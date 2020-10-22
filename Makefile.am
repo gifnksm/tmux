@@ -128,7 +128,6 @@ dist_tmux_SOURCES = \
 	cmd-unbind-key.c \
 	cmd-wait-for.c \
 	cmd.c \
-	colour.c \
 	compat.h \
 	control-notify.c \
 	control.c \
@@ -213,7 +212,8 @@ install-exec-hook:
 RUST_SOURCES = \
 	Cargo.toml \
 	build.rs \
-	src/lib.rs
+	src/lib.rs \
+	src/colour.rs
 
 RUST_EXTRA = \
 	Cargo.lock
