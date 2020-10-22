@@ -7,6 +7,7 @@ fn main() {
     let bindings = bindgen::Builder::default()
         .header("tmux.h")
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))
+        .whitelist_function("^colour_.*")
         .generate()
         .expect("Unable to generate bindings");
 
