@@ -8,7 +8,10 @@ if [ "$TRAVIS_OS_NAME" = "linux" ]; then
 				libevent-dev \
 				pkg-config \
 				libutempter-dev \
-				build-essential
+				build-essential \
+				llvm-dev \
+				libclang-dev \
+				clang
 
 	if [ "$BUILD" = "musl" -o "$BUILD" = "musl-static" ]; then
 		sudo apt-get -y install musl-dev \
@@ -20,9 +23,13 @@ if [ "$TRAVIS_OS_NAME" = "freebsd" ]; then
 	sudo pkg install -y \
 		automake \
 		libevent \
-		pkgconf
+		pkgconf \
+		llvm90
 fi
 
+export PATH="${HOME}/.cargo/bin:${PATH}"
+
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s - -y
 
 if [ "$BUILD" = "musl" -o "$BUILD" = "musl-static" ]; then
 	IS_MUSL=yes
@@ -39,35 +46,6 @@ case "$TRAVIS_CPU_ARCH" in
 		;;
 esac
 
-case "$TRAVIS_OS_NAME" in
-	linux)
-		if [ "${IS_MUSL}" = yes ]; then
-			RUST_TARGET=${RUST_ARCH}-unknown-linux-musl
-		else
-			RUST_TARGET=${RUST_ARCH}-unknown-linux-gnu
-		fi
-		;;
-	freebsd)
-		if [ "${IS_MUSL}" = yes ]; then
-			echo "musl target for FreeBSD is not supported" >&2
-			exit 1
-		else
-			RUST_TARGET=${RUST_ARCH}-unknown-freebsd
-		fi
-		;;
-	osx)
-		if [ "${IS_MUSL}" = yes ]; then
-			echo "musl target for Mac is not supported" >&2
-			exit 1
-		else
-			RUST_TARGET=${RUST_ARCH}-apple-darwin
-		fi
-		;;
-esac
-
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s - --target ${RUST_TARGET} --profile minimal -y
-mkdir -p ${HOME}/.cargo/
-cat <<END > ${HOME}/.cargo/config.toml
-[build]
-rustflags = ["--target", "${RUST_TARGET}"]
-END
+if [ "${IS_MUSL}" = yes -a "${TRAVIS_OS_NAME}" = linux ]; then
+	rustup target add ${RUST_ARCH}-unknown-linux-musl
+fi
