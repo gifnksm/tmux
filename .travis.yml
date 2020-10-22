@@ -24,6 +24,7 @@ jobs:
   # rustup failed on FreeBSD
   allow_failures:
     - os: freebsd
+    - arch: arm64
   exclude:
     # Static builds are broken on OS X (by Apple)
     - os: osx

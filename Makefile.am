@@ -212,6 +212,7 @@ install-exec-hook:
 
 RUST_SOURCES = \
 	Cargo.toml \
+	build.rs \
 	src/lib.rs
 
 RUST_EXTRA = \
@@ -232,8 +233,8 @@ cargo_verbose_1 = --verbose
 
 RUST_LIB=@abs_top_builddir@/target/@RUST_TARGET_SUBDIR@/libtmux.a
 
-@abs_top_builddir@/target/@RUST_TARGET_SUBDIR@/libtmux.a: $(RUST_SOURCES)
-	CARGO_TARGET_DIR=@abs_top_builddir@/target cargo build $(CARGO_VERBOSE) $(CARGO_RELEASE_ARGS)
+$(RUST_LIB): $(RUST_SOURCES)
+	CARGO_TARGET_DIR=@abs_top_builddir@/target cargo build @RUST_TARGET_FLAG@ $(CARGO_VERBOSE) $(CARGO_RELEASE_ARGS)
 
 check-local:
 	CARGO_TARGET_DIR=@abs_top_builddir@/target cargo test $(CARGO_VERBOSE)

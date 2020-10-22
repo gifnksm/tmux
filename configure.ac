@@ -60,6 +60,14 @@ else
 fi
 AC_SUBST([RUST_TARGET_SUBDIR])
 
+# Specify rust target
+AC_ARG_VAR(RUST_TARGET, "rust target triple")
+if test "x$RUST_TARGET" != x; then
+	RUST_TARGET_SUBDIR="${RUST_TARGET}/${RUST_TARGET_SUBDIR}"
+	RUST_TARGET_FLAG="--target ${RUST_TARGET}"
+fi
+AC_SUBST([RUST_TARGET_FLAG])
+
 # Is this a static build?
 AC_ARG_ENABLE(
 	static,
@@ -148,6 +156,10 @@ AC_FUNC_STRNLEN
 
 # Look for clock_gettime. Must come before event_init.
 AC_SEARCH_LIBS(clock_gettime, rt)
+
+# Look for rust symbols
+AC_SEARCH_LIBS(pthread_rwlock_wrlock, pthread)
+AC_SEARCH_LIBS(dlsym, dl)
 
 # Always use our getopt because 1) glibc's doesn't enforce argument order 2)
 # musl does not set optarg to NULL for flags without arguments (although it is

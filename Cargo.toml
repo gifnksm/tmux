@@ -13,3 +13,6 @@ crate-type = [ "staticlib" ]
 
 [profile.release]
 lto = true
+
+[build-dependencies]
+bindgen = "0.55.1"
