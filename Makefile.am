@@ -101,7 +101,6 @@ dist_tmux_SOURCES = \
 	cmd-queue.c \
 	cmd-refresh-client.c \
 	cmd-rename-session.c \
-	cmd-rename-window.c \
 	cmd-resize-pane.c \
 	cmd-resize-window.c \
 	cmd-respawn-pane.c \
@@ -156,6 +155,8 @@ dist_tmux_SOURCES = \
 	proc.c \
 	regsub.c \
 	resize.c \
+	rust-glue.c \
+	rust-glue.h \
 	screen-redraw.c \
 	screen-write.c \
 	screen.c \
@@ -211,11 +212,20 @@ install-exec-hook:
 RUST_SOURCES = \
 	Cargo.toml \
 	build.rs \
-	src/lib.rs \
+	src/arguments.rs \
 	src/cmd.rs \
+	src/cmd/find.rs \
 	src/cmd/kill_server.rs \
+	src/cmd/queue.rs \
+	src/cmd/rename_window.rs \
 	src/cmd/start_server.rs \
-	src/colour.rs
+	src/colour.rs \
+	src/ffi.rs \
+	src/format.rs \
+	src/lib.rs \
+	src/options.rs \
+	src/server.rs \
+	src/window.rs
 
 RUST_EXTRA = \
 	Cargo.lock
