@@ -82,7 +82,6 @@ dist_tmux_SOURCES = \
 	cmd-if-shell.c \
 	cmd-join-pane.c \
 	cmd-kill-pane.c \
-	cmd-kill-server.c \
 	cmd-kill-session.c \
 	cmd-kill-window.c \
 	cmd-list-buffers.c \
@@ -213,6 +212,9 @@ RUST_SOURCES = \
 	Cargo.toml \
 	build.rs \
 	src/lib.rs \
+	src/cmd.rs \
+	src/cmd/kill_server.rs \
+	src/cmd/start_server.rs \
 	src/colour.rs
 
 RUST_EXTRA = \
