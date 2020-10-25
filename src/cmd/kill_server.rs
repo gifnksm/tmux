@@ -1,4 +1,4 @@
-use super::{Args, Cmd, Entry, EntryFlag, QueueItem};
+use super::{Args, Cmd, Entry, EntryFlag, QueueItem, Retval};
 use crate::ffi;
 use cstr::cstr;
 use std::ptr;
@@ -13,16 +13,20 @@ static cmd_kill_server_entry: Entry = Entry {
     usage: cstr!("").as_ptr(),
 
     flags: ffi::CMD_STARTSERVER as i32,
-    exec: Some(exec),
+    exec: Some(exec_c),
 
     source: EntryFlag::EMPTY,
     target: EntryFlag::EMPTY,
 };
 
-extern "C" fn exec(_this: *mut Cmd, _item: *mut QueueItem) -> ffi::cmd_retval {
+extern "C" fn exec_c(this: *mut Cmd, item: *mut QueueItem) -> ffi::cmd_retval {
+    super::exec_wrap(this, item, exec)
+}
+
+fn exec(_this: &mut Cmd, _item: &mut QueueItem) -> Retval {
     unsafe {
         let _ = libc::kill(libc::getpid(), libc::SIGTERM);
     }
 
-    ffi::cmd_retval_CMD_RETURN_NORMAL
+    Retval::Normal
 }

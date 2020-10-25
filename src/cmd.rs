@@ -10,8 +10,9 @@ use cstr::cstr;
 pub(crate) use self::{find::State as FindState, queue::Item as QueueItem};
 
 mod find;
-mod kill_server;
 mod queue;
+
+mod kill_server;
 mod rename_window;
 mod start_server;
 
@@ -40,5 +41,29 @@ impl Cmd {
                 .as_ref()
                 .unwrap()
         }
+    }
+}
+
+#[derive(Debug, Copy, Clone, Eq, PartialEq)]
+enum Retval {
+    //Error,
+    Normal,
+    //Wait,
+    //Stop,
+}
+
+fn exec_wrap(
+    this: *mut Cmd,
+    item: *mut QueueItem,
+    exec: impl FnOnce(&mut Cmd, &mut QueueItem) -> Retval,
+) -> ffi::cmd_retval {
+    let this = unsafe { this.as_mut().unwrap() };
+    let item = unsafe { item.as_mut().unwrap() };
+
+    match exec(this, item) {
+        //Retval::Error => ffi::cmd_retval_CMD_RETURN_ERROR,
+        Retval::Normal => ffi::cmd_retval_CMD_RETURN_NORMAL,
+        //Retval::Wait => ffi::cmd_retval_CMD_RETURN_WAIT,
+        //Retval::Stop => ffi::cmd_retval_CMD_RETURN_STOP,
     }
 }
