@@ -7,7 +7,7 @@ fn main() {
     let bindings = bindgen::Builder::default()
         .header("rust-glue.h")
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))
-        .whitelist_function("^(glue|cmdq?|format|window|options|server)_.*")
+        .whitelist_function("^(glue|cmdq?|format|window|options|server|args|layout)_.*")
         .whitelist_type("^cmd_.*")
         .whitelist_var("^CMD_.*")
         .generate()

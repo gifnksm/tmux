@@ -4,6 +4,7 @@ mod arguments;
 mod cmd;
 mod colour;
 mod format;
+mod layout;
 mod options;
 mod server;
 mod window;

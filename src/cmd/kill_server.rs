@@ -12,11 +12,11 @@ static cmd_kill_server_entry: Entry = Entry {
     args: Args::EMPTY,
     usage: cstr!("").as_ptr(),
 
-    flags: ffi::CMD_STARTSERVER as i32,
-    exec: Some(exec_c),
-
     source: EntryFlag::EMPTY,
     target: EntryFlag::EMPTY,
+
+    flags: ffi::CMD_STARTSERVER as i32,
+    exec: Some(exec_c),
 };
 
 extern "C" fn exec_c(this: *mut Cmd, item: *mut QueueItem) -> ffi::cmd_retval {

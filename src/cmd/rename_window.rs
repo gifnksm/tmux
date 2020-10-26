@@ -16,11 +16,11 @@ static cmd_rename_window_entry: Entry = Entry {
     },
     usage: cstr!("[-t target-window] new-name").as_ptr(), // usage: cstr!(concat!(CMD_TARGET_WINDOW_USAGE, " new-name")).as_ptr(),
 
-    flags: ffi::CMD_AFTERHOOK as i32,
-    exec: Some(exec_c),
-
     source: EntryFlag::EMPTY,
     target: EntryFlag::EMPTY,
+
+    flags: ffi::CMD_AFTERHOOK as i32,
+    exec: Some(exec_c),
 };
 
 extern "C" fn exec_c(this: *mut Cmd, item: *mut QueueItem) -> ffi::cmd_retval {
@@ -31,7 +31,7 @@ fn exec(this: &mut Cmd, item: &mut QueueItem) -> Retval {
     let argv = this.args().argv();
     let new_name = format::single_from_target(item, argv[0]);
 
-    let target = item.target_mut();
+    let target = item.target();
     let wl = target.wl_mut();
     let window = wl.window_mut();
     window.set_name(new_name);

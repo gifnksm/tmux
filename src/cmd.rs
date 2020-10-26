@@ -12,6 +12,7 @@ pub(crate) use self::{find::State as FindState, queue::Item as QueueItem};
 mod find;
 mod queue;
 
+mod kill_pane;
 mod kill_server;
 mod rename_window;
 mod start_server;

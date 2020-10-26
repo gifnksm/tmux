@@ -81,7 +81,6 @@ dist_tmux_SOURCES = \
 	cmd-find.c \
 	cmd-if-shell.c \
 	cmd-join-pane.c \
-	cmd-kill-pane.c \
 	cmd-kill-session.c \
 	cmd-kill-window.c \
 	cmd-list-buffers.c \
@@ -212,9 +211,12 @@ install-exec-hook:
 RUST_SOURCES = \
 	Cargo.toml \
 	build.rs \
+	tmux.h \
+	rust-glue.h \
 	src/arguments.rs \
 	src/cmd.rs \
 	src/cmd/find.rs \
+	src/cmd/kill_pane.rs \
 	src/cmd/kill_server.rs \
 	src/cmd/queue.rs \
 	src/cmd/rename_window.rs \
@@ -222,6 +224,7 @@ RUST_SOURCES = \
 	src/colour.rs \
 	src/ffi.rs \
 	src/format.rs \
+	src/layout.rs \
 	src/lib.rs \
 	src/options.rs \
 	src/server.rs \
