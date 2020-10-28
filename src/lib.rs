@@ -7,4 +7,5 @@ mod format;
 mod layout;
 mod options;
 mod server;
+mod session;
 mod window;

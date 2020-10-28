@@ -14,6 +14,7 @@ mod queue;
 
 mod kill_pane;
 mod kill_server;
+mod kill_session;
 mod rename_window;
 mod start_server;
 

@@ -81,7 +81,6 @@ dist_tmux_SOURCES = \
 	cmd-find.c \
 	cmd-if-shell.c \
 	cmd-join-pane.c \
-	cmd-kill-session.c \
 	cmd-kill-window.c \
 	cmd-list-buffers.c \
 	cmd-list-clients.c \
@@ -218,6 +217,7 @@ RUST_SOURCES = \
 	src/cmd/find.rs \
 	src/cmd/kill_pane.rs \
 	src/cmd/kill_server.rs \
+	src/cmd/kill_session.rs \
 	src/cmd/queue.rs \
 	src/cmd/rename_window.rs \
 	src/cmd/start_server.rs \

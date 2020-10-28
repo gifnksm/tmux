@@ -7,9 +7,9 @@ fn main() {
     let bindings = bindgen::Builder::default()
         .header("rust-glue.h")
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))
-        .whitelist_function("^(glue|cmdq?|format|window|options|server|args|layout)_.*")
+        .whitelist_function("^(glue|cmdq?|format|window|options|server|args|layout|session)_.*")
         .whitelist_type("^cmd_.*")
-        .whitelist_var("^CMD_.*")
+        .whitelist_var("^(CMD|WINDOW|WINLINK)_.*|^sessions$")
         .generate()
         .expect("Unable to generate bindings");
 
