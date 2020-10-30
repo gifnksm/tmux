@@ -25,6 +25,14 @@ int glue_winlinks_foreach_safe(struct winlinks *wls, void *context, int (*f)(str
     return ret;
 }
 
+struct winlink *glue_winlinks_prev(__unused struct winlinks *wls, struct winlink *wl) {
+    return RB_PREV(winlinks, wls, wl);
+}
+
+struct winlink *glue_winlinks_next(__unused struct winlinks *wls, struct winlink *wl) {
+    return RB_NEXT(winlinks, wls, wl);
+}
+
 int glue_sessions_foreach_safe(struct sessions *ss, void *context, int (*f)(struct session *, void *)) {
     struct session *loops, *tmps;
     int ret = 0;

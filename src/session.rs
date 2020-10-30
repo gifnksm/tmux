@@ -3,11 +3,18 @@ use std::{
     os::raw::c_int,
 };
 
-use crate::{ffi, window::Winlink};
+use crate::{
+    ffi,
+    window::{Window, Winlink, Winlinks},
+};
 
 pub(crate) use ffi::session as Session;
 
 impl Session {
+    pub(crate) fn windows_mut(&mut self) -> &mut Winlinks {
+        &mut self.windows
+    }
+
     pub(crate) fn each_sessions(f: impl FnMut(&mut Session) -> bool) {
         // FIXME: workaround to satisfy borrow checker
         let mut ctx = EachSessionsCtx {
@@ -42,6 +49,10 @@ impl Session {
         unsafe {
             ffi::session_destroy(self, notify as c_int, from.as_ptr());
         }
+    }
+
+    pub(crate) fn is_linked(&self, w: &Window) -> bool {
+        unsafe { ffi::session_is_linked(self as *const _ as *mut _, w as *const _ as *mut _) != 0 }
     }
 }
 

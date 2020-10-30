@@ -6,6 +6,7 @@ mod colour;
 mod format;
 mod layout;
 mod options;
+mod resize;
 mod server;
 mod session;
 mod window;

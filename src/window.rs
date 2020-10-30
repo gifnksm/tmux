@@ -4,7 +4,19 @@ use std::{
     os::raw::{c_char, c_int},
 };
 
-pub(crate) use crate::ffi::{window as Window, window_pane as WindowPane, winlink as Winlink};
+pub(crate) use crate::ffi::{
+    window as Window, window_pane as WindowPane, winlink as Winlink, winlinks as Winlinks,
+};
+
+impl Winlinks {
+    pub(crate) fn prev_mut(&mut self, wl: &mut Winlink) -> Option<&mut Winlink> {
+        unsafe { ffi::glue_winlinks_prev(self, wl).as_mut() }
+    }
+
+    pub(crate) fn next_mut(&mut self, wl: &mut Winlink) -> Option<&mut Winlink> {
+        unsafe { ffi::glue_winlinks_next(self, wl).as_mut() }
+    }
+}
 
 impl Winlink {
     pub(crate) fn window_mut(&mut self) -> &mut Window {

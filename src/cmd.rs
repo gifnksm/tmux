@@ -15,8 +15,10 @@ mod queue;
 mod kill_pane;
 mod kill_server;
 mod kill_session;
+mod kill_window;
 mod rename_window;
 mod start_server;
+mod unlink_window;
 
 unsafe impl Sync for Entry {}
 
@@ -48,7 +50,7 @@ impl Cmd {
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
 enum Retval {
-    //Error,
+    Error,
     Normal,
     //Wait,
     //Stop,
@@ -63,7 +65,7 @@ fn exec_wrap(
     let item = unsafe { item.as_mut().unwrap() };
 
     match exec(this, item) {
-        //Retval::Error => ffi::cmd_retval_CMD_RETURN_ERROR,
+        Retval::Error => ffi::cmd_retval_CMD_RETURN_ERROR,
         Retval::Normal => ffi::cmd_retval_CMD_RETURN_NORMAL,
         //Retval::Wait => ffi::cmd_retval_CMD_RETURN_WAIT,
         //Retval::Stop => ffi::cmd_retval_CMD_RETURN_STOP,

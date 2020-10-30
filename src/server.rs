@@ -1,7 +1,9 @@
+use std::os::raw::c_int;
+
 use crate::{
     ffi,
     session::Session,
-    window::{Window, WindowPane},
+    window::{Window, WindowPane, Winlink},
 };
 
 pub(crate) fn redraw_session(session: &mut Session) {
@@ -28,8 +30,20 @@ pub(crate) fn kill_pane(pane: &mut WindowPane) {
     unsafe { ffi::server_kill_pane(pane) }
 }
 
+pub(crate) fn kill_window(w: &mut Window, renumber: bool) {
+    unsafe { ffi::server_kill_window(w, renumber as c_int) }
+}
+
+pub(crate) fn renumber_all() {
+    unsafe { ffi::server_renumber_all() }
+}
+
 pub(crate) fn destroy_session(session: &mut Session) {
     unsafe { ffi::server_destroy_session(session) }
+}
+
+pub(crate) fn unlink_window(session: &mut Session, wl: &mut Winlink) {
+    unsafe { ffi::server_unlink_window(session, wl) }
 }
 
 pub(crate) fn unzoom_window(window: &mut Window) {
