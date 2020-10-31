@@ -1,6 +1,6 @@
 use std::{
-    ffi::{c_void, CString},
-    os::raw::c_int,
+    ffi::{c_void, CStr, CString},
+    os::raw::{c_char, c_int},
 };
 
 use crate::{
@@ -11,8 +11,33 @@ use crate::{
 pub(crate) use ffi::session as Session;
 
 impl Session {
+    pub(crate) fn find(name: *const c_char) -> Option<&'static mut Session> {
+        unsafe { ffi::session_find(name).as_mut() }
+    }
+
+    pub(crate) fn check_name(name: *const c_char) -> *mut c_char {
+        unsafe { ffi::session_check_name(name) }
+    }
+
+    pub(crate) fn name(&self) -> &CStr {
+        unsafe { CStr::from_ptr(self.name) }
+    }
+
+    pub(crate) fn set_name(&mut self, name: *mut c_char) {
+        unsafe { libc::free(self.name as *mut c_void) };
+        self.name = name;
+    }
+
     pub(crate) fn windows_mut(&mut self) -> &mut Winlinks {
         &mut self.windows
+    }
+
+    pub(crate) fn remove(s: *mut Self) -> *mut Self {
+        unsafe { ffi::glue_sessions_remove(s) }
+    }
+
+    pub(crate) fn insert(s: *mut Self) -> *mut Self {
+        unsafe { ffi::glue_sessions_insert(s) }
     }
 
     pub(crate) fn each_sessions(f: impl FnMut(&mut Session) -> bool) {

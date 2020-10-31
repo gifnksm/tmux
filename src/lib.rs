@@ -5,6 +5,7 @@ mod cmd;
 mod colour;
 mod format;
 mod layout;
+mod notify;
 mod options;
 mod resize;
 mod server;

@@ -16,6 +16,7 @@ mod kill_pane;
 mod kill_server;
 mod kill_session;
 mod kill_window;
+mod rename_session;
 mod rename_window;
 mod start_server;
 mod unlink_window;

@@ -97,7 +97,6 @@ dist_tmux_SOURCES = \
 	cmd-pipe-pane.c \
 	cmd-queue.c \
 	cmd-refresh-client.c \
-	cmd-rename-session.c \
 	cmd-resize-pane.c \
 	cmd-resize-window.c \
 	cmd-respawn-pane.c \
@@ -219,6 +218,7 @@ RUST_SOURCES = \
 	src/cmd/kill_session.rs \
 	src/cmd/kill_window.rs \
 	src/cmd/queue.rs \
+	src/cmd/rename_session.rs \
 	src/cmd/rename_window.rs \
 	src/cmd/start_server.rs \
 	src/cmd/unlink_window.rs \
@@ -227,6 +227,7 @@ RUST_SOURCES = \
 	src/format.rs \
 	src/layout.rs \
 	src/lib.rs \
+	src/notify.rs \
 	src/options.rs \
 	src/resize.rs \
 	src/server.rs \

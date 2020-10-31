@@ -14,6 +14,10 @@ pub(crate) fn client_remove_pane(pane: &mut WindowPane) {
     unsafe { ffi::server_client_remove_pane(pane) }
 }
 
+pub(crate) fn status_session(s: &mut Session) {
+    unsafe { ffi::server_status_session(s) }
+}
+
 pub(crate) fn redraw_window(window: &mut Window) {
     unsafe { ffi::server_redraw_window(window) }
 }

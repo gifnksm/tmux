@@ -33,6 +33,15 @@ struct winlink *glue_winlinks_next(__unused struct winlinks *wls, struct winlink
     return RB_NEXT(winlinks, wls, wl);
 }
 
+struct session *glue_sessions_remove(struct session *s) {
+    return RB_REMOVE(sessions, &sessions, s);
+}
+
+struct session *glue_sessions_insert(struct session *s) {
+    return RB_INSERT(sessions, &sessions, s);
+}
+
+
 int glue_sessions_foreach_safe(struct sessions *ss, void *context, int (*f)(struct session *, void *)) {
     struct session *loops, *tmps;
     int ret = 0;
