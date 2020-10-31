@@ -8,7 +8,7 @@ edition = "2018"
 
 [dependencies]
 cstr = "0.2.5"
-libc = "0.2.79"
+libc = "0.2.80"
 
 [lib]
 crate-type = [ "staticlib" ]
