@@ -1,7 +1,7 @@
-use std::ffi::CString;
-
 use super::FindState;
 use crate::{client::Client, ffi};
+use cstr::cstr;
+use std::ffi::CString;
 
 pub(crate) use crate::ffi::cmdq_item as Item;
 
@@ -14,6 +14,14 @@ impl Item {
         }
     }
 
+    pub(crate) fn client(&self) -> &mut Client {
+        unsafe {
+            ffi::cmdq_get_client(self as *const _ as _)
+                .as_mut()
+                .unwrap()
+        }
+    }
+
     pub(crate) fn target_client(&self) -> &mut Client {
         unsafe {
             ffi::cmdq_get_target_client(self as *const _ as _)
@@ -22,10 +30,17 @@ impl Item {
         }
     }
 
+    pub(crate) fn print(&mut self, msg: impl Into<Vec<u8>>) {
+        let msg = CString::new(msg).unwrap();
+        unsafe {
+            ffi::cmdq_print(self, cstr!("%s").as_ptr(), msg.as_ptr());
+        }
+    }
+
     pub(crate) fn error(&mut self, msg: impl Into<Vec<u8>>) {
         let msg = CString::new(msg).unwrap();
         unsafe {
-            ffi::cmdq_error(self, msg.as_ptr());
+            ffi::cmdq_error(self, cstr!("%s").as_ptr(), msg.as_ptr());
         }
     }
 }

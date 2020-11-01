@@ -8,6 +8,7 @@ mod format;
 mod layout;
 mod notify;
 mod options;
+mod paste;
 mod resize;
 mod server;
 mod session;

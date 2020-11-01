@@ -8,10 +8,10 @@ fn main() {
         .header("rust-glue.h")
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))
         .whitelist_function(
-            "^(glue|cmdq?|format|window|options|server|args|layout|session|recalculate|notify)_.*",
+            "^(glue|cmdq?|format|window|options|server|args|layout|session|recalculate|notify|paste)_.*",
         )
-        .whitelist_type("^cmd_.*")
-        .whitelist_var("^(CMD|WINDOW|WINLINK)_.*|^sessions$")
+        .whitelist_type("^(cmd|paste)_.*")
+        .whitelist_var("^(CMD|WINDOW|WINLINK|FORMAT)_.*|^sessions$")
         .generate()
         .expect("Unable to generate bindings");
 

@@ -16,6 +16,7 @@ mod kill_pane;
 mod kill_server;
 mod kill_session;
 mod kill_window;
+mod list_buffers;
 mod lock_client;
 mod lock_server;
 mod lock_session;
