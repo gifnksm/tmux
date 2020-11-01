@@ -1,6 +1,7 @@
 use std::os::raw::c_int;
 
 use crate::{
+    client::Client,
     ffi,
     session::Session,
     window::{Window, WindowPane, Winlink},
@@ -28,6 +29,18 @@ pub(crate) fn redraw_window_borders(window: &mut Window) {
 
 pub(crate) fn status_window(window: &mut Window) {
     unsafe { ffi::server_status_window(window) }
+}
+
+pub(crate) fn lock() {
+    unsafe { ffi::server_lock() }
+}
+
+pub(crate) fn lock_session(s: &mut Session) {
+    unsafe { ffi::server_lock_session(s) }
+}
+
+pub(crate) fn lock_client(c: &mut Client) {
+    unsafe { ffi::server_lock_client(c) }
 }
 
 pub(crate) fn kill_pane(pane: &mut WindowPane) {

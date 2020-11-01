@@ -1,7 +1,7 @@
 use std::ffi::CString;
 
 use super::FindState;
-use crate::ffi;
+use crate::{client::Client, ffi};
 
 pub(crate) use crate::ffi::cmdq_item as Item;
 
@@ -10,6 +10,14 @@ impl Item {
         unsafe {
             ffi::cmdq_get_target(self as *const _ as _)
                 .as_ref()
+                .unwrap()
+        }
+    }
+
+    pub(crate) fn target_client(&self) -> &mut Client {
+        unsafe {
+            ffi::cmdq_get_target_client(self as *const _ as _)
+                .as_mut()
                 .unwrap()
         }
     }

@@ -1,6 +1,7 @@
 #[macro_use]
 mod ffi;
 mod arguments;
+mod client;
 mod cmd;
 mod colour;
 mod format;

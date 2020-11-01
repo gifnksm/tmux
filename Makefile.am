@@ -88,7 +88,6 @@ dist_tmux_SOURCES = \
 	cmd-list-sessions.c \
 	cmd-list-windows.c \
 	cmd-load-buffer.c \
-	cmd-lock-server.c \
 	cmd-move-window.c \
 	cmd-new-session.c \
 	cmd-new-window.c \
@@ -211,12 +210,16 @@ RUST_SOURCES = \
 	tmux.h \
 	rust-glue.h \
 	src/arguments.rs \
+	src/client.rs \
 	src/cmd.rs \
 	src/cmd/find.rs \
 	src/cmd/kill_pane.rs \
 	src/cmd/kill_server.rs \
 	src/cmd/kill_session.rs \
 	src/cmd/kill_window.rs \
+	src/cmd/lock_client.rs \
+	src/cmd/lock_server.rs \
+	src/cmd/lock_session.rs \
 	src/cmd/queue.rs \
 	src/cmd/rename_session.rs \
 	src/cmd/rename_window.rs \
