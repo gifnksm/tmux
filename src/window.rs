@@ -19,7 +19,7 @@ impl Winlinks {
 }
 
 impl Winlink {
-    pub(crate) fn window_mut(&mut self) -> &mut Window {
+    pub(crate) fn window_mut(&mut self) -> &'static mut Window {
         unsafe { self.window.as_mut().unwrap() }
     }
 }
