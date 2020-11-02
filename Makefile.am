@@ -235,6 +235,7 @@ RUST_SOURCES = \
 	src/paste.rs \
 	src/resize.rs \
 	src/server.rs \
+	src/session.rs \
 	src/window.rs
 
 RUST_EXTRA = \

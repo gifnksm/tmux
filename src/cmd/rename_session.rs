@@ -1,10 +1,7 @@
 use super::{Args, Cmd, Entry, EntryFlag, QueueItem, Retval};
 use crate::{ffi, format, notify, server, session::Session};
 use cstr::cstr;
-use std::{
-    ffi::{c_void, CStr},
-    os::raw::c_char,
-};
+use std::{ffi::CStr, os::raw::c_char};
 
 /// Rename a window.
 #[no_mangle]
@@ -40,18 +37,14 @@ fn exec(this: &mut Cmd, item: &mut QueueItem) -> Retval {
     let s = target.s_mut();
 
     let tmp = format::single_from_target(item, unsafe { CStr::from_ptr(argv[0]) });
-    let new_name = Session::check_name(tmp.as_ptr());
+    let new_name = Session::check_name(&tmp);
 
     if &*tmp == s.name() {
-        unsafe { libc::free(new_name as *mut c_void) };
         return Retval::Normal;
     }
 
-    if Session::find(new_name).is_some() {
-        item.error(format!("duplicate session: {}", unsafe {
-            CStr::from_ptr(new_name).to_str().unwrap()
-        }));
-        unsafe { libc::free(new_name as *mut c_void) };
+    if Session::find(&new_name).is_some() {
+        item.error(format!("duplicate session: {}", new_name.to_str().unwrap()));
         return Retval::Error;
     }
 
