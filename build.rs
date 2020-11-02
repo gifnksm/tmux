@@ -11,7 +11,7 @@ fn main() {
             "^(glue|cmdq?|format|window|options|server|args|layout|session|recalculate|notify|paste)_.*",
         )
         .whitelist_type("^(cmd|paste)_.*")
-        .whitelist_var("^(CMD|WINDOW|WINLINK|FORMAT)_.*|^sessions$")
+        .whitelist_var("^(CMD|WINDOW|WINLINK|FORMAT)_.*|^sessions$|^clients$")
         .generate()
         .expect("Unable to generate bindings");
 

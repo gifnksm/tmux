@@ -12,3 +12,5 @@ struct session *glue_sessions_remove(struct session *s);
 struct session *glue_sessions_insert(struct session *s);
 int glue_sessions_foreach_safe(struct sessions *, void *,
                                int (*f)(struct session *, void *));
+int glue_clients_foreach_safe(struct clients *, void *,
+                              int (*f)(struct client *, void *));

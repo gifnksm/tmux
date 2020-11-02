@@ -53,3 +53,16 @@ int glue_sessions_foreach_safe(struct sessions *ss, void *context, int (*f)(stru
     }
     return ret;
 }
+
+int glue_clients_foreach_safe(struct clients *cs, void *ctx, int (*f)(struct client *, void *)) {
+    struct client *loopc, *tmpc;
+    int ret = 0;
+    TAILQ_FOREACH_SAFE(loopc, cs, entry, tmpc) {
+        ret = f(loopc, ctx);
+        if (ret) {
+            break;
+        }
+    }
+    return ret;
+
+}

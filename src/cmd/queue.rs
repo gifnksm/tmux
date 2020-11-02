@@ -6,7 +6,7 @@ use std::ffi::CString;
 pub(crate) use crate::ffi::cmdq_item as Item;
 
 impl Item {
-    pub(crate) fn target(&self) -> &FindState {
+    pub(crate) fn target(&self) -> &'static FindState {
         unsafe {
             ffi::cmdq_get_target(self as *const _ as _)
                 .as_ref()
@@ -14,7 +14,7 @@ impl Item {
         }
     }
 
-    pub(crate) fn client(&self) -> &mut Client {
+    pub(crate) fn client(&self) -> &'static mut Client {
         unsafe {
             ffi::cmdq_get_client(self as *const _ as _)
                 .as_mut()
@@ -22,7 +22,7 @@ impl Item {
         }
     }
 
-    pub(crate) fn target_client(&self) -> &mut Client {
+    pub(crate) fn target_client(&self) -> &'static mut Client {
         unsafe {
             ffi::cmdq_get_target_client(self as *const _ as _)
                 .as_mut()
