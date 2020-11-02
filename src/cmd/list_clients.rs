@@ -65,12 +65,11 @@ fn exec(this: &mut Cmd, item: &mut QueueItem) -> Retval {
 
         let ft = format::create(item.client(), item, ffi::FORMAT_NONE as i32, 0);
         let fmt = CString::new(format!("{}", idx)).unwrap();
-        format::add(ft, cstr!("line").as_ptr(), fmt.as_ptr());
+        format::add(ft, cstr!("line"), &fmt);
         format::defaults(ft, Some(c), None, None, None);
 
-        let line = format::expand(ft, template.as_ptr());
-        item.print(unsafe { CStr::from_ptr(line) }.to_str().unwrap());
-        unsafe { libc::free(line as *mut _) }
+        let line = format::expand(ft, &template);
+        item.print(line.to_str().unwrap());
 
         format::free(ft);
 

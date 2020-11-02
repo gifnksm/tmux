@@ -7,14 +7,15 @@ use crate::{
     window::{WindowPane, Winlink},
 };
 use std::{
-    os::raw::{c_char, c_int},
+    ffi::{CStr, CString},
+    os::raw::c_int,
     ptr,
 };
 
 pub(crate) use ffi::format_tree as Tree;
 
-pub(crate) fn true_(s: *const c_char) -> bool {
-    unsafe { ffi::format_true(s) != 0 }
+pub(crate) fn true_(s: &CStr) -> bool {
+    unsafe { ffi::format_true(s.as_ptr()) != 0 }
 }
 
 pub(crate) fn create(
@@ -34,16 +35,18 @@ pub(crate) fn free(ft: &mut Tree) {
     unsafe { ffi::format_free(ft) }
 }
 
-pub(crate) fn add(ft: &mut Tree, key: *const c_char, fmt: *const c_char) {
-    unsafe { ffi::format_add(ft, key, fmt) }
+pub(crate) fn add(ft: &mut Tree, key: &CStr, fmt: &CStr) {
+    unsafe { ffi::format_add(ft, key.as_ptr(), fmt.as_ptr()) }
 }
 
-pub(crate) fn expand(ft: &mut Tree, fmt: *const c_char) -> *mut c_char {
-    unsafe { ffi::format_expand(ft, fmt) }
+pub(crate) fn expand(ft: &mut Tree, fmt: &CStr) -> CString {
+    let ptr = unsafe { ffi::format_expand(ft, fmt.as_ptr()) };
+    unsafe { ffi::ptr_into_cstring(ptr) }
 }
 
-pub(crate) fn single_from_target(item: &QueueItem, fmt: *const c_char) -> *mut c_char {
-    unsafe { ffi::format_single_from_target(item as *const _ as *mut _, fmt) }
+pub(crate) fn single_from_target(item: &QueueItem, fmt: &CStr) -> CString {
+    let ptr = unsafe { ffi::format_single_from_target(item as *const _ as *mut _, fmt.as_ptr()) };
+    unsafe { ffi::ptr_into_cstring(ptr) }
 }
 
 pub(crate) fn defaults(

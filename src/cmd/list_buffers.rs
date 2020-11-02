@@ -1,7 +1,7 @@
 use super::{Args, Cmd, Entry, EntryFlag, QueueItem, Retval};
 use crate::{ffi, format, paste};
 use cstr::cstr;
-use std::ffi::{c_void, CStr};
+use std::ffi::CStr;
 
 /// List paste buffers.
 #[no_mangle]
@@ -49,17 +49,15 @@ fn exec(this: &mut Cmd, item: &mut QueueItem) -> Retval {
 
         let flag;
         if let Some(filter) = filter {
-            let expanded = format::expand(ft, filter.as_ptr());
-            flag = format::true_(expanded);
-            unsafe { libc::free(expanded as *mut c_void) }
+            let expanded = format::expand(ft, &filter);
+            flag = format::true_(&expanded);
         } else {
             flag = true;
         }
 
         if flag {
-            let line = format::expand(ft, template.as_ptr());
-            item.print(unsafe { CStr::from_ptr(line) }.to_str().unwrap());
-            unsafe { libc::free(line as *mut c_void) };
+            let line = format::expand(ft, &template);
+            item.print(line.to_str().unwrap());
         }
 
         format::free(ft);

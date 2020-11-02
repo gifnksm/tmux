@@ -1,7 +1,8 @@
+use std::ffi::CStr;
+
 use super::{Args, Cmd, Entry, EntryFlag, QueueItem, Retval};
 use crate::{ffi, format, server};
 use cstr::cstr;
-use std::ffi::c_void;
 
 /// Rename a window.
 #[no_mangle]
@@ -29,20 +30,18 @@ extern "C" fn exec_c(this: *mut Cmd, item: *mut QueueItem) -> ffi::cmd_retval {
 
 fn exec(this: &mut Cmd, item: &mut QueueItem) -> Retval {
     let argv = this.args().argv();
-    let new_name = format::single_from_target(item, argv[0]);
+    let new_name = format::single_from_target(item, unsafe { CStr::from_ptr(argv[0]) });
 
     let target = item.target();
     let wl = target.wl_mut();
     let window = wl.window_mut();
-    window.set_name(new_name);
+    window.set_name(new_name.as_ptr());
     window
         .options_mut()
         .set_number(cstr!("automatic-rename").as_ptr(), 0);
 
     server::redraw_window_borders(window);
     server::status_window(window);
-
-    unsafe { libc::free(new_name as *mut c_void) };
 
     Retval::Normal
 }

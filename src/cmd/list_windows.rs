@@ -90,22 +90,20 @@ fn session(this: &mut Cmd, s: &mut Session, item: &mut QueueItem, ty: Type) {
     s.each_windows(|s, wl| {
         let ft = format::create(item.client(), item, ffi::FORMAT_NONE as i32, 0);
         let fmt = CString::new(format!("{}", n)).unwrap();
-        format::add(ft, cstr!("line").as_ptr(), fmt.as_ptr());
+        format::add(ft, cstr!("line"), &fmt);
         format::defaults(ft, None, Some(s), Some(wl), None);
 
         let flag;
         if let Some(filter) = filter {
-            let expanded = format::expand(ft, filter.as_ptr());
-            flag = format::true_(expanded);
-            unsafe { libc::free(expanded as _) };
+            let expanded = format::expand(ft, &filter);
+            flag = format::true_(&expanded);
         } else {
             flag = true;
         }
 
         if flag {
-            let line = format::expand(ft, template.as_ptr());
-            item.print(unsafe { CStr::from_ptr(line) }.to_str().unwrap());
-            unsafe { libc::free(line as _) }
+            let line = format::expand(ft, &template);
+            item.print(line.to_str().unwrap());
         }
 
         format::free(ft);

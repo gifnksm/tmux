@@ -39,11 +39,10 @@ fn exec(this: &mut Cmd, item: &mut QueueItem) -> Retval {
     let target = item.target();
     let s = target.s_mut();
 
-    let tmp = format::single_from_target(item, argv[0]);
-    let new_name = Session::check_name(tmp);
-    unsafe { libc::free(tmp as *mut c_void) };
+    let tmp = format::single_from_target(item, unsafe { CStr::from_ptr(argv[0]) });
+    let new_name = Session::check_name(tmp.as_ptr());
 
-    if unsafe { CStr::from_ptr(tmp) } == s.name() {
+    if &*tmp == s.name() {
         unsafe { libc::free(new_name as *mut c_void) };
         return Retval::Normal;
     }
