@@ -3,7 +3,7 @@ use crate::{
     session::Session,
     window::{WindowPane, Winlink},
 };
-pub(crate) use ffi::cmd_find_state as State;
+pub(crate) use ffi::{cmd_find_state as State, cmd_find_type as Type};
 
 impl State {
     pub(crate) fn wl_mut(&self) -> &mut Winlink {

@@ -7,7 +7,10 @@ use crate::{
 };
 use cstr::cstr;
 
-pub(crate) use self::{find::State as FindState, queue::Item as QueueItem};
+pub(crate) use self::{
+    find::{State as FindState, Type as FindType},
+    queue::Item as QueueItem,
+};
 
 mod find;
 mod queue;
@@ -42,7 +45,7 @@ impl Args {
 impl EntryFlag {
     const EMPTY: Self = Self {
         flag: 0,
-        type_: 0,
+        type_: FindType::CMD_FIND_PANE, // 0
         flags: 0,
     };
 }
@@ -74,9 +77,9 @@ fn exec_wrap(
     let item = unsafe { item.as_mut().unwrap() };
 
     match exec(this, item) {
-        Retval::Error => ffi::cmd_retval_CMD_RETURN_ERROR,
-        Retval::Normal => ffi::cmd_retval_CMD_RETURN_NORMAL,
-        //Retval::Wait => ffi::cmd_retval_CMD_RETURN_WAIT,
-        //Retval::Stop => ffi::cmd_retval_CMD_RETURN_STOP,
+        Retval::Error => ffi::cmd_retval::CMD_RETURN_ERROR,
+        Retval::Normal => ffi::cmd_retval::CMD_RETURN_NORMAL,
+        //Retval::Wait => ffi::cmd_retval::CMD_RETURN_WAIT,
+        //Retval::Stop => ffi::cmd_retval::CMD_RETURN_STOP,
     }
 }

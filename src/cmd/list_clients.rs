@@ -1,4 +1,4 @@
-use super::{Args, Cmd, Entry, EntryFlag, QueueItem, Retval};
+use super::{Args, Cmd, Entry, EntryFlag, FindType, QueueItem, Retval};
 use crate::{client::Client, ffi, format};
 use cstr::cstr;
 use std::{
@@ -23,7 +23,7 @@ static cmd_list_clients_entry: Entry = Entry {
     source: EntryFlag::EMPTY,
     target: EntryFlag {
         flag: b't' as c_char,
-        type_: ffi::cmd_find_type_CMD_FIND_SESSION,
+        type_: FindType::CMD_FIND_SESSION,
         flags: 0,
     },
 

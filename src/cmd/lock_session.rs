@@ -1,4 +1,4 @@
-use super::{Args, Cmd, Entry, EntryFlag, QueueItem, Retval};
+use super::{Args, Cmd, Entry, EntryFlag, FindType, QueueItem, Retval};
 use crate::{ffi, resize, server};
 use cstr::cstr;
 use std::os::raw::c_char;
@@ -19,7 +19,7 @@ static cmd_lock_session_entry: Entry = Entry {
     source: EntryFlag::EMPTY,
     target: EntryFlag {
         flag: b't' as c_char,
-        type_: ffi::cmd_find_type_CMD_FIND_SESSION,
+        type_: FindType::CMD_FIND_SESSION,
         flags: 0,
     },
 

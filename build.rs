@@ -1,5 +1,5 @@
-use std::env;
-use std::path::PathBuf;
+use bindgen::EnumVariation;
+use std::{env, path::PathBuf};
 
 fn main() {
     println!("cargo:rerun-if-changed=rust-glue.h");
@@ -12,6 +12,7 @@ fn main() {
         )
         .whitelist_type("^(cmd|paste)_.*")
         .whitelist_var("^(CMD|WINDOW|WINLINK|FORMAT)_.*|^sessions$|^clients$")
+        .default_enum_style(EnumVariation::Rust{non_exhaustive: false})
         .generate()
         .expect("Unable to generate bindings");
 
