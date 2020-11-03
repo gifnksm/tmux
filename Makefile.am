@@ -66,7 +66,6 @@ dist_tmux_SOURCES = \
 	cfg.c \
 	client.c \
 	cmd-attach-session.c \
-	cmd-bind-key.c \
 	cmd-break-pane.c \
 	cmd-capture-pane.c \
 	cmd-choose-tree.c \
@@ -207,6 +206,7 @@ RUST_SOURCES = \
 	src/arguments.rs \
 	src/client.rs \
 	src/cmd.rs \
+	src/cmd/bind_key.rs \
 	src/cmd/find.rs \
 	src/cmd/kill_pane.rs \
 	src/cmd/kill_server.rs \
@@ -225,9 +225,12 @@ RUST_SOURCES = \
 	src/cmd/rename_window.rs \
 	src/cmd/start_server.rs \
 	src/cmd/unlink_window.rs \
+	src/cmd_parse.rs \
 	src/colour.rs \
 	src/ffi.rs \
 	src/format.rs \
+	src/key_bindings.rs \
+	src/key_string.rs \
 	src/layout.rs \
 	src/lib.rs \
 	src/notify.rs \

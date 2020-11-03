@@ -1,5 +1,3 @@
-use std::ffi::CStr;
-
 use super::{Args, Cmd, Entry, EntryFlag, QueueItem, Retval};
 use crate::{ffi, format, server};
 use cstr::cstr;
@@ -29,8 +27,7 @@ extern "C" fn exec_c(this: *mut Cmd, item: *mut QueueItem) -> ffi::cmd_retval {
 }
 
 fn exec(this: &mut Cmd, item: &mut QueueItem) -> Retval {
-    let argv = this.args().argv();
-    let new_name = format::single_from_target(item, unsafe { CStr::from_ptr(argv[0]) });
+    let new_name = format::single_from_target(item, &this.args()[0]);
 
     let target = item.target();
     let wl = target.wl_mut();

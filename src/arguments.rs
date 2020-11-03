@@ -2,6 +2,7 @@ use crate::ffi;
 pub(crate) use ffi::args as Args;
 use std::{
     ffi::CStr,
+    ops::Index,
     os::raw::{c_char, c_int},
     slice,
 };
@@ -21,5 +22,13 @@ impl Args {
                 .as_ref()
                 .map(|p| CStr::from_ptr(p as _))
         }
+    }
+}
+
+impl Index<usize> for Args {
+    type Output = CStr;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        unsafe { CStr::from_ptr(self.argv()[index]) }
     }
 }

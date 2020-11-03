@@ -1,7 +1,7 @@
 use super::{Args, Cmd, Entry, EntryFlag, FindType, QueueItem, Retval};
 use crate::{ffi, format, notify, server, session::Session};
 use cstr::cstr;
-use std::{ffi::CStr, os::raw::c_char};
+use std::os::raw::c_char;
 
 /// Rename a window.
 #[no_mangle]
@@ -32,11 +32,10 @@ extern "C" fn exec_c(this: *mut Cmd, item: *mut QueueItem) -> ffi::cmd_retval {
 }
 
 fn exec(this: &mut Cmd, item: &mut QueueItem) -> Retval {
-    let argv = this.args().argv();
     let target = item.target();
     let s = target.s_mut();
 
-    let tmp = format::single_from_target(item, unsafe { CStr::from_ptr(argv[0]) });
+    let tmp = format::single_from_target(item, &this.args()[0]);
     let new_name = Session::check_name(&tmp);
 
     if &*tmp == s.name() {

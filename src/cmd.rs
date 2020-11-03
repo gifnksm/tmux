@@ -15,6 +15,7 @@ pub(crate) use self::{
 mod find;
 mod queue;
 
+mod bind_key;
 mod kill_pane;
 mod kill_server;
 mod kill_session;
