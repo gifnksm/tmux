@@ -57,7 +57,7 @@ fn exec(this: &mut Cmd, item: &mut QueueItem) -> Retval {
     let args = this.args();
     let target = item.target();
 
-    if args.has(b'a') != 0 {
+    if args.has(b'a') {
         server(this, item)
     } else {
         session(this, target.s_mut(), item, Type::Session);

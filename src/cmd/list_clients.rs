@@ -47,7 +47,7 @@ fn exec(this: &mut Cmd, item: &mut QueueItem) -> Retval {
     let args = this.args();
     let target = item.target();
 
-    let s = if args.has(b't') != 0 {
+    let s = if args.has(b't') {
         Some(target.s_mut())
     } else {
         None

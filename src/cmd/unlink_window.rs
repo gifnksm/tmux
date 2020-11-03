@@ -38,7 +38,7 @@ fn exec(this: &mut Cmd, item: &mut QueueItem) -> Retval {
     let w = wl.window_mut();
     let s = target.s_mut();
 
-    if args.has(b'k') != 0 && s.is_linked(w) {
+    if args.has(b'k') && s.is_linked(w) {
         item.error("window only linked to one session");
         return Retval::Error;
     }

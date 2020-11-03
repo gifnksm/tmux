@@ -37,7 +37,7 @@ fn exec(this: &mut Cmd, item: &mut QueueItem) -> Retval {
     let wl = target.wl_mut();
     let s = target.s_mut();
 
-    if args.has(b'a') != 0 {
+    if args.has(b'a') {
         if s.windows_mut().prev_mut(wl).is_none() && s.windows_mut().next_mut(wl).is_none() {
             return Retval::Normal;
         }

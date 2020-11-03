@@ -38,7 +38,7 @@ fn exec(this: &mut Cmd, item: &mut QueueItem) -> Retval {
     let wp = target.wp_mut();
     let window = winlink.window_mut();
 
-    if args.has(b'a') != 0 {
+    if args.has(b'a') {
         server::unzoom_window(window);
         window.each_panes(|window, pane| {
             if ptr::eq(pane as _, wp as _) {

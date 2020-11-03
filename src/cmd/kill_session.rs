@@ -38,7 +38,7 @@ fn exec(this: &mut Cmd, item: &mut QueueItem) -> Retval {
     let args = this.args();
     let target = item.target();
 
-    if args.has(b'C') != 0 {
+    if args.has(b'C') {
         let s = target.s_mut();
         s.each_windows(|_s, wl| {
             wl.window_mut().flags &= !(ffi::WINDOW_ALERTFLAGS as i32);
@@ -46,7 +46,7 @@ fn exec(this: &mut Cmd, item: &mut QueueItem) -> Retval {
             false // continue
         });
         server::redraw_session(s);
-    } else if args.has(b'a') != 0 {
+    } else if args.has(b'a') {
         Session::each_sessions(|s| {
             if !ptr::eq(s, target.s_mut()) {
                 server::destroy_session(s);

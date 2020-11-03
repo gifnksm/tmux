@@ -1,19 +1,14 @@
 use crate::ffi;
 pub(crate) use ffi::args as Args;
-use std::{
-    ffi::CStr,
-    ops::Index,
-    os::raw::{c_char, c_int},
-    slice,
-};
+use std::{ffi::CStr, ops::Index, os::raw::c_char, slice};
 
 impl Args {
     pub(crate) fn argv(&self) -> &[*mut c_char] {
         unsafe { slice::from_raw_parts(self.argv, self.argc as usize) }
     }
 
-    pub(crate) fn has(&self, flag: u8) -> c_int {
-        unsafe { ffi::args_has(self as *const _ as _, flag) }
+    pub(crate) fn has(&self, flag: u8) -> bool {
+        unsafe { ffi::args_has(self as *const _ as _, flag) != 0 }
     }
 
     pub(crate) fn get(&self, flag: u8) -> Option<&CStr> {

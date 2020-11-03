@@ -42,13 +42,13 @@ fn exec(this: &mut Cmd, item: &mut QueueItem) -> Retval {
 
     let table_name = if let Some(name) = args.get(b'T') {
         name
-    } else if args.has(b'n') != 0 {
+    } else if args.has(b'n') {
         cstr!("root")
     } else {
         cstr!("prefix")
     };
 
-    let repeat = args.has(b'r') != 0;
+    let repeat = args.has(b'r');
     let note = args.get(b'N');
 
     if args.argv().len() != 1 {

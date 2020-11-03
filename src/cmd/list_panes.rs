@@ -37,9 +37,9 @@ fn exec(this: &mut Cmd, item: &mut QueueItem) -> Retval {
     let s = target.s_mut();
     let wl = target.wl_mut();
 
-    if args.has(b'a') != 0 {
+    if args.has(b'a') {
         server(this, item)
-    } else if args.has(b's') != 0 {
+    } else if args.has(b's') {
         session(this, s, item, Type::Window);
     } else {
         window(this, s, wl, item, Type::Pane)
