@@ -1,5 +1,4 @@
-use super::FindState;
-use crate::{client::Client, ffi};
+use crate::{client::Client, cmd_find::State as FindState, ffi};
 use cstr::cstr;
 use std::ffi::CString;
 

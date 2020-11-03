@@ -1,6 +1,6 @@
 use crate::{
     client::Client,
-    cmd::QueueItem,
+    cmd_queue::Item as QueueItem,
     ffi,
     paste::Buffer as PasteBuffer,
     session::Session,

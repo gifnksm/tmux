@@ -207,7 +207,6 @@ RUST_SOURCES = \
 	src/client.rs \
 	src/cmd.rs \
 	src/cmd/bind_key.rs \
-	src/cmd/find.rs \
 	src/cmd/kill_pane.rs \
 	src/cmd/kill_server.rs \
 	src/cmd/kill_session.rs \
@@ -220,12 +219,13 @@ RUST_SOURCES = \
 	src/cmd/lock_client.rs \
 	src/cmd/lock_server.rs \
 	src/cmd/lock_session.rs \
-	src/cmd/queue.rs \
 	src/cmd/rename_session.rs \
 	src/cmd/rename_window.rs \
 	src/cmd/start_server.rs \
 	src/cmd/unlink_window.rs \
+	src/cmd_find.rs \
 	src/cmd_parse.rs \
+	src/cmd_queue.rs \
 	src/colour.rs \
 	src/ffi.rs \
 	src/format.rs \
