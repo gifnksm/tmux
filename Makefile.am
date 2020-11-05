@@ -112,7 +112,6 @@ dist_tmux_SOURCES = \
 	cmd-swap-pane.c \
 	cmd-swap-window.c \
 	cmd-switch-client.c \
-	cmd-unbind-key.c \
 	cmd-wait-for.c \
 	cmd.c \
 	compat.h \
@@ -222,6 +221,7 @@ RUST_SOURCES = \
 	src/cmd/rename_session.rs \
 	src/cmd/rename_window.rs \
 	src/cmd/start_server.rs \
+	src/cmd/unbind_key.rs \
 	src/cmd/unlink_window.rs \
 	src/cmd_find.rs \
 	src/cmd_parse.rs \
