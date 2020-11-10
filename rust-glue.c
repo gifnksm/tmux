@@ -33,6 +33,15 @@ struct winlink *glue_winlinks_next(__unused struct winlinks *wls, struct winlink
     return RB_NEXT(winlinks, wls, wl);
 }
 
+void glue_window_remove_winlink(struct window *w, struct winlink *wl) {
+    TAILQ_REMOVE(&w->winlinks, wl, wentry);
+}
+
+void glue_window_insert_winlink(struct window *w, struct winlink *wl) {
+    TAILQ_INSERT_TAIL(&w->winlinks, wl, wentry);
+}
+
+
 struct session *glue_sessions_remove(struct session *s) {
     return RB_REMOVE(sessions, &sessions, s);
 }

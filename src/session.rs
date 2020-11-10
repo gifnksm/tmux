@@ -8,7 +8,7 @@ use crate::{
     window::{Window, Winlink, Winlinks},
 };
 
-pub(crate) use ffi::session as Session;
+pub(crate) use {ffi::session as Session, ffi::session_group as SessionGroup};
 
 impl Session {
     pub(crate) fn find(name: &CStr) -> Option<&'static mut Session> {
@@ -80,6 +80,10 @@ impl Session {
     pub(crate) fn is_linked(&self, w: &Window) -> bool {
         unsafe { ffi::session_is_linked(self as *const _ as *mut _, w as *const _ as *mut _) != 0 }
     }
+
+    pub(crate) fn select(&self, idx: i32) -> i32 {
+        unsafe { ffi::session_select(self as *const _ as *mut _, idx as _) as _ }
+    }
 }
 
 struct EachSessionsCtx<'a> {
@@ -102,4 +106,14 @@ extern "C" fn each_windows(wl: *mut Winlink, ctx: *mut c_void) -> c_int {
     let ctx = unsafe { (ctx as *mut EachWindowsCtx).as_mut().unwrap() };
     let session = unsafe { ctx.session.as_mut().unwrap() };
     (ctx.f)(session, wl) as _
+}
+
+impl SessionGroup {
+    pub(crate) fn contains(s: &Session) -> Option<&'static mut SessionGroup> {
+        unsafe { ffi::session_group_contains(s as *const _ as _).as_mut() }
+    }
+
+    pub(crate) fn synchronize_from(s: &Session) {
+        unsafe { ffi::session_group_synchronize_from(s as *const _ as _) }
+    }
 }

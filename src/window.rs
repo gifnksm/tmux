@@ -19,12 +19,28 @@ impl Winlinks {
 }
 
 impl Winlink {
+    pub(crate) fn idx(&self) -> i32 {
+        self.idx
+    }
+
     pub(crate) fn window_mut(&mut self) -> &'static mut Window {
         unsafe { self.window.as_mut().unwrap() }
+    }
+
+    pub(crate) fn set_window(&mut self, w: &mut Window) {
+        self.window = w as _;
     }
 }
 
 impl Window {
+    pub(crate) fn remove_winlink(&mut self, wl: &mut Winlink) {
+        unsafe { ffi::glue_window_remove_winlink(self, wl) }
+    }
+
+    pub(crate) fn insert_winlink(&mut self, wl: &mut Winlink) {
+        unsafe { ffi::glue_window_insert_winlink(self, wl) }
+    }
+
     pub(crate) fn set_name(&mut self, name: *const c_char) {
         unsafe { ffi::window_set_name(self, name) }
     }

@@ -25,6 +25,7 @@ mod lock_session;
 mod rename_session;
 mod rename_window;
 mod start_server;
+mod swap_window;
 mod unbind_key;
 mod unlink_window;
 

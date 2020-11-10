@@ -5,6 +5,14 @@ use std::ffi::CString;
 pub(crate) use crate::ffi::cmdq_item as Item;
 
 impl Item {
+    pub(crate) fn source(&self) -> &'static FindState {
+        unsafe {
+            ffi::cmdq_get_source(self as *const _ as _)
+                .as_ref()
+                .unwrap()
+        }
+    }
+
     pub(crate) fn target(&self) -> &'static FindState {
         unsafe {
             ffi::cmdq_get_target(self as *const _ as _)
