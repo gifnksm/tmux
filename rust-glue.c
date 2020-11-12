@@ -75,3 +75,32 @@ int glue_clients_foreach_safe(struct clients *cs, void *ctx, int (*f)(struct cli
     return ret;
 
 }
+
+struct window_pane *glue_window_first_pane(struct window *w) {
+    return TAILQ_FIRST(&w->panes);
+}
+
+struct window_pane *glue_window_last_pane(struct window *w) {
+    return TAILQ_LAST(&w->panes, window_panes);
+}
+
+void glue_window_replace_pane(struct window *w, struct window_pane *src,
+                              struct window_pane *dst) {
+    TAILQ_REPLACE(&w->panes, src, dst, entry);
+}
+
+void glue_window_insert_pane_head(struct window *w, struct window_pane *wp) {
+    TAILQ_INSERT_HEAD(&w->panes, wp, entry);
+}
+
+void glue_window_insert_pane_after(struct window *w, struct window_pane *list_wp, struct window_pane *wp) {
+    TAILQ_INSERT_AFTER(&w->panes, list_wp, wp, entry);
+}
+
+
+struct window_pane *glue_window_pane_prev(struct window_pane *wp) {
+    return TAILQ_PREV(wp, window_panes, entry);
+}
+struct window_pane *glue_window_pane_next(struct window_pane *wp) {
+    return TAILQ_NEXT(wp, entry);
+}

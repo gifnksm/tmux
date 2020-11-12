@@ -10,7 +10,7 @@ fn main() {
         .whitelist_function(
             "^(glue|cmdq?|format|window|options|server|args|layout|session|recalculate|notify|paste|key)_.*",
         )
-        .whitelist_var("^(CMD|WINDOW|WINLINK|FORMAT|KEYC)_.*|^(sessions|clients)$")
+        .whitelist_var("^(CMD|WINDOW|WINLINK|FORMAT|KEYC|PANE)_.*|^(sessions|clients)$")
         .default_enum_style(EnumVariation::Rust{non_exhaustive: false})
         .generate()
         .expect("Unable to generate bindings");
