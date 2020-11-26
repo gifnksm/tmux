@@ -27,30 +27,39 @@ extern "C" {
     #[no_mangle]
     fn fopen(_: *const libc::c_char, _: *const libc::c_char) -> *mut FILE;
     #[no_mangle]
-    fn fread(_: *mut libc::c_void, _: libc::c_ulong, _: libc::c_ulong,
-             _: *mut FILE) -> libc::c_ulong;
+    fn fread(
+        _: *mut libc::c_void,
+        _: libc::c_ulong,
+        _: libc::c_ulong,
+        _: *mut FILE,
+    ) -> libc::c_ulong;
     #[no_mangle]
-    fn fwrite(_: *const libc::c_void, _: libc::c_ulong, _: libc::c_ulong,
-              _: *mut FILE) -> libc::c_ulong;
+    fn fwrite(
+        _: *const libc::c_void,
+        _: libc::c_ulong,
+        _: libc::c_ulong,
+        _: *mut FILE,
+    ) -> libc::c_ulong;
     #[no_mangle]
     fn ferror(__stream: *mut FILE) -> libc::c_int;
     #[no_mangle]
     fn free(__ptr: *mut libc::c_void);
     #[no_mangle]
-    fn memcpy(_: *mut libc::c_void, _: *const libc::c_void, _: libc::c_ulong)
-     -> *mut libc::c_void;
+    fn memcpy(_: *mut libc::c_void, _: *const libc::c_void, _: libc::c_ulong) -> *mut libc::c_void;
     #[no_mangle]
     fn strcmp(_: *const libc::c_char, _: *const libc::c_char) -> libc::c_int;
     #[no_mangle]
     fn strlen(_: *const libc::c_char) -> libc::c_ulong;
     #[no_mangle]
-    fn event_once(_: libc::c_int, _: libc::c_short,
-                  _:
-                      Option<unsafe extern "C" fn(_: libc::c_int,
-                                                  _: libc::c_short,
-                                                  _: *mut libc::c_void)
-                                 -> ()>, _: *mut libc::c_void,
-                  _: *const timeval) -> libc::c_int;
+    fn event_once(
+        _: libc::c_int,
+        _: libc::c_short,
+        _: Option<
+            unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> (),
+        >,
+        _: *mut libc::c_void,
+        _: *const timeval,
+    ) -> libc::c_int;
     #[no_mangle]
     fn evbuffer_new() -> *mut evbuffer;
     #[no_mangle]
@@ -58,16 +67,17 @@ extern "C" {
     #[no_mangle]
     fn evbuffer_get_length(buf: *const evbuffer) -> size_t;
     #[no_mangle]
-    fn evbuffer_add(buf: *mut evbuffer, data: *const libc::c_void,
-                    datlen: size_t) -> libc::c_int;
+    fn evbuffer_add(buf: *mut evbuffer, data: *const libc::c_void, datlen: size_t) -> libc::c_int;
     #[no_mangle]
-    fn evbuffer_add_vprintf(buf: *mut evbuffer, fmt: *const libc::c_char,
-                            ap: ::std::ffi::VaList) -> libc::c_int;
+    fn evbuffer_add_vprintf(
+        buf: *mut evbuffer,
+        fmt: *const libc::c_char,
+        ap: ::std::ffi::VaList,
+    ) -> libc::c_int;
     #[no_mangle]
     fn evbuffer_drain(buf: *mut evbuffer, len: size_t) -> libc::c_int;
     #[no_mangle]
-    fn evbuffer_pullup(buf: *mut evbuffer, size: ssize_t)
-     -> *mut libc::c_uchar;
+    fn evbuffer_pullup(buf: *mut evbuffer, size: ssize_t) -> *mut libc::c_uchar;
     #[no_mangle]
     fn xmalloc(_: size_t) -> *mut libc::c_void;
     #[no_mangle]
@@ -77,16 +87,19 @@ extern "C" {
     #[no_mangle]
     fn xstrdup(_: *const libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
-    fn xasprintf(_: *mut *mut libc::c_char, _: *const libc::c_char, _: ...)
-     -> libc::c_int;
+    fn xasprintf(_: *mut *mut libc::c_char, _: *const libc::c_char, _: ...) -> libc::c_int;
     #[no_mangle]
-    fn proc_send(_: *mut tmuxpeer, _: msgtype, _: libc::c_int,
-                 _: *const libc::c_void, _: size_t) -> libc::c_int;
+    fn proc_send(
+        _: *mut tmuxpeer,
+        _: msgtype,
+        _: libc::c_int,
+        _: *const libc::c_void,
+        _: size_t,
+    ) -> libc::c_int;
     #[no_mangle]
     fn server_client_unref(_: *mut client);
     #[no_mangle]
-    fn server_client_get_cwd(_: *mut client, _: *mut session)
-     -> *const libc::c_char;
+    fn server_client_get_cwd(_: *mut client, _: *mut session) -> *const libc::c_char;
     #[no_mangle]
     fn fatalx(_: *const libc::c_char, _: ...) -> !;
     #[no_mangle]
@@ -234,18 +247,13 @@ pub struct event_callback {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub union C2RustUnnamed_6 {
-    pub evcb_callback: Option<unsafe extern "C" fn(_: libc::c_int,
-                                                   _: libc::c_short,
-                                                   _: *mut libc::c_void)
-                                  -> ()>,
-    pub evcb_selfcb: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                 _: *mut libc::c_void) -> ()>,
-    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
-    pub evcb_cbfinalize: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
+    pub evcb_callback:
+        Option<unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> ()>,
+    pub evcb_selfcb:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
+    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event, _: *mut libc::c_void) -> ()>,
+    pub evcb_cbfinalize:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -272,14 +280,10 @@ pub struct bufferevent {
     pub timeout_write: timeval,
     pub enabled: libc::c_short,
 }
-pub type bufferevent_event_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short,
-                                _: *mut libc::c_void) -> ()>;
-pub type bufferevent_data_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void)
-               -> ()>;
+pub type bufferevent_event_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short, _: *mut libc::c_void) -> ()>;
+pub type bufferevent_data_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct event_watermark {
@@ -427,17 +431,19 @@ pub struct C2RustUnnamed_9 {
     pub rbe_parent: *mut client_file,
     pub rbe_color: libc::c_int,
 }
-pub type client_file_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *const libc::c_char,
-                                _: libc::c_int, _: libc::c_int,
-                                _: *mut evbuffer, _: *mut libc::c_void)
-               -> ()>;
+pub type client_file_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: *mut evbuffer,
+        _: *mut libc::c_void,
+    ) -> (),
+>;
 pub type overlay_free_cb = Option<unsafe extern "C" fn(_: *mut client) -> ()>;
-pub type overlay_key_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event)
-               -> libc::c_int>;
+pub type overlay_key_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_event {
@@ -467,10 +473,8 @@ pub struct mouse_event {
     pub sgr_b: u_int,
 }
 pub type key_code = libc::c_ulonglong;
-pub type overlay_draw_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx)
-               -> ()>;
+pub type overlay_draw_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen_redraw_ctx {
@@ -484,10 +488,8 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int)
-               -> *mut screen>;
+pub type overlay_mode_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen {
@@ -581,10 +583,8 @@ pub struct C2RustUnnamed_11 {
     pub bg: u_char,
     pub data: u_char,
 }
-pub type overlay_check_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int)
-               -> libc::c_int>;
+pub type overlay_check_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct session {
@@ -831,24 +831,37 @@ pub struct C2RustUnnamed_24 {
 pub struct window_mode {
     pub name: *const libc::c_char,
     pub default_format: *const libc::c_char,
-    pub init: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                          _: *mut cmd_find_state,
-                                          _: *mut args) -> *mut screen>,
+    pub init: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut cmd_find_state,
+            _: *mut args,
+        ) -> *mut screen,
+    >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
-    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                            _: u_int, _: u_int) -> ()>,
-    pub key: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                         _: *mut client, _: *mut session,
-                                         _: *mut winlink, _: key_code,
-                                         _: *mut mouse_event) -> ()>,
-    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry)
-                              -> *const libc::c_char>,
-    pub command: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut client, _: *mut session,
-                                             _: *mut winlink, _: *mut args,
-                                             _: *mut mouse_event) -> ()>,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut format_tree) -> ()>,
+    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
+    pub key: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: key_code,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> *const libc::c_char>,
+    pub command: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: *mut args,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -885,14 +898,15 @@ pub struct winlink_stack {
 pub type C2RustUnnamed_25 = libc::c_uint;
 pub const PROMPT_COMMAND: C2RustUnnamed_25 = 1;
 pub const PROMPT_ENTRY: C2RustUnnamed_25 = 0;
-pub type prompt_free_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
-pub type prompt_input_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut libc::c_void,
-                                _: *const libc::c_char, _: libc::c_int)
-               -> libc::c_int>;
+pub type prompt_free_cb = Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
+pub type prompt_input_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut libc::c_void,
+        _: *const libc::c_char,
+        _: libc::c_int,
+    ) -> libc::c_int,
+>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_table {
@@ -1063,12 +1077,8 @@ pub struct tty {
     pub mouse_last_y: u_int,
     pub mouse_last_b: u_int,
     pub mouse_drag_flag: libc::c_int,
-    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client,
-                                                       _: *mut mouse_event)
-                                      -> ()>,
-    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client,
-                                                        _: *mut mouse_event)
-                                       -> ()>,
+    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
+    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
     pub key_timer: event,
     pub key_tree: *mut tty_key,
 }
@@ -1159,15 +1169,13 @@ pub struct msg_write_close {
  */
 static mut file_next_stream: libc::c_int = 3 as libc::c_int;
 #[no_mangle]
-pub unsafe extern "C" fn client_files_RB_REMOVE_COLOR(mut head:
-                                                          *mut client_files,
-                                                      mut parent:
-                                                          *mut client_file,
-                                                      mut elm:
-                                                          *mut client_file) {
+pub unsafe extern "C" fn client_files_RB_REMOVE_COLOR(
+    mut head: *mut client_files,
+    mut parent: *mut client_file,
+    mut elm: *mut client_file,
+) {
     let mut tmp: *mut client_file = 0 as *mut client_file;
-    while (elm.is_null() || (*elm).entry.rbe_color == 0 as libc::c_int) &&
-              elm != (*head).rbh_root {
+    while (elm.is_null() || (*elm).entry.rbe_color == 0 as libc::c_int) && elm != (*head).rbh_root {
         if (*parent).entry.rbe_left == elm {
             tmp = (*parent).entry.rbe_right;
             if (*tmp).entry.rbe_color == 1 as libc::c_int {
@@ -1180,31 +1188,31 @@ pub unsafe extern "C" fn client_files_RB_REMOVE_COLOR(mut head:
                 }
                 (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
                 if !(*tmp).entry.rbe_parent.is_null() {
-                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left
-                       {
+                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left {
                         (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
                     } else {
                         (*(*parent).entry.rbe_parent).entry.rbe_right = tmp
                     }
-                } else { (*head).rbh_root = tmp }
+                } else {
+                    (*head).rbh_root = tmp
+                }
                 (*tmp).entry.rbe_left = parent;
                 (*parent).entry.rbe_parent = tmp;
                 !(*tmp).entry.rbe_parent.is_null();
                 tmp = (*parent).entry.rbe_right
             }
-            if ((*tmp).entry.rbe_left.is_null() ||
-                    (*(*tmp).entry.rbe_left).entry.rbe_color ==
-                        0 as libc::c_int) &&
-                   ((*tmp).entry.rbe_right.is_null() ||
-                        (*(*tmp).entry.rbe_right).entry.rbe_color ==
-                            0 as libc::c_int) {
+            if ((*tmp).entry.rbe_left.is_null()
+                || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int)
+                && ((*tmp).entry.rbe_right.is_null()
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int)
+            {
                 (*tmp).entry.rbe_color = 1 as libc::c_int;
                 elm = parent;
                 parent = (*elm).entry.rbe_parent
             } else {
-                if (*tmp).entry.rbe_right.is_null() ||
-                       (*(*tmp).entry.rbe_right).entry.rbe_color ==
-                           0 as libc::c_int {
+                if (*tmp).entry.rbe_right.is_null()
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int
+                {
                     let mut oleft: *mut client_file = 0 as *mut client_file;
                     oleft = (*tmp).entry.rbe_left;
                     if !oleft.is_null() {
@@ -1223,7 +1231,9 @@ pub unsafe extern "C" fn client_files_RB_REMOVE_COLOR(mut head:
                         } else {
                             (*(*tmp).entry.rbe_parent).entry.rbe_right = oleft
                         }
-                    } else { (*head).rbh_root = oleft }
+                    } else {
+                        (*head).rbh_root = oleft
+                    }
                     (*oleft).entry.rbe_right = tmp;
                     (*tmp).entry.rbe_parent = oleft;
                     !(*oleft).entry.rbe_parent.is_null();
@@ -1232,8 +1242,7 @@ pub unsafe extern "C" fn client_files_RB_REMOVE_COLOR(mut head:
                 (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
                 (*parent).entry.rbe_color = 0 as libc::c_int;
                 if !(*tmp).entry.rbe_right.is_null() {
-                    (*(*tmp).entry.rbe_right).entry.rbe_color =
-                        0 as libc::c_int
+                    (*(*tmp).entry.rbe_right).entry.rbe_color = 0 as libc::c_int
                 }
                 tmp = (*parent).entry.rbe_right;
                 (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
@@ -1242,18 +1251,19 @@ pub unsafe extern "C" fn client_files_RB_REMOVE_COLOR(mut head:
                 }
                 (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
                 if !(*tmp).entry.rbe_parent.is_null() {
-                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left
-                       {
+                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left {
                         (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
                     } else {
                         (*(*parent).entry.rbe_parent).entry.rbe_right = tmp
                     }
-                } else { (*head).rbh_root = tmp }
+                } else {
+                    (*head).rbh_root = tmp
+                }
                 (*tmp).entry.rbe_left = parent;
                 (*parent).entry.rbe_parent = tmp;
                 !(*tmp).entry.rbe_parent.is_null();
                 elm = (*head).rbh_root;
-                break ;
+                break;
             }
         } else {
             tmp = (*parent).entry.rbe_left;
@@ -1267,31 +1277,31 @@ pub unsafe extern "C" fn client_files_RB_REMOVE_COLOR(mut head:
                 }
                 (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
                 if !(*tmp).entry.rbe_parent.is_null() {
-                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left
-                       {
+                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left {
                         (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
                     } else {
                         (*(*parent).entry.rbe_parent).entry.rbe_right = tmp
                     }
-                } else { (*head).rbh_root = tmp }
+                } else {
+                    (*head).rbh_root = tmp
+                }
                 (*tmp).entry.rbe_right = parent;
                 (*parent).entry.rbe_parent = tmp;
                 !(*tmp).entry.rbe_parent.is_null();
                 tmp = (*parent).entry.rbe_left
             }
-            if ((*tmp).entry.rbe_left.is_null() ||
-                    (*(*tmp).entry.rbe_left).entry.rbe_color ==
-                        0 as libc::c_int) &&
-                   ((*tmp).entry.rbe_right.is_null() ||
-                        (*(*tmp).entry.rbe_right).entry.rbe_color ==
-                            0 as libc::c_int) {
+            if ((*tmp).entry.rbe_left.is_null()
+                || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int)
+                && ((*tmp).entry.rbe_right.is_null()
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int)
+            {
                 (*tmp).entry.rbe_color = 1 as libc::c_int;
                 elm = parent;
                 parent = (*elm).entry.rbe_parent
             } else {
-                if (*tmp).entry.rbe_left.is_null() ||
-                       (*(*tmp).entry.rbe_left).entry.rbe_color ==
-                           0 as libc::c_int {
+                if (*tmp).entry.rbe_left.is_null()
+                    || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int
+                {
                     let mut oright: *mut client_file = 0 as *mut client_file;
                     oright = (*tmp).entry.rbe_right;
                     if !oright.is_null() {
@@ -1308,10 +1318,11 @@ pub unsafe extern "C" fn client_files_RB_REMOVE_COLOR(mut head:
                         if tmp == (*(*tmp).entry.rbe_parent).entry.rbe_left {
                             (*(*tmp).entry.rbe_parent).entry.rbe_left = oright
                         } else {
-                            (*(*tmp).entry.rbe_parent).entry.rbe_right =
-                                oright
+                            (*(*tmp).entry.rbe_parent).entry.rbe_right = oright
                         }
-                    } else { (*head).rbh_root = oright }
+                    } else {
+                        (*head).rbh_root = oright
+                    }
                     (*oright).entry.rbe_left = tmp;
                     (*tmp).entry.rbe_parent = oright;
                     !(*oright).entry.rbe_parent.is_null();
@@ -1320,8 +1331,7 @@ pub unsafe extern "C" fn client_files_RB_REMOVE_COLOR(mut head:
                 (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
                 (*parent).entry.rbe_color = 0 as libc::c_int;
                 if !(*tmp).entry.rbe_left.is_null() {
-                    (*(*tmp).entry.rbe_left).entry.rbe_color =
-                        0 as libc::c_int
+                    (*(*tmp).entry.rbe_left).entry.rbe_color = 0 as libc::c_int
                 }
                 tmp = (*parent).entry.rbe_left;
                 (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
@@ -1330,36 +1340,38 @@ pub unsafe extern "C" fn client_files_RB_REMOVE_COLOR(mut head:
                 }
                 (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
                 if !(*tmp).entry.rbe_parent.is_null() {
-                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left
-                       {
+                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left {
                         (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
                     } else {
                         (*(*parent).entry.rbe_parent).entry.rbe_right = tmp
                     }
-                } else { (*head).rbh_root = tmp }
+                } else {
+                    (*head).rbh_root = tmp
+                }
                 (*tmp).entry.rbe_right = parent;
                 (*parent).entry.rbe_parent = tmp;
                 !(*tmp).entry.rbe_parent.is_null();
                 elm = (*head).rbh_root;
-                break ;
+                break;
             }
         }
     }
-    if !elm.is_null() { (*elm).entry.rbe_color = 0 as libc::c_int };
+    if !elm.is_null() {
+        (*elm).entry.rbe_color = 0 as libc::c_int
+    };
 }
 #[no_mangle]
-pub unsafe extern "C" fn client_files_RB_INSERT_COLOR(mut head:
-                                                          *mut client_files,
-                                                      mut elm:
-                                                          *mut client_file) {
+pub unsafe extern "C" fn client_files_RB_INSERT_COLOR(
+    mut head: *mut client_files,
+    mut elm: *mut client_file,
+) {
     let mut parent: *mut client_file = 0 as *mut client_file;
     let mut gparent: *mut client_file = 0 as *mut client_file;
     let mut tmp: *mut client_file = 0 as *mut client_file;
-    loop  {
+    loop {
         parent = (*elm).entry.rbe_parent;
-        if !(!parent.is_null() &&
-                 (*parent).entry.rbe_color == 1 as libc::c_int) {
-            break ;
+        if !(!parent.is_null() && (*parent).entry.rbe_color == 1 as libc::c_int) {
+            break;
         }
         gparent = (*parent).entry.rbe_parent;
         if parent == (*gparent).entry.rbe_left {
@@ -1378,14 +1390,14 @@ pub unsafe extern "C" fn client_files_RB_INSERT_COLOR(mut head:
                     }
                     (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
                     if !(*tmp).entry.rbe_parent.is_null() {
-                        if parent ==
-                               (*(*parent).entry.rbe_parent).entry.rbe_left {
+                        if parent == (*(*parent).entry.rbe_parent).entry.rbe_left {
                             (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
                         } else {
-                            (*(*parent).entry.rbe_parent).entry.rbe_right =
-                                tmp
+                            (*(*parent).entry.rbe_parent).entry.rbe_right = tmp
                         }
-                    } else { (*head).rbh_root = tmp }
+                    } else {
+                        (*head).rbh_root = tmp
+                    }
                     (*tmp).entry.rbe_left = parent;
                     (*parent).entry.rbe_parent = tmp;
                     !(*tmp).entry.rbe_parent.is_null();
@@ -1402,13 +1414,14 @@ pub unsafe extern "C" fn client_files_RB_INSERT_COLOR(mut head:
                 }
                 (*tmp).entry.rbe_parent = (*gparent).entry.rbe_parent;
                 if !(*tmp).entry.rbe_parent.is_null() {
-                    if gparent ==
-                           (*(*gparent).entry.rbe_parent).entry.rbe_left {
+                    if gparent == (*(*gparent).entry.rbe_parent).entry.rbe_left {
                         (*(*gparent).entry.rbe_parent).entry.rbe_left = tmp
                     } else {
                         (*(*gparent).entry.rbe_parent).entry.rbe_right = tmp
                     }
-                } else { (*head).rbh_root = tmp }
+                } else {
+                    (*head).rbh_root = tmp
+                }
                 (*tmp).entry.rbe_right = gparent;
                 (*gparent).entry.rbe_parent = tmp;
                 !(*tmp).entry.rbe_parent.is_null();
@@ -1429,14 +1442,14 @@ pub unsafe extern "C" fn client_files_RB_INSERT_COLOR(mut head:
                     }
                     (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
                     if !(*tmp).entry.rbe_parent.is_null() {
-                        if parent ==
-                               (*(*parent).entry.rbe_parent).entry.rbe_left {
+                        if parent == (*(*parent).entry.rbe_parent).entry.rbe_left {
                             (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
                         } else {
-                            (*(*parent).entry.rbe_parent).entry.rbe_right =
-                                tmp
+                            (*(*parent).entry.rbe_parent).entry.rbe_right = tmp
                         }
-                    } else { (*head).rbh_root = tmp }
+                    } else {
+                        (*head).rbh_root = tmp
+                    }
                     (*tmp).entry.rbe_right = parent;
                     (*parent).entry.rbe_parent = tmp;
                     !(*tmp).entry.rbe_parent.is_null();
@@ -1453,13 +1466,14 @@ pub unsafe extern "C" fn client_files_RB_INSERT_COLOR(mut head:
                 }
                 (*tmp).entry.rbe_parent = (*gparent).entry.rbe_parent;
                 if !(*tmp).entry.rbe_parent.is_null() {
-                    if gparent ==
-                           (*(*gparent).entry.rbe_parent).entry.rbe_left {
+                    if gparent == (*(*gparent).entry.rbe_parent).entry.rbe_left {
                         (*(*gparent).entry.rbe_parent).entry.rbe_left = tmp
                     } else {
                         (*(*gparent).entry.rbe_parent).entry.rbe_right = tmp
                     }
-                } else { (*head).rbh_root = tmp }
+                } else {
+                    (*head).rbh_root = tmp
+                }
                 (*tmp).entry.rbe_left = gparent;
                 (*gparent).entry.rbe_parent = tmp;
                 !(*tmp).entry.rbe_parent.is_null();
@@ -1469,9 +1483,10 @@ pub unsafe extern "C" fn client_files_RB_INSERT_COLOR(mut head:
     (*(*head).rbh_root).entry.rbe_color = 0 as libc::c_int;
 }
 #[no_mangle]
-pub unsafe extern "C" fn client_files_RB_NFIND(mut head: *mut client_files,
-                                               mut elm: *mut client_file)
- -> *mut client_file {
+pub unsafe extern "C" fn client_files_RB_NFIND(
+    mut head: *mut client_files,
+    mut elm: *mut client_file,
+) -> *mut client_file {
     let mut tmp: *mut client_file = (*head).rbh_root;
     let mut res: *mut client_file = 0 as *mut client_file;
     let mut comp: libc::c_int = 0;
@@ -1482,14 +1497,17 @@ pub unsafe extern "C" fn client_files_RB_NFIND(mut head: *mut client_files,
             tmp = (*tmp).entry.rbe_left
         } else if comp > 0 as libc::c_int {
             tmp = (*tmp).entry.rbe_right
-        } else { return tmp }
+        } else {
+            return tmp;
+        }
     }
     return res;
 }
 #[no_mangle]
-pub unsafe extern "C" fn client_files_RB_REMOVE(mut head: *mut client_files,
-                                                mut elm: *mut client_file)
- -> *mut client_file {
+pub unsafe extern "C" fn client_files_RB_REMOVE(
+    mut head: *mut client_files,
+    mut elm: *mut client_file,
+) -> *mut client_file {
     let mut current_block: u64;
     let mut child: *mut client_file = 0 as *mut client_file;
     let mut parent: *mut client_file = 0 as *mut client_file;
@@ -1504,36 +1522,52 @@ pub unsafe extern "C" fn client_files_RB_REMOVE(mut head: *mut client_files,
     } else {
         let mut left: *mut client_file = 0 as *mut client_file;
         elm = (*elm).entry.rbe_right;
-        loop  {
+        loop {
             left = (*elm).entry.rbe_left;
-            if left.is_null() { break ; }
+            if left.is_null() {
+                break;
+            }
             elm = left
         }
         child = (*elm).entry.rbe_right;
         parent = (*elm).entry.rbe_parent;
         color = (*elm).entry.rbe_color;
-        if !child.is_null() { (*child).entry.rbe_parent = parent }
+        if !child.is_null() {
+            (*child).entry.rbe_parent = parent
+        }
         if !parent.is_null() {
             if (*parent).entry.rbe_left == elm {
                 (*parent).entry.rbe_left = child
-            } else { (*parent).entry.rbe_right = child }
-        } else { (*head).rbh_root = child }
-        if (*elm).entry.rbe_parent == old { parent = elm }
+            } else {
+                (*parent).entry.rbe_right = child
+            }
+        } else {
+            (*head).rbh_root = child
+        }
+        if (*elm).entry.rbe_parent == old {
+            parent = elm
+        }
         (*elm).entry = (*old).entry;
         if !(*old).entry.rbe_parent.is_null() {
             if (*(*old).entry.rbe_parent).entry.rbe_left == old {
                 (*(*old).entry.rbe_parent).entry.rbe_left = elm
-            } else { (*(*old).entry.rbe_parent).entry.rbe_right = elm }
-        } else { (*head).rbh_root = elm }
+            } else {
+                (*(*old).entry.rbe_parent).entry.rbe_right = elm
+            }
+        } else {
+            (*head).rbh_root = elm
+        }
         (*(*old).entry.rbe_left).entry.rbe_parent = elm;
         if !(*old).entry.rbe_right.is_null() {
             (*(*old).entry.rbe_right).entry.rbe_parent = elm
         }
         if !parent.is_null() {
             left = parent;
-            loop  {
+            loop {
                 left = (*left).entry.rbe_parent;
-                if left.is_null() { break ; }
+                if left.is_null() {
+                    break;
+                }
             }
         }
         current_block = 538028991732400653;
@@ -1542,14 +1576,20 @@ pub unsafe extern "C" fn client_files_RB_REMOVE(mut head: *mut client_files,
         7226443171521532240 => {
             parent = (*elm).entry.rbe_parent;
             color = (*elm).entry.rbe_color;
-            if !child.is_null() { (*child).entry.rbe_parent = parent }
+            if !child.is_null() {
+                (*child).entry.rbe_parent = parent
+            }
             if !parent.is_null() {
                 if (*parent).entry.rbe_left == elm {
                     (*parent).entry.rbe_left = child
-                } else { (*parent).entry.rbe_right = child }
-            } else { (*head).rbh_root = child }
+                } else {
+                    (*parent).entry.rbe_right = child
+                }
+            } else {
+                (*head).rbh_root = child
+            }
         }
-        _ => { }
+        _ => {}
     }
     if color == 0 as libc::c_int {
         client_files_RB_REMOVE_COLOR(head, parent, child);
@@ -1557,9 +1597,10 @@ pub unsafe extern "C" fn client_files_RB_REMOVE(mut head: *mut client_files,
     return old;
 }
 #[no_mangle]
-pub unsafe extern "C" fn client_files_RB_INSERT(mut head: *mut client_files,
-                                                mut elm: *mut client_file)
- -> *mut client_file {
+pub unsafe extern "C" fn client_files_RB_INSERT(
+    mut head: *mut client_files,
+    mut elm: *mut client_file,
+) -> *mut client_file {
     let mut tmp: *mut client_file = 0 as *mut client_file;
     let mut parent: *mut client_file = 0 as *mut client_file;
     let mut comp: libc::c_int = 0 as libc::c_int;
@@ -1571,7 +1612,9 @@ pub unsafe extern "C" fn client_files_RB_INSERT(mut head: *mut client_files,
             tmp = (*tmp).entry.rbe_left
         } else if comp > 0 as libc::c_int {
             tmp = (*tmp).entry.rbe_right
-        } else { return tmp }
+        } else {
+            return tmp;
+        }
     }
     (*elm).entry.rbe_parent = parent;
     (*elm).entry.rbe_right = 0 as *mut client_file;
@@ -1580,15 +1623,20 @@ pub unsafe extern "C" fn client_files_RB_INSERT(mut head: *mut client_files,
     if !parent.is_null() {
         if comp < 0 as libc::c_int {
             (*parent).entry.rbe_left = elm
-        } else { (*parent).entry.rbe_right = elm }
-    } else { (*head).rbh_root = elm }
+        } else {
+            (*parent).entry.rbe_right = elm
+        }
+    } else {
+        (*head).rbh_root = elm
+    }
     client_files_RB_INSERT_COLOR(head, elm);
     return 0 as *mut client_file;
 }
 #[no_mangle]
-pub unsafe extern "C" fn client_files_RB_FIND(mut head: *mut client_files,
-                                              mut elm: *mut client_file)
- -> *mut client_file {
+pub unsafe extern "C" fn client_files_RB_FIND(
+    mut head: *mut client_files,
+    mut elm: *mut client_file,
+) -> *mut client_file {
     let mut tmp: *mut client_file = (*head).rbh_root;
     let mut comp: libc::c_int = 0;
     while !tmp.is_null() {
@@ -1597,38 +1645,43 @@ pub unsafe extern "C" fn client_files_RB_FIND(mut head: *mut client_files,
             tmp = (*tmp).entry.rbe_left
         } else if comp > 0 as libc::c_int {
             tmp = (*tmp).entry.rbe_right
-        } else { return tmp }
+        } else {
+            return tmp;
+        }
     }
     return 0 as *mut client_file;
 }
 #[no_mangle]
-pub unsafe extern "C" fn client_files_RB_MINMAX(mut head: *mut client_files,
-                                                mut val: libc::c_int)
- -> *mut client_file {
+pub unsafe extern "C" fn client_files_RB_MINMAX(
+    mut head: *mut client_files,
+    mut val: libc::c_int,
+) -> *mut client_file {
     let mut tmp: *mut client_file = (*head).rbh_root;
     let mut parent: *mut client_file = 0 as *mut client_file;
     while !tmp.is_null() {
         parent = tmp;
         if val < 0 as libc::c_int {
             tmp = (*tmp).entry.rbe_left
-        } else { tmp = (*tmp).entry.rbe_right }
+        } else {
+            tmp = (*tmp).entry.rbe_right
+        }
     }
     return parent;
 }
 #[no_mangle]
-pub unsafe extern "C" fn client_files_RB_PREV(mut elm: *mut client_file)
- -> *mut client_file {
+pub unsafe extern "C" fn client_files_RB_PREV(mut elm: *mut client_file) -> *mut client_file {
     if !(*elm).entry.rbe_left.is_null() {
         elm = (*elm).entry.rbe_left;
         while !(*elm).entry.rbe_right.is_null() {
             elm = (*elm).entry.rbe_right
         }
-    } else if !(*elm).entry.rbe_parent.is_null() &&
-                  elm == (*(*elm).entry.rbe_parent).entry.rbe_right {
+    } else if !(*elm).entry.rbe_parent.is_null()
+        && elm == (*(*elm).entry.rbe_parent).entry.rbe_right
+    {
         elm = (*elm).entry.rbe_parent
     } else {
-        while !(*elm).entry.rbe_parent.is_null() &&
-                  elm == (*(*elm).entry.rbe_parent).entry.rbe_left {
+        while !(*elm).entry.rbe_parent.is_null() && elm == (*(*elm).entry.rbe_parent).entry.rbe_left
+        {
             elm = (*elm).entry.rbe_parent
         }
         elm = (*elm).entry.rbe_parent
@@ -1636,54 +1689,67 @@ pub unsafe extern "C" fn client_files_RB_PREV(mut elm: *mut client_file)
     return elm;
 }
 #[no_mangle]
-pub unsafe extern "C" fn client_files_RB_NEXT(mut elm: *mut client_file)
- -> *mut client_file {
+pub unsafe extern "C" fn client_files_RB_NEXT(mut elm: *mut client_file) -> *mut client_file {
     if !(*elm).entry.rbe_right.is_null() {
         elm = (*elm).entry.rbe_right;
-        while !(*elm).entry.rbe_left.is_null() { elm = (*elm).entry.rbe_left }
-    } else if !(*elm).entry.rbe_parent.is_null() &&
-                  elm == (*(*elm).entry.rbe_parent).entry.rbe_left {
+        while !(*elm).entry.rbe_left.is_null() {
+            elm = (*elm).entry.rbe_left
+        }
+    } else if !(*elm).entry.rbe_parent.is_null() && elm == (*(*elm).entry.rbe_parent).entry.rbe_left
+    {
         elm = (*elm).entry.rbe_parent
     } else {
-        while !(*elm).entry.rbe_parent.is_null() &&
-                  elm == (*(*elm).entry.rbe_parent).entry.rbe_right {
+        while !(*elm).entry.rbe_parent.is_null()
+            && elm == (*(*elm).entry.rbe_parent).entry.rbe_right
+        {
             elm = (*elm).entry.rbe_parent
         }
         elm = (*elm).entry.rbe_parent
     }
     return elm;
 }
-unsafe extern "C" fn file_get_path(mut c: *mut client,
-                                   mut file: *const libc::c_char)
- -> *mut libc::c_char {
+unsafe extern "C" fn file_get_path(
+    mut c: *mut client,
+    mut file: *const libc::c_char,
+) -> *mut libc::c_char {
     let mut path: *mut libc::c_char = 0 as *mut libc::c_char;
     if *file as libc::c_int == '/' as i32 {
         path = xstrdup(file)
     } else {
-        xasprintf(&mut path as *mut *mut libc::c_char,
-                  b"%s/%s\x00" as *const u8 as *const libc::c_char,
-                  server_client_get_cwd(c, 0 as *mut session), file);
+        xasprintf(
+            &mut path as *mut *mut libc::c_char,
+            b"%s/%s\x00" as *const u8 as *const libc::c_char,
+            server_client_get_cwd(c, 0 as *mut session),
+            file,
+        );
     }
     return path;
 }
 #[no_mangle]
-pub unsafe extern "C" fn file_cmp(mut cf1: *mut client_file,
-                                  mut cf2: *mut client_file) -> libc::c_int {
-    if (*cf1).stream < (*cf2).stream { return -(1 as libc::c_int) }
-    if (*cf1).stream > (*cf2).stream { return 1 as libc::c_int }
+pub unsafe extern "C" fn file_cmp(
+    mut cf1: *mut client_file,
+    mut cf2: *mut client_file,
+) -> libc::c_int {
+    if (*cf1).stream < (*cf2).stream {
+        return -(1 as libc::c_int);
+    }
+    if (*cf1).stream > (*cf2).stream {
+        return 1 as libc::c_int;
+    }
     return 0 as libc::c_int;
 }
 #[no_mangle]
-pub unsafe extern "C" fn file_create(mut c: *mut client,
-                                     mut stream: libc::c_int,
-                                     mut cb: client_file_cb,
-                                     mut cbdata: *mut libc::c_void)
- -> *mut client_file {
+pub unsafe extern "C" fn file_create(
+    mut c: *mut client,
+    mut stream: libc::c_int,
+    mut cb: client_file_cb,
+    mut cbdata: *mut libc::c_void,
+) -> *mut client_file {
     let mut cf: *mut client_file = 0 as *mut client_file;
-    cf =
-        xcalloc(1 as libc::c_int as size_t,
-                ::std::mem::size_of::<client_file>() as libc::c_ulong) as
-            *mut client_file;
+    cf = xcalloc(
+        1 as libc::c_int as size_t,
+        ::std::mem::size_of::<client_file>() as libc::c_ulong,
+    ) as *mut client_file;
     (*cf).c = c;
     (*cf).references = 1 as libc::c_int;
     (*cf).stream = stream;
@@ -1702,7 +1768,9 @@ pub unsafe extern "C" fn file_create(mut c: *mut client,
 #[no_mangle]
 pub unsafe extern "C" fn file_free(mut cf: *mut client_file) {
     (*cf).references -= 1;
-    if (*cf).references != 0 as libc::c_int { return }
+    if (*cf).references != 0 as libc::c_int {
+        return;
+    }
     evbuffer_free((*cf).buffer);
     free((*cf).path as *mut libc::c_void);
     if !(*cf).c.is_null() {
@@ -1711,82 +1779,112 @@ pub unsafe extern "C" fn file_free(mut cf: *mut client_file) {
     }
     free(cf as *mut libc::c_void);
 }
-unsafe extern "C" fn file_fire_done_cb(mut fd: libc::c_int,
-                                       mut events: libc::c_short,
-                                       mut arg: *mut libc::c_void) {
+unsafe extern "C" fn file_fire_done_cb(
+    mut fd: libc::c_int,
+    mut events: libc::c_short,
+    mut arg: *mut libc::c_void,
+) {
     let mut cf: *mut client_file = arg as *mut client_file;
     let mut c: *mut client = (*cf).c;
-    if (*cf).cb.is_some() &&
-           (c.is_null() ||
-                !(*c).flags & 0x200 as libc::c_int as libc::c_ulong != 0) {
-        (*cf).cb.expect("non-null function pointer")(c, (*cf).path,
-                                                     (*cf).error,
-                                                     1 as libc::c_int,
-                                                     (*cf).buffer,
-                                                     (*cf).data);
+    if (*cf).cb.is_some()
+        && (c.is_null() || !(*c).flags & 0x200 as libc::c_int as libc::c_ulong != 0)
+    {
+        (*cf).cb.expect("non-null function pointer")(
+            c,
+            (*cf).path,
+            (*cf).error,
+            1 as libc::c_int,
+            (*cf).buffer,
+            (*cf).data,
+        );
     }
     file_free(cf);
 }
 #[no_mangle]
 pub unsafe extern "C" fn file_fire_done(mut cf: *mut client_file) {
-    event_once(-(1 as libc::c_int), 0x1 as libc::c_int as libc::c_short,
-               Some(file_fire_done_cb as
-                        unsafe extern "C" fn(_: libc::c_int, _: libc::c_short,
-                                             _: *mut libc::c_void) -> ()),
-               cf as *mut libc::c_void, 0 as *const timeval);
+    event_once(
+        -(1 as libc::c_int),
+        0x1 as libc::c_int as libc::c_short,
+        Some(
+            file_fire_done_cb
+                as unsafe extern "C" fn(
+                    _: libc::c_int,
+                    _: libc::c_short,
+                    _: *mut libc::c_void,
+                ) -> (),
+        ),
+        cf as *mut libc::c_void,
+        0 as *const timeval,
+    );
 }
 #[no_mangle]
 pub unsafe extern "C" fn file_fire_read(mut cf: *mut client_file) {
     let mut c: *mut client = (*cf).c;
     if (*cf).cb.is_some() {
-        (*cf).cb.expect("non-null function pointer")(c, (*cf).path,
-                                                     (*cf).error,
-                                                     0 as libc::c_int,
-                                                     (*cf).buffer,
-                                                     (*cf).data);
+        (*cf).cb.expect("non-null function pointer")(
+            c,
+            (*cf).path,
+            (*cf).error,
+            0 as libc::c_int,
+            (*cf).buffer,
+            (*cf).data,
+        );
     };
 }
 #[no_mangle]
 pub unsafe extern "C" fn file_can_print(mut c: *mut client) -> libc::c_int {
-    if c.is_null() { return 0 as libc::c_int }
-    if !(*c).session.is_null() &&
-           !(*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
-        return 0 as libc::c_int
+    if c.is_null() {
+        return 0 as libc::c_int;
+    }
+    if !(*c).session.is_null() && !(*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
+        return 0 as libc::c_int;
     }
     return 1 as libc::c_int;
 }
 #[no_mangle]
-pub unsafe extern "C" fn file_print(mut c: *mut client,
-                                    mut fmt: *const libc::c_char,
-                                    mut args: ...) {
+pub unsafe extern "C" fn file_print(
+    mut c: *mut client,
+    mut fmt: *const libc::c_char,
+    mut args: ...
+) {
     let mut ap: ::std::ffi::VaListImpl;
     ap = args.clone();
     file_vprint(c, fmt, ap.as_va_list());
 }
 #[no_mangle]
-pub unsafe extern "C" fn file_vprint(mut c: *mut client,
-                                     mut fmt: *const libc::c_char,
-                                     mut ap: ::std::ffi::VaList) {
-    let mut find: client_file =
-        client_file{c: 0 as *mut client,
-                    references: 0,
-                    stream: 0,
-                    path: 0 as *mut libc::c_char,
-                    buffer: 0 as *mut evbuffer,
-                    event: 0 as *mut bufferevent,
-                    fd: 0,
-                    error: 0,
-                    closed: 0,
-                    cb: None,
-                    data: 0 as *mut libc::c_void,
-                    entry:
-                        C2RustUnnamed_9{rbe_left: 0 as *mut client_file,
-                                        rbe_right: 0 as *mut client_file,
-                                        rbe_parent: 0 as *mut client_file,
-                                        rbe_color: 0,},};
+pub unsafe extern "C" fn file_vprint(
+    mut c: *mut client,
+    mut fmt: *const libc::c_char,
+    mut ap: ::std::ffi::VaList,
+) {
+    let mut find: client_file = client_file {
+        c: 0 as *mut client,
+        references: 0,
+        stream: 0,
+        path: 0 as *mut libc::c_char,
+        buffer: 0 as *mut evbuffer,
+        event: 0 as *mut bufferevent,
+        fd: 0,
+        error: 0,
+        closed: 0,
+        cb: None,
+        data: 0 as *mut libc::c_void,
+        entry: C2RustUnnamed_9 {
+            rbe_left: 0 as *mut client_file,
+            rbe_right: 0 as *mut client_file,
+            rbe_parent: 0 as *mut client_file,
+            rbe_color: 0,
+        },
+    };
     let mut cf: *mut client_file = 0 as *mut client_file;
-    let mut msg: msg_write_open = msg_write_open{stream: 0, fd: 0, flags: 0,};
-    if file_can_print(c) == 0 { return }
+    let mut msg: msg_write_open = msg_write_open {
+        stream: 0,
+        fd: 0,
+        flags: 0,
+    };
+    if file_can_print(c) == 0 {
+        return;
+    }
     find.stream = 1 as libc::c_int;
     cf = client_files_RB_FIND(&mut (*c).files, &mut find);
     if cf.is_null() {
@@ -1796,38 +1894,52 @@ pub unsafe extern "C" fn file_vprint(mut c: *mut client,
         msg.stream = 1 as libc::c_int;
         msg.fd = 1 as libc::c_int;
         msg.flags = 0 as libc::c_int;
-        proc_send((*c).peer, MSG_WRITE_OPEN, -(1 as libc::c_int),
-                  &mut msg as *mut msg_write_open as *const libc::c_void,
-                  ::std::mem::size_of::<msg_write_open>() as libc::c_ulong);
+        proc_send(
+            (*c).peer,
+            MSG_WRITE_OPEN,
+            -(1 as libc::c_int),
+            &mut msg as *mut msg_write_open as *const libc::c_void,
+            ::std::mem::size_of::<msg_write_open>() as libc::c_ulong,
+        );
     } else {
         evbuffer_add_vprintf((*cf).buffer, fmt, ap.as_va_list());
         file_push(cf);
     };
 }
 #[no_mangle]
-pub unsafe extern "C" fn file_print_buffer(mut c: *mut client,
-                                           mut data: *mut libc::c_void,
-                                           mut size: size_t) {
-    let mut find: client_file =
-        client_file{c: 0 as *mut client,
-                    references: 0,
-                    stream: 0,
-                    path: 0 as *mut libc::c_char,
-                    buffer: 0 as *mut evbuffer,
-                    event: 0 as *mut bufferevent,
-                    fd: 0,
-                    error: 0,
-                    closed: 0,
-                    cb: None,
-                    data: 0 as *mut libc::c_void,
-                    entry:
-                        C2RustUnnamed_9{rbe_left: 0 as *mut client_file,
-                                        rbe_right: 0 as *mut client_file,
-                                        rbe_parent: 0 as *mut client_file,
-                                        rbe_color: 0,},};
+pub unsafe extern "C" fn file_print_buffer(
+    mut c: *mut client,
+    mut data: *mut libc::c_void,
+    mut size: size_t,
+) {
+    let mut find: client_file = client_file {
+        c: 0 as *mut client,
+        references: 0,
+        stream: 0,
+        path: 0 as *mut libc::c_char,
+        buffer: 0 as *mut evbuffer,
+        event: 0 as *mut bufferevent,
+        fd: 0,
+        error: 0,
+        closed: 0,
+        cb: None,
+        data: 0 as *mut libc::c_void,
+        entry: C2RustUnnamed_9 {
+            rbe_left: 0 as *mut client_file,
+            rbe_right: 0 as *mut client_file,
+            rbe_parent: 0 as *mut client_file,
+            rbe_color: 0,
+        },
+    };
     let mut cf: *mut client_file = 0 as *mut client_file;
-    let mut msg: msg_write_open = msg_write_open{stream: 0, fd: 0, flags: 0,};
-    if file_can_print(c) == 0 { return }
+    let mut msg: msg_write_open = msg_write_open {
+        stream: 0,
+        fd: 0,
+        flags: 0,
+    };
+    if file_can_print(c) == 0 {
+        return;
+    }
     find.stream = 1 as libc::c_int;
     cf = client_files_RB_FIND(&mut (*c).files, &mut find);
     if cf.is_null() {
@@ -1837,36 +1949,53 @@ pub unsafe extern "C" fn file_print_buffer(mut c: *mut client,
         msg.stream = 1 as libc::c_int;
         msg.fd = 1 as libc::c_int;
         msg.flags = 0 as libc::c_int;
-        proc_send((*c).peer, MSG_WRITE_OPEN, -(1 as libc::c_int),
-                  &mut msg as *mut msg_write_open as *const libc::c_void,
-                  ::std::mem::size_of::<msg_write_open>() as libc::c_ulong);
-    } else { evbuffer_add((*cf).buffer, data, size); file_push(cf); };
+        proc_send(
+            (*c).peer,
+            MSG_WRITE_OPEN,
+            -(1 as libc::c_int),
+            &mut msg as *mut msg_write_open as *const libc::c_void,
+            ::std::mem::size_of::<msg_write_open>() as libc::c_ulong,
+        );
+    } else {
+        evbuffer_add((*cf).buffer, data, size);
+        file_push(cf);
+    };
 }
 #[no_mangle]
-pub unsafe extern "C" fn file_error(mut c: *mut client,
-                                    mut fmt: *const libc::c_char,
-                                    mut args: ...) {
-    let mut find: client_file =
-        client_file{c: 0 as *mut client,
-                    references: 0,
-                    stream: 0,
-                    path: 0 as *mut libc::c_char,
-                    buffer: 0 as *mut evbuffer,
-                    event: 0 as *mut bufferevent,
-                    fd: 0,
-                    error: 0,
-                    closed: 0,
-                    cb: None,
-                    data: 0 as *mut libc::c_void,
-                    entry:
-                        C2RustUnnamed_9{rbe_left: 0 as *mut client_file,
-                                        rbe_right: 0 as *mut client_file,
-                                        rbe_parent: 0 as *mut client_file,
-                                        rbe_color: 0,},};
+pub unsafe extern "C" fn file_error(
+    mut c: *mut client,
+    mut fmt: *const libc::c_char,
+    mut args: ...
+) {
+    let mut find: client_file = client_file {
+        c: 0 as *mut client,
+        references: 0,
+        stream: 0,
+        path: 0 as *mut libc::c_char,
+        buffer: 0 as *mut evbuffer,
+        event: 0 as *mut bufferevent,
+        fd: 0,
+        error: 0,
+        closed: 0,
+        cb: None,
+        data: 0 as *mut libc::c_void,
+        entry: C2RustUnnamed_9 {
+            rbe_left: 0 as *mut client_file,
+            rbe_right: 0 as *mut client_file,
+            rbe_parent: 0 as *mut client_file,
+            rbe_color: 0,
+        },
+    };
     let mut cf: *mut client_file = 0 as *mut client_file;
-    let mut msg: msg_write_open = msg_write_open{stream: 0, fd: 0, flags: 0,};
+    let mut msg: msg_write_open = msg_write_open {
+        stream: 0,
+        fd: 0,
+        flags: 0,
+    };
     let mut ap: ::std::ffi::VaListImpl;
-    if file_can_print(c) == 0 { return }
+    if file_can_print(c) == 0 {
+        return;
+    }
     ap = args.clone();
     find.stream = 2 as libc::c_int;
     cf = client_files_RB_FIND(&mut (*c).files, &mut find);
@@ -1877,21 +2006,28 @@ pub unsafe extern "C" fn file_error(mut c: *mut client,
         msg.stream = 2 as libc::c_int;
         msg.fd = 2 as libc::c_int;
         msg.flags = 0 as libc::c_int;
-        proc_send((*c).peer, MSG_WRITE_OPEN, -(1 as libc::c_int),
-                  &mut msg as *mut msg_write_open as *const libc::c_void,
-                  ::std::mem::size_of::<msg_write_open>() as libc::c_ulong);
+        proc_send(
+            (*c).peer,
+            MSG_WRITE_OPEN,
+            -(1 as libc::c_int),
+            &mut msg as *mut msg_write_open as *const libc::c_void,
+            ::std::mem::size_of::<msg_write_open>() as libc::c_ulong,
+        );
     } else {
         evbuffer_add_vprintf((*cf).buffer, fmt, ap.as_va_list());
         file_push(cf);
     };
 }
 #[no_mangle]
-pub unsafe extern "C" fn file_write(mut c: *mut client,
-                                    mut path: *const libc::c_char,
-                                    mut flags: libc::c_int,
-                                    mut bdata: *const libc::c_void,
-                                    mut bsize: size_t, mut cb: client_file_cb,
-                                    mut cbdata: *mut libc::c_void) {
+pub unsafe extern "C" fn file_write(
+    mut c: *mut client,
+    mut path: *const libc::c_char,
+    mut flags: libc::c_int,
+    mut bdata: *const libc::c_void,
+    mut bsize: size_t,
+    mut cb: client_file_cb,
+    mut cbdata: *mut libc::c_void,
+) {
     let mut current_block: u64;
     let mut cf: *mut client_file = 0 as *mut client_file;
     let mut f: *mut FILE = 0 as *mut FILE;
@@ -1899,80 +2035,94 @@ pub unsafe extern "C" fn file_write(mut c: *mut client,
     let mut msglen: size_t = 0;
     let mut fd: libc::c_int = -(1 as libc::c_int);
     let mut mode: *const libc::c_char = 0 as *const libc::c_char;
-    if strcmp(path, b"-\x00" as *const u8 as *const libc::c_char) ==
-           0 as libc::c_int {
+    if strcmp(path, b"-\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
         let fresh0 = file_next_stream;
         file_next_stream = file_next_stream + 1;
         cf = file_create(c, fresh0, cb, cbdata);
         (*cf).path = xstrdup(b"-\x00" as *const u8 as *const libc::c_char);
         fd = 1 as libc::c_int;
-        if c.is_null() ||
-               (*c).flags & 0x80 as libc::c_int as libc::c_ulong != 0 ||
-               (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
+        if c.is_null()
+            || (*c).flags & 0x80 as libc::c_int as libc::c_ulong != 0
+            || (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0
+        {
             (*cf).error = 9 as libc::c_int;
             current_block = 4754283316149950537;
-        } else { current_block = 13008663247801745974; }
+        } else {
+            current_block = 13008663247801745974;
+        }
     } else {
         let fresh1 = file_next_stream;
         file_next_stream = file_next_stream + 1;
         cf = file_create(c, fresh1, cb, cbdata);
         (*cf).path = file_get_path(c, path);
-        if c.is_null() ||
-               (*c).flags & 0x80 as libc::c_int as libc::c_ulong != 0 {
+        if c.is_null() || (*c).flags & 0x80 as libc::c_int as libc::c_ulong != 0 {
             if flags & 0o2000 as libc::c_int != 0 {
                 mode = b"ab\x00" as *const u8 as *const libc::c_char
-            } else { mode = b"wb\x00" as *const u8 as *const libc::c_char }
+            } else {
+                mode = b"wb\x00" as *const u8 as *const libc::c_char
+            }
             f = fopen((*cf).path, mode);
             if f.is_null() {
                 (*cf).error = *__errno_location()
-            } else if fwrite(bdata, 1 as libc::c_int as libc::c_ulong, bsize,
-                             f) != bsize {
+            } else if fwrite(bdata, 1 as libc::c_int as libc::c_ulong, bsize, f) != bsize {
                 fclose(f);
                 (*cf).error = 5 as libc::c_int
-            } else { fclose(f); }
+            } else {
+                fclose(f);
+            }
             current_block = 4754283316149950537;
-        } else { current_block = 13008663247801745974; }
+        } else {
+            current_block = 13008663247801745974;
+        }
     }
     match current_block {
         13008663247801745974 => {
             evbuffer_add((*cf).buffer, bdata, bsize);
-            msglen =
-                strlen((*cf).path).wrapping_add(1 as libc::c_int as
-                                                    libc::c_ulong).wrapping_add(::std::mem::size_of::<msg_write_open>()
-                                                                                    as
-                                                                                    libc::c_ulong);
-            if msglen >
-                   (16384 as libc::c_int as
-                        libc::c_ulong).wrapping_sub(::std::mem::size_of::<imsg_hdr>()
-                                                        as libc::c_ulong) {
+            msglen = strlen((*cf).path)
+                .wrapping_add(1 as libc::c_int as libc::c_ulong)
+                .wrapping_add(::std::mem::size_of::<msg_write_open>() as libc::c_ulong);
+            if msglen
+                > (16384 as libc::c_int as libc::c_ulong)
+                    .wrapping_sub(::std::mem::size_of::<imsg_hdr>() as libc::c_ulong)
+            {
                 (*cf).error = 7 as libc::c_int
             } else {
                 msg = xmalloc(msglen) as *mut msg_write_open;
                 (*msg).stream = (*cf).stream;
                 (*msg).fd = fd;
                 (*msg).flags = flags;
-                memcpy(msg.offset(1 as libc::c_int as isize) as
-                           *mut libc::c_void,
-                       (*cf).path as *const libc::c_void,
-                       msglen.wrapping_sub(::std::mem::size_of::<msg_write_open>()
-                                               as libc::c_ulong));
-                if proc_send((*c).peer, MSG_WRITE_OPEN, -(1 as libc::c_int),
-                             msg as *const libc::c_void, msglen) !=
-                       0 as libc::c_int {
+                memcpy(
+                    msg.offset(1 as libc::c_int as isize) as *mut libc::c_void,
+                    (*cf).path as *const libc::c_void,
+                    msglen.wrapping_sub(::std::mem::size_of::<msg_write_open>() as libc::c_ulong),
+                );
+                if proc_send(
+                    (*c).peer,
+                    MSG_WRITE_OPEN,
+                    -(1 as libc::c_int),
+                    msg as *const libc::c_void,
+                    msglen,
+                ) != 0 as libc::c_int
+                {
                     free(msg as *mut libc::c_void);
                     (*cf).error = 22 as libc::c_int
-                } else { free(msg as *mut libc::c_void); return }
+                } else {
+                    free(msg as *mut libc::c_void);
+                    return;
+                }
             }
         }
-        _ => { }
+        _ => {}
     }
     file_fire_done(cf);
 }
 #[no_mangle]
-pub unsafe extern "C" fn file_read(mut c: *mut client,
-                                   mut path: *const libc::c_char,
-                                   mut cb: client_file_cb,
-                                   mut cbdata: *mut libc::c_void) {
+pub unsafe extern "C" fn file_read(
+    mut c: *mut client,
+    mut path: *const libc::c_char,
+    mut cb: client_file_cb,
+    mut cbdata: *mut libc::c_void,
+) {
     let mut current_block: u64;
     let mut cf: *mut client_file = 0 as *mut client_file;
     let mut f: *mut FILE = 0 as *mut FILE;
@@ -1981,100 +2131,113 @@ pub unsafe extern "C" fn file_read(mut c: *mut client,
     let mut size: size_t = 0;
     let mut fd: libc::c_int = -(1 as libc::c_int);
     let mut buffer: [libc::c_char; 8192] = [0; 8192];
-    if strcmp(path, b"-\x00" as *const u8 as *const libc::c_char) ==
-           0 as libc::c_int {
+    if strcmp(path, b"-\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
         let fresh2 = file_next_stream;
         file_next_stream = file_next_stream + 1;
         cf = file_create(c, fresh2, cb, cbdata);
         (*cf).path = xstrdup(b"-\x00" as *const u8 as *const libc::c_char);
         fd = 0 as libc::c_int;
-        if c.is_null() ||
-               (*c).flags & 0x80 as libc::c_int as libc::c_ulong != 0 ||
-               (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
+        if c.is_null()
+            || (*c).flags & 0x80 as libc::c_int as libc::c_ulong != 0
+            || (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0
+        {
             (*cf).error = 9 as libc::c_int;
             current_block = 3907211889417656943;
-        } else { current_block = 8877882829518769139; }
+        } else {
+            current_block = 8877882829518769139;
+        }
     } else {
         let fresh3 = file_next_stream;
         file_next_stream = file_next_stream + 1;
         cf = file_create(c, fresh3, cb, cbdata);
         (*cf).path = file_get_path(c, path);
-        if c.is_null() ||
-               (*c).flags & 0x80 as libc::c_int as libc::c_ulong != 0 {
-            f =
-                fopen((*cf).path,
-                      b"rb\x00" as *const u8 as *const libc::c_char);
+        if c.is_null() || (*c).flags & 0x80 as libc::c_int as libc::c_ulong != 0 {
+            f = fopen((*cf).path, b"rb\x00" as *const u8 as *const libc::c_char);
             if f.is_null() {
                 (*cf).error = *__errno_location()
             } else {
-                loop  {
-                    size =
-                        fread(buffer.as_mut_ptr() as *mut libc::c_void,
-                              1 as libc::c_int as libc::c_ulong,
-                              ::std::mem::size_of::<[libc::c_char; 8192]>() as
-                                  libc::c_ulong, f);
-                    if evbuffer_add((*cf).buffer,
-                                    buffer.as_mut_ptr() as
-                                        *const libc::c_void, size) !=
-                           0 as libc::c_int {
+                loop {
+                    size = fread(
+                        buffer.as_mut_ptr() as *mut libc::c_void,
+                        1 as libc::c_int as libc::c_ulong,
+                        ::std::mem::size_of::<[libc::c_char; 8192]>() as libc::c_ulong,
+                        f,
+                    );
+                    if evbuffer_add(
+                        (*cf).buffer,
+                        buffer.as_mut_ptr() as *const libc::c_void,
+                        size,
+                    ) != 0 as libc::c_int
+                    {
                         (*cf).error = 12 as libc::c_int;
                         current_block = 3907211889417656943;
-                        break ;
-                    } else if size !=
-                                  ::std::mem::size_of::<[libc::c_char; 8192]>()
-                                      as libc::c_ulong {
+                        break;
+                    } else if size != ::std::mem::size_of::<[libc::c_char; 8192]>() as libc::c_ulong
+                    {
                         current_block = 1109700713171191020;
-                        break ;
+                        break;
                     }
                 }
                 match current_block {
-                    3907211889417656943 => { }
+                    3907211889417656943 => {}
                     _ => {
                         if ferror(f) != 0 {
                             (*cf).error = 5 as libc::c_int
-                        } else { fclose(f); }
+                        } else {
+                            fclose(f);
+                        }
                     }
                 }
             }
             current_block = 3907211889417656943;
-        } else { current_block = 8877882829518769139; }
+        } else {
+            current_block = 8877882829518769139;
+        }
     }
     match current_block {
         8877882829518769139 => {
-            msglen =
-                strlen((*cf).path).wrapping_add(1 as libc::c_int as
-                                                    libc::c_ulong).wrapping_add(::std::mem::size_of::<msg_read_open>()
-                                                                                    as
-                                                                                    libc::c_ulong);
-            if msglen >
-                   (16384 as libc::c_int as
-                        libc::c_ulong).wrapping_sub(::std::mem::size_of::<imsg_hdr>()
-                                                        as libc::c_ulong) {
+            msglen = strlen((*cf).path)
+                .wrapping_add(1 as libc::c_int as libc::c_ulong)
+                .wrapping_add(::std::mem::size_of::<msg_read_open>() as libc::c_ulong);
+            if msglen
+                > (16384 as libc::c_int as libc::c_ulong)
+                    .wrapping_sub(::std::mem::size_of::<imsg_hdr>() as libc::c_ulong)
+            {
                 (*cf).error = 7 as libc::c_int
             } else {
                 msg = xmalloc(msglen) as *mut msg_read_open;
                 (*msg).stream = (*cf).stream;
                 (*msg).fd = fd;
-                memcpy(msg.offset(1 as libc::c_int as isize) as
-                           *mut libc::c_void,
-                       (*cf).path as *const libc::c_void,
-                       msglen.wrapping_sub(::std::mem::size_of::<msg_read_open>()
-                                               as libc::c_ulong));
-                if proc_send((*c).peer, MSG_READ_OPEN, -(1 as libc::c_int),
-                             msg as *const libc::c_void, msglen) !=
-                       0 as libc::c_int {
+                memcpy(
+                    msg.offset(1 as libc::c_int as isize) as *mut libc::c_void,
+                    (*cf).path as *const libc::c_void,
+                    msglen.wrapping_sub(::std::mem::size_of::<msg_read_open>() as libc::c_ulong),
+                );
+                if proc_send(
+                    (*c).peer,
+                    MSG_READ_OPEN,
+                    -(1 as libc::c_int),
+                    msg as *const libc::c_void,
+                    msglen,
+                ) != 0 as libc::c_int
+                {
                     free(msg as *mut libc::c_void);
                     (*cf).error = 22 as libc::c_int
-                } else { free(msg as *mut libc::c_void); return }
+                } else {
+                    free(msg as *mut libc::c_void);
+                    return;
+                }
             }
         }
-        _ => { }
+        _ => {}
     }
     file_fire_done(cf);
 }
-unsafe extern "C" fn file_push_cb(mut fd: libc::c_int,
-                                  mut events: libc::c_short,
-                                  mut arg: *mut libc::c_void) {
+unsafe extern "C" fn file_push_cb(
+    mut fd: libc::c_int,
+    mut events: libc::c_short,
+    mut arg: *mut libc::c_void,
+) {
     let mut cf: *mut client_file = arg as *mut client_file;
     let mut c: *mut client = (*cf).c;
     if !(*c).flags & 0x200 as libc::c_int as libc::c_ulong != 0 {
@@ -2089,61 +2252,73 @@ pub unsafe extern "C" fn file_push(mut cf: *mut client_file) {
     let mut msglen: size_t = 0;
     let mut sent: size_t = 0;
     let mut left: size_t = 0;
-    let mut close: msg_write_close = msg_write_close{stream: 0,};
-    msg =
-        xmalloc(::std::mem::size_of::<msg_write_data>() as libc::c_ulong) as
-            *mut msg_write_data;
+    let mut close: msg_write_close = msg_write_close { stream: 0 };
+    msg = xmalloc(::std::mem::size_of::<msg_write_data>() as libc::c_ulong) as *mut msg_write_data;
     left = evbuffer_get_length((*cf).buffer);
     while left != 0 as libc::c_int as libc::c_ulong {
         sent = left;
-        if sent >
-               (16384 as libc::c_int as
-                    libc::c_ulong).wrapping_sub(::std::mem::size_of::<imsg_hdr>()
-                                                    as
-                                                    libc::c_ulong).wrapping_sub(::std::mem::size_of::<msg_write_data>()
-                                                                                    as
-                                                                                    libc::c_ulong)
-           {
-            sent =
-                (16384 as libc::c_int as
-                     libc::c_ulong).wrapping_sub(::std::mem::size_of::<imsg_hdr>()
-                                                     as
-                                                     libc::c_ulong).wrapping_sub(::std::mem::size_of::<msg_write_data>()
-                                                                                     as
-                                                                                     libc::c_ulong)
+        if sent
+            > (16384 as libc::c_int as libc::c_ulong)
+                .wrapping_sub(::std::mem::size_of::<imsg_hdr>() as libc::c_ulong)
+                .wrapping_sub(::std::mem::size_of::<msg_write_data>() as libc::c_ulong)
+        {
+            sent = (16384 as libc::c_int as libc::c_ulong)
+                .wrapping_sub(::std::mem::size_of::<imsg_hdr>() as libc::c_ulong)
+                .wrapping_sub(::std::mem::size_of::<msg_write_data>() as libc::c_ulong)
         }
-        msglen =
-            (::std::mem::size_of::<msg_write_data>() as
-                 libc::c_ulong).wrapping_add(sent);
-        msg =
-            xrealloc(msg as *mut libc::c_void, msglen) as *mut msg_write_data;
+        msglen = (::std::mem::size_of::<msg_write_data>() as libc::c_ulong).wrapping_add(sent);
+        msg = xrealloc(msg as *mut libc::c_void, msglen) as *mut msg_write_data;
         (*msg).stream = (*cf).stream;
-        memcpy(msg.offset(1 as libc::c_int as isize) as *mut libc::c_void,
-               evbuffer_pullup((*cf).buffer, -(1 as libc::c_int) as ssize_t)
-                   as *const libc::c_void, sent);
-        if proc_send((*c).peer, MSG_WRITE, -(1 as libc::c_int),
-                     msg as *const libc::c_void, msglen) != 0 as libc::c_int {
-            break ;
+        memcpy(
+            msg.offset(1 as libc::c_int as isize) as *mut libc::c_void,
+            evbuffer_pullup((*cf).buffer, -(1 as libc::c_int) as ssize_t) as *const libc::c_void,
+            sent,
+        );
+        if proc_send(
+            (*c).peer,
+            MSG_WRITE,
+            -(1 as libc::c_int),
+            msg as *const libc::c_void,
+            msglen,
+        ) != 0 as libc::c_int
+        {
+            break;
         }
         evbuffer_drain((*cf).buffer, sent);
         left = evbuffer_get_length((*cf).buffer);
-        log_debug(b"%s: file %d sent %zu, left %zu\x00" as *const u8 as
-                      *const libc::c_char, (*c).name, (*cf).stream, sent,
-                  left);
+        log_debug(
+            b"%s: file %d sent %zu, left %zu\x00" as *const u8 as *const libc::c_char,
+            (*c).name,
+            (*cf).stream,
+            sent,
+            left,
+        );
     }
     if left != 0 as libc::c_int as libc::c_ulong {
         (*cf).references += 1;
-        event_once(-(1 as libc::c_int), 0x1 as libc::c_int as libc::c_short,
-                   Some(file_push_cb as
-                            unsafe extern "C" fn(_: libc::c_int,
-                                                 _: libc::c_short,
-                                                 _: *mut libc::c_void) -> ()),
-                   cf as *mut libc::c_void, 0 as *const timeval);
+        event_once(
+            -(1 as libc::c_int),
+            0x1 as libc::c_int as libc::c_short,
+            Some(
+                file_push_cb
+                    as unsafe extern "C" fn(
+                        _: libc::c_int,
+                        _: libc::c_short,
+                        _: *mut libc::c_void,
+                    ) -> (),
+            ),
+            cf as *mut libc::c_void,
+            0 as *const timeval,
+        );
     } else if (*cf).stream > 2 as libc::c_int {
         close.stream = (*cf).stream;
-        proc_send((*c).peer, MSG_WRITE_CLOSE, -(1 as libc::c_int),
-                  &mut close as *mut msg_write_close as *const libc::c_void,
-                  ::std::mem::size_of::<msg_write_close>() as libc::c_ulong);
+        proc_send(
+            (*c).peer,
+            MSG_WRITE_CLOSE,
+            -(1 as libc::c_int),
+            &mut close as *mut msg_write_close as *const libc::c_void,
+            ::std::mem::size_of::<msg_write_close>() as libc::c_ulong,
+        );
         file_fire_done(cf);
     }
     free(msg as *mut libc::c_void);

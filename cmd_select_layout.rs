@@ -143,18 +143,13 @@ pub struct event_callback {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub union C2RustUnnamed_6 {
-    pub evcb_callback: Option<unsafe extern "C" fn(_: libc::c_int,
-                                                   _: libc::c_short,
-                                                   _: *mut libc::c_void)
-                                  -> ()>,
-    pub evcb_selfcb: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                 _: *mut libc::c_void) -> ()>,
-    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
-    pub evcb_cbfinalize: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
+    pub evcb_callback:
+        Option<unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> ()>,
+    pub evcb_selfcb:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
+    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event, _: *mut libc::c_void) -> ()>,
+    pub evcb_cbfinalize:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -181,14 +176,10 @@ pub struct bufferevent {
     pub timeout_write: timeval,
     pub enabled: libc::c_short,
 }
-pub type bufferevent_event_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short,
-                                _: *mut libc::c_void) -> ()>;
-pub type bufferevent_data_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void)
-               -> ()>;
+pub type bufferevent_event_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short, _: *mut libc::c_void) -> ()>;
+pub type bufferevent_data_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct event_watermark {
@@ -327,17 +318,19 @@ pub struct C2RustUnnamed_9 {
     pub rbe_parent: *mut client_file,
     pub rbe_color: libc::c_int,
 }
-pub type client_file_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *const libc::c_char,
-                                _: libc::c_int, _: libc::c_int,
-                                _: *mut evbuffer, _: *mut libc::c_void)
-               -> ()>;
+pub type client_file_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: *mut evbuffer,
+        _: *mut libc::c_void,
+    ) -> (),
+>;
 pub type overlay_free_cb = Option<unsafe extern "C" fn(_: *mut client) -> ()>;
-pub type overlay_key_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event)
-               -> libc::c_int>;
+pub type overlay_key_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_event {
@@ -367,10 +360,8 @@ pub struct mouse_event {
     pub sgr_b: u_int,
 }
 pub type key_code = libc::c_ulonglong;
-pub type overlay_draw_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx)
-               -> ()>;
+pub type overlay_draw_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen_redraw_ctx {
@@ -384,10 +375,8 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int)
-               -> *mut screen>;
+pub type overlay_mode_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen {
@@ -481,10 +470,8 @@ pub struct C2RustUnnamed_11 {
     pub bg: u_char,
     pub data: u_char,
 }
-pub type overlay_check_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int)
-               -> libc::c_int>;
+pub type overlay_check_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct session {
@@ -731,24 +718,37 @@ pub struct C2RustUnnamed_24 {
 pub struct window_mode {
     pub name: *const libc::c_char,
     pub default_format: *const libc::c_char,
-    pub init: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                          _: *mut cmd_find_state,
-                                          _: *mut args) -> *mut screen>,
+    pub init: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut cmd_find_state,
+            _: *mut args,
+        ) -> *mut screen,
+    >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
-    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                            _: u_int, _: u_int) -> ()>,
-    pub key: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                         _: *mut client, _: *mut session,
-                                         _: *mut winlink, _: key_code,
-                                         _: *mut mouse_event) -> ()>,
-    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry)
-                              -> *const libc::c_char>,
-    pub command: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut client, _: *mut session,
-                                             _: *mut winlink, _: *mut args,
-                                             _: *mut mouse_event) -> ()>,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut format_tree) -> ()>,
+    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
+    pub key: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: key_code,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> *const libc::c_char>,
+    pub command: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: *mut args,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -785,14 +785,15 @@ pub struct winlink_stack {
 pub type C2RustUnnamed_25 = libc::c_uint;
 pub const PROMPT_COMMAND: C2RustUnnamed_25 = 1;
 pub const PROMPT_ENTRY: C2RustUnnamed_25 = 0;
-pub type prompt_free_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
-pub type prompt_input_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut libc::c_void,
-                                _: *const libc::c_char, _: libc::c_int)
-               -> libc::c_int>;
+pub type prompt_free_cb = Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
+pub type prompt_input_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut libc::c_void,
+        _: *const libc::c_char,
+        _: libc::c_int,
+    ) -> libc::c_int,
+>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_table {
@@ -963,12 +964,8 @@ pub struct tty {
     pub mouse_last_y: u_int,
     pub mouse_last_b: u_int,
     pub mouse_drag_flag: libc::c_int,
-    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client,
-                                                       _: *mut mouse_event)
-                                      -> ()>,
-    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client,
-                                                        _: *mut mouse_event)
-                                       -> ()>,
+    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
+    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
     pub key_timer: event,
     pub key_tree: *mut tty_key,
 }
@@ -1044,8 +1041,7 @@ pub struct cmd_entry {
     pub source: cmd_entry_flag,
     pub target: cmd_entry_flag,
     pub flags: libc::c_int,
-    pub exec: Option<unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item)
-                         -> cmd_retval>,
+    pub exec: Option<unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -1055,158 +1051,117 @@ pub struct C2RustUnnamed_32 {
     pub upper: libc::c_int,
 }
 #[no_mangle]
-pub static mut cmd_select_layout_entry: cmd_entry =
-    unsafe {
-        {
-            let mut init =
-                cmd_entry{name:
-                              b"select-layout\x00" as *const u8 as
-                                  *const libc::c_char,
-                          alias:
-                              b"selectl\x00" as *const u8 as
-                                  *const libc::c_char,
-                          args:
-                              {
-                                  let mut init =
-                                      C2RustUnnamed_32{template:
-                                                           b"Enopt:\x00" as
-                                                               *const u8 as
-                                                               *const libc::c_char,
-                                                       lower:
-                                                           0 as libc::c_int,
-                                                       upper:
-                                                           1 as libc::c_int,};
-                                  init
-                              },
-                          usage:
-                              b"[-Enop] [-t target-pane] [layout-name]\x00" as
-                                  *const u8 as *const libc::c_char,
-                          source:
-                              cmd_entry_flag{flag: 0,
-                                             type_0: CMD_FIND_PANE,
-                                             flags: 0,},
-                          target:
-                              {
-                                  let mut init =
-                                      cmd_entry_flag{flag:
-                                                         't' as i32 as
-                                                             libc::c_char,
-                                                     type_0: CMD_FIND_PANE,
-                                                     flags:
-                                                         0 as libc::c_int,};
-                                  init
-                              },
-                          flags: 0x4 as libc::c_int,
-                          exec:
-                              Some(cmd_select_layout_exec as
-                                       unsafe extern "C" fn(_: *mut cmd,
-                                                            _: *mut cmdq_item)
-                                           -> cmd_retval),};
-            init
-        }
-    };
+pub static mut cmd_select_layout_entry: cmd_entry = unsafe {
+    {
+        let mut init = cmd_entry {
+            name: b"select-layout\x00" as *const u8 as *const libc::c_char,
+            alias: b"selectl\x00" as *const u8 as *const libc::c_char,
+            args: {
+                let mut init = C2RustUnnamed_32 {
+                    template: b"Enopt:\x00" as *const u8 as *const libc::c_char,
+                    lower: 0 as libc::c_int,
+                    upper: 1 as libc::c_int,
+                };
+                init
+            },
+            usage: b"[-Enop] [-t target-pane] [layout-name]\x00" as *const u8
+                as *const libc::c_char,
+            source: cmd_entry_flag {
+                flag: 0,
+                type_0: CMD_FIND_PANE,
+                flags: 0,
+            },
+            target: {
+                let mut init = cmd_entry_flag {
+                    flag: 't' as i32 as libc::c_char,
+                    type_0: CMD_FIND_PANE,
+                    flags: 0 as libc::c_int,
+                };
+                init
+            },
+            flags: 0x4 as libc::c_int,
+            exec: Some(
+                cmd_select_layout_exec
+                    as unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval,
+            ),
+        };
+        init
+    }
+};
 #[no_mangle]
-pub static mut cmd_next_layout_entry: cmd_entry =
-    unsafe {
-        {
-            let mut init =
-                cmd_entry{name:
-                              b"next-layout\x00" as *const u8 as
-                                  *const libc::c_char,
-                          alias:
-                              b"nextl\x00" as *const u8 as
-                                  *const libc::c_char,
-                          args:
-                              {
-                                  let mut init =
-                                      C2RustUnnamed_32{template:
-                                                           b"t:\x00" as
-                                                               *const u8 as
-                                                               *const libc::c_char,
-                                                       lower:
-                                                           0 as libc::c_int,
-                                                       upper:
-                                                           0 as libc::c_int,};
-                                  init
-                              },
-                          usage:
-                              b"[-t target-window]\x00" as *const u8 as
-                                  *const libc::c_char,
-                          source:
-                              cmd_entry_flag{flag: 0,
-                                             type_0: CMD_FIND_PANE,
-                                             flags: 0,},
-                          target:
-                              {
-                                  let mut init =
-                                      cmd_entry_flag{flag:
-                                                         't' as i32 as
-                                                             libc::c_char,
-                                                     type_0: CMD_FIND_WINDOW,
-                                                     flags:
-                                                         0 as libc::c_int,};
-                                  init
-                              },
-                          flags: 0x4 as libc::c_int,
-                          exec:
-                              Some(cmd_select_layout_exec as
-                                       unsafe extern "C" fn(_: *mut cmd,
-                                                            _: *mut cmdq_item)
-                                           -> cmd_retval),};
-            init
-        }
-    };
+pub static mut cmd_next_layout_entry: cmd_entry = unsafe {
+    {
+        let mut init = cmd_entry {
+            name: b"next-layout\x00" as *const u8 as *const libc::c_char,
+            alias: b"nextl\x00" as *const u8 as *const libc::c_char,
+            args: {
+                let mut init = C2RustUnnamed_32 {
+                    template: b"t:\x00" as *const u8 as *const libc::c_char,
+                    lower: 0 as libc::c_int,
+                    upper: 0 as libc::c_int,
+                };
+                init
+            },
+            usage: b"[-t target-window]\x00" as *const u8 as *const libc::c_char,
+            source: cmd_entry_flag {
+                flag: 0,
+                type_0: CMD_FIND_PANE,
+                flags: 0,
+            },
+            target: {
+                let mut init = cmd_entry_flag {
+                    flag: 't' as i32 as libc::c_char,
+                    type_0: CMD_FIND_WINDOW,
+                    flags: 0 as libc::c_int,
+                };
+                init
+            },
+            flags: 0x4 as libc::c_int,
+            exec: Some(
+                cmd_select_layout_exec
+                    as unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval,
+            ),
+        };
+        init
+    }
+};
 #[no_mangle]
-pub static mut cmd_previous_layout_entry: cmd_entry =
-    unsafe {
-        {
-            let mut init =
-                cmd_entry{name:
-                              b"previous-layout\x00" as *const u8 as
-                                  *const libc::c_char,
-                          alias:
-                              b"prevl\x00" as *const u8 as
-                                  *const libc::c_char,
-                          args:
-                              {
-                                  let mut init =
-                                      C2RustUnnamed_32{template:
-                                                           b"t:\x00" as
-                                                               *const u8 as
-                                                               *const libc::c_char,
-                                                       lower:
-                                                           0 as libc::c_int,
-                                                       upper:
-                                                           0 as libc::c_int,};
-                                  init
-                              },
-                          usage:
-                              b"[-t target-window]\x00" as *const u8 as
-                                  *const libc::c_char,
-                          source:
-                              cmd_entry_flag{flag: 0,
-                                             type_0: CMD_FIND_PANE,
-                                             flags: 0,},
-                          target:
-                              {
-                                  let mut init =
-                                      cmd_entry_flag{flag:
-                                                         't' as i32 as
-                                                             libc::c_char,
-                                                     type_0: CMD_FIND_WINDOW,
-                                                     flags:
-                                                         0 as libc::c_int,};
-                                  init
-                              },
-                          flags: 0x4 as libc::c_int,
-                          exec:
-                              Some(cmd_select_layout_exec as
-                                       unsafe extern "C" fn(_: *mut cmd,
-                                                            _: *mut cmdq_item)
-                                           -> cmd_retval),};
-            init
-        }
-    };
+pub static mut cmd_previous_layout_entry: cmd_entry = unsafe {
+    {
+        let mut init = cmd_entry {
+            name: b"previous-layout\x00" as *const u8 as *const libc::c_char,
+            alias: b"prevl\x00" as *const u8 as *const libc::c_char,
+            args: {
+                let mut init = C2RustUnnamed_32 {
+                    template: b"t:\x00" as *const u8 as *const libc::c_char,
+                    lower: 0 as libc::c_int,
+                    upper: 0 as libc::c_int,
+                };
+                init
+            },
+            usage: b"[-t target-window]\x00" as *const u8 as *const libc::c_char,
+            source: cmd_entry_flag {
+                flag: 0,
+                type_0: CMD_FIND_PANE,
+                flags: 0,
+            },
+            target: {
+                let mut init = cmd_entry_flag {
+                    flag: 't' as i32 as libc::c_char,
+                    type_0: CMD_FIND_WINDOW,
+                    flags: 0 as libc::c_int,
+                };
+                init
+            },
+            flags: 0x4 as libc::c_int,
+            exec: Some(
+                cmd_select_layout_exec
+                    as unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval,
+            ),
+        };
+        init
+    }
+};
 /* $OpenBSD$ */
 /*
  * Copyright (c) 2009 Nicholas Marriott <nicholas.marriott@gmail.com>
@@ -1226,9 +1181,10 @@ pub static mut cmd_previous_layout_entry: cmd_entry =
 /*
  * Switch window to selected layout.
  */
-unsafe extern "C" fn cmd_select_layout_exec(mut self_0: *mut cmd,
-                                            mut item: *mut cmdq_item)
- -> cmd_retval {
+unsafe extern "C" fn cmd_select_layout_exec(
+    mut self_0: *mut cmd,
+    mut item: *mut cmdq_item,
+) -> cmd_retval {
     let mut current_block: u64;
     let mut args: *mut args = cmd_get_args(self_0);
     let mut target: *mut cmd_find_state = cmdq_get_target(item);
@@ -1241,20 +1197,23 @@ unsafe extern "C" fn cmd_select_layout_exec(mut self_0: *mut cmd,
     let mut previous: libc::c_int = 0;
     let mut layout: libc::c_int = 0;
     server_unzoom_window(w);
-    next =
-        (cmd_get_entry(self_0) == &cmd_next_layout_entry as *const cmd_entry)
-            as libc::c_int;
-    if args_has(args, 'n' as i32 as u_char) != 0 { next = 1 as libc::c_int }
+    next = (cmd_get_entry(self_0) == &cmd_next_layout_entry as *const cmd_entry) as libc::c_int;
+    if args_has(args, 'n' as i32 as u_char) != 0 {
+        next = 1 as libc::c_int
+    }
     previous =
-        (cmd_get_entry(self_0) ==
-             &cmd_previous_layout_entry as *const cmd_entry) as libc::c_int;
+        (cmd_get_entry(self_0) == &cmd_previous_layout_entry as *const cmd_entry) as libc::c_int;
     if args_has(args, 'p' as i32 as u_char) != 0 {
         previous = 1 as libc::c_int
     }
     oldlayout = (*w).old_layout;
     (*w).old_layout = layout_dump((*w).layout_root);
     if next != 0 || previous != 0 {
-        if next != 0 { layout_set_next(w); } else { layout_set_previous(w); }
+        if next != 0 {
+            layout_set_next(w);
+        } else {
+            layout_set_previous(w);
+        }
     } else if args_has(args, 'E' as i32 as u_char) != 0 {
         layout_spread_out(wp);
     } else {
@@ -1262,36 +1221,41 @@ unsafe extern "C" fn cmd_select_layout_exec(mut self_0: *mut cmd,
             if (*args).argc == 0 as libc::c_int {
                 layout = (*w).lastlayout
             } else {
-                layout =
-                    layout_set_lookup(*(*args).argv.offset(0 as libc::c_int as
-                                                               isize))
+                layout = layout_set_lookup(*(*args).argv.offset(0 as libc::c_int as isize))
             }
             if layout != -(1 as libc::c_int) {
                 layout_set_select(w, layout as u_int);
                 current_block = 9678350773491451590;
-            } else { current_block = 6669252993407410313; }
-        } else { current_block = 6669252993407410313; }
+            } else {
+                current_block = 6669252993407410313;
+            }
+        } else {
+            current_block = 6669252993407410313;
+        }
         match current_block {
-            9678350773491451590 => { }
+            9678350773491451590 => {}
             _ => {
                 if (*args).argc != 0 as libc::c_int {
-                    layoutname =
-                        *(*args).argv.offset(0 as libc::c_int as isize)
+                    layoutname = *(*args).argv.offset(0 as libc::c_int as isize)
                 } else if args_has(args, 'o' as i32 as u_char) != 0 {
                     layoutname = oldlayout
-                } else { layoutname = 0 as *const libc::c_char }
+                } else {
+                    layoutname = 0 as *const libc::c_char
+                }
                 if !layoutname.is_null() {
                     if layout_parse(w, layoutname) == -(1 as libc::c_int) {
-                        cmdq_error(item,
-                                   b"can\'t set layout: %s\x00" as *const u8
-                                       as *const libc::c_char, layoutname);
+                        cmdq_error(
+                            item,
+                            b"can\'t set layout: %s\x00" as *const u8 as *const libc::c_char,
+                            layoutname,
+                        );
                         free((*w).old_layout as *mut libc::c_void);
                         (*w).old_layout = oldlayout;
-                        return CMD_RETURN_ERROR
+                        return CMD_RETURN_ERROR;
                     }
                 } else {
                     free(oldlayout as *mut libc::c_void);
-                    return CMD_RETURN_NORMAL
+                    return CMD_RETURN_NORMAL;
                 }
             }
         }
@@ -1299,7 +1263,9 @@ unsafe extern "C" fn cmd_select_layout_exec(mut self_0: *mut cmd,
     free(oldlayout as *mut libc::c_void);
     recalculate_sizes();
     server_redraw_window(w);
-    notify_window(b"window-layout-changed\x00" as *const u8 as
-                      *const libc::c_char, w);
+    notify_window(
+        b"window-layout-changed\x00" as *const u8 as *const libc::c_char,
+        w,
+    );
     return CMD_RETURN_NORMAL;
 }

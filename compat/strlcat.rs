@@ -28,28 +28,29 @@ pub type size_t = libc::c_ulong;
  * If retval >= siz, truncation occurred.
  */
 #[no_mangle]
-pub unsafe extern "C" fn strlcat(mut dst: *mut libc::c_char,
-                                 mut src: *const libc::c_char,
-                                 mut siz: size_t) -> libc::c_ulong {
+pub unsafe extern "C" fn strlcat(
+    mut dst: *mut libc::c_char,
+    mut src: *const libc::c_char,
+    mut siz: size_t,
+) -> libc::c_ulong {
     let mut d: *mut libc::c_char = dst;
     let mut s: *const libc::c_char = src;
     let mut n: size_t = siz;
     let mut dlen: size_t = 0;
-    loop 
-         /* Find the end of dst and adjust bytes left but don't go past end */
-         {
+    loop
+    /* Find the end of dst and adjust bytes left but don't go past end */
+    {
         let fresh0 = n;
         n = n.wrapping_sub(1);
-        if !(fresh0 != 0 as libc::c_int as libc::c_ulong &&
-                 *d as libc::c_int != '\u{0}' as i32) {
-            break ;
+        if !(fresh0 != 0 as libc::c_int as libc::c_ulong && *d as libc::c_int != '\u{0}' as i32) {
+            break;
         }
         d = d.offset(1)
     }
     dlen = d.wrapping_offset_from(dst) as libc::c_long as size_t;
     n = siz.wrapping_sub(dlen);
     if n == 0 as libc::c_int as libc::c_ulong {
-        return dlen.wrapping_add(strlen(s))
+        return dlen.wrapping_add(strlen(s));
     }
     while *s as libc::c_int != '\u{0}' as i32 {
         if n != 1 as libc::c_int as libc::c_ulong {
@@ -61,7 +62,6 @@ pub unsafe extern "C" fn strlcat(mut dst: *mut libc::c_char,
         s = s.offset(1)
     }
     *d = '\u{0}' as i32 as libc::c_char;
-    return dlen.wrapping_add(s.wrapping_offset_from(src) as libc::c_long as
-                                 libc::c_ulong);
+    return dlen.wrapping_add(s.wrapping_offset_from(src) as libc::c_long as libc::c_ulong);
     /* count does not include NUL */
 }

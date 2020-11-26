@@ -24,23 +24,26 @@ extern "C" {
     #[no_mangle]
     fn free(__ptr: *mut libc::c_void);
     #[no_mangle]
-    fn qsort(__base: *mut libc::c_void, __nmemb: size_t, __size: size_t,
-             __compar: __compar_fn_t);
+    fn qsort(__base: *mut libc::c_void, __nmemb: size_t, __size: size_t, __compar: __compar_fn_t);
     #[no_mangle]
     fn strcmp(_: *const libc::c_char, _: *const libc::c_char) -> libc::c_int;
     #[no_mangle]
     fn xcalloc(_: size_t, _: size_t) -> *mut libc::c_void;
     #[no_mangle]
-    fn xreallocarray(_: *mut libc::c_void, _: size_t, _: size_t)
-     -> *mut libc::c_void;
+    fn xreallocarray(_: *mut libc::c_void, _: size_t, _: size_t) -> *mut libc::c_void;
     #[no_mangle]
     fn xstrdup(_: *const libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
     fn format_true(_: *const libc::c_char) -> libc::c_int;
     #[no_mangle]
-    fn format_single(_: *mut cmdq_item, _: *const libc::c_char,
-                     _: *mut client, _: *mut session, _: *mut winlink,
-                     _: *mut window_pane) -> *mut libc::c_char;
+    fn format_single(
+        _: *mut cmdq_item,
+        _: *const libc::c_char,
+        _: *mut client,
+        _: *mut session,
+        _: *mut winlink,
+        _: *mut window_pane,
+    ) -> *mut libc::c_char;
     #[no_mangle]
     fn args_has(_: *mut args, _: u_char) -> libc::c_int;
     #[no_mangle]
@@ -54,17 +57,25 @@ extern "C" {
     #[no_mangle]
     fn status_line_size(_: *mut client) -> u_int;
     #[no_mangle]
-    fn screen_write_fast_copy(_: *mut screen_write_ctx, _: *mut screen,
-                              _: u_int, _: u_int, _: u_int, _: u_int);
+    fn screen_write_fast_copy(
+        _: *mut screen_write_ctx,
+        _: *mut screen,
+        _: u_int,
+        _: u_int,
+        _: u_int,
+        _: u_int,
+    );
     #[no_mangle]
-    fn screen_write_hline(_: *mut screen_write_ctx, _: u_int, _: libc::c_int,
-                          _: libc::c_int);
+    fn screen_write_hline(_: *mut screen_write_ctx, _: u_int, _: libc::c_int, _: libc::c_int);
     #[no_mangle]
-    fn screen_write_preview(_: *mut screen_write_ctx, _: *mut screen,
-                            _: u_int, _: u_int);
+    fn screen_write_preview(_: *mut screen_write_ctx, _: *mut screen, _: u_int, _: u_int);
     #[no_mangle]
-    fn screen_write_cursormove(_: *mut screen_write_ctx, _: libc::c_int,
-                               _: libc::c_int, _: libc::c_int);
+    fn screen_write_cursormove(
+        _: *mut screen_write_ctx,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: libc::c_int,
+    );
     #[no_mangle]
     fn server_client_suspend(_: *mut client);
     #[no_mangle]
@@ -76,17 +87,30 @@ extern "C" {
     #[no_mangle]
     fn mode_tree_get_current(_: *mut mode_tree_data) -> *mut libc::c_void;
     #[no_mangle]
-    fn mode_tree_each_tagged(_: *mut mode_tree_data, _: mode_tree_each_cb,
-                             _: *mut client, _: key_code, _: libc::c_int);
+    fn mode_tree_each_tagged(
+        _: *mut mode_tree_data,
+        _: mode_tree_each_cb,
+        _: *mut client,
+        _: key_code,
+        _: libc::c_int,
+    );
     #[no_mangle]
     fn mode_tree_down(_: *mut mode_tree_data, _: libc::c_int);
     #[no_mangle]
-    fn mode_tree_start(_: *mut window_pane, _: *mut args,
-                       _: mode_tree_build_cb, _: mode_tree_draw_cb,
-                       _: mode_tree_search_cb, _: mode_tree_menu_cb,
-                       _: mode_tree_height_cb, _: *mut libc::c_void,
-                       _: *const menu_item, _: *mut *const libc::c_char,
-                       _: u_int, _: *mut *mut screen) -> *mut mode_tree_data;
+    fn mode_tree_start(
+        _: *mut window_pane,
+        _: *mut args,
+        _: mode_tree_build_cb,
+        _: mode_tree_draw_cb,
+        _: mode_tree_search_cb,
+        _: mode_tree_menu_cb,
+        _: mode_tree_height_cb,
+        _: *mut libc::c_void,
+        _: *const menu_item,
+        _: *mut *const libc::c_char,
+        _: u_int,
+        _: *mut *mut screen,
+    ) -> *mut mode_tree_data;
     #[no_mangle]
     fn mode_tree_zoom(_: *mut mode_tree_data, _: *mut args);
     #[no_mangle]
@@ -96,19 +120,33 @@ extern "C" {
     #[no_mangle]
     fn mode_tree_resize(_: *mut mode_tree_data, _: u_int, _: u_int);
     #[no_mangle]
-    fn mode_tree_add(_: *mut mode_tree_data, _: *mut mode_tree_item,
-                     _: *mut libc::c_void, _: uint64_t,
-                     _: *const libc::c_char, _: *const libc::c_char,
-                     _: libc::c_int) -> *mut mode_tree_item;
+    fn mode_tree_add(
+        _: *mut mode_tree_data,
+        _: *mut mode_tree_item,
+        _: *mut libc::c_void,
+        _: uint64_t,
+        _: *const libc::c_char,
+        _: *const libc::c_char,
+        _: libc::c_int,
+    ) -> *mut mode_tree_item;
     #[no_mangle]
     fn mode_tree_draw(_: *mut mode_tree_data);
     #[no_mangle]
-    fn mode_tree_key(_: *mut mode_tree_data, _: *mut client, _: *mut key_code,
-                     _: *mut mouse_event, _: *mut u_int, _: *mut u_int)
-     -> libc::c_int;
+    fn mode_tree_key(
+        _: *mut mode_tree_data,
+        _: *mut client,
+        _: *mut key_code,
+        _: *mut mouse_event,
+        _: *mut u_int,
+        _: *mut u_int,
+    ) -> libc::c_int;
     #[no_mangle]
-    fn mode_tree_run_command(_: *mut client, _: *mut cmd_find_state,
-                             _: *const libc::c_char, _: *const libc::c_char);
+    fn mode_tree_run_command(
+        _: *mut client,
+        _: *mut cmd_find_state,
+        _: *const libc::c_char,
+        _: *const libc::c_char,
+    );
 }
 pub type __u_char = libc::c_uchar;
 pub type __u_short = libc::c_ushort;
@@ -129,10 +167,8 @@ pub struct timeval {
     pub tv_sec: __time_t,
     pub tv_usec: __suseconds_t,
 }
-pub type __compar_fn_t
-    =
-    Option<unsafe extern "C" fn(_: *const libc::c_void,
-                                _: *const libc::c_void) -> libc::c_int>;
+pub type __compar_fn_t =
+    Option<unsafe extern "C" fn(_: *const libc::c_void, _: *const libc::c_void) -> libc::c_int>;
 pub type uint8_t = __uint8_t;
 pub type uint64_t = __uint64_t;
 #[derive(Copy, Clone)]
@@ -203,18 +239,13 @@ pub struct event_callback {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub union C2RustUnnamed_6 {
-    pub evcb_callback: Option<unsafe extern "C" fn(_: libc::c_int,
-                                                   _: libc::c_short,
-                                                   _: *mut libc::c_void)
-                                  -> ()>,
-    pub evcb_selfcb: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                 _: *mut libc::c_void) -> ()>,
-    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
-    pub evcb_cbfinalize: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
+    pub evcb_callback:
+        Option<unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> ()>,
+    pub evcb_selfcb:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
+    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event, _: *mut libc::c_void) -> ()>,
+    pub evcb_cbfinalize:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -241,14 +272,10 @@ pub struct bufferevent {
     pub timeout_write: timeval,
     pub enabled: libc::c_short,
 }
-pub type bufferevent_event_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short,
-                                _: *mut libc::c_void) -> ()>;
-pub type bufferevent_data_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void)
-               -> ()>;
+pub type bufferevent_event_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short, _: *mut libc::c_void) -> ()>;
+pub type bufferevent_data_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct event_watermark {
@@ -387,17 +414,19 @@ pub struct C2RustUnnamed_9 {
     pub rbe_parent: *mut client_file,
     pub rbe_color: libc::c_int,
 }
-pub type client_file_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *const libc::c_char,
-                                _: libc::c_int, _: libc::c_int,
-                                _: *mut evbuffer, _: *mut libc::c_void)
-               -> ()>;
+pub type client_file_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: *mut evbuffer,
+        _: *mut libc::c_void,
+    ) -> (),
+>;
 pub type overlay_free_cb = Option<unsafe extern "C" fn(_: *mut client) -> ()>;
-pub type overlay_key_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event)
-               -> libc::c_int>;
+pub type overlay_key_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_event {
@@ -427,10 +456,8 @@ pub struct mouse_event {
     pub sgr_b: u_int,
 }
 pub type key_code = libc::c_ulonglong;
-pub type overlay_draw_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx)
-               -> ()>;
+pub type overlay_draw_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen_redraw_ctx {
@@ -444,10 +471,8 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int)
-               -> *mut screen>;
+pub type overlay_mode_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen {
@@ -541,10 +566,8 @@ pub struct C2RustUnnamed_11 {
     pub bg: u_char,
     pub data: u_char,
 }
-pub type overlay_check_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int)
-               -> libc::c_int>;
+pub type overlay_check_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct session {
@@ -791,24 +814,37 @@ pub struct C2RustUnnamed_24 {
 pub struct window_mode {
     pub name: *const libc::c_char,
     pub default_format: *const libc::c_char,
-    pub init: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                          _: *mut cmd_find_state,
-                                          _: *mut args) -> *mut screen>,
+    pub init: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut cmd_find_state,
+            _: *mut args,
+        ) -> *mut screen,
+    >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
-    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                            _: u_int, _: u_int) -> ()>,
-    pub key: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                         _: *mut client, _: *mut session,
-                                         _: *mut winlink, _: key_code,
-                                         _: *mut mouse_event) -> ()>,
-    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry)
-                              -> *const libc::c_char>,
-    pub command: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut client, _: *mut session,
-                                             _: *mut winlink, _: *mut args,
-                                             _: *mut mouse_event) -> ()>,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut format_tree) -> ()>,
+    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
+    pub key: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: key_code,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> *const libc::c_char>,
+    pub command: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: *mut args,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -845,14 +881,15 @@ pub struct winlink_stack {
 pub type C2RustUnnamed_25 = libc::c_uint;
 pub const PROMPT_COMMAND: C2RustUnnamed_25 = 1;
 pub const PROMPT_ENTRY: C2RustUnnamed_25 = 0;
-pub type prompt_free_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
-pub type prompt_input_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut libc::c_void,
-                                _: *const libc::c_char, _: libc::c_int)
-               -> libc::c_int>;
+pub type prompt_free_cb = Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
+pub type prompt_input_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut libc::c_void,
+        _: *const libc::c_char,
+        _: libc::c_int,
+    ) -> libc::c_int,
+>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_table {
@@ -1023,12 +1060,8 @@ pub struct tty {
     pub mouse_last_y: u_int,
     pub mouse_last_b: u_int,
     pub mouse_drag_flag: libc::c_int,
-    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client,
-                                                       _: *mut mouse_event)
-                                      -> ()>,
-    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client,
-                                                        _: *mut mouse_event)
-                                       -> ()>,
+    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
+    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
     pub key_timer: event,
     pub key_tree: *mut tty_key,
 }
@@ -1093,10 +1126,8 @@ pub struct screen_write_ctx {
     pub written: u_int,
     pub skipped: u_int,
 }
-pub type screen_write_init_ctx_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut screen_write_ctx, _: *mut tty_ctx)
-               -> ()>;
+pub type screen_write_init_ctx_cb =
+    Option<unsafe extern "C" fn(_: *mut screen_write_ctx, _: *mut tty_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct tty_ctx {
@@ -1127,13 +1158,9 @@ pub struct tty_ctx {
     pub wsx: u_int,
     pub wsy: u_int,
 }
-pub type tty_ctx_set_client_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut tty_ctx, _: *mut client)
-               -> libc::c_int>;
-pub type tty_ctx_redraw_cb
-    =
-    Option<unsafe extern "C" fn(_: *const tty_ctx) -> ()>;
+pub type tty_ctx_set_client_cb =
+    Option<unsafe extern "C" fn(_: *mut tty_ctx, _: *mut client) -> libc::c_int>;
+pub type tty_ctx_redraw_cb = Option<unsafe extern "C" fn(_: *const tty_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct menu_item {
@@ -1153,32 +1180,42 @@ pub struct mode_tree_sort_criteria {
     pub field: u_int,
     pub reversed: libc::c_int,
 }
-pub type mode_tree_build_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void,
-                                _: *mut mode_tree_sort_criteria,
-                                _: *mut uint64_t, _: *const libc::c_char)
-               -> ()>;
-pub type mode_tree_draw_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void, _: *mut libc::c_void,
-                                _: *mut screen_write_ctx, _: u_int, _: u_int)
-               -> ()>;
-pub type mode_tree_search_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void, _: *mut libc::c_void,
-                                _: *const libc::c_char) -> libc::c_int>;
-pub type mode_tree_menu_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void, _: *mut client,
-                                _: key_code) -> ()>;
-pub type mode_tree_height_cb
-    =
+pub type mode_tree_build_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut libc::c_void,
+        _: *mut mode_tree_sort_criteria,
+        _: *mut uint64_t,
+        _: *const libc::c_char,
+    ) -> (),
+>;
+pub type mode_tree_draw_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut libc::c_void,
+        _: *mut libc::c_void,
+        _: *mut screen_write_ctx,
+        _: u_int,
+        _: u_int,
+    ) -> (),
+>;
+pub type mode_tree_search_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut libc::c_void,
+        _: *mut libc::c_void,
+        _: *const libc::c_char,
+    ) -> libc::c_int,
+>;
+pub type mode_tree_menu_cb =
+    Option<unsafe extern "C" fn(_: *mut libc::c_void, _: *mut client, _: key_code) -> ()>;
+pub type mode_tree_height_cb =
     Option<unsafe extern "C" fn(_: *mut libc::c_void, _: u_int) -> u_int>;
-pub type mode_tree_each_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void, _: *mut libc::c_void,
-                                _: *mut client, _: key_code) -> ()>;
+pub type mode_tree_each_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut libc::c_void,
+        _: *mut libc::c_void,
+        _: *mut client,
+        _: key_code,
+    ) -> (),
+>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct window_client_modedata {
@@ -1199,166 +1236,157 @@ pub const WINDOW_CLIENT_BY_CREATION_TIME: window_client_sort_type = 2;
 pub const WINDOW_CLIENT_BY_SIZE: window_client_sort_type = 1;
 pub type window_client_sort_type = libc::c_uint;
 pub const WINDOW_CLIENT_BY_NAME: window_client_sort_type = 0;
-static mut window_client_menu_items: [menu_item; 9] =
-    [{
-         let mut init =
-             menu_item{name:
-                           b"Detach\x00" as *const u8 as *const libc::c_char,
-                       key: 'd' as i32 as key_code,
-                       command: 0 as *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             menu_item{name:
-                           b"Detach Tagged\x00" as *const u8 as
-                               *const libc::c_char,
-                       key: 'D' as i32 as key_code,
-                       command: 0 as *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             menu_item{name: b"\x00" as *const u8 as *const libc::c_char,
-                       key: 0xff000000000 as libc::c_ulonglong,
-                       command: 0 as *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             menu_item{name: b"Tag\x00" as *const u8 as *const libc::c_char,
-                       key: 't' as i32 as key_code,
-                       command: 0 as *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             menu_item{name:
-                           b"Tag All\x00" as *const u8 as *const libc::c_char,
-                       key: '\u{14}' as i32 as key_code,
-                       command: 0 as *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             menu_item{name:
-                           b"Tag None\x00" as *const u8 as
-                               *const libc::c_char,
-                       key: 'T' as i32 as key_code,
-                       command: 0 as *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             menu_item{name: b"\x00" as *const u8 as *const libc::c_char,
-                       key: 0xff000000000 as libc::c_ulonglong,
-                       command: 0 as *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             menu_item{name:
-                           b"Cancel\x00" as *const u8 as *const libc::c_char,
-                       key: 'q' as i32 as key_code,
-                       command: 0 as *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             menu_item{name: 0 as *const libc::c_char,
-                       key: 0xff000000000 as libc::c_ulonglong,
-                       command: 0 as *const libc::c_char,};
-         init
-     }];
+static mut window_client_menu_items: [menu_item; 9] = [
+    {
+        let mut init = menu_item {
+            name: b"Detach\x00" as *const u8 as *const libc::c_char,
+            key: 'd' as i32 as key_code,
+            command: 0 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = menu_item {
+            name: b"Detach Tagged\x00" as *const u8 as *const libc::c_char,
+            key: 'D' as i32 as key_code,
+            command: 0 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = menu_item {
+            name: b"\x00" as *const u8 as *const libc::c_char,
+            key: 0xff000000000 as libc::c_ulonglong,
+            command: 0 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = menu_item {
+            name: b"Tag\x00" as *const u8 as *const libc::c_char,
+            key: 't' as i32 as key_code,
+            command: 0 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = menu_item {
+            name: b"Tag All\x00" as *const u8 as *const libc::c_char,
+            key: '\u{14}' as i32 as key_code,
+            command: 0 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = menu_item {
+            name: b"Tag None\x00" as *const u8 as *const libc::c_char,
+            key: 'T' as i32 as key_code,
+            command: 0 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = menu_item {
+            name: b"\x00" as *const u8 as *const libc::c_char,
+            key: 0xff000000000 as libc::c_ulonglong,
+            command: 0 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = menu_item {
+            name: b"Cancel\x00" as *const u8 as *const libc::c_char,
+            key: 'q' as i32 as key_code,
+            command: 0 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = menu_item {
+            name: 0 as *const libc::c_char,
+            key: 0xff000000000 as libc::c_ulonglong,
+            command: 0 as *const libc::c_char,
+        };
+        init
+    },
+];
 #[no_mangle]
-pub static mut window_client_mode: window_mode =
-    unsafe {
-        {
-            let mut init =
-                window_mode{name:
-                                b"client-mode\x00" as *const u8 as
-                                    *const libc::c_char,
-                            default_format:
-                                b"#{t/p:client_activity}: session #{session_name}\x00"
-                                    as *const u8 as *const libc::c_char,
-                            init:
-                                Some(window_client_init as
-                                         unsafe extern "C" fn(_:
-                                                                  *mut window_mode_entry,
-                                                              _:
-                                                                  *mut cmd_find_state,
-                                                              _: *mut args)
-                                             -> *mut screen),
-                            free:
-                                Some(window_client_free as
-                                         unsafe extern "C" fn(_:
-                                                                  *mut window_mode_entry)
-                                             -> ()),
-                            resize:
-                                Some(window_client_resize as
-                                         unsafe extern "C" fn(_:
-                                                                  *mut window_mode_entry,
-                                                              _: u_int,
-                                                              _: u_int)
-                                             -> ()),
-                            key:
-                                Some(window_client_key as
-                                         unsafe extern "C" fn(_:
-                                                                  *mut window_mode_entry,
-                                                              _: *mut client,
-                                                              _: *mut session,
-                                                              _: *mut winlink,
-                                                              _: key_code,
-                                                              _:
-                                                                  *mut mouse_event)
-                                             -> ()),
-                            key_table: None,
-                            command: None,
-                            formats: None,};
-            init
-        }
-    };
-static mut window_client_sort_list: [*const libc::c_char; 4] =
-    [b"name\x00" as *const u8 as *const libc::c_char,
-     b"size\x00" as *const u8 as *const libc::c_char,
-     b"creation\x00" as *const u8 as *const libc::c_char,
-     b"activity\x00" as *const u8 as *const libc::c_char];
+pub static mut window_client_mode: window_mode = unsafe {
+    {
+        let mut init = window_mode {
+            name: b"client-mode\x00" as *const u8 as *const libc::c_char,
+            default_format: b"#{t/p:client_activity}: session #{session_name}\x00" as *const u8
+                as *const libc::c_char,
+            init: Some(
+                window_client_init
+                    as unsafe extern "C" fn(
+                        _: *mut window_mode_entry,
+                        _: *mut cmd_find_state,
+                        _: *mut args,
+                    ) -> *mut screen,
+            ),
+            free: Some(window_client_free as unsafe extern "C" fn(_: *mut window_mode_entry) -> ()),
+            resize: Some(
+                window_client_resize
+                    as unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> (),
+            ),
+            key: Some(
+                window_client_key
+                    as unsafe extern "C" fn(
+                        _: *mut window_mode_entry,
+                        _: *mut client,
+                        _: *mut session,
+                        _: *mut winlink,
+                        _: key_code,
+                        _: *mut mouse_event,
+                    ) -> (),
+            ),
+            key_table: None,
+            command: None,
+            formats: None,
+        };
+        init
+    }
+};
+static mut window_client_sort_list: [*const libc::c_char; 4] = [
+    b"name\x00" as *const u8 as *const libc::c_char,
+    b"size\x00" as *const u8 as *const libc::c_char,
+    b"creation\x00" as *const u8 as *const libc::c_char,
+    b"activity\x00" as *const u8 as *const libc::c_char,
+];
 static mut window_client_sort: *mut mode_tree_sort_criteria =
     0 as *const mode_tree_sort_criteria as *mut mode_tree_sort_criteria;
-unsafe extern "C" fn window_client_add_item(mut data:
-                                                *mut window_client_modedata)
- -> *mut window_client_itemdata {
-    let mut item: *mut window_client_itemdata =
-        0 as *mut window_client_itemdata;
-    (*data).item_list =
-        xreallocarray((*data).item_list as *mut libc::c_void,
-                      (*data).item_size.wrapping_add(1 as libc::c_int as
-                                                         libc::c_uint) as
-                          size_t,
-                      ::std::mem::size_of::<*mut window_client_itemdata>() as
-                          libc::c_ulong) as *mut *mut window_client_itemdata;
+unsafe extern "C" fn window_client_add_item(
+    mut data: *mut window_client_modedata,
+) -> *mut window_client_itemdata {
+    let mut item: *mut window_client_itemdata = 0 as *mut window_client_itemdata;
+    (*data).item_list = xreallocarray(
+        (*data).item_list as *mut libc::c_void,
+        (*data)
+            .item_size
+            .wrapping_add(1 as libc::c_int as libc::c_uint) as size_t,
+        ::std::mem::size_of::<*mut window_client_itemdata>() as libc::c_ulong,
+    ) as *mut *mut window_client_itemdata;
     let fresh0 = (*data).item_size;
     (*data).item_size = (*data).item_size.wrapping_add(1);
     let ref mut fresh1 = *(*data).item_list.offset(fresh0 as isize);
-    *fresh1 =
-        xcalloc(1 as libc::c_int as size_t,
-                ::std::mem::size_of::<window_client_itemdata>() as
-                    libc::c_ulong) as *mut window_client_itemdata;
+    *fresh1 = xcalloc(
+        1 as libc::c_int as size_t,
+        ::std::mem::size_of::<window_client_itemdata>() as libc::c_ulong,
+    ) as *mut window_client_itemdata;
     item = *fresh1;
     return item;
 }
-unsafe extern "C" fn window_client_free_item(mut item:
-                                                 *mut window_client_itemdata) {
+unsafe extern "C" fn window_client_free_item(mut item: *mut window_client_itemdata) {
     server_client_unref((*item).c);
     free(item as *mut libc::c_void);
 }
-unsafe extern "C" fn window_client_cmp(mut a0: *const libc::c_void,
-                                       mut b0: *const libc::c_void)
- -> libc::c_int {
-    let mut a: *const *const window_client_itemdata =
-        a0 as *const *const window_client_itemdata;
-    let mut b: *const *const window_client_itemdata =
-        b0 as *const *const window_client_itemdata;
+unsafe extern "C" fn window_client_cmp(
+    mut a0: *const libc::c_void,
+    mut b0: *const libc::c_void,
+) -> libc::c_int {
+    let mut a: *const *const window_client_itemdata = a0 as *const *const window_client_itemdata;
+    let mut b: *const *const window_client_itemdata = b0 as *const *const window_client_itemdata;
     let mut itema: *const window_client_itemdata = *a;
     let mut itemb: *const window_client_itemdata = *b;
     let mut ca: *mut client = (*itema).c;
@@ -1368,66 +1396,62 @@ unsafe extern "C" fn window_client_cmp(mut a0: *const libc::c_void,
         1 => {
             result = (*ca).tty.sx.wrapping_sub((*cb).tty.sx) as libc::c_int;
             if result == 0 as libc::c_int {
-                result =
-                    (*ca).tty.sy.wrapping_sub((*cb).tty.sy) as libc::c_int
+                result = (*ca).tty.sy.wrapping_sub((*cb).tty.sy) as libc::c_int
             }
         }
         2 => {
             if if (*ca).creation_time.tv_sec == (*cb).creation_time.tv_sec {
-                   ((*ca).creation_time.tv_usec > (*cb).creation_time.tv_usec)
-                       as libc::c_int
-               } else {
-                   ((*ca).creation_time.tv_sec > (*cb).creation_time.tv_sec)
-                       as libc::c_int
-               } != 0 {
+                ((*ca).creation_time.tv_usec > (*cb).creation_time.tv_usec) as libc::c_int
+            } else {
+                ((*ca).creation_time.tv_sec > (*cb).creation_time.tv_sec) as libc::c_int
+            } != 0
+            {
                 result = -(1 as libc::c_int)
-            } else if if (*ca).creation_time.tv_sec ==
-                             (*cb).creation_time.tv_sec {
-                          ((*ca).creation_time.tv_usec <
-                               (*cb).creation_time.tv_usec) as libc::c_int
-                      } else {
-                          ((*ca).creation_time.tv_sec <
-                               (*cb).creation_time.tv_sec) as libc::c_int
-                      } != 0 {
+            } else if if (*ca).creation_time.tv_sec == (*cb).creation_time.tv_sec {
+                ((*ca).creation_time.tv_usec < (*cb).creation_time.tv_usec) as libc::c_int
+            } else {
+                ((*ca).creation_time.tv_sec < (*cb).creation_time.tv_sec) as libc::c_int
+            } != 0
+            {
                 result = 1 as libc::c_int
             }
         }
         3 => {
             if if (*ca).activity_time.tv_sec == (*cb).activity_time.tv_sec {
-                   ((*ca).activity_time.tv_usec > (*cb).activity_time.tv_usec)
-                       as libc::c_int
-               } else {
-                   ((*ca).activity_time.tv_sec > (*cb).activity_time.tv_sec)
-                       as libc::c_int
-               } != 0 {
+                ((*ca).activity_time.tv_usec > (*cb).activity_time.tv_usec) as libc::c_int
+            } else {
+                ((*ca).activity_time.tv_sec > (*cb).activity_time.tv_sec) as libc::c_int
+            } != 0
+            {
                 result = -(1 as libc::c_int)
-            } else if if (*ca).activity_time.tv_sec ==
-                             (*cb).activity_time.tv_sec {
-                          ((*ca).activity_time.tv_usec <
-                               (*cb).activity_time.tv_usec) as libc::c_int
-                      } else {
-                          ((*ca).activity_time.tv_sec <
-                               (*cb).activity_time.tv_sec) as libc::c_int
-                      } != 0 {
+            } else if if (*ca).activity_time.tv_sec == (*cb).activity_time.tv_sec {
+                ((*ca).activity_time.tv_usec < (*cb).activity_time.tv_usec) as libc::c_int
+            } else {
+                ((*ca).activity_time.tv_sec < (*cb).activity_time.tv_sec) as libc::c_int
+            } != 0
+            {
                 result = 1 as libc::c_int
             }
         }
-        _ => { }
+        _ => {}
     }
     /* Use WINDOW_CLIENT_BY_NAME as default order and tie breaker. */
-    if result == 0 as libc::c_int { result = strcmp((*ca).name, (*cb).name) }
-    if (*window_client_sort).reversed != 0 { result = -result }
+    if result == 0 as libc::c_int {
+        result = strcmp((*ca).name, (*cb).name)
+    }
+    if (*window_client_sort).reversed != 0 {
+        result = -result
+    }
     return result;
 }
-unsafe extern "C" fn window_client_build(mut modedata: *mut libc::c_void,
-                                         mut sort_crit:
-                                             *mut mode_tree_sort_criteria,
-                                         mut tag: *mut uint64_t,
-                                         mut filter: *const libc::c_char) {
-    let mut data: *mut window_client_modedata =
-        modedata as *mut window_client_modedata;
-    let mut item: *mut window_client_itemdata =
-        0 as *mut window_client_itemdata;
+unsafe extern "C" fn window_client_build(
+    mut modedata: *mut libc::c_void,
+    mut sort_crit: *mut mode_tree_sort_criteria,
+    mut tag: *mut uint64_t,
+    mut filter: *const libc::c_char,
+) {
+    let mut data: *mut window_client_modedata = modedata as *mut window_client_modedata;
+    let mut item: *mut window_client_itemdata = 0 as *mut window_client_itemdata;
     let mut i: u_int = 0;
     let mut c: *mut client = 0 as *mut client;
     let mut text: *mut libc::c_char = 0 as *mut libc::c_char;
@@ -1442,10 +1466,12 @@ unsafe extern "C" fn window_client_build(mut modedata: *mut libc::c_void,
     (*data).item_size = 0 as libc::c_int as u_int;
     c = clients.tqh_first;
     while !c.is_null() {
-        if !((*c).session.is_null() ||
-                 (*c).flags &
-                     (0x200 as libc::c_int | 0x40 as libc::c_int |
-                          0x4 as libc::c_int) as libc::c_ulong != 0) {
+        if !((*c).session.is_null()
+            || (*c).flags
+                & (0x200 as libc::c_int | 0x40 as libc::c_int | 0x4 as libc::c_int)
+                    as libc::c_ulong
+                != 0)
+        {
             item = window_client_add_item(data);
             (*item).c = c;
             (*c).references += 1
@@ -1453,23 +1479,32 @@ unsafe extern "C" fn window_client_build(mut modedata: *mut libc::c_void,
         c = (*c).entry.tqe_next
     }
     window_client_sort = sort_crit;
-    qsort((*data).item_list as *mut libc::c_void, (*data).item_size as size_t,
-          ::std::mem::size_of::<*mut window_client_itemdata>() as
-              libc::c_ulong,
-          Some(window_client_cmp as
-                   unsafe extern "C" fn(_: *const libc::c_void,
-                                        _: *const libc::c_void)
-                       -> libc::c_int));
+    qsort(
+        (*data).item_list as *mut libc::c_void,
+        (*data).item_size as size_t,
+        ::std::mem::size_of::<*mut window_client_itemdata>() as libc::c_ulong,
+        Some(
+            window_client_cmp
+                as unsafe extern "C" fn(
+                    _: *const libc::c_void,
+                    _: *const libc::c_void,
+                ) -> libc::c_int,
+        ),
+    );
     let mut current_block_21: u64;
     i = 0 as libc::c_int as u_int;
     while i < (*data).item_size {
         item = *(*data).item_list.offset(i as isize);
         c = (*item).c;
         if !filter.is_null() {
-            cp =
-                format_single(0 as *mut cmdq_item, filter, c,
-                              0 as *mut session, 0 as *mut winlink,
-                              0 as *mut window_pane);
+            cp = format_single(
+                0 as *mut cmdq_item,
+                filter,
+                c,
+                0 as *mut session,
+                0 as *mut winlink,
+                0 as *mut window_pane,
+            );
             if format_true(cp) == 0 {
                 free(cp as *mut libc::c_void);
                 current_block_21 = 15652330335145281839;
@@ -1477,29 +1512,43 @@ unsafe extern "C" fn window_client_build(mut modedata: *mut libc::c_void,
                 free(cp as *mut libc::c_void);
                 current_block_21 = 18386322304582297246;
             }
-        } else { current_block_21 = 18386322304582297246; }
+        } else {
+            current_block_21 = 18386322304582297246;
+        }
         match current_block_21 {
             18386322304582297246 => {
-                text =
-                    format_single(0 as *mut cmdq_item, (*data).format, c,
-                                  0 as *mut session, 0 as *mut winlink,
-                                  0 as *mut window_pane);
-                mode_tree_add((*data).data, 0 as *mut mode_tree_item,
-                              item as *mut libc::c_void, c as uint64_t,
-                              (*c).name, text, -(1 as libc::c_int));
+                text = format_single(
+                    0 as *mut cmdq_item,
+                    (*data).format,
+                    c,
+                    0 as *mut session,
+                    0 as *mut winlink,
+                    0 as *mut window_pane,
+                );
+                mode_tree_add(
+                    (*data).data,
+                    0 as *mut mode_tree_item,
+                    item as *mut libc::c_void,
+                    c as uint64_t,
+                    (*c).name,
+                    text,
+                    -(1 as libc::c_int),
+                );
                 free(text as *mut libc::c_void);
             }
-            _ => { }
+            _ => {}
         }
         i = i.wrapping_add(1)
-    };
+    }
 }
-unsafe extern "C" fn window_client_draw(mut modedata: *mut libc::c_void,
-                                        mut itemdata: *mut libc::c_void,
-                                        mut ctx: *mut screen_write_ctx,
-                                        mut sx: u_int, mut sy: u_int) {
-    let mut item: *mut window_client_itemdata =
-        itemdata as *mut window_client_itemdata;
+unsafe extern "C" fn window_client_draw(
+    mut modedata: *mut libc::c_void,
+    mut itemdata: *mut libc::c_void,
+    mut ctx: *mut screen_write_ctx,
+    mut sx: u_int,
+    mut sy: u_int,
+) {
+    let mut item: *mut window_client_itemdata = itemdata as *mut window_client_itemdata;
     let mut c: *mut client = (*item).c;
     let mut s: *mut screen = (*ctx).s;
     let mut wp: *mut window_pane = 0 as *mut window_pane;
@@ -1507,61 +1556,93 @@ unsafe extern "C" fn window_client_draw(mut modedata: *mut libc::c_void,
     let mut cy: u_int = (*s).cy;
     let mut lines: u_int = 0;
     let mut at: u_int = 0;
-    if (*c).session.is_null() ||
-           (*c).flags &
-               (0x200 as libc::c_int | 0x40 as libc::c_int |
-                    0x4 as libc::c_int) as libc::c_ulong != 0 {
-        return
+    if (*c).session.is_null()
+        || (*c).flags
+            & (0x200 as libc::c_int | 0x40 as libc::c_int | 0x4 as libc::c_int) as libc::c_ulong
+            != 0
+    {
+        return;
     }
     wp = (*(*(*(*c).session).curw).window).active;
     lines = status_line_size(c);
-    if lines >= sy { lines = 0 as libc::c_int as u_int }
+    if lines >= sy {
+        lines = 0 as libc::c_int as u_int
+    }
     if status_at_line(c) == 0 as libc::c_int {
         at = lines
-    } else { at = 0 as libc::c_int as u_int }
-    screen_write_cursormove(ctx, cx as libc::c_int,
-                            cy.wrapping_add(at) as libc::c_int,
-                            0 as libc::c_int);
-    screen_write_preview(ctx, &mut (*wp).base, sx,
-                         sy.wrapping_sub(2 as libc::c_int as
-                                             libc::c_uint).wrapping_sub(lines));
-    if at != 0 as libc::c_int as libc::c_uint {
-        screen_write_cursormove(ctx, cx as libc::c_int,
-                                cy.wrapping_add(2 as libc::c_int as
-                                                    libc::c_uint) as
-                                    libc::c_int, 0 as libc::c_int);
     } else {
-        screen_write_cursormove(ctx, cx as libc::c_int,
-                                cy.wrapping_add(sy).wrapping_sub(1 as
-                                                                     libc::c_int
-                                                                     as
-                                                                     libc::c_uint).wrapping_sub(lines)
-                                    as libc::c_int, 0 as libc::c_int);
+        at = 0 as libc::c_int as u_int
+    }
+    screen_write_cursormove(
+        ctx,
+        cx as libc::c_int,
+        cy.wrapping_add(at) as libc::c_int,
+        0 as libc::c_int,
+    );
+    screen_write_preview(
+        ctx,
+        &mut (*wp).base,
+        sx,
+        sy.wrapping_sub(2 as libc::c_int as libc::c_uint)
+            .wrapping_sub(lines),
+    );
+    if at != 0 as libc::c_int as libc::c_uint {
+        screen_write_cursormove(
+            ctx,
+            cx as libc::c_int,
+            cy.wrapping_add(2 as libc::c_int as libc::c_uint) as libc::c_int,
+            0 as libc::c_int,
+        );
+    } else {
+        screen_write_cursormove(
+            ctx,
+            cx as libc::c_int,
+            cy.wrapping_add(sy)
+                .wrapping_sub(1 as libc::c_int as libc::c_uint)
+                .wrapping_sub(lines) as libc::c_int,
+            0 as libc::c_int,
+        );
     }
     screen_write_hline(ctx, sx, 0 as libc::c_int, 0 as libc::c_int);
     if at != 0 as libc::c_int as libc::c_uint {
-        screen_write_cursormove(ctx, cx as libc::c_int, cy as libc::c_int,
-                                0 as libc::c_int);
+        screen_write_cursormove(ctx, cx as libc::c_int, cy as libc::c_int, 0 as libc::c_int);
     } else {
-        screen_write_cursormove(ctx, cx as libc::c_int,
-                                cy.wrapping_add(sy).wrapping_sub(lines) as
-                                    libc::c_int, 0 as libc::c_int);
+        screen_write_cursormove(
+            ctx,
+            cx as libc::c_int,
+            cy.wrapping_add(sy).wrapping_sub(lines) as libc::c_int,
+            0 as libc::c_int,
+        );
     }
-    screen_write_fast_copy(ctx, &mut (*c).status.screen,
-                           0 as libc::c_int as u_int,
-                           0 as libc::c_int as u_int, sx, lines);
+    screen_write_fast_copy(
+        ctx,
+        &mut (*c).status.screen,
+        0 as libc::c_int as u_int,
+        0 as libc::c_int as u_int,
+        sx,
+        lines,
+    );
 }
-unsafe extern "C" fn window_client_menu(mut modedata: *mut libc::c_void,
-                                        mut c: *mut client,
-                                        mut key: key_code) {
-    let mut data: *mut window_client_modedata =
-        modedata as *mut window_client_modedata;
+unsafe extern "C" fn window_client_menu(
+    mut modedata: *mut libc::c_void,
+    mut c: *mut client,
+    mut key: key_code,
+) {
+    let mut data: *mut window_client_modedata = modedata as *mut window_client_modedata;
     let mut wp: *mut window_pane = (*data).wp;
     let mut wme: *mut window_mode_entry = 0 as *mut window_mode_entry;
     wme = (*wp).modes.tqh_first;
-    if wme.is_null() || (*wme).data != modedata { return }
-    window_client_key(wme, c, 0 as *mut session, 0 as *mut winlink, key,
-                      0 as *mut mouse_event);
+    if wme.is_null() || (*wme).data != modedata {
+        return;
+    }
+    window_client_key(
+        wme,
+        c,
+        0 as *mut session,
+        0 as *mut winlink,
+        key,
+        0 as *mut mouse_event,
+    );
 }
 /* $OpenBSD$ */
 /*
@@ -1579,69 +1660,81 @@ unsafe extern "C" fn window_client_menu(mut modedata: *mut libc::c_void,
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-unsafe extern "C" fn window_client_init(mut wme: *mut window_mode_entry,
-                                        mut fs: *mut cmd_find_state,
-                                        mut args: *mut args) -> *mut screen {
+unsafe extern "C" fn window_client_init(
+    mut wme: *mut window_mode_entry,
+    mut fs: *mut cmd_find_state,
+    mut args: *mut args,
+) -> *mut screen {
     let mut wp: *mut window_pane = (*wme).wp;
-    let mut data: *mut window_client_modedata =
-        0 as *mut window_client_modedata;
+    let mut data: *mut window_client_modedata = 0 as *mut window_client_modedata;
     let mut s: *mut screen = 0 as *mut screen;
-    data =
-        xcalloc(1 as libc::c_int as size_t,
-                ::std::mem::size_of::<window_client_modedata>() as
-                    libc::c_ulong) as *mut window_client_modedata;
+    data = xcalloc(
+        1 as libc::c_int as size_t,
+        ::std::mem::size_of::<window_client_modedata>() as libc::c_ulong,
+    ) as *mut window_client_modedata;
     (*wme).data = data as *mut libc::c_void;
     (*data).wp = wp;
     if args.is_null() || args_has(args, 'F' as i32 as u_char) == 0 {
-        (*data).format =
-            xstrdup(b"#{t/p:client_activity}: session #{session_name}\x00" as
-                        *const u8 as *const libc::c_char)
-    } else { (*data).format = xstrdup(args_get(args, 'F' as i32 as u_char)) }
+        (*data).format = xstrdup(
+            b"#{t/p:client_activity}: session #{session_name}\x00" as *const u8
+                as *const libc::c_char,
+        )
+    } else {
+        (*data).format = xstrdup(args_get(args, 'F' as i32 as u_char))
+    }
     if args.is_null() || (*args).argc == 0 as libc::c_int {
         (*data).command =
-            xstrdup(b"detach-client -t \'%%\'\x00" as *const u8 as
-                        *const libc::c_char)
+            xstrdup(b"detach-client -t \'%%\'\x00" as *const u8 as *const libc::c_char)
     } else {
-        (*data).command =
-            xstrdup(*(*args).argv.offset(0 as libc::c_int as isize))
+        (*data).command = xstrdup(*(*args).argv.offset(0 as libc::c_int as isize))
     }
-    (*data).data =
-        mode_tree_start(wp, args,
-                        Some(window_client_build as
-                                 unsafe extern "C" fn(_: *mut libc::c_void,
-                                                      _:
-                                                          *mut mode_tree_sort_criteria,
-                                                      _: *mut uint64_t,
-                                                      _: *const libc::c_char)
-                                     -> ()),
-                        Some(window_client_draw as
-                                 unsafe extern "C" fn(_: *mut libc::c_void,
-                                                      _: *mut libc::c_void,
-                                                      _:
-                                                          *mut screen_write_ctx,
-                                                      _: u_int, _: u_int)
-                                     -> ()), None,
-                        Some(window_client_menu as
-                                 unsafe extern "C" fn(_: *mut libc::c_void,
-                                                      _: *mut client,
-                                                      _: key_code) -> ()),
-                        None, data as *mut libc::c_void,
-                        window_client_menu_items.as_ptr(),
-                        window_client_sort_list.as_mut_ptr(),
-                        (::std::mem::size_of::<[*const libc::c_char; 4]>() as
-                             libc::c_ulong).wrapping_div(::std::mem::size_of::<*const libc::c_char>()
-                                                             as libc::c_ulong)
-                            as u_int, &mut s);
+    (*data).data = mode_tree_start(
+        wp,
+        args,
+        Some(
+            window_client_build
+                as unsafe extern "C" fn(
+                    _: *mut libc::c_void,
+                    _: *mut mode_tree_sort_criteria,
+                    _: *mut uint64_t,
+                    _: *const libc::c_char,
+                ) -> (),
+        ),
+        Some(
+            window_client_draw
+                as unsafe extern "C" fn(
+                    _: *mut libc::c_void,
+                    _: *mut libc::c_void,
+                    _: *mut screen_write_ctx,
+                    _: u_int,
+                    _: u_int,
+                ) -> (),
+        ),
+        None,
+        Some(
+            window_client_menu
+                as unsafe extern "C" fn(_: *mut libc::c_void, _: *mut client, _: key_code) -> (),
+        ),
+        None,
+        data as *mut libc::c_void,
+        window_client_menu_items.as_ptr(),
+        window_client_sort_list.as_mut_ptr(),
+        (::std::mem::size_of::<[*const libc::c_char; 4]>() as libc::c_ulong)
+            .wrapping_div(::std::mem::size_of::<*const libc::c_char>() as libc::c_ulong)
+            as u_int,
+        &mut s,
+    );
     mode_tree_zoom((*data).data, args);
     mode_tree_build((*data).data);
     mode_tree_draw((*data).data);
     return s;
 }
 unsafe extern "C" fn window_client_free(mut wme: *mut window_mode_entry) {
-    let mut data: *mut window_client_modedata =
-        (*wme).data as *mut window_client_modedata;
+    let mut data: *mut window_client_modedata = (*wme).data as *mut window_client_modedata;
     let mut i: u_int = 0;
-    if data.is_null() { return }
+    if data.is_null() {
+        return;
+    }
     mode_tree_free((*data).data);
     i = 0 as libc::c_int as u_int;
     while i < (*data).item_size {
@@ -1653,82 +1746,87 @@ unsafe extern "C" fn window_client_free(mut wme: *mut window_mode_entry) {
     free((*data).command as *mut libc::c_void);
     free(data as *mut libc::c_void);
 }
-unsafe extern "C" fn window_client_resize(mut wme: *mut window_mode_entry,
-                                          mut sx: u_int, mut sy: u_int) {
-    let mut data: *mut window_client_modedata =
-        (*wme).data as *mut window_client_modedata;
+unsafe extern "C" fn window_client_resize(
+    mut wme: *mut window_mode_entry,
+    mut sx: u_int,
+    mut sy: u_int,
+) {
+    let mut data: *mut window_client_modedata = (*wme).data as *mut window_client_modedata;
     mode_tree_resize((*data).data, sx, sy);
 }
-unsafe extern "C" fn window_client_do_detach(mut modedata: *mut libc::c_void,
-                                             mut itemdata: *mut libc::c_void,
-                                             mut c: *mut client,
-                                             mut key: key_code) {
-    let mut data: *mut window_client_modedata =
-        modedata as *mut window_client_modedata;
-    let mut item: *mut window_client_itemdata =
-        itemdata as *mut window_client_itemdata;
-    if item ==
-           mode_tree_get_current((*data).data) as *mut window_client_itemdata
-       {
+unsafe extern "C" fn window_client_do_detach(
+    mut modedata: *mut libc::c_void,
+    mut itemdata: *mut libc::c_void,
+    mut c: *mut client,
+    mut key: key_code,
+) {
+    let mut data: *mut window_client_modedata = modedata as *mut window_client_modedata;
+    let mut item: *mut window_client_itemdata = itemdata as *mut window_client_itemdata;
+    if item == mode_tree_get_current((*data).data) as *mut window_client_itemdata {
         mode_tree_down((*data).data, 0 as libc::c_int);
     }
-    if key == 'd' as i32 as libc::c_ulonglong ||
-           key == 'D' as i32 as libc::c_ulonglong {
+    if key == 'd' as i32 as libc::c_ulonglong || key == 'D' as i32 as libc::c_ulonglong {
         server_client_detach((*item).c, MSG_DETACH);
-    } else if key == 'x' as i32 as libc::c_ulonglong ||
-                  key == 'X' as i32 as libc::c_ulonglong {
+    } else if key == 'x' as i32 as libc::c_ulonglong || key == 'X' as i32 as libc::c_ulonglong {
         server_client_detach((*item).c, MSG_DETACHKILL);
-    } else if key == 'z' as i32 as libc::c_ulonglong ||
-                  key == 'Z' as i32 as libc::c_ulonglong {
+    } else if key == 'z' as i32 as libc::c_ulonglong || key == 'Z' as i32 as libc::c_ulonglong {
         server_client_suspend((*item).c);
     };
 }
-unsafe extern "C" fn window_client_key(mut wme: *mut window_mode_entry,
-                                       mut c: *mut client,
-                                       mut s: *mut session,
-                                       mut wl: *mut winlink,
-                                       mut key: key_code,
-                                       mut m: *mut mouse_event) {
+unsafe extern "C" fn window_client_key(
+    mut wme: *mut window_mode_entry,
+    mut c: *mut client,
+    mut s: *mut session,
+    mut wl: *mut winlink,
+    mut key: key_code,
+    mut m: *mut mouse_event,
+) {
     let mut wp: *mut window_pane = (*wme).wp;
-    let mut data: *mut window_client_modedata =
-        (*wme).data as *mut window_client_modedata;
+    let mut data: *mut window_client_modedata = (*wme).data as *mut window_client_modedata;
     let mut mtd: *mut mode_tree_data = (*data).data;
-    let mut item: *mut window_client_itemdata =
-        0 as *mut window_client_itemdata;
+    let mut item: *mut window_client_itemdata = 0 as *mut window_client_itemdata;
     let mut finished: libc::c_int = 0;
-    finished =
-        mode_tree_key(mtd, c, &mut key, m, 0 as *mut u_int, 0 as *mut u_int);
+    finished = mode_tree_key(mtd, c, &mut key, m, 0 as *mut u_int, 0 as *mut u_int);
     match key {
         100 | 120 | 122 => {
             item = mode_tree_get_current(mtd) as *mut window_client_itemdata;
-            window_client_do_detach(data as *mut libc::c_void,
-                                    item as *mut libc::c_void, c, key);
+            window_client_do_detach(data as *mut libc::c_void, item as *mut libc::c_void, c, key);
             mode_tree_build(mtd);
         }
         68 | 88 | 90 => {
-            mode_tree_each_tagged(mtd,
-                                  Some(window_client_do_detach as
-                                           unsafe extern "C" fn(_:
-                                                                    *mut libc::c_void,
-                                                                _:
-                                                                    *mut libc::c_void,
-                                                                _:
-                                                                    *mut client,
-                                                                _: key_code)
-                                               -> ()), c, key,
-                                  0 as libc::c_int);
+            mode_tree_each_tagged(
+                mtd,
+                Some(
+                    window_client_do_detach
+                        as unsafe extern "C" fn(
+                            _: *mut libc::c_void,
+                            _: *mut libc::c_void,
+                            _: *mut client,
+                            _: key_code,
+                        ) -> (),
+                ),
+                c,
+                key,
+                0 as libc::c_int,
+            );
             mode_tree_build(mtd);
         }
         13 => {
             item = mode_tree_get_current(mtd) as *mut window_client_itemdata;
-            mode_tree_run_command(c, 0 as *mut cmd_find_state,
-                                  (*data).command, (*(*item).c).ttyname);
+            mode_tree_run_command(
+                c,
+                0 as *mut cmd_find_state,
+                (*data).command,
+                (*(*item).c).ttyname,
+            );
             finished = 1 as libc::c_int
         }
-        _ => { }
+        _ => {}
     }
-    if finished != 0 ||
-           server_client_how_many() == 0 as libc::c_int as libc::c_uint {
+    if finished != 0 || server_client_how_many() == 0 as libc::c_int as libc::c_uint {
         window_pane_reset_mode(wp);
-    } else { mode_tree_draw(mtd); (*wp).flags |= 0x1 as libc::c_int };
+    } else {
+        mode_tree_draw(mtd);
+        (*wp).flags |= 0x1 as libc::c_int
+    };
 }

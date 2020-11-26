@@ -20,14 +20,16 @@ extern "C" {
     pub type cmdq_item;
     pub type tmuxproc;
     #[no_mangle]
-    fn ioctl(__fd: libc::c_int, __request: libc::c_ulong, _: ...)
-     -> libc::c_int;
+    fn ioctl(__fd: libc::c_int, __request: libc::c_ulong, _: ...) -> libc::c_int;
     #[no_mangle]
     fn shutdown(__fd: libc::c_int, __how: libc::c_int) -> libc::c_int;
     #[no_mangle]
-    fn socketpair(__domain: libc::c_int, __type: libc::c_int,
-                  __protocol: libc::c_int, __fds: *mut libc::c_int)
-     -> libc::c_int;
+    fn socketpair(
+        __domain: libc::c_int,
+        __type: libc::c_int,
+        __protocol: libc::c_int,
+        __fds: *mut libc::c_int,
+    ) -> libc::c_int;
     #[no_mangle]
     fn kill(__pid: __pid_t, __sig: libc::c_int) -> libc::c_int;
     #[no_mangle]
@@ -35,16 +37,17 @@ extern "C" {
     #[no_mangle]
     fn sigfillset(__set: *mut sigset_t) -> libc::c_int;
     #[no_mangle]
-    fn sigprocmask(__how: libc::c_int, __set: *const sigset_t,
-                   __oset: *mut sigset_t) -> libc::c_int;
+    fn sigprocmask(
+        __how: libc::c_int,
+        __set: *const sigset_t,
+        __oset: *mut sigset_t,
+    ) -> libc::c_int;
     #[no_mangle]
-    fn open(__file: *const libc::c_char, __oflag: libc::c_int, _: ...)
-     -> libc::c_int;
+    fn open(__file: *const libc::c_char, __oflag: libc::c_int, _: ...) -> libc::c_int;
     #[no_mangle]
     fn free(__ptr: *mut libc::c_void);
     #[no_mangle]
-    fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong)
-     -> *mut libc::c_void;
+    fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
     #[no_mangle]
     fn close(__fd: libc::c_int) -> libc::c_int;
     #[no_mangle]
@@ -52,8 +55,7 @@ extern "C" {
     #[no_mangle]
     fn dup2(__fd: libc::c_int, __fd2: libc::c_int) -> libc::c_int;
     #[no_mangle]
-    fn execl(__path: *const libc::c_char, __arg: *const libc::c_char, _: ...)
-     -> libc::c_int;
+    fn execl(__path: *const libc::c_char, __arg: *const libc::c_char, _: ...) -> libc::c_int;
     #[no_mangle]
     fn fork() -> __pid_t;
     #[no_mangle]
@@ -63,21 +65,27 @@ extern "C" {
     #[no_mangle]
     fn bufferevent_get_output(bufev: *mut bufferevent) -> *mut evbuffer;
     #[no_mangle]
-    fn bufferevent_enable(bufev: *mut bufferevent, event: libc::c_short)
-     -> libc::c_int;
+    fn bufferevent_enable(bufev: *mut bufferevent, event: libc::c_short) -> libc::c_int;
     #[no_mangle]
-    fn bufferevent_disable(bufev: *mut bufferevent, event: libc::c_short)
-     -> libc::c_int;
+    fn bufferevent_disable(bufev: *mut bufferevent, event: libc::c_short) -> libc::c_int;
     #[no_mangle]
-    fn bufferevent_new(fd: libc::c_int, readcb: bufferevent_data_cb,
-                       writecb: bufferevent_data_cb,
-                       errorcb: bufferevent_event_cb,
-                       cbarg: *mut libc::c_void) -> *mut bufferevent;
+    fn bufferevent_new(
+        fd: libc::c_int,
+        readcb: bufferevent_data_cb,
+        writecb: bufferevent_data_cb,
+        errorcb: bufferevent_event_cb,
+        cbarg: *mut libc::c_void,
+    ) -> *mut bufferevent;
     #[no_mangle]
     fn closefrom(_: libc::c_int);
     #[no_mangle]
-    fn fdforkpty(_: libc::c_int, _: *mut libc::c_int, _: *mut libc::c_char,
-                 _: *mut termios, _: *mut winsize) -> pid_t;
+    fn fdforkpty(
+        _: libc::c_int,
+        _: *mut libc::c_int,
+        _: *mut libc::c_char,
+        _: *mut termios,
+        _: *mut winsize,
+    ) -> pid_t;
     #[no_mangle]
     fn xmalloc(_: size_t) -> *mut libc::c_void;
     #[no_mangle]
@@ -226,18 +234,13 @@ pub struct event_callback {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub union C2RustUnnamed_7 {
-    pub evcb_callback: Option<unsafe extern "C" fn(_: libc::c_int,
-                                                   _: libc::c_short,
-                                                   _: *mut libc::c_void)
-                                  -> ()>,
-    pub evcb_selfcb: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                 _: *mut libc::c_void) -> ()>,
-    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
-    pub evcb_cbfinalize: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
+    pub evcb_callback:
+        Option<unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> ()>,
+    pub evcb_selfcb:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
+    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event, _: *mut libc::c_void) -> ()>,
+    pub evcb_cbfinalize:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -264,14 +267,10 @@ pub struct bufferevent {
     pub timeout_write: timeval,
     pub enabled: libc::c_short,
 }
-pub type bufferevent_event_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short,
-                                _: *mut libc::c_void) -> ()>;
-pub type bufferevent_data_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void)
-               -> ()>;
+pub type bufferevent_event_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short, _: *mut libc::c_void) -> ()>;
+pub type bufferevent_data_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct event_watermark {
@@ -410,17 +409,19 @@ pub struct C2RustUnnamed_10 {
     pub rbe_parent: *mut client_file,
     pub rbe_color: libc::c_int,
 }
-pub type client_file_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *const libc::c_char,
-                                _: libc::c_int, _: libc::c_int,
-                                _: *mut evbuffer, _: *mut libc::c_void)
-               -> ()>;
+pub type client_file_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: *mut evbuffer,
+        _: *mut libc::c_void,
+    ) -> (),
+>;
 pub type overlay_free_cb = Option<unsafe extern "C" fn(_: *mut client) -> ()>;
-pub type overlay_key_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event)
-               -> libc::c_int>;
+pub type overlay_key_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_event {
@@ -450,10 +451,8 @@ pub struct mouse_event {
     pub sgr_b: u_int,
 }
 pub type key_code = libc::c_ulonglong;
-pub type overlay_draw_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx)
-               -> ()>;
+pub type overlay_draw_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen_redraw_ctx {
@@ -467,10 +466,8 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int)
-               -> *mut screen>;
+pub type overlay_mode_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen {
@@ -564,10 +561,8 @@ pub struct C2RustUnnamed_12 {
     pub bg: u_char,
     pub data: u_char,
 }
-pub type overlay_check_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int)
-               -> libc::c_int>;
+pub type overlay_check_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct session {
@@ -814,24 +809,37 @@ pub struct C2RustUnnamed_25 {
 pub struct window_mode {
     pub name: *const libc::c_char,
     pub default_format: *const libc::c_char,
-    pub init: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                          _: *mut cmd_find_state,
-                                          _: *mut args) -> *mut screen>,
+    pub init: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut cmd_find_state,
+            _: *mut args,
+        ) -> *mut screen,
+    >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
-    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                            _: u_int, _: u_int) -> ()>,
-    pub key: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                         _: *mut client, _: *mut session,
-                                         _: *mut winlink, _: key_code,
-                                         _: *mut mouse_event) -> ()>,
-    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry)
-                              -> *const libc::c_char>,
-    pub command: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut client, _: *mut session,
-                                             _: *mut winlink, _: *mut args,
-                                             _: *mut mouse_event) -> ()>,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut format_tree) -> ()>,
+    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
+    pub key: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: key_code,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> *const libc::c_char>,
+    pub command: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: *mut args,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -868,14 +876,15 @@ pub struct winlink_stack {
 pub type C2RustUnnamed_26 = libc::c_uint;
 pub const PROMPT_COMMAND: C2RustUnnamed_26 = 1;
 pub const PROMPT_ENTRY: C2RustUnnamed_26 = 0;
-pub type prompt_free_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
-pub type prompt_input_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut libc::c_void,
-                                _: *const libc::c_char, _: libc::c_int)
-               -> libc::c_int>;
+pub type prompt_free_cb = Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
+pub type prompt_input_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut libc::c_void,
+        _: *const libc::c_char,
+        _: libc::c_int,
+    ) -> libc::c_int,
+>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_table {
@@ -1046,12 +1055,8 @@ pub struct tty {
     pub mouse_last_y: u_int,
     pub mouse_last_b: u_int,
     pub mouse_drag_flag: libc::c_int,
-    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client,
-                                                       _: *mut mouse_event)
-                                      -> ()>,
-    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client,
-                                                        _: *mut mouse_event)
-                                       -> ()>,
+    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
+    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
     pub key_timer: event,
     pub key_tree: *mut tty_key,
 }
@@ -1124,9 +1129,7 @@ pub struct C2RustUnnamed_33 {
     pub le_next: *mut job,
     pub le_prev: *mut *mut job,
 }
-pub type job_free_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
+pub type job_free_cb = Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
 pub type job_complete_cb = Option<unsafe extern "C" fn(_: *mut job) -> ()>;
 pub type job_update_cb = Option<unsafe extern "C" fn(_: *mut job) -> ()>;
 pub type C2RustUnnamed_34 = libc::c_uint;
@@ -1139,19 +1142,26 @@ pub const JOB_RUNNING: C2RustUnnamed_34 = 0;
 pub struct joblist {
     pub lh_first: *mut job,
 }
-static mut all_jobs: joblist =
-    { let mut init = joblist{lh_first: 0 as *const job as *mut job,}; init };
+static mut all_jobs: joblist = {
+    let mut init = joblist {
+        lh_first: 0 as *const job as *mut job,
+    };
+    init
+};
 /* Start a job running, if it isn't already. */
 #[no_mangle]
-pub unsafe extern "C" fn job_run(mut cmd: *const libc::c_char,
-                                 mut s: *mut session,
-                                 mut cwd: *const libc::c_char,
-                                 mut updatecb: job_update_cb,
-                                 mut completecb: job_complete_cb,
-                                 mut freecb: job_free_cb,
-                                 mut data: *mut libc::c_void,
-                                 mut flags: libc::c_int, mut sx: libc::c_int,
-                                 mut sy: libc::c_int) -> *mut job {
+pub unsafe extern "C" fn job_run(
+    mut cmd: *const libc::c_char,
+    mut s: *mut session,
+    mut cwd: *const libc::c_char,
+    mut updatecb: job_update_cb,
+    mut completecb: job_complete_cb,
+    mut freecb: job_free_cb,
+    mut data: *mut libc::c_void,
+    mut flags: libc::c_int,
+    mut sx: libc::c_int,
+    mut sy: libc::c_int,
+) -> *mut job {
     let mut current_block: u64;
     let mut job: *mut job = 0 as *mut job;
     let mut env: *mut environ = 0 as *mut environ;
@@ -1160,41 +1170,61 @@ pub unsafe extern "C" fn job_run(mut cmd: *const libc::c_char,
     let mut out: [libc::c_int; 2] = [0; 2];
     let mut master: libc::c_int = 0;
     let mut home: *const libc::c_char = 0 as *const libc::c_char;
-    let mut set: sigset_t = sigset_t{__val: [0; 16],};
-    let mut oldset: sigset_t = sigset_t{__val: [0; 16],};
-    let mut ws: winsize =
-        winsize{ws_row: 0, ws_col: 0, ws_xpixel: 0, ws_ypixel: 0,};
+    let mut set: sigset_t = sigset_t { __val: [0; 16] };
+    let mut oldset: sigset_t = sigset_t { __val: [0; 16] };
+    let mut ws: winsize = winsize {
+        ws_row: 0,
+        ws_col: 0,
+        ws_xpixel: 0,
+        ws_ypixel: 0,
+    };
     /*
-	 * Do not set TERM during .tmux.conf, it is nice to be able to use
-	 * if-shell to decide on default-terminal based on outside TERM.
-	 */
+     * Do not set TERM during .tmux.conf, it is nice to be able to use
+     * if-shell to decide on default-terminal based on outside TERM.
+     */
     env = environ_for_session(s, (cfg_finished == 0) as libc::c_int);
     sigfillset(&mut set);
     sigprocmask(0 as libc::c_int, &mut set, &mut oldset);
     if flags & 0x4 as libc::c_int != 0 {
-        memset(&mut ws as *mut winsize as *mut libc::c_void, 0 as libc::c_int,
-               ::std::mem::size_of::<winsize>() as libc::c_ulong);
+        memset(
+            &mut ws as *mut winsize as *mut libc::c_void,
+            0 as libc::c_int,
+            ::std::mem::size_of::<winsize>() as libc::c_ulong,
+        );
         ws.ws_col = sx as libc::c_ushort;
         ws.ws_row = sy as libc::c_ushort;
-        pid =
-            fdforkpty(ptm_fd, &mut master, 0 as *mut libc::c_char,
-                      0 as *mut termios, &mut ws);
+        pid = fdforkpty(
+            ptm_fd,
+            &mut master,
+            0 as *mut libc::c_char,
+            0 as *mut termios,
+            &mut ws,
+        );
         current_block = 12599329904712511516;
-    } else if socketpair(1 as libc::c_int, SOCK_STREAM as libc::c_int,
-                         0 as libc::c_int, out.as_mut_ptr()) !=
-                  0 as libc::c_int {
+    } else if socketpair(
+        1 as libc::c_int,
+        SOCK_STREAM as libc::c_int,
+        0 as libc::c_int,
+        out.as_mut_ptr(),
+    ) != 0 as libc::c_int
+    {
         current_block = 972739748014652499;
-    } else { pid = fork(); current_block = 12599329904712511516; }
+    } else {
+        pid = fork();
+        current_block = 12599329904712511516;
+    }
     match current_block {
         12599329904712511516 => {
-            log_debug(b"%s: cmd=%s, cwd=%s\x00" as *const u8 as
-                          *const libc::c_char,
-                      (*::std::mem::transmute::<&[u8; 8],
-                                                &[libc::c_char; 8]>(b"job_run\x00")).as_ptr(),
-                      cmd,
-                      if cwd.is_null() {
-                          b"\x00" as *const u8 as *const libc::c_char
-                      } else { cwd });
+            log_debug(
+                b"%s: cmd=%s, cwd=%s\x00" as *const u8 as *const libc::c_char,
+                (*::std::mem::transmute::<&[u8; 8], &[libc::c_char; 8]>(b"job_run\x00")).as_ptr(),
+                cmd,
+                if cwd.is_null() {
+                    b"\x00" as *const u8 as *const libc::c_char
+                } else {
+                    cwd
+                },
+            );
             match pid {
                 -1 => {
                     if !flags & 0x4 as libc::c_int != 0 {
@@ -1204,65 +1234,61 @@ pub unsafe extern "C" fn job_run(mut cmd: *const libc::c_char,
                 }
                 0 => {
                     proc_clear_signals(server_proc, 1 as libc::c_int);
-                    sigprocmask(2 as libc::c_int, &mut oldset,
-                                0 as *mut sigset_t);
+                    sigprocmask(2 as libc::c_int, &mut oldset, 0 as *mut sigset_t);
                     if cwd.is_null() || chdir(cwd) != 0 as libc::c_int {
                         home = find_home();
                         if home.is_null() || chdir(home) != 0 as libc::c_int {
-                            chdir(b"/\x00" as *const u8 as
-                                      *const libc::c_char);
+                            chdir(b"/\x00" as *const u8 as *const libc::c_char);
                         }
                     }
                     environ_push(env);
                     environ_free(env);
                     if !flags & 0x4 as libc::c_int != 0 {
-                        if dup2(out[1 as libc::c_int as usize],
-                                0 as libc::c_int) == -(1 as libc::c_int) {
-                            fatal(b"dup2 failed\x00" as *const u8 as
-                                      *const libc::c_char);
+                        if dup2(out[1 as libc::c_int as usize], 0 as libc::c_int)
+                            == -(1 as libc::c_int)
+                        {
+                            fatal(b"dup2 failed\x00" as *const u8 as *const libc::c_char);
                         }
-                        if dup2(out[1 as libc::c_int as usize],
-                                1 as libc::c_int) == -(1 as libc::c_int) {
-                            fatal(b"dup2 failed\x00" as *const u8 as
-                                      *const libc::c_char);
+                        if dup2(out[1 as libc::c_int as usize], 1 as libc::c_int)
+                            == -(1 as libc::c_int)
+                        {
+                            fatal(b"dup2 failed\x00" as *const u8 as *const libc::c_char);
                         }
                         if out[1 as libc::c_int as usize] != 0 as libc::c_int
-                               &&
-                               out[1 as libc::c_int as usize] !=
-                                   1 as libc::c_int {
+                            && out[1 as libc::c_int as usize] != 1 as libc::c_int
+                        {
                             close(out[1 as libc::c_int as usize]);
                         }
                         close(out[0 as libc::c_int as usize]);
-                        nullfd =
-                            open(b"/dev/null\x00" as *const u8 as
-                                     *const libc::c_char, 0o2 as libc::c_int,
-                                 0 as libc::c_int);
+                        nullfd = open(
+                            b"/dev/null\x00" as *const u8 as *const libc::c_char,
+                            0o2 as libc::c_int,
+                            0 as libc::c_int,
+                        );
                         if nullfd == -(1 as libc::c_int) {
-                            fatal(b"open failed\x00" as *const u8 as
-                                      *const libc::c_char);
+                            fatal(b"open failed\x00" as *const u8 as *const libc::c_char);
                         }
-                        if dup2(nullfd, 2 as libc::c_int) ==
-                               -(1 as libc::c_int) {
-                            fatal(b"dup2 failed\x00" as *const u8 as
-                                      *const libc::c_char);
+                        if dup2(nullfd, 2 as libc::c_int) == -(1 as libc::c_int) {
+                            fatal(b"dup2 failed\x00" as *const u8 as *const libc::c_char);
                         }
-                        if nullfd != 2 as libc::c_int { close(nullfd); }
+                        if nullfd != 2 as libc::c_int {
+                            close(nullfd);
+                        }
                     }
                     closefrom(2 as libc::c_int + 1 as libc::c_int);
-                    execl(b"/bin/sh\x00" as *const u8 as *const libc::c_char,
-                          b"sh\x00" as *const u8 as *const libc::c_char,
-                          b"-c\x00" as *const u8 as *const libc::c_char, cmd,
-                          0 as *mut libc::c_void as *mut libc::c_char);
-                    fatal(b"execl failed\x00" as *const u8 as
-                              *const libc::c_char);
+                    execl(
+                        b"/bin/sh\x00" as *const u8 as *const libc::c_char,
+                        b"sh\x00" as *const u8 as *const libc::c_char,
+                        b"-c\x00" as *const u8 as *const libc::c_char,
+                        cmd,
+                        0 as *mut libc::c_void as *mut libc::c_char,
+                    );
+                    fatal(b"execl failed\x00" as *const u8 as *const libc::c_char);
                 }
                 _ => {
-                    sigprocmask(2 as libc::c_int, &mut oldset,
-                                0 as *mut sigset_t);
+                    sigprocmask(2 as libc::c_int, &mut oldset, 0 as *mut sigset_t);
                     environ_free(env);
-                    job =
-                        xmalloc(::std::mem::size_of::<job>() as libc::c_ulong)
-                            as *mut job;
+                    job = xmalloc(::std::mem::size_of::<job>() as libc::c_ulong) as *mut job;
                     (*job).state = JOB_RUNNING;
                     (*job).flags = flags;
                     (*job).cmd = xstrdup(cmd);
@@ -1270,8 +1296,7 @@ pub unsafe extern "C" fn job_run(mut cmd: *const libc::c_char,
                     (*job).status = 0 as libc::c_int;
                     (*job).entry.le_next = all_jobs.lh_first;
                     if !(*job).entry.le_next.is_null() {
-                        (*all_jobs.lh_first).entry.le_prev =
-                            &mut (*job).entry.le_next
+                        (*all_jobs.lh_first).entry.le_prev = &mut (*job).entry.le_next
                     }
                     all_jobs.lh_first = job;
                     (*job).entry.le_prev = &mut all_jobs.lh_first;
@@ -1282,47 +1307,54 @@ pub unsafe extern "C" fn job_run(mut cmd: *const libc::c_char,
                     if !flags & 0x4 as libc::c_int != 0 {
                         close(out[1 as libc::c_int as usize]);
                         (*job).fd = out[0 as libc::c_int as usize]
-                    } else { (*job).fd = master }
-                    setblocking((*job).fd, 0 as libc::c_int);
-                    (*job).event =
-                        bufferevent_new((*job).fd,
-                                        Some(job_read_callback as
-                                                 unsafe extern "C" fn(_:
-                                                                          *mut bufferevent,
-                                                                      _:
-                                                                          *mut libc::c_void)
-                                                     -> ()),
-                                        Some(job_write_callback as
-                                                 unsafe extern "C" fn(_:
-                                                                          *mut bufferevent,
-                                                                      _:
-                                                                          *mut libc::c_void)
-                                                     -> ()),
-                                        Some(job_error_callback as
-                                                 unsafe extern "C" fn(_:
-                                                                          *mut bufferevent,
-                                                                      _:
-                                                                          libc::c_short,
-                                                                      _:
-                                                                          *mut libc::c_void)
-                                                     -> ()),
-                                        job as *mut libc::c_void);
-                    if (*job).event.is_null() {
-                        fatalx(b"out of memory\x00" as *const u8 as
-                                   *const libc::c_char);
+                    } else {
+                        (*job).fd = master
                     }
-                    bufferevent_enable((*job).event,
-                                       (0x2 as libc::c_int |
-                                            0x4 as libc::c_int) as
-                                           libc::c_short);
-                    log_debug(b"run job %p: %s, pid %ld\x00" as *const u8 as
-                                  *const libc::c_char, job, (*job).cmd,
-                              (*job).pid as libc::c_long);
-                    return job
+                    setblocking((*job).fd, 0 as libc::c_int);
+                    (*job).event = bufferevent_new(
+                        (*job).fd,
+                        Some(
+                            job_read_callback
+                                as unsafe extern "C" fn(
+                                    _: *mut bufferevent,
+                                    _: *mut libc::c_void,
+                                ) -> (),
+                        ),
+                        Some(
+                            job_write_callback
+                                as unsafe extern "C" fn(
+                                    _: *mut bufferevent,
+                                    _: *mut libc::c_void,
+                                ) -> (),
+                        ),
+                        Some(
+                            job_error_callback
+                                as unsafe extern "C" fn(
+                                    _: *mut bufferevent,
+                                    _: libc::c_short,
+                                    _: *mut libc::c_void,
+                                ) -> (),
+                        ),
+                        job as *mut libc::c_void,
+                    );
+                    if (*job).event.is_null() {
+                        fatalx(b"out of memory\x00" as *const u8 as *const libc::c_char);
+                    }
+                    bufferevent_enable(
+                        (*job).event,
+                        (0x2 as libc::c_int | 0x4 as libc::c_int) as libc::c_short,
+                    );
+                    log_debug(
+                        b"run job %p: %s, pid %ld\x00" as *const u8 as *const libc::c_char,
+                        job,
+                        (*job).cmd,
+                        (*job).pid as libc::c_long,
+                    );
+                    return job;
                 }
             }
         }
-        _ => { }
+        _ => {}
     }
     sigprocmask(2 as libc::c_int, &mut oldset, 0 as *mut sigset_t);
     environ_free(env);
@@ -1331,8 +1363,11 @@ pub unsafe extern "C" fn job_run(mut cmd: *const libc::c_char,
 /* Kill and free an individual job. */
 #[no_mangle]
 pub unsafe extern "C" fn job_free(mut job: *mut job) {
-    log_debug(b"free job %p: %s\x00" as *const u8 as *const libc::c_char, job,
-              (*job).cmd);
+    log_debug(
+        b"free job %p: %s\x00" as *const u8 as *const libc::c_char,
+        job,
+        (*job).cmd,
+    );
     if !(*job).entry.le_next.is_null() {
         (*(*job).entry.le_next).entry.le_prev = (*job).entry.le_prev
     }
@@ -1344,28 +1379,45 @@ pub unsafe extern "C" fn job_free(mut job: *mut job) {
     if (*job).pid != -(1 as libc::c_int) {
         kill((*job).pid, 15 as libc::c_int);
     }
-    if !(*job).event.is_null() { bufferevent_free((*job).event); }
-    if (*job).fd != -(1 as libc::c_int) { close((*job).fd); }
+    if !(*job).event.is_null() {
+        bufferevent_free((*job).event);
+    }
+    if (*job).fd != -(1 as libc::c_int) {
+        close((*job).fd);
+    }
     free(job as *mut libc::c_void);
 }
 /* Resize job. */
 #[no_mangle]
-pub unsafe extern "C" fn job_resize(mut job: *mut job, mut sx: u_int,
-                                    mut sy: u_int) {
-    let mut ws: winsize =
-        winsize{ws_row: 0, ws_col: 0, ws_xpixel: 0, ws_ypixel: 0,};
-    if (*job).fd == -(1 as libc::c_int) ||
-           !(*job).flags & 0x4 as libc::c_int != 0 {
-        return
+pub unsafe extern "C" fn job_resize(mut job: *mut job, mut sx: u_int, mut sy: u_int) {
+    let mut ws: winsize = winsize {
+        ws_row: 0,
+        ws_col: 0,
+        ws_xpixel: 0,
+        ws_ypixel: 0,
+    };
+    if (*job).fd == -(1 as libc::c_int) || !(*job).flags & 0x4 as libc::c_int != 0 {
+        return;
     }
-    log_debug(b"resize job %p: %ux%u\x00" as *const u8 as *const libc::c_char,
-              job, sx, sy);
-    memset(&mut ws as *mut winsize as *mut libc::c_void, 0 as libc::c_int,
-           ::std::mem::size_of::<winsize>() as libc::c_ulong);
+    log_debug(
+        b"resize job %p: %ux%u\x00" as *const u8 as *const libc::c_char,
+        job,
+        sx,
+        sy,
+    );
+    memset(
+        &mut ws as *mut winsize as *mut libc::c_void,
+        0 as libc::c_int,
+        ::std::mem::size_of::<winsize>() as libc::c_ulong,
+    );
     ws.ws_col = sx as libc::c_ushort;
     ws.ws_row = sy as libc::c_ushort;
-    if ioctl((*job).fd, 0x5414 as libc::c_int as libc::c_ulong,
-             &mut ws as *mut winsize) == -(1 as libc::c_int) {
+    if ioctl(
+        (*job).fd,
+        0x5414 as libc::c_int as libc::c_ulong,
+        &mut ws as *mut winsize,
+    ) == -(1 as libc::c_int)
+    {
         fatal(b"ioctl failed\x00" as *const u8 as *const libc::c_char);
     };
 }
@@ -1390,8 +1442,7 @@ pub unsafe extern "C" fn job_resize(mut job: *mut job, mut sx: u_int,
  * output.
  */
 /* Job buffer read callback. */
-unsafe extern "C" fn job_read_callback(mut bufev: *mut bufferevent,
-                                       mut data: *mut libc::c_void) {
+unsafe extern "C" fn job_read_callback(mut bufev: *mut bufferevent, mut data: *mut libc::c_void) {
     let mut job: *mut job = data as *mut job;
     if (*job).updatecb.is_some() {
         (*job).updatecb.expect("non-null function pointer")(job);
@@ -1402,73 +1453,83 @@ unsafe extern "C" fn job_read_callback(mut bufev: *mut bufferevent,
  * (default is empty). If all the data has been written, disable the write
  * event.
  */
-unsafe extern "C" fn job_write_callback(mut bufev: *mut bufferevent,
-                                        mut data: *mut libc::c_void) {
+unsafe extern "C" fn job_write_callback(mut bufev: *mut bufferevent, mut data: *mut libc::c_void) {
     let mut job: *mut job = data as *mut job;
-    let mut len: size_t =
-        evbuffer_get_length(bufferevent_get_output((*job).event));
-    log_debug(b"job write %p: %s, pid %ld, output left %zu\x00" as *const u8
-                  as *const libc::c_char, job, (*job).cmd,
-              (*job).pid as libc::c_long, len);
-    if len == 0 as libc::c_int as libc::c_ulong &&
-           !(*job).flags & 0x2 as libc::c_int != 0 {
+    let mut len: size_t = evbuffer_get_length(bufferevent_get_output((*job).event));
+    log_debug(
+        b"job write %p: %s, pid %ld, output left %zu\x00" as *const u8 as *const libc::c_char,
+        job,
+        (*job).cmd,
+        (*job).pid as libc::c_long,
+        len,
+    );
+    if len == 0 as libc::c_int as libc::c_ulong && !(*job).flags & 0x2 as libc::c_int != 0 {
         shutdown((*job).fd, SHUT_WR as libc::c_int);
-        bufferevent_disable((*job).event,
-                            0x4 as libc::c_int as libc::c_short);
+        bufferevent_disable((*job).event, 0x4 as libc::c_int as libc::c_short);
     };
 }
 /* Job buffer error callback. */
-unsafe extern "C" fn job_error_callback(mut bufev: *mut bufferevent,
-                                        mut events: libc::c_short,
-                                        mut data: *mut libc::c_void) {
+unsafe extern "C" fn job_error_callback(
+    mut bufev: *mut bufferevent,
+    mut events: libc::c_short,
+    mut data: *mut libc::c_void,
+) {
     let mut job: *mut job = data as *mut job;
-    log_debug(b"job error %p: %s, pid %ld\x00" as *const u8 as
-                  *const libc::c_char, job, (*job).cmd,
-              (*job).pid as libc::c_long);
-    if (*job).state as libc::c_uint == JOB_DEAD as libc::c_int as libc::c_uint
-       {
+    log_debug(
+        b"job error %p: %s, pid %ld\x00" as *const u8 as *const libc::c_char,
+        job,
+        (*job).cmd,
+        (*job).pid as libc::c_long,
+    );
+    if (*job).state as libc::c_uint == JOB_DEAD as libc::c_int as libc::c_uint {
         if (*job).completecb.is_some() {
             (*job).completecb.expect("non-null function pointer")(job);
         }
         job_free(job);
     } else {
-        bufferevent_disable((*job).event,
-                            0x2 as libc::c_int as libc::c_short);
+        bufferevent_disable((*job).event, 0x2 as libc::c_int as libc::c_short);
         (*job).state = JOB_CLOSED
     };
 }
 /* Job died (waitpid() returned its pid). */
 #[no_mangle]
-pub unsafe extern "C" fn job_check_died(mut pid: pid_t,
-                                        mut status: libc::c_int) {
+pub unsafe extern "C" fn job_check_died(mut pid: pid_t, mut status: libc::c_int) {
     let mut job: *mut job = 0 as *mut job;
     job = all_jobs.lh_first;
     while !job.is_null() {
-        if pid == (*job).pid { break ; }
+        if pid == (*job).pid {
+            break;
+        }
         job = (*job).entry.le_next
     }
-    if job.is_null() { return }
+    if job.is_null() {
+        return;
+    }
     if status & 0xff as libc::c_int == 0x7f as libc::c_int {
-        if (status & 0xff00 as libc::c_int) >> 8 as libc::c_int ==
-               21 as libc::c_int ||
-               (status & 0xff00 as libc::c_int) >> 8 as libc::c_int ==
-                   22 as libc::c_int {
-            return
+        if (status & 0xff00 as libc::c_int) >> 8 as libc::c_int == 21 as libc::c_int
+            || (status & 0xff00 as libc::c_int) >> 8 as libc::c_int == 22 as libc::c_int
+        {
+            return;
         }
         killpg((*job).pid, 18 as libc::c_int);
-        return
+        return;
     }
-    log_debug(b"job died %p: %s, pid %ld\x00" as *const u8 as
-                  *const libc::c_char, job, (*job).cmd,
-              (*job).pid as libc::c_long);
+    log_debug(
+        b"job died %p: %s, pid %ld\x00" as *const u8 as *const libc::c_char,
+        job,
+        (*job).cmd,
+        (*job).pid as libc::c_long,
+    );
     (*job).status = status;
-    if (*job).state as libc::c_uint ==
-           JOB_CLOSED as libc::c_int as libc::c_uint {
+    if (*job).state as libc::c_uint == JOB_CLOSED as libc::c_int as libc::c_uint {
         if (*job).completecb.is_some() {
             (*job).completecb.expect("non-null function pointer")(job);
         }
         job_free(job);
-    } else { (*job).pid = -(1 as libc::c_int); (*job).state = JOB_DEAD };
+    } else {
+        (*job).pid = -(1 as libc::c_int);
+        (*job).state = JOB_DEAD
+    };
 }
 /* Get job status. */
 #[no_mangle]
@@ -1477,14 +1538,12 @@ pub unsafe extern "C" fn job_get_status(mut job: *mut job) -> libc::c_int {
 }
 /* Get job data. */
 #[no_mangle]
-pub unsafe extern "C" fn job_get_data(mut job: *mut job)
- -> *mut libc::c_void {
+pub unsafe extern "C" fn job_get_data(mut job: *mut job) -> *mut libc::c_void {
     return (*job).data;
 }
 /* Get job event. */
 #[no_mangle]
-pub unsafe extern "C" fn job_get_event(mut job: *mut job)
- -> *mut bufferevent {
+pub unsafe extern "C" fn job_get_event(mut job: *mut job) -> *mut bufferevent {
     return (*job).event;
 }
 /* Kill all jobs. */
@@ -1497,7 +1556,7 @@ pub unsafe extern "C" fn job_kill_all() {
             kill((*job).pid, 15 as libc::c_int);
         }
         job = (*job).entry.le_next
-    };
+    }
 }
 /* Are any jobs still running? */
 #[no_mangle]
@@ -1505,10 +1564,10 @@ pub unsafe extern "C" fn job_still_running() -> libc::c_int {
     let mut job: *mut job = 0 as *mut job;
     job = all_jobs.lh_first;
     while !job.is_null() {
-        if !(*job).flags & 0x1 as libc::c_int != 0 &&
-               (*job).state as libc::c_uint ==
-                   JOB_RUNNING as libc::c_int as libc::c_uint {
-            return 1 as libc::c_int
+        if !(*job).flags & 0x1 as libc::c_int != 0
+            && (*job).state as libc::c_uint == JOB_RUNNING as libc::c_int as libc::c_uint
+        {
+            return 1 as libc::c_int;
         }
         job = (*job).entry.le_next
     }
@@ -1516,22 +1575,29 @@ pub unsafe extern "C" fn job_still_running() -> libc::c_int {
 }
 /* Print job summary. */
 #[no_mangle]
-pub unsafe extern "C" fn job_print_summary(mut item: *mut cmdq_item,
-                                           mut blank: libc::c_int) {
+pub unsafe extern "C" fn job_print_summary(mut item: *mut cmdq_item, mut blank: libc::c_int) {
     let mut job: *mut job = 0 as *mut job;
     let mut n: u_int = 0 as libc::c_int as u_int;
     job = all_jobs.lh_first;
     while !job.is_null() {
         if blank != 0 {
-            cmdq_print(item, b"%s\x00" as *const u8 as *const libc::c_char,
-                       b"\x00" as *const u8 as *const libc::c_char);
+            cmdq_print(
+                item,
+                b"%s\x00" as *const u8 as *const libc::c_char,
+                b"\x00" as *const u8 as *const libc::c_char,
+            );
             blank = 0 as libc::c_int
         }
-        cmdq_print(item,
-                   b"Job %u: %s [fd=%d, pid=%ld, status=%d]\x00" as *const u8
-                       as *const libc::c_char, n, (*job).cmd, (*job).fd,
-                   (*job).pid as libc::c_long, (*job).status);
+        cmdq_print(
+            item,
+            b"Job %u: %s [fd=%d, pid=%ld, status=%d]\x00" as *const u8 as *const libc::c_char,
+            n,
+            (*job).cmd,
+            (*job).fd,
+            (*job).pid as libc::c_long,
+            (*job).status,
+        );
         n = n.wrapping_add(1);
         job = (*job).entry.le_next
-    };
+    }
 }

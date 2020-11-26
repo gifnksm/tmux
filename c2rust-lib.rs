@@ -15,12 +15,9 @@
 #![feature(register_tool)]
 #![register_tool(c2rust)]
 
-
 #[macro_use]
 extern crate c2rust_bitfields;
 extern crate libc;
-
-
 
 pub mod alerts;
 pub mod arguments;
@@ -92,22 +89,22 @@ pub mod cmd_unbind_key;
 pub mod cmd_wait_for;
 pub mod colour;
 pub mod compat {
-pub mod closefrom;
-pub mod fdforkpty;
-pub mod fgetln;
-pub mod freezero;
-pub mod getdtablecount;
-pub mod getopt;
-pub mod getprogname;
-pub mod imsg;
-pub mod imsg_buffer;
-pub mod recallocarray;
-pub mod setproctitle;
-pub mod strlcat;
-pub mod strlcpy;
-pub mod strtonum;
-pub mod unvis;
-pub mod vis;
+    pub mod closefrom;
+    pub mod fdforkpty;
+    pub mod fgetln;
+    pub mod freezero;
+    pub mod getdtablecount;
+    pub mod getopt;
+    pub mod getprogname;
+    pub mod imsg;
+    pub mod imsg_buffer;
+    pub mod recallocarray;
+    pub mod setproctitle;
+    pub mod strlcat;
+    pub mod strlcpy;
+    pub mod strtonum;
+    pub mod unvis;
+    pub mod vis;
 } // mod compat
 pub mod control;
 pub mod control_notify;
@@ -162,4 +159,3 @@ pub mod window_copy;
 pub mod window_customize;
 pub mod window_tree;
 pub mod xmalloc;
-

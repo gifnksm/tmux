@@ -25,16 +25,17 @@ extern "C" {
     #[no_mangle]
     fn sigfillset(__set: *mut sigset_t) -> libc::c_int;
     #[no_mangle]
-    fn sigprocmask(__how: libc::c_int, __set: *const sigset_t,
-                   __oset: *mut sigset_t) -> libc::c_int;
+    fn sigprocmask(
+        __how: libc::c_int,
+        __set: *const sigset_t,
+        __oset: *mut sigset_t,
+    ) -> libc::c_int;
     #[no_mangle]
     fn free(__ptr: *mut libc::c_void);
     #[no_mangle]
-    fn memcpy(_: *mut libc::c_void, _: *const libc::c_void, _: libc::c_ulong)
-     -> *mut libc::c_void;
+    fn memcpy(_: *mut libc::c_void, _: *const libc::c_void, _: libc::c_ulong) -> *mut libc::c_void;
     #[no_mangle]
-    fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong)
-     -> *mut libc::c_void;
+    fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
     #[no_mangle]
     fn strrchr(_: *const libc::c_char, _: libc::c_int) -> *mut libc::c_char;
     #[no_mangle]
@@ -44,11 +45,9 @@ extern "C" {
     #[no_mangle]
     fn chdir(__path: *const libc::c_char) -> libc::c_int;
     #[no_mangle]
-    fn execl(__path: *const libc::c_char, __arg: *const libc::c_char, _: ...)
-     -> libc::c_int;
+    fn execl(__path: *const libc::c_char, __arg: *const libc::c_char, _: ...) -> libc::c_int;
     #[no_mangle]
-    fn execvp(__file: *const libc::c_char, __argv: *const *mut libc::c_char)
-     -> libc::c_int;
+    fn execvp(__file: *const libc::c_char, __argv: *const *mut libc::c_char) -> libc::c_int;
     #[no_mangle]
     fn _exit(_: libc::c_int) -> !;
     #[no_mangle]
@@ -56,51 +55,66 @@ extern "C" {
     #[no_mangle]
     fn tcgetattr(__fd: libc::c_int, __termios_p: *mut termios) -> libc::c_int;
     #[no_mangle]
-    fn tcsetattr(__fd: libc::c_int, __optional_actions: libc::c_int,
-                 __termios_p: *const termios) -> libc::c_int;
+    fn tcsetattr(
+        __fd: libc::c_int,
+        __optional_actions: libc::c_int,
+        __termios_p: *const termios,
+    ) -> libc::c_int;
     #[no_mangle]
     fn closefrom(_: libc::c_int);
     #[no_mangle]
-    fn fdforkpty(_: libc::c_int, _: *mut libc::c_int, _: *mut libc::c_char,
-                 _: *mut termios, _: *mut winsize) -> pid_t;
+    fn fdforkpty(
+        _: libc::c_int,
+        _: *mut libc::c_int,
+        _: *mut libc::c_char,
+        _: *mut termios,
+        _: *mut winsize,
+    ) -> pid_t;
     #[no_mangle]
     fn xstrdup(_: *const libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
-    fn xasprintf(_: *mut *mut libc::c_char, _: *const libc::c_char, _: ...)
-     -> libc::c_int;
+    fn xasprintf(_: *mut *mut libc::c_char, _: *const libc::c_char, _: ...) -> libc::c_int;
     #[no_mangle]
-    fn xsnprintf(_: *mut libc::c_char, _: size_t, _: *const libc::c_char,
-                 _: ...) -> libc::c_int;
+    fn xsnprintf(_: *mut libc::c_char, _: size_t, _: *const libc::c_char, _: ...) -> libc::c_int;
     #[no_mangle]
     fn proc_clear_signals(_: *mut tmuxproc, _: libc::c_int);
     #[no_mangle]
-    fn format_single(_: *mut cmdq_item, _: *const libc::c_char,
-                     _: *mut client, _: *mut session, _: *mut winlink,
-                     _: *mut window_pane) -> *mut libc::c_char;
+    fn format_single(
+        _: *mut cmdq_item,
+        _: *const libc::c_char,
+        _: *mut client,
+        _: *mut session,
+        _: *mut winlink,
+        _: *mut window_pane,
+    ) -> *mut libc::c_char;
     #[no_mangle]
-    fn notify_session_window(_: *const libc::c_char, _: *mut session,
-                             _: *mut window);
+    fn notify_session_window(_: *const libc::c_char, _: *mut session, _: *mut window);
     #[no_mangle]
     fn notify_window(_: *const libc::c_char, _: *mut window);
     #[no_mangle]
-    fn options_get_string(_: *mut options, _: *const libc::c_char)
-     -> *const libc::c_char;
+    fn options_get_string(_: *mut options, _: *const libc::c_char) -> *const libc::c_char;
     #[no_mangle]
-    fn options_get_number(_: *mut options, _: *const libc::c_char)
-     -> libc::c_longlong;
+    fn options_get_number(_: *mut options, _: *const libc::c_char) -> libc::c_longlong;
     #[no_mangle]
-    fn options_set_number(_: *mut options, _: *const libc::c_char,
-                          _: libc::c_longlong) -> *mut options_entry;
+    fn options_set_number(
+        _: *mut options,
+        _: *const libc::c_char,
+        _: libc::c_longlong,
+    ) -> *mut options_entry;
     #[no_mangle]
     fn environ_free(_: *mut environ);
     #[no_mangle]
     fn environ_copy(_: *mut environ, _: *mut environ);
     #[no_mangle]
-    fn environ_find(_: *mut environ, _: *const libc::c_char)
-     -> *mut environ_entry;
+    fn environ_find(_: *mut environ, _: *const libc::c_char) -> *mut environ_entry;
     #[no_mangle]
-    fn environ_set(_: *mut environ, _: *const libc::c_char, _: libc::c_int,
-                   _: *const libc::c_char, _: ...);
+    fn environ_set(
+        _: *mut environ,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: *const libc::c_char,
+        _: ...
+    );
     #[no_mangle]
     fn environ_push(_: *mut environ);
     #[no_mangle]
@@ -108,16 +122,13 @@ extern "C" {
     #[no_mangle]
     fn environ_for_session(_: *mut session, _: libc::c_int) -> *mut environ;
     #[no_mangle]
-    fn cmd_log_argv(_: libc::c_int, _: *mut *mut libc::c_char,
-                    _: *const libc::c_char, _: ...);
+    fn cmd_log_argv(_: libc::c_int, _: *mut *mut libc::c_char, _: *const libc::c_char, _: ...);
     #[no_mangle]
-    fn cmd_copy_argv(_: libc::c_int, _: *mut *mut libc::c_char)
-     -> *mut *mut libc::c_char;
+    fn cmd_copy_argv(_: libc::c_int, _: *mut *mut libc::c_char) -> *mut *mut libc::c_char;
     #[no_mangle]
     fn cmd_free_argv(_: libc::c_int, _: *mut *mut libc::c_char);
     #[no_mangle]
-    fn cmd_stringify_argv(_: libc::c_int, _: *mut *mut libc::c_char)
-     -> *mut libc::c_char;
+    fn cmd_stringify_argv(_: libc::c_int, _: *mut *mut libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
     fn cmdq_get_name(_: *mut cmdq_item) -> *const libc::c_char;
     #[no_mangle]
@@ -127,14 +138,20 @@ extern "C" {
     #[no_mangle]
     static mut server_proc: *mut tmuxproc;
     #[no_mangle]
-    fn server_client_get_cwd(_: *mut client, _: *mut session)
-     -> *const libc::c_char;
+    fn server_client_get_cwd(_: *mut client, _: *mut session) -> *const libc::c_char;
     #[no_mangle]
     fn server_client_remove_pane(_: *mut window_pane);
     #[no_mangle]
-    fn default_window_size(_: *mut client, _: *mut session, _: *mut window,
-                           _: *mut u_int, _: *mut u_int, _: *mut u_int,
-                           _: *mut u_int, _: libc::c_int);
+    fn default_window_size(
+        _: *mut client,
+        _: *mut session,
+        _: *mut window,
+        _: *mut u_int,
+        _: *mut u_int,
+        _: *mut u_int,
+        _: *mut u_int,
+        _: libc::c_int,
+    );
     #[no_mangle]
     static mut global_options: *mut options;
     #[no_mangle]
@@ -146,8 +163,7 @@ extern "C" {
     #[no_mangle]
     fn screen_reinit(_: *mut screen);
     #[no_mangle]
-    fn winlink_find_by_index(_: *mut winlinks, _: libc::c_int)
-     -> *mut winlink;
+    fn winlink_find_by_index(_: *mut winlinks, _: libc::c_int) -> *mut winlink;
     #[no_mangle]
     fn winlink_add(_: *mut winlinks, _: libc::c_int) -> *mut winlink;
     #[no_mangle]
@@ -161,11 +177,14 @@ extern "C" {
     #[no_mangle]
     fn window_pane_set_event(_: *mut window_pane);
     #[no_mangle]
-    fn window_set_active_pane(_: *mut window, _: *mut window_pane,
-                              _: libc::c_int) -> libc::c_int;
+    fn window_set_active_pane(_: *mut window, _: *mut window_pane, _: libc::c_int) -> libc::c_int;
     #[no_mangle]
-    fn window_add_pane(_: *mut window, _: *mut window_pane, _: u_int,
-                       _: libc::c_int) -> *mut window_pane;
+    fn window_add_pane(
+        _: *mut window,
+        _: *mut window_pane,
+        _: u_int,
+        _: libc::c_int,
+    ) -> *mut window_pane;
     #[no_mangle]
     fn window_remove_pane(_: *mut window, _: *mut window_pane);
     #[no_mangle]
@@ -292,18 +311,13 @@ pub struct event_callback {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub union C2RustUnnamed_6 {
-    pub evcb_callback: Option<unsafe extern "C" fn(_: libc::c_int,
-                                                   _: libc::c_short,
-                                                   _: *mut libc::c_void)
-                                  -> ()>,
-    pub evcb_selfcb: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                 _: *mut libc::c_void) -> ()>,
-    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
-    pub evcb_cbfinalize: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
+    pub evcb_callback:
+        Option<unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> ()>,
+    pub evcb_selfcb:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
+    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event, _: *mut libc::c_void) -> ()>,
+    pub evcb_cbfinalize:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -330,14 +344,10 @@ pub struct bufferevent {
     pub timeout_write: timeval,
     pub enabled: libc::c_short,
 }
-pub type bufferevent_event_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short,
-                                _: *mut libc::c_void) -> ()>;
-pub type bufferevent_data_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void)
-               -> ()>;
+pub type bufferevent_event_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short, _: *mut libc::c_void) -> ()>;
+pub type bufferevent_data_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct event_watermark {
@@ -484,17 +494,19 @@ pub struct C2RustUnnamed_9 {
     pub rbe_parent: *mut client_file,
     pub rbe_color: libc::c_int,
 }
-pub type client_file_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *const libc::c_char,
-                                _: libc::c_int, _: libc::c_int,
-                                _: *mut evbuffer, _: *mut libc::c_void)
-               -> ()>;
+pub type client_file_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: *mut evbuffer,
+        _: *mut libc::c_void,
+    ) -> (),
+>;
 pub type overlay_free_cb = Option<unsafe extern "C" fn(_: *mut client) -> ()>;
-pub type overlay_key_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event)
-               -> libc::c_int>;
+pub type overlay_key_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_event {
@@ -524,10 +536,8 @@ pub struct mouse_event {
     pub sgr_b: u_int,
 }
 pub type key_code = libc::c_ulonglong;
-pub type overlay_draw_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx)
-               -> ()>;
+pub type overlay_draw_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen_redraw_ctx {
@@ -541,10 +551,8 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int)
-               -> *mut screen>;
+pub type overlay_mode_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen {
@@ -638,10 +646,8 @@ pub struct C2RustUnnamed_11 {
     pub bg: u_char,
     pub data: u_char,
 }
-pub type overlay_check_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int)
-               -> libc::c_int>;
+pub type overlay_check_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct session {
@@ -888,24 +894,37 @@ pub struct C2RustUnnamed_24 {
 pub struct window_mode {
     pub name: *const libc::c_char,
     pub default_format: *const libc::c_char,
-    pub init: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                          _: *mut cmd_find_state,
-                                          _: *mut args) -> *mut screen>,
+    pub init: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut cmd_find_state,
+            _: *mut args,
+        ) -> *mut screen,
+    >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
-    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                            _: u_int, _: u_int) -> ()>,
-    pub key: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                         _: *mut client, _: *mut session,
-                                         _: *mut winlink, _: key_code,
-                                         _: *mut mouse_event) -> ()>,
-    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry)
-                              -> *const libc::c_char>,
-    pub command: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut client, _: *mut session,
-                                             _: *mut winlink, _: *mut args,
-                                             _: *mut mouse_event) -> ()>,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut format_tree) -> ()>,
+    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
+    pub key: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: key_code,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> *const libc::c_char>,
+    pub command: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: *mut args,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -942,14 +961,15 @@ pub struct winlink_stack {
 pub type C2RustUnnamed_25 = libc::c_uint;
 pub const PROMPT_COMMAND: C2RustUnnamed_25 = 1;
 pub const PROMPT_ENTRY: C2RustUnnamed_25 = 0;
-pub type prompt_free_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
-pub type prompt_input_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut libc::c_void,
-                                _: *const libc::c_char, _: libc::c_int)
-               -> libc::c_int>;
+pub type prompt_free_cb = Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
+pub type prompt_input_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut libc::c_void,
+        _: *const libc::c_char,
+        _: libc::c_int,
+    ) -> libc::c_int,
+>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_table {
@@ -1120,12 +1140,8 @@ pub struct tty {
     pub mouse_last_y: u_int,
     pub mouse_last_b: u_int,
     pub mouse_drag_flag: libc::c_int,
-    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client,
-                                                       _: *mut mouse_event)
-                                      -> ()>,
-    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client,
-                                                        _: *mut mouse_event)
-                                       -> ()>,
+    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
+    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
     pub key_timer: event,
     pub key_tree: *mut tty_key,
 }
@@ -1245,51 +1261,69 @@ pub struct spawn_context {
  *
  * - remaining environment, comes from the session.
  */
-unsafe extern "C" fn spawn_log(mut from: *const libc::c_char,
-                               mut sc: *mut spawn_context) {
+unsafe extern "C" fn spawn_log(mut from: *const libc::c_char, mut sc: *mut spawn_context) {
     let mut s: *mut session = (*sc).s;
     let mut wl: *mut winlink = (*sc).wl;
     let mut wp0: *mut window_pane = (*sc).wp0;
     let mut name: *const libc::c_char = cmdq_get_name((*sc).item);
     let mut tmp: [libc::c_char; 128] = [0; 128];
-    log_debug(b"%s: %s, flags=%#x\x00" as *const u8 as *const libc::c_char,
-              from, name, (*sc).flags);
+    log_debug(
+        b"%s: %s, flags=%#x\x00" as *const u8 as *const libc::c_char,
+        from,
+        name,
+        (*sc).flags,
+    );
     if !wl.is_null() && !wp0.is_null() {
-        xsnprintf(tmp.as_mut_ptr(),
-                  ::std::mem::size_of::<[libc::c_char; 128]>() as
-                      libc::c_ulong,
-                  b"wl=%d wp0=%%%u\x00" as *const u8 as *const libc::c_char,
-                  (*wl).idx, (*wp0).id);
+        xsnprintf(
+            tmp.as_mut_ptr(),
+            ::std::mem::size_of::<[libc::c_char; 128]>() as libc::c_ulong,
+            b"wl=%d wp0=%%%u\x00" as *const u8 as *const libc::c_char,
+            (*wl).idx,
+            (*wp0).id,
+        );
     } else if !wl.is_null() {
-        xsnprintf(tmp.as_mut_ptr(),
-                  ::std::mem::size_of::<[libc::c_char; 128]>() as
-                      libc::c_ulong,
-                  b"wl=%d wp0=none\x00" as *const u8 as *const libc::c_char,
-                  (*wl).idx);
+        xsnprintf(
+            tmp.as_mut_ptr(),
+            ::std::mem::size_of::<[libc::c_char; 128]>() as libc::c_ulong,
+            b"wl=%d wp0=none\x00" as *const u8 as *const libc::c_char,
+            (*wl).idx,
+        );
     } else if !wp0.is_null() {
-        xsnprintf(tmp.as_mut_ptr(),
-                  ::std::mem::size_of::<[libc::c_char; 128]>() as
-                      libc::c_ulong,
-                  b"wl=none wp0=%%%u\x00" as *const u8 as *const libc::c_char,
-                  (*wp0).id);
+        xsnprintf(
+            tmp.as_mut_ptr(),
+            ::std::mem::size_of::<[libc::c_char; 128]>() as libc::c_ulong,
+            b"wl=none wp0=%%%u\x00" as *const u8 as *const libc::c_char,
+            (*wp0).id,
+        );
     } else {
-        xsnprintf(tmp.as_mut_ptr(),
-                  ::std::mem::size_of::<[libc::c_char; 128]>() as
-                      libc::c_ulong,
-                  b"wl=none wp0=none\x00" as *const u8 as
-                      *const libc::c_char);
+        xsnprintf(
+            tmp.as_mut_ptr(),
+            ::std::mem::size_of::<[libc::c_char; 128]>() as libc::c_ulong,
+            b"wl=none wp0=none\x00" as *const u8 as *const libc::c_char,
+        );
     }
-    log_debug(b"%s: s=$%u %s idx=%d\x00" as *const u8 as *const libc::c_char,
-              from, (*s).id, tmp.as_mut_ptr(), (*sc).idx);
-    log_debug(b"%s: name=%s\x00" as *const u8 as *const libc::c_char, from,
-              if (*sc).name.is_null() {
-                  b"none\x00" as *const u8 as *const libc::c_char
-              } else { (*sc).name });
+    log_debug(
+        b"%s: s=$%u %s idx=%d\x00" as *const u8 as *const libc::c_char,
+        from,
+        (*s).id,
+        tmp.as_mut_ptr(),
+        (*sc).idx,
+    );
+    log_debug(
+        b"%s: name=%s\x00" as *const u8 as *const libc::c_char,
+        from,
+        if (*sc).name.is_null() {
+            b"none\x00" as *const u8 as *const libc::c_char
+        } else {
+            (*sc).name
+        },
+    );
 }
 #[no_mangle]
-pub unsafe extern "C" fn spawn_window(mut sc: *mut spawn_context,
-                                      mut cause: *mut *mut libc::c_char)
- -> *mut winlink {
+pub unsafe extern "C" fn spawn_window(
+    mut sc: *mut spawn_context,
+    mut cause: *mut *mut libc::c_char,
+) -> *mut winlink {
     let mut item: *mut cmdq_item = (*sc).item;
     let mut c: *mut client = cmdq_get_client(item);
     let mut s: *mut session = (*sc).s;
@@ -1301,42 +1335,49 @@ pub unsafe extern "C" fn spawn_window(mut sc: *mut spawn_context,
     let mut sy: u_int = 0;
     let mut xpixel: u_int = 0;
     let mut ypixel: u_int = 0;
-    spawn_log((*::std::mem::transmute::<&[u8; 13],
-                                        &[libc::c_char; 13]>(b"spawn_window\x00")).as_ptr(),
-              sc);
+    spawn_log(
+        (*::std::mem::transmute::<&[u8; 13], &[libc::c_char; 13]>(b"spawn_window\x00")).as_ptr(),
+        sc,
+    );
     /*
-	 * If the window already exists, we are respawning, so destroy all the
-	 * panes except one.
-	 */
+     * If the window already exists, we are respawning, so destroy all the
+     * panes except one.
+     */
     if (*sc).flags & 0x4 as libc::c_int != 0 {
         w = (*(*sc).wl).window;
         if !(*sc).flags & 0x1 as libc::c_int != 0 {
             wp = (*w).panes.tqh_first;
             while !wp.is_null() {
-                if (*wp).fd != -(1 as libc::c_int) { break ; }
+                if (*wp).fd != -(1 as libc::c_int) {
+                    break;
+                }
                 wp = (*wp).entry.tqe_next
             }
             if !wp.is_null() {
-                xasprintf(cause,
-                          b"window %s:%d still active\x00" as *const u8 as
-                              *const libc::c_char, (*s).name,
-                          (*(*sc).wl).idx);
-                return 0 as *mut winlink
+                xasprintf(
+                    cause,
+                    b"window %s:%d still active\x00" as *const u8 as *const libc::c_char,
+                    (*s).name,
+                    (*(*sc).wl).idx,
+                );
+                return 0 as *mut winlink;
             }
         }
         (*sc).wp0 = (*w).panes.tqh_first;
         if !(*(*sc).wp0).entry.tqe_next.is_null() {
-            (*(*(*sc).wp0).entry.tqe_next).entry.tqe_prev =
-                (*(*sc).wp0).entry.tqe_prev
-        } else { (*w).panes.tqh_last = (*(*sc).wp0).entry.tqe_prev }
+            (*(*(*sc).wp0).entry.tqe_next).entry.tqe_prev = (*(*sc).wp0).entry.tqe_prev
+        } else {
+            (*w).panes.tqh_last = (*(*sc).wp0).entry.tqe_prev
+        }
         *(*(*sc).wp0).entry.tqe_prev = (*(*sc).wp0).entry.tqe_next;
         layout_free(w);
         window_destroy_panes(w);
         (*(*sc).wp0).entry.tqe_next = (*w).panes.tqh_first;
         if !(*(*sc).wp0).entry.tqe_next.is_null() {
-            (*(*w).panes.tqh_first).entry.tqe_prev =
-                &mut (*(*sc).wp0).entry.tqe_next
-        } else { (*w).panes.tqh_last = &mut (*(*sc).wp0).entry.tqe_next }
+            (*(*w).panes.tqh_first).entry.tqe_prev = &mut (*(*sc).wp0).entry.tqe_next
+        } else {
+            (*w).panes.tqh_last = &mut (*(*sc).wp0).entry.tqe_next
+        }
         (*w).panes.tqh_first = (*sc).wp0;
         (*(*sc).wp0).entry.tqe_prev = &mut (*w).panes.tqh_first;
         window_pane_resize((*sc).wp0, (*w).sx, (*w).sy);
@@ -1344,27 +1385,30 @@ pub unsafe extern "C" fn spawn_window(mut sc: *mut spawn_context,
         window_set_active_pane(w, (*sc).wp0, 0 as libc::c_int);
     }
     /*
-	 * Otherwise we have no window so we will need to create one. First
-	 * check if the given index already exists and destroy it if so.
-	 */
+     * Otherwise we have no window so we will need to create one. First
+     * check if the given index already exists and destroy it if so.
+     */
     if !(*sc).flags & 0x4 as libc::c_int != 0 && idx != -(1 as libc::c_int) {
         wl = winlink_find_by_index(&mut (*s).windows, idx);
         if !wl.is_null() && !(*sc).flags & 0x1 as libc::c_int != 0 {
-            xasprintf(cause,
-                      b"index %d in use\x00" as *const u8 as
-                          *const libc::c_char, idx);
-            return 0 as *mut winlink
+            xasprintf(
+                cause,
+                b"index %d in use\x00" as *const u8 as *const libc::c_char,
+                idx,
+            );
+            return 0 as *mut winlink;
         }
         if !wl.is_null() {
             /*
-			 * Can't use session_detach as it will destroy session
-			 * if this makes it empty.
-			 */
-            (*wl).flags &=
-                !(0x1 as libc::c_int | 0x2 as libc::c_int |
-                      0x4 as libc::c_int);
-            notify_session_window(b"window-unlinked\x00" as *const u8 as
-                                      *const libc::c_char, s, (*wl).window);
+             * Can't use session_detach as it will destroy session
+             * if this makes it empty.
+             */
+            (*wl).flags &= !(0x1 as libc::c_int | 0x2 as libc::c_int | 0x4 as libc::c_int);
+            notify_session_window(
+                b"window-unlinked\x00" as *const u8 as *const libc::c_char,
+                s,
+                (*wl).window,
+            );
             winlink_stack_remove(&mut (*s).lastw, wl);
             winlink_remove(&mut (*s).windows, wl);
             if (*s).curw == wl {
@@ -1376,35 +1420,50 @@ pub unsafe extern "C" fn spawn_window(mut sc: *mut spawn_context,
     /* Then create a window if needed. */
     if !(*sc).flags & 0x4 as libc::c_int != 0 {
         if idx == -(1 as libc::c_int) {
-            idx =
-                (-(1 as libc::c_int) as libc::c_longlong -
-                     options_get_number((*s).options,
-                                        b"base-index\x00" as *const u8 as
-                                            *const libc::c_char)) as
-                    libc::c_int
+            idx = (-(1 as libc::c_int) as libc::c_longlong
+                - options_get_number(
+                    (*s).options,
+                    b"base-index\x00" as *const u8 as *const libc::c_char,
+                )) as libc::c_int
         }
         (*sc).wl = winlink_add(&mut (*s).windows, idx);
         if (*sc).wl.is_null() {
-            xasprintf(cause,
-                      b"couldn\'t add window %d\x00" as *const u8 as
-                          *const libc::c_char, idx);
-            return 0 as *mut winlink
+            xasprintf(
+                cause,
+                b"couldn\'t add window %d\x00" as *const u8 as *const libc::c_char,
+                idx,
+            );
+            return 0 as *mut winlink;
         }
-        default_window_size((*sc).tc, s, 0 as *mut window, &mut sx, &mut sy,
-                            &mut xpixel, &mut ypixel, -(1 as libc::c_int));
+        default_window_size(
+            (*sc).tc,
+            s,
+            0 as *mut window,
+            &mut sx,
+            &mut sy,
+            &mut xpixel,
+            &mut ypixel,
+            -(1 as libc::c_int),
+        );
         w = window_create(sx, sy, xpixel, ypixel);
         if w.is_null() {
             winlink_remove(&mut (*s).windows, (*sc).wl);
-            xasprintf(cause,
-                      b"couldn\'t create window %d\x00" as *const u8 as
-                          *const libc::c_char, idx);
-            return 0 as *mut winlink
+            xasprintf(
+                cause,
+                b"couldn\'t create window %d\x00" as *const u8 as *const libc::c_char,
+                idx,
+            );
+            return 0 as *mut winlink;
         }
-        if (*s).curw.is_null() { (*s).curw = (*sc).wl }
+        if (*s).curw.is_null() {
+            (*s).curw = (*sc).wl
+        }
         (*(*sc).wl).session = s;
         (*w).latest = (*sc).tc as *mut libc::c_void;
         winlink_set_window((*sc).wl, w);
-    } else { w = 0 as *mut window }
+    } else {
+        w = 0 as *mut window
+    }
     (*sc).flags |= 0x10 as libc::c_int;
     /* Spawn the pane. */
     wp = spawn_pane(sc, cause);
@@ -1412,19 +1471,27 @@ pub unsafe extern "C" fn spawn_window(mut sc: *mut spawn_context,
         if !(*sc).flags & 0x4 as libc::c_int != 0 {
             winlink_remove(&mut (*s).windows, (*sc).wl);
         }
-        return 0 as *mut winlink
+        return 0 as *mut winlink;
     }
     /* Set the name of the new window. */
     if !(*sc).flags & 0x4 as libc::c_int != 0 {
         if !(*sc).name.is_null() {
-            (*w).name =
-                format_single(item, (*sc).name, c, s, 0 as *mut winlink,
-                              0 as *mut window_pane);
-            options_set_number((*w).options,
-                               b"automatic-rename\x00" as *const u8 as
-                                   *const libc::c_char,
-                               0 as libc::c_int as libc::c_longlong);
-        } else { (*w).name = xstrdup(default_window_name(w)) }
+            (*w).name = format_single(
+                item,
+                (*sc).name,
+                c,
+                s,
+                0 as *mut winlink,
+                0 as *mut window_pane,
+            );
+            options_set_number(
+                (*w).options,
+                b"automatic-rename\x00" as *const u8 as *const libc::c_char,
+                0 as libc::c_int as libc::c_longlong,
+            );
+        } else {
+            (*w).name = xstrdup(default_window_name(w))
+        }
     }
     /* Switch to the new window if required. */
     if !(*sc).flags & 0x2 as libc::c_int != 0 {
@@ -1432,16 +1499,20 @@ pub unsafe extern "C" fn spawn_window(mut sc: *mut spawn_context,
     }
     /* Fire notification if new window. */
     if !(*sc).flags & 0x4 as libc::c_int != 0 {
-        notify_session_window(b"window-linked\x00" as *const u8 as
-                                  *const libc::c_char, s, w);
+        notify_session_window(
+            b"window-linked\x00" as *const u8 as *const libc::c_char,
+            s,
+            w,
+        );
     }
     session_group_synchronize_from(s);
     return (*sc).wl;
 }
 #[no_mangle]
-pub unsafe extern "C" fn spawn_pane(mut sc: *mut spawn_context,
-                                    mut cause: *mut *mut libc::c_char)
- -> *mut window_pane {
+pub unsafe extern "C" fn spawn_pane(
+    mut sc: *mut spawn_context,
+    mut cause: *mut *mut libc::c_char,
+) -> *mut window_pane {
     let mut item: *mut cmdq_item = (*sc).item;
     let mut target: *mut cmd_find_state = cmdq_get_target(item);
     let mut c: *mut client = cmdq_get_client(item);
@@ -1459,53 +1530,68 @@ pub unsafe extern "C" fn spawn_pane(mut sc: *mut spawn_context,
     let mut tmp: *const libc::c_char = 0 as *const libc::c_char;
     let mut argc: libc::c_int = 0;
     let mut idx: u_int = 0;
-    let mut now: termios =
-        termios{c_iflag: 0,
-                c_oflag: 0,
-                c_cflag: 0,
-                c_lflag: 0,
-                c_line: 0,
-                c_cc: [0; 32],
-                c_ispeed: 0,
-                c_ospeed: 0,};
+    let mut now: termios = termios {
+        c_iflag: 0,
+        c_oflag: 0,
+        c_cflag: 0,
+        c_lflag: 0,
+        c_line: 0,
+        c_cc: [0; 32],
+        c_ispeed: 0,
+        c_ospeed: 0,
+    };
     let mut hlimit: u_int = 0;
-    let mut ws: winsize =
-        winsize{ws_row: 0, ws_col: 0, ws_xpixel: 0, ws_ypixel: 0,};
-    let mut set: sigset_t = sigset_t{__val: [0; 16],};
-    let mut oldset: sigset_t = sigset_t{__val: [0; 16],};
+    let mut ws: winsize = winsize {
+        ws_row: 0,
+        ws_col: 0,
+        ws_xpixel: 0,
+        ws_ypixel: 0,
+    };
+    let mut set: sigset_t = sigset_t { __val: [0; 16] };
+    let mut oldset: sigset_t = sigset_t { __val: [0; 16] };
     let mut key: key_code = 0;
-    spawn_log((*::std::mem::transmute::<&[u8; 11],
-                                        &[libc::c_char; 11]>(b"spawn_pane\x00")).as_ptr(),
-              sc);
+    spawn_log(
+        (*::std::mem::transmute::<&[u8; 11], &[libc::c_char; 11]>(b"spawn_pane\x00")).as_ptr(),
+        sc,
+    );
     /*
-	 * Work out the current working directory. If respawning, use
-	 * the pane's stored one unless specified.
-	 */
+     * Work out the current working directory. If respawning, use
+     * the pane's stored one unless specified.
+     */
     if !(*sc).cwd.is_null() {
-        cwd =
-            format_single(item, (*sc).cwd, c, (*target).s, 0 as *mut winlink,
-                          0 as *mut window_pane)
+        cwd = format_single(
+            item,
+            (*sc).cwd,
+            c,
+            (*target).s,
+            0 as *mut winlink,
+            0 as *mut window_pane,
+        )
     } else if !(*sc).flags & 0x4 as libc::c_int != 0 {
         cwd = xstrdup(server_client_get_cwd(c, (*target).s))
-    } else { cwd = 0 as *mut libc::c_char }
+    } else {
+        cwd = 0 as *mut libc::c_char
+    }
     /*
-	 * If we are respawning then get rid of the old process. Otherwise
-	 * either create a new cell or assign to the one we are given.
-	 */
-    hlimit =
-        options_get_number((*s).options,
-                           b"history-limit\x00" as *const u8 as
-                               *const libc::c_char) as u_int;
+     * If we are respawning then get rid of the old process. Otherwise
+     * either create a new cell or assign to the one we are given.
+     */
+    hlimit = options_get_number(
+        (*s).options,
+        b"history-limit\x00" as *const u8 as *const libc::c_char,
+    ) as u_int;
     if (*sc).flags & 0x4 as libc::c_int != 0 {
-        if (*(*sc).wp0).fd != -(1 as libc::c_int) &&
-               !(*sc).flags & 0x1 as libc::c_int != 0 {
+        if (*(*sc).wp0).fd != -(1 as libc::c_int) && !(*sc).flags & 0x1 as libc::c_int != 0 {
             window_pane_index((*sc).wp0, &mut idx);
-            xasprintf(cause,
-                      b"pane %s:%d.%u still active\x00" as *const u8 as
-                          *const libc::c_char, (*s).name, (*(*sc).wl).idx,
-                      idx);
+            xasprintf(
+                cause,
+                b"pane %s:%d.%u still active\x00" as *const u8 as *const libc::c_char,
+                (*s).name,
+                (*(*sc).wl).idx,
+                idx,
+            );
             free(cwd as *mut libc::c_void);
-            return 0 as *mut window_pane
+            return 0 as *mut window_pane;
         }
         if (*(*sc).wp0).fd != -(1 as libc::c_int) {
             bufferevent_free((*(*sc).wp0).event);
@@ -1518,37 +1604,40 @@ pub unsafe extern "C" fn spawn_pane(mut sc: *mut spawn_context,
         new_wp = (*sc).wp0;
         (*new_wp).flags &= !(0x200 as libc::c_int | 0x400 as libc::c_int)
     } else if (*sc).lc.is_null() {
-        new_wp =
-            window_add_pane(w, 0 as *mut window_pane, hlimit, (*sc).flags);
+        new_wp = window_add_pane(w, 0 as *mut window_pane, hlimit, (*sc).flags);
         layout_init(w, new_wp);
     } else {
         new_wp = window_add_pane(w, (*sc).wp0, hlimit, (*sc).flags);
         layout_assign_pane((*sc).lc, new_wp);
     }
     /*
-	 * Now we have a pane with nothing running in it ready for the new process.
-	 * Work out the command and arguments and store the working directory.
-	 */
-    if (*sc).argc == 0 as libc::c_int &&
-           !(*sc).flags & 0x4 as libc::c_int != 0 {
-        cmd =
-            options_get_string((*s).options,
-                               b"default-command\x00" as *const u8 as
-                                   *const libc::c_char);
+     * Now we have a pane with nothing running in it ready for the new process.
+     * Work out the command and arguments and store the working directory.
+     */
+    if (*sc).argc == 0 as libc::c_int && !(*sc).flags & 0x4 as libc::c_int != 0 {
+        cmd = options_get_string(
+            (*s).options,
+            b"default-command\x00" as *const u8 as *const libc::c_char,
+        );
         if !cmd.is_null() && *cmd as libc::c_int != '\u{0}' as i32 {
             argc = 1 as libc::c_int;
-            argv =
-                &mut cmd as *mut *const libc::c_char as *mut *mut libc::c_char
-        } else { argc = 0 as libc::c_int; argv = 0 as *mut *mut libc::c_char }
-    } else { argc = (*sc).argc; argv = (*sc).argv }
+            argv = &mut cmd as *mut *const libc::c_char as *mut *mut libc::c_char
+        } else {
+            argc = 0 as libc::c_int;
+            argv = 0 as *mut *mut libc::c_char
+        }
+    } else {
+        argc = (*sc).argc;
+        argv = (*sc).argv
+    }
     if !cwd.is_null() {
         free((*new_wp).cwd as *mut libc::c_void);
         (*new_wp).cwd = cwd
     }
     /*
-	 * Replace the stored arguments if there are new ones. If not, the
-	 * existing ones will be used (they will only exist for respawn).
-	 */
+     * Replace the stored arguments if there are new ones. If not, the
+     * existing ones will be used (they will only exist for respawn).
+     */
     if argc > 0 as libc::c_int {
         cmd_free_argv((*new_wp).argc, (*new_wp).argv);
         (*new_wp).argc = argc;
@@ -1556,89 +1645,108 @@ pub unsafe extern "C" fn spawn_pane(mut sc: *mut spawn_context,
     }
     /* Create an environment for this pane. */
     child = environ_for_session(s, 0 as libc::c_int);
-    if !(*sc).environ.is_null() { environ_copy((*sc).environ, child); }
-    environ_set(child, b"TMUX_PANE\x00" as *const u8 as *const libc::c_char,
-                0 as libc::c_int,
-                b"%%%u\x00" as *const u8 as *const libc::c_char,
-                (*new_wp).id);
+    if !(*sc).environ.is_null() {
+        environ_copy((*sc).environ, child);
+    }
+    environ_set(
+        child,
+        b"TMUX_PANE\x00" as *const u8 as *const libc::c_char,
+        0 as libc::c_int,
+        b"%%%u\x00" as *const u8 as *const libc::c_char,
+        (*new_wp).id,
+    );
     /*
-	 * Then the PATH environment variable. The session one is replaced from
-	 * the client if there is one because otherwise running "tmux new
-	 * myprogram" wouldn't work if myprogram isn't in the session's path.
-	 */
+     * Then the PATH environment variable. The session one is replaced from
+     * the client if there is one because otherwise running "tmux new
+     * myprogram" wouldn't work if myprogram isn't in the session's path.
+     */
     if !c.is_null() && (*c).session.is_null() {
         /* only unattached clients */
-        ee =
-            environ_find((*c).environ,
-                         b"PATH\x00" as *const u8 as *const libc::c_char);
+        ee = environ_find(
+            (*c).environ,
+            b"PATH\x00" as *const u8 as *const libc::c_char,
+        );
         if !ee.is_null() {
-            environ_set(child,
-                        b"PATH\x00" as *const u8 as *const libc::c_char,
-                        0 as libc::c_int,
-                        b"%s\x00" as *const u8 as *const libc::c_char,
-                        (*ee).value);
+            environ_set(
+                child,
+                b"PATH\x00" as *const u8 as *const libc::c_char,
+                0 as libc::c_int,
+                b"%s\x00" as *const u8 as *const libc::c_char,
+                (*ee).value,
+            );
         }
     }
-    if environ_find(child,
-                    b"PATH\x00" as *const u8 as *const libc::c_char).is_null()
-       {
-        environ_set(child, b"PATH\x00" as *const u8 as *const libc::c_char,
-                    0 as libc::c_int,
-                    b"%s\x00" as *const u8 as *const libc::c_char,
-                    b"/usr/bin:/bin\x00" as *const u8 as *const libc::c_char);
+    if environ_find(child, b"PATH\x00" as *const u8 as *const libc::c_char).is_null() {
+        environ_set(
+            child,
+            b"PATH\x00" as *const u8 as *const libc::c_char,
+            0 as libc::c_int,
+            b"%s\x00" as *const u8 as *const libc::c_char,
+            b"/usr/bin:/bin\x00" as *const u8 as *const libc::c_char,
+        );
     }
     /* Then the shell. If respawning, use the old one. */
     if !(*sc).flags & 0x4 as libc::c_int != 0 {
-        tmp =
-            options_get_string((*s).options,
-                               b"default-shell\x00" as *const u8 as
-                                   *const libc::c_char);
+        tmp = options_get_string(
+            (*s).options,
+            b"default-shell\x00" as *const u8 as *const libc::c_char,
+        );
         if checkshell(tmp) == 0 {
             tmp = b"/bin/sh\x00" as *const u8 as *const libc::c_char
         }
         free((*new_wp).shell as *mut libc::c_void);
         (*new_wp).shell = xstrdup(tmp)
     }
-    environ_set(child, b"SHELL\x00" as *const u8 as *const libc::c_char,
-                0 as libc::c_int,
-                b"%s\x00" as *const u8 as *const libc::c_char,
-                (*new_wp).shell);
+    environ_set(
+        child,
+        b"SHELL\x00" as *const u8 as *const libc::c_char,
+        0 as libc::c_int,
+        b"%s\x00" as *const u8 as *const libc::c_char,
+        (*new_wp).shell,
+    );
     /* Log the arguments we are going to use. */
-    log_debug(b"%s: shell=%s\x00" as *const u8 as *const libc::c_char,
-              (*::std::mem::transmute::<&[u8; 11],
-                                        &[libc::c_char; 11]>(b"spawn_pane\x00")).as_ptr(),
-              (*new_wp).shell);
+    log_debug(
+        b"%s: shell=%s\x00" as *const u8 as *const libc::c_char,
+        (*::std::mem::transmute::<&[u8; 11], &[libc::c_char; 11]>(b"spawn_pane\x00")).as_ptr(),
+        (*new_wp).shell,
+    );
     if (*new_wp).argc != 0 as libc::c_int {
         cp = cmd_stringify_argv((*new_wp).argc, (*new_wp).argv);
-        log_debug(b"%s: cmd=%s\x00" as *const u8 as *const libc::c_char,
-                  (*::std::mem::transmute::<&[u8; 11],
-                                            &[libc::c_char; 11]>(b"spawn_pane\x00")).as_ptr(),
-                  cp);
+        log_debug(
+            b"%s: cmd=%s\x00" as *const u8 as *const libc::c_char,
+            (*::std::mem::transmute::<&[u8; 11], &[libc::c_char; 11]>(b"spawn_pane\x00")).as_ptr(),
+            cp,
+        );
         free(cp as *mut libc::c_void);
     }
     if !cwd.is_null() {
-        log_debug(b"%s: cwd=%s\x00" as *const u8 as *const libc::c_char,
-                  (*::std::mem::transmute::<&[u8; 11],
-                                            &[libc::c_char; 11]>(b"spawn_pane\x00")).as_ptr(),
-                  cwd);
+        log_debug(
+            b"%s: cwd=%s\x00" as *const u8 as *const libc::c_char,
+            (*::std::mem::transmute::<&[u8; 11], &[libc::c_char; 11]>(b"spawn_pane\x00")).as_ptr(),
+            cwd,
+        );
     }
-    cmd_log_argv((*new_wp).argc, (*new_wp).argv,
-                 b"%s\x00" as *const u8 as *const libc::c_char,
-                 (*::std::mem::transmute::<&[u8; 11],
-                                           &[libc::c_char; 11]>(b"spawn_pane\x00")).as_ptr());
-    environ_log(child,
-                b"%s: environment \x00" as *const u8 as *const libc::c_char,
-                (*::std::mem::transmute::<&[u8; 11],
-                                          &[libc::c_char; 11]>(b"spawn_pane\x00")).as_ptr());
+    cmd_log_argv(
+        (*new_wp).argc,
+        (*new_wp).argv,
+        b"%s\x00" as *const u8 as *const libc::c_char,
+        (*::std::mem::transmute::<&[u8; 11], &[libc::c_char; 11]>(b"spawn_pane\x00")).as_ptr(),
+    );
+    environ_log(
+        child,
+        b"%s: environment \x00" as *const u8 as *const libc::c_char,
+        (*::std::mem::transmute::<&[u8; 11], &[libc::c_char; 11]>(b"spawn_pane\x00")).as_ptr(),
+    );
     /* Initialize the window size. */
-    memset(&mut ws as *mut winsize as *mut libc::c_void, 0 as libc::c_int,
-           ::std::mem::size_of::<winsize>() as libc::c_ulong);
+    memset(
+        &mut ws as *mut winsize as *mut libc::c_void,
+        0 as libc::c_int,
+        ::std::mem::size_of::<winsize>() as libc::c_ulong,
+    );
     ws.ws_col = (*(*new_wp).base.grid).sx as libc::c_ushort;
     ws.ws_row = (*(*new_wp).base.grid).sy as libc::c_ushort;
-    ws.ws_xpixel =
-        (*w).xpixel.wrapping_mul(ws.ws_col as libc::c_uint) as libc::c_ushort;
-    ws.ws_ypixel =
-        (*w).ypixel.wrapping_mul(ws.ws_row as libc::c_uint) as libc::c_ushort;
+    ws.ws_xpixel = (*w).xpixel.wrapping_mul(ws.ws_col as libc::c_uint) as libc::c_ushort;
+    ws.ws_ypixel = (*w).ypixel.wrapping_mul(ws.ws_row as libc::c_uint) as libc::c_ushort;
     /* Block signals until fork has completed. */
     sigfillset(&mut set);
     sigprocmask(0 as libc::c_int, &mut set, &mut oldset);
@@ -1649,13 +1757,19 @@ pub unsafe extern "C" fn spawn_pane(mut sc: *mut spawn_context,
         (*new_wp).base.mode |= 0x4000 as libc::c_int
     } else {
         /* Fork the new process. */
-        (*new_wp).pid =
-            fdforkpty(ptm_fd, &mut (*new_wp).fd, (*new_wp).tty.as_mut_ptr(),
-                      0 as *mut termios, &mut ws);
+        (*new_wp).pid = fdforkpty(
+            ptm_fd,
+            &mut (*new_wp).fd,
+            (*new_wp).tty.as_mut_ptr(),
+            0 as *mut termios,
+            &mut ws,
+        );
         if (*new_wp).pid == -(1 as libc::c_int) {
-            xasprintf(cause,
-                      b"fork failed: %s\x00" as *const u8 as
-                          *const libc::c_char, strerror(*__errno_location()));
+            xasprintf(
+                cause,
+                b"fork failed: %s\x00" as *const u8 as *const libc::c_char,
+                strerror(*__errno_location()),
+            );
             (*new_wp).fd = -(1 as libc::c_int);
             if !(*sc).flags & 0x4 as libc::c_int != 0 {
                 server_client_remove_pane(new_wp);
@@ -1664,14 +1778,14 @@ pub unsafe extern "C" fn spawn_pane(mut sc: *mut spawn_context,
             }
             sigprocmask(2 as libc::c_int, &mut oldset, 0 as *mut sigset_t);
             environ_free(child);
-            return 0 as *mut window_pane
+            return 0 as *mut window_pane;
         }
         /* In the parent process, everything is done now. */
         if !((*new_wp).pid != 0 as libc::c_int) {
             /*
-	 * Child process. Change to the working directory or home if that
-	 * fails.
-	 */
+             * Child process. Change to the working directory or home if that
+             * fails.
+             */
             if chdir((*new_wp).cwd) != 0 as libc::c_int {
                 tmp = find_home();
                 if tmp.is_null() || chdir(tmp) != 0 as libc::c_int {
@@ -1679,27 +1793,30 @@ pub unsafe extern "C" fn spawn_pane(mut sc: *mut spawn_context,
                 }
             }
             /*
-	 * Update terminal escape characters from the session if available and
-	 * force VERASE to tmux's backspace.
-	 */
+             * Update terminal escape characters from the session if available and
+             * force VERASE to tmux's backspace.
+             */
             if tcgetattr(0 as libc::c_int, &mut now) != 0 as libc::c_int {
                 _exit(1 as libc::c_int);
             }
             if !(*s).tio.is_null() {
-                memcpy(now.c_cc.as_mut_ptr() as *mut libc::c_void,
-                       (*(*s).tio).c_cc.as_mut_ptr() as *const libc::c_void,
-                       ::std::mem::size_of::<[cc_t; 32]>() as libc::c_ulong);
+                memcpy(
+                    now.c_cc.as_mut_ptr() as *mut libc::c_void,
+                    (*(*s).tio).c_cc.as_mut_ptr() as *const libc::c_void,
+                    ::std::mem::size_of::<[cc_t; 32]>() as libc::c_ulong,
+                );
             }
-            key =
-                options_get_number(global_options,
-                                   b"backspace\x00" as *const u8 as
-                                       *const libc::c_char) as key_code;
+            key = options_get_number(
+                global_options,
+                b"backspace\x00" as *const u8 as *const libc::c_char,
+            ) as key_code;
             if key >= 0x7f as libc::c_int as libc::c_ulonglong {
                 now.c_cc[2 as libc::c_int as usize] = '\u{7f}' as i32 as cc_t
-            } else { now.c_cc[2 as libc::c_int as usize] = key as cc_t }
+            } else {
+                now.c_cc[2 as libc::c_int as usize] = key as cc_t
+            }
             now.c_iflag |= 0o40000 as libc::c_int as libc::c_uint;
-            if tcsetattr(0 as libc::c_int, 0 as libc::c_int, &mut now) !=
-                   0 as libc::c_int {
+            if tcsetattr(0 as libc::c_int, 0 as libc::c_int, &mut now) != 0 as libc::c_int {
                 _exit(1 as libc::c_int);
             }
             /* Clean up file descriptors and signals and update the environment. */
@@ -1709,52 +1826,68 @@ pub unsafe extern "C" fn spawn_pane(mut sc: *mut spawn_context,
             log_close();
             environ_push(child);
             /*
-	 * If given multiple arguments, use execvp(). Copy the arguments to
-	 * ensure they end in a NULL.
-	 */
-            if (*new_wp).argc != 0 as libc::c_int &&
-                   (*new_wp).argc != 1 as libc::c_int {
+             * If given multiple arguments, use execvp(). Copy the arguments to
+             * ensure they end in a NULL.
+             */
+            if (*new_wp).argc != 0 as libc::c_int && (*new_wp).argc != 1 as libc::c_int {
                 argvp = cmd_copy_argv((*new_wp).argc, (*new_wp).argv);
-                execvp(*argvp.offset(0 as libc::c_int as isize),
-                       argvp as *const *mut libc::c_char);
+                execvp(
+                    *argvp.offset(0 as libc::c_int as isize),
+                    argvp as *const *mut libc::c_char,
+                );
                 _exit(1 as libc::c_int);
             }
             /*
-	 * If one argument, pass it to $SHELL -c. Otherwise create a login
-	 * shell.
-	 */
+             * If one argument, pass it to $SHELL -c. Otherwise create a login
+             * shell.
+             */
             cp = strrchr((*new_wp).shell, '/' as i32);
             if (*new_wp).argc == 1 as libc::c_int {
                 tmp = *(*new_wp).argv.offset(0 as libc::c_int as isize);
-                if !cp.is_null() &&
-                       *cp.offset(1 as libc::c_int as isize) as libc::c_int !=
-                           '\u{0}' as i32 {
-                    xasprintf(&mut argv0 as *mut *mut libc::c_char,
-                              b"%s\x00" as *const u8 as *const libc::c_char,
-                              cp.offset(1 as libc::c_int as isize));
+                if !cp.is_null()
+                    && *cp.offset(1 as libc::c_int as isize) as libc::c_int != '\u{0}' as i32
+                {
+                    xasprintf(
+                        &mut argv0 as *mut *mut libc::c_char,
+                        b"%s\x00" as *const u8 as *const libc::c_char,
+                        cp.offset(1 as libc::c_int as isize),
+                    );
                 } else {
-                    xasprintf(&mut argv0 as *mut *mut libc::c_char,
-                              b"%s\x00" as *const u8 as *const libc::c_char,
-                              (*new_wp).shell);
+                    xasprintf(
+                        &mut argv0 as *mut *mut libc::c_char,
+                        b"%s\x00" as *const u8 as *const libc::c_char,
+                        (*new_wp).shell,
+                    );
                 }
-                execl((*new_wp).shell, argv0,
-                      b"-c\x00" as *const u8 as *const libc::c_char, tmp,
-                      0 as *mut libc::c_void as *mut libc::c_char);
+                execl(
+                    (*new_wp).shell,
+                    argv0,
+                    b"-c\x00" as *const u8 as *const libc::c_char,
+                    tmp,
+                    0 as *mut libc::c_void as *mut libc::c_char,
+                );
                 _exit(1 as libc::c_int);
             }
-            if !cp.is_null() &&
-                   *cp.offset(1 as libc::c_int as isize) as libc::c_int !=
-                       '\u{0}' as i32 {
-                xasprintf(&mut argv0 as *mut *mut libc::c_char,
-                          b"-%s\x00" as *const u8 as *const libc::c_char,
-                          cp.offset(1 as libc::c_int as isize));
+            if !cp.is_null()
+                && *cp.offset(1 as libc::c_int as isize) as libc::c_int != '\u{0}' as i32
+            {
+                xasprintf(
+                    &mut argv0 as *mut *mut libc::c_char,
+                    b"-%s\x00" as *const u8 as *const libc::c_char,
+                    cp.offset(1 as libc::c_int as isize),
+                );
             } else {
-                xasprintf(&mut argv0 as *mut *mut libc::c_char,
-                          b"-%s\x00" as *const u8 as *const libc::c_char,
-                          (*new_wp).shell);
+                xasprintf(
+                    &mut argv0 as *mut *mut libc::c_char,
+                    b"-%s\x00" as *const u8 as *const libc::c_char,
+                    (*new_wp).shell,
+                );
             }
-            execl((*new_wp).shell, argv0,
-                  0 as *mut libc::c_void as *mut libc::c_char);
+            execl(
+                (*new_wp).shell,
+                argv0,
+                0 as *mut libc::c_void as *mut libc::c_char,
+            );
             _exit(1 as libc::c_int);
         }
     }
@@ -1762,15 +1895,21 @@ pub unsafe extern "C" fn spawn_pane(mut sc: *mut spawn_context,
     sigprocmask(2 as libc::c_int, &mut oldset, 0 as *mut sigset_t);
     window_pane_set_event(new_wp);
     environ_free(child);
-    if (*sc).flags & 0x4 as libc::c_int != 0 { return new_wp }
+    if (*sc).flags & 0x4 as libc::c_int != 0 {
+        return new_wp;
+    }
     if !(*sc).flags & 0x2 as libc::c_int != 0 || (*w).active.is_null() {
         if (*sc).flags & 0x10 as libc::c_int != 0 {
             window_set_active_pane(w, new_wp, 0 as libc::c_int);
-        } else { window_set_active_pane(w, new_wp, 1 as libc::c_int); }
+        } else {
+            window_set_active_pane(w, new_wp, 1 as libc::c_int);
+        }
     }
     if !(*sc).flags & 0x10 as libc::c_int != 0 {
-        notify_window(b"window-layout-changed\x00" as *const u8 as
-                          *const libc::c_char, w);
+        notify_window(
+            b"window-layout-changed\x00" as *const u8 as *const libc::c_char,
+            w,
+        );
     }
     return new_wp;
 }

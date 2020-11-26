@@ -9,7 +9,7 @@ extern "C" {
     fn calloc(_: libc::c_ulong, _: libc::c_ulong) -> *mut libc::c_void;
     #[no_mangle]
     fn reallocarray(__ptr: *mut libc::c_void, __nmemb: size_t, __size: size_t)
-     -> *mut libc::c_void;
+        -> *mut libc::c_void;
     #[no_mangle]
     fn free(__ptr: *mut libc::c_void);
     #[no_mangle]
@@ -72,10 +72,8 @@ pub type FILE = _IO_FILE;
  * portable fgetln() version, NOT reentrant
  */
 #[no_mangle]
-pub unsafe extern "C" fn fgetln(mut fp: *mut FILE, mut len: *mut size_t)
- -> *mut libc::c_char {
-    static mut buf: *mut libc::c_char =
-        0 as *const libc::c_char as *mut libc::c_char;
+pub unsafe extern "C" fn fgetln(mut fp: *mut FILE, mut len: *mut size_t) -> *mut libc::c_char {
+    static mut buf: *mut libc::c_char = 0 as *const libc::c_char as *mut libc::c_char;
     static mut bufsz: size_t = 0 as libc::c_int as size_t;
     let mut r: size_t = 0 as libc::c_int as size_t;
     let mut p: *mut libc::c_char = 0 as *mut libc::c_char;
@@ -83,39 +81,48 @@ pub unsafe extern "C" fn fgetln(mut fp: *mut FILE, mut len: *mut size_t)
     let mut e: libc::c_int = 0;
     if fp.is_null() || len.is_null() {
         *__errno_location() = 22 as libc::c_int;
-        return 0 as *mut libc::c_char
+        return 0 as *mut libc::c_char;
     }
     if buf.is_null() {
-        buf =
-            calloc(1 as libc::c_int as libc::c_ulong,
-                   8192 as libc::c_int as libc::c_ulong) as *mut libc::c_char;
-        if buf.is_null() { return 0 as *mut libc::c_char }
+        buf = calloc(
+            1 as libc::c_int as libc::c_ulong,
+            8192 as libc::c_int as libc::c_ulong,
+        ) as *mut libc::c_char;
+        if buf.is_null() {
+            return 0 as *mut libc::c_char;
+        }
         bufsz = 8192 as libc::c_int as size_t
     }
-    loop  {
+    loop {
         c = getc(fp);
-        if !(c != -(1 as libc::c_int)) { break ; }
+        if !(c != -(1 as libc::c_int)) {
+            break;
+        }
         let fresh0 = r;
         r = r.wrapping_add(1);
         *buf.offset(fresh0 as isize) = c as libc::c_char;
         if r == bufsz {
-            p =
-                reallocarray(buf as *mut libc::c_void,
-                             2 as libc::c_int as size_t, bufsz) as
-                    *mut libc::c_char;
+            p = reallocarray(buf as *mut libc::c_void, 2 as libc::c_int as size_t, bufsz)
+                as *mut libc::c_char;
             if p.is_null() {
                 e = *__errno_location();
                 free(buf as *mut libc::c_void);
                 *__errno_location() = e;
                 buf = 0 as *mut libc::c_char;
                 bufsz = 0 as libc::c_int as size_t;
-                return 0 as *mut libc::c_char
+                return 0 as *mut libc::c_char;
             }
             buf = p;
             bufsz = (2 as libc::c_int as libc::c_ulong).wrapping_mul(bufsz)
         }
-        if c == '\n' as i32 { break ; }
+        if c == '\n' as i32 {
+            break;
+        }
     }
     *len = r;
-    return if *len != 0 { buf } else { 0 as *mut libc::c_char };
+    return if *len != 0 {
+        buf
+    } else {
+        0 as *mut libc::c_char
+    };
 }

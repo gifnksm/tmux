@@ -26,37 +26,36 @@ extern "C" {
     #[no_mangle]
     fn free(__ptr: *mut libc::c_void);
     #[no_mangle]
-    fn qsort(__base: *mut libc::c_void, __nmemb: size_t, __size: size_t,
-             __compar: __compar_fn_t);
+    fn qsort(__base: *mut libc::c_void, __nmemb: size_t, __size: size_t, __compar: __compar_fn_t);
     #[no_mangle]
-    fn memcpy(_: *mut libc::c_void, _: *const libc::c_void, _: libc::c_ulong)
-     -> *mut libc::c_void;
+    fn memcpy(_: *mut libc::c_void, _: *const libc::c_void, _: libc::c_ulong) -> *mut libc::c_void;
     #[no_mangle]
     fn strcmp(_: *const libc::c_char, _: *const libc::c_char) -> libc::c_int;
     #[no_mangle]
-    fn strstr(_: *const libc::c_char, _: *const libc::c_char)
-     -> *mut libc::c_char;
+    fn strstr(_: *const libc::c_char, _: *const libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
     fn strlen(_: *const libc::c_char) -> libc::c_ulong;
     #[no_mangle]
     fn xcalloc(_: size_t, _: size_t) -> *mut libc::c_void;
     #[no_mangle]
-    fn xreallocarray(_: *mut libc::c_void, _: size_t, _: size_t)
-     -> *mut libc::c_void;
+    fn xreallocarray(_: *mut libc::c_void, _: size_t, _: size_t) -> *mut libc::c_void;
     #[no_mangle]
     fn xstrdup(_: *const libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
-    fn xasprintf(_: *mut *mut libc::c_char, _: *const libc::c_char, _: ...)
-     -> libc::c_int;
+    fn xasprintf(_: *mut *mut libc::c_char, _: *const libc::c_char, _: ...) -> libc::c_int;
     #[no_mangle]
     fn format_true(_: *const libc::c_char) -> libc::c_int;
     #[no_mangle]
-    fn format_single(_: *mut cmdq_item, _: *const libc::c_char,
-                     _: *mut client, _: *mut session, _: *mut winlink,
-                     _: *mut window_pane) -> *mut libc::c_char;
+    fn format_single(
+        _: *mut cmdq_item,
+        _: *const libc::c_char,
+        _: *mut client,
+        _: *mut session,
+        _: *mut winlink,
+        _: *mut window_pane,
+    ) -> *mut libc::c_char;
     #[no_mangle]
-    fn options_get_number(_: *mut options, _: *const libc::c_char)
-     -> libc::c_longlong;
+    fn options_get_number(_: *mut options, _: *const libc::c_char) -> libc::c_longlong;
     #[no_mangle]
     fn args_has(_: *mut args, _: u_char) -> libc::c_int;
     #[no_mangle]
@@ -64,16 +63,22 @@ extern "C" {
     #[no_mangle]
     fn cmd_find_clear_state(_: *mut cmd_find_state, _: libc::c_int);
     #[no_mangle]
-    fn cmd_find_from_winlink_pane(_: *mut cmd_find_state, _: *mut winlink,
-                                  _: *mut window_pane, _: libc::c_int);
+    fn cmd_find_from_winlink_pane(
+        _: *mut cmd_find_state,
+        _: *mut winlink,
+        _: *mut window_pane,
+        _: libc::c_int,
+    );
     #[no_mangle]
-    fn cmdq_get_callback1(_: *const libc::c_char, _: cmdq_cb,
-                          _: *mut libc::c_void) -> *mut cmdq_item;
+    fn cmdq_get_callback1(
+        _: *const libc::c_char,
+        _: cmdq_cb,
+        _: *mut libc::c_void,
+    ) -> *mut cmdq_item;
     #[no_mangle]
     fn cmdq_append(_: *mut client, _: *mut cmdq_item) -> *mut cmdq_item;
     #[no_mangle]
-    fn server_set_marked(_: *mut session, _: *mut winlink,
-                         _: *mut window_pane);
+    fn server_set_marked(_: *mut session, _: *mut winlink, _: *mut window_pane);
     #[no_mangle]
     fn server_clear_marked();
     #[no_mangle]
@@ -87,26 +92,31 @@ extern "C" {
     #[no_mangle]
     static grid_default_cell: grid_cell;
     #[no_mangle]
-    fn screen_write_puts(_: *mut screen_write_ctx, _: *const grid_cell,
-                         _: *const libc::c_char, _: ...);
+    fn screen_write_puts(
+        _: *mut screen_write_ctx,
+        _: *const grid_cell,
+        _: *const libc::c_char,
+        _: ...
+    );
     #[no_mangle]
-    fn screen_write_vline(_: *mut screen_write_ctx, _: u_int, _: libc::c_int,
-                          _: libc::c_int);
+    fn screen_write_vline(_: *mut screen_write_ctx, _: u_int, _: libc::c_int, _: libc::c_int);
     #[no_mangle]
     fn screen_write_box(_: *mut screen_write_ctx, _: u_int, _: u_int);
     #[no_mangle]
-    fn screen_write_preview(_: *mut screen_write_ctx, _: *mut screen,
-                            _: u_int, _: u_int);
+    fn screen_write_preview(_: *mut screen_write_ctx, _: *mut screen, _: u_int, _: u_int);
     #[no_mangle]
-    fn screen_write_cursormove(_: *mut screen_write_ctx, _: libc::c_int,
-                               _: libc::c_int, _: libc::c_int);
+    fn screen_write_cursormove(
+        _: *mut screen_write_ctx,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: libc::c_int,
+    );
     #[no_mangle]
     fn winlinks_RB_NEXT(_: *mut winlink) -> *mut winlink;
     #[no_mangle]
     fn winlinks_RB_MINMAX(_: *mut winlinks, _: libc::c_int) -> *mut winlink;
     #[no_mangle]
-    fn winlink_find_by_index(_: *mut winlinks, _: libc::c_int)
-     -> *mut winlink;
+    fn winlink_find_by_index(_: *mut winlinks, _: libc::c_int) -> *mut winlink;
     #[no_mangle]
     fn winlink_count(_: *mut winlinks) -> u_int;
     #[no_mangle]
@@ -120,10 +130,16 @@ extern "C" {
     #[no_mangle]
     fn window_pane_reset_mode(_: *mut window_pane);
     #[no_mangle]
-    fn status_prompt_set(_: *mut client, _: *mut cmd_find_state,
-                         _: *const libc::c_char, _: *const libc::c_char,
-                         _: prompt_input_cb, _: prompt_free_cb,
-                         _: *mut libc::c_void, _: libc::c_int);
+    fn status_prompt_set(
+        _: *mut client,
+        _: *mut cmd_find_state,
+        _: *const libc::c_char,
+        _: *const libc::c_char,
+        _: prompt_input_cb,
+        _: prompt_free_cb,
+        _: *mut libc::c_void,
+        _: libc::c_int,
+    );
     #[no_mangle]
     fn mode_tree_count_tagged(_: *mut mode_tree_data) -> u_int;
     #[no_mangle]
@@ -133,18 +149,30 @@ extern "C" {
     #[no_mangle]
     fn mode_tree_expand(_: *mut mode_tree_data, _: uint64_t);
     #[no_mangle]
-    fn mode_tree_set_current(_: *mut mode_tree_data, _: uint64_t)
-     -> libc::c_int;
+    fn mode_tree_set_current(_: *mut mode_tree_data, _: uint64_t) -> libc::c_int;
     #[no_mangle]
-    fn mode_tree_each_tagged(_: *mut mode_tree_data, _: mode_tree_each_cb,
-                             _: *mut client, _: key_code, _: libc::c_int);
+    fn mode_tree_each_tagged(
+        _: *mut mode_tree_data,
+        _: mode_tree_each_cb,
+        _: *mut client,
+        _: key_code,
+        _: libc::c_int,
+    );
     #[no_mangle]
-    fn mode_tree_start(_: *mut window_pane, _: *mut args,
-                       _: mode_tree_build_cb, _: mode_tree_draw_cb,
-                       _: mode_tree_search_cb, _: mode_tree_menu_cb,
-                       _: mode_tree_height_cb, _: *mut libc::c_void,
-                       _: *const menu_item, _: *mut *const libc::c_char,
-                       _: u_int, _: *mut *mut screen) -> *mut mode_tree_data;
+    fn mode_tree_start(
+        _: *mut window_pane,
+        _: *mut args,
+        _: mode_tree_build_cb,
+        _: mode_tree_draw_cb,
+        _: mode_tree_search_cb,
+        _: mode_tree_menu_cb,
+        _: mode_tree_height_cb,
+        _: *mut libc::c_void,
+        _: *const menu_item,
+        _: *mut *const libc::c_char,
+        _: u_int,
+        _: *mut *mut screen,
+    ) -> *mut mode_tree_data;
     #[no_mangle]
     fn mode_tree_zoom(_: *mut mode_tree_data, _: *mut args);
     #[no_mangle]
@@ -154,26 +182,39 @@ extern "C" {
     #[no_mangle]
     fn mode_tree_resize(_: *mut mode_tree_data, _: u_int, _: u_int);
     #[no_mangle]
-    fn mode_tree_add(_: *mut mode_tree_data, _: *mut mode_tree_item,
-                     _: *mut libc::c_void, _: uint64_t,
-                     _: *const libc::c_char, _: *const libc::c_char,
-                     _: libc::c_int) -> *mut mode_tree_item;
+    fn mode_tree_add(
+        _: *mut mode_tree_data,
+        _: *mut mode_tree_item,
+        _: *mut libc::c_void,
+        _: uint64_t,
+        _: *const libc::c_char,
+        _: *const libc::c_char,
+        _: libc::c_int,
+    ) -> *mut mode_tree_item;
     #[no_mangle]
     fn mode_tree_remove(_: *mut mode_tree_data, _: *mut mode_tree_item);
     #[no_mangle]
     fn mode_tree_draw(_: *mut mode_tree_data);
     #[no_mangle]
-    fn mode_tree_key(_: *mut mode_tree_data, _: *mut client, _: *mut key_code,
-                     _: *mut mouse_event, _: *mut u_int, _: *mut u_int)
-     -> libc::c_int;
+    fn mode_tree_key(
+        _: *mut mode_tree_data,
+        _: *mut client,
+        _: *mut key_code,
+        _: *mut mouse_event,
+        _: *mut u_int,
+        _: *mut u_int,
+    ) -> libc::c_int;
     #[no_mangle]
-    fn mode_tree_run_command(_: *mut client, _: *mut cmd_find_state,
-                             _: *const libc::c_char, _: *const libc::c_char);
+    fn mode_tree_run_command(
+        _: *mut client,
+        _: *mut cmd_find_state,
+        _: *const libc::c_char,
+        _: *const libc::c_char,
+    );
     #[no_mangle]
     fn session_find_by_id(_: u_int) -> *mut session;
     #[no_mangle]
-    fn session_destroy(_: *mut session, _: libc::c_int,
-                       _: *const libc::c_char);
+    fn session_destroy(_: *mut session, _: libc::c_int, _: *const libc::c_char);
     #[no_mangle]
     fn session_group_contains(_: *mut session) -> *mut session_group;
     #[no_mangle]
@@ -183,8 +224,7 @@ extern "C" {
     #[no_mangle]
     fn sessions_RB_MINMAX(_: *mut sessions, _: libc::c_int) -> *mut session;
     #[no_mangle]
-    fn osdep_get_name(_: libc::c_int, _: *mut libc::c_char)
-     -> *mut libc::c_char;
+    fn osdep_get_name(_: libc::c_int, _: *mut libc::c_char) -> *mut libc::c_char;
 }
 pub type __u_char = libc::c_uchar;
 pub type __u_short = libc::c_ushort;
@@ -206,10 +246,8 @@ pub struct timeval {
     pub tv_sec: __time_t,
     pub tv_usec: __suseconds_t,
 }
-pub type __compar_fn_t
-    =
-    Option<unsafe extern "C" fn(_: *const libc::c_void,
-                                _: *const libc::c_void) -> libc::c_int>;
+pub type __compar_fn_t =
+    Option<unsafe extern "C" fn(_: *const libc::c_void, _: *const libc::c_void) -> libc::c_int>;
 pub type uint8_t = __uint8_t;
 pub type uint64_t = __uint64_t;
 #[derive(Copy, Clone)]
@@ -280,18 +318,13 @@ pub struct event_callback {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub union C2RustUnnamed_6 {
-    pub evcb_callback: Option<unsafe extern "C" fn(_: libc::c_int,
-                                                   _: libc::c_short,
-                                                   _: *mut libc::c_void)
-                                  -> ()>,
-    pub evcb_selfcb: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                 _: *mut libc::c_void) -> ()>,
-    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
-    pub evcb_cbfinalize: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
+    pub evcb_callback:
+        Option<unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> ()>,
+    pub evcb_selfcb:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
+    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event, _: *mut libc::c_void) -> ()>,
+    pub evcb_cbfinalize:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -318,14 +351,10 @@ pub struct bufferevent {
     pub timeout_write: timeval,
     pub enabled: libc::c_short,
 }
-pub type bufferevent_event_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short,
-                                _: *mut libc::c_void) -> ()>;
-pub type bufferevent_data_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void)
-               -> ()>;
+pub type bufferevent_event_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short, _: *mut libc::c_void) -> ()>;
+pub type bufferevent_data_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct event_watermark {
@@ -464,17 +493,19 @@ pub struct C2RustUnnamed_9 {
     pub rbe_parent: *mut client_file,
     pub rbe_color: libc::c_int,
 }
-pub type client_file_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *const libc::c_char,
-                                _: libc::c_int, _: libc::c_int,
-                                _: *mut evbuffer, _: *mut libc::c_void)
-               -> ()>;
+pub type client_file_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: *mut evbuffer,
+        _: *mut libc::c_void,
+    ) -> (),
+>;
 pub type overlay_free_cb = Option<unsafe extern "C" fn(_: *mut client) -> ()>;
-pub type overlay_key_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event)
-               -> libc::c_int>;
+pub type overlay_key_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_event {
@@ -504,10 +535,8 @@ pub struct mouse_event {
     pub sgr_b: u_int,
 }
 pub type key_code = libc::c_ulonglong;
-pub type overlay_draw_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx)
-               -> ()>;
+pub type overlay_draw_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen_redraw_ctx {
@@ -521,10 +550,8 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int)
-               -> *mut screen>;
+pub type overlay_mode_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen {
@@ -618,10 +645,8 @@ pub struct C2RustUnnamed_11 {
     pub bg: u_char,
     pub data: u_char,
 }
-pub type overlay_check_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int)
-               -> libc::c_int>;
+pub type overlay_check_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct session {
@@ -868,24 +893,37 @@ pub struct C2RustUnnamed_24 {
 pub struct window_mode {
     pub name: *const libc::c_char,
     pub default_format: *const libc::c_char,
-    pub init: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                          _: *mut cmd_find_state,
-                                          _: *mut args) -> *mut screen>,
+    pub init: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut cmd_find_state,
+            _: *mut args,
+        ) -> *mut screen,
+    >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
-    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                            _: u_int, _: u_int) -> ()>,
-    pub key: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                         _: *mut client, _: *mut session,
-                                         _: *mut winlink, _: key_code,
-                                         _: *mut mouse_event) -> ()>,
-    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry)
-                              -> *const libc::c_char>,
-    pub command: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut client, _: *mut session,
-                                             _: *mut winlink, _: *mut args,
-                                             _: *mut mouse_event) -> ()>,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut format_tree) -> ()>,
+    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
+    pub key: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: key_code,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> *const libc::c_char>,
+    pub command: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: *mut args,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -922,14 +960,15 @@ pub struct winlink_stack {
 pub type C2RustUnnamed_25 = libc::c_uint;
 pub const PROMPT_COMMAND: C2RustUnnamed_25 = 1;
 pub const PROMPT_ENTRY: C2RustUnnamed_25 = 0;
-pub type prompt_free_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
-pub type prompt_input_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut libc::c_void,
-                                _: *const libc::c_char, _: libc::c_int)
-               -> libc::c_int>;
+pub type prompt_free_cb = Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
+pub type prompt_input_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut libc::c_void,
+        _: *const libc::c_char,
+        _: libc::c_int,
+    ) -> libc::c_int,
+>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_table {
@@ -1100,12 +1139,8 @@ pub struct tty {
     pub mouse_last_y: u_int,
     pub mouse_last_b: u_int,
     pub mouse_drag_flag: libc::c_int,
-    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client,
-                                                       _: *mut mouse_event)
-                                      -> ()>,
-    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client,
-                                                        _: *mut mouse_event)
-                                       -> ()>,
+    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
+    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
     pub key_timer: event,
     pub key_tree: *mut tty_key,
 }
@@ -1170,10 +1205,8 @@ pub struct screen_write_ctx {
     pub written: u_int,
     pub skipped: u_int,
 }
-pub type screen_write_init_ctx_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut screen_write_ctx, _: *mut tty_ctx)
-               -> ()>;
+pub type screen_write_init_ctx_cb =
+    Option<unsafe extern "C" fn(_: *mut screen_write_ctx, _: *mut tty_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct tty_ctx {
@@ -1204,13 +1237,9 @@ pub struct tty_ctx {
     pub wsx: u_int,
     pub wsy: u_int,
 }
-pub type tty_ctx_set_client_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut tty_ctx, _: *mut client)
-               -> libc::c_int>;
-pub type tty_ctx_redraw_cb
-    =
-    Option<unsafe extern "C" fn(_: *const tty_ctx) -> ()>;
+pub type tty_ctx_set_client_cb =
+    Option<unsafe extern "C" fn(_: *mut tty_ctx, _: *mut client) -> libc::c_int>;
+pub type tty_ctx_redraw_cb = Option<unsafe extern "C" fn(_: *const tty_ctx) -> ()>;
 pub type C2RustUnnamed_32 = libc::c_ulong;
 pub const KEYC_KP_PERIOD: C2RustUnnamed_32 = 68719476927;
 pub const KEYC_KP_ZERO: C2RustUnnamed_32 = 68719476926;
@@ -1442,42 +1471,50 @@ pub const CMD_RETURN_STOP: cmd_retval = 2;
 pub const CMD_RETURN_WAIT: cmd_retval = 1;
 pub const CMD_RETURN_NORMAL: cmd_retval = 0;
 pub const CMD_RETURN_ERROR: cmd_retval = -1;
-pub type cmdq_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut cmdq_item, _: *mut libc::c_void)
-               -> cmd_retval>;
+pub type cmdq_cb =
+    Option<unsafe extern "C" fn(_: *mut cmdq_item, _: *mut libc::c_void) -> cmd_retval>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct mode_tree_sort_criteria {
     pub field: u_int,
     pub reversed: libc::c_int,
 }
-pub type mode_tree_build_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void,
-                                _: *mut mode_tree_sort_criteria,
-                                _: *mut uint64_t, _: *const libc::c_char)
-               -> ()>;
-pub type mode_tree_draw_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void, _: *mut libc::c_void,
-                                _: *mut screen_write_ctx, _: u_int, _: u_int)
-               -> ()>;
-pub type mode_tree_search_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void, _: *mut libc::c_void,
-                                _: *const libc::c_char) -> libc::c_int>;
-pub type mode_tree_menu_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void, _: *mut client,
-                                _: key_code) -> ()>;
-pub type mode_tree_height_cb
-    =
+pub type mode_tree_build_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut libc::c_void,
+        _: *mut mode_tree_sort_criteria,
+        _: *mut uint64_t,
+        _: *const libc::c_char,
+    ) -> (),
+>;
+pub type mode_tree_draw_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut libc::c_void,
+        _: *mut libc::c_void,
+        _: *mut screen_write_ctx,
+        _: u_int,
+        _: u_int,
+    ) -> (),
+>;
+pub type mode_tree_search_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut libc::c_void,
+        _: *mut libc::c_void,
+        _: *const libc::c_char,
+    ) -> libc::c_int,
+>;
+pub type mode_tree_menu_cb =
+    Option<unsafe extern "C" fn(_: *mut libc::c_void, _: *mut client, _: key_code) -> ()>;
+pub type mode_tree_height_cb =
     Option<unsafe extern "C" fn(_: *mut libc::c_void, _: u_int) -> u_int>;
-pub type mode_tree_each_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void, _: *mut libc::c_void,
-                                _: *mut client, _: key_code) -> ()>;
+pub type mode_tree_each_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut libc::c_void,
+        _: *mut libc::c_void,
+        _: *mut client,
+        _: key_code,
+    ) -> (),
+>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct window_tree_modedata {
@@ -1520,114 +1557,121 @@ pub type window_tree_sort_type = libc::c_uint;
 #[inline]
 unsafe extern "C" fn tolower(mut __c: libc::c_int) -> libc::c_int {
     return if __c >= -(128 as libc::c_int) && __c < 256 as libc::c_int {
-               *(*__ctype_tolower_loc()).offset(__c as isize)
-           } else { __c };
+        *(*__ctype_tolower_loc()).offset(__c as isize)
+    } else {
+        __c
+    };
 }
-static mut window_tree_menu_items: [menu_item; 13] =
-    [{
-         let mut init =
-             menu_item{name:
-                           b"Select\x00" as *const u8 as *const libc::c_char,
-                       key: '\r' as i32 as key_code,
-                       command: 0 as *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             menu_item{name:
-                           b"Expand\x00" as *const u8 as *const libc::c_char,
-                       key: KEYC_RIGHT as libc::c_ulong as key_code,
-                       command: 0 as *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             menu_item{name: b"Mark\x00" as *const u8 as *const libc::c_char,
-                       key: 'm' as i32 as key_code,
-                       command: 0 as *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             menu_item{name: b"\x00" as *const u8 as *const libc::c_char,
-                       key: 0xff000000000 as libc::c_ulonglong,
-                       command: 0 as *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             menu_item{name: b"Tag\x00" as *const u8 as *const libc::c_char,
-                       key: 't' as i32 as key_code,
-                       command: 0 as *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             menu_item{name:
-                           b"Tag All\x00" as *const u8 as *const libc::c_char,
-                       key: '\u{14}' as i32 as key_code,
-                       command: 0 as *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             menu_item{name:
-                           b"Tag None\x00" as *const u8 as
-                               *const libc::c_char,
-                       key: 'T' as i32 as key_code,
-                       command: 0 as *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             menu_item{name: b"\x00" as *const u8 as *const libc::c_char,
-                       key: 0xff000000000 as libc::c_ulonglong,
-                       command: 0 as *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             menu_item{name: b"Kill\x00" as *const u8 as *const libc::c_char,
-                       key: 'x' as i32 as key_code,
-                       command: 0 as *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             menu_item{name:
-                           b"Kill Tagged\x00" as *const u8 as
-                               *const libc::c_char,
-                       key: 'X' as i32 as key_code,
-                       command: 0 as *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             menu_item{name: b"\x00" as *const u8 as *const libc::c_char,
-                       key: 0xff000000000 as libc::c_ulonglong,
-                       command: 0 as *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             menu_item{name:
-                           b"Cancel\x00" as *const u8 as *const libc::c_char,
-                       key: 'q' as i32 as key_code,
-                       command: 0 as *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             menu_item{name: 0 as *const libc::c_char,
-                       key: 0xff000000000 as libc::c_ulonglong,
-                       command: 0 as *const libc::c_char,};
-         init
-     }];
+static mut window_tree_menu_items: [menu_item; 13] = [
+    {
+        let mut init = menu_item {
+            name: b"Select\x00" as *const u8 as *const libc::c_char,
+            key: '\r' as i32 as key_code,
+            command: 0 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = menu_item {
+            name: b"Expand\x00" as *const u8 as *const libc::c_char,
+            key: KEYC_RIGHT as libc::c_ulong as key_code,
+            command: 0 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = menu_item {
+            name: b"Mark\x00" as *const u8 as *const libc::c_char,
+            key: 'm' as i32 as key_code,
+            command: 0 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = menu_item {
+            name: b"\x00" as *const u8 as *const libc::c_char,
+            key: 0xff000000000 as libc::c_ulonglong,
+            command: 0 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = menu_item {
+            name: b"Tag\x00" as *const u8 as *const libc::c_char,
+            key: 't' as i32 as key_code,
+            command: 0 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = menu_item {
+            name: b"Tag All\x00" as *const u8 as *const libc::c_char,
+            key: '\u{14}' as i32 as key_code,
+            command: 0 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = menu_item {
+            name: b"Tag None\x00" as *const u8 as *const libc::c_char,
+            key: 'T' as i32 as key_code,
+            command: 0 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = menu_item {
+            name: b"\x00" as *const u8 as *const libc::c_char,
+            key: 0xff000000000 as libc::c_ulonglong,
+            command: 0 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = menu_item {
+            name: b"Kill\x00" as *const u8 as *const libc::c_char,
+            key: 'x' as i32 as key_code,
+            command: 0 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = menu_item {
+            name: b"Kill Tagged\x00" as *const u8 as *const libc::c_char,
+            key: 'X' as i32 as key_code,
+            command: 0 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = menu_item {
+            name: b"\x00" as *const u8 as *const libc::c_char,
+            key: 0xff000000000 as libc::c_ulonglong,
+            command: 0 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = menu_item {
+            name: b"Cancel\x00" as *const u8 as *const libc::c_char,
+            key: 'q' as i32 as key_code,
+            command: 0 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = menu_item {
+            name: 0 as *const libc::c_char,
+            key: 0xff000000000 as libc::c_ulonglong,
+            command: 0 as *const libc::c_char,
+        };
+        init
+    },
+];
 #[no_mangle]
-pub static mut window_tree_mode: window_mode =
-    unsafe {
-        {
-            let mut init =
+pub static mut window_tree_mode: window_mode = unsafe {
+    {
+        let mut init =
                 window_mode{name:
                                 b"tree-mode\x00" as *const u8 as
                                     *const libc::c_char,
@@ -1668,36 +1712,41 @@ pub static mut window_tree_mode: window_mode =
                             key_table: None,
                             command: None,
                             formats: None,};
-            init
-        }
-    };
-static mut window_tree_sort_list: [*const libc::c_char; 3] =
-    [b"index\x00" as *const u8 as *const libc::c_char,
-     b"name\x00" as *const u8 as *const libc::c_char,
-     b"time\x00" as *const u8 as *const libc::c_char];
+        init
+    }
+};
+static mut window_tree_sort_list: [*const libc::c_char; 3] = [
+    b"index\x00" as *const u8 as *const libc::c_char,
+    b"name\x00" as *const u8 as *const libc::c_char,
+    b"time\x00" as *const u8 as *const libc::c_char,
+];
 static mut window_tree_sort: *mut mode_tree_sort_criteria =
     0 as *const mode_tree_sort_criteria as *mut mode_tree_sort_criteria;
-unsafe extern "C" fn window_tree_pull_item(mut item:
-                                               *mut window_tree_itemdata,
-                                           mut sp: *mut *mut session,
-                                           mut wlp: *mut *mut winlink,
-                                           mut wp: *mut *mut window_pane) {
+unsafe extern "C" fn window_tree_pull_item(
+    mut item: *mut window_tree_itemdata,
+    mut sp: *mut *mut session,
+    mut wlp: *mut *mut winlink,
+    mut wp: *mut *mut window_pane,
+) {
     *wp = 0 as *mut window_pane;
     *wlp = 0 as *mut winlink;
     *sp = session_find_by_id((*item).session as u_int);
-    if (*sp).is_null() { return }
-    if (*item).type_0 as libc::c_uint ==
-           WINDOW_TREE_SESSION as libc::c_int as libc::c_uint {
+    if (*sp).is_null() {
+        return;
+    }
+    if (*item).type_0 as libc::c_uint == WINDOW_TREE_SESSION as libc::c_int as libc::c_uint {
         *wlp = (**sp).curw;
         *wp = (*(**wlp).window).active;
-        return
+        return;
     }
     *wlp = winlink_find_by_index(&mut (**sp).windows, (*item).winlink);
-    if (*wlp).is_null() { *sp = 0 as *mut session; return }
-    if (*item).type_0 as libc::c_uint ==
-           WINDOW_TREE_WINDOW as libc::c_int as libc::c_uint {
+    if (*wlp).is_null() {
+        *sp = 0 as *mut session;
+        return;
+    }
+    if (*item).type_0 as libc::c_uint == WINDOW_TREE_WINDOW as libc::c_int as libc::c_uint {
         *wp = (*(**wlp).window).active;
-        return
+        return;
     }
     *wp = window_pane_find_by_id((*item).pane as u_int);
     if window_has_pane((**wlp).window, *wp) == 0 {
@@ -1706,36 +1755,37 @@ unsafe extern "C" fn window_tree_pull_item(mut item:
     if (*wp).is_null() {
         *sp = 0 as *mut session;
         *wlp = 0 as *mut winlink;
-        return
+        return;
     };
 }
-unsafe extern "C" fn window_tree_add_item(mut data: *mut window_tree_modedata)
- -> *mut window_tree_itemdata {
+unsafe extern "C" fn window_tree_add_item(
+    mut data: *mut window_tree_modedata,
+) -> *mut window_tree_itemdata {
     let mut item: *mut window_tree_itemdata = 0 as *mut window_tree_itemdata;
-    (*data).item_list =
-        xreallocarray((*data).item_list as *mut libc::c_void,
-                      (*data).item_size.wrapping_add(1 as libc::c_int as
-                                                         libc::c_uint) as
-                          size_t,
-                      ::std::mem::size_of::<*mut window_tree_itemdata>() as
-                          libc::c_ulong) as *mut *mut window_tree_itemdata;
+    (*data).item_list = xreallocarray(
+        (*data).item_list as *mut libc::c_void,
+        (*data)
+            .item_size
+            .wrapping_add(1 as libc::c_int as libc::c_uint) as size_t,
+        ::std::mem::size_of::<*mut window_tree_itemdata>() as libc::c_ulong,
+    ) as *mut *mut window_tree_itemdata;
     let fresh0 = (*data).item_size;
     (*data).item_size = (*data).item_size.wrapping_add(1);
     let ref mut fresh1 = *(*data).item_list.offset(fresh0 as isize);
-    *fresh1 =
-        xcalloc(1 as libc::c_int as size_t,
-                ::std::mem::size_of::<window_tree_itemdata>() as
-                    libc::c_ulong) as *mut window_tree_itemdata;
+    *fresh1 = xcalloc(
+        1 as libc::c_int as size_t,
+        ::std::mem::size_of::<window_tree_itemdata>() as libc::c_ulong,
+    ) as *mut window_tree_itemdata;
     item = *fresh1;
     return item;
 }
-unsafe extern "C" fn window_tree_free_item(mut item:
-                                               *mut window_tree_itemdata) {
+unsafe extern "C" fn window_tree_free_item(mut item: *mut window_tree_itemdata) {
     free(item as *mut libc::c_void);
 }
-unsafe extern "C" fn window_tree_cmp_session(mut a0: *const libc::c_void,
-                                             mut b0: *const libc::c_void)
- -> libc::c_int {
+unsafe extern "C" fn window_tree_cmp_session(
+    mut a0: *const libc::c_void,
+    mut b0: *const libc::c_void,
+) -> libc::c_int {
     let mut a: *const *const session = a0 as *const *const session;
     let mut b: *const *const session = b0 as *const *const session;
     let mut sa: *const session = *a;
@@ -1749,28 +1799,31 @@ unsafe extern "C" fn window_tree_cmp_session(mut a0: *const libc::c_void,
         }
         2 => {
             if if (*sa).activity_time.tv_sec == (*sb).activity_time.tv_sec {
-                   ((*sa).activity_time.tv_usec > (*sb).activity_time.tv_usec)
-                       as libc::c_int
-               } else {
-                   ((*sa).activity_time.tv_sec > (*sb).activity_time.tv_sec)
-                       as libc::c_int
-               } != 0 {
+                ((*sa).activity_time.tv_usec > (*sb).activity_time.tv_usec) as libc::c_int
+            } else {
+                ((*sa).activity_time.tv_sec > (*sb).activity_time.tv_sec) as libc::c_int
+            } != 0
+            {
                 result = -(1 as libc::c_int);
                 current_block_3 = 2979737022853876585;
-            } else if if (*sa).activity_time.tv_sec ==
-                             (*sb).activity_time.tv_sec {
-                          ((*sa).activity_time.tv_usec <
-                               (*sb).activity_time.tv_usec) as libc::c_int
-                      } else {
-                          ((*sa).activity_time.tv_sec <
-                               (*sb).activity_time.tv_sec) as libc::c_int
-                      } != 0 {
+            } else if if (*sa).activity_time.tv_sec == (*sb).activity_time.tv_sec {
+                ((*sa).activity_time.tv_usec < (*sb).activity_time.tv_usec) as libc::c_int
+            } else {
+                ((*sa).activity_time.tv_sec < (*sb).activity_time.tv_sec) as libc::c_int
+            } != 0
+            {
                 result = 1 as libc::c_int;
                 current_block_3 = 2979737022853876585;
-            } else { current_block_3 = 6916742544122075610; }
+            } else {
+                current_block_3 = 6916742544122075610;
+            }
         }
-        1 => { current_block_3 = 6916742544122075610; }
-        _ => { current_block_3 = 2979737022853876585; }
+        1 => {
+            current_block_3 = 6916742544122075610;
+        }
+        _ => {
+            current_block_3 = 2979737022853876585;
+        }
     }
     match current_block_3 {
         6916742544122075610 =>
@@ -1778,14 +1831,17 @@ unsafe extern "C" fn window_tree_cmp_session(mut a0: *const libc::c_void,
         {
             result = strcmp((*sa).name, (*sb).name)
         }
-        _ => { }
+        _ => {}
     }
-    if (*window_tree_sort).reversed != 0 { result = -result }
+    if (*window_tree_sort).reversed != 0 {
+        result = -result
+    }
     return result;
 }
-unsafe extern "C" fn window_tree_cmp_window(mut a0: *const libc::c_void,
-                                            mut b0: *const libc::c_void)
- -> libc::c_int {
+unsafe extern "C" fn window_tree_cmp_window(
+    mut a0: *const libc::c_void,
+    mut b0: *const libc::c_void,
+) -> libc::c_int {
     let mut a: *const *const winlink = a0 as *const *const winlink;
     let mut b: *const *const winlink = b0 as *const *const winlink;
     let mut wla: *const winlink = *a;
@@ -1801,28 +1857,31 @@ unsafe extern "C" fn window_tree_cmp_window(mut a0: *const libc::c_void,
         }
         2 => {
             if if (*wa).activity_time.tv_sec == (*wb).activity_time.tv_sec {
-                   ((*wa).activity_time.tv_usec > (*wb).activity_time.tv_usec)
-                       as libc::c_int
-               } else {
-                   ((*wa).activity_time.tv_sec > (*wb).activity_time.tv_sec)
-                       as libc::c_int
-               } != 0 {
+                ((*wa).activity_time.tv_usec > (*wb).activity_time.tv_usec) as libc::c_int
+            } else {
+                ((*wa).activity_time.tv_sec > (*wb).activity_time.tv_sec) as libc::c_int
+            } != 0
+            {
                 result = -(1 as libc::c_int);
                 current_block_3 = 3512920355445576850;
-            } else if if (*wa).activity_time.tv_sec ==
-                             (*wb).activity_time.tv_sec {
-                          ((*wa).activity_time.tv_usec <
-                               (*wb).activity_time.tv_usec) as libc::c_int
-                      } else {
-                          ((*wa).activity_time.tv_sec <
-                               (*wb).activity_time.tv_sec) as libc::c_int
-                      } != 0 {
+            } else if if (*wa).activity_time.tv_sec == (*wb).activity_time.tv_sec {
+                ((*wa).activity_time.tv_usec < (*wb).activity_time.tv_usec) as libc::c_int
+            } else {
+                ((*wa).activity_time.tv_sec < (*wb).activity_time.tv_sec) as libc::c_int
+            } != 0
+            {
                 result = 1 as libc::c_int;
                 current_block_3 = 3512920355445576850;
-            } else { current_block_3 = 2202846541499471484; }
+            } else {
+                current_block_3 = 2202846541499471484;
+            }
         }
-        1 => { current_block_3 = 2202846541499471484; }
-        _ => { current_block_3 = 3512920355445576850; }
+        1 => {
+            current_block_3 = 2202846541499471484;
+        }
+        _ => {
+            current_block_3 = 3512920355445576850;
+        }
     }
     match current_block_3 {
         2202846541499471484 =>
@@ -1830,38 +1889,42 @@ unsafe extern "C" fn window_tree_cmp_window(mut a0: *const libc::c_void,
         {
             result = strcmp((*wa).name, (*wb).name)
         }
-        _ => { }
+        _ => {}
     }
-    if (*window_tree_sort).reversed != 0 { result = -result }
+    if (*window_tree_sort).reversed != 0 {
+        result = -result
+    }
     return result;
 }
-unsafe extern "C" fn window_tree_cmp_pane(mut a0: *const libc::c_void,
-                                          mut b0: *const libc::c_void)
- -> libc::c_int {
+unsafe extern "C" fn window_tree_cmp_pane(
+    mut a0: *const libc::c_void,
+    mut b0: *const libc::c_void,
+) -> libc::c_int {
     let mut a: *const *const window_pane = a0 as *const *const window_pane;
     let mut b: *const *const window_pane = b0 as *const *const window_pane;
     let mut result: libc::c_int = 0;
-    if (*window_tree_sort).field ==
-           WINDOW_TREE_BY_TIME as libc::c_int as libc::c_uint {
-        result =
-            (**a).active_point.wrapping_sub((**b).active_point) as libc::c_int
+    if (*window_tree_sort).field == WINDOW_TREE_BY_TIME as libc::c_int as libc::c_uint {
+        result = (**a).active_point.wrapping_sub((**b).active_point) as libc::c_int
     } else {
         /*
-		 * Panes don't have names, so use number order for any other
-		 * sort field.
-		 */
+         * Panes don't have names, so use number order for any other
+         * sort field.
+         */
         result = (**a).id.wrapping_sub((**b).id) as libc::c_int
     }
-    if (*window_tree_sort).reversed != 0 { result = -result }
+    if (*window_tree_sort).reversed != 0 {
+        result = -result
+    }
     return result;
 }
-unsafe extern "C" fn window_tree_build_pane(mut s: *mut session,
-                                            mut wl: *mut winlink,
-                                            mut wp: *mut window_pane,
-                                            mut modedata: *mut libc::c_void,
-                                            mut parent: *mut mode_tree_item) {
-    let mut data: *mut window_tree_modedata =
-        modedata as *mut window_tree_modedata;
+unsafe extern "C" fn window_tree_build_pane(
+    mut s: *mut session,
+    mut wl: *mut winlink,
+    mut wp: *mut window_pane,
+    mut modedata: *mut libc::c_void,
+    mut parent: *mut mode_tree_item,
+) {
+    let mut data: *mut window_tree_modedata = modedata as *mut window_tree_modedata;
     let mut item: *mut window_tree_itemdata = 0 as *mut window_tree_itemdata;
     let mut name: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut text: *mut libc::c_char = 0 as *mut libc::c_char;
@@ -1872,41 +1935,56 @@ unsafe extern "C" fn window_tree_build_pane(mut s: *mut session,
     (*item).session = (*s).id as libc::c_int;
     (*item).winlink = (*wl).idx;
     (*item).pane = (*wp).id as libc::c_int;
-    text =
-        format_single(0 as *mut cmdq_item, (*data).format, 0 as *mut client,
-                      s, wl, wp);
-    xasprintf(&mut name as *mut *mut libc::c_char,
-              b"%u\x00" as *const u8 as *const libc::c_char, idx);
-    mode_tree_add((*data).data, parent, item as *mut libc::c_void,
-                  wp as uint64_t, name, text, -(1 as libc::c_int));
+    text = format_single(
+        0 as *mut cmdq_item,
+        (*data).format,
+        0 as *mut client,
+        s,
+        wl,
+        wp,
+    );
+    xasprintf(
+        &mut name as *mut *mut libc::c_char,
+        b"%u\x00" as *const u8 as *const libc::c_char,
+        idx,
+    );
+    mode_tree_add(
+        (*data).data,
+        parent,
+        item as *mut libc::c_void,
+        wp as uint64_t,
+        name,
+        text,
+        -(1 as libc::c_int),
+    );
     free(text as *mut libc::c_void);
     free(name as *mut libc::c_void);
 }
-unsafe extern "C" fn window_tree_filter_pane(mut s: *mut session,
-                                             mut wl: *mut winlink,
-                                             mut wp: *mut window_pane,
-                                             mut filter: *const libc::c_char)
- -> libc::c_int {
+unsafe extern "C" fn window_tree_filter_pane(
+    mut s: *mut session,
+    mut wl: *mut winlink,
+    mut wp: *mut window_pane,
+    mut filter: *const libc::c_char,
+) -> libc::c_int {
     let mut cp: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut result: libc::c_int = 0;
-    if filter.is_null() { return 1 as libc::c_int }
-    cp =
-        format_single(0 as *mut cmdq_item, filter, 0 as *mut client, s, wl,
-                      wp);
+    if filter.is_null() {
+        return 1 as libc::c_int;
+    }
+    cp = format_single(0 as *mut cmdq_item, filter, 0 as *mut client, s, wl, wp);
     result = format_true(cp);
     free(cp as *mut libc::c_void);
     return result;
 }
-unsafe extern "C" fn window_tree_build_window(mut s: *mut session,
-                                              mut wl: *mut winlink,
-                                              mut modedata: *mut libc::c_void,
-                                              mut sort_crit:
-                                                  *mut mode_tree_sort_criteria,
-                                              mut parent: *mut mode_tree_item,
-                                              mut filter: *const libc::c_char)
- -> libc::c_int {
-    let mut data: *mut window_tree_modedata =
-        modedata as *mut window_tree_modedata;
+unsafe extern "C" fn window_tree_build_window(
+    mut s: *mut session,
+    mut wl: *mut winlink,
+    mut modedata: *mut libc::c_void,
+    mut sort_crit: *mut mode_tree_sort_criteria,
+    mut parent: *mut mode_tree_item,
+    mut filter: *const libc::c_char,
+) -> libc::c_int {
+    let mut data: *mut window_tree_modedata = modedata as *mut window_tree_modedata;
     let mut item: *mut window_tree_itemdata = 0 as *mut window_tree_itemdata;
     let mut mti: *mut mode_tree_item = 0 as *mut mode_tree_item;
     let mut name: *mut libc::c_char = 0 as *mut libc::c_char;
@@ -1921,27 +1999,42 @@ unsafe extern "C" fn window_tree_build_window(mut s: *mut session,
     (*item).session = (*s).id as libc::c_int;
     (*item).winlink = (*wl).idx;
     (*item).pane = -(1 as libc::c_int);
-    text =
-        format_single(0 as *mut cmdq_item, (*data).format, 0 as *mut client,
-                      s, wl, 0 as *mut window_pane);
-    xasprintf(&mut name as *mut *mut libc::c_char,
-              b"%u\x00" as *const u8 as *const libc::c_char, (*wl).idx);
-    if (*data).type_0 as libc::c_uint ==
-           WINDOW_TREE_SESSION as libc::c_int as libc::c_uint ||
-           (*data).type_0 as libc::c_uint ==
-               WINDOW_TREE_WINDOW as libc::c_int as libc::c_uint {
+    text = format_single(
+        0 as *mut cmdq_item,
+        (*data).format,
+        0 as *mut client,
+        s,
+        wl,
+        0 as *mut window_pane,
+    );
+    xasprintf(
+        &mut name as *mut *mut libc::c_char,
+        b"%u\x00" as *const u8 as *const libc::c_char,
+        (*wl).idx,
+    );
+    if (*data).type_0 as libc::c_uint == WINDOW_TREE_SESSION as libc::c_int as libc::c_uint
+        || (*data).type_0 as libc::c_uint == WINDOW_TREE_WINDOW as libc::c_int as libc::c_uint
+    {
         expanded = 0 as libc::c_int
-    } else { expanded = 1 as libc::c_int }
-    mti =
-        mode_tree_add((*data).data, parent, item as *mut libc::c_void,
-                      wl as uint64_t, name, text, expanded);
+    } else {
+        expanded = 1 as libc::c_int
+    }
+    mti = mode_tree_add(
+        (*data).data,
+        parent,
+        item as *mut libc::c_void,
+        wl as uint64_t,
+        name,
+        text,
+        expanded,
+    );
     free(text as *mut libc::c_void);
     free(name as *mut libc::c_void);
     wp = (*(*wl).window).panes.tqh_first;
     if !wp.is_null() {
         if (*wp).entry.tqe_next.is_null() {
             if !(window_tree_filter_pane(s, wl, wp, filter) == 0) {
-                return 1 as libc::c_int
+                return 1 as libc::c_int;
             }
         } else {
             l = 0 as *mut *mut window_pane;
@@ -1949,14 +2042,11 @@ unsafe extern "C" fn window_tree_build_window(mut s: *mut session,
             wp = (*(*wl).window).panes.tqh_first;
             while !wp.is_null() {
                 if !(window_tree_filter_pane(s, wl, wp, filter) == 0) {
-                    l =
-                        xreallocarray(l as *mut libc::c_void,
-                                      n.wrapping_add(1 as libc::c_int as
-                                                         libc::c_uint) as
-                                          size_t,
-                                      ::std::mem::size_of::<*mut window_pane>()
-                                          as libc::c_ulong) as
-                            *mut *mut window_pane;
+                    l = xreallocarray(
+                        l as *mut libc::c_void,
+                        n.wrapping_add(1 as libc::c_int as libc::c_uint) as size_t,
+                        ::std::mem::size_of::<*mut window_pane>() as libc::c_ulong,
+                    ) as *mut *mut window_pane;
                     let fresh2 = n;
                     n = n.wrapping_add(1);
                     let ref mut fresh3 = *l.offset(fresh2 as isize);
@@ -1966,21 +2056,25 @@ unsafe extern "C" fn window_tree_build_window(mut s: *mut session,
             }
             if !(n == 0 as libc::c_int as libc::c_uint) {
                 window_tree_sort = sort_crit;
-                qsort(l as *mut libc::c_void, n as size_t,
-                      ::std::mem::size_of::<*mut window_pane>() as
-                          libc::c_ulong,
-                      Some(window_tree_cmp_pane as
-                               unsafe extern "C" fn(_: *const libc::c_void,
-                                                    _: *const libc::c_void)
-                                   -> libc::c_int));
+                qsort(
+                    l as *mut libc::c_void,
+                    n as size_t,
+                    ::std::mem::size_of::<*mut window_pane>() as libc::c_ulong,
+                    Some(
+                        window_tree_cmp_pane
+                            as unsafe extern "C" fn(
+                                _: *const libc::c_void,
+                                _: *const libc::c_void,
+                            ) -> libc::c_int,
+                    ),
+                );
                 i = 0 as libc::c_int as u_int;
                 while i < n {
-                    window_tree_build_pane(s, wl, *l.offset(i as isize),
-                                           modedata, mti);
+                    window_tree_build_pane(s, wl, *l.offset(i as isize), modedata, mti);
                     i = i.wrapping_add(1)
                 }
                 free(l as *mut libc::c_void);
-                return 1 as libc::c_int
+                return 1 as libc::c_int;
             }
         }
     }
@@ -1989,15 +2083,13 @@ unsafe extern "C" fn window_tree_build_window(mut s: *mut session,
     mode_tree_remove((*data).data, mti);
     return 0 as libc::c_int;
 }
-unsafe extern "C" fn window_tree_build_session(mut s: *mut session,
-                                               mut modedata:
-                                                   *mut libc::c_void,
-                                               mut sort_crit:
-                                                   *mut mode_tree_sort_criteria,
-                                               mut filter:
-                                                   *const libc::c_char) {
-    let mut data: *mut window_tree_modedata =
-        modedata as *mut window_tree_modedata;
+unsafe extern "C" fn window_tree_build_session(
+    mut s: *mut session,
+    mut modedata: *mut libc::c_void,
+    mut sort_crit: *mut mode_tree_sort_criteria,
+    mut filter: *const libc::c_char,
+) {
+    let mut data: *mut window_tree_modedata = modedata as *mut window_tree_modedata;
     let mut item: *mut window_tree_itemdata = 0 as *mut window_tree_itemdata;
     let mut mti: *mut mode_tree_item = 0 as *mut mode_tree_item;
     let mut text: *mut libc::c_char = 0 as *mut libc::c_char;
@@ -2012,28 +2104,38 @@ unsafe extern "C" fn window_tree_build_session(mut s: *mut session,
     (*item).session = (*s).id as libc::c_int;
     (*item).winlink = -(1 as libc::c_int);
     (*item).pane = -(1 as libc::c_int);
-    text =
-        format_single(0 as *mut cmdq_item, (*data).format, 0 as *mut client,
-                      s, 0 as *mut winlink, 0 as *mut window_pane);
-    if (*data).type_0 as libc::c_uint ==
-           WINDOW_TREE_SESSION as libc::c_int as libc::c_uint {
+    text = format_single(
+        0 as *mut cmdq_item,
+        (*data).format,
+        0 as *mut client,
+        s,
+        0 as *mut winlink,
+        0 as *mut window_pane,
+    );
+    if (*data).type_0 as libc::c_uint == WINDOW_TREE_SESSION as libc::c_int as libc::c_uint {
         expanded = 0 as libc::c_int
-    } else { expanded = 1 as libc::c_int }
-    mti =
-        mode_tree_add((*data).data, 0 as *mut mode_tree_item,
-                      item as *mut libc::c_void, s as uint64_t, (*s).name,
-                      text, expanded);
+    } else {
+        expanded = 1 as libc::c_int
+    }
+    mti = mode_tree_add(
+        (*data).data,
+        0 as *mut mode_tree_item,
+        item as *mut libc::c_void,
+        s as uint64_t,
+        (*s).name,
+        text,
+        expanded,
+    );
     free(text as *mut libc::c_void);
     l = 0 as *mut *mut winlink;
     n = 0 as libc::c_int as u_int;
     wl = winlinks_RB_MINMAX(&mut (*s).windows, -(1 as libc::c_int));
     while !wl.is_null() {
-        l =
-            xreallocarray(l as *mut libc::c_void,
-                          n.wrapping_add(1 as libc::c_int as libc::c_uint) as
-                              size_t,
-                          ::std::mem::size_of::<*mut winlink>() as
-                              libc::c_ulong) as *mut *mut winlink;
+        l = xreallocarray(
+            l as *mut libc::c_void,
+            n.wrapping_add(1 as libc::c_int as libc::c_uint) as size_t,
+            ::std::mem::size_of::<*mut winlink>() as libc::c_ulong,
+        ) as *mut *mut winlink;
         let fresh4 = n;
         n = n.wrapping_add(1);
         let ref mut fresh5 = *l.offset(fresh4 as isize);
@@ -2041,17 +2143,23 @@ unsafe extern "C" fn window_tree_build_session(mut s: *mut session,
         wl = winlinks_RB_NEXT(wl)
     }
     window_tree_sort = sort_crit;
-    qsort(l as *mut libc::c_void, n as size_t,
-          ::std::mem::size_of::<*mut winlink>() as libc::c_ulong,
-          Some(window_tree_cmp_window as
-                   unsafe extern "C" fn(_: *const libc::c_void,
-                                        _: *const libc::c_void)
-                       -> libc::c_int));
+    qsort(
+        l as *mut libc::c_void,
+        n as size_t,
+        ::std::mem::size_of::<*mut winlink>() as libc::c_ulong,
+        Some(
+            window_tree_cmp_window
+                as unsafe extern "C" fn(
+                    _: *const libc::c_void,
+                    _: *const libc::c_void,
+                ) -> libc::c_int,
+        ),
+    );
     empty = 0 as libc::c_int as u_int;
     i = 0 as libc::c_int as u_int;
     while i < n {
-        if window_tree_build_window(s, *l.offset(i as isize), modedata,
-                                    sort_crit, mti, filter) == 0 {
+        if window_tree_build_window(s, *l.offset(i as isize), modedata, sort_crit, mti, filter) == 0
+        {
             empty = empty.wrapping_add(1)
         }
         i = i.wrapping_add(1)
@@ -2063,13 +2171,13 @@ unsafe extern "C" fn window_tree_build_session(mut s: *mut session,
     }
     free(l as *mut libc::c_void);
 }
-unsafe extern "C" fn window_tree_build(mut modedata: *mut libc::c_void,
-                                       mut sort_crit:
-                                           *mut mode_tree_sort_criteria,
-                                       mut tag: *mut uint64_t,
-                                       mut filter: *const libc::c_char) {
-    let mut data: *mut window_tree_modedata =
-        modedata as *mut window_tree_modedata;
+unsafe extern "C" fn window_tree_build(
+    mut modedata: *mut libc::c_void,
+    mut sort_crit: *mut mode_tree_sort_criteria,
+    mut tag: *mut uint64_t,
+    mut filter: *const libc::c_char,
+) {
+    let mut data: *mut window_tree_modedata = modedata as *mut window_tree_modedata;
     let mut s: *mut session = 0 as *mut session;
     let mut l: *mut *mut session = 0 as *mut *mut session;
     let mut sg: *mut session_group = 0 as *mut session_group;
@@ -2090,113 +2198,132 @@ unsafe extern "C" fn window_tree_build(mut modedata: *mut libc::c_void,
     let mut current_block_11: u64;
     s = sessions_RB_MINMAX(&mut sessions, -(1 as libc::c_int));
     while !s.is_null() {
-        if (*data).squash_groups != 0 &&
-               { sg = session_group_contains(s); !sg.is_null() } {
-            if sg == current && s != (*data).fs.s ||
-                   sg != current && s != (*sg).sessions.tqh_first {
+        if (*data).squash_groups != 0 && {
+            sg = session_group_contains(s);
+            !sg.is_null()
+        } {
+            if sg == current && s != (*data).fs.s || sg != current && s != (*sg).sessions.tqh_first
+            {
                 current_block_11 = 13536709405535804910;
-            } else { current_block_11 = 8236137900636309791; }
-        } else { current_block_11 = 8236137900636309791; }
+            } else {
+                current_block_11 = 8236137900636309791;
+            }
+        } else {
+            current_block_11 = 8236137900636309791;
+        }
         match current_block_11 {
             8236137900636309791 => {
-                l =
-                    xreallocarray(l as *mut libc::c_void,
-                                  n.wrapping_add(1 as libc::c_int as
-                                                     libc::c_uint) as size_t,
-                                  ::std::mem::size_of::<*mut session>() as
-                                      libc::c_ulong) as *mut *mut session;
+                l = xreallocarray(
+                    l as *mut libc::c_void,
+                    n.wrapping_add(1 as libc::c_int as libc::c_uint) as size_t,
+                    ::std::mem::size_of::<*mut session>() as libc::c_ulong,
+                ) as *mut *mut session;
                 let fresh6 = n;
                 n = n.wrapping_add(1);
                 let ref mut fresh7 = *l.offset(fresh6 as isize);
                 *fresh7 = s
             }
-            _ => { }
+            _ => {}
         }
         s = sessions_RB_NEXT(s)
     }
     window_tree_sort = sort_crit;
-    qsort(l as *mut libc::c_void, n as size_t,
-          ::std::mem::size_of::<*mut session>() as libc::c_ulong,
-          Some(window_tree_cmp_session as
-                   unsafe extern "C" fn(_: *const libc::c_void,
-                                        _: *const libc::c_void)
-                       -> libc::c_int));
+    qsort(
+        l as *mut libc::c_void,
+        n as size_t,
+        ::std::mem::size_of::<*mut session>() as libc::c_ulong,
+        Some(
+            window_tree_cmp_session
+                as unsafe extern "C" fn(
+                    _: *const libc::c_void,
+                    _: *const libc::c_void,
+                ) -> libc::c_int,
+        ),
+    );
     i = 0 as libc::c_int as u_int;
     while i < n {
-        window_tree_build_session(*l.offset(i as isize), modedata, sort_crit,
-                                  filter);
+        window_tree_build_session(*l.offset(i as isize), modedata, sort_crit, filter);
         i = i.wrapping_add(1)
     }
     free(l as *mut libc::c_void);
     match (*data).type_0 as libc::c_uint {
-        1 => { *tag = (*data).fs.s as uint64_t }
-        2 => { *tag = (*data).fs.wl as uint64_t }
+        1 => *tag = (*data).fs.s as uint64_t,
+        2 => *tag = (*data).fs.wl as uint64_t,
         3 => {
-            if window_count_panes((*(*data).fs.wl).window) ==
-                   1 as libc::c_int as libc::c_uint {
+            if window_count_panes((*(*data).fs.wl).window) == 1 as libc::c_int as libc::c_uint {
                 *tag = (*data).fs.wl as uint64_t
-            } else { *tag = (*data).fs.wp as uint64_t }
+            } else {
+                *tag = (*data).fs.wp as uint64_t
+            }
         }
-        0 | _ => { }
+        0 | _ => {}
     };
 }
-unsafe extern "C" fn window_tree_draw_label(mut ctx: *mut screen_write_ctx,
-                                            mut px: u_int, mut py: u_int,
-                                            mut sx: u_int, mut sy: u_int,
-                                            mut gc: *const grid_cell,
-                                            mut label: *const libc::c_char) {
+unsafe extern "C" fn window_tree_draw_label(
+    mut ctx: *mut screen_write_ctx,
+    mut px: u_int,
+    mut py: u_int,
+    mut sx: u_int,
+    mut sy: u_int,
+    mut gc: *const grid_cell,
+    mut label: *const libc::c_char,
+) {
     let mut len: size_t = 0;
     let mut ox: u_int = 0;
     let mut oy: u_int = 0;
     len = strlen(label);
-    if sx == 0 as libc::c_int as libc::c_uint ||
-           sy == 1 as libc::c_int as libc::c_uint || len > sx as libc::c_ulong
-       {
-        return
+    if sx == 0 as libc::c_int as libc::c_uint
+        || sy == 1 as libc::c_int as libc::c_uint
+        || len > sx as libc::c_ulong
+    {
+        return;
     }
-    ox =
-        (sx as
-             libc::c_ulong).wrapping_sub(len).wrapping_add(1 as libc::c_int as
-                                                               libc::c_ulong).wrapping_div(2
-                                                                                               as
-                                                                                               libc::c_int
-                                                                                               as
-                                                                                               libc::c_ulong)
-            as u_int;
-    oy =
-        sy.wrapping_add(1 as libc::c_int as
-                            libc::c_uint).wrapping_div(2 as libc::c_int as
-                                                           libc::c_uint);
-    if ox > 1 as libc::c_int as libc::c_uint &&
-           (ox as libc::c_ulong).wrapping_add(len) <
-               sx.wrapping_sub(1 as libc::c_int as libc::c_uint) as
-                   libc::c_ulong && sy >= 3 as libc::c_int as libc::c_uint {
-        screen_write_cursormove(ctx,
-                                px.wrapping_add(ox).wrapping_sub(1 as
-                                                                     libc::c_int
-                                                                     as
-                                                                     libc::c_uint)
-                                    as libc::c_int,
-                                py.wrapping_add(oy).wrapping_sub(1 as
-                                                                     libc::c_int
-                                                                     as
-                                                                     libc::c_uint)
-                                    as libc::c_int, 0 as libc::c_int);
-        screen_write_box(ctx,
-                         len.wrapping_add(2 as libc::c_int as libc::c_ulong)
-                             as u_int, 3 as libc::c_int as u_int);
+    ox = (sx as libc::c_ulong)
+        .wrapping_sub(len)
+        .wrapping_add(1 as libc::c_int as libc::c_ulong)
+        .wrapping_div(2 as libc::c_int as libc::c_ulong) as u_int;
+    oy = sy
+        .wrapping_add(1 as libc::c_int as libc::c_uint)
+        .wrapping_div(2 as libc::c_int as libc::c_uint);
+    if ox > 1 as libc::c_int as libc::c_uint
+        && (ox as libc::c_ulong).wrapping_add(len)
+            < sx.wrapping_sub(1 as libc::c_int as libc::c_uint) as libc::c_ulong
+        && sy >= 3 as libc::c_int as libc::c_uint
+    {
+        screen_write_cursormove(
+            ctx,
+            px.wrapping_add(ox)
+                .wrapping_sub(1 as libc::c_int as libc::c_uint) as libc::c_int,
+            py.wrapping_add(oy)
+                .wrapping_sub(1 as libc::c_int as libc::c_uint) as libc::c_int,
+            0 as libc::c_int,
+        );
+        screen_write_box(
+            ctx,
+            len.wrapping_add(2 as libc::c_int as libc::c_ulong) as u_int,
+            3 as libc::c_int as u_int,
+        );
     }
-    screen_write_cursormove(ctx, px.wrapping_add(ox) as libc::c_int,
-                            py.wrapping_add(oy) as libc::c_int,
-                            0 as libc::c_int);
-    screen_write_puts(ctx, gc, b"%s\x00" as *const u8 as *const libc::c_char,
-                      label);
+    screen_write_cursormove(
+        ctx,
+        px.wrapping_add(ox) as libc::c_int,
+        py.wrapping_add(oy) as libc::c_int,
+        0 as libc::c_int,
+    );
+    screen_write_puts(
+        ctx,
+        gc,
+        b"%s\x00" as *const u8 as *const libc::c_char,
+        label,
+    );
 }
-unsafe extern "C" fn window_tree_draw_session(mut data:
-                                                  *mut window_tree_modedata,
-                                              mut s: *mut session,
-                                              mut ctx: *mut screen_write_ctx,
-                                              mut sx: u_int, mut sy: u_int) {
+unsafe extern "C" fn window_tree_draw_session(
+    mut data: *mut window_tree_modedata,
+    mut s: *mut session,
+    mut ctx: *mut screen_write_ctx,
+    mut sx: u_int,
+    mut sy: u_int,
+) {
     let mut oo: *mut options = (*s).options;
     let mut wl: *mut winlink = 0 as *mut winlink;
     let mut w: *mut window = 0 as *mut window;
@@ -2213,40 +2340,52 @@ unsafe extern "C" fn window_tree_draw_session(mut data:
     let mut end: u_int = 0;
     let mut remaining: u_int = 0;
     let mut i: u_int = 0;
-    let mut gc: grid_cell =
-        grid_cell{data: utf8_data{data: [0; 21], have: 0, size: 0, width: 0,},
-                  attr: 0,
-                  flags: 0,
-                  fg: 0,
-                  bg: 0,
-                  us: 0,};
+    let mut gc: grid_cell = grid_cell {
+        data: utf8_data {
+            data: [0; 21],
+            have: 0,
+            size: 0,
+            width: 0,
+        },
+        attr: 0,
+        flags: 0,
+        fg: 0,
+        bg: 0,
+        us: 0,
+    };
     let mut colour: libc::c_int = 0;
     let mut active_colour: libc::c_int = 0;
     let mut left: libc::c_int = 0;
     let mut right: libc::c_int = 0;
     let mut label: *mut libc::c_char = 0 as *mut libc::c_char;
     total = winlink_count(&mut (*s).windows);
-    memcpy(&mut gc as *mut grid_cell as *mut libc::c_void,
-           &grid_default_cell as *const grid_cell as *const libc::c_void,
-           ::std::mem::size_of::<grid_cell>() as libc::c_ulong);
-    colour =
-        options_get_number(oo,
-                           b"display-panes-colour\x00" as *const u8 as
-                               *const libc::c_char) as libc::c_int;
-    active_colour =
-        options_get_number(oo,
-                           b"display-panes-active-colour\x00" as *const u8 as
-                               *const libc::c_char) as libc::c_int;
+    memcpy(
+        &mut gc as *mut grid_cell as *mut libc::c_void,
+        &grid_default_cell as *const grid_cell as *const libc::c_void,
+        ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+    );
+    colour = options_get_number(
+        oo,
+        b"display-panes-colour\x00" as *const u8 as *const libc::c_char,
+    ) as libc::c_int;
+    active_colour = options_get_number(
+        oo,
+        b"display-panes-active-colour\x00" as *const u8 as *const libc::c_char,
+    ) as libc::c_int;
     if sx.wrapping_div(total) < 24 as libc::c_int as libc::c_uint {
         visible = sx.wrapping_div(24 as libc::c_int as libc::c_uint);
         if visible == 0 as libc::c_int as libc::c_uint {
             visible = 1 as libc::c_int as u_int
         }
-    } else { visible = total }
+    } else {
+        visible = total
+    }
     current = 0 as libc::c_int as u_int;
     wl = winlinks_RB_MINMAX(&mut (*s).windows, -(1 as libc::c_int));
     while !wl.is_null() {
-        if wl == (*s).curw { break ; }
+        if wl == (*s).curw {
+            break;
+        }
         current = current.wrapping_add(1);
         wl = winlinks_RB_NEXT(wl)
     }
@@ -2257,9 +2396,7 @@ unsafe extern "C" fn window_tree_draw_session(mut data:
         start = total.wrapping_sub(visible);
         end = total
     } else {
-        start =
-            current.wrapping_sub(visible.wrapping_div(2 as libc::c_int as
-                                                          libc::c_uint));
+        start = current.wrapping_sub(visible.wrapping_div(2 as libc::c_int as libc::c_uint));
         end = start.wrapping_add(visible)
     }
     if (*data).offset < -(start as libc::c_int) {
@@ -2268,83 +2405,87 @@ unsafe extern "C" fn window_tree_draw_session(mut data:
     if (*data).offset > total.wrapping_sub(end) as libc::c_int {
         (*data).offset = total.wrapping_sub(end) as libc::c_int
     }
-    start =
-        (start as libc::c_uint).wrapping_add((*data).offset as libc::c_uint)
-            as u_int as u_int;
-    end =
-        (end as libc::c_uint).wrapping_add((*data).offset as libc::c_uint) as
-            u_int as u_int;
+    start = (start as libc::c_uint).wrapping_add((*data).offset as libc::c_uint) as u_int as u_int;
+    end = (end as libc::c_uint).wrapping_add((*data).offset as libc::c_uint) as u_int as u_int;
     left = (start != 0 as libc::c_int as libc::c_uint) as libc::c_int;
     right = (end != total) as libc::c_int;
-    if left != 0 && right != 0 && sx <= 6 as libc::c_int as libc::c_uint ||
-           (left != 0 || right != 0) && sx <= 3 as libc::c_int as libc::c_uint
-       {
+    if left != 0 && right != 0 && sx <= 6 as libc::c_int as libc::c_uint
+        || (left != 0 || right != 0) && sx <= 3 as libc::c_int as libc::c_uint
+    {
         right = 0 as libc::c_int;
         left = right
     }
     if left != 0 && right != 0 {
-        each =
-            sx.wrapping_sub(6 as libc::c_int as
-                                libc::c_uint).wrapping_div(visible);
-        remaining =
-            sx.wrapping_sub(6 as libc::c_int as
-                                libc::c_uint).wrapping_sub(visible.wrapping_mul(each))
+        each = sx
+            .wrapping_sub(6 as libc::c_int as libc::c_uint)
+            .wrapping_div(visible);
+        remaining = sx
+            .wrapping_sub(6 as libc::c_int as libc::c_uint)
+            .wrapping_sub(visible.wrapping_mul(each))
     } else if left != 0 || right != 0 {
-        each =
-            sx.wrapping_sub(3 as libc::c_int as
-                                libc::c_uint).wrapping_div(visible);
-        remaining =
-            sx.wrapping_sub(3 as libc::c_int as
-                                libc::c_uint).wrapping_sub(visible.wrapping_mul(each))
+        each = sx
+            .wrapping_sub(3 as libc::c_int as libc::c_uint)
+            .wrapping_div(visible);
+        remaining = sx
+            .wrapping_sub(3 as libc::c_int as libc::c_uint)
+            .wrapping_sub(visible.wrapping_mul(each))
     } else {
         each = sx.wrapping_div(visible);
         remaining = sx.wrapping_sub(visible.wrapping_mul(each))
     }
-    if each == 0 as libc::c_int as libc::c_uint { return }
+    if each == 0 as libc::c_int as libc::c_uint {
+        return;
+    }
     if left != 0 {
-        (*data).left =
-            cx.wrapping_add(2 as libc::c_int as libc::c_uint) as libc::c_int;
-        screen_write_cursormove(ctx,
-                                cx.wrapping_add(2 as libc::c_int as
-                                                    libc::c_uint) as
-                                    libc::c_int, cy as libc::c_int,
-                                0 as libc::c_int);
+        (*data).left = cx.wrapping_add(2 as libc::c_int as libc::c_uint) as libc::c_int;
+        screen_write_cursormove(
+            ctx,
+            cx.wrapping_add(2 as libc::c_int as libc::c_uint) as libc::c_int,
+            cy as libc::c_int,
+            0 as libc::c_int,
+        );
         screen_write_vline(ctx, sy, 0 as libc::c_int, 0 as libc::c_int);
-        screen_write_cursormove(ctx, cx as libc::c_int,
-                                cy.wrapping_add(sy.wrapping_div(2 as
-                                                                    libc::c_int
-                                                                    as
-                                                                    libc::c_uint))
-                                    as libc::c_int, 0 as libc::c_int);
-        screen_write_puts(ctx, &grid_default_cell as *const grid_cell,
-                          b"<\x00" as *const u8 as *const libc::c_char);
-    } else { (*data).left = -(1 as libc::c_int) }
+        screen_write_cursormove(
+            ctx,
+            cx as libc::c_int,
+            cy.wrapping_add(sy.wrapping_div(2 as libc::c_int as libc::c_uint)) as libc::c_int,
+            0 as libc::c_int,
+        );
+        screen_write_puts(
+            ctx,
+            &grid_default_cell as *const grid_cell,
+            b"<\x00" as *const u8 as *const libc::c_char,
+        );
+    } else {
+        (*data).left = -(1 as libc::c_int)
+    }
     if right != 0 {
-        (*data).right =
-            cx.wrapping_add(sx).wrapping_sub(3 as libc::c_int as libc::c_uint)
-                as libc::c_int;
-        screen_write_cursormove(ctx,
-                                cx.wrapping_add(sx).wrapping_sub(3 as
-                                                                     libc::c_int
-                                                                     as
-                                                                     libc::c_uint)
-                                    as libc::c_int, cy as libc::c_int,
-                                0 as libc::c_int);
+        (*data).right = cx
+            .wrapping_add(sx)
+            .wrapping_sub(3 as libc::c_int as libc::c_uint) as libc::c_int;
+        screen_write_cursormove(
+            ctx,
+            cx.wrapping_add(sx)
+                .wrapping_sub(3 as libc::c_int as libc::c_uint) as libc::c_int,
+            cy as libc::c_int,
+            0 as libc::c_int,
+        );
         screen_write_vline(ctx, sy, 0 as libc::c_int, 0 as libc::c_int);
-        screen_write_cursormove(ctx,
-                                cx.wrapping_add(sx).wrapping_sub(1 as
-                                                                     libc::c_int
-                                                                     as
-                                                                     libc::c_uint)
-                                    as libc::c_int,
-                                cy.wrapping_add(sy.wrapping_div(2 as
-                                                                    libc::c_int
-                                                                    as
-                                                                    libc::c_uint))
-                                    as libc::c_int, 0 as libc::c_int);
-        screen_write_puts(ctx, &grid_default_cell as *const grid_cell,
-                          b">\x00" as *const u8 as *const libc::c_char);
-    } else { (*data).right = -(1 as libc::c_int) }
+        screen_write_cursormove(
+            ctx,
+            cx.wrapping_add(sx)
+                .wrapping_sub(1 as libc::c_int as libc::c_uint) as libc::c_int,
+            cy.wrapping_add(sy.wrapping_div(2 as libc::c_int as libc::c_uint)) as libc::c_int,
+            0 as libc::c_int,
+        );
+        screen_write_puts(
+            ctx,
+            &grid_default_cell as *const grid_cell,
+            b">\x00" as *const u8 as *const libc::c_char,
+        );
+    } else {
+        (*data).right = -(1 as libc::c_int)
+    }
     (*data).start = start;
     (*data).end = end;
     (*data).each = each;
@@ -2352,59 +2493,73 @@ unsafe extern "C" fn window_tree_draw_session(mut data:
     i = loop_0;
     wl = winlinks_RB_MINMAX(&mut (*s).windows, -(1 as libc::c_int));
     while !wl.is_null() {
-        if loop_0 == end { break ; }
+        if loop_0 == end {
+            break;
+        }
         if loop_0 < start {
             loop_0 = loop_0.wrapping_add(1)
         } else {
             w = (*wl).window;
             if wl == (*s).curw {
                 gc.fg = active_colour
-            } else { gc.fg = colour }
+            } else {
+                gc.fg = colour
+            }
             if left != 0 {
-                offset =
-                    (3 as libc::c_int as
-                         libc::c_uint).wrapping_add(i.wrapping_mul(each))
-            } else { offset = i.wrapping_mul(each) }
+                offset = (3 as libc::c_int as libc::c_uint).wrapping_add(i.wrapping_mul(each))
+            } else {
+                offset = i.wrapping_mul(each)
+            }
             if loop_0 == end.wrapping_sub(1 as libc::c_int as libc::c_uint) {
                 width = each.wrapping_add(remaining)
             } else {
                 width = each.wrapping_sub(1 as libc::c_int as libc::c_uint)
             }
-            screen_write_cursormove(ctx,
-                                    cx.wrapping_add(offset) as libc::c_int,
-                                    cy as libc::c_int, 0 as libc::c_int);
+            screen_write_cursormove(
+                ctx,
+                cx.wrapping_add(offset) as libc::c_int,
+                cy as libc::c_int,
+                0 as libc::c_int,
+            );
             screen_write_preview(ctx, &mut (*(*w).active).base, width, sy);
-            xasprintf(&mut label as *mut *mut libc::c_char,
-                      b" %u:%s \x00" as *const u8 as *const libc::c_char,
-                      (*wl).idx, (*w).name);
+            xasprintf(
+                &mut label as *mut *mut libc::c_char,
+                b" %u:%s \x00" as *const u8 as *const libc::c_char,
+                (*wl).idx,
+                (*w).name,
+            );
             if strlen(label) > width as libc::c_ulong {
-                xasprintf(&mut label as *mut *mut libc::c_char,
-                          b" %u \x00" as *const u8 as *const libc::c_char,
-                          (*wl).idx);
+                xasprintf(
+                    &mut label as *mut *mut libc::c_char,
+                    b" %u \x00" as *const u8 as *const libc::c_char,
+                    (*wl).idx,
+                );
             }
-            window_tree_draw_label(ctx, cx.wrapping_add(offset), cy, width,
-                                   sy, &mut gc, label);
+            window_tree_draw_label(ctx, cx.wrapping_add(offset), cy, width, sy, &mut gc, label);
             free(label as *mut libc::c_void);
             if loop_0 != end.wrapping_sub(1 as libc::c_int as libc::c_uint) {
-                screen_write_cursormove(ctx,
-                                        cx.wrapping_add(offset).wrapping_add(width)
-                                            as libc::c_int, cy as libc::c_int,
-                                        0 as libc::c_int);
-                screen_write_vline(ctx, sy, 0 as libc::c_int,
-                                   0 as libc::c_int);
+                screen_write_cursormove(
+                    ctx,
+                    cx.wrapping_add(offset).wrapping_add(width) as libc::c_int,
+                    cy as libc::c_int,
+                    0 as libc::c_int,
+                );
+                screen_write_vline(ctx, sy, 0 as libc::c_int, 0 as libc::c_int);
             }
             loop_0 = loop_0.wrapping_add(1);
             i = i.wrapping_add(1)
         }
         wl = winlinks_RB_NEXT(wl)
-    };
+    }
 }
-unsafe extern "C" fn window_tree_draw_window(mut data:
-                                                 *mut window_tree_modedata,
-                                             mut s: *mut session,
-                                             mut w: *mut window,
-                                             mut ctx: *mut screen_write_ctx,
-                                             mut sx: u_int, mut sy: u_int) {
+unsafe extern "C" fn window_tree_draw_window(
+    mut data: *mut window_tree_modedata,
+    mut s: *mut session,
+    mut w: *mut window,
+    mut ctx: *mut screen_write_ctx,
+    mut sx: u_int,
+    mut sy: u_int,
+) {
     let mut oo: *mut options = (*s).options;
     let mut wp: *mut window_pane = 0 as *mut window_pane;
     let mut cx: u_int = (*(*ctx).s).cx;
@@ -2420,13 +2575,19 @@ unsafe extern "C" fn window_tree_draw_window(mut data:
     let mut end: u_int = 0;
     let mut remaining: u_int = 0;
     let mut i: u_int = 0;
-    let mut gc: grid_cell =
-        grid_cell{data: utf8_data{data: [0; 21], have: 0, size: 0, width: 0,},
-                  attr: 0,
-                  flags: 0,
-                  fg: 0,
-                  bg: 0,
-                  us: 0,};
+    let mut gc: grid_cell = grid_cell {
+        data: utf8_data {
+            data: [0; 21],
+            have: 0,
+            size: 0,
+            width: 0,
+        },
+        attr: 0,
+        flags: 0,
+        fg: 0,
+        bg: 0,
+        us: 0,
+    };
     let mut colour: libc::c_int = 0;
     let mut active_colour: libc::c_int = 0;
     let mut left: libc::c_int = 0;
@@ -2434,27 +2595,33 @@ unsafe extern "C" fn window_tree_draw_window(mut data:
     let mut pane_idx: libc::c_int = 0;
     let mut label: *mut libc::c_char = 0 as *mut libc::c_char;
     total = window_count_panes(w);
-    memcpy(&mut gc as *mut grid_cell as *mut libc::c_void,
-           &grid_default_cell as *const grid_cell as *const libc::c_void,
-           ::std::mem::size_of::<grid_cell>() as libc::c_ulong);
-    colour =
-        options_get_number(oo,
-                           b"display-panes-colour\x00" as *const u8 as
-                               *const libc::c_char) as libc::c_int;
-    active_colour =
-        options_get_number(oo,
-                           b"display-panes-active-colour\x00" as *const u8 as
-                               *const libc::c_char) as libc::c_int;
+    memcpy(
+        &mut gc as *mut grid_cell as *mut libc::c_void,
+        &grid_default_cell as *const grid_cell as *const libc::c_void,
+        ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+    );
+    colour = options_get_number(
+        oo,
+        b"display-panes-colour\x00" as *const u8 as *const libc::c_char,
+    ) as libc::c_int;
+    active_colour = options_get_number(
+        oo,
+        b"display-panes-active-colour\x00" as *const u8 as *const libc::c_char,
+    ) as libc::c_int;
     if sx.wrapping_div(total) < 24 as libc::c_int as libc::c_uint {
         visible = sx.wrapping_div(24 as libc::c_int as libc::c_uint);
         if visible == 0 as libc::c_int as libc::c_uint {
             visible = 1 as libc::c_int as u_int
         }
-    } else { visible = total }
+    } else {
+        visible = total
+    }
     current = 0 as libc::c_int as u_int;
     wp = (*w).panes.tqh_first;
     while !wp.is_null() {
-        if wp == (*w).active { break ; }
+        if wp == (*w).active {
+            break;
+        }
         current = current.wrapping_add(1);
         wp = (*wp).entry.tqe_next
     }
@@ -2465,9 +2632,7 @@ unsafe extern "C" fn window_tree_draw_window(mut data:
         start = total.wrapping_sub(visible);
         end = total
     } else {
-        start =
-            current.wrapping_sub(visible.wrapping_div(2 as libc::c_int as
-                                                          libc::c_uint));
+        start = current.wrapping_sub(visible.wrapping_div(2 as libc::c_int as libc::c_uint));
         end = start.wrapping_add(visible)
     }
     if (*data).offset < -(start as libc::c_int) {
@@ -2476,83 +2641,87 @@ unsafe extern "C" fn window_tree_draw_window(mut data:
     if (*data).offset > total.wrapping_sub(end) as libc::c_int {
         (*data).offset = total.wrapping_sub(end) as libc::c_int
     }
-    start =
-        (start as libc::c_uint).wrapping_add((*data).offset as libc::c_uint)
-            as u_int as u_int;
-    end =
-        (end as libc::c_uint).wrapping_add((*data).offset as libc::c_uint) as
-            u_int as u_int;
+    start = (start as libc::c_uint).wrapping_add((*data).offset as libc::c_uint) as u_int as u_int;
+    end = (end as libc::c_uint).wrapping_add((*data).offset as libc::c_uint) as u_int as u_int;
     left = (start != 0 as libc::c_int as libc::c_uint) as libc::c_int;
     right = (end != total) as libc::c_int;
-    if left != 0 && right != 0 && sx <= 6 as libc::c_int as libc::c_uint ||
-           (left != 0 || right != 0) && sx <= 3 as libc::c_int as libc::c_uint
-       {
+    if left != 0 && right != 0 && sx <= 6 as libc::c_int as libc::c_uint
+        || (left != 0 || right != 0) && sx <= 3 as libc::c_int as libc::c_uint
+    {
         right = 0 as libc::c_int;
         left = right
     }
     if left != 0 && right != 0 {
-        each =
-            sx.wrapping_sub(6 as libc::c_int as
-                                libc::c_uint).wrapping_div(visible);
-        remaining =
-            sx.wrapping_sub(6 as libc::c_int as
-                                libc::c_uint).wrapping_sub(visible.wrapping_mul(each))
+        each = sx
+            .wrapping_sub(6 as libc::c_int as libc::c_uint)
+            .wrapping_div(visible);
+        remaining = sx
+            .wrapping_sub(6 as libc::c_int as libc::c_uint)
+            .wrapping_sub(visible.wrapping_mul(each))
     } else if left != 0 || right != 0 {
-        each =
-            sx.wrapping_sub(3 as libc::c_int as
-                                libc::c_uint).wrapping_div(visible);
-        remaining =
-            sx.wrapping_sub(3 as libc::c_int as
-                                libc::c_uint).wrapping_sub(visible.wrapping_mul(each))
+        each = sx
+            .wrapping_sub(3 as libc::c_int as libc::c_uint)
+            .wrapping_div(visible);
+        remaining = sx
+            .wrapping_sub(3 as libc::c_int as libc::c_uint)
+            .wrapping_sub(visible.wrapping_mul(each))
     } else {
         each = sx.wrapping_div(visible);
         remaining = sx.wrapping_sub(visible.wrapping_mul(each))
     }
-    if each == 0 as libc::c_int as libc::c_uint { return }
+    if each == 0 as libc::c_int as libc::c_uint {
+        return;
+    }
     if left != 0 {
-        (*data).left =
-            cx.wrapping_add(2 as libc::c_int as libc::c_uint) as libc::c_int;
-        screen_write_cursormove(ctx,
-                                cx.wrapping_add(2 as libc::c_int as
-                                                    libc::c_uint) as
-                                    libc::c_int, cy as libc::c_int,
-                                0 as libc::c_int);
+        (*data).left = cx.wrapping_add(2 as libc::c_int as libc::c_uint) as libc::c_int;
+        screen_write_cursormove(
+            ctx,
+            cx.wrapping_add(2 as libc::c_int as libc::c_uint) as libc::c_int,
+            cy as libc::c_int,
+            0 as libc::c_int,
+        );
         screen_write_vline(ctx, sy, 0 as libc::c_int, 0 as libc::c_int);
-        screen_write_cursormove(ctx, cx as libc::c_int,
-                                cy.wrapping_add(sy.wrapping_div(2 as
-                                                                    libc::c_int
-                                                                    as
-                                                                    libc::c_uint))
-                                    as libc::c_int, 0 as libc::c_int);
-        screen_write_puts(ctx, &grid_default_cell as *const grid_cell,
-                          b"<\x00" as *const u8 as *const libc::c_char);
-    } else { (*data).left = -(1 as libc::c_int) }
+        screen_write_cursormove(
+            ctx,
+            cx as libc::c_int,
+            cy.wrapping_add(sy.wrapping_div(2 as libc::c_int as libc::c_uint)) as libc::c_int,
+            0 as libc::c_int,
+        );
+        screen_write_puts(
+            ctx,
+            &grid_default_cell as *const grid_cell,
+            b"<\x00" as *const u8 as *const libc::c_char,
+        );
+    } else {
+        (*data).left = -(1 as libc::c_int)
+    }
     if right != 0 {
-        (*data).right =
-            cx.wrapping_add(sx).wrapping_sub(3 as libc::c_int as libc::c_uint)
-                as libc::c_int;
-        screen_write_cursormove(ctx,
-                                cx.wrapping_add(sx).wrapping_sub(3 as
-                                                                     libc::c_int
-                                                                     as
-                                                                     libc::c_uint)
-                                    as libc::c_int, cy as libc::c_int,
-                                0 as libc::c_int);
+        (*data).right = cx
+            .wrapping_add(sx)
+            .wrapping_sub(3 as libc::c_int as libc::c_uint) as libc::c_int;
+        screen_write_cursormove(
+            ctx,
+            cx.wrapping_add(sx)
+                .wrapping_sub(3 as libc::c_int as libc::c_uint) as libc::c_int,
+            cy as libc::c_int,
+            0 as libc::c_int,
+        );
         screen_write_vline(ctx, sy, 0 as libc::c_int, 0 as libc::c_int);
-        screen_write_cursormove(ctx,
-                                cx.wrapping_add(sx).wrapping_sub(1 as
-                                                                     libc::c_int
-                                                                     as
-                                                                     libc::c_uint)
-                                    as libc::c_int,
-                                cy.wrapping_add(sy.wrapping_div(2 as
-                                                                    libc::c_int
-                                                                    as
-                                                                    libc::c_uint))
-                                    as libc::c_int, 0 as libc::c_int);
-        screen_write_puts(ctx, &grid_default_cell as *const grid_cell,
-                          b">\x00" as *const u8 as *const libc::c_char);
-    } else { (*data).right = -(1 as libc::c_int) }
+        screen_write_cursormove(
+            ctx,
+            cx.wrapping_add(sx)
+                .wrapping_sub(1 as libc::c_int as libc::c_uint) as libc::c_int,
+            cy.wrapping_add(sy.wrapping_div(2 as libc::c_int as libc::c_uint)) as libc::c_int,
+            0 as libc::c_int,
+        );
+        screen_write_puts(
+            ctx,
+            &grid_default_cell as *const grid_cell,
+            b">\x00" as *const u8 as *const libc::c_char,
+        );
+    } else {
+        (*data).right = -(1 as libc::c_int)
+    }
     (*data).start = start;
     (*data).end = end;
     (*data).each = each;
@@ -2560,82 +2729,102 @@ unsafe extern "C" fn window_tree_draw_window(mut data:
     i = loop_0;
     wp = (*w).panes.tqh_first;
     while !wp.is_null() {
-        if loop_0 == end { break ; }
+        if loop_0 == end {
+            break;
+        }
         if loop_0 < start {
             loop_0 = loop_0.wrapping_add(1)
         } else {
             if wp == (*w).active {
                 gc.fg = active_colour
-            } else { gc.fg = colour }
+            } else {
+                gc.fg = colour
+            }
             if left != 0 {
-                offset =
-                    (3 as libc::c_int as
-                         libc::c_uint).wrapping_add(i.wrapping_mul(each))
-            } else { offset = i.wrapping_mul(each) }
+                offset = (3 as libc::c_int as libc::c_uint).wrapping_add(i.wrapping_mul(each))
+            } else {
+                offset = i.wrapping_mul(each)
+            }
             if loop_0 == end.wrapping_sub(1 as libc::c_int as libc::c_uint) {
                 width = each.wrapping_add(remaining)
             } else {
                 width = each.wrapping_sub(1 as libc::c_int as libc::c_uint)
             }
-            screen_write_cursormove(ctx,
-                                    cx.wrapping_add(offset) as libc::c_int,
-                                    cy as libc::c_int, 0 as libc::c_int);
+            screen_write_cursormove(
+                ctx,
+                cx.wrapping_add(offset) as libc::c_int,
+                cy as libc::c_int,
+                0 as libc::c_int,
+            );
             screen_write_preview(ctx, &mut (*wp).base, width, sy);
-            if window_pane_index(wp,
-                                 &mut pane_idx as *mut libc::c_int as
-                                     *mut u_int) != 0 as libc::c_int {
+            if window_pane_index(wp, &mut pane_idx as *mut libc::c_int as *mut u_int)
+                != 0 as libc::c_int
+            {
                 pane_idx = loop_0 as libc::c_int
             }
-            xasprintf(&mut label as *mut *mut libc::c_char,
-                      b" %u \x00" as *const u8 as *const libc::c_char,
-                      pane_idx);
-            window_tree_draw_label(ctx, cx.wrapping_add(offset), cy, each, sy,
-                                   &mut gc, label);
+            xasprintf(
+                &mut label as *mut *mut libc::c_char,
+                b" %u \x00" as *const u8 as *const libc::c_char,
+                pane_idx,
+            );
+            window_tree_draw_label(ctx, cx.wrapping_add(offset), cy, each, sy, &mut gc, label);
             free(label as *mut libc::c_void);
             if loop_0 != end.wrapping_sub(1 as libc::c_int as libc::c_uint) {
-                screen_write_cursormove(ctx,
-                                        cx.wrapping_add(offset).wrapping_add(width)
-                                            as libc::c_int, cy as libc::c_int,
-                                        0 as libc::c_int);
-                screen_write_vline(ctx, sy, 0 as libc::c_int,
-                                   0 as libc::c_int);
+                screen_write_cursormove(
+                    ctx,
+                    cx.wrapping_add(offset).wrapping_add(width) as libc::c_int,
+                    cy as libc::c_int,
+                    0 as libc::c_int,
+                );
+                screen_write_vline(ctx, sy, 0 as libc::c_int, 0 as libc::c_int);
             }
             loop_0 = loop_0.wrapping_add(1);
             i = i.wrapping_add(1)
         }
         wp = (*wp).entry.tqe_next
-    };
+    }
 }
-unsafe extern "C" fn window_tree_draw(mut modedata: *mut libc::c_void,
-                                      mut itemdata: *mut libc::c_void,
-                                      mut ctx: *mut screen_write_ctx,
-                                      mut sx: u_int, mut sy: u_int) {
-    let mut item: *mut window_tree_itemdata =
-        itemdata as *mut window_tree_itemdata;
+unsafe extern "C" fn window_tree_draw(
+    mut modedata: *mut libc::c_void,
+    mut itemdata: *mut libc::c_void,
+    mut ctx: *mut screen_write_ctx,
+    mut sx: u_int,
+    mut sy: u_int,
+) {
+    let mut item: *mut window_tree_itemdata = itemdata as *mut window_tree_itemdata;
     let mut sp: *mut session = 0 as *mut session;
     let mut wlp: *mut winlink = 0 as *mut winlink;
     let mut wp: *mut window_pane = 0 as *mut window_pane;
     window_tree_pull_item(item, &mut sp, &mut wlp, &mut wp);
-    if wp.is_null() { return }
+    if wp.is_null() {
+        return;
+    }
     match (*item).type_0 as libc::c_uint {
         1 => {
-            window_tree_draw_session(modedata as *mut window_tree_modedata,
-                                     sp, ctx, sx, sy);
+            window_tree_draw_session(modedata as *mut window_tree_modedata, sp, ctx, sx, sy);
         }
         2 => {
-            window_tree_draw_window(modedata as *mut window_tree_modedata, sp,
-                                    (*wlp).window, ctx, sx, sy);
+            window_tree_draw_window(
+                modedata as *mut window_tree_modedata,
+                sp,
+                (*wlp).window,
+                ctx,
+                sx,
+                sy,
+            );
         }
-        3 => { screen_write_preview(ctx, &mut (*wp).base, sx, sy); }
-        0 | _ => { }
+        3 => {
+            screen_write_preview(ctx, &mut (*wp).base, sx, sy);
+        }
+        0 | _ => {}
     };
 }
-unsafe extern "C" fn window_tree_search(mut modedata: *mut libc::c_void,
-                                        mut itemdata: *mut libc::c_void,
-                                        mut ss: *const libc::c_char)
- -> libc::c_int {
-    let mut item: *mut window_tree_itemdata =
-        itemdata as *mut window_tree_itemdata;
+unsafe extern "C" fn window_tree_search(
+    mut modedata: *mut libc::c_void,
+    mut itemdata: *mut libc::c_void,
+    mut ss: *const libc::c_char,
+) -> libc::c_int {
+    let mut item: *mut window_tree_itemdata = itemdata as *mut window_tree_itemdata;
     let mut s: *mut session = 0 as *mut session;
     let mut wl: *mut winlink = 0 as *mut winlink;
     let mut wp: *mut window_pane = 0 as *mut window_pane;
@@ -2643,47 +2832,57 @@ unsafe extern "C" fn window_tree_search(mut modedata: *mut libc::c_void,
     let mut retval: libc::c_int = 0;
     window_tree_pull_item(item, &mut s, &mut wl, &mut wp);
     match (*item).type_0 as libc::c_uint {
-        0 => { return 0 as libc::c_int }
+        0 => return 0 as libc::c_int,
         1 => {
-            if s.is_null() { return 0 as libc::c_int }
-            return (strstr((*s).name, ss) !=
-                        0 as *mut libc::c_void as *mut libc::c_char) as
-                       libc::c_int
+            if s.is_null() {
+                return 0 as libc::c_int;
+            }
+            return (strstr((*s).name, ss) != 0 as *mut libc::c_void as *mut libc::c_char)
+                as libc::c_int;
         }
         2 => {
-            if s.is_null() || wl.is_null() { return 0 as libc::c_int }
-            return (strstr((*(*wl).window).name, ss) !=
-                        0 as *mut libc::c_void as *mut libc::c_char) as
-                       libc::c_int
+            if s.is_null() || wl.is_null() {
+                return 0 as libc::c_int;
+            }
+            return (strstr((*(*wl).window).name, ss) != 0 as *mut libc::c_void as *mut libc::c_char)
+                as libc::c_int;
         }
         3 => {
             if !(s.is_null() || wl.is_null() || wp.is_null()) {
                 cmd = osdep_get_name((*wp).fd, (*wp).tty.as_mut_ptr());
                 if cmd.is_null() || *cmd as libc::c_int == '\u{0}' as i32 {
-                    return 0 as libc::c_int
+                    return 0 as libc::c_int;
                 }
                 retval =
-                    (strstr(cmd, ss) !=
-                         0 as *mut libc::c_void as *mut libc::c_char) as
-                        libc::c_int;
+                    (strstr(cmd, ss) != 0 as *mut libc::c_void as *mut libc::c_char) as libc::c_int;
                 free(cmd as *mut libc::c_void);
-                return retval
+                return retval;
             }
         }
-        _ => { }
+        _ => {}
     }
     return 0 as libc::c_int;
 }
-unsafe extern "C" fn window_tree_menu(mut modedata: *mut libc::c_void,
-                                      mut c: *mut client, mut key: key_code) {
-    let mut data: *mut window_tree_modedata =
-        modedata as *mut window_tree_modedata;
+unsafe extern "C" fn window_tree_menu(
+    mut modedata: *mut libc::c_void,
+    mut c: *mut client,
+    mut key: key_code,
+) {
+    let mut data: *mut window_tree_modedata = modedata as *mut window_tree_modedata;
     let mut wp: *mut window_pane = (*data).wp;
     let mut wme: *mut window_mode_entry = 0 as *mut window_mode_entry;
     wme = (*wp).modes.tqh_first;
-    if wme.is_null() || (*wme).data != modedata { return }
-    window_tree_key(wme, c, 0 as *mut session, 0 as *mut winlink, key,
-                    0 as *mut mouse_event);
+    if wme.is_null() || (*wme).data != modedata {
+        return;
+    }
+    window_tree_key(
+        wme,
+        c,
+        0 as *mut session,
+        0 as *mut winlink,
+        key,
+        0 as *mut mouse_event,
+    );
 }
 /* $OpenBSD$ */
 /*
@@ -2701,16 +2900,18 @@ unsafe extern "C" fn window_tree_menu(mut modedata: *mut libc::c_void,
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-unsafe extern "C" fn window_tree_init(mut wme: *mut window_mode_entry,
-                                      mut fs: *mut cmd_find_state,
-                                      mut args: *mut args) -> *mut screen {
+unsafe extern "C" fn window_tree_init(
+    mut wme: *mut window_mode_entry,
+    mut fs: *mut cmd_find_state,
+    mut args: *mut args,
+) -> *mut screen {
     let mut wp: *mut window_pane = (*wme).wp;
     let mut data: *mut window_tree_modedata = 0 as *mut window_tree_modedata;
     let mut s: *mut screen = 0 as *mut screen;
-    data =
-        xcalloc(1 as libc::c_int as size_t,
-                ::std::mem::size_of::<window_tree_modedata>() as
-                    libc::c_ulong) as *mut window_tree_modedata;
+    data = xcalloc(
+        1 as libc::c_int as size_t,
+        ::std::mem::size_of::<window_tree_modedata>() as libc::c_ulong,
+    ) as *mut window_tree_modedata;
     (*wme).data = data as *mut libc::c_void;
     (*data).wp = wp;
     (*data).references = 1 as libc::c_int;
@@ -2718,68 +2919,83 @@ unsafe extern "C" fn window_tree_init(mut wme: *mut window_mode_entry,
         (*data).type_0 = WINDOW_TREE_SESSION
     } else if args_has(args, 'w' as i32 as u_char) != 0 {
         (*data).type_0 = WINDOW_TREE_WINDOW
-    } else { (*data).type_0 = WINDOW_TREE_PANE }
-    memcpy(&mut (*data).fs as *mut cmd_find_state as *mut libc::c_void,
-           fs as *const libc::c_void,
-           ::std::mem::size_of::<cmd_find_state>() as libc::c_ulong);
+    } else {
+        (*data).type_0 = WINDOW_TREE_PANE
+    }
+    memcpy(
+        &mut (*data).fs as *mut cmd_find_state as *mut libc::c_void,
+        fs as *const libc::c_void,
+        ::std::mem::size_of::<cmd_find_state>() as libc::c_ulong,
+    );
     if args.is_null() || args_has(args, 'F' as i32 as u_char) == 0 {
         (*data).format =
             xstrdup(b"#{?pane_format,#{?pane_marked,#[reverse],}#{pane_current_command}#{?pane_active,*,}#{?pane_marked,M,}#{?#{&&:#{pane_title},#{!=:#{pane_title},#{host_short}}},: \"#{pane_title}\",},#{?window_format,#{?window_marked_flag,#[reverse],}#{window_name}#{window_flags}#{?#{&&:#{==:#{window_panes},1},#{&&:#{pane_title},#{!=:#{pane_title},#{host_short}}}},: \"#{pane_title}\",},#{session_windows} windows#{?session_grouped, (group #{session_group}: #{session_group_list}),}#{?session_attached, (attached),}}}\x00"
                         as *const u8 as *const libc::c_char)
-    } else { (*data).format = xstrdup(args_get(args, 'F' as i32 as u_char)) }
+    } else {
+        (*data).format = xstrdup(args_get(args, 'F' as i32 as u_char))
+    }
     if args.is_null() || (*args).argc == 0 as libc::c_int {
         (*data).command =
-            xstrdup(b"switch-client -Zt \'%%\'\x00" as *const u8 as
-                        *const libc::c_char)
+            xstrdup(b"switch-client -Zt \'%%\'\x00" as *const u8 as *const libc::c_char)
     } else {
-        (*data).command =
-            xstrdup(*(*args).argv.offset(0 as libc::c_int as isize))
+        (*data).command = xstrdup(*(*args).argv.offset(0 as libc::c_int as isize))
     }
-    (*data).squash_groups =
-        (args_has(args, 'G' as i32 as u_char) == 0) as libc::c_int;
-    (*data).data =
-        mode_tree_start(wp, args,
-                        Some(window_tree_build as
-                                 unsafe extern "C" fn(_: *mut libc::c_void,
-                                                      _:
-                                                          *mut mode_tree_sort_criteria,
-                                                      _: *mut uint64_t,
-                                                      _: *const libc::c_char)
-                                     -> ()),
-                        Some(window_tree_draw as
-                                 unsafe extern "C" fn(_: *mut libc::c_void,
-                                                      _: *mut libc::c_void,
-                                                      _:
-                                                          *mut screen_write_ctx,
-                                                      _: u_int, _: u_int)
-                                     -> ()),
-                        Some(window_tree_search as
-                                 unsafe extern "C" fn(_: *mut libc::c_void,
-                                                      _: *mut libc::c_void,
-                                                      _: *const libc::c_char)
-                                     -> libc::c_int),
-                        Some(window_tree_menu as
-                                 unsafe extern "C" fn(_: *mut libc::c_void,
-                                                      _: *mut client,
-                                                      _: key_code) -> ()),
-                        None, data as *mut libc::c_void,
-                        window_tree_menu_items.as_ptr(),
-                        window_tree_sort_list.as_mut_ptr(),
-                        (::std::mem::size_of::<[*const libc::c_char; 3]>() as
-                             libc::c_ulong).wrapping_div(::std::mem::size_of::<*const libc::c_char>()
-                                                             as libc::c_ulong)
-                            as u_int, &mut s);
+    (*data).squash_groups = (args_has(args, 'G' as i32 as u_char) == 0) as libc::c_int;
+    (*data).data = mode_tree_start(
+        wp,
+        args,
+        Some(
+            window_tree_build
+                as unsafe extern "C" fn(
+                    _: *mut libc::c_void,
+                    _: *mut mode_tree_sort_criteria,
+                    _: *mut uint64_t,
+                    _: *const libc::c_char,
+                ) -> (),
+        ),
+        Some(
+            window_tree_draw
+                as unsafe extern "C" fn(
+                    _: *mut libc::c_void,
+                    _: *mut libc::c_void,
+                    _: *mut screen_write_ctx,
+                    _: u_int,
+                    _: u_int,
+                ) -> (),
+        ),
+        Some(
+            window_tree_search
+                as unsafe extern "C" fn(
+                    _: *mut libc::c_void,
+                    _: *mut libc::c_void,
+                    _: *const libc::c_char,
+                ) -> libc::c_int,
+        ),
+        Some(
+            window_tree_menu
+                as unsafe extern "C" fn(_: *mut libc::c_void, _: *mut client, _: key_code) -> (),
+        ),
+        None,
+        data as *mut libc::c_void,
+        window_tree_menu_items.as_ptr(),
+        window_tree_sort_list.as_mut_ptr(),
+        (::std::mem::size_of::<[*const libc::c_char; 3]>() as libc::c_ulong)
+            .wrapping_div(::std::mem::size_of::<*const libc::c_char>() as libc::c_ulong)
+            as u_int,
+        &mut s,
+    );
     mode_tree_zoom((*data).data, args);
     mode_tree_build((*data).data);
     mode_tree_draw((*data).data);
     (*data).type_0 = WINDOW_TREE_NONE;
     return s;
 }
-unsafe extern "C" fn window_tree_destroy(mut data:
-                                             *mut window_tree_modedata) {
+unsafe extern "C" fn window_tree_destroy(mut data: *mut window_tree_modedata) {
     let mut i: u_int = 0;
     (*data).references -= 1;
-    if (*data).references != 0 as libc::c_int { return }
+    if (*data).references != 0 as libc::c_int {
+        return;
+    }
     i = 0 as libc::c_int as u_int;
     while i < (*data).item_size {
         window_tree_free_item(*(*data).item_list.offset(i as isize));
@@ -2791,23 +3007,26 @@ unsafe extern "C" fn window_tree_destroy(mut data:
     free(data as *mut libc::c_void);
 }
 unsafe extern "C" fn window_tree_free(mut wme: *mut window_mode_entry) {
-    let mut data: *mut window_tree_modedata =
-        (*wme).data as *mut window_tree_modedata;
-    if data.is_null() { return }
+    let mut data: *mut window_tree_modedata = (*wme).data as *mut window_tree_modedata;
+    if data.is_null() {
+        return;
+    }
     (*data).dead = 1 as libc::c_int;
     mode_tree_free((*data).data);
     window_tree_destroy(data);
 }
-unsafe extern "C" fn window_tree_resize(mut wme: *mut window_mode_entry,
-                                        mut sx: u_int, mut sy: u_int) {
-    let mut data: *mut window_tree_modedata =
-        (*wme).data as *mut window_tree_modedata;
+unsafe extern "C" fn window_tree_resize(
+    mut wme: *mut window_mode_entry,
+    mut sx: u_int,
+    mut sy: u_int,
+) {
+    let mut data: *mut window_tree_modedata = (*wme).data as *mut window_tree_modedata;
     mode_tree_resize((*data).data, sx, sy);
 }
-unsafe extern "C" fn window_tree_get_target(mut item:
-                                                *mut window_tree_itemdata,
-                                            mut fs: *mut cmd_find_state)
- -> *mut libc::c_char {
+unsafe extern "C" fn window_tree_get_target(
+    mut item: *mut window_tree_itemdata,
+    mut fs: *mut cmd_find_state,
+) -> *mut libc::c_char {
     let mut s: *mut session = 0 as *mut session;
     let mut wl: *mut winlink = 0 as *mut winlink;
     let mut wp: *mut window_pane = 0 as *mut window_pane;
@@ -2817,61 +3036,72 @@ unsafe extern "C" fn window_tree_get_target(mut item:
     match (*item).type_0 as libc::c_uint {
         1 => {
             if !s.is_null() {
-                xasprintf(&mut target as *mut *mut libc::c_char,
-                          b"=%s:\x00" as *const u8 as *const libc::c_char,
-                          (*s).name);
+                xasprintf(
+                    &mut target as *mut *mut libc::c_char,
+                    b"=%s:\x00" as *const u8 as *const libc::c_char,
+                    (*s).name,
+                );
             }
         }
         2 => {
             if !(s.is_null() || wl.is_null()) {
-                xasprintf(&mut target as *mut *mut libc::c_char,
-                          b"=%s:%u.\x00" as *const u8 as *const libc::c_char,
-                          (*s).name, (*wl).idx);
+                xasprintf(
+                    &mut target as *mut *mut libc::c_char,
+                    b"=%s:%u.\x00" as *const u8 as *const libc::c_char,
+                    (*s).name,
+                    (*wl).idx,
+                );
             }
         }
         3 => {
             if !(s.is_null() || wl.is_null() || wp.is_null()) {
-                xasprintf(&mut target as *mut *mut libc::c_char,
-                          b"=%s:%u.%%%u\x00" as *const u8 as
-                              *const libc::c_char, (*s).name, (*wl).idx,
-                          (*wp).id);
+                xasprintf(
+                    &mut target as *mut *mut libc::c_char,
+                    b"=%s:%u.%%%u\x00" as *const u8 as *const libc::c_char,
+                    (*s).name,
+                    (*wl).idx,
+                    (*wp).id,
+                );
             }
         }
-        0 | _ => { }
+        0 | _ => {}
     }
     if target.is_null() {
         cmd_find_clear_state(fs, 0 as libc::c_int);
-    } else { cmd_find_from_winlink_pane(fs, wl, wp, 0 as libc::c_int); }
+    } else {
+        cmd_find_from_winlink_pane(fs, wl, wp, 0 as libc::c_int);
+    }
     return target;
 }
-unsafe extern "C" fn window_tree_command_each(mut modedata: *mut libc::c_void,
-                                              mut itemdata: *mut libc::c_void,
-                                              mut c: *mut client,
-                                              mut key: key_code) {
-    let mut data: *mut window_tree_modedata =
-        modedata as *mut window_tree_modedata;
-    let mut item: *mut window_tree_itemdata =
-        itemdata as *mut window_tree_itemdata;
+unsafe extern "C" fn window_tree_command_each(
+    mut modedata: *mut libc::c_void,
+    mut itemdata: *mut libc::c_void,
+    mut c: *mut client,
+    mut key: key_code,
+) {
+    let mut data: *mut window_tree_modedata = modedata as *mut window_tree_modedata;
+    let mut item: *mut window_tree_itemdata = itemdata as *mut window_tree_itemdata;
     let mut name: *mut libc::c_char = 0 as *mut libc::c_char;
-    let mut fs: cmd_find_state =
-        cmd_find_state{flags: 0,
-                       current: 0 as *mut cmd_find_state,
-                       s: 0 as *mut session,
-                       wl: 0 as *mut winlink,
-                       w: 0 as *mut window,
-                       wp: 0 as *mut window_pane,
-                       idx: 0,};
+    let mut fs: cmd_find_state = cmd_find_state {
+        flags: 0,
+        current: 0 as *mut cmd_find_state,
+        s: 0 as *mut session,
+        wl: 0 as *mut winlink,
+        w: 0 as *mut window,
+        wp: 0 as *mut window_pane,
+        idx: 0,
+    };
     name = window_tree_get_target(item, &mut fs);
     if !name.is_null() {
         mode_tree_run_command(c, &mut fs, (*data).entered, name);
     }
     free(name as *mut libc::c_void);
 }
-unsafe extern "C" fn window_tree_command_done(mut item: *mut cmdq_item,
-                                              mut modedata: *mut libc::c_void)
- -> cmd_retval {
-    let mut data: *mut window_tree_modedata =
-        modedata as *mut window_tree_modedata;
+unsafe extern "C" fn window_tree_command_done(
+    mut item: *mut cmdq_item,
+    mut modedata: *mut libc::c_void,
+) -> cmd_retval {
+    let mut data: *mut window_tree_modedata = modedata as *mut window_tree_modedata;
     if (*data).dead == 0 {
         mode_tree_build((*data).data);
         mode_tree_draw((*data).data);
@@ -2880,53 +3110,58 @@ unsafe extern "C" fn window_tree_command_done(mut item: *mut cmdq_item,
     window_tree_destroy(data);
     return CMD_RETURN_NORMAL;
 }
-unsafe extern "C" fn window_tree_command_callback(mut c: *mut client,
-                                                  mut modedata:
-                                                      *mut libc::c_void,
-                                                  mut s: *const libc::c_char,
-                                                  mut done: libc::c_int)
- -> libc::c_int {
-    let mut data: *mut window_tree_modedata =
-        modedata as *mut window_tree_modedata;
-    if s.is_null() || *s as libc::c_int == '\u{0}' as i32 || (*data).dead != 0
-       {
-        return 0 as libc::c_int
+unsafe extern "C" fn window_tree_command_callback(
+    mut c: *mut client,
+    mut modedata: *mut libc::c_void,
+    mut s: *const libc::c_char,
+    mut done: libc::c_int,
+) -> libc::c_int {
+    let mut data: *mut window_tree_modedata = modedata as *mut window_tree_modedata;
+    if s.is_null() || *s as libc::c_int == '\u{0}' as i32 || (*data).dead != 0 {
+        return 0 as libc::c_int;
     }
     (*data).entered = s;
-    mode_tree_each_tagged((*data).data,
-                          Some(window_tree_command_each as
-                                   unsafe extern "C" fn(_: *mut libc::c_void,
-                                                        _: *mut libc::c_void,
-                                                        _: *mut client,
-                                                        _: key_code) -> ()),
-                          c, 0xff000000000 as libc::c_ulonglong,
-                          1 as libc::c_int);
+    mode_tree_each_tagged(
+        (*data).data,
+        Some(
+            window_tree_command_each
+                as unsafe extern "C" fn(
+                    _: *mut libc::c_void,
+                    _: *mut libc::c_void,
+                    _: *mut client,
+                    _: key_code,
+                ) -> (),
+        ),
+        c,
+        0xff000000000 as libc::c_ulonglong,
+        1 as libc::c_int,
+    );
     (*data).entered = 0 as *const libc::c_char;
     (*data).references += 1;
-    cmdq_append(c,
-                cmdq_get_callback1(b"window_tree_command_done\x00" as
-                                       *const u8 as *const libc::c_char,
-                                   Some(window_tree_command_done as
-                                            unsafe extern "C" fn(_:
-                                                                     *mut cmdq_item,
-                                                                 _:
-                                                                     *mut libc::c_void)
-                                                -> cmd_retval),
-                                   data as *mut libc::c_void));
+    cmdq_append(
+        c,
+        cmdq_get_callback1(
+            b"window_tree_command_done\x00" as *const u8 as *const libc::c_char,
+            Some(
+                window_tree_command_done
+                    as unsafe extern "C" fn(_: *mut cmdq_item, _: *mut libc::c_void) -> cmd_retval,
+            ),
+            data as *mut libc::c_void,
+        ),
+    );
     return 0 as libc::c_int;
 }
-unsafe extern "C" fn window_tree_command_free(mut modedata:
-                                                  *mut libc::c_void) {
-    let mut data: *mut window_tree_modedata =
-        modedata as *mut window_tree_modedata;
+unsafe extern "C" fn window_tree_command_free(mut modedata: *mut libc::c_void) {
+    let mut data: *mut window_tree_modedata = modedata as *mut window_tree_modedata;
     window_tree_destroy(data);
 }
-unsafe extern "C" fn window_tree_kill_each(mut modedata: *mut libc::c_void,
-                                           mut itemdata: *mut libc::c_void,
-                                           mut c: *mut client,
-                                           mut key: key_code) {
-    let mut item: *mut window_tree_itemdata =
-        itemdata as *mut window_tree_itemdata;
+unsafe extern "C" fn window_tree_kill_each(
+    mut modedata: *mut libc::c_void,
+    mut itemdata: *mut libc::c_void,
+    mut c: *mut client,
+    mut key: key_code,
+) {
+    let mut item: *mut window_tree_itemdata = itemdata as *mut window_tree_itemdata;
     let mut s: *mut session = 0 as *mut session;
     let mut wl: *mut winlink = 0 as *mut winlink;
     let mut wp: *mut window_pane = 0 as *mut window_pane;
@@ -2935,9 +3170,14 @@ unsafe extern "C" fn window_tree_kill_each(mut modedata: *mut libc::c_void,
         1 => {
             if !s.is_null() {
                 server_destroy_session(s);
-                session_destroy(s, 1 as libc::c_int,
-                                (*::std::mem::transmute::<&[u8; 22],
-                                                          &[libc::c_char; 22]>(b"window_tree_kill_each\x00")).as_ptr());
+                session_destroy(
+                    s,
+                    1 as libc::c_int,
+                    (*::std::mem::transmute::<&[u8; 22], &[libc::c_char; 22]>(
+                        b"window_tree_kill_each\x00",
+                    ))
+                    .as_ptr(),
+                );
             }
         }
         2 => {
@@ -2945,169 +3185,160 @@ unsafe extern "C" fn window_tree_kill_each(mut modedata: *mut libc::c_void,
                 server_kill_window((*wl).window, 0 as libc::c_int);
             }
         }
-        3 => { if !wp.is_null() { server_kill_pane(wp); } }
-        0 | _ => { }
+        3 => {
+            if !wp.is_null() {
+                server_kill_pane(wp);
+            }
+        }
+        0 | _ => {}
     };
 }
-unsafe extern "C" fn window_tree_kill_current_callback(mut c: *mut client,
-                                                       mut modedata:
-                                                           *mut libc::c_void,
-                                                       mut s:
-                                                           *const libc::c_char,
-                                                       mut done: libc::c_int)
- -> libc::c_int {
-    let mut data: *mut window_tree_modedata =
-        modedata as *mut window_tree_modedata;
+unsafe extern "C" fn window_tree_kill_current_callback(
+    mut c: *mut client,
+    mut modedata: *mut libc::c_void,
+    mut s: *const libc::c_char,
+    mut done: libc::c_int,
+) -> libc::c_int {
+    let mut data: *mut window_tree_modedata = modedata as *mut window_tree_modedata;
     let mut mtd: *mut mode_tree_data = (*data).data;
-    if s.is_null() || *s as libc::c_int == '\u{0}' as i32 || (*data).dead != 0
-       {
-        return 0 as libc::c_int
+    if s.is_null() || *s as libc::c_int == '\u{0}' as i32 || (*data).dead != 0 {
+        return 0 as libc::c_int;
     }
     if ({
-            let mut __res: libc::c_int = 0;
-            if ::std::mem::size_of::<u_char>() as libc::c_ulong >
-                   1 as libc::c_int as libc::c_ulong {
-                if 0 != 0 {
-                    let mut __c: libc::c_int =
-                        *s.offset(0 as libc::c_int as isize) as u_char as
-                            libc::c_int;
-                    __res =
-                        (if __c < -(128 as libc::c_int) ||
-                                __c > 255 as libc::c_int {
-                             __c
-                         } else {
-                             *(*__ctype_tolower_loc()).offset(__c as isize)
-                         })
+        let mut __res: libc::c_int = 0;
+        if ::std::mem::size_of::<u_char>() as libc::c_ulong > 1 as libc::c_int as libc::c_ulong {
+            if 0 != 0 {
+                let mut __c: libc::c_int =
+                    *s.offset(0 as libc::c_int as isize) as u_char as libc::c_int;
+                __res = (if __c < -(128 as libc::c_int) || __c > 255 as libc::c_int {
+                    __c
                 } else {
-                    __res =
-                        tolower(*s.offset(0 as libc::c_int as isize) as u_char
-                                    as libc::c_int)
-                }
+                    *(*__ctype_tolower_loc()).offset(__c as isize)
+                })
             } else {
-                __res =
-                    *(*__ctype_tolower_loc()).offset(*s.offset(0 as
-                                                                   libc::c_int
-                                                                   as isize)
-                                                         as u_char as
-                                                         libc::c_int as isize)
+                __res = tolower(*s.offset(0 as libc::c_int as isize) as u_char as libc::c_int)
             }
-            __res
-        }) != 'y' as i32 ||
-           *s.offset(1 as libc::c_int as isize) as libc::c_int !=
-               '\u{0}' as i32 {
-        return 0 as libc::c_int
+        } else {
+            __res = *(*__ctype_tolower_loc())
+                .offset(*s.offset(0 as libc::c_int as isize) as u_char as libc::c_int as isize)
+        }
+        __res
+    }) != 'y' as i32
+        || *s.offset(1 as libc::c_int as isize) as libc::c_int != '\u{0}' as i32
+    {
+        return 0 as libc::c_int;
     }
-    window_tree_kill_each(data as *mut libc::c_void,
-                          mode_tree_get_current(mtd), c,
-                          0xff000000000 as libc::c_ulonglong);
+    window_tree_kill_each(
+        data as *mut libc::c_void,
+        mode_tree_get_current(mtd),
+        c,
+        0xff000000000 as libc::c_ulonglong,
+    );
     server_renumber_all();
     (*data).references += 1;
-    cmdq_append(c,
-                cmdq_get_callback1(b"window_tree_command_done\x00" as
-                                       *const u8 as *const libc::c_char,
-                                   Some(window_tree_command_done as
-                                            unsafe extern "C" fn(_:
-                                                                     *mut cmdq_item,
-                                                                 _:
-                                                                     *mut libc::c_void)
-                                                -> cmd_retval),
-                                   data as *mut libc::c_void));
+    cmdq_append(
+        c,
+        cmdq_get_callback1(
+            b"window_tree_command_done\x00" as *const u8 as *const libc::c_char,
+            Some(
+                window_tree_command_done
+                    as unsafe extern "C" fn(_: *mut cmdq_item, _: *mut libc::c_void) -> cmd_retval,
+            ),
+            data as *mut libc::c_void,
+        ),
+    );
     return 0 as libc::c_int;
 }
-unsafe extern "C" fn window_tree_kill_tagged_callback(mut c: *mut client,
-                                                      mut modedata:
-                                                          *mut libc::c_void,
-                                                      mut s:
-                                                          *const libc::c_char,
-                                                      mut done: libc::c_int)
- -> libc::c_int {
-    let mut data: *mut window_tree_modedata =
-        modedata as *mut window_tree_modedata;
+unsafe extern "C" fn window_tree_kill_tagged_callback(
+    mut c: *mut client,
+    mut modedata: *mut libc::c_void,
+    mut s: *const libc::c_char,
+    mut done: libc::c_int,
+) -> libc::c_int {
+    let mut data: *mut window_tree_modedata = modedata as *mut window_tree_modedata;
     let mut mtd: *mut mode_tree_data = (*data).data;
-    if s.is_null() || *s as libc::c_int == '\u{0}' as i32 || (*data).dead != 0
-       {
-        return 0 as libc::c_int
+    if s.is_null() || *s as libc::c_int == '\u{0}' as i32 || (*data).dead != 0 {
+        return 0 as libc::c_int;
     }
     if ({
-            let mut __res: libc::c_int = 0;
-            if ::std::mem::size_of::<u_char>() as libc::c_ulong >
-                   1 as libc::c_int as libc::c_ulong {
-                if 0 != 0 {
-                    let mut __c: libc::c_int =
-                        *s.offset(0 as libc::c_int as isize) as u_char as
-                            libc::c_int;
-                    __res =
-                        (if __c < -(128 as libc::c_int) ||
-                                __c > 255 as libc::c_int {
-                             __c
-                         } else {
-                             *(*__ctype_tolower_loc()).offset(__c as isize)
-                         })
+        let mut __res: libc::c_int = 0;
+        if ::std::mem::size_of::<u_char>() as libc::c_ulong > 1 as libc::c_int as libc::c_ulong {
+            if 0 != 0 {
+                let mut __c: libc::c_int =
+                    *s.offset(0 as libc::c_int as isize) as u_char as libc::c_int;
+                __res = (if __c < -(128 as libc::c_int) || __c > 255 as libc::c_int {
+                    __c
                 } else {
-                    __res =
-                        tolower(*s.offset(0 as libc::c_int as isize) as u_char
-                                    as libc::c_int)
-                }
+                    *(*__ctype_tolower_loc()).offset(__c as isize)
+                })
             } else {
-                __res =
-                    *(*__ctype_tolower_loc()).offset(*s.offset(0 as
-                                                                   libc::c_int
-                                                                   as isize)
-                                                         as u_char as
-                                                         libc::c_int as isize)
+                __res = tolower(*s.offset(0 as libc::c_int as isize) as u_char as libc::c_int)
             }
-            __res
-        }) != 'y' as i32 ||
-           *s.offset(1 as libc::c_int as isize) as libc::c_int !=
-               '\u{0}' as i32 {
-        return 0 as libc::c_int
+        } else {
+            __res = *(*__ctype_tolower_loc())
+                .offset(*s.offset(0 as libc::c_int as isize) as u_char as libc::c_int as isize)
+        }
+        __res
+    }) != 'y' as i32
+        || *s.offset(1 as libc::c_int as isize) as libc::c_int != '\u{0}' as i32
+    {
+        return 0 as libc::c_int;
     }
-    mode_tree_each_tagged(mtd,
-                          Some(window_tree_kill_each as
-                                   unsafe extern "C" fn(_: *mut libc::c_void,
-                                                        _: *mut libc::c_void,
-                                                        _: *mut client,
-                                                        _: key_code) -> ()),
-                          c, 0xff000000000 as libc::c_ulonglong,
-                          1 as libc::c_int);
+    mode_tree_each_tagged(
+        mtd,
+        Some(
+            window_tree_kill_each
+                as unsafe extern "C" fn(
+                    _: *mut libc::c_void,
+                    _: *mut libc::c_void,
+                    _: *mut client,
+                    _: key_code,
+                ) -> (),
+        ),
+        c,
+        0xff000000000 as libc::c_ulonglong,
+        1 as libc::c_int,
+    );
     server_renumber_all();
     (*data).references += 1;
-    cmdq_append(c,
-                cmdq_get_callback1(b"window_tree_command_done\x00" as
-                                       *const u8 as *const libc::c_char,
-                                   Some(window_tree_command_done as
-                                            unsafe extern "C" fn(_:
-                                                                     *mut cmdq_item,
-                                                                 _:
-                                                                     *mut libc::c_void)
-                                                -> cmd_retval),
-                                   data as *mut libc::c_void));
+    cmdq_append(
+        c,
+        cmdq_get_callback1(
+            b"window_tree_command_done\x00" as *const u8 as *const libc::c_char,
+            Some(
+                window_tree_command_done
+                    as unsafe extern "C" fn(_: *mut cmdq_item, _: *mut libc::c_void) -> cmd_retval,
+            ),
+            data as *mut libc::c_void,
+        ),
+    );
     return 0 as libc::c_int;
 }
-unsafe extern "C" fn window_tree_mouse(mut data: *mut window_tree_modedata,
-                                       mut key: key_code, mut x: u_int,
-                                       mut item: *mut window_tree_itemdata)
- -> key_code {
+unsafe extern "C" fn window_tree_mouse(
+    mut data: *mut window_tree_modedata,
+    mut key: key_code,
+    mut x: u_int,
+    mut item: *mut window_tree_itemdata,
+) -> key_code {
     let mut s: *mut session = 0 as *mut session;
     let mut wl: *mut winlink = 0 as *mut winlink;
     let mut wp: *mut window_pane = 0 as *mut window_pane;
     let mut loop_0: u_int = 0;
     if key != KEYC_MOUSEDOWN1_PANE as libc::c_ulong as libc::c_ulonglong {
-        return 0xff000000000 as libc::c_ulonglong
+        return 0xff000000000 as libc::c_ulonglong;
     }
     if (*data).left != -(1 as libc::c_int) && x <= (*data).left as u_int {
-        return '<' as i32 as key_code
+        return '<' as i32 as key_code;
     }
     if (*data).right != -(1 as libc::c_int) && x >= (*data).right as u_int {
-        return '>' as i32 as key_code
+        return '>' as i32 as key_code;
     }
     if (*data).left != -(1 as libc::c_int) {
-        x =
-            (x as libc::c_uint).wrapping_sub((*data).left as libc::c_uint) as
-                u_int as u_int
-    } else if x != 0 as libc::c_int as libc::c_uint { x = x.wrapping_sub(1) }
-    if x == 0 as libc::c_int as libc::c_uint ||
-           (*data).end == 0 as libc::c_int as libc::c_uint {
+        x = (x as libc::c_uint).wrapping_sub((*data).left as libc::c_uint) as u_int as u_int
+    } else if x != 0 as libc::c_int as libc::c_uint {
+        x = x.wrapping_sub(1)
+    }
+    if x == 0 as libc::c_int as libc::c_uint || (*data).end == 0 as libc::c_int as libc::c_uint {
         x = 0 as libc::c_int as u_int
     } else {
         x = x.wrapping_div((*data).each);
@@ -3116,60 +3347,69 @@ unsafe extern "C" fn window_tree_mouse(mut data: *mut window_tree_modedata,
         }
     }
     window_tree_pull_item(item, &mut s, &mut wl, &mut wp);
-    if (*item).type_0 as libc::c_uint ==
-           WINDOW_TREE_SESSION as libc::c_int as libc::c_uint {
-        if s.is_null() { return 0xff000000000 as libc::c_ulonglong }
+    if (*item).type_0 as libc::c_uint == WINDOW_TREE_SESSION as libc::c_int as libc::c_uint {
+        if s.is_null() {
+            return 0xff000000000 as libc::c_ulonglong;
+        }
         mode_tree_expand_current((*data).data);
         loop_0 = 0 as libc::c_int as u_int;
         wl = winlinks_RB_MINMAX(&mut (*s).windows, -(1 as libc::c_int));
         while !wl.is_null() {
-            if loop_0 == (*data).start.wrapping_add(x) { break ; }
+            if loop_0 == (*data).start.wrapping_add(x) {
+                break;
+            }
             loop_0 = loop_0.wrapping_add(1);
             wl = winlinks_RB_NEXT(wl)
         }
         if !wl.is_null() {
             mode_tree_set_current((*data).data, wl as uint64_t);
         }
-        return '\r' as i32 as key_code
+        return '\r' as i32 as key_code;
     }
-    if (*item).type_0 as libc::c_uint ==
-           WINDOW_TREE_WINDOW as libc::c_int as libc::c_uint {
-        if wl.is_null() { return 0xff000000000 as libc::c_ulonglong }
+    if (*item).type_0 as libc::c_uint == WINDOW_TREE_WINDOW as libc::c_int as libc::c_uint {
+        if wl.is_null() {
+            return 0xff000000000 as libc::c_ulonglong;
+        }
         mode_tree_expand_current((*data).data);
         loop_0 = 0 as libc::c_int as u_int;
         wp = (*(*wl).window).panes.tqh_first;
         while !wp.is_null() {
-            if loop_0 == (*data).start.wrapping_add(x) { break ; }
+            if loop_0 == (*data).start.wrapping_add(x) {
+                break;
+            }
             loop_0 = loop_0.wrapping_add(1);
             wp = (*wp).entry.tqe_next
         }
         if !wp.is_null() {
             mode_tree_set_current((*data).data, wp as uint64_t);
         }
-        return '\r' as i32 as key_code
+        return '\r' as i32 as key_code;
     }
     return 0xff000000000 as libc::c_ulonglong;
 }
-unsafe extern "C" fn window_tree_key(mut wme: *mut window_mode_entry,
-                                     mut c: *mut client, mut s: *mut session,
-                                     mut wl: *mut winlink, mut key: key_code,
-                                     mut m: *mut mouse_event) {
+unsafe extern "C" fn window_tree_key(
+    mut wme: *mut window_mode_entry,
+    mut c: *mut client,
+    mut s: *mut session,
+    mut wl: *mut winlink,
+    mut key: key_code,
+    mut m: *mut mouse_event,
+) {
     let mut wp: *mut window_pane = (*wme).wp;
-    let mut data: *mut window_tree_modedata =
-        (*wme).data as *mut window_tree_modedata;
+    let mut data: *mut window_tree_modedata = (*wme).data as *mut window_tree_modedata;
     let mut item: *mut window_tree_itemdata = 0 as *mut window_tree_itemdata;
-    let mut new_item: *mut window_tree_itemdata =
-        0 as *mut window_tree_itemdata;
+    let mut new_item: *mut window_tree_itemdata = 0 as *mut window_tree_itemdata;
     let mut name: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut prompt: *mut libc::c_char = 0 as *mut libc::c_char;
-    let mut fs: cmd_find_state =
-        cmd_find_state{flags: 0,
-                       current: 0 as *mut cmd_find_state,
-                       s: 0 as *mut session,
-                       wl: 0 as *mut winlink,
-                       w: 0 as *mut window,
-                       wp: 0 as *mut window_pane,
-                       idx: 0,};
+    let mut fs: cmd_find_state = cmd_find_state {
+        flags: 0,
+        current: 0 as *mut cmd_find_state,
+        s: 0 as *mut session,
+        wl: 0 as *mut winlink,
+        w: 0 as *mut window,
+        wp: 0 as *mut window_pane,
+        idx: 0,
+    };
     let mut fsp: *mut cmd_find_state = &mut (*data).fs;
     let mut finished: libc::c_int = 0;
     let mut tagged: u_int = 0;
@@ -3181,24 +3421,25 @@ unsafe extern "C" fn window_tree_key(mut wme: *mut window_mode_entry,
     let mut nwp: *mut window_pane = 0 as *mut window_pane;
     item = mode_tree_get_current((*data).data) as *mut window_tree_itemdata;
     finished = mode_tree_key((*data).data, c, &mut key, m, &mut x, &mut y);
-    new_item =
-        mode_tree_get_current((*data).data) as *mut window_tree_itemdata;
-    if item != new_item { item = new_item; (*data).offset = 0 as libc::c_int }
-    if key & 0xfffffffffff as libc::c_ulonglong >=
-           KEYC_MOUSE as libc::c_ulong as libc::c_ulonglong &&
-           (key & 0xfffffffffff as libc::c_ulonglong) <
-               KEYC_BSPACE as libc::c_ulong as libc::c_ulonglong &&
-           !m.is_null() {
+    new_item = mode_tree_get_current((*data).data) as *mut window_tree_itemdata;
+    if item != new_item {
+        item = new_item;
+        (*data).offset = 0 as libc::c_int
+    }
+    if key & 0xfffffffffff as libc::c_ulonglong >= KEYC_MOUSE as libc::c_ulong as libc::c_ulonglong
+        && (key & 0xfffffffffff as libc::c_ulonglong)
+            < KEYC_BSPACE as libc::c_ulong as libc::c_ulonglong
+        && !m.is_null()
+    {
         key = window_tree_mouse(data, key, x, item)
     }
     match key {
-        60 => { (*data).offset -= 1 }
-        62 => { (*data).offset += 1 }
+        60 => (*data).offset -= 1,
+        62 => (*data).offset += 1,
         72 => {
             mode_tree_expand((*data).data, (*fsp).s as uint64_t);
             mode_tree_expand((*data).data, (*fsp).wl as uint64_t);
-            if mode_tree_set_current((*data).data, (*wme).wp as uint64_t) == 0
-               {
+            if mode_tree_set_current((*data).data, (*wme).wp as uint64_t) == 0 {
                 mode_tree_set_current((*data).data, (*fsp).wl as uint64_t);
             }
         }
@@ -3207,125 +3448,145 @@ unsafe extern "C" fn window_tree_key(mut wme: *mut window_mode_entry,
             server_set_marked(ns, nwl, nwp);
             mode_tree_build((*data).data);
         }
-        77 => { server_clear_marked(); mode_tree_build((*data).data); }
+        77 => {
+            server_clear_marked();
+            mode_tree_build((*data).data);
+        }
         120 => {
             window_tree_pull_item(item, &mut ns, &mut nwl, &mut nwp);
             match (*item).type_0 as libc::c_uint {
                 1 => {
                     if !ns.is_null() {
-                        xasprintf(&mut prompt as *mut *mut libc::c_char,
-                                  b"Kill session %s? \x00" as *const u8 as
-                                      *const libc::c_char, (*ns).name);
+                        xasprintf(
+                            &mut prompt as *mut *mut libc::c_char,
+                            b"Kill session %s? \x00" as *const u8 as *const libc::c_char,
+                            (*ns).name,
+                        );
                     }
                 }
                 2 => {
                     if !nwl.is_null() {
-                        xasprintf(&mut prompt as *mut *mut libc::c_char,
-                                  b"Kill window %u? \x00" as *const u8 as
-                                      *const libc::c_char, (*nwl).idx);
+                        xasprintf(
+                            &mut prompt as *mut *mut libc::c_char,
+                            b"Kill window %u? \x00" as *const u8 as *const libc::c_char,
+                            (*nwl).idx,
+                        );
                     }
                 }
                 3 => {
-                    if !(nwp.is_null() ||
-                             window_pane_index(nwp, &mut idx) !=
-                                 0 as libc::c_int) {
-                        xasprintf(&mut prompt as *mut *mut libc::c_char,
-                                  b"Kill pane %u? \x00" as *const u8 as
-                                      *const libc::c_char, idx);
+                    if !(nwp.is_null() || window_pane_index(nwp, &mut idx) != 0 as libc::c_int) {
+                        xasprintf(
+                            &mut prompt as *mut *mut libc::c_char,
+                            b"Kill pane %u? \x00" as *const u8 as *const libc::c_char,
+                            idx,
+                        );
                     }
                 }
-                0 | _ => { }
+                0 | _ => {}
             }
             if !prompt.is_null() {
                 (*data).references += 1;
-                status_prompt_set(c, 0 as *mut cmd_find_state, prompt,
-                                  b"\x00" as *const u8 as *const libc::c_char,
-                                  Some(window_tree_kill_current_callback as
-                                           unsafe extern "C" fn(_:
-                                                                    *mut client,
-                                                                _:
-                                                                    *mut libc::c_void,
-                                                                _:
-                                                                    *const libc::c_char,
-                                                                _:
-                                                                    libc::c_int)
-                                               -> libc::c_int),
-                                  Some(window_tree_command_free as
-                                           unsafe extern "C" fn(_:
-                                                                    *mut libc::c_void)
-                                               -> ()),
-                                  data as *mut libc::c_void,
-                                  0x1 as libc::c_int | 0x8 as libc::c_int);
+                status_prompt_set(
+                    c,
+                    0 as *mut cmd_find_state,
+                    prompt,
+                    b"\x00" as *const u8 as *const libc::c_char,
+                    Some(
+                        window_tree_kill_current_callback
+                            as unsafe extern "C" fn(
+                                _: *mut client,
+                                _: *mut libc::c_void,
+                                _: *const libc::c_char,
+                                _: libc::c_int,
+                            ) -> libc::c_int,
+                    ),
+                    Some(
+                        window_tree_command_free
+                            as unsafe extern "C" fn(_: *mut libc::c_void) -> (),
+                    ),
+                    data as *mut libc::c_void,
+                    0x1 as libc::c_int | 0x8 as libc::c_int,
+                );
                 free(prompt as *mut libc::c_void);
             }
         }
         88 => {
             tagged = mode_tree_count_tagged((*data).data);
             if !(tagged == 0 as libc::c_int as libc::c_uint) {
-                xasprintf(&mut prompt as *mut *mut libc::c_char,
-                          b"Kill %u tagged? \x00" as *const u8 as
-                              *const libc::c_char, tagged);
+                xasprintf(
+                    &mut prompt as *mut *mut libc::c_char,
+                    b"Kill %u tagged? \x00" as *const u8 as *const libc::c_char,
+                    tagged,
+                );
                 (*data).references += 1;
-                status_prompt_set(c, 0 as *mut cmd_find_state, prompt,
-                                  b"\x00" as *const u8 as *const libc::c_char,
-                                  Some(window_tree_kill_tagged_callback as
-                                           unsafe extern "C" fn(_:
-                                                                    *mut client,
-                                                                _:
-                                                                    *mut libc::c_void,
-                                                                _:
-                                                                    *const libc::c_char,
-                                                                _:
-                                                                    libc::c_int)
-                                               -> libc::c_int),
-                                  Some(window_tree_command_free as
-                                           unsafe extern "C" fn(_:
-                                                                    *mut libc::c_void)
-                                               -> ()),
-                                  data as *mut libc::c_void,
-                                  0x1 as libc::c_int | 0x8 as libc::c_int);
+                status_prompt_set(
+                    c,
+                    0 as *mut cmd_find_state,
+                    prompt,
+                    b"\x00" as *const u8 as *const libc::c_char,
+                    Some(
+                        window_tree_kill_tagged_callback
+                            as unsafe extern "C" fn(
+                                _: *mut client,
+                                _: *mut libc::c_void,
+                                _: *const libc::c_char,
+                                _: libc::c_int,
+                            ) -> libc::c_int,
+                    ),
+                    Some(
+                        window_tree_command_free
+                            as unsafe extern "C" fn(_: *mut libc::c_void) -> (),
+                    ),
+                    data as *mut libc::c_void,
+                    0x1 as libc::c_int | 0x8 as libc::c_int,
+                );
                 free(prompt as *mut libc::c_void);
             }
         }
         58 => {
             tagged = mode_tree_count_tagged((*data).data);
             if tagged != 0 as libc::c_int as libc::c_uint {
-                xasprintf(&mut prompt as *mut *mut libc::c_char,
-                          b"(%u tagged) \x00" as *const u8 as
-                              *const libc::c_char, tagged);
+                xasprintf(
+                    &mut prompt as *mut *mut libc::c_char,
+                    b"(%u tagged) \x00" as *const u8 as *const libc::c_char,
+                    tagged,
+                );
             } else {
-                xasprintf(&mut prompt as *mut *mut libc::c_char,
-                          b"(current) \x00" as *const u8 as
-                              *const libc::c_char);
+                xasprintf(
+                    &mut prompt as *mut *mut libc::c_char,
+                    b"(current) \x00" as *const u8 as *const libc::c_char,
+                );
             }
             (*data).references += 1;
-            status_prompt_set(c, 0 as *mut cmd_find_state, prompt,
-                              b"\x00" as *const u8 as *const libc::c_char,
-                              Some(window_tree_command_callback as
-                                       unsafe extern "C" fn(_: *mut client,
-                                                            _:
-                                                                *mut libc::c_void,
-                                                            _:
-                                                                *const libc::c_char,
-                                                            _: libc::c_int)
-                                           -> libc::c_int),
-                              Some(window_tree_command_free as
-                                       unsafe extern "C" fn(_:
-                                                                *mut libc::c_void)
-                                           -> ()), data as *mut libc::c_void,
-                              0x8 as libc::c_int);
+            status_prompt_set(
+                c,
+                0 as *mut cmd_find_state,
+                prompt,
+                b"\x00" as *const u8 as *const libc::c_char,
+                Some(
+                    window_tree_command_callback
+                        as unsafe extern "C" fn(
+                            _: *mut client,
+                            _: *mut libc::c_void,
+                            _: *const libc::c_char,
+                            _: libc::c_int,
+                        ) -> libc::c_int,
+                ),
+                Some(window_tree_command_free as unsafe extern "C" fn(_: *mut libc::c_void) -> ()),
+                data as *mut libc::c_void,
+                0x8 as libc::c_int,
+            );
             free(prompt as *mut libc::c_void);
         }
         13 => {
             name = window_tree_get_target(item, &mut fs);
             if !name.is_null() {
-                mode_tree_run_command(c, 0 as *mut cmd_find_state,
-                                      (*data).command, name);
+                mode_tree_run_command(c, 0 as *mut cmd_find_state, (*data).command, name);
             }
             finished = 1 as libc::c_int;
             free(name as *mut libc::c_void);
         }
-        _ => { }
+        _ => {}
     }
     if finished != 0 {
         window_pane_reset_mode(wp);

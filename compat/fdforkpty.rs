@@ -1,9 +1,12 @@
 use ::libc;
 extern "C" {
     #[no_mangle]
-    fn forkpty(__amaster: *mut libc::c_int, __name: *mut libc::c_char,
-               __termp: *const termios, __winp: *const winsize)
-     -> libc::c_int;
+    fn forkpty(
+        __amaster: *mut libc::c_int,
+        __name: *mut libc::c_char,
+        __termp: *const termios,
+        __winp: *const winsize,
+    ) -> libc::c_int;
 }
 pub type __pid_t = libc::c_int;
 pub type pid_t = __pid_t;
@@ -50,10 +53,12 @@ pub unsafe extern "C" fn getptmfd() -> libc::c_int {
     return 2147483647 as libc::c_int;
 }
 #[no_mangle]
-pub unsafe extern "C" fn fdforkpty(mut ptmfd: libc::c_int,
-                                   mut master: *mut libc::c_int,
-                                   mut name: *mut libc::c_char,
-                                   mut tio: *mut termios,
-                                   mut ws: *mut winsize) -> pid_t {
+pub unsafe extern "C" fn fdforkpty(
+    mut ptmfd: libc::c_int,
+    mut master: *mut libc::c_int,
+    mut name: *mut libc::c_char,
+    mut tio: *mut termios,
+    mut ws: *mut winsize,
+) -> pid_t {
     return forkpty(master, name, tio, ws);
 }

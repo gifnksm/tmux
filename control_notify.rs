@@ -21,14 +21,18 @@ extern "C" {
     #[no_mangle]
     fn free(__ptr: *mut libc::c_void);
     #[no_mangle]
-    fn format_single(_: *mut cmdq_item, _: *const libc::c_char,
-                     _: *mut client, _: *mut session, _: *mut winlink,
-                     _: *mut window_pane) -> *mut libc::c_char;
+    fn format_single(
+        _: *mut cmdq_item,
+        _: *const libc::c_char,
+        _: *mut client,
+        _: *mut session,
+        _: *mut winlink,
+        _: *mut window_pane,
+    ) -> *mut libc::c_char;
     #[no_mangle]
     static mut clients: clients;
     #[no_mangle]
-    fn winlink_find_by_window(_: *mut winlinks, _: *mut window)
-     -> *mut winlink;
+    fn winlink_find_by_window(_: *mut winlinks, _: *mut window) -> *mut winlink;
     #[no_mangle]
     fn winlink_find_by_window_id(_: *mut winlinks, _: u_int) -> *mut winlink;
     #[no_mangle]
@@ -123,18 +127,13 @@ pub struct event_callback {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub union C2RustUnnamed_6 {
-    pub evcb_callback: Option<unsafe extern "C" fn(_: libc::c_int,
-                                                   _: libc::c_short,
-                                                   _: *mut libc::c_void)
-                                  -> ()>,
-    pub evcb_selfcb: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                 _: *mut libc::c_void) -> ()>,
-    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
-    pub evcb_cbfinalize: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
+    pub evcb_callback:
+        Option<unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> ()>,
+    pub evcb_selfcb:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
+    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event, _: *mut libc::c_void) -> ()>,
+    pub evcb_cbfinalize:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -161,14 +160,10 @@ pub struct bufferevent {
     pub timeout_write: timeval,
     pub enabled: libc::c_short,
 }
-pub type bufferevent_event_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short,
-                                _: *mut libc::c_void) -> ()>;
-pub type bufferevent_data_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void)
-               -> ()>;
+pub type bufferevent_event_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short, _: *mut libc::c_void) -> ()>;
+pub type bufferevent_data_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct event_watermark {
@@ -307,17 +302,19 @@ pub struct C2RustUnnamed_9 {
     pub rbe_parent: *mut client_file,
     pub rbe_color: libc::c_int,
 }
-pub type client_file_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *const libc::c_char,
-                                _: libc::c_int, _: libc::c_int,
-                                _: *mut evbuffer, _: *mut libc::c_void)
-               -> ()>;
+pub type client_file_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: *mut evbuffer,
+        _: *mut libc::c_void,
+    ) -> (),
+>;
 pub type overlay_free_cb = Option<unsafe extern "C" fn(_: *mut client) -> ()>;
-pub type overlay_key_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event)
-               -> libc::c_int>;
+pub type overlay_key_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_event {
@@ -347,10 +344,8 @@ pub struct mouse_event {
     pub sgr_b: u_int,
 }
 pub type key_code = libc::c_ulonglong;
-pub type overlay_draw_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx)
-               -> ()>;
+pub type overlay_draw_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen_redraw_ctx {
@@ -364,10 +359,8 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int)
-               -> *mut screen>;
+pub type overlay_mode_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen {
@@ -461,10 +454,8 @@ pub struct C2RustUnnamed_11 {
     pub bg: u_char,
     pub data: u_char,
 }
-pub type overlay_check_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int)
-               -> libc::c_int>;
+pub type overlay_check_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct session {
@@ -711,24 +702,37 @@ pub struct C2RustUnnamed_24 {
 pub struct window_mode {
     pub name: *const libc::c_char,
     pub default_format: *const libc::c_char,
-    pub init: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                          _: *mut cmd_find_state,
-                                          _: *mut args) -> *mut screen>,
+    pub init: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut cmd_find_state,
+            _: *mut args,
+        ) -> *mut screen,
+    >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
-    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                            _: u_int, _: u_int) -> ()>,
-    pub key: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                         _: *mut client, _: *mut session,
-                                         _: *mut winlink, _: key_code,
-                                         _: *mut mouse_event) -> ()>,
-    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry)
-                              -> *const libc::c_char>,
-    pub command: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut client, _: *mut session,
-                                             _: *mut winlink, _: *mut args,
-                                             _: *mut mouse_event) -> ()>,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut format_tree) -> ()>,
+    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
+    pub key: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: key_code,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> *const libc::c_char>,
+    pub command: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: *mut args,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -765,14 +769,15 @@ pub struct winlink_stack {
 pub type C2RustUnnamed_25 = libc::c_uint;
 pub const PROMPT_COMMAND: C2RustUnnamed_25 = 1;
 pub const PROMPT_ENTRY: C2RustUnnamed_25 = 0;
-pub type prompt_free_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
-pub type prompt_input_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut libc::c_void,
-                                _: *const libc::c_char, _: libc::c_int)
-               -> libc::c_int>;
+pub type prompt_free_cb = Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
+pub type prompt_input_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut libc::c_void,
+        _: *const libc::c_char,
+        _: libc::c_int,
+    ) -> libc::c_int,
+>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_table {
@@ -943,12 +948,8 @@ pub struct tty {
     pub mouse_last_y: u_int,
     pub mouse_last_b: u_int,
     pub mouse_drag_flag: libc::c_int,
-    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client,
-                                                       _: *mut mouse_event)
-                                      -> ()>,
-    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client,
-                                                        _: *mut mouse_event)
-                                       -> ()>,
+    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
+    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
     pub key_timer: event,
     pub key_tree: *mut tty_key,
 }
@@ -1005,23 +1006,22 @@ pub struct clients {
     pub tqh_last: *mut *mut client,
 }
 #[no_mangle]
-pub unsafe extern "C" fn control_notify_pane_mode_changed(mut pane:
-                                                              libc::c_int) {
+pub unsafe extern "C" fn control_notify_pane_mode_changed(mut pane: libc::c_int) {
     let mut c: *mut client = 0 as *mut client;
     c = clients.tqh_first;
     while !c.is_null() {
-        if !c.is_null() &&
-               (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
-            control_write(c,
-                          b"%%pane-mode-changed %%%u\x00" as *const u8 as
-                              *const libc::c_char, pane);
+        if !c.is_null() && (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
+            control_write(
+                c,
+                b"%%pane-mode-changed %%%u\x00" as *const u8 as *const libc::c_char,
+                pane,
+            );
         }
         c = (*c).entry.tqe_next
-    };
+    }
 }
 #[no_mangle]
-pub unsafe extern "C" fn control_notify_window_layout_changed(mut w:
-                                                                  *mut window) {
+pub unsafe extern "C" fn control_notify_window_layout_changed(mut w: *mut window) {
     let mut c: *mut client = 0 as *mut client;
     let mut s: *mut session = 0 as *mut session;
     let mut wl: *mut winlink = 0 as *mut winlink;
@@ -1032,100 +1032,105 @@ pub unsafe extern "C" fn control_notify_window_layout_changed(mut w:
             as *const u8 as *const libc::c_char;
     c = clients.tqh_first;
     while !c.is_null() {
-        if !(!(!c.is_null() &&
-                   (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0)
-                 || (*c).session.is_null()) {
+        if !(!(!c.is_null() && (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0)
+            || (*c).session.is_null())
+        {
             s = (*c).session;
-            if !winlink_find_by_window_id(&mut (*s).windows,
-                                          (*w).id).is_null() {
+            if !winlink_find_by_window_id(&mut (*s).windows, (*w).id).is_null() {
                 /*
-		 * When the last pane in a window is closed it won't have a
-		 * layout root and we don't need to inform the client about the
-		 * layout change because the whole window will go away soon.
-		 */
+                 * When the last pane in a window is closed it won't have a
+                 * layout root and we don't need to inform the client about the
+                 * layout change because the whole window will go away soon.
+                 */
                 if !(*w).layout_root.is_null() {
                     wl = winlink_find_by_window(&mut (*s).windows, w);
                     if !wl.is_null() {
-                        cp =
-                            format_single(0 as *mut cmdq_item, template, c,
-                                          0 as *mut session, wl,
-                                          0 as *mut window_pane);
-                        control_write(c,
-                                      b"%s\x00" as *const u8 as
-                                          *const libc::c_char, cp);
+                        cp = format_single(
+                            0 as *mut cmdq_item,
+                            template,
+                            c,
+                            0 as *mut session,
+                            wl,
+                            0 as *mut window_pane,
+                        );
+                        control_write(c, b"%s\x00" as *const u8 as *const libc::c_char, cp);
                         free(cp as *mut libc::c_void);
                     }
                 }
             }
         }
         c = (*c).entry.tqe_next
-    };
+    }
 }
 #[no_mangle]
-pub unsafe extern "C" fn control_notify_window_pane_changed(mut w:
-                                                                *mut window) {
+pub unsafe extern "C" fn control_notify_window_pane_changed(mut w: *mut window) {
     let mut c: *mut client = 0 as *mut client;
     c = clients.tqh_first;
     while !c.is_null() {
-        if !c.is_null() &&
-               (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
-            control_write(c,
-                          b"%%window-pane-changed @%u %%%u\x00" as *const u8
-                              as *const libc::c_char, (*w).id,
-                          (*(*w).active).id);
+        if !c.is_null() && (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
+            control_write(
+                c,
+                b"%%window-pane-changed @%u %%%u\x00" as *const u8 as *const libc::c_char,
+                (*w).id,
+                (*(*w).active).id,
+            );
         }
         c = (*c).entry.tqe_next
-    };
+    }
 }
 #[no_mangle]
-pub unsafe extern "C" fn control_notify_window_unlinked(mut s: *mut session,
-                                                        mut w: *mut window) {
-    let mut c: *mut client = 0 as *mut client;
-    let mut cs: *mut session = 0 as *mut session;
-    c = clients.tqh_first;
-    while !c.is_null() {
-        if !(!(!c.is_null() &&
-                   (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0)
-                 || (*c).session.is_null()) {
-            cs = (*c).session;
-            if !winlink_find_by_window_id(&mut (*cs).windows,
-                                          (*w).id).is_null() {
-                control_write(c,
-                              b"%%window-close @%u\x00" as *const u8 as
-                                  *const libc::c_char, (*w).id);
-            } else {
-                control_write(c,
-                              b"%%unlinked-window-close @%u\x00" as *const u8
-                                  as *const libc::c_char, (*w).id);
-            }
-        }
-        c = (*c).entry.tqe_next
-    };
-}
-#[no_mangle]
-pub unsafe extern "C" fn control_notify_window_linked(mut s: *mut session,
-                                                      mut w: *mut window) {
+pub unsafe extern "C" fn control_notify_window_unlinked(mut s: *mut session, mut w: *mut window) {
     let mut c: *mut client = 0 as *mut client;
     let mut cs: *mut session = 0 as *mut session;
     c = clients.tqh_first;
     while !c.is_null() {
-        if !(!(!c.is_null() &&
-                   (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0)
-                 || (*c).session.is_null()) {
+        if !(!(!c.is_null() && (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0)
+            || (*c).session.is_null())
+        {
             cs = (*c).session;
-            if !winlink_find_by_window_id(&mut (*cs).windows,
-                                          (*w).id).is_null() {
-                control_write(c,
-                              b"%%window-add @%u\x00" as *const u8 as
-                                  *const libc::c_char, (*w).id);
+            if !winlink_find_by_window_id(&mut (*cs).windows, (*w).id).is_null() {
+                control_write(
+                    c,
+                    b"%%window-close @%u\x00" as *const u8 as *const libc::c_char,
+                    (*w).id,
+                );
             } else {
-                control_write(c,
-                              b"%%unlinked-window-add @%u\x00" as *const u8 as
-                                  *const libc::c_char, (*w).id);
+                control_write(
+                    c,
+                    b"%%unlinked-window-close @%u\x00" as *const u8 as *const libc::c_char,
+                    (*w).id,
+                );
             }
         }
         c = (*c).entry.tqe_next
-    };
+    }
+}
+#[no_mangle]
+pub unsafe extern "C" fn control_notify_window_linked(mut s: *mut session, mut w: *mut window) {
+    let mut c: *mut client = 0 as *mut client;
+    let mut cs: *mut session = 0 as *mut session;
+    c = clients.tqh_first;
+    while !c.is_null() {
+        if !(!(!c.is_null() && (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0)
+            || (*c).session.is_null())
+        {
+            cs = (*c).session;
+            if !winlink_find_by_window_id(&mut (*cs).windows, (*w).id).is_null() {
+                control_write(
+                    c,
+                    b"%%window-add @%u\x00" as *const u8 as *const libc::c_char,
+                    (*w).id,
+                );
+            } else {
+                control_write(
+                    c,
+                    b"%%unlinked-window-add @%u\x00" as *const u8 as *const libc::c_char,
+                    (*w).id,
+                );
+            }
+        }
+        c = (*c).entry.tqe_next
+    }
 }
 #[no_mangle]
 pub unsafe extern "C" fn control_notify_window_renamed(mut w: *mut window) {
@@ -1133,106 +1138,119 @@ pub unsafe extern "C" fn control_notify_window_renamed(mut w: *mut window) {
     let mut cs: *mut session = 0 as *mut session;
     c = clients.tqh_first;
     while !c.is_null() {
-        if !(!(!c.is_null() &&
-                   (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0)
-                 || (*c).session.is_null()) {
+        if !(!(!c.is_null() && (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0)
+            || (*c).session.is_null())
+        {
             cs = (*c).session;
-            if !winlink_find_by_window_id(&mut (*cs).windows,
-                                          (*w).id).is_null() {
-                control_write(c,
-                              b"%%window-renamed @%u %s\x00" as *const u8 as
-                                  *const libc::c_char, (*w).id, (*w).name);
+            if !winlink_find_by_window_id(&mut (*cs).windows, (*w).id).is_null() {
+                control_write(
+                    c,
+                    b"%%window-renamed @%u %s\x00" as *const u8 as *const libc::c_char,
+                    (*w).id,
+                    (*w).name,
+                );
             } else {
-                control_write(c,
-                              b"%%unlinked-window-renamed @%u %s\x00" as
-                                  *const u8 as *const libc::c_char, (*w).id,
-                              (*w).name);
+                control_write(
+                    c,
+                    b"%%unlinked-window-renamed @%u %s\x00" as *const u8 as *const libc::c_char,
+                    (*w).id,
+                    (*w).name,
+                );
             }
         }
         c = (*c).entry.tqe_next
-    };
+    }
 }
 #[no_mangle]
-pub unsafe extern "C" fn control_notify_client_session_changed(mut cc:
-                                                                   *mut client) {
+pub unsafe extern "C" fn control_notify_client_session_changed(mut cc: *mut client) {
     let mut c: *mut client = 0 as *mut client;
     let mut s: *mut session = 0 as *mut session;
-    if (*cc).session.is_null() { return }
+    if (*cc).session.is_null() {
+        return;
+    }
     s = (*cc).session;
     c = clients.tqh_first;
     while !c.is_null() {
-        if !(!(!c.is_null() &&
-                   (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0)
-                 || (*c).session.is_null()) {
+        if !(!(!c.is_null() && (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0)
+            || (*c).session.is_null())
+        {
             if cc == c {
-                control_write(c,
-                              b"%%session-changed $%u %s\x00" as *const u8 as
-                                  *const libc::c_char, (*s).id, (*s).name);
+                control_write(
+                    c,
+                    b"%%session-changed $%u %s\x00" as *const u8 as *const libc::c_char,
+                    (*s).id,
+                    (*s).name,
+                );
             } else {
-                control_write(c,
-                              b"%%client-session-changed %s $%u %s\x00" as
-                                  *const u8 as *const libc::c_char,
-                              (*cc).name, (*s).id, (*s).name);
+                control_write(
+                    c,
+                    b"%%client-session-changed %s $%u %s\x00" as *const u8 as *const libc::c_char,
+                    (*cc).name,
+                    (*s).id,
+                    (*s).name,
+                );
             }
         }
         c = (*c).entry.tqe_next
-    };
+    }
 }
 #[no_mangle]
 pub unsafe extern "C" fn control_notify_session_renamed(mut s: *mut session) {
     let mut c: *mut client = 0 as *mut client;
     c = clients.tqh_first;
     while !c.is_null() {
-        if !c.is_null() &&
-               (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
-            control_write(c,
-                          b"%%session-renamed $%u %s\x00" as *const u8 as
-                              *const libc::c_char, (*s).id, (*s).name);
+        if !c.is_null() && (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
+            control_write(
+                c,
+                b"%%session-renamed $%u %s\x00" as *const u8 as *const libc::c_char,
+                (*s).id,
+                (*s).name,
+            );
         }
         c = (*c).entry.tqe_next
-    };
+    }
 }
 #[no_mangle]
 pub unsafe extern "C" fn control_notify_session_created(mut s: *mut session) {
     let mut c: *mut client = 0 as *mut client;
     c = clients.tqh_first;
     while !c.is_null() {
-        if !c.is_null() &&
-               (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
-            control_write(c,
-                          b"%%sessions-changed\x00" as *const u8 as
-                              *const libc::c_char);
+        if !c.is_null() && (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
+            control_write(
+                c,
+                b"%%sessions-changed\x00" as *const u8 as *const libc::c_char,
+            );
         }
         c = (*c).entry.tqe_next
-    };
+    }
 }
 #[no_mangle]
 pub unsafe extern "C" fn control_notify_session_closed(mut s: *mut session) {
     let mut c: *mut client = 0 as *mut client;
     c = clients.tqh_first;
     while !c.is_null() {
-        if !c.is_null() &&
-               (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
-            control_write(c,
-                          b"%%sessions-changed\x00" as *const u8 as
-                              *const libc::c_char);
+        if !c.is_null() && (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
+            control_write(
+                c,
+                b"%%sessions-changed\x00" as *const u8 as *const libc::c_char,
+            );
         }
         c = (*c).entry.tqe_next
-    };
+    }
 }
 #[no_mangle]
-pub unsafe extern "C" fn control_notify_session_window_changed(mut s:
-                                                                   *mut session) {
+pub unsafe extern "C" fn control_notify_session_window_changed(mut s: *mut session) {
     let mut c: *mut client = 0 as *mut client;
     c = clients.tqh_first;
     while !c.is_null() {
-        if !c.is_null() &&
-               (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
-            control_write(c,
-                          b"%%session-window-changed $%u @%u\x00" as *const u8
-                              as *const libc::c_char, (*s).id,
-                          (*(*(*s).curw).window).id);
+        if !c.is_null() && (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
+            control_write(
+                c,
+                b"%%session-window-changed $%u @%u\x00" as *const u8 as *const libc::c_char,
+                (*s).id,
+                (*(*(*s).curw).window).id,
+            );
         }
         c = (*c).entry.tqe_next
-    };
+    }
 }

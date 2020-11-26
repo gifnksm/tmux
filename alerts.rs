@@ -18,20 +18,25 @@ extern "C" {
     pub type cmdq_list;
     pub type tmuxpeer;
     #[no_mangle]
-    fn event_once(_: libc::c_int, _: libc::c_short,
-                  _:
-                      Option<unsafe extern "C" fn(_: libc::c_int,
-                                                  _: libc::c_short,
-                                                  _: *mut libc::c_void)
-                                 -> ()>, _: *mut libc::c_void,
-                  _: *const timeval) -> libc::c_int;
+    fn event_once(
+        _: libc::c_int,
+        _: libc::c_short,
+        _: Option<
+            unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> (),
+        >,
+        _: *mut libc::c_void,
+        _: *const timeval,
+    ) -> libc::c_int;
     #[no_mangle]
-    fn event_set(_: *mut event, _: libc::c_int, _: libc::c_short,
-                 _:
-                     Option<unsafe extern "C" fn(_: libc::c_int,
-                                                 _: libc::c_short,
-                                                 _: *mut libc::c_void) -> ()>,
-                 _: *mut libc::c_void);
+    fn event_set(
+        _: *mut event,
+        _: libc::c_int,
+        _: libc::c_short,
+        _: Option<
+            unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> (),
+        >,
+        _: *mut libc::c_void,
+    );
     #[no_mangle]
     fn event_initialized(ev: *const event) -> libc::c_int;
     #[no_mangle]
@@ -41,13 +46,17 @@ extern "C" {
     #[no_mangle]
     fn notify_winlink(_: *const libc::c_char, _: *mut winlink);
     #[no_mangle]
-    fn options_get_number(_: *mut options, _: *const libc::c_char)
-     -> libc::c_longlong;
+    fn options_get_number(_: *mut options, _: *const libc::c_char) -> libc::c_longlong;
     #[no_mangle]
     fn tty_putcode(_: *mut tty, _: tty_code_code);
     #[no_mangle]
-    fn status_message_set(_: *mut client, _: libc::c_int, _: libc::c_int,
-                          _: *const libc::c_char, _: ...);
+    fn status_message_set(
+        _: *mut client,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: *const libc::c_char,
+        _: ...
+    );
     #[no_mangle]
     static mut clients: clients;
     #[no_mangle]
@@ -158,18 +167,13 @@ pub struct event_callback {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub union C2RustUnnamed_6 {
-    pub evcb_callback: Option<unsafe extern "C" fn(_: libc::c_int,
-                                                   _: libc::c_short,
-                                                   _: *mut libc::c_void)
-                                  -> ()>,
-    pub evcb_selfcb: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                 _: *mut libc::c_void) -> ()>,
-    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
-    pub evcb_cbfinalize: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
+    pub evcb_callback:
+        Option<unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> ()>,
+    pub evcb_selfcb:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
+    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event, _: *mut libc::c_void) -> ()>,
+    pub evcb_cbfinalize:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -196,14 +200,10 @@ pub struct bufferevent {
     pub timeout_write: timeval,
     pub enabled: libc::c_short,
 }
-pub type bufferevent_event_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short,
-                                _: *mut libc::c_void) -> ()>;
-pub type bufferevent_data_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void)
-               -> ()>;
+pub type bufferevent_event_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short, _: *mut libc::c_void) -> ()>;
+pub type bufferevent_data_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct event_watermark {
@@ -342,17 +342,19 @@ pub struct C2RustUnnamed_9 {
     pub rbe_parent: *mut client_file,
     pub rbe_color: libc::c_int,
 }
-pub type client_file_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *const libc::c_char,
-                                _: libc::c_int, _: libc::c_int,
-                                _: *mut evbuffer, _: *mut libc::c_void)
-               -> ()>;
+pub type client_file_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: *mut evbuffer,
+        _: *mut libc::c_void,
+    ) -> (),
+>;
 pub type overlay_free_cb = Option<unsafe extern "C" fn(_: *mut client) -> ()>;
-pub type overlay_key_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event)
-               -> libc::c_int>;
+pub type overlay_key_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_event {
@@ -382,10 +384,8 @@ pub struct mouse_event {
     pub sgr_b: u_int,
 }
 pub type key_code = libc::c_ulonglong;
-pub type overlay_draw_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx)
-               -> ()>;
+pub type overlay_draw_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen_redraw_ctx {
@@ -399,10 +399,8 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int)
-               -> *mut screen>;
+pub type overlay_mode_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen {
@@ -496,10 +494,8 @@ pub struct C2RustUnnamed_11 {
     pub bg: u_char,
     pub data: u_char,
 }
-pub type overlay_check_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int)
-               -> libc::c_int>;
+pub type overlay_check_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct session {
@@ -746,24 +742,37 @@ pub struct C2RustUnnamed_24 {
 pub struct window_mode {
     pub name: *const libc::c_char,
     pub default_format: *const libc::c_char,
-    pub init: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                          _: *mut cmd_find_state,
-                                          _: *mut args) -> *mut screen>,
+    pub init: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut cmd_find_state,
+            _: *mut args,
+        ) -> *mut screen,
+    >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
-    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                            _: u_int, _: u_int) -> ()>,
-    pub key: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                         _: *mut client, _: *mut session,
-                                         _: *mut winlink, _: key_code,
-                                         _: *mut mouse_event) -> ()>,
-    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry)
-                              -> *const libc::c_char>,
-    pub command: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut client, _: *mut session,
-                                             _: *mut winlink, _: *mut args,
-                                             _: *mut mouse_event) -> ()>,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut format_tree) -> ()>,
+    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
+    pub key: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: key_code,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> *const libc::c_char>,
+    pub command: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: *mut args,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -800,14 +809,15 @@ pub struct winlink_stack {
 pub type C2RustUnnamed_25 = libc::c_uint;
 pub const PROMPT_COMMAND: C2RustUnnamed_25 = 1;
 pub const PROMPT_ENTRY: C2RustUnnamed_25 = 0;
-pub type prompt_free_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
-pub type prompt_input_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut libc::c_void,
-                                _: *const libc::c_char, _: libc::c_int)
-               -> libc::c_int>;
+pub type prompt_free_cb = Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
+pub type prompt_input_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut libc::c_void,
+        _: *const libc::c_char,
+        _: libc::c_int,
+    ) -> libc::c_int,
+>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_table {
@@ -978,12 +988,8 @@ pub struct tty {
     pub mouse_last_y: u_int,
     pub mouse_last_b: u_int,
     pub mouse_drag_flag: libc::c_int,
-    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client,
-                                                       _: *mut mouse_event)
-                                      -> ()>,
-    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client,
-                                                        _: *mut mouse_event)
-                                       -> ()>,
+    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
+    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
     pub key_timer: event,
     pub key_tree: *mut tty_key,
 }
@@ -1294,61 +1300,77 @@ pub struct C2RustUnnamed_32 {
  */
 static mut alerts_fired: libc::c_int = 0;
 // Initialized in run_static_initializers
-static mut alerts_list: C2RustUnnamed_32 =
-    C2RustUnnamed_32{tqh_first: 0 as *const window as *mut window,
-                     tqh_last: 0 as *const *mut window as *mut *mut window,};
-unsafe extern "C" fn alerts_timer(mut fd: libc::c_int,
-                                  mut events: libc::c_short,
-                                  mut arg: *mut libc::c_void) {
+static mut alerts_list: C2RustUnnamed_32 = C2RustUnnamed_32 {
+    tqh_first: 0 as *const window as *mut window,
+    tqh_last: 0 as *const *mut window as *mut *mut window,
+};
+unsafe extern "C" fn alerts_timer(
+    mut fd: libc::c_int,
+    mut events: libc::c_short,
+    mut arg: *mut libc::c_void,
+) {
     let mut w: *mut window = arg as *mut window;
-    log_debug(b"@%u alerts timer expired\x00" as *const u8 as
-                  *const libc::c_char, (*w).id);
+    log_debug(
+        b"@%u alerts timer expired\x00" as *const u8 as *const libc::c_char,
+        (*w).id,
+    );
     alerts_queue(w, 0x4 as libc::c_int);
 }
-unsafe extern "C" fn alerts_callback(mut fd: libc::c_int,
-                                     mut events: libc::c_short,
-                                     mut arg: *mut libc::c_void) {
+unsafe extern "C" fn alerts_callback(
+    mut fd: libc::c_int,
+    mut events: libc::c_short,
+    mut arg: *mut libc::c_void,
+) {
     let mut w: *mut window = 0 as *mut window;
     let mut w1: *mut window = 0 as *mut window;
     let mut alerts: libc::c_int = 0;
     w = alerts_list.tqh_first;
-    while !w.is_null() &&
-              { w1 = (*w).alerts_entry.tqe_next; (1 as libc::c_int) != 0 } {
+    while !w.is_null() && {
+        w1 = (*w).alerts_entry.tqe_next;
+        (1 as libc::c_int) != 0
+    } {
         alerts = alerts_check_all(w);
-        log_debug(b"@%u alerts check, alerts %#x\x00" as *const u8 as
-                      *const libc::c_char, (*w).id, alerts);
+        log_debug(
+            b"@%u alerts check, alerts %#x\x00" as *const u8 as *const libc::c_char,
+            (*w).id,
+            alerts,
+        );
         (*w).alerts_queued = 0 as libc::c_int;
         if !(*w).alerts_entry.tqe_next.is_null() {
-            (*(*w).alerts_entry.tqe_next).alerts_entry.tqe_prev =
-                (*w).alerts_entry.tqe_prev
-        } else { alerts_list.tqh_last = (*w).alerts_entry.tqe_prev }
+            (*(*w).alerts_entry.tqe_next).alerts_entry.tqe_prev = (*w).alerts_entry.tqe_prev
+        } else {
+            alerts_list.tqh_last = (*w).alerts_entry.tqe_prev
+        }
         *(*w).alerts_entry.tqe_prev = (*w).alerts_entry.tqe_next;
-        (*w).flags &=
-            !(0x1 as libc::c_int | 0x2 as libc::c_int | 0x4 as libc::c_int);
-        window_remove_ref(w,
-                          (*::std::mem::transmute::<&[u8; 16],
-                                                    &[libc::c_char; 16]>(b"alerts_callback\x00")).as_ptr());
+        (*w).flags &= !(0x1 as libc::c_int | 0x2 as libc::c_int | 0x4 as libc::c_int);
+        window_remove_ref(
+            w,
+            (*::std::mem::transmute::<&[u8; 16], &[libc::c_char; 16]>(b"alerts_callback\x00"))
+                .as_ptr(),
+        );
         w = w1
     }
     alerts_fired = 0 as libc::c_int;
 }
-unsafe extern "C" fn alerts_action_applies(mut wl: *mut winlink,
-                                           mut name: *const libc::c_char)
- -> libc::c_int {
+unsafe extern "C" fn alerts_action_applies(
+    mut wl: *mut winlink,
+    mut name: *const libc::c_char,
+) -> libc::c_int {
     let mut action: libc::c_int = 0;
     /*
-	 * {bell,activity,silence}-action determines when to alert: none means
-	 * nothing happens, current means only do something for the current
-	 * window and other means only for windows other than the current.
-	 */
-    action =
-        options_get_number((*(*wl).session).options, name) as libc::c_int;
-    if action == 1 as libc::c_int { return 1 as libc::c_int }
+     * {bell,activity,silence}-action determines when to alert: none means
+     * nothing happens, current means only do something for the current
+     * window and other means only for windows other than the current.
+     */
+    action = options_get_number((*(*wl).session).options, name) as libc::c_int;
+    if action == 1 as libc::c_int {
+        return 1 as libc::c_int;
+    }
     if action == 2 as libc::c_int {
-        return (wl == (*(*wl).session).curw) as libc::c_int
+        return (wl == (*(*wl).session).curw) as libc::c_int;
     }
     if action == 3 as libc::c_int {
-        return (wl != (*(*wl).session).curw) as libc::c_int
+        return (wl != (*(*wl).session).curw) as libc::c_int;
     }
     return 0 as libc::c_int;
 }
@@ -1366,30 +1388,34 @@ pub unsafe extern "C" fn alerts_check_session(mut s: *mut session) {
     while !wl.is_null() {
         alerts_check_all((*wl).window);
         wl = winlinks_RB_NEXT(wl)
-    };
+    }
 }
-unsafe extern "C" fn alerts_enabled(mut w: *mut window,
-                                    mut flags: libc::c_int) -> libc::c_int {
+unsafe extern "C" fn alerts_enabled(mut w: *mut window, mut flags: libc::c_int) -> libc::c_int {
     if flags & 0x1 as libc::c_int != 0 {
-        if options_get_number((*w).options,
-                              b"monitor-bell\x00" as *const u8 as
-                                  *const libc::c_char) != 0 {
-            return 1 as libc::c_int
+        if options_get_number(
+            (*w).options,
+            b"monitor-bell\x00" as *const u8 as *const libc::c_char,
+        ) != 0
+        {
+            return 1 as libc::c_int;
         }
     }
     if flags & 0x2 as libc::c_int != 0 {
-        if options_get_number((*w).options,
-                              b"monitor-activity\x00" as *const u8 as
-                                  *const libc::c_char) != 0 {
-            return 1 as libc::c_int
+        if options_get_number(
+            (*w).options,
+            b"monitor-activity\x00" as *const u8 as *const libc::c_char,
+        ) != 0
+        {
+            return 1 as libc::c_int;
         }
     }
     if flags & 0x4 as libc::c_int != 0 {
-        if options_get_number((*w).options,
-                              b"monitor-silence\x00" as *const u8 as
-                                  *const libc::c_char) !=
-               0 as libc::c_int as libc::c_longlong {
-            return 1 as libc::c_int
+        if options_get_number(
+            (*w).options,
+            b"monitor-silence\x00" as *const u8 as *const libc::c_char,
+        ) != 0 as libc::c_int as libc::c_longlong
+        {
+            return 1 as libc::c_int;
         }
     }
     return 0 as libc::c_int;
@@ -1398,41 +1424,59 @@ unsafe extern "C" fn alerts_enabled(mut w: *mut window,
 pub unsafe extern "C" fn alerts_reset_all() {
     let mut w: *mut window = 0 as *mut window;
     w = windows_RB_MINMAX(&mut windows, -(1 as libc::c_int));
-    while !w.is_null() { alerts_reset(w); w = windows_RB_NEXT(w) };
+    while !w.is_null() {
+        alerts_reset(w);
+        w = windows_RB_NEXT(w)
+    }
 }
 unsafe extern "C" fn alerts_reset(mut w: *mut window) {
-    let mut tv: timeval = timeval{tv_sec: 0, tv_usec: 0,};
+    let mut tv: timeval = timeval {
+        tv_sec: 0,
+        tv_usec: 0,
+    };
     if event_initialized(&mut (*w).alerts_timer) == 0 {
-        event_set(&mut (*w).alerts_timer, -(1 as libc::c_int),
-                  0 as libc::c_int as libc::c_short,
-                  Some(alerts_timer as
-                           unsafe extern "C" fn(_: libc::c_int,
-                                                _: libc::c_short,
-                                                _: *mut libc::c_void) -> ()),
-                  w as *mut libc::c_void);
+        event_set(
+            &mut (*w).alerts_timer,
+            -(1 as libc::c_int),
+            0 as libc::c_int as libc::c_short,
+            Some(
+                alerts_timer
+                    as unsafe extern "C" fn(
+                        _: libc::c_int,
+                        _: libc::c_short,
+                        _: *mut libc::c_void,
+                    ) -> (),
+            ),
+            w as *mut libc::c_void,
+        );
     }
     (*w).flags &= !(0x4 as libc::c_int);
     event_del(&mut (*w).alerts_timer);
     tv.tv_usec = 0 as libc::c_int as __suseconds_t;
     tv.tv_sec = tv.tv_usec;
-    tv.tv_sec =
-        options_get_number((*w).options,
-                           b"monitor-silence\x00" as *const u8 as
-                               *const libc::c_char) as __time_t;
-    log_debug(b"@%u alerts timer reset %u\x00" as *const u8 as
-                  *const libc::c_char, (*w).id, tv.tv_sec as u_int);
+    tv.tv_sec = options_get_number(
+        (*w).options,
+        b"monitor-silence\x00" as *const u8 as *const libc::c_char,
+    ) as __time_t;
+    log_debug(
+        b"@%u alerts timer reset %u\x00" as *const u8 as *const libc::c_char,
+        (*w).id,
+        tv.tv_sec as u_int,
+    );
     if tv.tv_sec != 0 as libc::c_int as libc::c_long {
         event_add(&mut (*w).alerts_timer, &mut tv);
     };
 }
 #[no_mangle]
-pub unsafe extern "C" fn alerts_queue(mut w: *mut window,
-                                      mut flags: libc::c_int) {
+pub unsafe extern "C" fn alerts_queue(mut w: *mut window, mut flags: libc::c_int) {
     alerts_reset(w);
     if (*w).flags & flags != flags {
         (*w).flags |= flags;
-        log_debug(b"@%u alerts flags added %#x\x00" as *const u8 as
-                      *const libc::c_char, (*w).id, flags);
+        log_debug(
+            b"@%u alerts flags added %#x\x00" as *const u8 as *const libc::c_char,
+            (*w).id,
+            flags,
+        );
     }
     if alerts_enabled(w, flags) != 0 {
         if (*w).alerts_queued == 0 {
@@ -1441,21 +1485,31 @@ pub unsafe extern "C" fn alerts_queue(mut w: *mut window,
             (*w).alerts_entry.tqe_prev = alerts_list.tqh_last;
             *alerts_list.tqh_last = w;
             alerts_list.tqh_last = &mut (*w).alerts_entry.tqe_next;
-            window_add_ref(w,
-                           (*::std::mem::transmute::<&[u8; 13],
-                                                     &[libc::c_char; 13]>(b"alerts_queue\x00")).as_ptr());
+            window_add_ref(
+                w,
+                (*::std::mem::transmute::<&[u8; 13], &[libc::c_char; 13]>(b"alerts_queue\x00"))
+                    .as_ptr(),
+            );
         }
         if alerts_fired == 0 {
-            log_debug(b"alerts check queued (by @%u)\x00" as *const u8 as
-                          *const libc::c_char, (*w).id);
-            event_once(-(1 as libc::c_int),
-                       0x1 as libc::c_int as libc::c_short,
-                       Some(alerts_callback as
-                                unsafe extern "C" fn(_: libc::c_int,
-                                                     _: libc::c_short,
-                                                     _: *mut libc::c_void)
-                                    -> ()), 0 as *mut libc::c_void,
-                       0 as *const timeval);
+            log_debug(
+                b"alerts check queued (by @%u)\x00" as *const u8 as *const libc::c_char,
+                (*w).id,
+            );
+            event_once(
+                -(1 as libc::c_int),
+                0x1 as libc::c_int as libc::c_short,
+                Some(
+                    alerts_callback
+                        as unsafe extern "C" fn(
+                            _: libc::c_int,
+                            _: libc::c_short,
+                            _: *mut libc::c_void,
+                        ) -> (),
+                ),
+                0 as *mut libc::c_void,
+                0 as *const timeval,
+            );
             alerts_fired = 1 as libc::c_int
         }
     };
@@ -1463,11 +1517,15 @@ pub unsafe extern "C" fn alerts_queue(mut w: *mut window,
 unsafe extern "C" fn alerts_check_bell(mut w: *mut window) -> libc::c_int {
     let mut wl: *mut winlink = 0 as *mut winlink;
     let mut s: *mut session = 0 as *mut session;
-    if !(*w).flags & 0x1 as libc::c_int != 0 { return 0 as libc::c_int }
-    if options_get_number((*w).options,
-                          b"monitor-bell\x00" as *const u8 as
-                              *const libc::c_char) == 0 {
-        return 0 as libc::c_int
+    if !(*w).flags & 0x1 as libc::c_int != 0 {
+        return 0 as libc::c_int;
+    }
+    if options_get_number(
+        (*w).options,
+        b"monitor-bell\x00" as *const u8 as *const libc::c_char,
+    ) == 0
+    {
+        return 0 as libc::c_int;
     }
     wl = (*w).winlinks.tqh_first;
     while !wl.is_null() {
@@ -1477,42 +1535,42 @@ unsafe extern "C" fn alerts_check_bell(mut w: *mut window) -> libc::c_int {
     wl = (*w).winlinks.tqh_first;
     while !wl.is_null() {
         /*
-		 * Bells are allowed even if there is an existing bell (so do
-		 * not check WINLINK_BELL).
-		 */
+         * Bells are allowed even if there is an existing bell (so do
+         * not check WINLINK_BELL).
+         */
         s = (*wl).session;
-        if (*s).curw != wl ||
-               (*s).attached == 0 as libc::c_int as libc::c_uint {
+        if (*s).curw != wl || (*s).attached == 0 as libc::c_int as libc::c_uint {
             (*wl).flags |= 0x1 as libc::c_int;
             server_status_session(s);
         }
-        if !(alerts_action_applies(wl,
-                                   b"bell-action\x00" as *const u8 as
-                                       *const libc::c_char) == 0) {
-            notify_winlink(b"alert-bell\x00" as *const u8 as
-                               *const libc::c_char, wl);
+        if !(alerts_action_applies(wl, b"bell-action\x00" as *const u8 as *const libc::c_char) == 0)
+        {
+            notify_winlink(b"alert-bell\x00" as *const u8 as *const libc::c_char, wl);
             if !((*s).flags & 0x2 as libc::c_int != 0) {
                 (*s).flags |= 0x2 as libc::c_int;
-                alerts_set_message(wl,
-                                   b"Bell\x00" as *const u8 as
-                                       *const libc::c_char,
-                                   b"visual-bell\x00" as *const u8 as
-                                       *const libc::c_char);
+                alerts_set_message(
+                    wl,
+                    b"Bell\x00" as *const u8 as *const libc::c_char,
+                    b"visual-bell\x00" as *const u8 as *const libc::c_char,
+                );
             }
         }
         wl = (*wl).wentry.tqe_next
     }
     return 0x1 as libc::c_int;
 }
-unsafe extern "C" fn alerts_check_activity(mut w: *mut window)
- -> libc::c_int {
+unsafe extern "C" fn alerts_check_activity(mut w: *mut window) -> libc::c_int {
     let mut wl: *mut winlink = 0 as *mut winlink;
     let mut s: *mut session = 0 as *mut session;
-    if !(*w).flags & 0x2 as libc::c_int != 0 { return 0 as libc::c_int }
-    if options_get_number((*w).options,
-                          b"monitor-activity\x00" as *const u8 as
-                              *const libc::c_char) == 0 {
-        return 0 as libc::c_int
+    if !(*w).flags & 0x2 as libc::c_int != 0 {
+        return 0 as libc::c_int;
+    }
+    if options_get_number(
+        (*w).options,
+        b"monitor-activity\x00" as *const u8 as *const libc::c_char,
+    ) == 0
+    {
+        return 0 as libc::c_int;
     }
     wl = (*w).winlinks.tqh_first;
     while !wl.is_null() {
@@ -1523,23 +1581,26 @@ unsafe extern "C" fn alerts_check_activity(mut w: *mut window)
     while !wl.is_null() {
         if !((*wl).flags & 0x2 as libc::c_int != 0) {
             s = (*wl).session;
-            if (*s).curw != wl ||
-                   (*s).attached == 0 as libc::c_int as libc::c_uint {
+            if (*s).curw != wl || (*s).attached == 0 as libc::c_int as libc::c_uint {
                 (*wl).flags |= 0x2 as libc::c_int;
                 server_status_session(s);
             }
-            if !(alerts_action_applies(wl,
-                                       b"activity-action\x00" as *const u8 as
-                                           *const libc::c_char) == 0) {
-                notify_winlink(b"alert-activity\x00" as *const u8 as
-                                   *const libc::c_char, wl);
+            if !(alerts_action_applies(
+                wl,
+                b"activity-action\x00" as *const u8 as *const libc::c_char,
+            ) == 0)
+            {
+                notify_winlink(
+                    b"alert-activity\x00" as *const u8 as *const libc::c_char,
+                    wl,
+                );
                 if !((*s).flags & 0x2 as libc::c_int != 0) {
                     (*s).flags |= 0x2 as libc::c_int;
-                    alerts_set_message(wl,
-                                       b"Activity\x00" as *const u8 as
-                                           *const libc::c_char,
-                                       b"visual-activity\x00" as *const u8 as
-                                           *const libc::c_char);
+                    alerts_set_message(
+                        wl,
+                        b"Activity\x00" as *const u8 as *const libc::c_char,
+                        b"visual-activity\x00" as *const u8 as *const libc::c_char,
+                    );
                 }
             }
         }
@@ -1550,12 +1611,15 @@ unsafe extern "C" fn alerts_check_activity(mut w: *mut window)
 unsafe extern "C" fn alerts_check_silence(mut w: *mut window) -> libc::c_int {
     let mut wl: *mut winlink = 0 as *mut winlink;
     let mut s: *mut session = 0 as *mut session;
-    if !(*w).flags & 0x4 as libc::c_int != 0 { return 0 as libc::c_int }
-    if options_get_number((*w).options,
-                          b"monitor-silence\x00" as *const u8 as
-                              *const libc::c_char) ==
-           0 as libc::c_int as libc::c_longlong {
-        return 0 as libc::c_int
+    if !(*w).flags & 0x4 as libc::c_int != 0 {
+        return 0 as libc::c_int;
+    }
+    if options_get_number(
+        (*w).options,
+        b"monitor-silence\x00" as *const u8 as *const libc::c_char,
+    ) == 0 as libc::c_int as libc::c_longlong
+    {
+        return 0 as libc::c_int;
     }
     wl = (*w).winlinks.tqh_first;
     while !wl.is_null() {
@@ -1566,23 +1630,23 @@ unsafe extern "C" fn alerts_check_silence(mut w: *mut window) -> libc::c_int {
     while !wl.is_null() {
         if !((*wl).flags & 0x4 as libc::c_int != 0) {
             s = (*wl).session;
-            if (*s).curw != wl ||
-                   (*s).attached == 0 as libc::c_int as libc::c_uint {
+            if (*s).curw != wl || (*s).attached == 0 as libc::c_int as libc::c_uint {
                 (*wl).flags |= 0x4 as libc::c_int;
                 server_status_session(s);
             }
-            if !(alerts_action_applies(wl,
-                                       b"silence-action\x00" as *const u8 as
-                                           *const libc::c_char) == 0) {
-                notify_winlink(b"alert-silence\x00" as *const u8 as
-                                   *const libc::c_char, wl);
+            if !(alerts_action_applies(
+                wl,
+                b"silence-action\x00" as *const u8 as *const libc::c_char,
+            ) == 0)
+            {
+                notify_winlink(b"alert-silence\x00" as *const u8 as *const libc::c_char, wl);
                 if !((*s).flags & 0x2 as libc::c_int != 0) {
                     (*s).flags |= 0x2 as libc::c_int;
-                    alerts_set_message(wl,
-                                       b"Silence\x00" as *const u8 as
-                                           *const libc::c_char,
-                                       b"visual-silence\x00" as *const u8 as
-                                           *const libc::c_char);
+                    alerts_set_message(
+                        wl,
+                        b"Silence\x00" as *const u8 as *const libc::c_char,
+                        b"visual-silence\x00" as *const u8 as *const libc::c_char,
+                    );
                 }
             }
         }
@@ -1590,56 +1654,63 @@ unsafe extern "C" fn alerts_check_silence(mut w: *mut window) -> libc::c_int {
     }
     return 0x4 as libc::c_int;
 }
-unsafe extern "C" fn alerts_set_message(mut wl: *mut winlink,
-                                        mut type_0: *const libc::c_char,
-                                        mut option: *const libc::c_char) {
+unsafe extern "C" fn alerts_set_message(
+    mut wl: *mut winlink,
+    mut type_0: *const libc::c_char,
+    mut option: *const libc::c_char,
+) {
     let mut c: *mut client = 0 as *mut client;
     let mut visual: libc::c_int = 0;
     /*
-	 * We have found an alert (bell, activity or silence), so we need to
-	 * pass it on to the user. For each client attached to this session,
-	 * decide whether a bell, message or both is needed.
-	 *
-	 * If visual-{bell,activity,silence} is on, then a message is
-	 * substituted for a bell; if it is off, a bell is sent as normal; both
-	 * mean both a bell and message is sent.
-	 */
-    visual =
-        options_get_number((*(*wl).session).options, option) as libc::c_int;
+     * We have found an alert (bell, activity or silence), so we need to
+     * pass it on to the user. For each client attached to this session,
+     * decide whether a bell, message or both is needed.
+     *
+     * If visual-{bell,activity,silence} is on, then a message is
+     * substituted for a bell; if it is off, a bell is sent as normal; both
+     * mean both a bell and message is sent.
+     */
+    visual = options_get_number((*(*wl).session).options, option) as libc::c_int;
     c = clients.tqh_first;
     while !c.is_null() {
-        if !((*c).session != (*wl).session ||
-                 (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0) {
+        if !((*c).session != (*wl).session
+            || (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0)
+        {
             if visual == 0 as libc::c_int || visual == 2 as libc::c_int {
                 tty_putcode(&mut (*c).tty, TTYC_BEL);
             }
             if !(visual == 0 as libc::c_int) {
                 if (*(*c).session).curw == wl {
-                    status_message_set(c, -(1 as libc::c_int),
-                                       1 as libc::c_int,
-                                       b"%s in current window\x00" as
-                                           *const u8 as *const libc::c_char,
-                                       type_0);
+                    status_message_set(
+                        c,
+                        -(1 as libc::c_int),
+                        1 as libc::c_int,
+                        b"%s in current window\x00" as *const u8 as *const libc::c_char,
+                        type_0,
+                    );
                 } else {
-                    status_message_set(c, -(1 as libc::c_int),
-                                       1 as libc::c_int,
-                                       b"%s in window %d\x00" as *const u8 as
-                                           *const libc::c_char, type_0,
-                                       (*wl).idx);
+                    status_message_set(
+                        c,
+                        -(1 as libc::c_int),
+                        1 as libc::c_int,
+                        b"%s in window %d\x00" as *const u8 as *const libc::c_char,
+                        type_0,
+                        (*wl).idx,
+                    );
                 }
             }
         }
         c = (*c).entry.tqe_next
-    };
+    }
 }
 unsafe extern "C" fn run_static_initializers() {
-    alerts_list =
-        {
-            let mut init =
-                C2RustUnnamed_32{tqh_first: 0 as *mut window,
-                                 tqh_last: &mut alerts_list.tqh_first,};
-            init
-        }
+    alerts_list = {
+        let mut init = C2RustUnnamed_32 {
+            tqh_first: 0 as *mut window,
+            tqh_last: &mut alerts_list.tqh_first,
+        };
+        init
+    }
 }
 #[used]
 #[cfg_attr(target_os = "linux", link_section = ".init_array")]

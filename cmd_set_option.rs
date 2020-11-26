@@ -26,58 +26,77 @@ extern "C" {
     #[no_mangle]
     fn xstrdup(_: *const libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
-    fn format_single_from_target(_: *mut cmdq_item, _: *const libc::c_char)
-     -> *mut libc::c_char;
+    fn format_single_from_target(_: *mut cmdq_item, _: *const libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
     fn notify_hook(_: *mut cmdq_item, _: *const libc::c_char);
     #[no_mangle]
-    fn options_empty(_: *mut options, _: *const options_table_entry)
-     -> *mut options_entry;
+    fn options_empty(_: *mut options, _: *const options_table_entry) -> *mut options_entry;
     #[no_mangle]
-    fn options_table_entry(_: *mut options_entry)
-     -> *const options_table_entry;
+    fn options_table_entry(_: *mut options_entry) -> *const options_table_entry;
     #[no_mangle]
-    fn options_get_only(_: *mut options, _: *const libc::c_char)
-     -> *mut options_entry;
+    fn options_get_only(_: *mut options, _: *const libc::c_char) -> *mut options_entry;
     #[no_mangle]
-    fn options_get(_: *mut options, _: *const libc::c_char)
-     -> *mut options_entry;
+    fn options_get(_: *mut options, _: *const libc::c_char) -> *mut options_entry;
     #[no_mangle]
     fn options_array_clear(_: *mut options_entry);
     #[no_mangle]
-    fn options_array_get(_: *mut options_entry, _: u_int)
-     -> *mut options_value;
+    fn options_array_get(_: *mut options_entry, _: u_int) -> *mut options_value;
     #[no_mangle]
-    fn options_array_set(_: *mut options_entry, _: u_int,
-                         _: *const libc::c_char, _: libc::c_int,
-                         _: *mut *mut libc::c_char) -> libc::c_int;
+    fn options_array_set(
+        _: *mut options_entry,
+        _: u_int,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: *mut *mut libc::c_char,
+    ) -> libc::c_int;
     #[no_mangle]
-    fn options_array_assign(_: *mut options_entry, _: *const libc::c_char,
-                            _: *mut *mut libc::c_char) -> libc::c_int;
+    fn options_array_assign(
+        _: *mut options_entry,
+        _: *const libc::c_char,
+        _: *mut *mut libc::c_char,
+    ) -> libc::c_int;
     #[no_mangle]
     fn options_is_array(_: *mut options_entry) -> libc::c_int;
     #[no_mangle]
-    fn options_match(_: *const libc::c_char, _: *mut libc::c_int,
-                     _: *mut libc::c_int) -> *mut libc::c_char;
+    fn options_match(
+        _: *const libc::c_char,
+        _: *mut libc::c_int,
+        _: *mut libc::c_int,
+    ) -> *mut libc::c_char;
     #[no_mangle]
-    fn options_set_string(_: *mut options, _: *const libc::c_char,
-                          _: libc::c_int, _: *const libc::c_char, _: ...)
-     -> *mut options_entry;
+    fn options_set_string(
+        _: *mut options,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: *const libc::c_char,
+        _: ...
+    ) -> *mut options_entry;
     #[no_mangle]
-    fn options_scope_from_name(_: *mut args, _: libc::c_int,
-                               _: *const libc::c_char, _: *mut cmd_find_state,
-                               _: *mut *mut options,
-                               _: *mut *mut libc::c_char) -> libc::c_int;
+    fn options_scope_from_name(
+        _: *mut args,
+        _: libc::c_int,
+        _: *const libc::c_char,
+        _: *mut cmd_find_state,
+        _: *mut *mut options,
+        _: *mut *mut libc::c_char,
+    ) -> libc::c_int;
     #[no_mangle]
-    fn options_from_string(_: *mut options, _: *const options_table_entry,
-                           _: *const libc::c_char, _: *const libc::c_char,
-                           _: libc::c_int, _: *mut *mut libc::c_char)
-     -> libc::c_int;
+    fn options_from_string(
+        _: *mut options,
+        _: *const options_table_entry,
+        _: *const libc::c_char,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: *mut *mut libc::c_char,
+    ) -> libc::c_int;
     #[no_mangle]
     fn options_push_changes(_: *const libc::c_char);
     #[no_mangle]
-    fn options_remove_or_default(_: *mut options_entry, _: libc::c_int,
-                                 _: *mut *mut libc::c_char) -> libc::c_int;
+    fn options_remove_or_default(
+        _: *mut options_entry,
+        _: libc::c_int,
+        _: *mut *mut libc::c_char,
+    ) -> libc::c_int;
     #[no_mangle]
     fn args_has(_: *mut args, _: u_char) -> libc::c_int;
     #[no_mangle]
@@ -178,18 +197,13 @@ pub struct event_callback {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub union C2RustUnnamed_6 {
-    pub evcb_callback: Option<unsafe extern "C" fn(_: libc::c_int,
-                                                   _: libc::c_short,
-                                                   _: *mut libc::c_void)
-                                  -> ()>,
-    pub evcb_selfcb: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                 _: *mut libc::c_void) -> ()>,
-    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
-    pub evcb_cbfinalize: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
+    pub evcb_callback:
+        Option<unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> ()>,
+    pub evcb_selfcb:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
+    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event, _: *mut libc::c_void) -> ()>,
+    pub evcb_cbfinalize:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -216,14 +230,10 @@ pub struct bufferevent {
     pub timeout_write: timeval,
     pub enabled: libc::c_short,
 }
-pub type bufferevent_event_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short,
-                                _: *mut libc::c_void) -> ()>;
-pub type bufferevent_data_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void)
-               -> ()>;
+pub type bufferevent_event_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short, _: *mut libc::c_void) -> ()>;
+pub type bufferevent_data_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct event_watermark {
@@ -362,17 +372,19 @@ pub struct C2RustUnnamed_9 {
     pub rbe_parent: *mut client_file,
     pub rbe_color: libc::c_int,
 }
-pub type client_file_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *const libc::c_char,
-                                _: libc::c_int, _: libc::c_int,
-                                _: *mut evbuffer, _: *mut libc::c_void)
-               -> ()>;
+pub type client_file_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: *mut evbuffer,
+        _: *mut libc::c_void,
+    ) -> (),
+>;
 pub type overlay_free_cb = Option<unsafe extern "C" fn(_: *mut client) -> ()>;
-pub type overlay_key_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event)
-               -> libc::c_int>;
+pub type overlay_key_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_event {
@@ -402,10 +414,8 @@ pub struct mouse_event {
     pub sgr_b: u_int,
 }
 pub type key_code = libc::c_ulonglong;
-pub type overlay_draw_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx)
-               -> ()>;
+pub type overlay_draw_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen_redraw_ctx {
@@ -419,10 +429,8 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int)
-               -> *mut screen>;
+pub type overlay_mode_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen {
@@ -516,10 +524,8 @@ pub struct C2RustUnnamed_11 {
     pub bg: u_char,
     pub data: u_char,
 }
-pub type overlay_check_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int)
-               -> libc::c_int>;
+pub type overlay_check_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct session {
@@ -766,24 +772,37 @@ pub struct C2RustUnnamed_24 {
 pub struct window_mode {
     pub name: *const libc::c_char,
     pub default_format: *const libc::c_char,
-    pub init: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                          _: *mut cmd_find_state,
-                                          _: *mut args) -> *mut screen>,
+    pub init: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut cmd_find_state,
+            _: *mut args,
+        ) -> *mut screen,
+    >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
-    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                            _: u_int, _: u_int) -> ()>,
-    pub key: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                         _: *mut client, _: *mut session,
-                                         _: *mut winlink, _: key_code,
-                                         _: *mut mouse_event) -> ()>,
-    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry)
-                              -> *const libc::c_char>,
-    pub command: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut client, _: *mut session,
-                                             _: *mut winlink, _: *mut args,
-                                             _: *mut mouse_event) -> ()>,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut format_tree) -> ()>,
+    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
+    pub key: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: key_code,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> *const libc::c_char>,
+    pub command: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: *mut args,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -820,14 +839,15 @@ pub struct winlink_stack {
 pub type C2RustUnnamed_25 = libc::c_uint;
 pub const PROMPT_COMMAND: C2RustUnnamed_25 = 1;
 pub const PROMPT_ENTRY: C2RustUnnamed_25 = 0;
-pub type prompt_free_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
-pub type prompt_input_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut libc::c_void,
-                                _: *const libc::c_char, _: libc::c_int)
-               -> libc::c_int>;
+pub type prompt_free_cb = Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
+pub type prompt_input_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut libc::c_void,
+        _: *const libc::c_char,
+        _: libc::c_int,
+    ) -> libc::c_int,
+>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_table {
@@ -998,12 +1018,8 @@ pub struct tty {
     pub mouse_last_y: u_int,
     pub mouse_last_b: u_int,
     pub mouse_drag_flag: libc::c_int,
-    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client,
-                                                       _: *mut mouse_event)
-                                      -> ()>,
-    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client,
-                                                        _: *mut mouse_event)
-                                       -> ()>,
+    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
+    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
     pub key_timer: event,
     pub key_tree: *mut tty_key,
 }
@@ -1106,8 +1122,7 @@ pub struct cmd_entry {
     pub source: cmd_entry_flag,
     pub target: cmd_entry_flag,
     pub flags: libc::c_int,
-    pub exec: Option<unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item)
-                         -> cmd_retval>,
+    pub exec: Option<unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -1158,157 +1173,119 @@ pub struct options_table_entry {
     pub unit: *const libc::c_char,
 }
 #[no_mangle]
-pub static mut cmd_set_option_entry: cmd_entry =
-    unsafe {
-        {
-            let mut init =
-                cmd_entry{name:
-                              b"set-option\x00" as *const u8 as
-                                  *const libc::c_char,
-                          alias:
-                              b"set\x00" as *const u8 as *const libc::c_char,
-                          args:
-                              {
-                                  let mut init =
-                                      C2RustUnnamed_32{template:
-                                                           b"aFgopqst:uw\x00"
-                                                               as *const u8 as
-                                                               *const libc::c_char,
-                                                       lower:
-                                                           1 as libc::c_int,
-                                                       upper:
-                                                           2 as libc::c_int,};
-                                  init
-                              },
-                          usage:
-                              b"[-aFgopqsuw] [-t target-pane] option [value]\x00"
-                                  as *const u8 as *const libc::c_char,
-                          source:
-                              cmd_entry_flag{flag: 0,
-                                             type_0: CMD_FIND_PANE,
-                                             flags: 0,},
-                          target:
-                              {
-                                  let mut init =
-                                      cmd_entry_flag{flag:
-                                                         't' as i32 as
-                                                             libc::c_char,
-                                                     type_0: CMD_FIND_PANE,
-                                                     flags:
-                                                         0x40 as
-                                                             libc::c_int,};
-                                  init
-                              },
-                          flags: 0x4 as libc::c_int,
-                          exec:
-                              Some(cmd_set_option_exec as
-                                       unsafe extern "C" fn(_: *mut cmd,
-                                                            _: *mut cmdq_item)
-                                           -> cmd_retval),};
-            init
-        }
-    };
+pub static mut cmd_set_option_entry: cmd_entry = unsafe {
+    {
+        let mut init = cmd_entry {
+            name: b"set-option\x00" as *const u8 as *const libc::c_char,
+            alias: b"set\x00" as *const u8 as *const libc::c_char,
+            args: {
+                let mut init = C2RustUnnamed_32 {
+                    template: b"aFgopqst:uw\x00" as *const u8 as *const libc::c_char,
+                    lower: 1 as libc::c_int,
+                    upper: 2 as libc::c_int,
+                };
+                init
+            },
+            usage: b"[-aFgopqsuw] [-t target-pane] option [value]\x00" as *const u8
+                as *const libc::c_char,
+            source: cmd_entry_flag {
+                flag: 0,
+                type_0: CMD_FIND_PANE,
+                flags: 0,
+            },
+            target: {
+                let mut init = cmd_entry_flag {
+                    flag: 't' as i32 as libc::c_char,
+                    type_0: CMD_FIND_PANE,
+                    flags: 0x40 as libc::c_int,
+                };
+                init
+            },
+            flags: 0x4 as libc::c_int,
+            exec: Some(
+                cmd_set_option_exec
+                    as unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval,
+            ),
+        };
+        init
+    }
+};
 #[no_mangle]
-pub static mut cmd_set_window_option_entry: cmd_entry =
-    unsafe {
-        {
-            let mut init =
-                cmd_entry{name:
-                              b"set-window-option\x00" as *const u8 as
-                                  *const libc::c_char,
-                          alias:
-                              b"setw\x00" as *const u8 as *const libc::c_char,
-                          args:
-                              {
-                                  let mut init =
-                                      C2RustUnnamed_32{template:
-                                                           b"aFgoqt:u\x00" as
-                                                               *const u8 as
-                                                               *const libc::c_char,
-                                                       lower:
-                                                           1 as libc::c_int,
-                                                       upper:
-                                                           2 as libc::c_int,};
-                                  init
-                              },
-                          usage:
-                              b"[-aFgoqu] [-t target-window] option [value]\x00"
-                                  as *const u8 as *const libc::c_char,
-                          source:
-                              cmd_entry_flag{flag: 0,
-                                             type_0: CMD_FIND_PANE,
-                                             flags: 0,},
-                          target:
-                              {
-                                  let mut init =
-                                      cmd_entry_flag{flag:
-                                                         't' as i32 as
-                                                             libc::c_char,
-                                                     type_0: CMD_FIND_WINDOW,
-                                                     flags:
-                                                         0x40 as
-                                                             libc::c_int,};
-                                  init
-                              },
-                          flags: 0x4 as libc::c_int,
-                          exec:
-                              Some(cmd_set_option_exec as
-                                       unsafe extern "C" fn(_: *mut cmd,
-                                                            _: *mut cmdq_item)
-                                           -> cmd_retval),};
-            init
-        }
-    };
+pub static mut cmd_set_window_option_entry: cmd_entry = unsafe {
+    {
+        let mut init = cmd_entry {
+            name: b"set-window-option\x00" as *const u8 as *const libc::c_char,
+            alias: b"setw\x00" as *const u8 as *const libc::c_char,
+            args: {
+                let mut init = C2RustUnnamed_32 {
+                    template: b"aFgoqt:u\x00" as *const u8 as *const libc::c_char,
+                    lower: 1 as libc::c_int,
+                    upper: 2 as libc::c_int,
+                };
+                init
+            },
+            usage: b"[-aFgoqu] [-t target-window] option [value]\x00" as *const u8
+                as *const libc::c_char,
+            source: cmd_entry_flag {
+                flag: 0,
+                type_0: CMD_FIND_PANE,
+                flags: 0,
+            },
+            target: {
+                let mut init = cmd_entry_flag {
+                    flag: 't' as i32 as libc::c_char,
+                    type_0: CMD_FIND_WINDOW,
+                    flags: 0x40 as libc::c_int,
+                };
+                init
+            },
+            flags: 0x4 as libc::c_int,
+            exec: Some(
+                cmd_set_option_exec
+                    as unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval,
+            ),
+        };
+        init
+    }
+};
 #[no_mangle]
-pub static mut cmd_set_hook_entry: cmd_entry =
-    unsafe {
-        {
-            let mut init =
-                cmd_entry{name:
-                              b"set-hook\x00" as *const u8 as
-                                  *const libc::c_char,
-                          alias: 0 as *const libc::c_char,
-                          args:
-                              {
-                                  let mut init =
-                                      C2RustUnnamed_32{template:
-                                                           b"agpRt:uw\x00" as
-                                                               *const u8 as
-                                                               *const libc::c_char,
-                                                       lower:
-                                                           1 as libc::c_int,
-                                                       upper:
-                                                           2 as libc::c_int,};
-                                  init
-                              },
-                          usage:
-                              b"[-agpRuw] [-t target-pane] hook [command]\x00"
-                                  as *const u8 as *const libc::c_char,
-                          source:
-                              cmd_entry_flag{flag: 0,
-                                             type_0: CMD_FIND_PANE,
-                                             flags: 0,},
-                          target:
-                              {
-                                  let mut init =
-                                      cmd_entry_flag{flag:
-                                                         't' as i32 as
-                                                             libc::c_char,
-                                                     type_0: CMD_FIND_PANE,
-                                                     flags:
-                                                         0x40 as
-                                                             libc::c_int,};
-                                  init
-                              },
-                          flags: 0x4 as libc::c_int,
-                          exec:
-                              Some(cmd_set_option_exec as
-                                       unsafe extern "C" fn(_: *mut cmd,
-                                                            _: *mut cmdq_item)
-                                           -> cmd_retval),};
-            init
-        }
-    };
+pub static mut cmd_set_hook_entry: cmd_entry = unsafe {
+    {
+        let mut init = cmd_entry {
+            name: b"set-hook\x00" as *const u8 as *const libc::c_char,
+            alias: 0 as *const libc::c_char,
+            args: {
+                let mut init = C2RustUnnamed_32 {
+                    template: b"agpRt:uw\x00" as *const u8 as *const libc::c_char,
+                    lower: 1 as libc::c_int,
+                    upper: 2 as libc::c_int,
+                };
+                init
+            },
+            usage: b"[-agpRuw] [-t target-pane] hook [command]\x00" as *const u8
+                as *const libc::c_char,
+            source: cmd_entry_flag {
+                flag: 0,
+                type_0: CMD_FIND_PANE,
+                flags: 0,
+            },
+            target: {
+                let mut init = cmd_entry_flag {
+                    flag: 't' as i32 as libc::c_char,
+                    type_0: CMD_FIND_PANE,
+                    flags: 0x40 as libc::c_int,
+                };
+                init
+            },
+            flags: 0x4 as libc::c_int,
+            exec: Some(
+                cmd_set_option_exec
+                    as unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval,
+            ),
+        };
+        init
+    }
+};
 /* $OpenBSD$ */
 /*
  * Copyright (c) 2007 Nicholas Marriott <nicholas.marriott@gmail.com>
@@ -1328,9 +1305,10 @@ pub static mut cmd_set_hook_entry: cmd_entry =
 /*
  * Set an option.
  */
-unsafe extern "C" fn cmd_set_option_exec(mut self_0: *mut cmd,
-                                         mut item: *mut cmdq_item)
- -> cmd_retval {
+unsafe extern "C" fn cmd_set_option_exec(
+    mut self_0: *mut cmd,
+    mut item: *mut cmdq_item,
+) -> cmd_retval {
     let mut current_block: u64;
     let mut args: *mut args = cmd_get_args(self_0);
     let mut append: libc::c_int = args_has(args, 'a' as i32 as u_char);
@@ -1349,19 +1327,16 @@ unsafe extern "C" fn cmd_set_option_exec(mut self_0: *mut cmd,
     let mut ambiguous: libc::c_int = 0;
     let mut scope: libc::c_int = 0;
     window =
-        (cmd_get_entry(self_0) ==
-             &cmd_set_window_option_entry as *const cmd_entry) as libc::c_int;
+        (cmd_get_entry(self_0) == &cmd_set_window_option_entry as *const cmd_entry) as libc::c_int;
     /* Expand argument. */
-    argument =
-        format_single_from_target(item,
-                                  *(*args).argv.offset(0 as libc::c_int as
-                                                           isize));
+    argument = format_single_from_target(item, *(*args).argv.offset(0 as libc::c_int as isize));
     /* If set-hook -R, fire the hook straight away. */
-    if cmd_get_entry(self_0) == &cmd_set_hook_entry as *const cmd_entry &&
-           args_has(args, 'R' as i32 as u_char) != 0 {
+    if cmd_get_entry(self_0) == &cmd_set_hook_entry as *const cmd_entry
+        && args_has(args, 'R' as i32 as u_char) != 0
+    {
         notify_hook(item, argument);
         free(argument as *mut libc::c_void);
-        return CMD_RETURN_NORMAL
+        return CMD_RETURN_NORMAL;
     }
     /* Parse option name and index. */
     name = options_match(argument, &mut idx, &mut ambiguous);
@@ -1370,13 +1345,17 @@ unsafe extern "C" fn cmd_set_option_exec(mut self_0: *mut cmd,
             current_block = 12655716798986455333;
         } else {
             if ambiguous != 0 {
-                cmdq_error(item,
-                           b"ambiguous option: %s\x00" as *const u8 as
-                               *const libc::c_char, argument);
+                cmdq_error(
+                    item,
+                    b"ambiguous option: %s\x00" as *const u8 as *const libc::c_char,
+                    argument,
+                );
             } else {
-                cmdq_error(item,
-                           b"invalid option: %s\x00" as *const u8 as
-                               *const libc::c_char, argument);
+                cmdq_error(
+                    item,
+                    b"invalid option: %s\x00" as *const u8 as *const libc::c_char,
+                    argument,
+                );
             }
             current_block = 2465518546904993161;
         }
@@ -1384,25 +1363,17 @@ unsafe extern "C" fn cmd_set_option_exec(mut self_0: *mut cmd,
         if (*args).argc < 2 as libc::c_int {
             value = 0 as *mut libc::c_char
         } else if args_has(args, 'F' as i32 as u_char) != 0 {
-            value =
-                format_single_from_target(item,
-                                          *(*args).argv.offset(1 as
-                                                                   libc::c_int
-                                                                   as isize))
+            value = format_single_from_target(item, *(*args).argv.offset(1 as libc::c_int as isize))
         } else {
             value = xstrdup(*(*args).argv.offset(1 as libc::c_int as isize))
         }
         /* Get the scope and table for the option .*/
-        scope =
-            options_scope_from_name(args, window, name, target, &mut oo,
-                                    &mut cause);
+        scope = options_scope_from_name(args, window, name, target, &mut oo, &mut cause);
         if scope == 0 as libc::c_int {
             if args_has(args, 'q' as i32 as u_char) != 0 {
                 current_block = 12655716798986455333;
             } else {
-                cmdq_error(item,
-                           b"%s\x00" as *const u8 as *const libc::c_char,
-                           cause);
+                cmdq_error(item, b"%s\x00" as *const u8 as *const libc::c_char, cause);
                 free(cause as *mut libc::c_void);
                 current_block = 2465518546904993161;
             }
@@ -1410,128 +1381,147 @@ unsafe extern "C" fn cmd_set_option_exec(mut self_0: *mut cmd,
             o = options_get_only(oo, name);
             parent = options_get(oo, name);
             /* Check that array options and indexes match up. */
-            if idx != -(1 as libc::c_int) &&
-                   (*name as libc::c_int == '@' as i32 ||
-                        options_is_array(parent) == 0) {
-                cmdq_error(item,
-                           b"not an array: %s\x00" as *const u8 as
-                               *const libc::c_char, argument);
+            if idx != -(1 as libc::c_int)
+                && (*name as libc::c_int == '@' as i32 || options_is_array(parent) == 0)
+            {
+                cmdq_error(
+                    item,
+                    b"not an array: %s\x00" as *const u8 as *const libc::c_char,
+                    argument,
+                );
                 current_block = 2465518546904993161;
             } else {
                 /* With -o, check this option is not already set. */
-                if args_has(args, 'u' as i32 as u_char) == 0 &&
-                       args_has(args, 'o' as i32 as u_char) != 0 {
+                if args_has(args, 'u' as i32 as u_char) == 0
+                    && args_has(args, 'o' as i32 as u_char) != 0
+                {
                     if idx == -(1 as libc::c_int) {
-                        already =
-                            (o !=
-                                 0 as *mut libc::c_void as *mut options_entry)
-                                as libc::c_int
+                        already = (o != 0 as *mut libc::c_void as *mut options_entry) as libc::c_int
                     } else if o.is_null() {
                         already = 0 as libc::c_int
                     } else {
-                        already =
-                            (options_array_get(o, idx as u_int) !=
-                                 0 as *mut libc::c_void as *mut options_value)
-                                as libc::c_int
+                        already = (options_array_get(o, idx as u_int)
+                            != 0 as *mut libc::c_void as *mut options_value)
+                            as libc::c_int
                     }
                     if already != 0 {
                         if args_has(args, 'q' as i32 as u_char) != 0 {
                             current_block = 12655716798986455333;
                         } else {
-                            cmdq_error(item,
-                                       b"already set: %s\x00" as *const u8 as
-                                           *const libc::c_char, argument);
+                            cmdq_error(
+                                item,
+                                b"already set: %s\x00" as *const u8 as *const libc::c_char,
+                                argument,
+                            );
                             current_block = 2465518546904993161;
                         }
-                    } else { current_block = 17784502470059252271; }
-                } else { current_block = 17784502470059252271; }
+                    } else {
+                        current_block = 17784502470059252271;
+                    }
+                } else {
+                    current_block = 17784502470059252271;
+                }
                 match current_block {
-                    12655716798986455333 => { }
-                    2465518546904993161 => { }
+                    12655716798986455333 => {}
+                    2465518546904993161 => {}
                     _ =>
                     /* Change the option. */
                     {
                         if args_has(args, 'u' as i32 as u_char) != 0 {
                             if o.is_null() {
                                 current_block = 12655716798986455333;
-                            } else if options_remove_or_default(o, idx,
-                                                                &mut cause) !=
-                                          0 as libc::c_int {
-                                cmdq_error(item,
-                                           b"%s\x00" as *const u8 as
-                                               *const libc::c_char, cause);
+                            } else if options_remove_or_default(o, idx, &mut cause)
+                                != 0 as libc::c_int
+                            {
+                                cmdq_error(
+                                    item,
+                                    b"%s\x00" as *const u8 as *const libc::c_char,
+                                    cause,
+                                );
                                 free(cause as *mut libc::c_void);
-                                current_block = 2465518546904993161;
-                            } else { current_block = 9437375157805982253; }
-                        } else if *name as libc::c_int == '@' as i32 {
-                            if value.is_null() {
-                                cmdq_error(item,
-                                           b"empty value\x00" as *const u8 as
-                                               *const libc::c_char);
                                 current_block = 2465518546904993161;
                             } else {
-                                options_set_string(oo, name, append,
-                                                   b"%s\x00" as *const u8 as
-                                                       *const libc::c_char,
-                                                   value);
                                 current_block = 9437375157805982253;
                             }
-                        } else if idx == -(1 as libc::c_int) &&
-                                      options_is_array(parent) == 0 {
-                            error =
-                                options_from_string(oo,
-                                                    options_table_entry(parent),
-                                                    (*options_table_entry(parent)).name,
-                                                    value,
-                                                    args_has(args,
-                                                             'a' as i32 as
-                                                                 u_char),
-                                                    &mut cause);
+                        } else if *name as libc::c_int == '@' as i32 {
+                            if value.is_null() {
+                                cmdq_error(
+                                    item,
+                                    b"empty value\x00" as *const u8 as *const libc::c_char,
+                                );
+                                current_block = 2465518546904993161;
+                            } else {
+                                options_set_string(
+                                    oo,
+                                    name,
+                                    append,
+                                    b"%s\x00" as *const u8 as *const libc::c_char,
+                                    value,
+                                );
+                                current_block = 9437375157805982253;
+                            }
+                        } else if idx == -(1 as libc::c_int) && options_is_array(parent) == 0 {
+                            error = options_from_string(
+                                oo,
+                                options_table_entry(parent),
+                                (*options_table_entry(parent)).name,
+                                value,
+                                args_has(args, 'a' as i32 as u_char),
+                                &mut cause,
+                            );
                             if error != 0 as libc::c_int {
-                                cmdq_error(item,
-                                           b"%s\x00" as *const u8 as
-                                               *const libc::c_char, cause);
+                                cmdq_error(
+                                    item,
+                                    b"%s\x00" as *const u8 as *const libc::c_char,
+                                    cause,
+                                );
                                 free(cause as *mut libc::c_void);
                                 current_block = 2465518546904993161;
-                            } else { current_block = 9437375157805982253; }
+                            } else {
+                                current_block = 9437375157805982253;
+                            }
                         } else if value.is_null() {
-                            cmdq_error(item,
-                                       b"empty value\x00" as *const u8 as
-                                           *const libc::c_char);
+                            cmdq_error(
+                                item,
+                                b"empty value\x00" as *const u8 as *const libc::c_char,
+                            );
                             current_block = 2465518546904993161;
                         } else {
                             if o.is_null() {
-                                o =
-                                    options_empty(oo,
-                                                  options_table_entry(parent))
+                                o = options_empty(oo, options_table_entry(parent))
                             }
                             if idx == -(1 as libc::c_int) {
-                                if append == 0 { options_array_clear(o); }
-                                if options_array_assign(o, value, &mut cause)
-                                       != 0 as libc::c_int {
-                                    cmdq_error(item,
-                                               b"%s\x00" as *const u8 as
-                                                   *const libc::c_char,
-                                               cause);
+                                if append == 0 {
+                                    options_array_clear(o);
+                                }
+                                if options_array_assign(o, value, &mut cause) != 0 as libc::c_int {
+                                    cmdq_error(
+                                        item,
+                                        b"%s\x00" as *const u8 as *const libc::c_char,
+                                        cause,
+                                    );
                                     free(cause as *mut libc::c_void);
                                     current_block = 2465518546904993161;
                                 } else {
                                     current_block = 9437375157805982253;
                                 }
-                            } else if options_array_set(o, idx as u_int,
-                                                        value, append,
-                                                        &mut cause) !=
-                                          0 as libc::c_int {
-                                cmdq_error(item,
-                                           b"%s\x00" as *const u8 as
-                                               *const libc::c_char, cause);
+                            } else if options_array_set(o, idx as u_int, value, append, &mut cause)
+                                != 0 as libc::c_int
+                            {
+                                cmdq_error(
+                                    item,
+                                    b"%s\x00" as *const u8 as *const libc::c_char,
+                                    cause,
+                                );
                                 free(cause as *mut libc::c_void);
                                 current_block = 2465518546904993161;
-                            } else { current_block = 9437375157805982253; }
+                            } else {
+                                current_block = 9437375157805982253;
+                            }
                         }
                         match current_block {
-                            2465518546904993161 => { }
-                            12655716798986455333 => { }
+                            2465518546904993161 => {}
+                            12655716798986455333 => {}
                             _ => {
                                 options_push_changes(name);
                                 current_block = 12655716798986455333;
@@ -1547,13 +1537,13 @@ unsafe extern "C" fn cmd_set_option_exec(mut self_0: *mut cmd,
             free(argument as *mut libc::c_void);
             free(value as *mut libc::c_void);
             free(name as *mut libc::c_void);
-            return CMD_RETURN_ERROR
+            return CMD_RETURN_ERROR;
         }
         _ => {
             free(argument as *mut libc::c_void);
             free(value as *mut libc::c_void);
             free(name as *mut libc::c_void);
-            return CMD_RETURN_NORMAL
+            return CMD_RETURN_NORMAL;
         }
     };
 }

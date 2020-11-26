@@ -22,25 +22,32 @@ pub type size_t = libc::c_ulong;
  * Returns strlen(src); if retval >= siz, truncation occurred.
  */
 #[no_mangle]
-pub unsafe extern "C" fn strlcpy(mut dst: *mut libc::c_char,
-                                 mut src: *const libc::c_char,
-                                 mut siz: size_t) -> libc::c_ulong {
+pub unsafe extern "C" fn strlcpy(
+    mut dst: *mut libc::c_char,
+    mut src: *const libc::c_char,
+    mut siz: size_t,
+) -> libc::c_ulong {
     let mut d: *mut libc::c_char = dst;
     let mut s: *const libc::c_char = src;
     let mut n: size_t = siz;
     /* Copy as many bytes as will fit */
-    if n != 0 as libc::c_int as libc::c_ulong &&
-           { n = n.wrapping_sub(1); (n) != 0 as libc::c_int as libc::c_ulong }
-       {
-        loop  {
+    if n != 0 as libc::c_int as libc::c_ulong && {
+        n = n.wrapping_sub(1);
+        (n) != 0 as libc::c_int as libc::c_ulong
+    } {
+        loop {
             let fresh0 = s;
             s = s.offset(1);
             let fresh1 = d;
             d = d.offset(1);
             *fresh1 = *fresh0;
-            if *fresh1 as libc::c_int == 0 as libc::c_int { break ; }
+            if *fresh1 as libc::c_int == 0 as libc::c_int {
+                break;
+            }
             n = n.wrapping_sub(1);
-            if !(n != 0 as libc::c_int as libc::c_ulong) { break ; }
+            if !(n != 0 as libc::c_int as libc::c_ulong) {
+                break;
+            }
         }
     }
     /* Not enough room in dst, add NUL and traverse rest of src */
@@ -48,13 +55,15 @@ pub unsafe extern "C" fn strlcpy(mut dst: *mut libc::c_char,
         if siz != 0 as libc::c_int as libc::c_ulong {
             *d = '\u{0}' as i32 as libc::c_char
         } /* NUL-terminate dst */
-        loop  {
+        loop {
             let fresh2 = s;
             s = s.offset(1);
-            if !(*fresh2 != 0) { break ; }
+            if !(*fresh2 != 0) {
+                break;
+            }
         }
     }
-    return (s.wrapping_offset_from(src) as libc::c_long -
-                1 as libc::c_int as libc::c_long) as libc::c_ulong;
+    return (s.wrapping_offset_from(src) as libc::c_long - 1 as libc::c_int as libc::c_long)
+        as libc::c_ulong;
     /* count does not include NUL */
 }

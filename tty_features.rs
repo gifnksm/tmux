@@ -25,18 +25,15 @@ extern "C" {
     fn strlen(_: *const libc::c_char) -> libc::c_ulong;
     #[no_mangle]
     fn strsep(__stringp: *mut *mut libc::c_char, __delim: *const libc::c_char)
-     -> *mut libc::c_char;
+        -> *mut libc::c_char;
     #[no_mangle]
-    fn strcasecmp(_: *const libc::c_char, _: *const libc::c_char)
-     -> libc::c_int;
+    fn strcasecmp(_: *const libc::c_char, _: *const libc::c_char) -> libc::c_int;
     #[no_mangle]
-    fn strlcat(_: *mut libc::c_char, _: *const libc::c_char, _: libc::c_ulong)
-     -> libc::c_ulong;
+    fn strlcat(_: *mut libc::c_char, _: *const libc::c_char, _: libc::c_ulong) -> libc::c_ulong;
     #[no_mangle]
     fn xstrdup(_: *const libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
-    fn tty_term_apply(_: *mut tty_term, _: *const libc::c_char,
-                      _: libc::c_int);
+    fn tty_term_apply(_: *mut tty_term, _: *const libc::c_char, _: libc::c_int);
     #[no_mangle]
     fn log_debug(_: *const libc::c_char, _: ...);
 }
@@ -129,18 +126,13 @@ pub struct event_callback {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub union C2RustUnnamed_6 {
-    pub evcb_callback: Option<unsafe extern "C" fn(_: libc::c_int,
-                                                   _: libc::c_short,
-                                                   _: *mut libc::c_void)
-                                  -> ()>,
-    pub evcb_selfcb: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                 _: *mut libc::c_void) -> ()>,
-    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
-    pub evcb_cbfinalize: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
+    pub evcb_callback:
+        Option<unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> ()>,
+    pub evcb_selfcb:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
+    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event, _: *mut libc::c_void) -> ()>,
+    pub evcb_cbfinalize:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -167,14 +159,10 @@ pub struct bufferevent {
     pub timeout_write: timeval,
     pub enabled: libc::c_short,
 }
-pub type bufferevent_event_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short,
-                                _: *mut libc::c_void) -> ()>;
-pub type bufferevent_data_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void)
-               -> ()>;
+pub type bufferevent_event_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short, _: *mut libc::c_void) -> ()>;
+pub type bufferevent_data_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct event_watermark {
@@ -313,17 +301,19 @@ pub struct C2RustUnnamed_9 {
     pub rbe_parent: *mut client_file,
     pub rbe_color: libc::c_int,
 }
-pub type client_file_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *const libc::c_char,
-                                _: libc::c_int, _: libc::c_int,
-                                _: *mut evbuffer, _: *mut libc::c_void)
-               -> ()>;
+pub type client_file_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: *mut evbuffer,
+        _: *mut libc::c_void,
+    ) -> (),
+>;
 pub type overlay_free_cb = Option<unsafe extern "C" fn(_: *mut client) -> ()>;
-pub type overlay_key_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event)
-               -> libc::c_int>;
+pub type overlay_key_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_event {
@@ -353,10 +343,8 @@ pub struct mouse_event {
     pub sgr_b: u_int,
 }
 pub type key_code = libc::c_ulonglong;
-pub type overlay_draw_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx)
-               -> ()>;
+pub type overlay_draw_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen_redraw_ctx {
@@ -370,10 +358,8 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int)
-               -> *mut screen>;
+pub type overlay_mode_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen {
@@ -467,10 +453,8 @@ pub struct C2RustUnnamed_11 {
     pub bg: u_char,
     pub data: u_char,
 }
-pub type overlay_check_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int)
-               -> libc::c_int>;
+pub type overlay_check_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct session {
@@ -717,24 +701,37 @@ pub struct C2RustUnnamed_24 {
 pub struct window_mode {
     pub name: *const libc::c_char,
     pub default_format: *const libc::c_char,
-    pub init: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                          _: *mut cmd_find_state,
-                                          _: *mut args) -> *mut screen>,
+    pub init: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut cmd_find_state,
+            _: *mut args,
+        ) -> *mut screen,
+    >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
-    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                            _: u_int, _: u_int) -> ()>,
-    pub key: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                         _: *mut client, _: *mut session,
-                                         _: *mut winlink, _: key_code,
-                                         _: *mut mouse_event) -> ()>,
-    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry)
-                              -> *const libc::c_char>,
-    pub command: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut client, _: *mut session,
-                                             _: *mut winlink, _: *mut args,
-                                             _: *mut mouse_event) -> ()>,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut format_tree) -> ()>,
+    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
+    pub key: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: key_code,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> *const libc::c_char>,
+    pub command: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: *mut args,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -771,14 +768,15 @@ pub struct winlink_stack {
 pub type C2RustUnnamed_25 = libc::c_uint;
 pub const PROMPT_COMMAND: C2RustUnnamed_25 = 1;
 pub const PROMPT_ENTRY: C2RustUnnamed_25 = 0;
-pub type prompt_free_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
-pub type prompt_input_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut libc::c_void,
-                                _: *const libc::c_char, _: libc::c_int)
-               -> libc::c_int>;
+pub type prompt_free_cb = Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
+pub type prompt_input_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut libc::c_void,
+        _: *const libc::c_char,
+        _: libc::c_int,
+    ) -> libc::c_int,
+>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_table {
@@ -949,12 +947,8 @@ pub struct tty {
     pub mouse_last_y: u_int,
     pub mouse_last_b: u_int,
     pub mouse_drag_flag: libc::c_int,
-    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client,
-                                                       _: *mut mouse_event)
-                                      -> ()>,
-    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client,
-                                                        _: *mut mouse_event)
-                                       -> ()>,
+    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
+    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
     pub key_timer: event,
     pub key_tree: *mut tty_key,
 }
@@ -1047,413 +1041,389 @@ pub struct C2RustUnnamed_32 {
     pub features: *const libc::c_char,
 }
 /* Terminal has xterm(1) title setting. */
-static mut tty_feature_title_capabilities: [*const libc::c_char; 3] =
-    [b"tsl=\\E]0;\x00" as *const u8 as *const libc::c_char,
-     b"fsl=\\a\x00" as *const u8 as *const libc::c_char,
-     0 as *const libc::c_char];
-static mut tty_feature_title: tty_feature =
-    unsafe {
-        {
-            let mut init =
-                tty_feature{name:
-                                b"title\x00" as *const u8 as
-                                    *const libc::c_char,
-                            capabilities:
-                                tty_feature_title_capabilities.as_ptr() as
-                                    *mut _,
-                            flags: 0 as libc::c_int,};
-            init
-        }
-    };
+static mut tty_feature_title_capabilities: [*const libc::c_char; 3] = [
+    b"tsl=\\E]0;\x00" as *const u8 as *const libc::c_char,
+    b"fsl=\\a\x00" as *const u8 as *const libc::c_char,
+    0 as *const libc::c_char,
+];
+static mut tty_feature_title: tty_feature = unsafe {
+    {
+        let mut init = tty_feature {
+            name: b"title\x00" as *const u8 as *const libc::c_char,
+            capabilities: tty_feature_title_capabilities.as_ptr() as *mut _,
+            flags: 0 as libc::c_int,
+        };
+        init
+    }
+};
 /* Terminal can set the clipboard with OSC 52. */
-static mut tty_feature_clipboard_capabilities: [*const libc::c_char; 2] =
-    [b"Ms=\\E]52;%p1%s;%p2%s\\a\x00" as *const u8 as *const libc::c_char,
-     0 as *const libc::c_char];
-static mut tty_feature_clipboard: tty_feature =
-    unsafe {
-        {
-            let mut init =
-                tty_feature{name:
-                                b"clipboard\x00" as *const u8 as
-                                    *const libc::c_char,
-                            capabilities:
-                                tty_feature_clipboard_capabilities.as_ptr() as
-                                    *mut _,
-                            flags: 0 as libc::c_int,};
-            init
-        }
-    };
+static mut tty_feature_clipboard_capabilities: [*const libc::c_char; 2] = [
+    b"Ms=\\E]52;%p1%s;%p2%s\\a\x00" as *const u8 as *const libc::c_char,
+    0 as *const libc::c_char,
+];
+static mut tty_feature_clipboard: tty_feature = unsafe {
+    {
+        let mut init = tty_feature {
+            name: b"clipboard\x00" as *const u8 as *const libc::c_char,
+            capabilities: tty_feature_clipboard_capabilities.as_ptr() as *mut _,
+            flags: 0 as libc::c_int,
+        };
+        init
+    }
+};
 /*
  * Terminal supports RGB colour. This replaces setab and setaf also since
  * terminals with RGB have versions that do not allow setting colours from the
  * 256 palette.
  */
-static mut tty_feature_rgb_capabilities: [*const libc::c_char; 6] =
-    [b"AX\x00" as *const u8 as *const libc::c_char,
-     b"setrgbf=\\E[38;2;%p1%d;%p2%d;%p3%dm\x00" as *const u8 as
-         *const libc::c_char,
-     b"setrgbb=\\E[48;2;%p1%d;%p2%d;%p3%dm\x00" as *const u8 as
-         *const libc::c_char,
-     b"setab=\\E[%?%p1%{8}%<%t4%p1%d%e%p1%{16}%<%t10%p1%{8}%-%d%e48;5;%p1%d%;m\x00"
-         as *const u8 as *const libc::c_char,
-     b"setaf=\\E[%?%p1%{8}%<%t3%p1%d%e%p1%{16}%<%t9%p1%{8}%-%d%e38;5;%p1%d%;m\x00"
-         as *const u8 as *const libc::c_char, 0 as *const libc::c_char];
-static mut tty_feature_rgb: tty_feature =
-    unsafe {
-        {
-            let mut init =
-                tty_feature{name:
-                                b"RGB\x00" as *const u8 as
-                                    *const libc::c_char,
-                            capabilities:
-                                tty_feature_rgb_capabilities.as_ptr() as
-                                    *mut _,
-                            flags: 0x1 as libc::c_int | 0x10 as libc::c_int,};
-            init
-        }
-    };
-/* Terminal supports 256 colours. */
-static mut tty_feature_256_capabilities: [*const libc::c_char; 4] =
-    [b"AX\x00" as *const u8 as *const libc::c_char,
-     b"setab=\\E[%?%p1%{8}%<%t4%p1%d%e%p1%{16}%<%t10%p1%{8}%-%d%e48;5;%p1%d%;m\x00"
-         as *const u8 as *const libc::c_char,
-     b"setaf=\\E[%?%p1%{8}%<%t3%p1%d%e%p1%{16}%<%t9%p1%{8}%-%d%e38;5;%p1%d%;m\x00"
-         as *const u8 as *const libc::c_char, 0 as *const libc::c_char];
-static mut tty_feature_256: tty_feature =
-    unsafe {
-        {
-            let mut init =
-                tty_feature{name:
-                                b"256\x00" as *const u8 as
-                                    *const libc::c_char,
-                            capabilities:
-                                tty_feature_256_capabilities.as_ptr() as
-                                    *mut _,
-                            flags: 0x1 as libc::c_int,};
-            init
-        }
-    };
-/* Terminal supports overline. */
-static mut tty_feature_overline_capabilities: [*const libc::c_char; 2] =
-    [b"Smol=\\E[53m\x00" as *const u8 as *const libc::c_char,
-     0 as *const libc::c_char];
-static mut tty_feature_overline: tty_feature =
-    unsafe {
-        {
-            let mut init =
-                tty_feature{name:
-                                b"overline\x00" as *const u8 as
-                                    *const libc::c_char,
-                            capabilities:
-                                tty_feature_overline_capabilities.as_ptr() as
-                                    *mut _,
-                            flags: 0 as libc::c_int,};
-            init
-        }
-    };
-/* Terminal supports underscore styles. */
-static mut tty_feature_usstyle_capabilities: [*const libc::c_char; 4] =
-    [b"Smulx=\\E[4::%p1%dm\x00" as *const u8 as *const libc::c_char,
-     b"Setulc=\\E[58::2::%p1%{65536}%/%d::%p1%{256}%/%{255}%&%d::%p1%{255}%&%d%;m\x00"
-         as *const u8 as *const libc::c_char,
-     b"ol=\\E[59m\x00" as *const u8 as *const libc::c_char,
-     0 as *const libc::c_char];
-static mut tty_feature_usstyle: tty_feature =
-    unsafe {
-        {
-            let mut init =
-                tty_feature{name:
-                                b"usstyle\x00" as *const u8 as
-                                    *const libc::c_char,
-                            capabilities:
-                                tty_feature_usstyle_capabilities.as_ptr() as
-                                    *mut _,
-                            flags: 0 as libc::c_int,};
-            init
-        }
-    };
-/* Terminal supports bracketed paste. */
-static mut tty_feature_bpaste_capabilities: [*const libc::c_char; 3] =
-    [b"Enbp=\\E[?2004h\x00" as *const u8 as *const libc::c_char,
-     b"Dsbp=\\E[?2004l\x00" as *const u8 as *const libc::c_char,
-     0 as *const libc::c_char];
-static mut tty_feature_bpaste: tty_feature =
-    unsafe {
-        {
-            let mut init =
-                tty_feature{name:
-                                b"bpaste\x00" as *const u8 as
-                                    *const libc::c_char,
-                            capabilities:
-                                tty_feature_bpaste_capabilities.as_ptr() as
-                                    *mut _,
-                            flags: 0 as libc::c_int,};
-            init
-        }
-    };
-/* Terminal supports focus reporting. */
-static mut tty_feature_focus_capabilities: [*const libc::c_char; 3] =
-    [b"Enfcs=\\E[?1004h\x00" as *const u8 as *const libc::c_char,
-     b"Dsfcs=\\E[?1004l\x00" as *const u8 as *const libc::c_char,
-     0 as *const libc::c_char];
-static mut tty_feature_focus: tty_feature =
-    unsafe {
-        {
-            let mut init =
-                tty_feature{name:
-                                b"focus\x00" as *const u8 as
-                                    *const libc::c_char,
-                            capabilities:
-                                tty_feature_focus_capabilities.as_ptr() as
-                                    *mut _,
-                            flags: 0 as libc::c_int,};
-            init
-        }
-    };
-/* Terminal supports cursor styles. */
-static mut tty_feature_cstyle_capabilities: [*const libc::c_char; 3] =
-    [b"Ss=\\E[%p1%d q\x00" as *const u8 as *const libc::c_char,
-     b"Se=\\E[2 q\x00" as *const u8 as *const libc::c_char,
-     0 as *const libc::c_char];
-static mut tty_feature_cstyle: tty_feature =
-    unsafe {
-        {
-            let mut init =
-                tty_feature{name:
-                                b"cstyle\x00" as *const u8 as
-                                    *const libc::c_char,
-                            capabilities:
-                                tty_feature_cstyle_capabilities.as_ptr() as
-                                    *mut _,
-                            flags: 0 as libc::c_int,};
-            init
-        }
-    };
-/* Terminal supports cursor colours. */
-static mut tty_feature_ccolour_capabilities: [*const libc::c_char; 3] =
-    [b"Cs=\\E]12;%p1%s\\a\x00" as *const u8 as *const libc::c_char,
-     b"Cr=\\E]112\\a\x00" as *const u8 as *const libc::c_char,
-     0 as *const libc::c_char];
-static mut tty_feature_ccolour: tty_feature =
-    unsafe {
-        {
-            let mut init =
-                tty_feature{name:
-                                b"ccolour\x00" as *const u8 as
-                                    *const libc::c_char,
-                            capabilities:
-                                tty_feature_ccolour_capabilities.as_ptr() as
-                                    *mut _,
-                            flags: 0 as libc::c_int,};
-            init
-        }
-    };
-/* Terminal supports strikethrough. */
-static mut tty_feature_strikethrough_capabilities: [*const libc::c_char; 2] =
-    [b"smxx=\\E[9m\x00" as *const u8 as *const libc::c_char,
-     0 as *const libc::c_char];
-static mut tty_feature_strikethrough: tty_feature =
-    unsafe {
-        {
-            let mut init =
-                tty_feature{name:
-                                b"strikethrough\x00" as *const u8 as
-                                    *const libc::c_char,
-                            capabilities:
-                                tty_feature_strikethrough_capabilities.as_ptr()
-                                    as *mut _,
-                            flags: 0 as libc::c_int,};
-            init
-        }
-    };
-/* Terminal supports synchronized updates. */
-static mut tty_feature_sync_capabilities: [*const libc::c_char; 2] =
-    [b"Sync=\\EP=%p1%ds\\E\\\\\x00" as *const u8 as *const libc::c_char,
-     0 as *const libc::c_char];
-static mut tty_feature_sync: tty_feature =
-    unsafe {
-        {
-            let mut init =
-                tty_feature{name:
-                                b"sync\x00" as *const u8 as
-                                    *const libc::c_char,
-                            capabilities:
-                                tty_feature_sync_capabilities.as_ptr() as
-                                    *mut _,
-                            flags: 0 as libc::c_int,};
-            init
-        }
-    };
-/* Terminal supports extended keys. */
-static mut tty_feature_extkeys_capabilities: [*const libc::c_char; 3] =
-    [b"Eneks=\\E[>4;1m\x00" as *const u8 as *const libc::c_char,
-     b"Dseks=\\E[>4m\x00" as *const u8 as *const libc::c_char,
-     0 as *const libc::c_char];
-static mut tty_feature_extkeys: tty_feature =
-    unsafe {
-        {
-            let mut init =
-                tty_feature{name:
-                                b"extkeys\x00" as *const u8 as
-                                    *const libc::c_char,
-                            capabilities:
-                                tty_feature_extkeys_capabilities.as_ptr() as
-                                    *mut _,
-                            flags: 0 as libc::c_int,};
-            init
-        }
-    };
-/* Terminal supports DECSLRM margins. */
-static mut tty_feature_margins_capabilities: [*const libc::c_char; 5] =
-    [b"Enmg=\\E[?69h\x00" as *const u8 as *const libc::c_char,
-     b"Dsmg=\\E[?69l\x00" as *const u8 as *const libc::c_char,
-     b"Clmg=\\E[s\x00" as *const u8 as *const libc::c_char,
-     b"Cmg=\\E[%i%p1%d;%p2%ds\x00" as *const u8 as *const libc::c_char,
-     0 as *const libc::c_char];
-static mut tty_feature_margins: tty_feature =
-    unsafe {
-        {
-            let mut init =
-                tty_feature{name:
-                                b"margins\x00" as *const u8 as
-                                    *const libc::c_char,
-                            capabilities:
-                                tty_feature_margins_capabilities.as_ptr() as
-                                    *mut _,
-                            flags: 0x4 as libc::c_int,};
-            init
-        }
-    };
-/* Terminal supports DECFRA rectangle fill. */
-static mut tty_feature_rectfill: tty_feature =
+static mut tty_feature_rgb_capabilities: [*const libc::c_char; 6] = [
+    b"AX\x00" as *const u8 as *const libc::c_char,
+    b"setrgbf=\\E[38;2;%p1%d;%p2%d;%p3%dm\x00" as *const u8 as *const libc::c_char,
+    b"setrgbb=\\E[48;2;%p1%d;%p2%d;%p3%dm\x00" as *const u8 as *const libc::c_char,
+    b"setab=\\E[%?%p1%{8}%<%t4%p1%d%e%p1%{16}%<%t10%p1%{8}%-%d%e48;5;%p1%d%;m\x00" as *const u8
+        as *const libc::c_char,
+    b"setaf=\\E[%?%p1%{8}%<%t3%p1%d%e%p1%{16}%<%t9%p1%{8}%-%d%e38;5;%p1%d%;m\x00" as *const u8
+        as *const libc::c_char,
+    0 as *const libc::c_char,
+];
+static mut tty_feature_rgb: tty_feature = unsafe {
     {
-        let mut init =
-            tty_feature{name:
-                            b"rectfill\x00" as *const u8 as
-                                *const libc::c_char,
-                        capabilities:
-                            0 as *const *const libc::c_char as
-                                *mut *const libc::c_char,
-                        flags: 0x8 as libc::c_int,};
+        let mut init = tty_feature {
+            name: b"RGB\x00" as *const u8 as *const libc::c_char,
+            capabilities: tty_feature_rgb_capabilities.as_ptr() as *mut _,
+            flags: 0x1 as libc::c_int | 0x10 as libc::c_int,
+        };
         init
+    }
+};
+/* Terminal supports 256 colours. */
+static mut tty_feature_256_capabilities: [*const libc::c_char; 4] = [
+    b"AX\x00" as *const u8 as *const libc::c_char,
+    b"setab=\\E[%?%p1%{8}%<%t4%p1%d%e%p1%{16}%<%t10%p1%{8}%-%d%e48;5;%p1%d%;m\x00" as *const u8
+        as *const libc::c_char,
+    b"setaf=\\E[%?%p1%{8}%<%t3%p1%d%e%p1%{16}%<%t9%p1%{8}%-%d%e38;5;%p1%d%;m\x00" as *const u8
+        as *const libc::c_char,
+    0 as *const libc::c_char,
+];
+static mut tty_feature_256: tty_feature = unsafe {
+    {
+        let mut init = tty_feature {
+            name: b"256\x00" as *const u8 as *const libc::c_char,
+            capabilities: tty_feature_256_capabilities.as_ptr() as *mut _,
+            flags: 0x1 as libc::c_int,
+        };
+        init
+    }
+};
+/* Terminal supports overline. */
+static mut tty_feature_overline_capabilities: [*const libc::c_char; 2] = [
+    b"Smol=\\E[53m\x00" as *const u8 as *const libc::c_char,
+    0 as *const libc::c_char,
+];
+static mut tty_feature_overline: tty_feature = unsafe {
+    {
+        let mut init = tty_feature {
+            name: b"overline\x00" as *const u8 as *const libc::c_char,
+            capabilities: tty_feature_overline_capabilities.as_ptr() as *mut _,
+            flags: 0 as libc::c_int,
+        };
+        init
+    }
+};
+/* Terminal supports underscore styles. */
+static mut tty_feature_usstyle_capabilities: [*const libc::c_char; 4] = [
+    b"Smulx=\\E[4::%p1%dm\x00" as *const u8 as *const libc::c_char,
+    b"Setulc=\\E[58::2::%p1%{65536}%/%d::%p1%{256}%/%{255}%&%d::%p1%{255}%&%d%;m\x00" as *const u8
+        as *const libc::c_char,
+    b"ol=\\E[59m\x00" as *const u8 as *const libc::c_char,
+    0 as *const libc::c_char,
+];
+static mut tty_feature_usstyle: tty_feature = unsafe {
+    {
+        let mut init = tty_feature {
+            name: b"usstyle\x00" as *const u8 as *const libc::c_char,
+            capabilities: tty_feature_usstyle_capabilities.as_ptr() as *mut _,
+            flags: 0 as libc::c_int,
+        };
+        init
+    }
+};
+/* Terminal supports bracketed paste. */
+static mut tty_feature_bpaste_capabilities: [*const libc::c_char; 3] = [
+    b"Enbp=\\E[?2004h\x00" as *const u8 as *const libc::c_char,
+    b"Dsbp=\\E[?2004l\x00" as *const u8 as *const libc::c_char,
+    0 as *const libc::c_char,
+];
+static mut tty_feature_bpaste: tty_feature = unsafe {
+    {
+        let mut init = tty_feature {
+            name: b"bpaste\x00" as *const u8 as *const libc::c_char,
+            capabilities: tty_feature_bpaste_capabilities.as_ptr() as *mut _,
+            flags: 0 as libc::c_int,
+        };
+        init
+    }
+};
+/* Terminal supports focus reporting. */
+static mut tty_feature_focus_capabilities: [*const libc::c_char; 3] = [
+    b"Enfcs=\\E[?1004h\x00" as *const u8 as *const libc::c_char,
+    b"Dsfcs=\\E[?1004l\x00" as *const u8 as *const libc::c_char,
+    0 as *const libc::c_char,
+];
+static mut tty_feature_focus: tty_feature = unsafe {
+    {
+        let mut init = tty_feature {
+            name: b"focus\x00" as *const u8 as *const libc::c_char,
+            capabilities: tty_feature_focus_capabilities.as_ptr() as *mut _,
+            flags: 0 as libc::c_int,
+        };
+        init
+    }
+};
+/* Terminal supports cursor styles. */
+static mut tty_feature_cstyle_capabilities: [*const libc::c_char; 3] = [
+    b"Ss=\\E[%p1%d q\x00" as *const u8 as *const libc::c_char,
+    b"Se=\\E[2 q\x00" as *const u8 as *const libc::c_char,
+    0 as *const libc::c_char,
+];
+static mut tty_feature_cstyle: tty_feature = unsafe {
+    {
+        let mut init = tty_feature {
+            name: b"cstyle\x00" as *const u8 as *const libc::c_char,
+            capabilities: tty_feature_cstyle_capabilities.as_ptr() as *mut _,
+            flags: 0 as libc::c_int,
+        };
+        init
+    }
+};
+/* Terminal supports cursor colours. */
+static mut tty_feature_ccolour_capabilities: [*const libc::c_char; 3] = [
+    b"Cs=\\E]12;%p1%s\\a\x00" as *const u8 as *const libc::c_char,
+    b"Cr=\\E]112\\a\x00" as *const u8 as *const libc::c_char,
+    0 as *const libc::c_char,
+];
+static mut tty_feature_ccolour: tty_feature = unsafe {
+    {
+        let mut init = tty_feature {
+            name: b"ccolour\x00" as *const u8 as *const libc::c_char,
+            capabilities: tty_feature_ccolour_capabilities.as_ptr() as *mut _,
+            flags: 0 as libc::c_int,
+        };
+        init
+    }
+};
+/* Terminal supports strikethrough. */
+static mut tty_feature_strikethrough_capabilities: [*const libc::c_char; 2] = [
+    b"smxx=\\E[9m\x00" as *const u8 as *const libc::c_char,
+    0 as *const libc::c_char,
+];
+static mut tty_feature_strikethrough: tty_feature = unsafe {
+    {
+        let mut init = tty_feature {
+            name: b"strikethrough\x00" as *const u8 as *const libc::c_char,
+            capabilities: tty_feature_strikethrough_capabilities.as_ptr() as *mut _,
+            flags: 0 as libc::c_int,
+        };
+        init
+    }
+};
+/* Terminal supports synchronized updates. */
+static mut tty_feature_sync_capabilities: [*const libc::c_char; 2] = [
+    b"Sync=\\EP=%p1%ds\\E\\\\\x00" as *const u8 as *const libc::c_char,
+    0 as *const libc::c_char,
+];
+static mut tty_feature_sync: tty_feature = unsafe {
+    {
+        let mut init = tty_feature {
+            name: b"sync\x00" as *const u8 as *const libc::c_char,
+            capabilities: tty_feature_sync_capabilities.as_ptr() as *mut _,
+            flags: 0 as libc::c_int,
+        };
+        init
+    }
+};
+/* Terminal supports extended keys. */
+static mut tty_feature_extkeys_capabilities: [*const libc::c_char; 3] = [
+    b"Eneks=\\E[>4;1m\x00" as *const u8 as *const libc::c_char,
+    b"Dseks=\\E[>4m\x00" as *const u8 as *const libc::c_char,
+    0 as *const libc::c_char,
+];
+static mut tty_feature_extkeys: tty_feature = unsafe {
+    {
+        let mut init = tty_feature {
+            name: b"extkeys\x00" as *const u8 as *const libc::c_char,
+            capabilities: tty_feature_extkeys_capabilities.as_ptr() as *mut _,
+            flags: 0 as libc::c_int,
+        };
+        init
+    }
+};
+/* Terminal supports DECSLRM margins. */
+static mut tty_feature_margins_capabilities: [*const libc::c_char; 5] = [
+    b"Enmg=\\E[?69h\x00" as *const u8 as *const libc::c_char,
+    b"Dsmg=\\E[?69l\x00" as *const u8 as *const libc::c_char,
+    b"Clmg=\\E[s\x00" as *const u8 as *const libc::c_char,
+    b"Cmg=\\E[%i%p1%d;%p2%ds\x00" as *const u8 as *const libc::c_char,
+    0 as *const libc::c_char,
+];
+static mut tty_feature_margins: tty_feature = unsafe {
+    {
+        let mut init = tty_feature {
+            name: b"margins\x00" as *const u8 as *const libc::c_char,
+            capabilities: tty_feature_margins_capabilities.as_ptr() as *mut _,
+            flags: 0x4 as libc::c_int,
+        };
+        init
+    }
+};
+/* Terminal supports DECFRA rectangle fill. */
+static mut tty_feature_rectfill: tty_feature = {
+    let mut init = tty_feature {
+        name: b"rectfill\x00" as *const u8 as *const libc::c_char,
+        capabilities: 0 as *const *const libc::c_char as *mut *const libc::c_char,
+        flags: 0x8 as libc::c_int,
     };
+    init
+};
 /* Available terminal features. */
-static mut tty_features: [*const tty_feature; 15] =
-    unsafe {
-        [&tty_feature_256 as *const tty_feature,
-         &tty_feature_bpaste as *const tty_feature,
-         &tty_feature_ccolour as *const tty_feature,
-         &tty_feature_clipboard as *const tty_feature,
-         &tty_feature_cstyle as *const tty_feature,
-         &tty_feature_extkeys as *const tty_feature,
-         &tty_feature_focus as *const tty_feature,
-         &tty_feature_margins as *const tty_feature,
-         &tty_feature_overline as *const tty_feature,
-         &tty_feature_rectfill as *const tty_feature,
-         &tty_feature_rgb as *const tty_feature,
-         &tty_feature_strikethrough as *const tty_feature,
-         &tty_feature_sync as *const tty_feature,
-         &tty_feature_title as *const tty_feature,
-         &tty_feature_usstyle as *const tty_feature]
-    };
+static mut tty_features: [*const tty_feature; 15] = unsafe {
+    [
+        &tty_feature_256 as *const tty_feature,
+        &tty_feature_bpaste as *const tty_feature,
+        &tty_feature_ccolour as *const tty_feature,
+        &tty_feature_clipboard as *const tty_feature,
+        &tty_feature_cstyle as *const tty_feature,
+        &tty_feature_extkeys as *const tty_feature,
+        &tty_feature_focus as *const tty_feature,
+        &tty_feature_margins as *const tty_feature,
+        &tty_feature_overline as *const tty_feature,
+        &tty_feature_rectfill as *const tty_feature,
+        &tty_feature_rgb as *const tty_feature,
+        &tty_feature_strikethrough as *const tty_feature,
+        &tty_feature_sync as *const tty_feature,
+        &tty_feature_title as *const tty_feature,
+        &tty_feature_usstyle as *const tty_feature,
+    ]
+};
 #[no_mangle]
-pub unsafe extern "C" fn tty_add_features(mut feat: *mut libc::c_int,
-                                          mut s: *const libc::c_char,
-                                          mut separators:
-                                              *const libc::c_char) {
+pub unsafe extern "C" fn tty_add_features(
+    mut feat: *mut libc::c_int,
+    mut s: *const libc::c_char,
+    mut separators: *const libc::c_char,
+) {
     let mut tf: *const tty_feature = 0 as *const tty_feature;
     let mut next: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut loop_0: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut copy: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut i: u_int = 0;
-    log_debug(b"adding terminal features %s\x00" as *const u8 as
-                  *const libc::c_char, s);
+    log_debug(
+        b"adding terminal features %s\x00" as *const u8 as *const libc::c_char,
+        s,
+    );
     copy = xstrdup(s);
     loop_0 = copy;
-    loop  {
+    loop {
         next = strsep(&mut loop_0, separators);
-        if next.is_null() { break ; }
+        if next.is_null() {
+            break;
+        }
         i = 0 as libc::c_int as u_int;
-        while (i as libc::c_ulong) <
-                  (::std::mem::size_of::<[*const tty_feature; 15]>() as
-                       libc::c_ulong).wrapping_div(::std::mem::size_of::<*const tty_feature>()
-                                                       as libc::c_ulong) {
+        while (i as libc::c_ulong)
+            < (::std::mem::size_of::<[*const tty_feature; 15]>() as libc::c_ulong)
+                .wrapping_div(::std::mem::size_of::<*const tty_feature>() as libc::c_ulong)
+        {
             tf = tty_features[i as usize];
-            if strcasecmp((*tf).name, next) == 0 as libc::c_int { break ; }
+            if strcasecmp((*tf).name, next) == 0 as libc::c_int {
+                break;
+            }
             i = i.wrapping_add(1)
         }
-        if i as libc::c_ulong ==
-               (::std::mem::size_of::<[*const tty_feature; 15]>() as
-                    libc::c_ulong).wrapping_div(::std::mem::size_of::<*const tty_feature>()
-                                                    as libc::c_ulong) {
-            log_debug(b"unknown terminal feature: %s\x00" as *const u8 as
-                          *const libc::c_char, next);
-            break ;
+        if i as libc::c_ulong
+            == (::std::mem::size_of::<[*const tty_feature; 15]>() as libc::c_ulong)
+                .wrapping_div(::std::mem::size_of::<*const tty_feature>() as libc::c_ulong)
+        {
+            log_debug(
+                b"unknown terminal feature: %s\x00" as *const u8 as *const libc::c_char,
+                next,
+            );
+            break;
         } else if !*feat & (1 as libc::c_int) << i != 0 {
-            log_debug(b"adding terminal feature: %s\x00" as *const u8 as
-                          *const libc::c_char, (*tf).name);
+            log_debug(
+                b"adding terminal feature: %s\x00" as *const u8 as *const libc::c_char,
+                (*tf).name,
+            );
             *feat |= (1 as libc::c_int) << i
         }
     }
     free(copy as *mut libc::c_void);
 }
 #[no_mangle]
-pub unsafe extern "C" fn tty_get_features(mut feat: libc::c_int)
- -> *const libc::c_char {
+pub unsafe extern "C" fn tty_get_features(mut feat: libc::c_int) -> *const libc::c_char {
     let mut tf: *const tty_feature = 0 as *const tty_feature;
     static mut s: [libc::c_char; 512] = [0; 512];
     let mut i: u_int = 0;
     *s.as_mut_ptr() = '\u{0}' as i32 as libc::c_char;
     i = 0 as libc::c_int as u_int;
-    while (i as libc::c_ulong) <
-              (::std::mem::size_of::<[*const tty_feature; 15]>() as
-                   libc::c_ulong).wrapping_div(::std::mem::size_of::<*const tty_feature>()
-                                                   as libc::c_ulong) {
+    while (i as libc::c_ulong)
+        < (::std::mem::size_of::<[*const tty_feature; 15]>() as libc::c_ulong)
+            .wrapping_div(::std::mem::size_of::<*const tty_feature>() as libc::c_ulong)
+    {
         if !(!feat & (1 as libc::c_int) << i != 0) {
             tf = tty_features[i as usize];
-            strlcat(s.as_mut_ptr(), (*tf).name,
-                    ::std::mem::size_of::<[libc::c_char; 512]>() as
-                        libc::c_ulong);
-            strlcat(s.as_mut_ptr(),
-                    b",\x00" as *const u8 as *const libc::c_char,
-                    ::std::mem::size_of::<[libc::c_char; 512]>() as
-                        libc::c_ulong);
+            strlcat(
+                s.as_mut_ptr(),
+                (*tf).name,
+                ::std::mem::size_of::<[libc::c_char; 512]>() as libc::c_ulong,
+            );
+            strlcat(
+                s.as_mut_ptr(),
+                b",\x00" as *const u8 as *const libc::c_char,
+                ::std::mem::size_of::<[libc::c_char; 512]>() as libc::c_ulong,
+            );
         }
         i = i.wrapping_add(1)
     }
     if *s.as_mut_ptr() as libc::c_int != '\u{0}' as i32 {
-        s[strlen(s.as_mut_ptr()).wrapping_sub(1 as libc::c_int as
-                                                  libc::c_ulong) as usize] =
+        s[strlen(s.as_mut_ptr()).wrapping_sub(1 as libc::c_int as libc::c_ulong) as usize] =
             '\u{0}' as i32 as libc::c_char
     }
     return s.as_mut_ptr();
 }
 #[no_mangle]
-pub unsafe extern "C" fn tty_apply_features(mut term: *mut tty_term,
-                                            mut feat: libc::c_int)
- -> libc::c_int {
+pub unsafe extern "C" fn tty_apply_features(
+    mut term: *mut tty_term,
+    mut feat: libc::c_int,
+) -> libc::c_int {
     let mut tf: *const tty_feature = 0 as *const tty_feature;
-    let mut capability: *mut *const libc::c_char =
-        0 as *mut *const libc::c_char;
+    let mut capability: *mut *const libc::c_char = 0 as *mut *const libc::c_char;
     let mut i: u_int = 0;
-    if feat == 0 as libc::c_int { return 0 as libc::c_int }
-    log_debug(b"applying terminal features: %s\x00" as *const u8 as
-                  *const libc::c_char, tty_get_features(feat));
+    if feat == 0 as libc::c_int {
+        return 0 as libc::c_int;
+    }
+    log_debug(
+        b"applying terminal features: %s\x00" as *const u8 as *const libc::c_char,
+        tty_get_features(feat),
+    );
     i = 0 as libc::c_int as u_int;
-    while (i as libc::c_ulong) <
-              (::std::mem::size_of::<[*const tty_feature; 15]>() as
-                   libc::c_ulong).wrapping_div(::std::mem::size_of::<*const tty_feature>()
-                                                   as libc::c_ulong) {
-        if !((*term).features & (1 as libc::c_int) << i != 0 ||
-                 !feat & (1 as libc::c_int) << i != 0) {
+    while (i as libc::c_ulong)
+        < (::std::mem::size_of::<[*const tty_feature; 15]>() as libc::c_ulong)
+            .wrapping_div(::std::mem::size_of::<*const tty_feature>() as libc::c_ulong)
+    {
+        if !((*term).features & (1 as libc::c_int) << i != 0
+            || !feat & (1 as libc::c_int) << i != 0)
+        {
             tf = tty_features[i as usize];
-            log_debug(b"applying terminal feature: %s\x00" as *const u8 as
-                          *const libc::c_char, (*tf).name);
+            log_debug(
+                b"applying terminal feature: %s\x00" as *const u8 as *const libc::c_char,
+                (*tf).name,
+            );
             if !(*tf).capabilities.is_null() {
                 capability = (*tf).capabilities;
                 while !(*capability).is_null() {
-                    log_debug(b"adding capability: %s\x00" as *const u8 as
-                                  *const libc::c_char, *capability);
+                    log_debug(
+                        b"adding capability: %s\x00" as *const u8 as *const libc::c_char,
+                        *capability,
+                    );
                     tty_term_apply(term, *capability, 1 as libc::c_int);
                     capability = capability.offset(1)
                 }
@@ -1462,17 +1432,21 @@ pub unsafe extern "C" fn tty_apply_features(mut term: *mut tty_term,
         }
         i = i.wrapping_add(1)
     }
-    if (*term).features | feat == (*term).features { return 0 as libc::c_int }
+    if (*term).features | feat == (*term).features {
+        return 0 as libc::c_int;
+    }
     (*term).features |= feat;
     return 1 as libc::c_int;
 }
 #[no_mangle]
-pub unsafe extern "C" fn tty_default_features(mut feat: *mut libc::c_int,
-                                              mut name: *const libc::c_char,
-                                              mut version: u_int) {
-    static mut table: [C2RustUnnamed_32; 5] =
-        [{
-             let mut init =
+pub unsafe extern "C" fn tty_default_features(
+    mut feat: *mut libc::c_int,
+    mut name: *const libc::c_char,
+    mut version: u_int,
+) {
+    static mut table: [C2RustUnnamed_32; 5] = [
+        {
+            let mut init =
                  C2RustUnnamed_32{name:
                                       b"mintty\x00" as *const u8 as
                                           *const libc::c_char,
@@ -1481,10 +1455,10 @@ pub unsafe extern "C" fn tty_default_features(mut feat: *mut libc::c_int,
                                       b"256,RGB,bpaste,clipboard,strikethrough,title,ccolour,cstyle,extkeys,margins,overline,usstyle\x00"
                                           as *const u8 as
                                           *const libc::c_char,};
-             init
-         },
-         {
-             let mut init =
+            init
+        },
+        {
+            let mut init =
                  C2RustUnnamed_32{name:
                                       b"tmux\x00" as *const u8 as
                                           *const libc::c_char,
@@ -1493,34 +1467,29 @@ pub unsafe extern "C" fn tty_default_features(mut feat: *mut libc::c_int,
                                       b"256,RGB,bpaste,clipboard,strikethrough,title,ccolour,cstyle,focus,overline,usstyle\x00"
                                           as *const u8 as
                                           *const libc::c_char,};
-             init
-         },
-         {
-             let mut init =
-                 C2RustUnnamed_32{name:
-                                      b"rxvt-unicode\x00" as *const u8 as
-                                          *const libc::c_char,
-                                  version: 0,
-                                  features:
-                                      b"256,bpaste,ccolour,cstyle,title\x00"
-                                          as *const u8 as
-                                          *const libc::c_char,};
-             init
-         },
-         {
-             let mut init =
-                 C2RustUnnamed_32{name:
-                                      b"iTerm2\x00" as *const u8 as
-                                          *const libc::c_char,
-                                  version: 0,
-                                  features:
-                                      b"256,RGB,bpaste,clipboard,strikethrough,title,cstyle,extkeys,margins,sync\x00"
-                                          as *const u8 as
-                                          *const libc::c_char,};
-             init
-         },
-         {
-             let mut init =
+            init
+        },
+        {
+            let mut init = C2RustUnnamed_32 {
+                name: b"rxvt-unicode\x00" as *const u8 as *const libc::c_char,
+                version: 0,
+                features: b"256,bpaste,ccolour,cstyle,title\x00" as *const u8
+                    as *const libc::c_char,
+            };
+            init
+        },
+        {
+            let mut init = C2RustUnnamed_32 {
+                name: b"iTerm2\x00" as *const u8 as *const libc::c_char,
+                version: 0,
+                features:
+                    b"256,RGB,bpaste,clipboard,strikethrough,title,cstyle,extkeys,margins,sync\x00"
+                        as *const u8 as *const libc::c_char,
+            };
+            init
+        },
+        {
+            let mut init =
                  C2RustUnnamed_32{name:
                                       b"XTerm\x00" as *const u8 as
                                           *const libc::c_char,
@@ -1529,22 +1498,25 @@ pub unsafe extern "C" fn tty_default_features(mut feat: *mut libc::c_int,
                                       b"256,RGB,bpaste,clipboard,strikethrough,title,ccolour,cstyle,extkeys,focus,margins,rectfill\x00"
                                           as *const u8 as
                                           *const libc::c_char,};
-             init
-         }];
+            init
+        },
+    ];
     let mut i: u_int = 0;
     i = 0 as libc::c_int as u_int;
-    while (i as libc::c_ulong) <
-              (::std::mem::size_of::<[C2RustUnnamed_32; 5]>() as
-                   libc::c_ulong).wrapping_div(::std::mem::size_of::<C2RustUnnamed_32>()
-                                                   as libc::c_ulong) {
+    while (i as libc::c_ulong)
+        < (::std::mem::size_of::<[C2RustUnnamed_32; 5]>() as libc::c_ulong)
+            .wrapping_div(::std::mem::size_of::<C2RustUnnamed_32>() as libc::c_ulong)
+    {
         if !(strcmp(table[i as usize].name, name) != 0 as libc::c_int) {
-            if !(version != 0 as libc::c_int as libc::c_uint &&
-                     version < table[i as usize].version) {
-                tty_add_features(feat, table[i as usize].features,
-                                 b",\x00" as *const u8 as
-                                     *const libc::c_char);
+            if !(version != 0 as libc::c_int as libc::c_uint && version < table[i as usize].version)
+            {
+                tty_add_features(
+                    feat,
+                    table[i as usize].features,
+                    b",\x00" as *const u8 as *const libc::c_char,
+                );
             }
         }
         i = i.wrapping_add(1)
-    };
+    }
 }

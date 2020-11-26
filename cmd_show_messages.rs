@@ -24,14 +24,11 @@ extern "C" {
     #[no_mangle]
     fn format_free(_: *mut format_tree);
     #[no_mangle]
-    fn format_add(_: *mut format_tree, _: *const libc::c_char,
-                  _: *const libc::c_char, _: ...);
+    fn format_add(_: *mut format_tree, _: *const libc::c_char, _: *const libc::c_char, _: ...);
     #[no_mangle]
-    fn format_add_tv(_: *mut format_tree, _: *const libc::c_char,
-                     _: *mut timeval);
+    fn format_add_tv(_: *mut format_tree, _: *const libc::c_char, _: *mut timeval);
     #[no_mangle]
-    fn format_expand(_: *mut format_tree, _: *const libc::c_char)
-     -> *mut libc::c_char;
+    fn format_expand(_: *mut format_tree, _: *const libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
     fn format_create_from_target(_: *mut cmdq_item) -> *mut format_tree;
     #[no_mangle]
@@ -41,8 +38,7 @@ extern "C" {
     #[no_mangle]
     fn tty_term_ncodes() -> u_int;
     #[no_mangle]
-    fn tty_term_describe(_: *mut tty_term, _: tty_code_code)
-     -> *const libc::c_char;
+    fn tty_term_describe(_: *mut tty_term, _: tty_code_code) -> *const libc::c_char;
     #[no_mangle]
     fn args_has(_: *mut args, _: u_char) -> libc::c_int;
     #[no_mangle]
@@ -143,18 +139,13 @@ pub struct event_callback {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub union C2RustUnnamed_6 {
-    pub evcb_callback: Option<unsafe extern "C" fn(_: libc::c_int,
-                                                   _: libc::c_short,
-                                                   _: *mut libc::c_void)
-                                  -> ()>,
-    pub evcb_selfcb: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                 _: *mut libc::c_void) -> ()>,
-    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
-    pub evcb_cbfinalize: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
+    pub evcb_callback:
+        Option<unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> ()>,
+    pub evcb_selfcb:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
+    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event, _: *mut libc::c_void) -> ()>,
+    pub evcb_cbfinalize:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -181,14 +172,10 @@ pub struct bufferevent {
     pub timeout_write: timeval,
     pub enabled: libc::c_short,
 }
-pub type bufferevent_event_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short,
-                                _: *mut libc::c_void) -> ()>;
-pub type bufferevent_data_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void)
-               -> ()>;
+pub type bufferevent_event_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short, _: *mut libc::c_void) -> ()>;
+pub type bufferevent_data_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct event_watermark {
@@ -327,17 +314,19 @@ pub struct C2RustUnnamed_9 {
     pub rbe_parent: *mut client_file,
     pub rbe_color: libc::c_int,
 }
-pub type client_file_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *const libc::c_char,
-                                _: libc::c_int, _: libc::c_int,
-                                _: *mut evbuffer, _: *mut libc::c_void)
-               -> ()>;
+pub type client_file_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: *mut evbuffer,
+        _: *mut libc::c_void,
+    ) -> (),
+>;
 pub type overlay_free_cb = Option<unsafe extern "C" fn(_: *mut client) -> ()>;
-pub type overlay_key_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event)
-               -> libc::c_int>;
+pub type overlay_key_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_event {
@@ -367,10 +356,8 @@ pub struct mouse_event {
     pub sgr_b: u_int,
 }
 pub type key_code = libc::c_ulonglong;
-pub type overlay_draw_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx)
-               -> ()>;
+pub type overlay_draw_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen_redraw_ctx {
@@ -384,10 +371,8 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int)
-               -> *mut screen>;
+pub type overlay_mode_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen {
@@ -481,10 +466,8 @@ pub struct C2RustUnnamed_11 {
     pub bg: u_char,
     pub data: u_char,
 }
-pub type overlay_check_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int)
-               -> libc::c_int>;
+pub type overlay_check_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct session {
@@ -731,24 +714,37 @@ pub struct C2RustUnnamed_24 {
 pub struct window_mode {
     pub name: *const libc::c_char,
     pub default_format: *const libc::c_char,
-    pub init: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                          _: *mut cmd_find_state,
-                                          _: *mut args) -> *mut screen>,
+    pub init: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut cmd_find_state,
+            _: *mut args,
+        ) -> *mut screen,
+    >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
-    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                            _: u_int, _: u_int) -> ()>,
-    pub key: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                         _: *mut client, _: *mut session,
-                                         _: *mut winlink, _: key_code,
-                                         _: *mut mouse_event) -> ()>,
-    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry)
-                              -> *const libc::c_char>,
-    pub command: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut client, _: *mut session,
-                                             _: *mut winlink, _: *mut args,
-                                             _: *mut mouse_event) -> ()>,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut format_tree) -> ()>,
+    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
+    pub key: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: key_code,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> *const libc::c_char>,
+    pub command: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: *mut args,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -785,14 +781,15 @@ pub struct winlink_stack {
 pub type C2RustUnnamed_25 = libc::c_uint;
 pub const PROMPT_COMMAND: C2RustUnnamed_25 = 1;
 pub const PROMPT_ENTRY: C2RustUnnamed_25 = 0;
-pub type prompt_free_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
-pub type prompt_input_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut libc::c_void,
-                                _: *const libc::c_char, _: libc::c_int)
-               -> libc::c_int>;
+pub type prompt_free_cb = Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
+pub type prompt_input_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut libc::c_void,
+        _: *const libc::c_char,
+        _: libc::c_int,
+    ) -> libc::c_int,
+>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_table {
@@ -963,12 +960,8 @@ pub struct tty {
     pub mouse_last_y: u_int,
     pub mouse_last_b: u_int,
     pub mouse_drag_flag: libc::c_int,
-    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client,
-                                                       _: *mut mouse_event)
-                                      -> ()>,
-    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client,
-                                                        _: *mut mouse_event)
-                                       -> ()>,
+    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
+    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
     pub key_timer: event,
     pub key_tree: *mut tty_key,
 }
@@ -1295,8 +1288,7 @@ pub struct cmd_entry {
     pub source: cmd_entry_flag,
     pub target: cmd_entry_flag,
     pub flags: libc::c_int,
-    pub exec: Option<unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item)
-                         -> cmd_retval>,
+    pub exec: Option<unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -1306,53 +1298,44 @@ pub struct C2RustUnnamed_33 {
     pub upper: libc::c_int,
 }
 #[no_mangle]
-pub static mut cmd_show_messages_entry: cmd_entry =
-    unsafe {
-        {
-            let mut init =
-                cmd_entry{name:
-                              b"show-messages\x00" as *const u8 as
-                                  *const libc::c_char,
-                          alias:
-                              b"showmsgs\x00" as *const u8 as
-                                  *const libc::c_char,
-                          args:
-                              {
-                                  let mut init =
-                                      C2RustUnnamed_33{template:
-                                                           b"JTt:\x00" as
-                                                               *const u8 as
-                                                               *const libc::c_char,
-                                                       lower:
-                                                           0 as libc::c_int,
-                                                       upper:
-                                                           0 as libc::c_int,};
-                                  init
-                              },
-                          usage:
-                              b"[-JT] [-t target-client]\x00" as *const u8 as
-                                  *const libc::c_char,
-                          source:
-                              cmd_entry_flag{flag: 0,
-                                             type_0: CMD_FIND_PANE,
-                                             flags: 0,},
-                          target:
-                              cmd_entry_flag{flag: 0,
-                                             type_0: CMD_FIND_PANE,
-                                             flags: 0,},
-                          flags: 0x4 as libc::c_int | 0x10 as libc::c_int,
-                          exec:
-                              Some(cmd_show_messages_exec as
-                                       unsafe extern "C" fn(_: *mut cmd,
-                                                            _: *mut cmdq_item)
-                                           -> cmd_retval),};
-            init
-        }
-    };
-unsafe extern "C" fn cmd_show_messages_terminals(mut self_0: *mut cmd,
-                                                 mut item: *mut cmdq_item,
-                                                 mut blank: libc::c_int)
- -> libc::c_int {
+pub static mut cmd_show_messages_entry: cmd_entry = unsafe {
+    {
+        let mut init = cmd_entry {
+            name: b"show-messages\x00" as *const u8 as *const libc::c_char,
+            alias: b"showmsgs\x00" as *const u8 as *const libc::c_char,
+            args: {
+                let mut init = C2RustUnnamed_33 {
+                    template: b"JTt:\x00" as *const u8 as *const libc::c_char,
+                    lower: 0 as libc::c_int,
+                    upper: 0 as libc::c_int,
+                };
+                init
+            },
+            usage: b"[-JT] [-t target-client]\x00" as *const u8 as *const libc::c_char,
+            source: cmd_entry_flag {
+                flag: 0,
+                type_0: CMD_FIND_PANE,
+                flags: 0,
+            },
+            target: cmd_entry_flag {
+                flag: 0,
+                type_0: CMD_FIND_PANE,
+                flags: 0,
+            },
+            flags: 0x4 as libc::c_int | 0x10 as libc::c_int,
+            exec: Some(
+                cmd_show_messages_exec
+                    as unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval,
+            ),
+        };
+        init
+    }
+};
+unsafe extern "C" fn cmd_show_messages_terminals(
+    mut self_0: *mut cmd,
+    mut item: *mut cmdq_item,
+    mut blank: libc::c_int,
+) -> libc::c_int {
     let mut args: *mut args = cmd_get_args(self_0);
     let mut tc: *mut client = cmdq_get_target_client(item);
     let mut term: *mut tty_term = 0 as *mut tty_term;
@@ -1361,24 +1344,31 @@ unsafe extern "C" fn cmd_show_messages_terminals(mut self_0: *mut cmd,
     n = 0 as libc::c_int as u_int;
     term = tty_terms.lh_first;
     while !term.is_null() {
-        if !(args_has(args, 't' as i32 as u_char) != 0 &&
-                 term != (*tc).tty.term) {
+        if !(args_has(args, 't' as i32 as u_char) != 0 && term != (*tc).tty.term) {
             if blank != 0 {
-                cmdq_print(item,
-                           b"%s\x00" as *const u8 as *const libc::c_char,
-                           b"\x00" as *const u8 as *const libc::c_char);
+                cmdq_print(
+                    item,
+                    b"%s\x00" as *const u8 as *const libc::c_char,
+                    b"\x00" as *const u8 as *const libc::c_char,
+                );
                 blank = 0 as libc::c_int
             }
-            cmdq_print(item,
-                       b"Terminal %u: %s for %s, flags=0x%x:\x00" as *const u8
-                           as *const libc::c_char, n, (*term).name,
-                       (*(*(*term).tty).client).name, (*term).flags);
+            cmdq_print(
+                item,
+                b"Terminal %u: %s for %s, flags=0x%x:\x00" as *const u8 as *const libc::c_char,
+                n,
+                (*term).name,
+                (*(*(*term).tty).client).name,
+                (*term).flags,
+            );
             n = n.wrapping_add(1);
             i = 0 as libc::c_int as u_int;
             while i < tty_term_ncodes() {
-                cmdq_print(item,
-                           b"%s\x00" as *const u8 as *const libc::c_char,
-                           tty_term_describe(term, i as tty_code_code));
+                cmdq_print(
+                    item,
+                    b"%s\x00" as *const u8 as *const libc::c_char,
+                    tty_term_describe(term, i as tty_code_code),
+                );
                 i = i.wrapping_add(1)
             }
         }
@@ -1386,9 +1376,10 @@ unsafe extern "C" fn cmd_show_messages_terminals(mut self_0: *mut cmd,
     }
     return (n != 0 as libc::c_int as libc::c_uint) as libc::c_int;
 }
-unsafe extern "C" fn cmd_show_messages_exec(mut self_0: *mut cmd,
-                                            mut item: *mut cmdq_item)
- -> cmd_retval {
+unsafe extern "C" fn cmd_show_messages_exec(
+    mut self_0: *mut cmd,
+    mut item: *mut cmdq_item,
+) -> cmd_retval {
     let mut args: *mut args = cmd_get_args(self_0);
     let mut msg: *mut message_entry = 0 as *mut message_entry;
     let mut s: *mut libc::c_char = 0 as *mut libc::c_char;
@@ -1405,24 +1396,33 @@ unsafe extern "C" fn cmd_show_messages_exec(mut self_0: *mut cmd,
         job_print_summary(item, blank);
         done = 1 as libc::c_int
     }
-    if done != 0 { return CMD_RETURN_NORMAL }
+    if done != 0 {
+        return CMD_RETURN_NORMAL;
+    }
     ft = format_create_from_target(item);
     msg = *(*(message_log.tqh_last as *mut message_list)).tqh_last;
     while !msg.is_null() {
-        format_add(ft,
-                   b"message_text\x00" as *const u8 as *const libc::c_char,
-                   b"%s\x00" as *const u8 as *const libc::c_char, (*msg).msg);
-        format_add(ft,
-                   b"message_number\x00" as *const u8 as *const libc::c_char,
-                   b"%u\x00" as *const u8 as *const libc::c_char,
-                   (*msg).msg_num);
-        format_add_tv(ft,
-                      b"message_time\x00" as *const u8 as *const libc::c_char,
-                      &mut (*msg).msg_time);
-        s =
-            format_expand(ft,
-                          b"#{t/p:message_time}: #{message_text}\x00" as
-                              *const u8 as *const libc::c_char);
+        format_add(
+            ft,
+            b"message_text\x00" as *const u8 as *const libc::c_char,
+            b"%s\x00" as *const u8 as *const libc::c_char,
+            (*msg).msg,
+        );
+        format_add(
+            ft,
+            b"message_number\x00" as *const u8 as *const libc::c_char,
+            b"%u\x00" as *const u8 as *const libc::c_char,
+            (*msg).msg_num,
+        );
+        format_add_tv(
+            ft,
+            b"message_time\x00" as *const u8 as *const libc::c_char,
+            &mut (*msg).msg_time,
+        );
+        s = format_expand(
+            ft,
+            b"#{t/p:message_time}: #{message_text}\x00" as *const u8 as *const libc::c_char,
+        );
         cmdq_print(item, b"%s\x00" as *const u8 as *const libc::c_char, s);
         free(s as *mut libc::c_void);
         msg = *(*((*msg).entry.tqe_prev as *mut message_list)).tqh_last

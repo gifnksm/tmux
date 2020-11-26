@@ -32,17 +32,13 @@ extern "C" {
     pub type cmdq_item;
     pub type tmuxproc;
     #[no_mangle]
-    fn connect(__fd: libc::c_int, __addr: __CONST_SOCKADDR_ARG,
-               __len: socklen_t) -> libc::c_int;
+    fn connect(__fd: libc::c_int, __addr: __CONST_SOCKADDR_ARG, __len: socklen_t) -> libc::c_int;
     #[no_mangle]
-    fn socket(__domain: libc::c_int, __type: libc::c_int,
-              __protocol: libc::c_int) -> libc::c_int;
+    fn socket(__domain: libc::c_int, __type: libc::c_int, __protocol: libc::c_int) -> libc::c_int;
     #[no_mangle]
-    fn memcpy(_: *mut libc::c_void, _: *const libc::c_void, _: libc::c_ulong)
-     -> *mut libc::c_void;
+    fn memcpy(_: *mut libc::c_void, _: *const libc::c_void, _: libc::c_ulong) -> *mut libc::c_void;
     #[no_mangle]
-    fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong)
-     -> *mut libc::c_void;
+    fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
     #[no_mangle]
     fn strrchr(_: *const libc::c_char, _: libc::c_int) -> *mut libc::c_char;
     #[no_mangle]
@@ -52,23 +48,23 @@ extern "C" {
     #[no_mangle]
     fn strsignal(__sig: libc::c_int) -> *mut libc::c_char;
     #[no_mangle]
-    fn signal(__sig: libc::c_int, __handler: __sighandler_t)
-     -> __sighandler_t;
+    fn signal(__sig: libc::c_int, __handler: __sighandler_t) -> __sighandler_t;
     #[no_mangle]
     fn kill(__pid: __pid_t, __sig: libc::c_int) -> libc::c_int;
     #[no_mangle]
     fn sigemptyset(__set: *mut sigset_t) -> libc::c_int;
     #[no_mangle]
-    fn sigaction(__sig: libc::c_int, __act: *const sigaction,
-                 __oact: *mut sigaction) -> libc::c_int;
+    fn sigaction(
+        __sig: libc::c_int,
+        __act: *const sigaction,
+        __oact: *mut sigaction,
+    ) -> libc::c_int;
     #[no_mangle]
-    fn waitpid(__pid: __pid_t, __stat_loc: *mut libc::c_int,
-               __options: libc::c_int) -> __pid_t;
+    fn waitpid(__pid: __pid_t, __stat_loc: *mut libc::c_int, __options: libc::c_int) -> __pid_t;
     #[no_mangle]
     fn flock(__fd: libc::c_int, __operation: libc::c_int) -> libc::c_int;
     #[no_mangle]
-    fn open(__file: *const libc::c_char, __oflag: libc::c_int, _: ...)
-     -> libc::c_int;
+    fn open(__file: *const libc::c_char, __oflag: libc::c_int, _: ...) -> libc::c_int;
     #[no_mangle]
     fn __errno_location() -> *mut libc::c_int;
     #[no_mangle]
@@ -80,42 +76,57 @@ extern "C" {
     #[no_mangle]
     fn fflush(__stream: *mut FILE) -> libc::c_int;
     #[no_mangle]
-    fn setvbuf(__stream: *mut FILE, __buf: *mut libc::c_char,
-               __modes: libc::c_int, __n: size_t) -> libc::c_int;
+    fn setvbuf(
+        __stream: *mut FILE,
+        __buf: *mut libc::c_char,
+        __modes: libc::c_int,
+        __n: size_t,
+    ) -> libc::c_int;
     #[no_mangle]
     fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> libc::c_int;
     #[no_mangle]
     fn printf(_: *const libc::c_char, _: ...) -> libc::c_int;
     #[no_mangle]
-    fn __getdelim(__lineptr: *mut *mut libc::c_char, __n: *mut size_t,
-                  __delimiter: libc::c_int, __stream: *mut FILE) -> __ssize_t;
+    fn __getdelim(
+        __lineptr: *mut *mut libc::c_char,
+        __n: *mut size_t,
+        __delimiter: libc::c_int,
+        __stream: *mut FILE,
+    ) -> __ssize_t;
     #[no_mangle]
     fn evbuffer_get_length(buf: *const evbuffer) -> size_t;
     #[no_mangle]
     fn evbuffer_drain(buf: *mut evbuffer, len: size_t) -> libc::c_int;
     #[no_mangle]
-    fn evbuffer_pullup(buf: *mut evbuffer, size: ssize_t)
-     -> *mut libc::c_uchar;
+    fn evbuffer_pullup(buf: *mut evbuffer, size: ssize_t) -> *mut libc::c_uchar;
     #[no_mangle]
     fn bufferevent_free(bufev: *mut bufferevent);
     #[no_mangle]
-    fn bufferevent_write(bufev: *mut bufferevent, data: *const libc::c_void,
-                         size: size_t) -> libc::c_int;
+    fn bufferevent_write(
+        bufev: *mut bufferevent,
+        data: *const libc::c_void,
+        size: size_t,
+    ) -> libc::c_int;
     #[no_mangle]
-    fn bufferevent_enable(bufev: *mut bufferevent, event: libc::c_short)
-     -> libc::c_int;
+    fn bufferevent_enable(bufev: *mut bufferevent, event: libc::c_short) -> libc::c_int;
     #[no_mangle]
-    fn bufferevent_new(fd: libc::c_int, readcb: bufferevent_data_cb,
-                       writecb: bufferevent_data_cb,
-                       errorcb: bufferevent_event_cb,
-                       cbarg: *mut libc::c_void) -> *mut bufferevent;
+    fn bufferevent_new(
+        fd: libc::c_int,
+        readcb: bufferevent_data_cb,
+        writecb: bufferevent_data_cb,
+        errorcb: bufferevent_event_cb,
+        cbarg: *mut libc::c_void,
+    ) -> *mut bufferevent;
     #[no_mangle]
     fn free(__ptr: *mut libc::c_void);
     #[no_mangle]
     fn getenv(__name: *const libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
-    fn setenv(__name: *const libc::c_char, __value: *const libc::c_char,
-              __replace: libc::c_int) -> libc::c_int;
+    fn setenv(
+        __name: *const libc::c_char,
+        __value: *const libc::c_char,
+        __replace: libc::c_int,
+    ) -> libc::c_int;
     #[no_mangle]
     fn system(__command: *const libc::c_char) -> libc::c_int;
     #[no_mangle]
@@ -125,8 +136,7 @@ extern "C" {
     #[no_mangle]
     static mut environ: *mut *mut libc::c_char;
     #[no_mangle]
-    fn execl(__path: *const libc::c_char, __arg: *const libc::c_char, _: ...)
-     -> libc::c_int;
+    fn execl(__path: *const libc::c_char, __arg: *const libc::c_char, _: ...) -> libc::c_int;
     #[no_mangle]
     fn getpid() -> __pid_t;
     #[no_mangle]
@@ -156,66 +166,78 @@ extern "C" {
     #[no_mangle]
     fn find_home() -> *const libc::c_char;
     #[no_mangle]
-    fn proc_send(_: *mut tmuxpeer, _: msgtype, _: libc::c_int,
-                 _: *const libc::c_void, _: size_t) -> libc::c_int;
+    fn proc_send(
+        _: *mut tmuxpeer,
+        _: msgtype,
+        _: libc::c_int,
+        _: *const libc::c_void,
+        _: size_t,
+    ) -> libc::c_int;
     #[no_mangle]
     fn proc_start(_: *const libc::c_char) -> *mut tmuxproc;
     #[no_mangle]
-    fn proc_loop(_: *mut tmuxproc,
-                 _: Option<unsafe extern "C" fn() -> libc::c_int>);
+    fn proc_loop(_: *mut tmuxproc, _: Option<unsafe extern "C" fn() -> libc::c_int>);
     #[no_mangle]
     fn proc_exit(_: *mut tmuxproc);
     #[no_mangle]
-    fn proc_set_signals(_: *mut tmuxproc,
-                        _:
-                            Option<unsafe extern "C" fn(_: libc::c_int)
-                                       -> ()>);
+    fn proc_set_signals(_: *mut tmuxproc, _: Option<unsafe extern "C" fn(_: libc::c_int) -> ()>);
     #[no_mangle]
     fn proc_clear_signals(_: *mut tmuxproc, _: libc::c_int);
     #[no_mangle]
-    fn proc_add_peer(_: *mut tmuxproc, _: libc::c_int,
-                     _:
-                         Option<unsafe extern "C" fn(_: *mut imsg,
-                                                     _: *mut libc::c_void)
-                                    -> ()>, _: *mut libc::c_void)
-     -> *mut tmuxpeer;
+    fn proc_add_peer(
+        _: *mut tmuxproc,
+        _: libc::c_int,
+        _: Option<unsafe extern "C" fn(_: *mut imsg, _: *mut libc::c_void) -> ()>,
+        _: *mut libc::c_void,
+    ) -> *mut tmuxpeer;
     #[no_mangle]
     fn options_free(_: *mut options);
     #[no_mangle]
     fn environ_free(_: *mut environ);
     #[no_mangle]
-    fn cmd_pack_argv(_: libc::c_int, _: *mut *mut libc::c_char,
-                     _: *mut libc::c_char, _: size_t) -> libc::c_int;
+    fn cmd_pack_argv(
+        _: libc::c_int,
+        _: *mut *mut libc::c_char,
+        _: *mut libc::c_char,
+        _: size_t,
+    ) -> libc::c_int;
     #[no_mangle]
     fn cmd_list_free(_: *mut cmd_list);
     #[no_mangle]
     fn cmd_list_any_have(_: *mut cmd_list, _: libc::c_int) -> libc::c_int;
     #[no_mangle]
-    fn cmd_parse_from_arguments(_: libc::c_int, _: *mut *mut libc::c_char,
-                                _: *mut cmd_parse_input)
-     -> *mut cmd_parse_result;
+    fn cmd_parse_from_arguments(
+        _: libc::c_int,
+        _: *mut *mut libc::c_char,
+        _: *mut cmd_parse_input,
+    ) -> *mut cmd_parse_result;
     #[no_mangle]
     fn client_files_RB_NEXT(_: *mut client_file) -> *mut client_file;
     #[no_mangle]
-    fn client_files_RB_INSERT(_: *mut client_files, _: *mut client_file)
-     -> *mut client_file;
+    fn client_files_RB_INSERT(_: *mut client_files, _: *mut client_file) -> *mut client_file;
     #[no_mangle]
-    fn client_files_RB_MINMAX(_: *mut client_files, _: libc::c_int)
-     -> *mut client_file;
+    fn client_files_RB_MINMAX(_: *mut client_files, _: libc::c_int) -> *mut client_file;
     #[no_mangle]
-    fn client_files_RB_FIND(_: *mut client_files, _: *mut client_file)
-     -> *mut client_file;
+    fn client_files_RB_FIND(_: *mut client_files, _: *mut client_file) -> *mut client_file;
     #[no_mangle]
-    fn client_files_RB_REMOVE(_: *mut client_files, _: *mut client_file)
-     -> *mut client_file;
+    fn client_files_RB_REMOVE(_: *mut client_files, _: *mut client_file) -> *mut client_file;
     #[no_mangle]
-    fn file_create(_: *mut client, _: libc::c_int, _: client_file_cb,
-                   _: *mut libc::c_void) -> *mut client_file;
+    fn file_create(
+        _: *mut client,
+        _: libc::c_int,
+        _: client_file_cb,
+        _: *mut libc::c_void,
+    ) -> *mut client_file;
     #[no_mangle]
     fn file_free(_: *mut client_file);
     #[no_mangle]
-    fn server_start(_: *mut tmuxproc, _: libc::c_int, _: *mut event_base,
-                    _: libc::c_int, _: *mut libc::c_char) -> libc::c_int;
+    fn server_start(
+        _: *mut tmuxproc,
+        _: libc::c_int,
+        _: *mut event_base,
+        _: libc::c_int,
+        _: *mut libc::c_char,
+    ) -> libc::c_int;
     #[no_mangle]
     fn fatal(_: *const libc::c_char, _: ...) -> !;
     #[no_mangle]
@@ -225,28 +247,27 @@ extern "C" {
     #[no_mangle]
     fn cfmakeraw(__termios_p: *mut termios);
     #[no_mangle]
-    fn tcsetattr(__fd: libc::c_int, __optional_actions: libc::c_int,
-                 __termios_p: *const termios) -> libc::c_int;
+    fn tcsetattr(
+        __fd: libc::c_int,
+        __optional_actions: libc::c_int,
+        __termios_p: *const termios,
+    ) -> libc::c_int;
     #[no_mangle]
     fn tcgetattr(__fd: libc::c_int, __termios_p: *mut termios) -> libc::c_int;
     #[no_mangle]
-    fn cfsetispeed(__termios_p: *mut termios, __speed: speed_t)
-     -> libc::c_int;
+    fn cfsetispeed(__termios_p: *mut termios, __speed: speed_t) -> libc::c_int;
     #[no_mangle]
-    fn cfsetospeed(__termios_p: *mut termios, __speed: speed_t)
-     -> libc::c_int;
+    fn cfsetospeed(__termios_p: *mut termios, __speed: speed_t) -> libc::c_int;
     #[no_mangle]
     fn cfgetispeed(__termios_p: *const termios) -> speed_t;
     #[no_mangle]
     fn cfgetospeed(__termios_p: *const termios) -> speed_t;
     #[no_mangle]
-    fn xsnprintf(_: *mut libc::c_char, _: size_t, _: *const libc::c_char,
-                 _: ...) -> libc::c_int;
+    fn xsnprintf(_: *mut libc::c_char, _: size_t, _: *const libc::c_char, _: ...) -> libc::c_int;
     #[no_mangle]
     fn closefrom(_: libc::c_int);
     #[no_mangle]
-    fn strlcpy(_: *mut libc::c_char, _: *const libc::c_char, _: libc::c_ulong)
-     -> libc::c_ulong;
+    fn strlcpy(_: *mut libc::c_char, _: *const libc::c_char, _: libc::c_ulong) -> libc::c_ulong;
     #[no_mangle]
     fn xmalloc(_: size_t) -> *mut libc::c_void;
     #[no_mangle]
@@ -254,8 +275,7 @@ extern "C" {
     #[no_mangle]
     fn xstrdup(_: *const libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
-    fn xasprintf(_: *mut *mut libc::c_char, _: *const libc::c_char, _: ...)
-     -> libc::c_int;
+    fn xasprintf(_: *mut *mut libc::c_char, _: *const libc::c_char, _: ...) -> libc::c_int;
 }
 pub type __u_char = libc::c_uchar;
 pub type __u_short = libc::c_ushort;
@@ -473,10 +493,8 @@ pub struct sigaction {
 #[repr(C)]
 pub union C2RustUnnamed_10 {
     pub sa_handler: __sighandler_t,
-    pub sa_sigaction: Option<unsafe extern "C" fn(_: libc::c_int,
-                                                  _: *mut siginfo_t,
-                                                  _: *mut libc::c_void)
-                                 -> ()>,
+    pub sa_sigaction:
+        Option<unsafe extern "C" fn(_: libc::c_int, _: *mut siginfo_t, _: *mut libc::c_void) -> ()>,
 }
 pub type uint64_t = __uint64_t;
 #[derive(Copy, Clone)]
@@ -547,18 +565,13 @@ pub struct event_callback {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub union C2RustUnnamed_18 {
-    pub evcb_callback: Option<unsafe extern "C" fn(_: libc::c_int,
-                                                   _: libc::c_short,
-                                                   _: *mut libc::c_void)
-                                  -> ()>,
-    pub evcb_selfcb: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                 _: *mut libc::c_void) -> ()>,
-    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
-    pub evcb_cbfinalize: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
+    pub evcb_callback:
+        Option<unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> ()>,
+    pub evcb_selfcb:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
+    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event, _: *mut libc::c_void) -> ()>,
+    pub evcb_cbfinalize:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -620,14 +633,10 @@ pub struct bufferevent {
     pub timeout_write: timeval,
     pub enabled: libc::c_short,
 }
-pub type bufferevent_event_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short,
-                                _: *mut libc::c_void) -> ()>;
-pub type bufferevent_data_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void)
-               -> ()>;
+pub type bufferevent_event_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short, _: *mut libc::c_void) -> ()>;
+pub type bufferevent_data_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct event_watermark {
@@ -782,17 +791,19 @@ pub struct C2RustUnnamed_21 {
     pub rbe_parent: *mut client_file,
     pub rbe_color: libc::c_int,
 }
-pub type client_file_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *const libc::c_char,
-                                _: libc::c_int, _: libc::c_int,
-                                _: *mut evbuffer, _: *mut libc::c_void)
-               -> ()>;
+pub type client_file_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: *mut evbuffer,
+        _: *mut libc::c_void,
+    ) -> (),
+>;
 pub type overlay_free_cb = Option<unsafe extern "C" fn(_: *mut client) -> ()>;
-pub type overlay_key_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event)
-               -> libc::c_int>;
+pub type overlay_key_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_event {
@@ -822,10 +833,8 @@ pub struct mouse_event {
     pub sgr_b: u_int,
 }
 pub type key_code = libc::c_ulonglong;
-pub type overlay_draw_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx)
-               -> ()>;
+pub type overlay_draw_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen_redraw_ctx {
@@ -839,10 +848,8 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int)
-               -> *mut screen>;
+pub type overlay_mode_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen {
@@ -936,10 +943,8 @@ pub struct C2RustUnnamed_23 {
     pub bg: u_char,
     pub data: u_char,
 }
-pub type overlay_check_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int)
-               -> libc::c_int>;
+pub type overlay_check_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct session {
@@ -1186,24 +1191,37 @@ pub struct C2RustUnnamed_36 {
 pub struct window_mode {
     pub name: *const libc::c_char,
     pub default_format: *const libc::c_char,
-    pub init: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                          _: *mut cmd_find_state,
-                                          _: *mut args) -> *mut screen>,
+    pub init: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut cmd_find_state,
+            _: *mut args,
+        ) -> *mut screen,
+    >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
-    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                            _: u_int, _: u_int) -> ()>,
-    pub key: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                         _: *mut client, _: *mut session,
-                                         _: *mut winlink, _: key_code,
-                                         _: *mut mouse_event) -> ()>,
-    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry)
-                              -> *const libc::c_char>,
-    pub command: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut client, _: *mut session,
-                                             _: *mut winlink, _: *mut args,
-                                             _: *mut mouse_event) -> ()>,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut format_tree) -> ()>,
+    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
+    pub key: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: key_code,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> *const libc::c_char>,
+    pub command: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: *mut args,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -1240,14 +1258,15 @@ pub struct winlink_stack {
 pub type C2RustUnnamed_37 = libc::c_uint;
 pub const PROMPT_COMMAND: C2RustUnnamed_37 = 1;
 pub const PROMPT_ENTRY: C2RustUnnamed_37 = 0;
-pub type prompt_free_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
-pub type prompt_input_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut libc::c_void,
-                                _: *const libc::c_char, _: libc::c_int)
-               -> libc::c_int>;
+pub type prompt_free_cb = Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
+pub type prompt_input_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut libc::c_void,
+        _: *const libc::c_char,
+        _: libc::c_int,
+    ) -> libc::c_int,
+>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_table {
@@ -1418,12 +1437,8 @@ pub struct tty {
     pub mouse_last_y: u_int,
     pub mouse_last_b: u_int,
     pub mouse_drag_flag: libc::c_int,
-    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client,
-                                                       _: *mut mouse_event)
-                                      -> ()>,
-    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client,
-                                                        _: *mut mouse_event)
-                                       -> ()>,
+    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
+    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
     pub key_timer: event,
     pub key_tree: *mut tty_key,
 }
@@ -1550,9 +1565,11 @@ pub const CLIENT_EXIT_DETACHED: C2RustUnnamed_44 = 1;
 pub const CLIENT_EXIT_NONE: C2RustUnnamed_44 = 0;
 pub type C2RustUnnamed_44 = libc::c_uint;
 #[inline]
-unsafe extern "C" fn getline(mut __lineptr: *mut *mut libc::c_char,
-                             mut __n: *mut size_t, mut __stream: *mut FILE)
- -> __ssize_t {
+unsafe extern "C" fn getline(
+    mut __lineptr: *mut *mut libc::c_char,
+    mut __n: *mut size_t,
+    mut __stream: *mut FILE,
+) -> __ssize_t {
     return __getdelim(__lineptr, __n, '\n' as i32, __stream);
 }
 /* $OpenBSD$ */
@@ -1580,134 +1597,167 @@ static mut client_exitflag: libc::c_int = 0;
 static mut client_exitval: libc::c_int = 0;
 static mut client_exittype: msgtype = 0 as msgtype;
 static mut client_exitsession: *const libc::c_char = 0 as *const libc::c_char;
-static mut client_exitmessage: *mut libc::c_char =
-    0 as *const libc::c_char as *mut libc::c_char;
+static mut client_exitmessage: *mut libc::c_char = 0 as *const libc::c_char as *mut libc::c_char;
 static mut client_execshell: *const libc::c_char = 0 as *const libc::c_char;
 static mut client_execcmd: *const libc::c_char = 0 as *const libc::c_char;
 static mut client_attached: libc::c_int = 0;
-static mut client_files: client_files =
-    {
-        let mut init =
-            client_files{rbh_root:
-                             0 as *const client_file as *mut client_file,};
-        init
+static mut client_files: client_files = {
+    let mut init = client_files {
+        rbh_root: 0 as *const client_file as *mut client_file,
     };
+    init
+};
 /*
  * Get server create lock. If already held then server start is happening in
  * another client, so block until the lock is released and return -2 to
  * retry. Return -1 on failure to continue and start the server anyway.
  */
-unsafe extern "C" fn client_get_lock(mut lockfile: *mut libc::c_char)
- -> libc::c_int {
+unsafe extern "C" fn client_get_lock(mut lockfile: *mut libc::c_char) -> libc::c_int {
     let mut lockfd: libc::c_int = 0;
-    log_debug(b"lock file is %s\x00" as *const u8 as *const libc::c_char,
-              lockfile);
-    lockfd =
-        open(lockfile, 0o1 as libc::c_int | 0o100 as libc::c_int,
-             0o600 as libc::c_int);
+    log_debug(
+        b"lock file is %s\x00" as *const u8 as *const libc::c_char,
+        lockfile,
+    );
+    lockfd = open(
+        lockfile,
+        0o1 as libc::c_int | 0o100 as libc::c_int,
+        0o600 as libc::c_int,
+    );
     if lockfd == -(1 as libc::c_int) {
-        log_debug(b"open failed: %s\x00" as *const u8 as *const libc::c_char,
-                  strerror(*__errno_location()));
-        return -(1 as libc::c_int)
+        log_debug(
+            b"open failed: %s\x00" as *const u8 as *const libc::c_char,
+            strerror(*__errno_location()),
+        );
+        return -(1 as libc::c_int);
     }
-    if flock(lockfd, 2 as libc::c_int | 4 as libc::c_int) ==
-           -(1 as libc::c_int) {
-        log_debug(b"flock failed: %s\x00" as *const u8 as *const libc::c_char,
-                  strerror(*__errno_location()));
-        if *__errno_location() != 11 as libc::c_int { return lockfd }
-        /* nothing */
-        while flock(lockfd, 2 as libc::c_int) == -(1 as libc::c_int) &&
-                  *__errno_location() == 4 as libc::c_int {
+    if flock(lockfd, 2 as libc::c_int | 4 as libc::c_int) == -(1 as libc::c_int) {
+        log_debug(
+            b"flock failed: %s\x00" as *const u8 as *const libc::c_char,
+            strerror(*__errno_location()),
+        );
+        if *__errno_location() != 11 as libc::c_int {
+            return lockfd;
         }
+        /* nothing */
+        while flock(lockfd, 2 as libc::c_int) == -(1 as libc::c_int)
+            && *__errno_location() == 4 as libc::c_int
+        {}
         close(lockfd);
-        return -(2 as libc::c_int)
+        return -(2 as libc::c_int);
     }
     log_debug(b"flock succeeded\x00" as *const u8 as *const libc::c_char);
     return lockfd;
 }
 /* Connect client to server. */
-unsafe extern "C" fn client_connect(mut base: *mut event_base,
-                                    mut path: *const libc::c_char,
-                                    mut flags: uint64_t) -> libc::c_int {
+unsafe extern "C" fn client_connect(
+    mut base: *mut event_base,
+    mut path: *const libc::c_char,
+    mut flags: uint64_t,
+) -> libc::c_int {
     let mut current_block: u64;
-    let mut sa: sockaddr_un = sockaddr_un{sun_family: 0, sun_path: [0; 108],};
+    let mut sa: sockaddr_un = sockaddr_un {
+        sun_family: 0,
+        sun_path: [0; 108],
+    };
     let mut size: size_t = 0;
     let mut fd: libc::c_int = 0;
     let mut lockfd: libc::c_int = -(1 as libc::c_int);
     let mut locked: libc::c_int = 0 as libc::c_int;
     let mut lockfile: *mut libc::c_char = 0 as *mut libc::c_char;
-    memset(&mut sa as *mut sockaddr_un as *mut libc::c_void, 0 as libc::c_int,
-           ::std::mem::size_of::<sockaddr_un>() as libc::c_ulong);
+    memset(
+        &mut sa as *mut sockaddr_un as *mut libc::c_void,
+        0 as libc::c_int,
+        ::std::mem::size_of::<sockaddr_un>() as libc::c_ulong,
+    );
     sa.sun_family = 1 as libc::c_int as sa_family_t;
-    size =
-        strlcpy(sa.sun_path.as_mut_ptr(), path,
-                ::std::mem::size_of::<[libc::c_char; 108]>() as
-                    libc::c_ulong);
+    size = strlcpy(
+        sa.sun_path.as_mut_ptr(),
+        path,
+        ::std::mem::size_of::<[libc::c_char; 108]>() as libc::c_ulong,
+    );
     if size >= ::std::mem::size_of::<[libc::c_char; 108]>() as libc::c_ulong {
         *__errno_location() = 36 as libc::c_int;
-        return -(1 as libc::c_int)
+        return -(1 as libc::c_int);
     }
-    log_debug(b"socket is %s\x00" as *const u8 as *const libc::c_char, path);
-    loop  {
-        fd =
-            socket(1 as libc::c_int, SOCK_STREAM as libc::c_int,
-                   0 as libc::c_int);
-        if fd == -(1 as libc::c_int) { return -(1 as libc::c_int) }
-        log_debug(b"trying connect\x00" as *const u8 as *const libc::c_char);
-        if !(connect(fd,
-                     __CONST_SOCKADDR_ARG{__sockaddr__:
-                                              &mut sa as *mut sockaddr_un as
-                                                  *mut sockaddr,},
-                     ::std::mem::size_of::<sockaddr_un>() as libc::c_ulong as
-                         socklen_t) == -(1 as libc::c_int)) {
-            current_block = 2569451025026770673;
-            break ;
+    log_debug(
+        b"socket is %s\x00" as *const u8 as *const libc::c_char,
+        path,
+    );
+    loop {
+        fd = socket(
+            1 as libc::c_int,
+            SOCK_STREAM as libc::c_int,
+            0 as libc::c_int,
+        );
+        if fd == -(1 as libc::c_int) {
+            return -(1 as libc::c_int);
         }
-        log_debug(b"connect failed: %s\x00" as *const u8 as
-                      *const libc::c_char, strerror(*__errno_location()));
-        if *__errno_location() != 111 as libc::c_int &&
-               *__errno_location() != 2 as libc::c_int {
+        log_debug(b"trying connect\x00" as *const u8 as *const libc::c_char);
+        if !(connect(
+            fd,
+            __CONST_SOCKADDR_ARG {
+                __sockaddr__: &mut sa as *mut sockaddr_un as *mut sockaddr,
+            },
+            ::std::mem::size_of::<sockaddr_un>() as libc::c_ulong as socklen_t,
+        ) == -(1 as libc::c_int))
+        {
+            current_block = 2569451025026770673;
+            break;
+        }
+        log_debug(
+            b"connect failed: %s\x00" as *const u8 as *const libc::c_char,
+            strerror(*__errno_location()),
+        );
+        if *__errno_location() != 111 as libc::c_int && *__errno_location() != 2 as libc::c_int {
             current_block = 12517108148661954305;
-            break ;
+            break;
         }
         if !flags & 0x10000000 as libc::c_int as libc::c_ulong != 0 {
             current_block = 12517108148661954305;
-            break ;
+            break;
         }
         close(fd);
         if locked == 0 {
-            xasprintf(&mut lockfile as *mut *mut libc::c_char,
-                      b"%s.lock\x00" as *const u8 as *const libc::c_char,
-                      path);
+            xasprintf(
+                &mut lockfile as *mut *mut libc::c_char,
+                b"%s.lock\x00" as *const u8 as *const libc::c_char,
+                path,
+            );
             lockfd = client_get_lock(lockfile);
             if lockfd < 0 as libc::c_int {
-                log_debug(b"didn\'t get lock (%d)\x00" as *const u8 as
-                              *const libc::c_char, lockfd);
+                log_debug(
+                    b"didn\'t get lock (%d)\x00" as *const u8 as *const libc::c_char,
+                    lockfd,
+                );
                 free(lockfile as *mut libc::c_void);
                 lockfile = 0 as *mut libc::c_char;
-                if lockfd == -(2 as libc::c_int) { continue ; }
+                if lockfd == -(2 as libc::c_int) {
+                    continue;
+                }
             }
-            log_debug(b"got lock (%d)\x00" as *const u8 as
-                          *const libc::c_char, lockfd);
+            log_debug(
+                b"got lock (%d)\x00" as *const u8 as *const libc::c_char,
+                lockfd,
+            );
             /*
-			 * Always retry at least once, even if we got the lock,
-			 * because another client could have taken the lock,
-			 * started the server and released the lock between our
-			 * connect() and flock().
-			 */
+             * Always retry at least once, even if we got the lock,
+             * because another client could have taken the lock,
+             * started the server and released the lock between our
+             * connect() and flock().
+             */
             locked = 1 as libc::c_int
         } else {
-            if lockfd >= 0 as libc::c_int && unlink(path) != 0 as libc::c_int
-                   && *__errno_location() != 2 as libc::c_int {
+            if lockfd >= 0 as libc::c_int
+                && unlink(path) != 0 as libc::c_int
+                && *__errno_location() != 2 as libc::c_int
+            {
                 free(lockfile as *mut libc::c_void);
                 close(lockfd);
-                return -(1 as libc::c_int)
+                return -(1 as libc::c_int);
             }
-            fd =
-                server_start(client_proc, flags as libc::c_int, base, lockfd,
-                             lockfile);
+            fd = server_start(client_proc, flags as libc::c_int, base, lockfd, lockfile);
             current_block = 2569451025026770673;
-            break ;
+            break;
         }
     }
     match current_block {
@@ -1717,7 +1767,7 @@ unsafe extern "C" fn client_connect(mut base: *mut event_base,
                 close(lockfd);
             }
             close(fd);
-            return -(1 as libc::c_int)
+            return -(1 as libc::c_int);
         }
         _ => {
             if locked != 0 && lockfd >= 0 as libc::c_int {
@@ -1725,7 +1775,7 @@ unsafe extern "C" fn client_connect(mut base: *mut event_base,
                 close(lockfd);
             }
             setblocking(fd, 0 as libc::c_int);
-            return fd
+            return fd;
         }
     };
 }
@@ -1735,40 +1785,36 @@ unsafe extern "C" fn client_exit_message() -> *const libc::c_char {
     match client_exitreason as libc::c_uint {
         1 => {
             if !client_exitsession.is_null() {
-                xsnprintf(msg.as_mut_ptr(),
-                          ::std::mem::size_of::<[libc::c_char; 256]>() as
-                              libc::c_ulong,
-                          b"detached (from session %s)\x00" as *const u8 as
-                              *const libc::c_char, client_exitsession);
-                return msg.as_mut_ptr()
+                xsnprintf(
+                    msg.as_mut_ptr(),
+                    ::std::mem::size_of::<[libc::c_char; 256]>() as libc::c_ulong,
+                    b"detached (from session %s)\x00" as *const u8 as *const libc::c_char,
+                    client_exitsession,
+                );
+                return msg.as_mut_ptr();
             }
-            return b"detached\x00" as *const u8 as *const libc::c_char
+            return b"detached\x00" as *const u8 as *const libc::c_char;
         }
         2 => {
             if !client_exitsession.is_null() {
-                xsnprintf(msg.as_mut_ptr(),
-                          ::std::mem::size_of::<[libc::c_char; 256]>() as
-                              libc::c_ulong,
-                          b"detached and SIGHUP (from session %s)\x00" as
-                              *const u8 as *const libc::c_char,
-                          client_exitsession);
-                return msg.as_mut_ptr()
+                xsnprintf(
+                    msg.as_mut_ptr(),
+                    ::std::mem::size_of::<[libc::c_char; 256]>() as libc::c_ulong,
+                    b"detached and SIGHUP (from session %s)\x00" as *const u8
+                        as *const libc::c_char,
+                    client_exitsession,
+                );
+                return msg.as_mut_ptr();
             }
-            return b"detached and SIGHUP\x00" as *const u8 as
-                       *const libc::c_char
+            return b"detached and SIGHUP\x00" as *const u8 as *const libc::c_char;
         }
-        3 => { return b"lost tty\x00" as *const u8 as *const libc::c_char }
-        4 => { return b"terminated\x00" as *const u8 as *const libc::c_char }
-        5 => {
-            return b"server exited unexpectedly\x00" as *const u8 as
-                       *const libc::c_char
-        }
-        6 => { return b"exited\x00" as *const u8 as *const libc::c_char }
-        7 => {
-            return b"server exited\x00" as *const u8 as *const libc::c_char
-        }
-        8 => { return client_exitmessage }
-        0 | _ => { }
+        3 => return b"lost tty\x00" as *const u8 as *const libc::c_char,
+        4 => return b"terminated\x00" as *const u8 as *const libc::c_char,
+        5 => return b"server exited unexpectedly\x00" as *const u8 as *const libc::c_char,
+        6 => return b"exited\x00" as *const u8 as *const libc::c_char,
+        7 => return b"server exited\x00" as *const u8 as *const libc::c_char,
+        8 => return client_exitmessage,
+        0 | _ => {}
     }
     return b"unknown reason\x00" as *const u8 as *const libc::c_char;
 }
@@ -1783,21 +1829,28 @@ unsafe extern "C" fn client_exit() {
             left = evbuffer_get_length((*(*cf).event).output);
             if left != 0 as libc::c_int as libc::c_ulong {
                 waiting += 1;
-                log_debug(b"file %u %zu bytes left\x00" as *const u8 as
-                              *const libc::c_char, (*cf).stream, left);
+                log_debug(
+                    b"file %u %zu bytes left\x00" as *const u8 as *const libc::c_char,
+                    (*cf).stream,
+                    left,
+                );
             }
         }
         cf = client_files_RB_NEXT(cf)
     }
-    if waiting == 0 as libc::c_int { proc_exit(client_proc); };
+    if waiting == 0 as libc::c_int {
+        proc_exit(client_proc);
+    };
 }
 /* Client main loop. */
 #[no_mangle]
-pub unsafe extern "C" fn client_main(mut base: *mut event_base,
-                                     mut argc: libc::c_int,
-                                     mut argv: *mut *mut libc::c_char,
-                                     mut flags: uint64_t,
-                                     mut feat: libc::c_int) -> libc::c_int {
+pub unsafe extern "C" fn client_main(
+    mut base: *mut event_base,
+    mut argc: libc::c_int,
+    mut argv: *mut *mut libc::c_char,
+    mut flags: uint64_t,
+    mut feat: libc::c_int,
+) -> libc::c_int {
     let mut pr: *mut cmd_parse_result = 0 as *mut cmd_parse_result;
     let mut data: *mut msg_command = 0 as *mut msg_command;
     let mut fd: libc::c_int = 0;
@@ -1806,33 +1859,35 @@ pub unsafe extern "C" fn client_main(mut base: *mut event_base,
     let mut cwd: *const libc::c_char = 0 as *const libc::c_char;
     let mut ppid: pid_t = 0;
     let mut msg: msgtype = 0 as msgtype;
-    let mut tio: termios =
-        termios{c_iflag: 0,
-                c_oflag: 0,
-                c_cflag: 0,
-                c_lflag: 0,
-                c_line: 0,
-                c_cc: [0; 32],
-                c_ispeed: 0,
-                c_ospeed: 0,};
-    let mut saved_tio: termios =
-        termios{c_iflag: 0,
-                c_oflag: 0,
-                c_cflag: 0,
-                c_lflag: 0,
-                c_line: 0,
-                c_cc: [0; 32],
-                c_ispeed: 0,
-                c_ospeed: 0,};
+    let mut tio: termios = termios {
+        c_iflag: 0,
+        c_oflag: 0,
+        c_cflag: 0,
+        c_lflag: 0,
+        c_line: 0,
+        c_cc: [0; 32],
+        c_ispeed: 0,
+        c_ospeed: 0,
+    };
+    let mut saved_tio: termios = termios {
+        c_iflag: 0,
+        c_oflag: 0,
+        c_cflag: 0,
+        c_lflag: 0,
+        c_line: 0,
+        c_cc: [0; 32],
+        c_ispeed: 0,
+        c_ospeed: 0,
+    };
     let mut size: size_t = 0;
     let mut linesize: size_t = 0 as libc::c_int as size_t;
     let mut linelen: ssize_t = 0;
     let mut line: *mut libc::c_char = 0 as *mut libc::c_char;
     /* Ignore SIGCHLD now or daemon() in the server will leave a zombie. */
-    signal(17 as libc::c_int,
-           ::std::mem::transmute::<libc::intptr_t,
-                                   __sighandler_t>(1 as libc::c_int as
-                                                       libc::intptr_t));
+    signal(
+        17 as libc::c_int,
+        ::std::mem::transmute::<libc::intptr_t, __sighandler_t>(1 as libc::c_int as libc::intptr_t),
+    );
     /* Set up the initial command. */
     if !shell_command.is_null() {
         msg = MSG_SHELL;
@@ -1843,53 +1898,63 @@ pub unsafe extern "C" fn client_main(mut base: *mut event_base,
     } else {
         msg = MSG_COMMAND;
         /*
-		 * It sucks parsing the command string twice (in client and
-		 * later in server) but it is necessary to get the start server
-		 * flag.
-		 */
+         * It sucks parsing the command string twice (in client and
+         * later in server) but it is necessary to get the start server
+         * flag.
+         */
         pr = cmd_parse_from_arguments(argc, argv, 0 as *mut cmd_parse_input);
-        if (*pr).status as libc::c_uint ==
-               CMD_PARSE_SUCCESS as libc::c_int as libc::c_uint {
+        if (*pr).status as libc::c_uint == CMD_PARSE_SUCCESS as libc::c_int as libc::c_uint {
             if cmd_list_any_have((*pr).cmdlist, 0x1 as libc::c_int) != 0 {
                 flags |= 0x10000000 as libc::c_int as libc::c_ulong
             }
             cmd_list_free((*pr).cmdlist);
-        } else { free((*pr).error as *mut libc::c_void); }
+        } else {
+            free((*pr).error as *mut libc::c_void);
+        }
     }
     /* Create client process structure (starts logging). */
-    client_proc =
-        proc_start(b"client\x00" as *const u8 as *const libc::c_char);
-    proc_set_signals(client_proc,
-                     Some(client_signal as
-                              unsafe extern "C" fn(_: libc::c_int) -> ()));
+    client_proc = proc_start(b"client\x00" as *const u8 as *const libc::c_char);
+    proc_set_signals(
+        client_proc,
+        Some(client_signal as unsafe extern "C" fn(_: libc::c_int) -> ()),
+    );
     /* Save the flags. */
     client_flags = flags;
-    log_debug(b"flags are %#llx\x00" as *const u8 as *const libc::c_char,
-              client_flags as libc::c_ulonglong);
+    log_debug(
+        b"flags are %#llx\x00" as *const u8 as *const libc::c_char,
+        client_flags as libc::c_ulonglong,
+    );
     /* Initialize the client socket and start the server. */
     fd = client_connect(base, socket_path, client_flags);
     if fd == -(1 as libc::c_int) {
         if *__errno_location() == 111 as libc::c_int {
-            fprintf(stderr,
-                    b"no server running on %s\n\x00" as *const u8 as
-                        *const libc::c_char, socket_path);
+            fprintf(
+                stderr,
+                b"no server running on %s\n\x00" as *const u8 as *const libc::c_char,
+                socket_path,
+            );
         } else {
-            fprintf(stderr,
-                    b"error connecting to %s (%s)\n\x00" as *const u8 as
-                        *const libc::c_char, socket_path,
-                    strerror(*__errno_location()));
+            fprintf(
+                stderr,
+                b"error connecting to %s (%s)\n\x00" as *const u8 as *const libc::c_char,
+                socket_path,
+                strerror(*__errno_location()),
+            );
         }
-        return 1 as libc::c_int
+        return 1 as libc::c_int;
     }
-    client_peer =
-        proc_add_peer(client_proc, fd,
-                      Some(client_dispatch as
-                               unsafe extern "C" fn(_: *mut imsg,
-                                                    _: *mut libc::c_void)
-                                   -> ()), 0 as *mut libc::c_void);
+    client_peer = proc_add_peer(
+        client_proc,
+        fd,
+        Some(client_dispatch as unsafe extern "C" fn(_: *mut imsg, _: *mut libc::c_void) -> ()),
+        0 as *mut libc::c_void,
+    );
     /* Save these before pledge(). */
     cwd = find_cwd();
-    if cwd.is_null() && { cwd = find_home(); cwd.is_null() } {
+    if cwd.is_null() && {
+        cwd = find_home();
+        cwd.is_null()
+    } {
         cwd = b"/\x00" as *const u8 as *const libc::c_char
     }
     ttynam = ttyname(0 as libc::c_int);
@@ -1897,19 +1962,21 @@ pub unsafe extern "C" fn client_main(mut base: *mut event_base,
         ttynam = b"\x00" as *const u8 as *const libc::c_char
     }
     /*
-	 * Drop privileges for client. "proc exec" is needed for -c and for
-	 * locking (which uses system(3)).
-	 *
-	 * "tty" is needed to restore termios(4) and also for some reason -CC
-	 * does not work properly without it (input is not recognised).
-	 *
-	 * "sendfd" is dropped later in client_dispatch_wait().
-	 */
+     * Drop privileges for client. "proc exec" is needed for -c and for
+     * locking (which uses system(3)).
+     *
+     * "tty" is needed to restore termios(4) and also for some reason -CC
+     * does not work properly without it (input is not recognised).
+     *
+     * "sendfd" is dropped later in client_dispatch_wait().
+     */
     if 0 as libc::c_int != 0 as libc::c_int {
         fatal(b"pledge failed\x00" as *const u8 as *const libc::c_char);
     }
     /* Free stuff that is not used in the client. */
-    if ptm_fd != -(1 as libc::c_int) { close(ptm_fd); }
+    if ptm_fd != -(1 as libc::c_int) {
+        close(ptm_fd);
+    }
     options_free(global_options);
     options_free(global_s_options);
     options_free(global_w_options);
@@ -1917,18 +1984,18 @@ pub unsafe extern "C" fn client_main(mut base: *mut event_base,
     /* Set up control mode. */
     if client_flags & 0x4000 as libc::c_int as libc::c_ulong != 0 {
         if tcgetattr(0 as libc::c_int, &mut saved_tio) != 0 as libc::c_int {
-            fprintf(stderr,
-                    b"tcgetattr failed: %s\n\x00" as *const u8 as
-                        *const libc::c_char, strerror(*__errno_location()));
-            return 1 as libc::c_int
+            fprintf(
+                stderr,
+                b"tcgetattr failed: %s\n\x00" as *const u8 as *const libc::c_char,
+                strerror(*__errno_location()),
+            );
+            return 1 as libc::c_int;
         }
         cfmakeraw(&mut tio);
-        tio.c_iflag =
-            (0o400 as libc::c_int | 0o4000 as libc::c_int) as tcflag_t;
+        tio.c_iflag = (0o400 as libc::c_int | 0o4000 as libc::c_int) as tcflag_t;
         tio.c_oflag = (0o1 as libc::c_int | 0o4 as libc::c_int) as tcflag_t;
         tio.c_cflag =
-            (0o200 as libc::c_int | 0o60 as libc::c_int |
-                 0o2000 as libc::c_int) as tcflag_t;
+            (0o200 as libc::c_int | 0o60 as libc::c_int | 0o2000 as libc::c_int) as tcflag_t;
         tio.c_cc[6 as libc::c_int as usize] = 1 as libc::c_int as cc_t;
         tio.c_cc[5 as libc::c_int as usize] = 0 as libc::c_int as cc_t;
         cfsetispeed(&mut tio, cfgetispeed(&mut saved_tio));
@@ -1943,66 +2010,72 @@ pub unsafe extern "C" fn client_main(mut base: *mut event_base,
         size = 0 as libc::c_int as size_t;
         i = 0 as libc::c_int;
         while i < argc {
-            size =
-                (size as
-                     libc::c_ulong).wrapping_add(strlen(*argv.offset(i as
-                                                                         isize)).wrapping_add(1
-                                                                                                  as
-                                                                                                  libc::c_int
-                                                                                                  as
-                                                                                                  libc::c_ulong))
-                    as size_t as size_t;
+            size = (size as libc::c_ulong).wrapping_add(
+                strlen(*argv.offset(i as isize)).wrapping_add(1 as libc::c_int as libc::c_ulong),
+            ) as size_t as size_t;
             i += 1
         }
-        if size >
-               (16384 as libc::c_int as
-                    libc::c_ulong).wrapping_sub(::std::mem::size_of::<msg_command>()
-                                                    as libc::c_ulong) {
-            fprintf(stderr,
-                    b"command too long\n\x00" as *const u8 as
-                        *const libc::c_char);
-            return 1 as libc::c_int
+        if size
+            > (16384 as libc::c_int as libc::c_ulong)
+                .wrapping_sub(::std::mem::size_of::<msg_command>() as libc::c_ulong)
+        {
+            fprintf(
+                stderr,
+                b"command too long\n\x00" as *const u8 as *const libc::c_char,
+            );
+            return 1 as libc::c_int;
         }
-        data =
-            xmalloc((::std::mem::size_of::<msg_command>() as
-                         libc::c_ulong).wrapping_add(size)) as
-                *mut msg_command;
+        data = xmalloc((::std::mem::size_of::<msg_command>() as libc::c_ulong).wrapping_add(size))
+            as *mut msg_command;
         /* Prepare command for server. */
         (*data).argc = argc;
-        if cmd_pack_argv(argc, argv,
-                         data.offset(1 as libc::c_int as isize) as
-                             *mut libc::c_char, size) != 0 as libc::c_int {
-            fprintf(stderr,
-                    b"command too long\n\x00" as *const u8 as
-                        *const libc::c_char);
+        if cmd_pack_argv(
+            argc,
+            argv,
+            data.offset(1 as libc::c_int as isize) as *mut libc::c_char,
+            size,
+        ) != 0 as libc::c_int
+        {
+            fprintf(
+                stderr,
+                b"command too long\n\x00" as *const u8 as *const libc::c_char,
+            );
             free(data as *mut libc::c_void);
-            return 1 as libc::c_int
+            return 1 as libc::c_int;
         }
-        size =
-            (size as
-                 libc::c_ulong).wrapping_add(::std::mem::size_of::<msg_command>()
-                                                 as libc::c_ulong) as size_t
-                as size_t;
+        size = (size as libc::c_ulong)
+            .wrapping_add(::std::mem::size_of::<msg_command>() as libc::c_ulong)
+            as size_t as size_t;
         /* Send the command. */
-        if proc_send(client_peer, msg, -(1 as libc::c_int),
-                     data as *const libc::c_void, size) != 0 as libc::c_int {
-            fprintf(stderr,
-                    b"failed to send command\n\x00" as *const u8 as
-                        *const libc::c_char);
+        if proc_send(
+            client_peer,
+            msg,
+            -(1 as libc::c_int),
+            data as *const libc::c_void,
+            size,
+        ) != 0 as libc::c_int
+        {
+            fprintf(
+                stderr,
+                b"failed to send command\n\x00" as *const u8 as *const libc::c_char,
+            );
             free(data as *mut libc::c_void);
-            return 1 as libc::c_int
+            return 1 as libc::c_int;
         }
         free(data as *mut libc::c_void);
-    } else if msg as libc::c_uint == MSG_SHELL as libc::c_int as libc::c_uint
-     {
-        proc_send(client_peer, msg, -(1 as libc::c_int),
-                  0 as *const libc::c_void, 0 as libc::c_int as size_t);
+    } else if msg as libc::c_uint == MSG_SHELL as libc::c_int as libc::c_uint {
+        proc_send(
+            client_peer,
+            msg,
+            -(1 as libc::c_int),
+            0 as *const libc::c_void,
+            0 as libc::c_int as size_t,
+        );
     }
     /* Start main loop. */
     proc_loop(client_proc, None);
     /* Run command if user requested exec, instead of exiting. */
-    if client_exittype as libc::c_uint ==
-           MSG_EXEC as libc::c_int as libc::c_uint {
+    if client_exittype as libc::c_uint == MSG_EXEC as libc::c_int as libc::c_uint {
         if client_flags & 0x4000 as libc::c_int as libc::c_ulong != 0 {
             tcsetattr(1 as libc::c_int, 2 as libc::c_int, &mut saved_tio);
         }
@@ -2014,33 +2087,40 @@ pub unsafe extern "C" fn client_main(mut base: *mut event_base,
     setblocking(2 as libc::c_int, 1 as libc::c_int);
     /* Print the exit message, if any, and exit. */
     if client_attached != 0 {
-        if client_exitreason as libc::c_uint !=
-               CLIENT_EXIT_NONE as libc::c_int as libc::c_uint {
-            printf(b"[%s]\n\x00" as *const u8 as *const libc::c_char,
-                   client_exit_message());
+        if client_exitreason as libc::c_uint != CLIENT_EXIT_NONE as libc::c_int as libc::c_uint {
+            printf(
+                b"[%s]\n\x00" as *const u8 as *const libc::c_char,
+                client_exit_message(),
+            );
         }
         ppid = getppid();
-        if client_exittype as libc::c_uint ==
-               MSG_DETACHKILL as libc::c_int as libc::c_uint &&
-               ppid > 1 as libc::c_int {
+        if client_exittype as libc::c_uint == MSG_DETACHKILL as libc::c_int as libc::c_uint
+            && ppid > 1 as libc::c_int
+        {
             kill(ppid, 1 as libc::c_int);
         }
     } else if client_flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
-        if client_exitreason as libc::c_uint !=
-               CLIENT_EXIT_NONE as libc::c_int as libc::c_uint {
-            printf(b"%%exit %s\n\x00" as *const u8 as *const libc::c_char,
-                   client_exit_message());
+        if client_exitreason as libc::c_uint != CLIENT_EXIT_NONE as libc::c_int as libc::c_uint {
+            printf(
+                b"%%exit %s\n\x00" as *const u8 as *const libc::c_char,
+                client_exit_message(),
+            );
         } else {
             printf(b"%%exit\n\x00" as *const u8 as *const libc::c_char);
         }
         fflush(stdout);
-        if client_flags as libc::c_ulonglong &
-               0x200000000 as libc::c_ulonglong != 0 {
-            setvbuf(stdin, 0 as *mut libc::c_char, 1 as libc::c_int,
-                    0 as libc::c_int as size_t);
-            loop  {
+        if client_flags as libc::c_ulonglong & 0x200000000 as libc::c_ulonglong != 0 {
+            setvbuf(
+                stdin,
+                0 as *mut libc::c_char,
+                1 as libc::c_int,
+                0 as libc::c_int as size_t,
+            );
+            loop {
                 linelen = getline(&mut line, &mut linesize, stdin);
-                if linelen <= 1 as libc::c_int as libc::c_long { break ; }
+                if linelen <= 1 as libc::c_int as libc::c_long {
+                    break;
+                }
             }
             free(line as *mut libc::c_void);
         }
@@ -2049,160 +2129,226 @@ pub unsafe extern "C" fn client_main(mut base: *mut event_base,
             fflush(stdout);
             tcsetattr(1 as libc::c_int, 2 as libc::c_int, &mut saved_tio);
         }
-    } else if client_exitreason as libc::c_uint !=
-                  CLIENT_EXIT_NONE as libc::c_int as libc::c_uint {
-        fprintf(stderr, b"%s\n\x00" as *const u8 as *const libc::c_char,
-                client_exit_message());
+    } else if client_exitreason as libc::c_uint != CLIENT_EXIT_NONE as libc::c_int as libc::c_uint {
+        fprintf(
+            stderr,
+            b"%s\n\x00" as *const u8 as *const libc::c_char,
+            client_exit_message(),
+        );
     }
     return client_exitval;
 }
 /* Send identify messages to server. */
-unsafe extern "C" fn client_send_identify(mut ttynam: *const libc::c_char,
-                                          mut cwd: *const libc::c_char,
-                                          mut feat: libc::c_int) {
+unsafe extern "C" fn client_send_identify(
+    mut ttynam: *const libc::c_char,
+    mut cwd: *const libc::c_char,
+    mut feat: libc::c_int,
+) {
     let mut s: *const libc::c_char = 0 as *const libc::c_char;
     let mut ss: *mut *mut libc::c_char = 0 as *mut *mut libc::c_char;
     let mut sslen: size_t = 0;
     let mut fd: libc::c_int = 0;
     let mut flags: libc::c_int = client_flags as libc::c_int;
     let mut pid: pid_t = 0;
-    proc_send(client_peer, MSG_IDENTIFY_FLAGS, -(1 as libc::c_int),
-              &mut flags as *mut libc::c_int as *const libc::c_void,
-              ::std::mem::size_of::<libc::c_int>() as libc::c_ulong);
-    proc_send(client_peer, MSG_IDENTIFY_LONGFLAGS, -(1 as libc::c_int),
-              &mut client_flags as *mut uint64_t as *const libc::c_void,
-              ::std::mem::size_of::<uint64_t>() as libc::c_ulong);
+    proc_send(
+        client_peer,
+        MSG_IDENTIFY_FLAGS,
+        -(1 as libc::c_int),
+        &mut flags as *mut libc::c_int as *const libc::c_void,
+        ::std::mem::size_of::<libc::c_int>() as libc::c_ulong,
+    );
+    proc_send(
+        client_peer,
+        MSG_IDENTIFY_LONGFLAGS,
+        -(1 as libc::c_int),
+        &mut client_flags as *mut uint64_t as *const libc::c_void,
+        ::std::mem::size_of::<uint64_t>() as libc::c_ulong,
+    );
     s = getenv(b"TERM\x00" as *const u8 as *const libc::c_char);
-    if s.is_null() { s = b"\x00" as *const u8 as *const libc::c_char }
-    proc_send(client_peer, MSG_IDENTIFY_TERM, -(1 as libc::c_int),
-              s as *const libc::c_void,
-              strlen(s).wrapping_add(1 as libc::c_int as libc::c_ulong));
-    proc_send(client_peer, MSG_IDENTIFY_FEATURES, -(1 as libc::c_int),
-              &mut feat as *mut libc::c_int as *const libc::c_void,
-              ::std::mem::size_of::<libc::c_int>() as libc::c_ulong);
-    proc_send(client_peer, MSG_IDENTIFY_TTYNAME, -(1 as libc::c_int),
-              ttynam as *const libc::c_void,
-              strlen(ttynam).wrapping_add(1 as libc::c_int as libc::c_ulong));
-    proc_send(client_peer, MSG_IDENTIFY_CWD, -(1 as libc::c_int),
-              cwd as *const libc::c_void,
-              strlen(cwd).wrapping_add(1 as libc::c_int as libc::c_ulong));
+    if s.is_null() {
+        s = b"\x00" as *const u8 as *const libc::c_char
+    }
+    proc_send(
+        client_peer,
+        MSG_IDENTIFY_TERM,
+        -(1 as libc::c_int),
+        s as *const libc::c_void,
+        strlen(s).wrapping_add(1 as libc::c_int as libc::c_ulong),
+    );
+    proc_send(
+        client_peer,
+        MSG_IDENTIFY_FEATURES,
+        -(1 as libc::c_int),
+        &mut feat as *mut libc::c_int as *const libc::c_void,
+        ::std::mem::size_of::<libc::c_int>() as libc::c_ulong,
+    );
+    proc_send(
+        client_peer,
+        MSG_IDENTIFY_TTYNAME,
+        -(1 as libc::c_int),
+        ttynam as *const libc::c_void,
+        strlen(ttynam).wrapping_add(1 as libc::c_int as libc::c_ulong),
+    );
+    proc_send(
+        client_peer,
+        MSG_IDENTIFY_CWD,
+        -(1 as libc::c_int),
+        cwd as *const libc::c_void,
+        strlen(cwd).wrapping_add(1 as libc::c_int as libc::c_ulong),
+    );
     fd = dup(0 as libc::c_int);
     if fd == -(1 as libc::c_int) {
         fatal(b"dup failed\x00" as *const u8 as *const libc::c_char);
     }
-    proc_send(client_peer, MSG_IDENTIFY_STDIN, fd, 0 as *const libc::c_void,
-              0 as libc::c_int as size_t);
+    proc_send(
+        client_peer,
+        MSG_IDENTIFY_STDIN,
+        fd,
+        0 as *const libc::c_void,
+        0 as libc::c_int as size_t,
+    );
     fd = dup(1 as libc::c_int);
     if fd == -(1 as libc::c_int) {
         fatal(b"dup failed\x00" as *const u8 as *const libc::c_char);
     }
-    proc_send(client_peer, MSG_IDENTIFY_STDOUT, fd, 0 as *const libc::c_void,
-              0 as libc::c_int as size_t);
+    proc_send(
+        client_peer,
+        MSG_IDENTIFY_STDOUT,
+        fd,
+        0 as *const libc::c_void,
+        0 as libc::c_int as size_t,
+    );
     pid = getpid();
-    proc_send(client_peer, MSG_IDENTIFY_CLIENTPID, -(1 as libc::c_int),
-              &mut pid as *mut pid_t as *const libc::c_void,
-              ::std::mem::size_of::<pid_t>() as libc::c_ulong);
+    proc_send(
+        client_peer,
+        MSG_IDENTIFY_CLIENTPID,
+        -(1 as libc::c_int),
+        &mut pid as *mut pid_t as *const libc::c_void,
+        ::std::mem::size_of::<pid_t>() as libc::c_ulong,
+    );
     ss = environ;
     while !(*ss).is_null() {
         sslen = strlen(*ss).wrapping_add(1 as libc::c_int as libc::c_ulong);
-        if !(sslen >
-                 (16384 as libc::c_int as
-                      libc::c_ulong).wrapping_sub(::std::mem::size_of::<imsg_hdr>()
-                                                      as libc::c_ulong)) {
-            proc_send(client_peer, MSG_IDENTIFY_ENVIRON, -(1 as libc::c_int),
-                      *ss as *const libc::c_void, sslen);
+        if !(sslen
+            > (16384 as libc::c_int as libc::c_ulong)
+                .wrapping_sub(::std::mem::size_of::<imsg_hdr>() as libc::c_ulong))
+        {
+            proc_send(
+                client_peer,
+                MSG_IDENTIFY_ENVIRON,
+                -(1 as libc::c_int),
+                *ss as *const libc::c_void,
+                sslen,
+            );
         }
         ss = ss.offset(1)
     }
-    proc_send(client_peer, MSG_IDENTIFY_DONE, -(1 as libc::c_int),
-              0 as *const libc::c_void, 0 as libc::c_int as size_t);
+    proc_send(
+        client_peer,
+        MSG_IDENTIFY_DONE,
+        -(1 as libc::c_int),
+        0 as *const libc::c_void,
+        0 as libc::c_int as size_t,
+    );
 }
 /* File write error callback. */
-unsafe extern "C" fn client_write_error_callback(mut bev: *mut bufferevent,
-                                                 mut what: libc::c_short,
-                                                 mut arg: *mut libc::c_void) {
+unsafe extern "C" fn client_write_error_callback(
+    mut bev: *mut bufferevent,
+    mut what: libc::c_short,
+    mut arg: *mut libc::c_void,
+) {
     let mut cf: *mut client_file = arg as *mut client_file;
-    log_debug(b"write error file %d\x00" as *const u8 as *const libc::c_char,
-              (*cf).stream);
+    log_debug(
+        b"write error file %d\x00" as *const u8 as *const libc::c_char,
+        (*cf).stream,
+    );
     bufferevent_free((*cf).event);
     (*cf).event = 0 as *mut bufferevent;
     close((*cf).fd);
     (*cf).fd = -(1 as libc::c_int);
-    if client_exitflag != 0 { client_exit(); };
+    if client_exitflag != 0 {
+        client_exit();
+    };
 }
 /* File write callback. */
-unsafe extern "C" fn client_write_callback(mut bev: *mut bufferevent,
-                                           mut arg: *mut libc::c_void) {
+unsafe extern "C" fn client_write_callback(mut bev: *mut bufferevent, mut arg: *mut libc::c_void) {
     let mut cf: *mut client_file = arg as *mut client_file;
-    if (*cf).closed != 0 &&
-           evbuffer_get_length((*(*cf).event).output) ==
-               0 as libc::c_int as libc::c_ulong {
+    if (*cf).closed != 0
+        && evbuffer_get_length((*(*cf).event).output) == 0 as libc::c_int as libc::c_ulong
+    {
         bufferevent_free((*cf).event);
         close((*cf).fd);
         client_files_RB_REMOVE(&mut client_files, cf);
         file_free(cf);
     }
-    if client_exitflag != 0 { client_exit(); };
+    if client_exitflag != 0 {
+        client_exit();
+    };
 }
 /* Open write file. */
-unsafe extern "C" fn client_write_open(mut data: *mut libc::c_void,
-                                       mut datalen: size_t) {
+unsafe extern "C" fn client_write_open(mut data: *mut libc::c_void, mut datalen: size_t) {
     let mut msg: *mut msg_write_open = data as *mut msg_write_open;
     let mut path: *const libc::c_char = 0 as *const libc::c_char;
-    let mut reply: msg_write_ready = msg_write_ready{stream: 0, error: 0,};
-    let mut find: client_file =
-        client_file{c: 0 as *mut client,
-                    references: 0,
-                    stream: 0,
-                    path: 0 as *mut libc::c_char,
-                    buffer: 0 as *mut evbuffer,
-                    event: 0 as *mut bufferevent,
-                    fd: 0,
-                    error: 0,
-                    closed: 0,
-                    cb: None,
-                    data: 0 as *mut libc::c_void,
-                    entry:
-                        C2RustUnnamed_21{rbe_left: 0 as *mut client_file,
-                                         rbe_right: 0 as *mut client_file,
-                                         rbe_parent: 0 as *mut client_file,
-                                         rbe_color: 0,},};
+    let mut reply: msg_write_ready = msg_write_ready {
+        stream: 0,
+        error: 0,
+    };
+    let mut find: client_file = client_file {
+        c: 0 as *mut client,
+        references: 0,
+        stream: 0,
+        path: 0 as *mut libc::c_char,
+        buffer: 0 as *mut evbuffer,
+        event: 0 as *mut bufferevent,
+        fd: 0,
+        error: 0,
+        closed: 0,
+        cb: None,
+        data: 0 as *mut libc::c_void,
+        entry: C2RustUnnamed_21 {
+            rbe_left: 0 as *mut client_file,
+            rbe_right: 0 as *mut client_file,
+            rbe_parent: 0 as *mut client_file,
+            rbe_color: 0,
+        },
+    };
     let mut cf: *mut client_file = 0 as *mut client_file;
-    let flags: libc::c_int =
-        0o4000 as libc::c_int | 0o1 as libc::c_int | 0o100 as libc::c_int;
+    let flags: libc::c_int = 0o4000 as libc::c_int | 0o1 as libc::c_int | 0o100 as libc::c_int;
     let mut error: libc::c_int = 0 as libc::c_int;
     if datalen < ::std::mem::size_of::<msg_write_open>() as libc::c_ulong {
-        fatalx(b"bad MSG_WRITE_OPEN size\x00" as *const u8 as
-                   *const libc::c_char);
+        fatalx(b"bad MSG_WRITE_OPEN size\x00" as *const u8 as *const libc::c_char);
     }
     if datalen == ::std::mem::size_of::<msg_write_open>() as libc::c_ulong {
         path = b"-\x00" as *const u8 as *const libc::c_char
     } else {
         path = msg.offset(1 as libc::c_int as isize) as *const libc::c_char
     }
-    log_debug(b"open write file %d %s\x00" as *const u8 as
-                  *const libc::c_char, (*msg).stream, path);
+    log_debug(
+        b"open write file %d %s\x00" as *const u8 as *const libc::c_char,
+        (*msg).stream,
+        path,
+    );
     find.stream = (*msg).stream;
     cf = client_files_RB_FIND(&mut client_files, &mut find);
     if cf.is_null() {
-        cf =
-            file_create(0 as *mut client, (*msg).stream, None,
-                        0 as *mut libc::c_void);
+        cf = file_create(
+            0 as *mut client,
+            (*msg).stream,
+            None,
+            0 as *mut libc::c_void,
+        );
         client_files_RB_INSERT(&mut client_files, cf);
         if (*cf).closed != 0 {
             error = 9 as libc::c_int
         } else {
             (*cf).fd = -(1 as libc::c_int);
             if (*msg).fd == -(1 as libc::c_int) {
-                (*cf).fd =
-                    open(path, (*msg).flags | flags, 0o644 as libc::c_int)
-            } else if (*msg).fd != 1 as libc::c_int &&
-                          (*msg).fd != 2 as libc::c_int {
+                (*cf).fd = open(path, (*msg).flags | flags, 0o644 as libc::c_int)
+            } else if (*msg).fd != 1 as libc::c_int && (*msg).fd != 2 as libc::c_int {
                 *__errno_location() = 9 as libc::c_int
             } else {
                 (*cf).fd = dup((*msg).fd);
-                if !client_flags & 0x2000 as libc::c_int as libc::c_ulong != 0
-                   {
+                if !client_flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
                     close((*msg).fd);
                 }
                 /* can only be used once */
@@ -2210,230 +2356,265 @@ unsafe extern "C" fn client_write_open(mut data: *mut libc::c_void,
             if (*cf).fd == -(1 as libc::c_int) {
                 error = *__errno_location()
             } else {
-                (*cf).event =
-                    bufferevent_new((*cf).fd, None,
-                                    Some(client_write_callback as
-                                             unsafe extern "C" fn(_:
-                                                                      *mut bufferevent,
-                                                                  _:
-                                                                      *mut libc::c_void)
-                                                 -> ()),
-                                    Some(client_write_error_callback as
-                                             unsafe extern "C" fn(_:
-                                                                      *mut bufferevent,
-                                                                  _:
-                                                                      libc::c_short,
-                                                                  _:
-                                                                      *mut libc::c_void)
-                                                 -> ()),
-                                    cf as *mut libc::c_void);
-                bufferevent_enable((*cf).event,
-                                   0x4 as libc::c_int as libc::c_short);
+                (*cf).event = bufferevent_new(
+                    (*cf).fd,
+                    None,
+                    Some(
+                        client_write_callback
+                            as unsafe extern "C" fn(
+                                _: *mut bufferevent,
+                                _: *mut libc::c_void,
+                            ) -> (),
+                    ),
+                    Some(
+                        client_write_error_callback
+                            as unsafe extern "C" fn(
+                                _: *mut bufferevent,
+                                _: libc::c_short,
+                                _: *mut libc::c_void,
+                            ) -> (),
+                    ),
+                    cf as *mut libc::c_void,
+                );
+                bufferevent_enable((*cf).event, 0x4 as libc::c_int as libc::c_short);
             }
         }
-    } else { error = 9 as libc::c_int }
+    } else {
+        error = 9 as libc::c_int
+    }
     reply.stream = (*msg).stream;
     reply.error = error;
-    proc_send(client_peer, MSG_WRITE_READY, -(1 as libc::c_int),
-              &mut reply as *mut msg_write_ready as *const libc::c_void,
-              ::std::mem::size_of::<msg_write_ready>() as libc::c_ulong);
+    proc_send(
+        client_peer,
+        MSG_WRITE_READY,
+        -(1 as libc::c_int),
+        &mut reply as *mut msg_write_ready as *const libc::c_void,
+        ::std::mem::size_of::<msg_write_ready>() as libc::c_ulong,
+    );
 }
 /* Write to client file. */
-unsafe extern "C" fn client_write_data(mut data: *mut libc::c_void,
-                                       mut datalen: size_t) {
+unsafe extern "C" fn client_write_data(mut data: *mut libc::c_void, mut datalen: size_t) {
     let mut msg: *mut msg_write_data = data as *mut msg_write_data;
-    let mut find: client_file =
-        client_file{c: 0 as *mut client,
-                    references: 0,
-                    stream: 0,
-                    path: 0 as *mut libc::c_char,
-                    buffer: 0 as *mut evbuffer,
-                    event: 0 as *mut bufferevent,
-                    fd: 0,
-                    error: 0,
-                    closed: 0,
-                    cb: None,
-                    data: 0 as *mut libc::c_void,
-                    entry:
-                        C2RustUnnamed_21{rbe_left: 0 as *mut client_file,
-                                         rbe_right: 0 as *mut client_file,
-                                         rbe_parent: 0 as *mut client_file,
-                                         rbe_color: 0,},};
+    let mut find: client_file = client_file {
+        c: 0 as *mut client,
+        references: 0,
+        stream: 0,
+        path: 0 as *mut libc::c_char,
+        buffer: 0 as *mut evbuffer,
+        event: 0 as *mut bufferevent,
+        fd: 0,
+        error: 0,
+        closed: 0,
+        cb: None,
+        data: 0 as *mut libc::c_void,
+        entry: C2RustUnnamed_21 {
+            rbe_left: 0 as *mut client_file,
+            rbe_right: 0 as *mut client_file,
+            rbe_parent: 0 as *mut client_file,
+            rbe_color: 0,
+        },
+    };
     let mut cf: *mut client_file = 0 as *mut client_file;
     let mut size: size_t =
-        datalen.wrapping_sub(::std::mem::size_of::<msg_write_data>() as
-                                 libc::c_ulong);
+        datalen.wrapping_sub(::std::mem::size_of::<msg_write_data>() as libc::c_ulong);
     if datalen < ::std::mem::size_of::<msg_write_data>() as libc::c_ulong {
         fatalx(b"bad MSG_WRITE size\x00" as *const u8 as *const libc::c_char);
     }
     find.stream = (*msg).stream;
     cf = client_files_RB_FIND(&mut client_files, &mut find);
     if cf.is_null() {
-        fatalx(b"unknown stream number\x00" as *const u8 as
-                   *const libc::c_char);
+        fatalx(b"unknown stream number\x00" as *const u8 as *const libc::c_char);
     }
-    log_debug(b"write %zu to file %d\x00" as *const u8 as *const libc::c_char,
-              size, (*cf).stream);
+    log_debug(
+        b"write %zu to file %d\x00" as *const u8 as *const libc::c_char,
+        size,
+        (*cf).stream,
+    );
     if !(*cf).event.is_null() {
-        bufferevent_write((*cf).event,
-                          msg.offset(1 as libc::c_int as isize) as
-                              *const libc::c_void, size);
+        bufferevent_write(
+            (*cf).event,
+            msg.offset(1 as libc::c_int as isize) as *const libc::c_void,
+            size,
+        );
     };
 }
 /* Close client file. */
-unsafe extern "C" fn client_write_close(mut data: *mut libc::c_void,
-                                        mut datalen: size_t) {
+unsafe extern "C" fn client_write_close(mut data: *mut libc::c_void, mut datalen: size_t) {
     let mut msg: *mut msg_write_close = data as *mut msg_write_close;
-    let mut find: client_file =
-        client_file{c: 0 as *mut client,
-                    references: 0,
-                    stream: 0,
-                    path: 0 as *mut libc::c_char,
-                    buffer: 0 as *mut evbuffer,
-                    event: 0 as *mut bufferevent,
-                    fd: 0,
-                    error: 0,
-                    closed: 0,
-                    cb: None,
-                    data: 0 as *mut libc::c_void,
-                    entry:
-                        C2RustUnnamed_21{rbe_left: 0 as *mut client_file,
-                                         rbe_right: 0 as *mut client_file,
-                                         rbe_parent: 0 as *mut client_file,
-                                         rbe_color: 0,},};
+    let mut find: client_file = client_file {
+        c: 0 as *mut client,
+        references: 0,
+        stream: 0,
+        path: 0 as *mut libc::c_char,
+        buffer: 0 as *mut evbuffer,
+        event: 0 as *mut bufferevent,
+        fd: 0,
+        error: 0,
+        closed: 0,
+        cb: None,
+        data: 0 as *mut libc::c_void,
+        entry: C2RustUnnamed_21 {
+            rbe_left: 0 as *mut client_file,
+            rbe_right: 0 as *mut client_file,
+            rbe_parent: 0 as *mut client_file,
+            rbe_color: 0,
+        },
+    };
     let mut cf: *mut client_file = 0 as *mut client_file;
     if datalen != ::std::mem::size_of::<msg_write_close>() as libc::c_ulong {
-        fatalx(b"bad MSG_WRITE_CLOSE size\x00" as *const u8 as
-                   *const libc::c_char);
+        fatalx(b"bad MSG_WRITE_CLOSE size\x00" as *const u8 as *const libc::c_char);
     }
     find.stream = (*msg).stream;
     cf = client_files_RB_FIND(&mut client_files, &mut find);
     if cf.is_null() {
-        fatalx(b"unknown stream number\x00" as *const u8 as
-                   *const libc::c_char);
+        fatalx(b"unknown stream number\x00" as *const u8 as *const libc::c_char);
     }
-    log_debug(b"close file %d\x00" as *const u8 as *const libc::c_char,
-              (*cf).stream);
-    if (*cf).event.is_null() ||
-           evbuffer_get_length((*(*cf).event).output) ==
-               0 as libc::c_int as libc::c_ulong {
-        if !(*cf).event.is_null() { bufferevent_free((*cf).event); }
-        if (*cf).fd != -(1 as libc::c_int) { close((*cf).fd); }
+    log_debug(
+        b"close file %d\x00" as *const u8 as *const libc::c_char,
+        (*cf).stream,
+    );
+    if (*cf).event.is_null()
+        || evbuffer_get_length((*(*cf).event).output) == 0 as libc::c_int as libc::c_ulong
+    {
+        if !(*cf).event.is_null() {
+            bufferevent_free((*cf).event);
+        }
+        if (*cf).fd != -(1 as libc::c_int) {
+            close((*cf).fd);
+        }
         client_files_RB_REMOVE(&mut client_files, cf);
         file_free(cf);
     };
 }
 /* File read callback. */
-unsafe extern "C" fn client_read_callback(mut bev: *mut bufferevent,
-                                          mut arg: *mut libc::c_void) {
+unsafe extern "C" fn client_read_callback(mut bev: *mut bufferevent, mut arg: *mut libc::c_void) {
     let mut cf: *mut client_file = arg as *mut client_file;
     let mut bdata: *mut libc::c_void = 0 as *mut libc::c_void;
     let mut bsize: size_t = 0;
     let mut msg: *mut msg_read_data = 0 as *mut msg_read_data;
     let mut msglen: size_t = 0;
-    msg =
-        xmalloc(::std::mem::size_of::<msg_read_data>() as libc::c_ulong) as
-            *mut msg_read_data;
-    loop  {
-        bdata =
-            evbuffer_pullup((*(*cf).event).input,
-                            -(1 as libc::c_int) as ssize_t) as
-                *mut libc::c_void;
+    msg = xmalloc(::std::mem::size_of::<msg_read_data>() as libc::c_ulong) as *mut msg_read_data;
+    loop {
+        bdata = evbuffer_pullup((*(*cf).event).input, -(1 as libc::c_int) as ssize_t)
+            as *mut libc::c_void;
         bsize = evbuffer_get_length((*(*cf).event).input);
-        if bsize == 0 as libc::c_int as libc::c_ulong { break ; }
-        if bsize >
-               (16384 as libc::c_int as
-                    libc::c_ulong).wrapping_sub(::std::mem::size_of::<imsg_hdr>()
-                                                    as
-                                                    libc::c_ulong).wrapping_sub(::std::mem::size_of::<msg_read_data>()
-                                                                                    as
-                                                                                    libc::c_ulong)
-           {
-            bsize =
-                (16384 as libc::c_int as
-                     libc::c_ulong).wrapping_sub(::std::mem::size_of::<imsg_hdr>()
-                                                     as
-                                                     libc::c_ulong).wrapping_sub(::std::mem::size_of::<msg_read_data>()
-                                                                                     as
-                                                                                     libc::c_ulong)
+        if bsize == 0 as libc::c_int as libc::c_ulong {
+            break;
         }
-        log_debug(b"read %zu from file %d\x00" as *const u8 as
-                      *const libc::c_char, bsize, (*cf).stream);
-        msglen =
-            (::std::mem::size_of::<msg_read_data>() as
-                 libc::c_ulong).wrapping_add(bsize);
-        msg =
-            xrealloc(msg as *mut libc::c_void, msglen) as *mut msg_read_data;
+        if bsize
+            > (16384 as libc::c_int as libc::c_ulong)
+                .wrapping_sub(::std::mem::size_of::<imsg_hdr>() as libc::c_ulong)
+                .wrapping_sub(::std::mem::size_of::<msg_read_data>() as libc::c_ulong)
+        {
+            bsize = (16384 as libc::c_int as libc::c_ulong)
+                .wrapping_sub(::std::mem::size_of::<imsg_hdr>() as libc::c_ulong)
+                .wrapping_sub(::std::mem::size_of::<msg_read_data>() as libc::c_ulong)
+        }
+        log_debug(
+            b"read %zu from file %d\x00" as *const u8 as *const libc::c_char,
+            bsize,
+            (*cf).stream,
+        );
+        msglen = (::std::mem::size_of::<msg_read_data>() as libc::c_ulong).wrapping_add(bsize);
+        msg = xrealloc(msg as *mut libc::c_void, msglen) as *mut msg_read_data;
         (*msg).stream = (*cf).stream;
-        memcpy(msg.offset(1 as libc::c_int as isize) as *mut libc::c_void,
-               bdata, bsize);
-        proc_send(client_peer, MSG_READ, -(1 as libc::c_int),
-                  msg as *const libc::c_void, msglen);
+        memcpy(
+            msg.offset(1 as libc::c_int as isize) as *mut libc::c_void,
+            bdata,
+            bsize,
+        );
+        proc_send(
+            client_peer,
+            MSG_READ,
+            -(1 as libc::c_int),
+            msg as *const libc::c_void,
+            msglen,
+        );
         evbuffer_drain((*(*cf).event).input, bsize);
     }
     free(msg as *mut libc::c_void);
 }
 /* File read error callback. */
-unsafe extern "C" fn client_read_error_callback(mut bev: *mut bufferevent,
-                                                mut what: libc::c_short,
-                                                mut arg: *mut libc::c_void) {
+unsafe extern "C" fn client_read_error_callback(
+    mut bev: *mut bufferevent,
+    mut what: libc::c_short,
+    mut arg: *mut libc::c_void,
+) {
     let mut cf: *mut client_file = arg as *mut client_file;
-    let mut msg: msg_read_done = msg_read_done{stream: 0, error: 0,};
-    log_debug(b"read error file %d\x00" as *const u8 as *const libc::c_char,
-              (*cf).stream);
+    let mut msg: msg_read_done = msg_read_done {
+        stream: 0,
+        error: 0,
+    };
+    log_debug(
+        b"read error file %d\x00" as *const u8 as *const libc::c_char,
+        (*cf).stream,
+    );
     msg.stream = (*cf).stream;
     msg.error = 0 as libc::c_int;
-    proc_send(client_peer, MSG_READ_DONE, -(1 as libc::c_int),
-              &mut msg as *mut msg_read_done as *const libc::c_void,
-              ::std::mem::size_of::<msg_read_done>() as libc::c_ulong);
+    proc_send(
+        client_peer,
+        MSG_READ_DONE,
+        -(1 as libc::c_int),
+        &mut msg as *mut msg_read_done as *const libc::c_void,
+        ::std::mem::size_of::<msg_read_done>() as libc::c_ulong,
+    );
     bufferevent_free((*cf).event);
     close((*cf).fd);
     client_files_RB_REMOVE(&mut client_files, cf);
     file_free(cf);
 }
 /* Open read file. */
-unsafe extern "C" fn client_read_open(mut data: *mut libc::c_void,
-                                      mut datalen: size_t) {
+unsafe extern "C" fn client_read_open(mut data: *mut libc::c_void, mut datalen: size_t) {
     let mut msg: *mut msg_read_open = data as *mut msg_read_open;
     let mut path: *const libc::c_char = 0 as *const libc::c_char;
-    let mut reply: msg_read_done = msg_read_done{stream: 0, error: 0,};
-    let mut find: client_file =
-        client_file{c: 0 as *mut client,
-                    references: 0,
-                    stream: 0,
-                    path: 0 as *mut libc::c_char,
-                    buffer: 0 as *mut evbuffer,
-                    event: 0 as *mut bufferevent,
-                    fd: 0,
-                    error: 0,
-                    closed: 0,
-                    cb: None,
-                    data: 0 as *mut libc::c_void,
-                    entry:
-                        C2RustUnnamed_21{rbe_left: 0 as *mut client_file,
-                                         rbe_right: 0 as *mut client_file,
-                                         rbe_parent: 0 as *mut client_file,
-                                         rbe_color: 0,},};
+    let mut reply: msg_read_done = msg_read_done {
+        stream: 0,
+        error: 0,
+    };
+    let mut find: client_file = client_file {
+        c: 0 as *mut client,
+        references: 0,
+        stream: 0,
+        path: 0 as *mut libc::c_char,
+        buffer: 0 as *mut evbuffer,
+        event: 0 as *mut bufferevent,
+        fd: 0,
+        error: 0,
+        closed: 0,
+        cb: None,
+        data: 0 as *mut libc::c_void,
+        entry: C2RustUnnamed_21 {
+            rbe_left: 0 as *mut client_file,
+            rbe_right: 0 as *mut client_file,
+            rbe_parent: 0 as *mut client_file,
+            rbe_color: 0,
+        },
+    };
     let mut cf: *mut client_file = 0 as *mut client_file;
     let flags: libc::c_int = 0o4000 as libc::c_int | 0 as libc::c_int;
     let mut error: libc::c_int = 0;
     if datalen < ::std::mem::size_of::<msg_read_open>() as libc::c_ulong {
-        fatalx(b"bad MSG_READ_OPEN size\x00" as *const u8 as
-                   *const libc::c_char);
+        fatalx(b"bad MSG_READ_OPEN size\x00" as *const u8 as *const libc::c_char);
     }
     if datalen == ::std::mem::size_of::<msg_read_open>() as libc::c_ulong {
         path = b"-\x00" as *const u8 as *const libc::c_char
     } else {
         path = msg.offset(1 as libc::c_int as isize) as *const libc::c_char
     }
-    log_debug(b"open read file %d %s\x00" as *const u8 as *const libc::c_char,
-              (*msg).stream, path);
+    log_debug(
+        b"open read file %d %s\x00" as *const u8 as *const libc::c_char,
+        (*msg).stream,
+        path,
+    );
     find.stream = (*msg).stream;
     cf = client_files_RB_FIND(&mut client_files, &mut find);
     if cf.is_null() {
-        cf =
-            file_create(0 as *mut client, (*msg).stream, None,
-                        0 as *mut libc::c_void);
+        cf = file_create(
+            0 as *mut client,
+            (*msg).stream,
+            None,
+            0 as *mut libc::c_void,
+        );
         client_files_RB_INSERT(&mut client_files, cf);
         if (*cf).closed != 0 {
             error = 9 as libc::c_int
@@ -2445,8 +2626,7 @@ unsafe extern "C" fn client_read_open(mut data: *mut libc::c_void,
                 *__errno_location() = 9 as libc::c_int
             } else {
                 (*cf).fd = dup((*msg).fd);
-                if !client_flags & 0x2000 as libc::c_int as libc::c_ulong != 0
-                   {
+                if !client_flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
                     close((*msg).fd);
                 }
                 /* can only be used once */
@@ -2454,173 +2634,225 @@ unsafe extern "C" fn client_read_open(mut data: *mut libc::c_void,
             if (*cf).fd == -(1 as libc::c_int) {
                 error = *__errno_location()
             } else {
-                (*cf).event =
-                    bufferevent_new((*cf).fd,
-                                    Some(client_read_callback as
-                                             unsafe extern "C" fn(_:
-                                                                      *mut bufferevent,
-                                                                  _:
-                                                                      *mut libc::c_void)
-                                                 -> ()), None,
-                                    Some(client_read_error_callback as
-                                             unsafe extern "C" fn(_:
-                                                                      *mut bufferevent,
-                                                                  _:
-                                                                      libc::c_short,
-                                                                  _:
-                                                                      *mut libc::c_void)
-                                                 -> ()),
-                                    cf as *mut libc::c_void);
-                bufferevent_enable((*cf).event,
-                                   0x2 as libc::c_int as libc::c_short);
-                return
+                (*cf).event = bufferevent_new(
+                    (*cf).fd,
+                    Some(
+                        client_read_callback
+                            as unsafe extern "C" fn(
+                                _: *mut bufferevent,
+                                _: *mut libc::c_void,
+                            ) -> (),
+                    ),
+                    None,
+                    Some(
+                        client_read_error_callback
+                            as unsafe extern "C" fn(
+                                _: *mut bufferevent,
+                                _: libc::c_short,
+                                _: *mut libc::c_void,
+                            ) -> (),
+                    ),
+                    cf as *mut libc::c_void,
+                );
+                bufferevent_enable((*cf).event, 0x2 as libc::c_int as libc::c_short);
+                return;
             }
         }
-    } else { error = 9 as libc::c_int }
+    } else {
+        error = 9 as libc::c_int
+    }
     reply.stream = (*msg).stream;
     reply.error = error;
-    proc_send(client_peer, MSG_READ_DONE, -(1 as libc::c_int),
-              &mut reply as *mut msg_read_done as *const libc::c_void,
-              ::std::mem::size_of::<msg_read_done>() as libc::c_ulong);
+    proc_send(
+        client_peer,
+        MSG_READ_DONE,
+        -(1 as libc::c_int),
+        &mut reply as *mut msg_read_done as *const libc::c_void,
+        ::std::mem::size_of::<msg_read_done>() as libc::c_ulong,
+    );
 }
 /* Run command in shell; used for -c. */
-unsafe extern "C" fn client_exec(mut shell: *const libc::c_char,
-                                 mut shellcmd: *const libc::c_char) -> ! {
+unsafe extern "C" fn client_exec(
+    mut shell: *const libc::c_char,
+    mut shellcmd: *const libc::c_char,
+) -> ! {
     let mut name: *const libc::c_char = 0 as *const libc::c_char;
     let mut ptr: *const libc::c_char = 0 as *const libc::c_char;
     let mut argv0: *mut libc::c_char = 0 as *mut libc::c_char;
-    log_debug(b"shell %s, command %s\x00" as *const u8 as *const libc::c_char,
-              shell, shellcmd);
+    log_debug(
+        b"shell %s, command %s\x00" as *const u8 as *const libc::c_char,
+        shell,
+        shellcmd,
+    );
     ptr = strrchr(shell, '/' as i32);
-    if !ptr.is_null() &&
-           *ptr.offset(1 as libc::c_int as isize) as libc::c_int !=
-               '\u{0}' as i32 {
+    if !ptr.is_null() && *ptr.offset(1 as libc::c_int as isize) as libc::c_int != '\u{0}' as i32 {
         name = ptr.offset(1 as libc::c_int as isize)
-    } else { name = shell }
-    if client_flags & 0x2 as libc::c_int as libc::c_ulong != 0 {
-        xasprintf(&mut argv0 as *mut *mut libc::c_char,
-                  b"-%s\x00" as *const u8 as *const libc::c_char, name);
     } else {
-        xasprintf(&mut argv0 as *mut *mut libc::c_char,
-                  b"%s\x00" as *const u8 as *const libc::c_char, name);
+        name = shell
     }
-    setenv(b"SHELL\x00" as *const u8 as *const libc::c_char, shell,
-           1 as libc::c_int);
+    if client_flags & 0x2 as libc::c_int as libc::c_ulong != 0 {
+        xasprintf(
+            &mut argv0 as *mut *mut libc::c_char,
+            b"-%s\x00" as *const u8 as *const libc::c_char,
+            name,
+        );
+    } else {
+        xasprintf(
+            &mut argv0 as *mut *mut libc::c_char,
+            b"%s\x00" as *const u8 as *const libc::c_char,
+            name,
+        );
+    }
+    setenv(
+        b"SHELL\x00" as *const u8 as *const libc::c_char,
+        shell,
+        1 as libc::c_int,
+    );
     proc_clear_signals(client_proc, 1 as libc::c_int);
     setblocking(0 as libc::c_int, 1 as libc::c_int);
     setblocking(1 as libc::c_int, 1 as libc::c_int);
     setblocking(2 as libc::c_int, 1 as libc::c_int);
     closefrom(2 as libc::c_int + 1 as libc::c_int);
-    execl(shell, argv0, b"-c\x00" as *const u8 as *const libc::c_char,
-          shellcmd, 0 as *mut libc::c_void as *mut libc::c_char);
+    execl(
+        shell,
+        argv0,
+        b"-c\x00" as *const u8 as *const libc::c_char,
+        shellcmd,
+        0 as *mut libc::c_void as *mut libc::c_char,
+    );
     fatal(b"execl failed\x00" as *const u8 as *const libc::c_char);
 }
 /* Callback to handle signals in the client. */
 unsafe extern "C" fn client_signal(mut sig: libc::c_int) {
-    let mut sigact: sigaction =
-        sigaction{__sigaction_handler: C2RustUnnamed_10{sa_handler: None,},
-                  sa_mask: __sigset_t{__val: [0; 16],},
-                  sa_flags: 0,
-                  sa_restorer: None,};
+    let mut sigact: sigaction = sigaction {
+        __sigaction_handler: C2RustUnnamed_10 { sa_handler: None },
+        sa_mask: __sigset_t { __val: [0; 16] },
+        sa_flags: 0,
+        sa_restorer: None,
+    };
     let mut status: libc::c_int = 0;
-    log_debug(b"%s: %s\x00" as *const u8 as *const libc::c_char,
-              (*::std::mem::transmute::<&[u8; 14],
-                                        &[libc::c_char; 14]>(b"client_signal\x00")).as_ptr(),
-              strsignal(sig));
+    log_debug(
+        b"%s: %s\x00" as *const u8 as *const libc::c_char,
+        (*::std::mem::transmute::<&[u8; 14], &[libc::c_char; 14]>(b"client_signal\x00")).as_ptr(),
+        strsignal(sig),
+    );
     if sig == 17 as libc::c_int {
         waitpid(-(1 as libc::c_int), &mut status, 1 as libc::c_int);
     } else if client_attached == 0 {
-        if sig == 15 as libc::c_int { proc_exit(client_proc); }
+        if sig == 15 as libc::c_int {
+            proc_exit(client_proc);
+        }
     } else {
         match sig {
             1 => {
                 client_exitreason = CLIENT_EXIT_LOST_TTY;
                 client_exitval = 1 as libc::c_int;
-                proc_send(client_peer, MSG_EXITING, -(1 as libc::c_int),
-                          0 as *const libc::c_void,
-                          0 as libc::c_int as size_t);
+                proc_send(
+                    client_peer,
+                    MSG_EXITING,
+                    -(1 as libc::c_int),
+                    0 as *const libc::c_void,
+                    0 as libc::c_int as size_t,
+                );
             }
             15 => {
                 if client_suspended == 0 {
                     client_exitreason = CLIENT_EXIT_TERMINATED
                 }
                 client_exitval = 1 as libc::c_int;
-                proc_send(client_peer, MSG_EXITING, -(1 as libc::c_int),
-                          0 as *const libc::c_void,
-                          0 as libc::c_int as size_t);
+                proc_send(
+                    client_peer,
+                    MSG_EXITING,
+                    -(1 as libc::c_int),
+                    0 as *const libc::c_void,
+                    0 as libc::c_int as size_t,
+                );
             }
             28 => {
-                proc_send(client_peer, MSG_RESIZE, -(1 as libc::c_int),
-                          0 as *const libc::c_void,
-                          0 as libc::c_int as size_t);
+                proc_send(
+                    client_peer,
+                    MSG_RESIZE,
+                    -(1 as libc::c_int),
+                    0 as *const libc::c_void,
+                    0 as libc::c_int as size_t,
+                );
             }
             18 => {
-                memset(&mut sigact as *mut sigaction as *mut libc::c_void,
-                       0 as libc::c_int,
-                       ::std::mem::size_of::<sigaction>() as libc::c_ulong);
+                memset(
+                    &mut sigact as *mut sigaction as *mut libc::c_void,
+                    0 as libc::c_int,
+                    ::std::mem::size_of::<sigaction>() as libc::c_ulong,
+                );
                 sigemptyset(&mut sigact.sa_mask);
                 sigact.sa_flags = 0x10000000 as libc::c_int;
                 sigact.__sigaction_handler.sa_handler =
-                    ::std::mem::transmute::<libc::intptr_t,
-                                            __sighandler_t>(1 as libc::c_int
-                                                                as
-                                                                libc::intptr_t);
-                if sigaction(20 as libc::c_int, &mut sigact,
-                             0 as *mut sigaction) != 0 as libc::c_int {
-                    fatal(b"sigaction failed\x00" as *const u8 as
-                              *const libc::c_char);
+                    ::std::mem::transmute::<libc::intptr_t, __sighandler_t>(
+                        1 as libc::c_int as libc::intptr_t,
+                    );
+                if sigaction(20 as libc::c_int, &mut sigact, 0 as *mut sigaction)
+                    != 0 as libc::c_int
+                {
+                    fatal(b"sigaction failed\x00" as *const u8 as *const libc::c_char);
                 }
-                proc_send(client_peer, MSG_WAKEUP, -(1 as libc::c_int),
-                          0 as *const libc::c_void,
-                          0 as libc::c_int as size_t);
+                proc_send(
+                    client_peer,
+                    MSG_WAKEUP,
+                    -(1 as libc::c_int),
+                    0 as *const libc::c_void,
+                    0 as libc::c_int as size_t,
+                );
                 client_suspended = 0 as libc::c_int
             }
-            _ => { }
+            _ => {}
         }
     };
 }
 /* Callback for client read events. */
-unsafe extern "C" fn client_dispatch(mut imsg: *mut imsg,
-                                     mut arg: *mut libc::c_void) {
+unsafe extern "C" fn client_dispatch(mut imsg: *mut imsg, mut arg: *mut libc::c_void) {
     if imsg.is_null() {
         client_exitreason = CLIENT_EXIT_LOST_SERVER;
         client_exitval = 1 as libc::c_int;
         proc_exit(client_proc);
-        return
+        return;
     }
     if client_attached != 0 {
         client_dispatch_attached(imsg);
-    } else { client_dispatch_wait(imsg); };
+    } else {
+        client_dispatch_wait(imsg);
+    };
 }
 /* Process an exit message. */
-unsafe extern "C" fn client_dispatch_exit_message(mut data: *mut libc::c_char,
-                                                  mut datalen: size_t) {
+unsafe extern "C" fn client_dispatch_exit_message(
+    mut data: *mut libc::c_char,
+    mut datalen: size_t,
+) {
     let mut retval: libc::c_int = 0;
-    if datalen < ::std::mem::size_of::<libc::c_int>() as libc::c_ulong &&
-           datalen != 0 as libc::c_int as libc::c_ulong {
+    if datalen < ::std::mem::size_of::<libc::c_int>() as libc::c_ulong
+        && datalen != 0 as libc::c_int as libc::c_ulong
+    {
         fatalx(b"bad MSG_EXIT size\x00" as *const u8 as *const libc::c_char);
     }
     if datalen >= ::std::mem::size_of::<libc::c_int>() as libc::c_ulong {
-        memcpy(&mut retval as *mut libc::c_int as *mut libc::c_void,
-               data as *const libc::c_void,
-               ::std::mem::size_of::<libc::c_int>() as libc::c_ulong);
+        memcpy(
+            &mut retval as *mut libc::c_int as *mut libc::c_void,
+            data as *const libc::c_void,
+            ::std::mem::size_of::<libc::c_int>() as libc::c_ulong,
+        );
         client_exitval = retval
     }
     if datalen > ::std::mem::size_of::<libc::c_int>() as libc::c_ulong {
-        datalen =
-            (datalen as
-                 libc::c_ulong).wrapping_sub(::std::mem::size_of::<libc::c_int>()
-                                                 as libc::c_ulong) as size_t
-                as size_t;
-        data =
-            data.offset(::std::mem::size_of::<libc::c_int>() as libc::c_ulong
-                            as isize);
+        datalen = (datalen as libc::c_ulong)
+            .wrapping_sub(::std::mem::size_of::<libc::c_int>() as libc::c_ulong)
+            as size_t as size_t;
+        data = data.offset(::std::mem::size_of::<libc::c_int>() as libc::c_ulong as isize);
         client_exitmessage = xmalloc(datalen) as *mut libc::c_char;
-        memcpy(client_exitmessage as *mut libc::c_void,
-               data as *const libc::c_void, datalen);
-        *client_exitmessage.offset(datalen.wrapping_sub(1 as libc::c_int as
-                                                            libc::c_ulong) as
-                                       isize) =
+        memcpy(
+            client_exitmessage as *mut libc::c_void,
+            data as *const libc::c_void,
+            datalen,
+        );
+        *client_exitmessage
+            .offset(datalen.wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize) =
             '\u{0}' as i32 as libc::c_char;
         client_exitreason = CLIENT_EXIT_MESSAGE_PROVIDED
     };
@@ -2631,11 +2863,11 @@ unsafe extern "C" fn client_dispatch_wait(mut imsg: *mut imsg) {
     let mut datalen: ssize_t = 0;
     static mut pledge_applied: libc::c_int = 0;
     /*
-	 * "sendfd" is no longer required once all of the identify messages
-	 * have been sent. We know the server won't send us anything until that
-	 * point (because we don't ask it to), so we can drop "sendfd" once we
-	 * get the first message from the server.
-	 */
+     * "sendfd" is no longer required once all of the identify messages
+     * have been sent. We know the server won't send us anything until that
+     * point (because we don't ask it to), so we can drop "sendfd" once we
+     * get the first message from the server.
+     */
     if pledge_applied == 0 {
         if 0 as libc::c_int != 0 as libc::c_int {
             fatal(b"pledge failed\x00" as *const u8 as *const libc::c_char);
@@ -2643,10 +2875,8 @@ unsafe extern "C" fn client_dispatch_wait(mut imsg: *mut imsg) {
         pledge_applied = 1 as libc::c_int
     }
     data = (*imsg).data as *mut libc::c_char;
-    datalen =
-        ((*imsg).hdr.len as
-             libc::c_ulong).wrapping_sub(::std::mem::size_of::<imsg_hdr>() as
-                                             libc::c_ulong) as ssize_t;
+    datalen = ((*imsg).hdr.len as libc::c_ulong)
+        .wrapping_sub(::std::mem::size_of::<imsg_hdr>() as libc::c_ulong) as ssize_t;
     match (*imsg).hdr.type_0 {
         203 | 210 => {
             client_dispatch_exit_message(data, datalen as size_t);
@@ -2655,54 +2885,68 @@ unsafe extern "C" fn client_dispatch_wait(mut imsg: *mut imsg) {
         }
         207 => {
             if datalen != 0 as libc::c_int as libc::c_long {
-                fatalx(b"bad MSG_READY size\x00" as *const u8 as
-                           *const libc::c_char);
+                fatalx(b"bad MSG_READY size\x00" as *const u8 as *const libc::c_char);
             }
             client_attached = 1 as libc::c_int;
-            proc_send(client_peer, MSG_RESIZE, -(1 as libc::c_int),
-                      0 as *const libc::c_void, 0 as libc::c_int as size_t);
+            proc_send(
+                client_peer,
+                MSG_RESIZE,
+                -(1 as libc::c_int),
+                0 as *const libc::c_void,
+                0 as libc::c_int as size_t,
+            );
         }
         12 => {
             if datalen != 0 as libc::c_int as libc::c_long {
-                fatalx(b"bad MSG_VERSION size\x00" as *const u8 as
-                           *const libc::c_char);
+                fatalx(b"bad MSG_VERSION size\x00" as *const u8 as *const libc::c_char);
             }
-            fprintf(stderr,
-                    b"protocol version mismatch (client %d, server %u)\n\x00"
-                        as *const u8 as *const libc::c_char, 8 as libc::c_int,
-                    (*imsg).hdr.peerid & 0xff as libc::c_int as libc::c_uint);
+            fprintf(
+                stderr,
+                b"protocol version mismatch (client %d, server %u)\n\x00" as *const u8
+                    as *const libc::c_char,
+                8 as libc::c_int,
+                (*imsg).hdr.peerid & 0xff as libc::c_int as libc::c_uint,
+            );
             client_exitval = 1 as libc::c_int;
             proc_exit(client_proc);
         }
         218 => {
-            if datalen as libc::c_ulong !=
-                   ::std::mem::size_of::<uint64_t>() as libc::c_ulong {
-                fatalx(b"bad MSG_FLAGS string\x00" as *const u8 as
-                           *const libc::c_char);
+            if datalen as libc::c_ulong != ::std::mem::size_of::<uint64_t>() as libc::c_ulong {
+                fatalx(b"bad MSG_FLAGS string\x00" as *const u8 as *const libc::c_char);
             }
-            memcpy(&mut client_flags as *mut uint64_t as *mut libc::c_void,
-                   data as *const libc::c_void,
-                   ::std::mem::size_of::<uint64_t>() as libc::c_ulong);
-            log_debug(b"new flags are %#llx\x00" as *const u8 as
-                          *const libc::c_char,
-                      client_flags as libc::c_ulonglong);
+            memcpy(
+                &mut client_flags as *mut uint64_t as *mut libc::c_void,
+                data as *const libc::c_void,
+                ::std::mem::size_of::<uint64_t>() as libc::c_ulong,
+            );
+            log_debug(
+                b"new flags are %#llx\x00" as *const u8 as *const libc::c_char,
+                client_flags as libc::c_ulonglong,
+            );
         }
         209 => {
-            if datalen == 0 as libc::c_int as libc::c_long ||
-                   *data.offset((datalen - 1 as libc::c_int as libc::c_long)
-                                    as isize) as libc::c_int != '\u{0}' as i32
-               {
-                fatalx(b"bad MSG_SHELL string\x00" as *const u8 as
-                           *const libc::c_char);
+            if datalen == 0 as libc::c_int as libc::c_long
+                || *data.offset((datalen - 1 as libc::c_int as libc::c_long) as isize)
+                    as libc::c_int
+                    != '\u{0}' as i32
+            {
+                fatalx(b"bad MSG_SHELL string\x00" as *const u8 as *const libc::c_char);
             }
             client_exec(data, shell_command);
         }
         201 | 202 => {
             /* NOTREACHED */
-            proc_send(client_peer, MSG_EXITING, -(1 as libc::c_int),
-                      0 as *const libc::c_void, 0 as libc::c_int as size_t);
+            proc_send(
+                client_peer,
+                MSG_EXITING,
+                -(1 as libc::c_int),
+                0 as *const libc::c_void,
+                0 as libc::c_int as size_t,
+            );
         }
-        204 => { proc_exit(client_proc); }
+        204 => {
+            proc_exit(client_proc);
+        }
         300 => {
             client_read_open(data as *mut libc::c_void, datalen as size_t);
         }
@@ -2716,136 +2960,158 @@ unsafe extern "C" fn client_dispatch_wait(mut imsg: *mut imsg) {
             client_write_close(data as *mut libc::c_void, datalen as size_t);
         }
         211 | 212 | 213 => {
-            fprintf(stderr,
-                    b"server version is too old for client\n\x00" as *const u8
-                        as *const libc::c_char);
+            fprintf(
+                stderr,
+                b"server version is too old for client\n\x00" as *const u8 as *const libc::c_char,
+            );
             proc_exit(client_proc);
         }
-        _ => { }
+        _ => {}
     };
 }
 /* Dispatch imsgs in attached state (after MSG_READY). */
 unsafe extern "C" fn client_dispatch_attached(mut imsg: *mut imsg) {
-    let mut sigact: sigaction =
-        sigaction{__sigaction_handler: C2RustUnnamed_10{sa_handler: None,},
-                  sa_mask: __sigset_t{__val: [0; 16],},
-                  sa_flags: 0,
-                  sa_restorer: None,};
+    let mut sigact: sigaction = sigaction {
+        __sigaction_handler: C2RustUnnamed_10 { sa_handler: None },
+        sa_mask: __sigset_t { __val: [0; 16] },
+        sa_flags: 0,
+        sa_restorer: None,
+    };
     let mut data: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut datalen: ssize_t = 0;
     data = (*imsg).data as *mut libc::c_char;
-    datalen =
-        ((*imsg).hdr.len as
-             libc::c_ulong).wrapping_sub(::std::mem::size_of::<imsg_hdr>() as
-                                             libc::c_ulong) as ssize_t;
+    datalen = ((*imsg).hdr.len as libc::c_ulong)
+        .wrapping_sub(::std::mem::size_of::<imsg_hdr>() as libc::c_ulong) as ssize_t;
     match (*imsg).hdr.type_0 {
         218 => {
-            if datalen as libc::c_ulong !=
-                   ::std::mem::size_of::<uint64_t>() as libc::c_ulong {
-                fatalx(b"bad MSG_FLAGS string\x00" as *const u8 as
-                           *const libc::c_char);
+            if datalen as libc::c_ulong != ::std::mem::size_of::<uint64_t>() as libc::c_ulong {
+                fatalx(b"bad MSG_FLAGS string\x00" as *const u8 as *const libc::c_char);
             }
-            memcpy(&mut client_flags as *mut uint64_t as *mut libc::c_void,
-                   data as *const libc::c_void,
-                   ::std::mem::size_of::<uint64_t>() as libc::c_ulong);
-            log_debug(b"new flags are %#llx\x00" as *const u8 as
-                          *const libc::c_char,
-                      client_flags as libc::c_ulonglong);
+            memcpy(
+                &mut client_flags as *mut uint64_t as *mut libc::c_void,
+                data as *const libc::c_void,
+                ::std::mem::size_of::<uint64_t>() as libc::c_ulong,
+            );
+            log_debug(
+                b"new flags are %#llx\x00" as *const u8 as *const libc::c_char,
+                client_flags as libc::c_ulonglong,
+            );
         }
         201 | 202 => {
-            if datalen == 0 as libc::c_int as libc::c_long ||
-                   *data.offset((datalen - 1 as libc::c_int as libc::c_long)
-                                    as isize) as libc::c_int != '\u{0}' as i32
-               {
-                fatalx(b"bad MSG_DETACH string\x00" as *const u8 as
-                           *const libc::c_char);
+            if datalen == 0 as libc::c_int as libc::c_long
+                || *data.offset((datalen - 1 as libc::c_int as libc::c_long) as isize)
+                    as libc::c_int
+                    != '\u{0}' as i32
+            {
+                fatalx(b"bad MSG_DETACH string\x00" as *const u8 as *const libc::c_char);
             }
             client_exitsession = xstrdup(data);
             client_exittype = (*imsg).hdr.type_0 as msgtype;
-            if (*imsg).hdr.type_0 ==
-                   MSG_DETACHKILL as libc::c_int as libc::c_uint {
+            if (*imsg).hdr.type_0 == MSG_DETACHKILL as libc::c_int as libc::c_uint {
                 client_exitreason = CLIENT_EXIT_DETACHED_HUP
-            } else { client_exitreason = CLIENT_EXIT_DETACHED }
-            proc_send(client_peer, MSG_EXITING, -(1 as libc::c_int),
-                      0 as *const libc::c_void, 0 as libc::c_int as size_t);
+            } else {
+                client_exitreason = CLIENT_EXIT_DETACHED
+            }
+            proc_send(
+                client_peer,
+                MSG_EXITING,
+                -(1 as libc::c_int),
+                0 as *const libc::c_void,
+                0 as libc::c_int as size_t,
+            );
         }
         217 => {
-            if datalen == 0 as libc::c_int as libc::c_long ||
-                   *data.offset((datalen - 1 as libc::c_int as libc::c_long)
-                                    as isize) as libc::c_int != '\u{0}' as i32
-                   ||
-                   strlen(data).wrapping_add(1 as libc::c_int as
-                                                 libc::c_ulong) ==
-                       datalen as size_t {
-                fatalx(b"bad MSG_EXEC string\x00" as *const u8 as
-                           *const libc::c_char);
+            if datalen == 0 as libc::c_int as libc::c_long
+                || *data.offset((datalen - 1 as libc::c_int as libc::c_long) as isize)
+                    as libc::c_int
+                    != '\u{0}' as i32
+                || strlen(data).wrapping_add(1 as libc::c_int as libc::c_ulong) == datalen as size_t
+            {
+                fatalx(b"bad MSG_EXEC string\x00" as *const u8 as *const libc::c_char);
             }
             client_execcmd = xstrdup(data);
-            client_execshell =
-                xstrdup(data.offset(strlen(data) as
-                                        isize).offset(1 as libc::c_int as
-                                                          isize));
+            client_execshell = xstrdup(
+                data.offset(strlen(data) as isize)
+                    .offset(1 as libc::c_int as isize),
+            );
             client_exittype = (*imsg).hdr.type_0 as msgtype;
-            proc_send(client_peer, MSG_EXITING, -(1 as libc::c_int),
-                      0 as *const libc::c_void, 0 as libc::c_int as size_t);
+            proc_send(
+                client_peer,
+                MSG_EXITING,
+                -(1 as libc::c_int),
+                0 as *const libc::c_void,
+                0 as libc::c_int as size_t,
+            );
         }
         203 => {
             client_dispatch_exit_message(data, datalen as size_t);
-            if client_exitreason as libc::c_uint ==
-                   CLIENT_EXIT_NONE as libc::c_int as libc::c_uint {
+            if client_exitreason as libc::c_uint == CLIENT_EXIT_NONE as libc::c_int as libc::c_uint
+            {
                 client_exitreason = CLIENT_EXIT_EXITED
             }
-            proc_send(client_peer, MSG_EXITING, -(1 as libc::c_int),
-                      0 as *const libc::c_void, 0 as libc::c_int as size_t);
+            proc_send(
+                client_peer,
+                MSG_EXITING,
+                -(1 as libc::c_int),
+                0 as *const libc::c_void,
+                0 as libc::c_int as size_t,
+            );
         }
         204 => {
             if datalen != 0 as libc::c_int as libc::c_long {
-                fatalx(b"bad MSG_EXITED size\x00" as *const u8 as
-                           *const libc::c_char);
+                fatalx(b"bad MSG_EXITED size\x00" as *const u8 as *const libc::c_char);
             }
             proc_exit(client_proc);
         }
         210 => {
             if datalen != 0 as libc::c_int as libc::c_long {
-                fatalx(b"bad MSG_SHUTDOWN size\x00" as *const u8 as
-                           *const libc::c_char);
+                fatalx(b"bad MSG_SHUTDOWN size\x00" as *const u8 as *const libc::c_char);
             }
-            proc_send(client_peer, MSG_EXITING, -(1 as libc::c_int),
-                      0 as *const libc::c_void, 0 as libc::c_int as size_t);
+            proc_send(
+                client_peer,
+                MSG_EXITING,
+                -(1 as libc::c_int),
+                0 as *const libc::c_void,
+                0 as libc::c_int as size_t,
+            );
             client_exitreason = CLIENT_EXIT_SERVER_EXITED;
             client_exitval = 1 as libc::c_int
         }
         214 => {
             if datalen != 0 as libc::c_int as libc::c_long {
-                fatalx(b"bad MSG_SUSPEND size\x00" as *const u8 as
-                           *const libc::c_char);
+                fatalx(b"bad MSG_SUSPEND size\x00" as *const u8 as *const libc::c_char);
             }
-            memset(&mut sigact as *mut sigaction as *mut libc::c_void,
-                   0 as libc::c_int,
-                   ::std::mem::size_of::<sigaction>() as libc::c_ulong);
+            memset(
+                &mut sigact as *mut sigaction as *mut libc::c_void,
+                0 as libc::c_int,
+                ::std::mem::size_of::<sigaction>() as libc::c_ulong,
+            );
             sigemptyset(&mut sigact.sa_mask);
             sigact.sa_flags = 0x10000000 as libc::c_int;
             sigact.__sigaction_handler.sa_handler = None;
-            if sigaction(20 as libc::c_int, &mut sigact, 0 as *mut sigaction)
-                   != 0 as libc::c_int {
-                fatal(b"sigaction failed\x00" as *const u8 as
-                          *const libc::c_char);
+            if sigaction(20 as libc::c_int, &mut sigact, 0 as *mut sigaction) != 0 as libc::c_int {
+                fatal(b"sigaction failed\x00" as *const u8 as *const libc::c_char);
             }
             client_suspended = 1 as libc::c_int;
             kill(getpid(), 20 as libc::c_int);
         }
         206 => {
-            if datalen == 0 as libc::c_int as libc::c_long ||
-                   *data.offset((datalen - 1 as libc::c_int as libc::c_long)
-                                    as isize) as libc::c_int != '\u{0}' as i32
-               {
-                fatalx(b"bad MSG_LOCK string\x00" as *const u8 as
-                           *const libc::c_char);
+            if datalen == 0 as libc::c_int as libc::c_long
+                || *data.offset((datalen - 1 as libc::c_int as libc::c_long) as isize)
+                    as libc::c_int
+                    != '\u{0}' as i32
+            {
+                fatalx(b"bad MSG_LOCK string\x00" as *const u8 as *const libc::c_char);
             }
             system(data);
-            proc_send(client_peer, MSG_UNLOCK, -(1 as libc::c_int),
-                      0 as *const libc::c_void, 0 as libc::c_int as size_t);
+            proc_send(
+                client_peer,
+                MSG_UNLOCK,
+                -(1 as libc::c_int),
+                0 as *const libc::c_void,
+                0 as libc::c_int as size_t,
+            );
         }
-        _ => { }
+        _ => {}
     };
 }

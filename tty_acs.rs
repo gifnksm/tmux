@@ -43,10 +43,8 @@ pub struct timeval {
     pub tv_sec: __time_t,
     pub tv_usec: __suseconds_t,
 }
-pub type __compar_fn_t
-    =
-    Option<unsafe extern "C" fn(_: *const libc::c_void,
-                                _: *const libc::c_void) -> libc::c_int>;
+pub type __compar_fn_t =
+    Option<unsafe extern "C" fn(_: *const libc::c_void, _: *const libc::c_void) -> libc::c_int>;
 pub type uint8_t = __uint8_t;
 pub type uint64_t = __uint64_t;
 #[derive(Copy, Clone)]
@@ -117,18 +115,13 @@ pub struct event_callback {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub union C2RustUnnamed_6 {
-    pub evcb_callback: Option<unsafe extern "C" fn(_: libc::c_int,
-                                                   _: libc::c_short,
-                                                   _: *mut libc::c_void)
-                                  -> ()>,
-    pub evcb_selfcb: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                 _: *mut libc::c_void) -> ()>,
-    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
-    pub evcb_cbfinalize: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
+    pub evcb_callback:
+        Option<unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> ()>,
+    pub evcb_selfcb:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
+    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event, _: *mut libc::c_void) -> ()>,
+    pub evcb_cbfinalize:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -155,14 +148,10 @@ pub struct bufferevent {
     pub timeout_write: timeval,
     pub enabled: libc::c_short,
 }
-pub type bufferevent_event_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short,
-                                _: *mut libc::c_void) -> ()>;
-pub type bufferevent_data_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void)
-               -> ()>;
+pub type bufferevent_event_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short, _: *mut libc::c_void) -> ()>;
+pub type bufferevent_data_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct event_watermark {
@@ -301,17 +290,19 @@ pub struct C2RustUnnamed_9 {
     pub rbe_parent: *mut client_file,
     pub rbe_color: libc::c_int,
 }
-pub type client_file_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *const libc::c_char,
-                                _: libc::c_int, _: libc::c_int,
-                                _: *mut evbuffer, _: *mut libc::c_void)
-               -> ()>;
+pub type client_file_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: *mut evbuffer,
+        _: *mut libc::c_void,
+    ) -> (),
+>;
 pub type overlay_free_cb = Option<unsafe extern "C" fn(_: *mut client) -> ()>;
-pub type overlay_key_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event)
-               -> libc::c_int>;
+pub type overlay_key_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_event {
@@ -341,10 +332,8 @@ pub struct mouse_event {
     pub sgr_b: u_int,
 }
 pub type key_code = libc::c_ulonglong;
-pub type overlay_draw_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx)
-               -> ()>;
+pub type overlay_draw_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen_redraw_ctx {
@@ -358,10 +347,8 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int)
-               -> *mut screen>;
+pub type overlay_mode_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen {
@@ -455,10 +442,8 @@ pub struct C2RustUnnamed_11 {
     pub bg: u_char,
     pub data: u_char,
 }
-pub type overlay_check_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int)
-               -> libc::c_int>;
+pub type overlay_check_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct session {
@@ -705,24 +690,37 @@ pub struct C2RustUnnamed_24 {
 pub struct window_mode {
     pub name: *const libc::c_char,
     pub default_format: *const libc::c_char,
-    pub init: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                          _: *mut cmd_find_state,
-                                          _: *mut args) -> *mut screen>,
+    pub init: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut cmd_find_state,
+            _: *mut args,
+        ) -> *mut screen,
+    >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
-    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                            _: u_int, _: u_int) -> ()>,
-    pub key: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                         _: *mut client, _: *mut session,
-                                         _: *mut winlink, _: key_code,
-                                         _: *mut mouse_event) -> ()>,
-    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry)
-                              -> *const libc::c_char>,
-    pub command: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut client, _: *mut session,
-                                             _: *mut winlink, _: *mut args,
-                                             _: *mut mouse_event) -> ()>,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut format_tree) -> ()>,
+    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
+    pub key: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: key_code,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> *const libc::c_char>,
+    pub command: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: *mut args,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -759,14 +757,15 @@ pub struct winlink_stack {
 pub type C2RustUnnamed_25 = libc::c_uint;
 pub const PROMPT_COMMAND: C2RustUnnamed_25 = 1;
 pub const PROMPT_ENTRY: C2RustUnnamed_25 = 0;
-pub type prompt_free_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
-pub type prompt_input_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut libc::c_void,
-                                _: *const libc::c_char, _: libc::c_int)
-               -> libc::c_int>;
+pub type prompt_free_cb = Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
+pub type prompt_input_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut libc::c_void,
+        _: *const libc::c_char,
+        _: libc::c_int,
+    ) -> libc::c_int,
+>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_table {
@@ -937,12 +936,8 @@ pub struct tty {
     pub mouse_last_y: u_int,
     pub mouse_last_b: u_int,
     pub mouse_drag_flag: libc::c_int,
-    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client,
-                                                       _: *mut mouse_event)
-                                      -> ()>,
-    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client,
-                                                        _: *mut mouse_event)
-                                       -> ()>,
+    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
+    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
     pub key_timer: event,
     pub key_tree: *mut tty_key,
 }
@@ -1249,11 +1244,13 @@ pub struct tty_acs_reverse_entry {
     pub key: u_char,
 }
 #[inline]
-unsafe extern "C" fn bsearch(mut __key: *const libc::c_void,
-                             mut __base: *const libc::c_void,
-                             mut __nmemb: size_t, mut __size: size_t,
-                             mut __compar: __compar_fn_t)
- -> *mut libc::c_void {
+unsafe extern "C" fn bsearch(
+    mut __key: *const libc::c_void,
+    mut __base: *const libc::c_void,
+    mut __nmemb: size_t,
+    mut __size: size_t,
+    mut __compar: __compar_fn_t,
+) -> *mut libc::c_void {
     let mut __l: size_t = 0;
     let mut __u: size_t = 0;
     let mut __idx: size_t = 0;
@@ -1262,684 +1259,625 @@ unsafe extern "C" fn bsearch(mut __key: *const libc::c_void,
     __l = 0 as libc::c_int as size_t;
     __u = __nmemb;
     while __l < __u {
-        __idx =
-            __l.wrapping_add(__u).wrapping_div(2 as libc::c_int as
-                                                   libc::c_ulong);
-        __p =
-            (__base as
-                 *const libc::c_char).offset(__idx.wrapping_mul(__size) as
-                                                 isize) as *mut libc::c_void;
-        __comparison =
-            Some(__compar.expect("non-null function pointer")).expect("non-null function pointer")(__key,
-                                                                                                   __p);
+        __idx = __l
+            .wrapping_add(__u)
+            .wrapping_div(2 as libc::c_int as libc::c_ulong);
+        __p = (__base as *const libc::c_char).offset(__idx.wrapping_mul(__size) as isize)
+            as *mut libc::c_void;
+        __comparison = Some(__compar.expect("non-null function pointer"))
+            .expect("non-null function pointer")(__key, __p);
         if __comparison < 0 as libc::c_int {
             __u = __idx
         } else if __comparison > 0 as libc::c_int {
             __l = __idx.wrapping_add(1 as libc::c_int as libc::c_ulong)
-        } else { return __p as *mut libc::c_void }
+        } else {
+            return __p as *mut libc::c_void;
+        }
     }
     return 0 as *mut libc::c_void;
 }
-static mut tty_acs_table: [tty_acs_entry; 36] =
-    [{
-         let mut init =
-             tty_acs_entry{key: '+' as i32 as u_char,
-                           string:
-                               b"\xe2\x86\x92\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: ',' as i32 as u_char,
-                           string:
-                               b"\xe2\x86\x90\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: '-' as i32 as u_char,
-                           string:
-                               b"\xe2\x86\x91\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: '.' as i32 as u_char,
-                           string:
-                               b"\xe2\x86\x93\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: '0' as i32 as u_char,
-                           string:
-                               b"\xe2\x96\xae\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: '`' as i32 as u_char,
-                           string:
-                               b"\xe2\x97\x86\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: 'a' as i32 as u_char,
-                           string:
-                               b"\xe2\x96\x92\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: 'b' as i32 as u_char,
-                           string:
-                               b"\xe2\x90\x89\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: 'c' as i32 as u_char,
-                           string:
-                               b"\xe2\x90\x8c\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: 'd' as i32 as u_char,
-                           string:
-                               b"\xe2\x90\x8d\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: 'e' as i32 as u_char,
-                           string:
-                               b"\xe2\x90\x8a\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: 'f' as i32 as u_char,
-                           string:
-                               b"\xc2\xb0\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: 'g' as i32 as u_char,
-                           string:
-                               b"\xc2\xb1\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: 'h' as i32 as u_char,
-                           string:
-                               b"\xe2\x90\xa4\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: 'i' as i32 as u_char,
-                           string:
-                               b"\xe2\x90\x8b\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: 'j' as i32 as u_char,
-                           string:
-                               b"\xe2\x94\x98\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: 'k' as i32 as u_char,
-                           string:
-                               b"\xe2\x94\x90\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: 'l' as i32 as u_char,
-                           string:
-                               b"\xe2\x94\x8c\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: 'm' as i32 as u_char,
-                           string:
-                               b"\xe2\x94\x94\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: 'n' as i32 as u_char,
-                           string:
-                               b"\xe2\x94\xbc\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: 'o' as i32 as u_char,
-                           string:
-                               b"\xe2\x8e\xba\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: 'p' as i32 as u_char,
-                           string:
-                               b"\xe2\x8e\xbb\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: 'q' as i32 as u_char,
-                           string:
-                               b"\xe2\x94\x80\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: 'r' as i32 as u_char,
-                           string:
-                               b"\xe2\x8e\xbc\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: 's' as i32 as u_char,
-                           string:
-                               b"\xe2\x8e\xbd\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: 't' as i32 as u_char,
-                           string:
-                               b"\xe2\x94\x9c\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: 'u' as i32 as u_char,
-                           string:
-                               b"\xe2\x94\xa4\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: 'v' as i32 as u_char,
-                           string:
-                               b"\xe2\x94\xb4\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: 'w' as i32 as u_char,
-                           string:
-                               b"\xe2\x94\xac\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: 'x' as i32 as u_char,
-                           string:
-                               b"\xe2\x94\x82\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: 'y' as i32 as u_char,
-                           string:
-                               b"\xe2\x89\xa4\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: 'z' as i32 as u_char,
-                           string:
-                               b"\xe2\x89\xa5\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: '{' as i32 as u_char,
-                           string:
-                               b"\xcf\x80\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: '|' as i32 as u_char,
-                           string:
-                               b"\xe2\x89\xa0\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: '}' as i32 as u_char,
-                           string:
-                               b"\xc2\xa3\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_entry{key: '~' as i32 as u_char,
-                           string:
-                               b"\xc2\xb7\x00" as *const u8 as
-                                   *const libc::c_char,};
-         init
-     }];
-static mut tty_acs_reverse2: [tty_acs_reverse_entry; 1] =
-    [{
-         let mut init =
-             tty_acs_reverse_entry{string:
-                                       b"\xc2\xb7\x00" as *const u8 as
-                                           *const libc::c_char,
-                                   key: '~' as i32 as u_char,};
-         init
-     }];
-static mut tty_acs_reverse3: [tty_acs_reverse_entry; 32] =
-    [{
-         let mut init =
-             tty_acs_reverse_entry{string:
-                                       b"\xe2\x94\x80\x00" as *const u8 as
-                                           *const libc::c_char,
-                                   key: 'q' as i32 as u_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_reverse_entry{string:
-                                       b"\xe2\x94\x81\x00" as *const u8 as
-                                           *const libc::c_char,
-                                   key: 'q' as i32 as u_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_reverse_entry{string:
-                                       b"\xe2\x94\x82\x00" as *const u8 as
-                                           *const libc::c_char,
-                                   key: 'x' as i32 as u_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_reverse_entry{string:
-                                       b"\xe2\x94\x83\x00" as *const u8 as
-                                           *const libc::c_char,
-                                   key: 'x' as i32 as u_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_reverse_entry{string:
-                                       b"\xe2\x94\x8c\x00" as *const u8 as
-                                           *const libc::c_char,
-                                   key: 'l' as i32 as u_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_reverse_entry{string:
-                                       b"\xe2\x94\x8f\x00" as *const u8 as
-                                           *const libc::c_char,
-                                   key: 'k' as i32 as u_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_reverse_entry{string:
-                                       b"\xe2\x94\x90\x00" as *const u8 as
-                                           *const libc::c_char,
-                                   key: 'k' as i32 as u_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_reverse_entry{string:
-                                       b"\xe2\x94\x93\x00" as *const u8 as
-                                           *const libc::c_char,
-                                   key: 'l' as i32 as u_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_reverse_entry{string:
-                                       b"\xe2\x94\x94\x00" as *const u8 as
-                                           *const libc::c_char,
-                                   key: 'm' as i32 as u_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_reverse_entry{string:
-                                       b"\xe2\x94\x97\x00" as *const u8 as
-                                           *const libc::c_char,
-                                   key: 'm' as i32 as u_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_reverse_entry{string:
-                                       b"\xe2\x94\x98\x00" as *const u8 as
-                                           *const libc::c_char,
-                                   key: 'j' as i32 as u_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_reverse_entry{string:
-                                       b"\xe2\x94\x9b\x00" as *const u8 as
-                                           *const libc::c_char,
-                                   key: 'j' as i32 as u_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_reverse_entry{string:
-                                       b"\xe2\x94\x9c\x00" as *const u8 as
-                                           *const libc::c_char,
-                                   key: 't' as i32 as u_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_reverse_entry{string:
-                                       b"\xe2\x94\xa3\x00" as *const u8 as
-                                           *const libc::c_char,
-                                   key: 't' as i32 as u_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_reverse_entry{string:
-                                       b"\xe2\x94\xa4\x00" as *const u8 as
-                                           *const libc::c_char,
-                                   key: 'u' as i32 as u_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_reverse_entry{string:
-                                       b"\xe2\x94\xab\x00" as *const u8 as
-                                           *const libc::c_char,
-                                   key: 'u' as i32 as u_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_reverse_entry{string:
-                                       b"\xe2\x94\xb3\x00" as *const u8 as
-                                           *const libc::c_char,
-                                   key: 'w' as i32 as u_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_reverse_entry{string:
-                                       b"\xe2\x94\xb4\x00" as *const u8 as
-                                           *const libc::c_char,
-                                   key: 'v' as i32 as u_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_reverse_entry{string:
-                                       b"\xe2\x94\xbb\x00" as *const u8 as
-                                           *const libc::c_char,
-                                   key: 'v' as i32 as u_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_reverse_entry{string:
-                                       b"\xe2\x94\xbc\x00" as *const u8 as
-                                           *const libc::c_char,
-                                   key: 'n' as i32 as u_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_reverse_entry{string:
-                                       b"\xe2\x95\x8b\x00" as *const u8 as
-                                           *const libc::c_char,
-                                   key: 'n' as i32 as u_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_reverse_entry{string:
-                                       b"\xe2\x95\x90\x00" as *const u8 as
-                                           *const libc::c_char,
-                                   key: 'q' as i32 as u_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_reverse_entry{string:
-                                       b"\xe2\x95\x91\x00" as *const u8 as
-                                           *const libc::c_char,
-                                   key: 'x' as i32 as u_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_reverse_entry{string:
-                                       b"\xe2\x95\x94\x00" as *const u8 as
-                                           *const libc::c_char,
-                                   key: 'l' as i32 as u_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_reverse_entry{string:
-                                       b"\xe2\x95\x97\x00" as *const u8 as
-                                           *const libc::c_char,
-                                   key: 'k' as i32 as u_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_reverse_entry{string:
-                                       b"\xe2\x95\x9a\x00" as *const u8 as
-                                           *const libc::c_char,
-                                   key: 'm' as i32 as u_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_reverse_entry{string:
-                                       b"\xe2\x95\x9d\x00" as *const u8 as
-                                           *const libc::c_char,
-                                   key: 'j' as i32 as u_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_reverse_entry{string:
-                                       b"\xe2\x95\xa0\x00" as *const u8 as
-                                           *const libc::c_char,
-                                   key: 't' as i32 as u_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_reverse_entry{string:
-                                       b"\xe2\x95\xa3\x00" as *const u8 as
-                                           *const libc::c_char,
-                                   key: 'u' as i32 as u_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_reverse_entry{string:
-                                       b"\xe2\x95\xa6\x00" as *const u8 as
-                                           *const libc::c_char,
-                                   key: 'w' as i32 as u_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_reverse_entry{string:
-                                       b"\xe2\x95\xa9\x00" as *const u8 as
-                                           *const libc::c_char,
-                                   key: 'v' as i32 as u_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_acs_reverse_entry{string:
-                                       b"\xe2\x95\xac\x00" as *const u8 as
-                                           *const libc::c_char,
-                                   key: 'n' as i32 as u_char,};
-         init
-     }];
-unsafe extern "C" fn tty_acs_cmp(mut key: *const libc::c_void,
-                                 mut value: *const libc::c_void)
- -> libc::c_int {
+static mut tty_acs_table: [tty_acs_entry; 36] = [
+    {
+        let mut init = tty_acs_entry {
+            key: '+' as i32 as u_char,
+            string: b"\xe2\x86\x92\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: ',' as i32 as u_char,
+            string: b"\xe2\x86\x90\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: '-' as i32 as u_char,
+            string: b"\xe2\x86\x91\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: '.' as i32 as u_char,
+            string: b"\xe2\x86\x93\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: '0' as i32 as u_char,
+            string: b"\xe2\x96\xae\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: '`' as i32 as u_char,
+            string: b"\xe2\x97\x86\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: 'a' as i32 as u_char,
+            string: b"\xe2\x96\x92\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: 'b' as i32 as u_char,
+            string: b"\xe2\x90\x89\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: 'c' as i32 as u_char,
+            string: b"\xe2\x90\x8c\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: 'd' as i32 as u_char,
+            string: b"\xe2\x90\x8d\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: 'e' as i32 as u_char,
+            string: b"\xe2\x90\x8a\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: 'f' as i32 as u_char,
+            string: b"\xc2\xb0\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: 'g' as i32 as u_char,
+            string: b"\xc2\xb1\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: 'h' as i32 as u_char,
+            string: b"\xe2\x90\xa4\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: 'i' as i32 as u_char,
+            string: b"\xe2\x90\x8b\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: 'j' as i32 as u_char,
+            string: b"\xe2\x94\x98\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: 'k' as i32 as u_char,
+            string: b"\xe2\x94\x90\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: 'l' as i32 as u_char,
+            string: b"\xe2\x94\x8c\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: 'm' as i32 as u_char,
+            string: b"\xe2\x94\x94\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: 'n' as i32 as u_char,
+            string: b"\xe2\x94\xbc\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: 'o' as i32 as u_char,
+            string: b"\xe2\x8e\xba\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: 'p' as i32 as u_char,
+            string: b"\xe2\x8e\xbb\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: 'q' as i32 as u_char,
+            string: b"\xe2\x94\x80\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: 'r' as i32 as u_char,
+            string: b"\xe2\x8e\xbc\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: 's' as i32 as u_char,
+            string: b"\xe2\x8e\xbd\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: 't' as i32 as u_char,
+            string: b"\xe2\x94\x9c\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: 'u' as i32 as u_char,
+            string: b"\xe2\x94\xa4\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: 'v' as i32 as u_char,
+            string: b"\xe2\x94\xb4\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: 'w' as i32 as u_char,
+            string: b"\xe2\x94\xac\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: 'x' as i32 as u_char,
+            string: b"\xe2\x94\x82\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: 'y' as i32 as u_char,
+            string: b"\xe2\x89\xa4\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: 'z' as i32 as u_char,
+            string: b"\xe2\x89\xa5\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: '{' as i32 as u_char,
+            string: b"\xcf\x80\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: '|' as i32 as u_char,
+            string: b"\xe2\x89\xa0\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: '}' as i32 as u_char,
+            string: b"\xc2\xa3\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_entry {
+            key: '~' as i32 as u_char,
+            string: b"\xc2\xb7\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+];
+static mut tty_acs_reverse2: [tty_acs_reverse_entry; 1] = [{
+    let mut init = tty_acs_reverse_entry {
+        string: b"\xc2\xb7\x00" as *const u8 as *const libc::c_char,
+        key: '~' as i32 as u_char,
+    };
+    init
+}];
+static mut tty_acs_reverse3: [tty_acs_reverse_entry; 32] = [
+    {
+        let mut init = tty_acs_reverse_entry {
+            string: b"\xe2\x94\x80\x00" as *const u8 as *const libc::c_char,
+            key: 'q' as i32 as u_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_reverse_entry {
+            string: b"\xe2\x94\x81\x00" as *const u8 as *const libc::c_char,
+            key: 'q' as i32 as u_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_reverse_entry {
+            string: b"\xe2\x94\x82\x00" as *const u8 as *const libc::c_char,
+            key: 'x' as i32 as u_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_reverse_entry {
+            string: b"\xe2\x94\x83\x00" as *const u8 as *const libc::c_char,
+            key: 'x' as i32 as u_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_reverse_entry {
+            string: b"\xe2\x94\x8c\x00" as *const u8 as *const libc::c_char,
+            key: 'l' as i32 as u_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_reverse_entry {
+            string: b"\xe2\x94\x8f\x00" as *const u8 as *const libc::c_char,
+            key: 'k' as i32 as u_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_reverse_entry {
+            string: b"\xe2\x94\x90\x00" as *const u8 as *const libc::c_char,
+            key: 'k' as i32 as u_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_reverse_entry {
+            string: b"\xe2\x94\x93\x00" as *const u8 as *const libc::c_char,
+            key: 'l' as i32 as u_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_reverse_entry {
+            string: b"\xe2\x94\x94\x00" as *const u8 as *const libc::c_char,
+            key: 'm' as i32 as u_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_reverse_entry {
+            string: b"\xe2\x94\x97\x00" as *const u8 as *const libc::c_char,
+            key: 'm' as i32 as u_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_reverse_entry {
+            string: b"\xe2\x94\x98\x00" as *const u8 as *const libc::c_char,
+            key: 'j' as i32 as u_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_reverse_entry {
+            string: b"\xe2\x94\x9b\x00" as *const u8 as *const libc::c_char,
+            key: 'j' as i32 as u_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_reverse_entry {
+            string: b"\xe2\x94\x9c\x00" as *const u8 as *const libc::c_char,
+            key: 't' as i32 as u_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_reverse_entry {
+            string: b"\xe2\x94\xa3\x00" as *const u8 as *const libc::c_char,
+            key: 't' as i32 as u_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_reverse_entry {
+            string: b"\xe2\x94\xa4\x00" as *const u8 as *const libc::c_char,
+            key: 'u' as i32 as u_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_reverse_entry {
+            string: b"\xe2\x94\xab\x00" as *const u8 as *const libc::c_char,
+            key: 'u' as i32 as u_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_reverse_entry {
+            string: b"\xe2\x94\xb3\x00" as *const u8 as *const libc::c_char,
+            key: 'w' as i32 as u_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_reverse_entry {
+            string: b"\xe2\x94\xb4\x00" as *const u8 as *const libc::c_char,
+            key: 'v' as i32 as u_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_reverse_entry {
+            string: b"\xe2\x94\xbb\x00" as *const u8 as *const libc::c_char,
+            key: 'v' as i32 as u_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_reverse_entry {
+            string: b"\xe2\x94\xbc\x00" as *const u8 as *const libc::c_char,
+            key: 'n' as i32 as u_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_reverse_entry {
+            string: b"\xe2\x95\x8b\x00" as *const u8 as *const libc::c_char,
+            key: 'n' as i32 as u_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_reverse_entry {
+            string: b"\xe2\x95\x90\x00" as *const u8 as *const libc::c_char,
+            key: 'q' as i32 as u_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_reverse_entry {
+            string: b"\xe2\x95\x91\x00" as *const u8 as *const libc::c_char,
+            key: 'x' as i32 as u_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_reverse_entry {
+            string: b"\xe2\x95\x94\x00" as *const u8 as *const libc::c_char,
+            key: 'l' as i32 as u_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_reverse_entry {
+            string: b"\xe2\x95\x97\x00" as *const u8 as *const libc::c_char,
+            key: 'k' as i32 as u_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_reverse_entry {
+            string: b"\xe2\x95\x9a\x00" as *const u8 as *const libc::c_char,
+            key: 'm' as i32 as u_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_reverse_entry {
+            string: b"\xe2\x95\x9d\x00" as *const u8 as *const libc::c_char,
+            key: 'j' as i32 as u_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_reverse_entry {
+            string: b"\xe2\x95\xa0\x00" as *const u8 as *const libc::c_char,
+            key: 't' as i32 as u_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_reverse_entry {
+            string: b"\xe2\x95\xa3\x00" as *const u8 as *const libc::c_char,
+            key: 'u' as i32 as u_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_reverse_entry {
+            string: b"\xe2\x95\xa6\x00" as *const u8 as *const libc::c_char,
+            key: 'w' as i32 as u_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_reverse_entry {
+            string: b"\xe2\x95\xa9\x00" as *const u8 as *const libc::c_char,
+            key: 'v' as i32 as u_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_acs_reverse_entry {
+            string: b"\xe2\x95\xac\x00" as *const u8 as *const libc::c_char,
+            key: 'n' as i32 as u_char,
+        };
+        init
+    },
+];
+unsafe extern "C" fn tty_acs_cmp(
+    mut key: *const libc::c_void,
+    mut value: *const libc::c_void,
+) -> libc::c_int {
     let mut entry: *const tty_acs_entry = value as *const tty_acs_entry;
     let mut test: libc::c_int = *(key as *mut u_char) as libc::c_int;
     return test - (*entry).key as libc::c_int;
 }
-unsafe extern "C" fn tty_acs_reverse_cmp(mut key: *const libc::c_void,
-                                         mut value: *const libc::c_void)
- -> libc::c_int {
-    let mut entry: *const tty_acs_reverse_entry =
-        value as *const tty_acs_reverse_entry;
+unsafe extern "C" fn tty_acs_reverse_cmp(
+    mut key: *const libc::c_void,
+    mut value: *const libc::c_void,
+) -> libc::c_int {
+    let mut entry: *const tty_acs_reverse_entry = value as *const tty_acs_reverse_entry;
     let mut test: *const libc::c_char = key as *const libc::c_char;
     return strcmp(test, (*entry).string);
 }
 /* Should this terminal use ACS instead of UTF-8 line drawing? */
 #[no_mangle]
 pub unsafe extern "C" fn tty_acs_needed(mut tty: *mut tty) -> libc::c_int {
-    if tty.is_null() { return 0 as libc::c_int }
+    if tty.is_null() {
+        return 0 as libc::c_int;
+    }
     /*
-	 * If the U8 flag is present, it marks whether a terminal supports
-	 * UTF-8 and ACS together.
-	 *
-	 * If it is present and zero, we force ACS - this gives users a way to
-	 * turn off UTF-8 line drawing.
-	 *
-	 * If it is nonzero, we can fall through to the default and use UTF-8
-	 * line drawing on UTF-8 terminals.
-	 */
-    if tty_term_has((*tty).term, TTYC_U8) != 0 &&
-           tty_term_number((*tty).term, TTYC_U8) == 0 as libc::c_int {
-        return 1 as libc::c_int
+     * If the U8 flag is present, it marks whether a terminal supports
+     * UTF-8 and ACS together.
+     *
+     * If it is present and zero, we force ACS - this gives users a way to
+     * turn off UTF-8 line drawing.
+     *
+     * If it is nonzero, we can fall through to the default and use UTF-8
+     * line drawing on UTF-8 terminals.
+     */
+    if tty_term_has((*tty).term, TTYC_U8) != 0
+        && tty_term_number((*tty).term, TTYC_U8) == 0 as libc::c_int
+    {
+        return 1 as libc::c_int;
     }
     if (*(*tty).client).flags & 0x10000 as libc::c_int as libc::c_ulong != 0 {
-        return 0 as libc::c_int
+        return 0 as libc::c_int;
     }
     return 1 as libc::c_int;
 }
 /* Retrieve ACS to output as UTF-8. */
 #[no_mangle]
-pub unsafe extern "C" fn tty_acs_get(mut tty: *mut tty, mut ch: u_char)
- -> *const libc::c_char {
+pub unsafe extern "C" fn tty_acs_get(mut tty: *mut tty, mut ch: u_char) -> *const libc::c_char {
     let mut entry: *const tty_acs_entry = 0 as *const tty_acs_entry;
     /* Use the ACS set instead of UTF-8 if needed. */
     if tty_acs_needed(tty) != 0 {
-        if (*(*tty).term).acs[ch as usize][0 as libc::c_int as usize] as
-               libc::c_int == '\u{0}' as i32 {
-            return 0 as *const libc::c_char
+        if (*(*tty).term).acs[ch as usize][0 as libc::c_int as usize] as libc::c_int
+            == '\u{0}' as i32
+        {
+            return 0 as *const libc::c_char;
         }
-        return &mut *(*(*(*tty).term).acs.as_mut_ptr().offset(ch as
-                                                                  isize)).as_mut_ptr().offset(0
-                                                                                                  as
-                                                                                                  libc::c_int
-                                                                                                  as
-                                                                                                  isize)
-                   as *mut libc::c_char
+        return &mut *(*(*(*tty).term).acs.as_mut_ptr().offset(ch as isize))
+            .as_mut_ptr()
+            .offset(0 as libc::c_int as isize) as *mut libc::c_char;
     }
     /* Otherwise look up the UTF-8 translation. */
-    entry =
-        bsearch(&mut ch as *mut u_char as *const libc::c_void,
-                tty_acs_table.as_ptr() as *const libc::c_void,
-                (::std::mem::size_of::<[tty_acs_entry; 36]>() as
-                     libc::c_ulong).wrapping_div(::std::mem::size_of::<tty_acs_entry>()
-                                                     as libc::c_ulong),
-                ::std::mem::size_of::<tty_acs_entry>() as libc::c_ulong,
-                Some(tty_acs_cmp as
-                         unsafe extern "C" fn(_: *const libc::c_void,
-                                              _: *const libc::c_void)
-                             -> libc::c_int)) as *const tty_acs_entry;
-    if entry.is_null() { return 0 as *const libc::c_char }
+    entry = bsearch(
+        &mut ch as *mut u_char as *const libc::c_void,
+        tty_acs_table.as_ptr() as *const libc::c_void,
+        (::std::mem::size_of::<[tty_acs_entry; 36]>() as libc::c_ulong)
+            .wrapping_div(::std::mem::size_of::<tty_acs_entry>() as libc::c_ulong),
+        ::std::mem::size_of::<tty_acs_entry>() as libc::c_ulong,
+        Some(
+            tty_acs_cmp
+                as unsafe extern "C" fn(
+                    _: *const libc::c_void,
+                    _: *const libc::c_void,
+                ) -> libc::c_int,
+        ),
+    ) as *const tty_acs_entry;
+    if entry.is_null() {
+        return 0 as *const libc::c_char;
+    }
     return (*entry).string;
 }
 /* Reverse UTF-8 into ACS. */
 #[no_mangle]
-pub unsafe extern "C" fn tty_acs_reverse_get(mut tty: *mut tty,
-                                             mut s: *const libc::c_char,
-                                             mut slen: size_t)
- -> libc::c_int {
-    let mut table: *const tty_acs_reverse_entry =
-        0 as *const tty_acs_reverse_entry;
-    let mut entry: *const tty_acs_reverse_entry =
-        0 as *const tty_acs_reverse_entry;
+pub unsafe extern "C" fn tty_acs_reverse_get(
+    mut tty: *mut tty,
+    mut s: *const libc::c_char,
+    mut slen: size_t,
+) -> libc::c_int {
+    let mut table: *const tty_acs_reverse_entry = 0 as *const tty_acs_reverse_entry;
+    let mut entry: *const tty_acs_reverse_entry = 0 as *const tty_acs_reverse_entry;
     let mut items: u_int = 0;
     if slen == 2 as libc::c_int as libc::c_ulong {
         table = tty_acs_reverse2.as_ptr();
-        items =
-            (::std::mem::size_of::<[tty_acs_reverse_entry; 1]>() as
-                 libc::c_ulong).wrapping_div(::std::mem::size_of::<tty_acs_reverse_entry>()
-                                                 as libc::c_ulong) as u_int
+        items = (::std::mem::size_of::<[tty_acs_reverse_entry; 1]>() as libc::c_ulong)
+            .wrapping_div(::std::mem::size_of::<tty_acs_reverse_entry>() as libc::c_ulong)
+            as u_int
     } else if slen == 3 as libc::c_int as libc::c_ulong {
         table = tty_acs_reverse3.as_ptr();
-        items =
-            (::std::mem::size_of::<[tty_acs_reverse_entry; 32]>() as
-                 libc::c_ulong).wrapping_div(::std::mem::size_of::<tty_acs_reverse_entry>()
-                                                 as libc::c_ulong) as u_int
-    } else { return -(1 as libc::c_int) }
-    entry =
-        bsearch(s as *const libc::c_void, table as *const libc::c_void,
-                items as size_t,
-                ::std::mem::size_of::<tty_acs_reverse_entry>() as
-                    libc::c_ulong,
-                Some(tty_acs_reverse_cmp as
-                         unsafe extern "C" fn(_: *const libc::c_void,
-                                              _: *const libc::c_void)
-                             -> libc::c_int)) as *const tty_acs_reverse_entry;
-    if entry.is_null() { return -(1 as libc::c_int) }
+        items = (::std::mem::size_of::<[tty_acs_reverse_entry; 32]>() as libc::c_ulong)
+            .wrapping_div(::std::mem::size_of::<tty_acs_reverse_entry>() as libc::c_ulong)
+            as u_int
+    } else {
+        return -(1 as libc::c_int);
+    }
+    entry = bsearch(
+        s as *const libc::c_void,
+        table as *const libc::c_void,
+        items as size_t,
+        ::std::mem::size_of::<tty_acs_reverse_entry>() as libc::c_ulong,
+        Some(
+            tty_acs_reverse_cmp
+                as unsafe extern "C" fn(
+                    _: *const libc::c_void,
+                    _: *const libc::c_void,
+                ) -> libc::c_int,
+        ),
+    ) as *const tty_acs_reverse_entry;
+    if entry.is_null() {
+        return -(1 as libc::c_int);
+    }
     return (*entry).key as libc::c_int;
 }

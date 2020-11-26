@@ -20,32 +20,31 @@ extern "C" {
     #[no_mangle]
     fn free(__ptr: *mut libc::c_void);
     #[no_mangle]
-    fn strncmp(_: *const libc::c_char, _: *const libc::c_char,
-               _: libc::c_ulong) -> libc::c_int;
+    fn strncmp(_: *const libc::c_char, _: *const libc::c_char, _: libc::c_ulong) -> libc::c_int;
     #[no_mangle]
     fn strlen(_: *const libc::c_char) -> libc::c_ulong;
     #[no_mangle]
     fn notify_window(_: *const libc::c_char, _: *mut window);
     #[no_mangle]
-    fn options_get_string(_: *mut options, _: *const libc::c_char)
-     -> *const libc::c_char;
+    fn options_get_string(_: *mut options, _: *const libc::c_char) -> *const libc::c_char;
     #[no_mangle]
-    fn args_string_percentage(_: *const libc::c_char, _: libc::c_longlong,
-                              _: libc::c_longlong, _: libc::c_longlong,
-                              _: *mut *mut libc::c_char) -> libc::c_longlong;
+    fn args_string_percentage(
+        _: *const libc::c_char,
+        _: libc::c_longlong,
+        _: libc::c_longlong,
+        _: libc::c_longlong,
+        _: *mut *mut libc::c_char,
+    ) -> libc::c_longlong;
     #[no_mangle]
     fn server_redraw_window(_: *mut window);
     #[no_mangle]
-    fn window_resize(_: *mut window, _: u_int, _: u_int, _: libc::c_int,
-                     _: libc::c_int);
+    fn window_resize(_: *mut window, _: u_int, _: u_int, _: libc::c_int, _: libc::c_int);
     #[no_mangle]
     fn layout_create_cell(_: *mut layout_cell) -> *mut layout_cell;
     #[no_mangle]
-    fn layout_print_cell(_: *mut layout_cell, _: *const libc::c_char,
-                         _: u_int);
+    fn layout_print_cell(_: *mut layout_cell, _: *const libc::c_char, _: u_int);
     #[no_mangle]
-    fn layout_set_size(_: *mut layout_cell, _: u_int, _: u_int, _: u_int,
-                       _: u_int);
+    fn layout_set_size(_: *mut layout_cell, _: u_int, _: u_int, _: u_int, _: u_int);
     #[no_mangle]
     fn layout_make_leaf(_: *mut layout_cell, _: *mut window_pane);
     #[no_mangle]
@@ -55,8 +54,7 @@ extern "C" {
     #[no_mangle]
     fn layout_fix_panes(_: *mut window);
     #[no_mangle]
-    fn layout_resize_adjust(_: *mut window, _: *mut layout_cell,
-                            _: layout_type, _: libc::c_int);
+    fn layout_resize_adjust(_: *mut window, _: *mut layout_cell, _: layout_type, _: libc::c_int);
     #[no_mangle]
     fn layout_free(_: *mut window);
     #[no_mangle]
@@ -153,18 +151,13 @@ pub struct event_callback {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub union C2RustUnnamed_6 {
-    pub evcb_callback: Option<unsafe extern "C" fn(_: libc::c_int,
-                                                   _: libc::c_short,
-                                                   _: *mut libc::c_void)
-                                  -> ()>,
-    pub evcb_selfcb: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                 _: *mut libc::c_void) -> ()>,
-    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
-    pub evcb_cbfinalize: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
+    pub evcb_callback:
+        Option<unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> ()>,
+    pub evcb_selfcb:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
+    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event, _: *mut libc::c_void) -> ()>,
+    pub evcb_cbfinalize:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -191,14 +184,10 @@ pub struct bufferevent {
     pub timeout_write: timeval,
     pub enabled: libc::c_short,
 }
-pub type bufferevent_event_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short,
-                                _: *mut libc::c_void) -> ()>;
-pub type bufferevent_data_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void)
-               -> ()>;
+pub type bufferevent_event_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short, _: *mut libc::c_void) -> ()>;
+pub type bufferevent_data_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct event_watermark {
@@ -337,17 +326,19 @@ pub struct C2RustUnnamed_9 {
     pub rbe_parent: *mut client_file,
     pub rbe_color: libc::c_int,
 }
-pub type client_file_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *const libc::c_char,
-                                _: libc::c_int, _: libc::c_int,
-                                _: *mut evbuffer, _: *mut libc::c_void)
-               -> ()>;
+pub type client_file_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: *mut evbuffer,
+        _: *mut libc::c_void,
+    ) -> (),
+>;
 pub type overlay_free_cb = Option<unsafe extern "C" fn(_: *mut client) -> ()>;
-pub type overlay_key_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event)
-               -> libc::c_int>;
+pub type overlay_key_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_event {
@@ -377,10 +368,8 @@ pub struct mouse_event {
     pub sgr_b: u_int,
 }
 pub type key_code = libc::c_ulonglong;
-pub type overlay_draw_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx)
-               -> ()>;
+pub type overlay_draw_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen_redraw_ctx {
@@ -394,10 +383,8 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int)
-               -> *mut screen>;
+pub type overlay_mode_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen {
@@ -491,10 +478,8 @@ pub struct C2RustUnnamed_11 {
     pub bg: u_char,
     pub data: u_char,
 }
-pub type overlay_check_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int)
-               -> libc::c_int>;
+pub type overlay_check_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct session {
@@ -741,24 +726,37 @@ pub struct C2RustUnnamed_24 {
 pub struct window_mode {
     pub name: *const libc::c_char,
     pub default_format: *const libc::c_char,
-    pub init: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                          _: *mut cmd_find_state,
-                                          _: *mut args) -> *mut screen>,
+    pub init: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut cmd_find_state,
+            _: *mut args,
+        ) -> *mut screen,
+    >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
-    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                            _: u_int, _: u_int) -> ()>,
-    pub key: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                         _: *mut client, _: *mut session,
-                                         _: *mut winlink, _: key_code,
-                                         _: *mut mouse_event) -> ()>,
-    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry)
-                              -> *const libc::c_char>,
-    pub command: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut client, _: *mut session,
-                                             _: *mut winlink, _: *mut args,
-                                             _: *mut mouse_event) -> ()>,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut format_tree) -> ()>,
+    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
+    pub key: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: key_code,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> *const libc::c_char>,
+    pub command: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: *mut args,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -795,14 +793,15 @@ pub struct winlink_stack {
 pub type C2RustUnnamed_25 = libc::c_uint;
 pub const PROMPT_COMMAND: C2RustUnnamed_25 = 1;
 pub const PROMPT_ENTRY: C2RustUnnamed_25 = 0;
-pub type prompt_free_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
-pub type prompt_input_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut libc::c_void,
-                                _: *const libc::c_char, _: libc::c_int)
-               -> libc::c_int>;
+pub type prompt_free_cb = Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
+pub type prompt_input_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut libc::c_void,
+        _: *const libc::c_char,
+        _: libc::c_int,
+    ) -> libc::c_int,
+>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_table {
@@ -973,12 +972,8 @@ pub struct tty {
     pub mouse_last_y: u_int,
     pub mouse_last_b: u_int,
     pub mouse_drag_flag: libc::c_int,
-    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client,
-                                                       _: *mut mouse_event)
-                                      -> ()>,
-    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client,
-                                                        _: *mut mouse_event)
-                                       -> ()>,
+    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
+    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
     pub key_timer: event,
     pub key_tree: *mut tty_key,
 }
@@ -1034,84 +1029,58 @@ pub struct C2RustUnnamed_32 {
     pub name: *const libc::c_char,
     pub arrange: Option<unsafe extern "C" fn(_: *mut window) -> ()>,
 }
-static mut layout_sets: [C2RustUnnamed_32; 5] =
-    unsafe {
-        [{
-             let mut init =
-                 C2RustUnnamed_32{name:
-                                      b"even-horizontal\x00" as *const u8 as
-                                          *const libc::c_char,
-                                  arrange:
-                                      Some(layout_set_even_h as
-                                               unsafe extern "C" fn(_:
-                                                                        *mut window)
-                                                   -> ()),};
-             init
-         },
-         {
-             let mut init =
-                 C2RustUnnamed_32{name:
-                                      b"even-vertical\x00" as *const u8 as
-                                          *const libc::c_char,
-                                  arrange:
-                                      Some(layout_set_even_v as
-                                               unsafe extern "C" fn(_:
-                                                                        *mut window)
-                                                   -> ()),};
-             init
-         },
-         {
-             let mut init =
-                 C2RustUnnamed_32{name:
-                                      b"main-horizontal\x00" as *const u8 as
-                                          *const libc::c_char,
-                                  arrange:
-                                      Some(layout_set_main_h as
-                                               unsafe extern "C" fn(_:
-                                                                        *mut window)
-                                                   -> ()),};
-             init
-         },
-         {
-             let mut init =
-                 C2RustUnnamed_32{name:
-                                      b"main-vertical\x00" as *const u8 as
-                                          *const libc::c_char,
-                                  arrange:
-                                      Some(layout_set_main_v as
-                                               unsafe extern "C" fn(_:
-                                                                        *mut window)
-                                                   -> ()),};
-             init
-         },
-         {
-             let mut init =
-                 C2RustUnnamed_32{name:
-                                      b"tiled\x00" as *const u8 as
-                                          *const libc::c_char,
-                                  arrange:
-                                      Some(layout_set_tiled as
-                                               unsafe extern "C" fn(_:
-                                                                        *mut window)
-                                                   -> ()),};
-             init
-         }]
-    };
+static mut layout_sets: [C2RustUnnamed_32; 5] = unsafe {
+    [
+        {
+            let mut init = C2RustUnnamed_32 {
+                name: b"even-horizontal\x00" as *const u8 as *const libc::c_char,
+                arrange: Some(layout_set_even_h as unsafe extern "C" fn(_: *mut window) -> ()),
+            };
+            init
+        },
+        {
+            let mut init = C2RustUnnamed_32 {
+                name: b"even-vertical\x00" as *const u8 as *const libc::c_char,
+                arrange: Some(layout_set_even_v as unsafe extern "C" fn(_: *mut window) -> ()),
+            };
+            init
+        },
+        {
+            let mut init = C2RustUnnamed_32 {
+                name: b"main-horizontal\x00" as *const u8 as *const libc::c_char,
+                arrange: Some(layout_set_main_h as unsafe extern "C" fn(_: *mut window) -> ()),
+            };
+            init
+        },
+        {
+            let mut init = C2RustUnnamed_32 {
+                name: b"main-vertical\x00" as *const u8 as *const libc::c_char,
+                arrange: Some(layout_set_main_v as unsafe extern "C" fn(_: *mut window) -> ()),
+            };
+            init
+        },
+        {
+            let mut init = C2RustUnnamed_32 {
+                name: b"tiled\x00" as *const u8 as *const libc::c_char,
+                arrange: Some(layout_set_tiled as unsafe extern "C" fn(_: *mut window) -> ()),
+            };
+            init
+        },
+    ]
+};
 #[no_mangle]
-pub unsafe extern "C" fn layout_set_lookup(mut name: *const libc::c_char)
- -> libc::c_int {
+pub unsafe extern "C" fn layout_set_lookup(mut name: *const libc::c_char) -> libc::c_int {
     let mut i: u_int = 0;
     let mut matched: libc::c_int = -(1 as libc::c_int);
     i = 0 as libc::c_int as u_int;
-    while (i as libc::c_ulong) <
-              (::std::mem::size_of::<[C2RustUnnamed_32; 5]>() as
-                   libc::c_ulong).wrapping_div(::std::mem::size_of::<C2RustUnnamed_32>()
-                                                   as libc::c_ulong) {
-        if strncmp(layout_sets[i as usize].name, name, strlen(name)) ==
-               0 as libc::c_int {
+    while (i as libc::c_ulong)
+        < (::std::mem::size_of::<[C2RustUnnamed_32; 5]>() as libc::c_ulong)
+            .wrapping_div(::std::mem::size_of::<C2RustUnnamed_32>() as libc::c_ulong)
+    {
+        if strncmp(layout_sets[i as usize].name, name, strlen(name)) == 0 as libc::c_int {
             if matched != -(1 as libc::c_int) {
                 /* ambiguous */
-                return -(1 as libc::c_int)
+                return -(1 as libc::c_int);
             }
             matched = i as libc::c_int
         }
@@ -1120,32 +1089,20 @@ pub unsafe extern "C" fn layout_set_lookup(mut name: *const libc::c_char)
     return matched;
 }
 #[no_mangle]
-pub unsafe extern "C" fn layout_set_select(mut w: *mut window,
-                                           mut layout: u_int) -> u_int {
-    if layout as libc::c_ulong >
-           (::std::mem::size_of::<[C2RustUnnamed_32; 5]>() as
-                libc::c_ulong).wrapping_div(::std::mem::size_of::<C2RustUnnamed_32>()
-                                                as
-                                                libc::c_ulong).wrapping_sub(1
-                                                                                as
-                                                                                libc::c_int
-                                                                                as
-                                                                                libc::c_ulong)
-       {
-        layout =
-            (::std::mem::size_of::<[C2RustUnnamed_32; 5]>() as
-                 libc::c_ulong).wrapping_div(::std::mem::size_of::<C2RustUnnamed_32>()
-                                                 as
-                                                 libc::c_ulong).wrapping_sub(1
-                                                                                 as
-                                                                                 libc::c_int
-                                                                                 as
-                                                                                 libc::c_ulong)
-                as u_int
+pub unsafe extern "C" fn layout_set_select(mut w: *mut window, mut layout: u_int) -> u_int {
+    if layout as libc::c_ulong
+        > (::std::mem::size_of::<[C2RustUnnamed_32; 5]>() as libc::c_ulong)
+            .wrapping_div(::std::mem::size_of::<C2RustUnnamed_32>() as libc::c_ulong)
+            .wrapping_sub(1 as libc::c_int as libc::c_ulong)
+    {
+        layout = (::std::mem::size_of::<[C2RustUnnamed_32; 5]>() as libc::c_ulong)
+            .wrapping_div(::std::mem::size_of::<C2RustUnnamed_32>() as libc::c_ulong)
+            .wrapping_sub(1 as libc::c_int as libc::c_ulong) as u_int
     }
     if layout_sets[layout as usize].arrange.is_some() {
-        layout_sets[layout as
-                        usize].arrange.expect("non-null function pointer")(w);
+        layout_sets[layout as usize]
+            .arrange
+            .expect("non-null function pointer")(w);
     }
     (*w).lastlayout = layout as libc::c_int;
     return layout;
@@ -1157,22 +1114,18 @@ pub unsafe extern "C" fn layout_set_next(mut w: *mut window) -> u_int {
         layout = 0 as libc::c_int as u_int
     } else {
         layout = ((*w).lastlayout + 1 as libc::c_int) as u_int;
-        if layout as libc::c_ulong >
-               (::std::mem::size_of::<[C2RustUnnamed_32; 5]>() as
-                    libc::c_ulong).wrapping_div(::std::mem::size_of::<C2RustUnnamed_32>()
-                                                    as
-                                                    libc::c_ulong).wrapping_sub(1
-                                                                                    as
-                                                                                    libc::c_int
-                                                                                    as
-                                                                                    libc::c_ulong)
-           {
+        if layout as libc::c_ulong
+            > (::std::mem::size_of::<[C2RustUnnamed_32; 5]>() as libc::c_ulong)
+                .wrapping_div(::std::mem::size_of::<C2RustUnnamed_32>() as libc::c_ulong)
+                .wrapping_sub(1 as libc::c_int as libc::c_ulong)
+        {
             layout = 0 as libc::c_int as u_int
         }
     }
     if layout_sets[layout as usize].arrange.is_some() {
-        layout_sets[layout as
-                        usize].arrange.expect("non-null function pointer")(w);
+        layout_sets[layout as usize]
+            .arrange
+            .expect("non-null function pointer")(w);
     }
     (*w).lastlayout = layout as libc::c_int;
     return layout;
@@ -1181,75 +1134,72 @@ pub unsafe extern "C" fn layout_set_next(mut w: *mut window) -> u_int {
 pub unsafe extern "C" fn layout_set_previous(mut w: *mut window) -> u_int {
     let mut layout: u_int = 0;
     if (*w).lastlayout == -(1 as libc::c_int) {
-        layout =
-            (::std::mem::size_of::<[C2RustUnnamed_32; 5]>() as
-                 libc::c_ulong).wrapping_div(::std::mem::size_of::<C2RustUnnamed_32>()
-                                                 as
-                                                 libc::c_ulong).wrapping_sub(1
-                                                                                 as
-                                                                                 libc::c_int
-                                                                                 as
-                                                                                 libc::c_ulong)
-                as u_int
+        layout = (::std::mem::size_of::<[C2RustUnnamed_32; 5]>() as libc::c_ulong)
+            .wrapping_div(::std::mem::size_of::<C2RustUnnamed_32>() as libc::c_ulong)
+            .wrapping_sub(1 as libc::c_int as libc::c_ulong) as u_int
     } else {
         layout = (*w).lastlayout as u_int;
         if layout == 0 as libc::c_int as libc::c_uint {
-            layout =
-                (::std::mem::size_of::<[C2RustUnnamed_32; 5]>() as
-                     libc::c_ulong).wrapping_div(::std::mem::size_of::<C2RustUnnamed_32>()
-                                                     as
-                                                     libc::c_ulong).wrapping_sub(1
-                                                                                     as
-                                                                                     libc::c_int
-                                                                                     as
-                                                                                     libc::c_ulong)
-                    as u_int
-        } else { layout = layout.wrapping_sub(1) }
+            layout = (::std::mem::size_of::<[C2RustUnnamed_32; 5]>() as libc::c_ulong)
+                .wrapping_div(::std::mem::size_of::<C2RustUnnamed_32>() as libc::c_ulong)
+                .wrapping_sub(1 as libc::c_int as libc::c_ulong) as u_int
+        } else {
+            layout = layout.wrapping_sub(1)
+        }
     }
     if layout_sets[layout as usize].arrange.is_some() {
-        layout_sets[layout as
-                        usize].arrange.expect("non-null function pointer")(w);
+        layout_sets[layout as usize]
+            .arrange
+            .expect("non-null function pointer")(w);
     }
     (*w).lastlayout = layout as libc::c_int;
     return layout;
 }
-unsafe extern "C" fn layout_set_even(mut w: *mut window,
-                                     mut type_0: layout_type) {
+unsafe extern "C" fn layout_set_even(mut w: *mut window, mut type_0: layout_type) {
     let mut wp: *mut window_pane = 0 as *mut window_pane;
     let mut lc: *mut layout_cell = 0 as *mut layout_cell;
     let mut lcnew: *mut layout_cell = 0 as *mut layout_cell;
     let mut n: u_int = 0;
     let mut sx: u_int = 0;
     let mut sy: u_int = 0;
-    layout_print_cell((*w).layout_root,
-                      (*::std::mem::transmute::<&[u8; 16],
-                                                &[libc::c_char; 16]>(b"layout_set_even\x00")).as_ptr(),
-                      1 as libc::c_int as u_int);
+    layout_print_cell(
+        (*w).layout_root,
+        (*::std::mem::transmute::<&[u8; 16], &[libc::c_char; 16]>(b"layout_set_even\x00")).as_ptr(),
+        1 as libc::c_int as u_int,
+    );
     /* Get number of panes. */
     n = window_count_panes(w);
-    if n <= 1 as libc::c_int as libc::c_uint { return }
+    if n <= 1 as libc::c_int as libc::c_uint {
+        return;
+    }
     /* Free the old root and construct a new. */
     layout_free(w);
     (*w).layout_root = layout_create_cell(0 as *mut layout_cell);
     lc = (*w).layout_root;
-    if type_0 as libc::c_uint ==
-           LAYOUT_LEFTRIGHT as libc::c_int as libc::c_uint {
-        sx =
-            n.wrapping_mul((1 as libc::c_int + 1 as libc::c_int) as
-                               libc::c_uint).wrapping_sub(1 as libc::c_int as
-                                                              libc::c_uint);
-        if sx < (*w).sx { sx = (*w).sx }
+    if type_0 as libc::c_uint == LAYOUT_LEFTRIGHT as libc::c_int as libc::c_uint {
+        sx = n
+            .wrapping_mul((1 as libc::c_int + 1 as libc::c_int) as libc::c_uint)
+            .wrapping_sub(1 as libc::c_int as libc::c_uint);
+        if sx < (*w).sx {
+            sx = (*w).sx
+        }
         sy = (*w).sy
     } else {
-        sy =
-            n.wrapping_mul((1 as libc::c_int + 1 as libc::c_int) as
-                               libc::c_uint).wrapping_sub(1 as libc::c_int as
-                                                              libc::c_uint);
-        if sy < (*w).sy { sy = (*w).sy }
+        sy = n
+            .wrapping_mul((1 as libc::c_int + 1 as libc::c_int) as libc::c_uint)
+            .wrapping_sub(1 as libc::c_int as libc::c_uint);
+        if sy < (*w).sy {
+            sy = (*w).sy
+        }
         sx = (*w).sx
     }
-    layout_set_size(lc, sx, sy, 0 as libc::c_int as u_int,
-                    0 as libc::c_int as u_int);
+    layout_set_size(
+        lc,
+        sx,
+        sy,
+        0 as libc::c_int as u_int,
+        0 as libc::c_int as u_int,
+    );
     layout_make_node(lc, type_0);
     /* Build new leaf cells. */
     wp = (*w).panes.tqh_first;
@@ -1269,14 +1219,22 @@ unsafe extern "C" fn layout_set_even(mut w: *mut window,
     /* Fix cell offsets. */
     layout_fix_offsets(w);
     layout_fix_panes(w);
-    layout_print_cell((*w).layout_root,
-                      (*::std::mem::transmute::<&[u8; 16],
-                                                &[libc::c_char; 16]>(b"layout_set_even\x00")).as_ptr(),
-                      1 as libc::c_int as u_int);
-    window_resize(w, (*lc).sx, (*lc).sy, -(1 as libc::c_int),
-                  -(1 as libc::c_int));
-    notify_window(b"window-layout-changed\x00" as *const u8 as
-                      *const libc::c_char, w);
+    layout_print_cell(
+        (*w).layout_root,
+        (*::std::mem::transmute::<&[u8; 16], &[libc::c_char; 16]>(b"layout_set_even\x00")).as_ptr(),
+        1 as libc::c_int as u_int,
+    );
+    window_resize(
+        w,
+        (*lc).sx,
+        (*lc).sy,
+        -(1 as libc::c_int),
+        -(1 as libc::c_int),
+    );
+    notify_window(
+        b"window-layout-changed\x00" as *const u8 as *const libc::c_char,
+        w,
+    );
     server_redraw_window(w);
 }
 /* $OpenBSD$ */
@@ -1318,25 +1276,32 @@ unsafe extern "C" fn layout_set_main_h(mut w: *mut window) {
     let mut sy: u_int = 0;
     let mut cause: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut s: *const libc::c_char = 0 as *const libc::c_char;
-    layout_print_cell((*w).layout_root,
-                      (*::std::mem::transmute::<&[u8; 18],
-                                                &[libc::c_char; 18]>(b"layout_set_main_h\x00")).as_ptr(),
-                      1 as libc::c_int as u_int);
+    layout_print_cell(
+        (*w).layout_root,
+        (*::std::mem::transmute::<&[u8; 18], &[libc::c_char; 18]>(b"layout_set_main_h\x00"))
+            .as_ptr(),
+        1 as libc::c_int as u_int,
+    );
     /* Get number of panes. */
     n = window_count_panes(w); /* take off main pane */
-    if n <= 1 as libc::c_int as libc::c_uint { return }
+    if n <= 1 as libc::c_int as libc::c_uint {
+        return;
+    }
     n = n.wrapping_sub(1);
     /* Find available height - take off one line for the border. */
     sy = (*w).sy.wrapping_sub(1 as libc::c_int as libc::c_uint);
     /* Get the main pane height. */
-    s =
-        options_get_string((*w).options,
-                           b"main-pane-height\x00" as *const u8 as
-                               *const libc::c_char);
-    mainh =
-        args_string_percentage(s, 0 as libc::c_int as libc::c_longlong,
-                               sy as libc::c_longlong, sy as libc::c_longlong,
-                               &mut cause) as u_int;
+    s = options_get_string(
+        (*w).options,
+        b"main-pane-height\x00" as *const u8 as *const libc::c_char,
+    );
+    mainh = args_string_percentage(
+        s,
+        0 as libc::c_int as libc::c_longlong,
+        sy as libc::c_longlong,
+        sy as libc::c_longlong,
+        &mut cause,
+    ) as u_int;
     if !cause.is_null() {
         mainh = 24 as libc::c_int as u_int;
         free(cause as *mut libc::c_void);
@@ -1345,45 +1310,61 @@ unsafe extern "C" fn layout_set_main_h(mut w: *mut window) {
     if mainh.wrapping_add(1 as libc::c_int as libc::c_uint) >= sy {
         if sy <= (1 as libc::c_int + 1 as libc::c_int) as libc::c_uint {
             mainh = 1 as libc::c_int as u_int
-        } else { mainh = sy.wrapping_sub(1 as libc::c_int as libc::c_uint) }
+        } else {
+            mainh = sy.wrapping_sub(1 as libc::c_int as libc::c_uint)
+        }
         otherh = 1 as libc::c_int as u_int
     } else {
-        s =
-            options_get_string((*w).options,
-                               b"other-pane-height\x00" as *const u8 as
-                                   *const libc::c_char);
-        otherh =
-            args_string_percentage(s, 0 as libc::c_int as libc::c_longlong,
-                                   sy as libc::c_longlong,
-                                   sy as libc::c_longlong, &mut cause) as
-                u_int;
+        s = options_get_string(
+            (*w).options,
+            b"other-pane-height\x00" as *const u8 as *const libc::c_char,
+        );
+        otherh = args_string_percentage(
+            s,
+            0 as libc::c_int as libc::c_longlong,
+            sy as libc::c_longlong,
+            sy as libc::c_longlong,
+            &mut cause,
+        ) as u_int;
         if !cause.is_null() || otherh == 0 as libc::c_int as libc::c_uint {
             otherh = sy.wrapping_sub(mainh);
             free(cause as *mut libc::c_void);
         } else if otherh > sy || sy.wrapping_sub(otherh) < mainh {
             otherh = sy.wrapping_sub(mainh)
-        } else { mainh = sy.wrapping_sub(otherh) }
+        } else {
+            mainh = sy.wrapping_sub(otherh)
+        }
     }
     /* Work out what width is needed. */
-    sx =
-        n.wrapping_mul((1 as libc::c_int + 1 as libc::c_int) as
-                           libc::c_uint).wrapping_sub(1 as libc::c_int as
-                                                          libc::c_uint);
-    if sx < (*w).sx { sx = (*w).sx }
+    sx = n
+        .wrapping_mul((1 as libc::c_int + 1 as libc::c_int) as libc::c_uint)
+        .wrapping_sub(1 as libc::c_int as libc::c_uint);
+    if sx < (*w).sx {
+        sx = (*w).sx
+    }
     /* Free old tree and create a new root. */
     layout_free(w);
     (*w).layout_root = layout_create_cell(0 as *mut layout_cell);
     lc = (*w).layout_root;
-    layout_set_size(lc, sx,
-                    mainh.wrapping_add(otherh).wrapping_add(1 as libc::c_int
-                                                                as
-                                                                libc::c_uint),
-                    0 as libc::c_int as u_int, 0 as libc::c_int as u_int);
+    layout_set_size(
+        lc,
+        sx,
+        mainh
+            .wrapping_add(otherh)
+            .wrapping_add(1 as libc::c_int as libc::c_uint),
+        0 as libc::c_int as u_int,
+        0 as libc::c_int as u_int,
+    );
     layout_make_node(lc, LAYOUT_TOPBOTTOM);
     /* Create the main pane. */
     lcmain = layout_create_cell(lc);
-    layout_set_size(lcmain, sx, mainh, 0 as libc::c_int as u_int,
-                    0 as libc::c_int as u_int);
+    layout_set_size(
+        lcmain,
+        sx,
+        mainh,
+        0 as libc::c_int as u_int,
+        0 as libc::c_int as u_int,
+    );
     layout_make_leaf(lcmain, (*w).panes.tqh_first);
     (*lcmain).entry.tqe_next = 0 as *mut layout_cell;
     (*lcmain).entry.tqe_prev = (*lc).cells.tqh_last;
@@ -1391,8 +1372,13 @@ unsafe extern "C" fn layout_set_main_h(mut w: *mut window) {
     (*lc).cells.tqh_last = &mut (*lcmain).entry.tqe_next;
     /* Create the other pane. */
     lcother = layout_create_cell(lc);
-    layout_set_size(lcother, sx, otherh, 0 as libc::c_int as u_int,
-                    0 as libc::c_int as u_int);
+    layout_set_size(
+        lcother,
+        sx,
+        otherh,
+        0 as libc::c_int as u_int,
+        0 as libc::c_int as u_int,
+    );
     if n == 1 as libc::c_int as libc::c_uint {
         wp = (*(*w).panes.tqh_first).entry.tqe_next;
         layout_make_leaf(lcother, wp);
@@ -1411,9 +1397,13 @@ unsafe extern "C" fn layout_set_main_h(mut w: *mut window) {
         while !wp.is_null() {
             if !(wp == (*w).panes.tqh_first) {
                 lcchild = layout_create_cell(lcother);
-                layout_set_size(lcchild, 1 as libc::c_int as u_int, otherh,
-                                0 as libc::c_int as u_int,
-                                0 as libc::c_int as u_int);
+                layout_set_size(
+                    lcchild,
+                    1 as libc::c_int as u_int,
+                    otherh,
+                    0 as libc::c_int as u_int,
+                    0 as libc::c_int as u_int,
+                );
                 layout_make_leaf(lcchild, wp);
                 (*lcchild).entry.tqe_next = 0 as *mut layout_cell;
                 (*lcchild).entry.tqe_prev = (*lcother).cells.tqh_last;
@@ -1427,14 +1417,23 @@ unsafe extern "C" fn layout_set_main_h(mut w: *mut window) {
     /* Fix cell offsets. */
     layout_fix_offsets(w);
     layout_fix_panes(w);
-    layout_print_cell((*w).layout_root,
-                      (*::std::mem::transmute::<&[u8; 18],
-                                                &[libc::c_char; 18]>(b"layout_set_main_h\x00")).as_ptr(),
-                      1 as libc::c_int as u_int);
-    window_resize(w, (*lc).sx, (*lc).sy, -(1 as libc::c_int),
-                  -(1 as libc::c_int));
-    notify_window(b"window-layout-changed\x00" as *const u8 as
-                      *const libc::c_char, w);
+    layout_print_cell(
+        (*w).layout_root,
+        (*::std::mem::transmute::<&[u8; 18], &[libc::c_char; 18]>(b"layout_set_main_h\x00"))
+            .as_ptr(),
+        1 as libc::c_int as u_int,
+    );
+    window_resize(
+        w,
+        (*lc).sx,
+        (*lc).sy,
+        -(1 as libc::c_int),
+        -(1 as libc::c_int),
+    );
+    notify_window(
+        b"window-layout-changed\x00" as *const u8 as *const libc::c_char,
+        w,
+    );
     server_redraw_window(w);
 }
 unsafe extern "C" fn layout_set_main_v(mut w: *mut window) {
@@ -1450,25 +1449,32 @@ unsafe extern "C" fn layout_set_main_v(mut w: *mut window) {
     let mut sy: u_int = 0;
     let mut cause: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut s: *const libc::c_char = 0 as *const libc::c_char;
-    layout_print_cell((*w).layout_root,
-                      (*::std::mem::transmute::<&[u8; 18],
-                                                &[libc::c_char; 18]>(b"layout_set_main_v\x00")).as_ptr(),
-                      1 as libc::c_int as u_int);
+    layout_print_cell(
+        (*w).layout_root,
+        (*::std::mem::transmute::<&[u8; 18], &[libc::c_char; 18]>(b"layout_set_main_v\x00"))
+            .as_ptr(),
+        1 as libc::c_int as u_int,
+    );
     /* Get number of panes. */
     n = window_count_panes(w); /* take off main pane */
-    if n <= 1 as libc::c_int as libc::c_uint { return }
+    if n <= 1 as libc::c_int as libc::c_uint {
+        return;
+    }
     n = n.wrapping_sub(1);
     /* Find available width - take off one line for the border. */
     sx = (*w).sx.wrapping_sub(1 as libc::c_int as libc::c_uint);
     /* Get the main pane width. */
-    s =
-        options_get_string((*w).options,
-                           b"main-pane-width\x00" as *const u8 as
-                               *const libc::c_char);
-    mainw =
-        args_string_percentage(s, 0 as libc::c_int as libc::c_longlong,
-                               sx as libc::c_longlong, sx as libc::c_longlong,
-                               &mut cause) as u_int;
+    s = options_get_string(
+        (*w).options,
+        b"main-pane-width\x00" as *const u8 as *const libc::c_char,
+    );
+    mainw = args_string_percentage(
+        s,
+        0 as libc::c_int as libc::c_longlong,
+        sx as libc::c_longlong,
+        sx as libc::c_longlong,
+        &mut cause,
+    ) as u_int;
     if !cause.is_null() {
         mainw = 80 as libc::c_int as u_int;
         free(cause as *mut libc::c_void);
@@ -1477,45 +1483,61 @@ unsafe extern "C" fn layout_set_main_v(mut w: *mut window) {
     if mainw.wrapping_add(1 as libc::c_int as libc::c_uint) >= sx {
         if sx <= (1 as libc::c_int + 1 as libc::c_int) as libc::c_uint {
             mainw = 1 as libc::c_int as u_int
-        } else { mainw = sx.wrapping_sub(1 as libc::c_int as libc::c_uint) }
+        } else {
+            mainw = sx.wrapping_sub(1 as libc::c_int as libc::c_uint)
+        }
         otherw = 1 as libc::c_int as u_int
     } else {
-        s =
-            options_get_string((*w).options,
-                               b"other-pane-width\x00" as *const u8 as
-                                   *const libc::c_char);
-        otherw =
-            args_string_percentage(s, 0 as libc::c_int as libc::c_longlong,
-                                   sx as libc::c_longlong,
-                                   sx as libc::c_longlong, &mut cause) as
-                u_int;
+        s = options_get_string(
+            (*w).options,
+            b"other-pane-width\x00" as *const u8 as *const libc::c_char,
+        );
+        otherw = args_string_percentage(
+            s,
+            0 as libc::c_int as libc::c_longlong,
+            sx as libc::c_longlong,
+            sx as libc::c_longlong,
+            &mut cause,
+        ) as u_int;
         if !cause.is_null() || otherw == 0 as libc::c_int as libc::c_uint {
             otherw = sx.wrapping_sub(mainw);
             free(cause as *mut libc::c_void);
         } else if otherw > sx || sx.wrapping_sub(otherw) < mainw {
             otherw = sx.wrapping_sub(mainw)
-        } else { mainw = sx.wrapping_sub(otherw) }
+        } else {
+            mainw = sx.wrapping_sub(otherw)
+        }
     }
     /* Work out what height is needed. */
-    sy =
-        n.wrapping_mul((1 as libc::c_int + 1 as libc::c_int) as
-                           libc::c_uint).wrapping_sub(1 as libc::c_int as
-                                                          libc::c_uint);
-    if sy < (*w).sy { sy = (*w).sy }
+    sy = n
+        .wrapping_mul((1 as libc::c_int + 1 as libc::c_int) as libc::c_uint)
+        .wrapping_sub(1 as libc::c_int as libc::c_uint);
+    if sy < (*w).sy {
+        sy = (*w).sy
+    }
     /* Free old tree and create a new root. */
     layout_free(w);
     (*w).layout_root = layout_create_cell(0 as *mut layout_cell);
     lc = (*w).layout_root;
-    layout_set_size(lc,
-                    mainw.wrapping_add(otherw).wrapping_add(1 as libc::c_int
-                                                                as
-                                                                libc::c_uint),
-                    sy, 0 as libc::c_int as u_int, 0 as libc::c_int as u_int);
+    layout_set_size(
+        lc,
+        mainw
+            .wrapping_add(otherw)
+            .wrapping_add(1 as libc::c_int as libc::c_uint),
+        sy,
+        0 as libc::c_int as u_int,
+        0 as libc::c_int as u_int,
+    );
     layout_make_node(lc, LAYOUT_LEFTRIGHT);
     /* Create the main pane. */
     lcmain = layout_create_cell(lc);
-    layout_set_size(lcmain, mainw, sy, 0 as libc::c_int as u_int,
-                    0 as libc::c_int as u_int);
+    layout_set_size(
+        lcmain,
+        mainw,
+        sy,
+        0 as libc::c_int as u_int,
+        0 as libc::c_int as u_int,
+    );
     layout_make_leaf(lcmain, (*w).panes.tqh_first);
     (*lcmain).entry.tqe_next = 0 as *mut layout_cell;
     (*lcmain).entry.tqe_prev = (*lc).cells.tqh_last;
@@ -1523,8 +1545,13 @@ unsafe extern "C" fn layout_set_main_v(mut w: *mut window) {
     (*lc).cells.tqh_last = &mut (*lcmain).entry.tqe_next;
     /* Create the other pane. */
     lcother = layout_create_cell(lc);
-    layout_set_size(lcother, otherw, sy, 0 as libc::c_int as u_int,
-                    0 as libc::c_int as u_int);
+    layout_set_size(
+        lcother,
+        otherw,
+        sy,
+        0 as libc::c_int as u_int,
+        0 as libc::c_int as u_int,
+    );
     if n == 1 as libc::c_int as libc::c_uint {
         wp = (*(*w).panes.tqh_first).entry.tqe_next;
         layout_make_leaf(lcother, wp);
@@ -1543,9 +1570,13 @@ unsafe extern "C" fn layout_set_main_v(mut w: *mut window) {
         while !wp.is_null() {
             if !(wp == (*w).panes.tqh_first) {
                 lcchild = layout_create_cell(lcother);
-                layout_set_size(lcchild, otherw, 1 as libc::c_int as u_int,
-                                0 as libc::c_int as u_int,
-                                0 as libc::c_int as u_int);
+                layout_set_size(
+                    lcchild,
+                    otherw,
+                    1 as libc::c_int as u_int,
+                    0 as libc::c_int as u_int,
+                    0 as libc::c_int as u_int,
+                );
                 layout_make_leaf(lcchild, wp);
                 (*lcchild).entry.tqe_next = 0 as *mut layout_cell;
                 (*lcchild).entry.tqe_prev = (*lcother).cells.tqh_last;
@@ -1559,14 +1590,23 @@ unsafe extern "C" fn layout_set_main_v(mut w: *mut window) {
     /* Fix cell offsets. */
     layout_fix_offsets(w);
     layout_fix_panes(w);
-    layout_print_cell((*w).layout_root,
-                      (*::std::mem::transmute::<&[u8; 18],
-                                                &[libc::c_char; 18]>(b"layout_set_main_v\x00")).as_ptr(),
-                      1 as libc::c_int as u_int);
-    window_resize(w, (*lc).sx, (*lc).sy, -(1 as libc::c_int),
-                  -(1 as libc::c_int));
-    notify_window(b"window-layout-changed\x00" as *const u8 as
-                      *const libc::c_char, w);
+    layout_print_cell(
+        (*w).layout_root,
+        (*::std::mem::transmute::<&[u8; 18], &[libc::c_char; 18]>(b"layout_set_main_v\x00"))
+            .as_ptr(),
+        1 as libc::c_int as u_int,
+    );
+    window_resize(
+        w,
+        (*lc).sx,
+        (*lc).sy,
+        -(1 as libc::c_int),
+        -(1 as libc::c_int),
+    );
+    notify_window(
+        b"window-layout-changed\x00" as *const u8 as *const libc::c_char,
+        w,
+    );
     server_redraw_window(w);
 }
 unsafe extern "C" fn layout_set_tiled(mut w: *mut window) {
@@ -1584,13 +1624,17 @@ unsafe extern "C" fn layout_set_tiled(mut w: *mut window) {
     let mut j: u_int = 0;
     let mut columns: u_int = 0;
     let mut rows: u_int = 0;
-    layout_print_cell((*w).layout_root,
-                      (*::std::mem::transmute::<&[u8; 17],
-                                                &[libc::c_char; 17]>(b"layout_set_tiled\x00")).as_ptr(),
-                      1 as libc::c_int as u_int);
+    layout_print_cell(
+        (*w).layout_root,
+        (*::std::mem::transmute::<&[u8; 17], &[libc::c_char; 17]>(b"layout_set_tiled\x00"))
+            .as_ptr(),
+        1 as libc::c_int as u_int,
+    );
     /* Get number of panes. */
     n = window_count_panes(w);
-    if n <= 1 as libc::c_int as libc::c_uint { return }
+    if n <= 1 as libc::c_int as libc::c_uint {
+        return;
+    }
     /* How many rows and columns are wanted? */
     columns = 1 as libc::c_int as u_int;
     rows = columns;
@@ -1601,15 +1645,17 @@ unsafe extern "C" fn layout_set_tiled(mut w: *mut window) {
         }
     }
     /* What width and height should they be? */
-    width =
-        (*w).sx.wrapping_sub(columns.wrapping_sub(1 as libc::c_int as
-                                                      libc::c_uint)).wrapping_div(columns);
+    width = (*w)
+        .sx
+        .wrapping_sub(columns.wrapping_sub(1 as libc::c_int as libc::c_uint))
+        .wrapping_div(columns);
     if width < 1 as libc::c_int as libc::c_uint {
         width = 1 as libc::c_int as u_int
     }
-    height =
-        (*w).sy.wrapping_sub(rows.wrapping_sub(1 as libc::c_int as
-                                                   libc::c_uint)).wrapping_div(rows);
+    height = (*w)
+        .sy
+        .wrapping_sub(rows.wrapping_sub(1 as libc::c_int as libc::c_uint))
+        .wrapping_div(rows);
     if height < 1 as libc::c_int as libc::c_uint {
         height = 1 as libc::c_int as u_int
     }
@@ -1617,43 +1663,53 @@ unsafe extern "C" fn layout_set_tiled(mut w: *mut window) {
     layout_free(w);
     (*w).layout_root = layout_create_cell(0 as *mut layout_cell);
     lc = (*w).layout_root;
-    sx =
-        width.wrapping_add(1 as libc::c_int as
-                               libc::c_uint).wrapping_mul(columns).wrapping_sub(1
-                                                                                    as
-                                                                                    libc::c_int
-                                                                                    as
-                                                                                    libc::c_uint);
-    if sx < (*w).sx { sx = (*w).sx }
-    sy =
-        height.wrapping_add(1 as libc::c_int as
-                                libc::c_uint).wrapping_mul(rows).wrapping_sub(1
-                                                                                  as
-                                                                                  libc::c_int
-                                                                                  as
-                                                                                  libc::c_uint);
-    if sy < (*w).sy { sy = (*w).sy }
-    layout_set_size(lc, sx, sy, 0 as libc::c_int as u_int,
-                    0 as libc::c_int as u_int);
+    sx = width
+        .wrapping_add(1 as libc::c_int as libc::c_uint)
+        .wrapping_mul(columns)
+        .wrapping_sub(1 as libc::c_int as libc::c_uint);
+    if sx < (*w).sx {
+        sx = (*w).sx
+    }
+    sy = height
+        .wrapping_add(1 as libc::c_int as libc::c_uint)
+        .wrapping_mul(rows)
+        .wrapping_sub(1 as libc::c_int as libc::c_uint);
+    if sy < (*w).sy {
+        sy = (*w).sy
+    }
+    layout_set_size(
+        lc,
+        sx,
+        sy,
+        0 as libc::c_int as u_int,
+        0 as libc::c_int as u_int,
+    );
     layout_make_node(lc, LAYOUT_TOPBOTTOM);
     /* Create a grid of the cells. */
     wp = (*w).panes.tqh_first;
     j = 0 as libc::c_int as u_int;
     while j < rows {
         /* If this is the last cell, all done. */
-        if wp.is_null() { break ; }
+        if wp.is_null() {
+            break;
+        }
         /* Create the new row. */
         lcrow = layout_create_cell(lc);
-        layout_set_size(lcrow, (*w).sx, height, 0 as libc::c_int as u_int,
-                        0 as libc::c_int as u_int);
+        layout_set_size(
+            lcrow,
+            (*w).sx,
+            height,
+            0 as libc::c_int as u_int,
+            0 as libc::c_int as u_int,
+        );
         (*lcrow).entry.tqe_next = 0 as *mut layout_cell;
         (*lcrow).entry.tqe_prev = (*lc).cells.tqh_last;
         *(*lc).cells.tqh_last = lcrow;
         (*lc).cells.tqh_last = &mut (*lcrow).entry.tqe_next;
         /* If only one column, just use the row directly. */
-        if n.wrapping_sub(j.wrapping_mul(columns)) ==
-               1 as libc::c_int as libc::c_uint ||
-               columns == 1 as libc::c_int as libc::c_uint {
+        if n.wrapping_sub(j.wrapping_mul(columns)) == 1 as libc::c_int as libc::c_uint
+            || columns == 1 as libc::c_int as libc::c_uint
+        {
             layout_make_leaf(lcrow, wp);
             wp = (*wp).entry.tqe_next
         } else {
@@ -1663,9 +1719,13 @@ unsafe extern "C" fn layout_set_tiled(mut w: *mut window) {
             while i < columns {
                 /* Create and add a pane cell. */
                 lcchild = layout_create_cell(lcrow);
-                layout_set_size(lcchild, width, height,
-                                0 as libc::c_int as u_int,
-                                0 as libc::c_int as u_int);
+                layout_set_size(
+                    lcchild,
+                    width,
+                    height,
+                    0 as libc::c_int as u_int,
+                    0 as libc::c_int as u_int,
+                );
                 layout_make_leaf(lcchild, wp);
                 (*lcchild).entry.tqe_next = 0 as *mut layout_cell;
                 (*lcchild).entry.tqe_prev = (*lcrow).cells.tqh_last;
@@ -1673,57 +1733,67 @@ unsafe extern "C" fn layout_set_tiled(mut w: *mut window) {
                 (*lcrow).cells.tqh_last = &mut (*lcchild).entry.tqe_next;
                 /* Move to the next cell. */
                 wp = (*wp).entry.tqe_next;
-                if wp.is_null() { break ; }
+                if wp.is_null() {
+                    break;
+                }
                 i = i.wrapping_add(1)
             }
             /*
-		 * Adjust the row and columns to fit the full width if
-		 * necessary.
-		 */
-            if i == columns { i = i.wrapping_sub(1) }
-            used =
-                i.wrapping_add(1 as libc::c_int as
-                                   libc::c_uint).wrapping_mul(width.wrapping_add(1
-                                                                                     as
-                                                                                     libc::c_int
-                                                                                     as
-                                                                                     libc::c_uint)).wrapping_sub(1
-                                                                                                                     as
-                                                                                                                     libc::c_int
-                                                                                                                     as
-                                                                                                                     libc::c_uint);
+             * Adjust the row and columns to fit the full width if
+             * necessary.
+             */
+            if i == columns {
+                i = i.wrapping_sub(1)
+            }
+            used = i
+                .wrapping_add(1 as libc::c_int as libc::c_uint)
+                .wrapping_mul(width.wrapping_add(1 as libc::c_int as libc::c_uint))
+                .wrapping_sub(1 as libc::c_int as libc::c_uint);
             if !((*w).sx <= used) {
-                lcchild =
-                    *(*((*lcrow).cells.tqh_last as
-                            *mut layout_cells)).tqh_last;
-                layout_resize_adjust(w, lcchild, LAYOUT_LEFTRIGHT,
-                                     (*w).sx.wrapping_sub(used) as
-                                         libc::c_int);
+                lcchild = *(*((*lcrow).cells.tqh_last as *mut layout_cells)).tqh_last;
+                layout_resize_adjust(
+                    w,
+                    lcchild,
+                    LAYOUT_LEFTRIGHT,
+                    (*w).sx.wrapping_sub(used) as libc::c_int,
+                );
             }
         }
         j = j.wrapping_add(1)
     }
     /* Adjust the last row height to fit if necessary. */
-    used =
-        rows.wrapping_mul(height).wrapping_add(rows).wrapping_sub(1 as
-                                                                      libc::c_int
-                                                                      as
-                                                                      libc::c_uint);
+    used = rows
+        .wrapping_mul(height)
+        .wrapping_add(rows)
+        .wrapping_sub(1 as libc::c_int as libc::c_uint);
     if (*w).sy > used {
         lcrow = *(*((*lc).cells.tqh_last as *mut layout_cells)).tqh_last;
-        layout_resize_adjust(w, lcrow, LAYOUT_TOPBOTTOM,
-                             (*w).sy.wrapping_sub(used) as libc::c_int);
+        layout_resize_adjust(
+            w,
+            lcrow,
+            LAYOUT_TOPBOTTOM,
+            (*w).sy.wrapping_sub(used) as libc::c_int,
+        );
     }
     /* Fix cell offsets. */
     layout_fix_offsets(w);
     layout_fix_panes(w);
-    layout_print_cell((*w).layout_root,
-                      (*::std::mem::transmute::<&[u8; 17],
-                                                &[libc::c_char; 17]>(b"layout_set_tiled\x00")).as_ptr(),
-                      1 as libc::c_int as u_int);
-    window_resize(w, (*lc).sx, (*lc).sy, -(1 as libc::c_int),
-                  -(1 as libc::c_int));
-    notify_window(b"window-layout-changed\x00" as *const u8 as
-                      *const libc::c_char, w);
+    layout_print_cell(
+        (*w).layout_root,
+        (*::std::mem::transmute::<&[u8; 17], &[libc::c_char; 17]>(b"layout_set_tiled\x00"))
+            .as_ptr(),
+        1 as libc::c_int as u_int,
+    );
+    window_resize(
+        w,
+        (*lc).sx,
+        (*lc).sy,
+        -(1 as libc::c_int),
+        -(1 as libc::c_int),
+    );
+    notify_window(
+        b"window-layout-changed\x00" as *const u8 as *const libc::c_char,
+        w,
+    );
     server_redraw_window(w);
 }

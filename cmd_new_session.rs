@@ -24,37 +24,47 @@ extern "C" {
     #[no_mangle]
     fn free(__ptr: *mut libc::c_void);
     #[no_mangle]
-    fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong)
-     -> *mut libc::c_void;
+    fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
     #[no_mangle]
     fn strcmp(_: *const libc::c_char, _: *const libc::c_char) -> libc::c_int;
     #[no_mangle]
     fn tcgetattr(__fd: libc::c_int, __termios_p: *mut termios) -> libc::c_int;
     #[no_mangle]
-    fn sscanf(_: *const libc::c_char, _: *const libc::c_char, _: ...)
-     -> libc::c_int;
+    fn sscanf(_: *const libc::c_char, _: *const libc::c_char, _: ...) -> libc::c_int;
     #[no_mangle]
-    fn gettimeofday(__tv: *mut timeval, __tz: *mut libc::c_void)
-     -> libc::c_int;
+    fn gettimeofday(__tv: *mut timeval, __tz: *mut libc::c_void) -> libc::c_int;
     #[no_mangle]
-    fn strtonum(_: *const libc::c_char, _: libc::c_longlong,
-                _: libc::c_longlong, _: *mut *const libc::c_char)
-     -> libc::c_longlong;
+    fn strtonum(
+        _: *const libc::c_char,
+        _: libc::c_longlong,
+        _: libc::c_longlong,
+        _: *mut *const libc::c_char,
+    ) -> libc::c_longlong;
     #[no_mangle]
     fn xstrdup(_: *const libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
     static mut global_s_options: *mut options;
     #[no_mangle]
-    fn proc_send(_: *mut tmuxpeer, _: msgtype, _: libc::c_int,
-                 _: *const libc::c_void, _: size_t) -> libc::c_int;
+    fn proc_send(
+        _: *mut tmuxpeer,
+        _: msgtype,
+        _: libc::c_int,
+        _: *const libc::c_void,
+        _: size_t,
+    ) -> libc::c_int;
     #[no_mangle]
     static mut cfg_finished: libc::c_int;
     #[no_mangle]
     fn cfg_show_causes(_: *mut session);
     #[no_mangle]
-    fn format_single(_: *mut cmdq_item, _: *const libc::c_char,
-                     _: *mut client, _: *mut session, _: *mut winlink,
-                     _: *mut window_pane) -> *mut libc::c_char;
+    fn format_single(
+        _: *mut cmdq_item,
+        _: *const libc::c_char,
+        _: *mut client,
+        _: *mut session,
+        _: *mut winlink,
+        _: *mut window_pane,
+    ) -> *mut libc::c_char;
     #[no_mangle]
     fn notify_client(_: *const libc::c_char, _: *mut client);
     #[no_mangle]
@@ -62,15 +72,17 @@ extern "C" {
     #[no_mangle]
     fn options_create(_: *mut options) -> *mut options;
     #[no_mangle]
-    fn options_get_string(_: *mut options, _: *const libc::c_char)
-     -> *const libc::c_char;
+    fn options_get_string(_: *mut options, _: *const libc::c_char) -> *const libc::c_char;
     #[no_mangle]
-    fn options_get_number(_: *mut options, _: *const libc::c_char)
-     -> libc::c_longlong;
+    fn options_get_number(_: *mut options, _: *const libc::c_char) -> libc::c_longlong;
     #[no_mangle]
-    fn options_set_string(_: *mut options, _: *const libc::c_char,
-                          _: libc::c_int, _: *const libc::c_char, _: ...)
-     -> *mut options_entry;
+    fn options_set_string(
+        _: *mut options,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: *const libc::c_char,
+        _: ...
+    ) -> *mut options_entry;
     #[no_mangle]
     fn environ_create() -> *mut environ;
     #[no_mangle]
@@ -84,22 +96,26 @@ extern "C" {
     #[no_mangle]
     fn args_get(_: *mut args, _: u_char) -> *const libc::c_char;
     #[no_mangle]
-    fn args_first_value(_: *mut args, _: u_char, _: *mut *mut args_value)
-     -> *const libc::c_char;
+    fn args_first_value(_: *mut args, _: u_char, _: *mut *mut args_value) -> *const libc::c_char;
     #[no_mangle]
     fn args_next_value(_: *mut *mut args_value) -> *const libc::c_char;
     #[no_mangle]
-    fn cmd_find_from_session(_: *mut cmd_find_state, _: *mut session,
-                             _: libc::c_int);
+    fn cmd_find_from_session(_: *mut cmd_find_state, _: *mut session, _: libc::c_int);
     #[no_mangle]
     fn cmd_get_entry(_: *mut cmd) -> *const cmd_entry;
     #[no_mangle]
     fn cmd_get_args(_: *mut cmd) -> *mut args;
     #[no_mangle]
-    fn cmd_attach_session(_: *mut cmdq_item, _: *const libc::c_char,
-                          _: libc::c_int, _: libc::c_int, _: libc::c_int,
-                          _: *const libc::c_char, _: libc::c_int,
-                          _: *const libc::c_char) -> cmd_retval;
+    fn cmd_attach_session(
+        _: *mut cmdq_item,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: *const libc::c_char,
+    ) -> cmd_retval;
     #[no_mangle]
     fn cmdq_get_client(_: *mut cmdq_item) -> *mut client;
     #[no_mangle]
@@ -109,9 +125,13 @@ extern "C" {
     #[no_mangle]
     fn cmdq_get_flags(_: *mut cmdq_item) -> libc::c_int;
     #[no_mangle]
-    fn cmdq_insert_hook(_: *mut session, _: *mut cmdq_item,
-                        _: *mut cmd_find_state, _: *const libc::c_char,
-                        _: ...);
+    fn cmdq_insert_hook(
+        _: *mut session,
+        _: *mut cmdq_item,
+        _: *mut cmd_find_state,
+        _: *const libc::c_char,
+        _: ...
+    );
     #[no_mangle]
     fn cmdq_print(_: *mut cmdq_item, _: *const libc::c_char, _: ...);
     #[no_mangle]
@@ -123,11 +143,9 @@ extern "C" {
     #[no_mangle]
     fn server_client_check_nested(_: *mut client) -> libc::c_int;
     #[no_mangle]
-    fn server_client_open(_: *mut client, _: *mut *mut libc::c_char)
-     -> libc::c_int;
+    fn server_client_open(_: *mut client, _: *mut *mut libc::c_char) -> libc::c_int;
     #[no_mangle]
-    fn server_client_get_cwd(_: *mut client, _: *mut session)
-     -> *const libc::c_char;
+    fn server_client_get_cwd(_: *mut client, _: *mut session) -> *const libc::c_char;
     #[no_mangle]
     fn server_client_set_flags(_: *mut client, _: *const libc::c_char);
     #[no_mangle]
@@ -141,12 +159,16 @@ extern "C" {
     #[no_mangle]
     fn session_find(_: *const libc::c_char) -> *mut session;
     #[no_mangle]
-    fn session_create(_: *const libc::c_char, _: *const libc::c_char,
-                      _: *const libc::c_char, _: *mut environ,
-                      _: *mut options, _: *mut termios) -> *mut session;
+    fn session_create(
+        _: *const libc::c_char,
+        _: *const libc::c_char,
+        _: *const libc::c_char,
+        _: *mut environ,
+        _: *mut options,
+        _: *mut termios,
+    ) -> *mut session;
     #[no_mangle]
-    fn session_destroy(_: *mut session, _: libc::c_int,
-                       _: *const libc::c_char);
+    fn session_destroy(_: *mut session, _: libc::c_int, _: *const libc::c_char);
     #[no_mangle]
     fn session_check_name(_: *const libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
@@ -166,8 +188,7 @@ extern "C" {
     #[no_mangle]
     fn fatal(_: *const libc::c_char, _: ...) -> !;
     #[no_mangle]
-    fn spawn_window(_: *mut spawn_context, _: *mut *mut libc::c_char)
-     -> *mut winlink;
+    fn spawn_window(_: *mut spawn_context, _: *mut *mut libc::c_char) -> *mut winlink;
 }
 pub type __u_char = libc::c_uchar;
 pub type __u_short = libc::c_ushort;
@@ -273,18 +294,13 @@ pub struct event_callback {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub union C2RustUnnamed_6 {
-    pub evcb_callback: Option<unsafe extern "C" fn(_: libc::c_int,
-                                                   _: libc::c_short,
-                                                   _: *mut libc::c_void)
-                                  -> ()>,
-    pub evcb_selfcb: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                 _: *mut libc::c_void) -> ()>,
-    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
-    pub evcb_cbfinalize: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
+    pub evcb_callback:
+        Option<unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> ()>,
+    pub evcb_selfcb:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
+    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event, _: *mut libc::c_void) -> ()>,
+    pub evcb_cbfinalize:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -311,14 +327,10 @@ pub struct bufferevent {
     pub timeout_write: timeval,
     pub enabled: libc::c_short,
 }
-pub type bufferevent_event_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short,
-                                _: *mut libc::c_void) -> ()>;
-pub type bufferevent_data_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void)
-               -> ()>;
+pub type bufferevent_event_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short, _: *mut libc::c_void) -> ()>;
+pub type bufferevent_data_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct event_watermark {
@@ -442,17 +454,19 @@ pub struct C2RustUnnamed_9 {
     pub rbe_parent: *mut client_file,
     pub rbe_color: libc::c_int,
 }
-pub type client_file_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *const libc::c_char,
-                                _: libc::c_int, _: libc::c_int,
-                                _: *mut evbuffer, _: *mut libc::c_void)
-               -> ()>;
+pub type client_file_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: *mut evbuffer,
+        _: *mut libc::c_void,
+    ) -> (),
+>;
 pub type overlay_free_cb = Option<unsafe extern "C" fn(_: *mut client) -> ()>;
-pub type overlay_key_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event)
-               -> libc::c_int>;
+pub type overlay_key_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_event {
@@ -482,10 +496,8 @@ pub struct mouse_event {
     pub sgr_b: u_int,
 }
 pub type key_code = libc::c_ulonglong;
-pub type overlay_draw_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx)
-               -> ()>;
+pub type overlay_draw_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen_redraw_ctx {
@@ -499,10 +511,8 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int)
-               -> *mut screen>;
+pub type overlay_mode_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen {
@@ -596,10 +606,8 @@ pub struct C2RustUnnamed_11 {
     pub bg: u_char,
     pub data: u_char,
 }
-pub type overlay_check_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int)
-               -> libc::c_int>;
+pub type overlay_check_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct session {
@@ -846,24 +854,37 @@ pub struct C2RustUnnamed_24 {
 pub struct window_mode {
     pub name: *const libc::c_char,
     pub default_format: *const libc::c_char,
-    pub init: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                          _: *mut cmd_find_state,
-                                          _: *mut args) -> *mut screen>,
+    pub init: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut cmd_find_state,
+            _: *mut args,
+        ) -> *mut screen,
+    >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
-    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                            _: u_int, _: u_int) -> ()>,
-    pub key: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                         _: *mut client, _: *mut session,
-                                         _: *mut winlink, _: key_code,
-                                         _: *mut mouse_event) -> ()>,
-    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry)
-                              -> *const libc::c_char>,
-    pub command: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut client, _: *mut session,
-                                             _: *mut winlink, _: *mut args,
-                                             _: *mut mouse_event) -> ()>,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut format_tree) -> ()>,
+    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
+    pub key: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: key_code,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> *const libc::c_char>,
+    pub command: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: *mut args,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -900,14 +921,15 @@ pub struct winlink_stack {
 pub type C2RustUnnamed_25 = libc::c_uint;
 pub const PROMPT_COMMAND: C2RustUnnamed_25 = 1;
 pub const PROMPT_ENTRY: C2RustUnnamed_25 = 0;
-pub type prompt_free_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
-pub type prompt_input_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut libc::c_void,
-                                _: *const libc::c_char, _: libc::c_int)
-               -> libc::c_int>;
+pub type prompt_free_cb = Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
+pub type prompt_input_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut libc::c_void,
+        _: *const libc::c_char,
+        _: libc::c_int,
+    ) -> libc::c_int,
+>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_table {
@@ -1078,12 +1100,8 @@ pub struct tty {
     pub mouse_last_y: u_int,
     pub mouse_last_b: u_int,
     pub mouse_drag_flag: libc::c_int,
-    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client,
-                                                       _: *mut mouse_event)
-                                      -> ()>,
-    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client,
-                                                        _: *mut mouse_event)
-                                       -> ()>,
+    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
+    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
     pub key_timer: event,
     pub key_tree: *mut tty_key,
 }
@@ -1180,8 +1198,7 @@ pub struct cmd_entry {
     pub source: cmd_entry_flag,
     pub target: cmd_entry_flag,
     pub flags: libc::c_int,
-    pub exec: Option<unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item)
-                         -> cmd_retval>,
+    pub exec: Option<unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -1208,10 +1225,9 @@ pub struct spawn_context {
     pub flags: libc::c_int,
 }
 #[no_mangle]
-pub static mut cmd_new_session_entry: cmd_entry =
-    unsafe {
-        {
-            let mut init =
+pub static mut cmd_new_session_entry: cmd_entry = unsafe {
+    {
+        let mut init =
                 cmd_entry{name:
                               b"new-session\x00" as *const u8 as
                                   *const libc::c_char,
@@ -1256,62 +1272,50 @@ pub static mut cmd_new_session_entry: cmd_entry =
                                        unsafe extern "C" fn(_: *mut cmd,
                                                             _: *mut cmdq_item)
                                            -> cmd_retval),};
-            init
-        }
-    };
+        init
+    }
+};
 #[no_mangle]
-pub static mut cmd_has_session_entry: cmd_entry =
-    unsafe {
-        {
-            let mut init =
-                cmd_entry{name:
-                              b"has-session\x00" as *const u8 as
-                                  *const libc::c_char,
-                          alias:
-                              b"has\x00" as *const u8 as *const libc::c_char,
-                          args:
-                              {
-                                  let mut init =
-                                      C2RustUnnamed_34{template:
-                                                           b"t:\x00" as
-                                                               *const u8 as
-                                                               *const libc::c_char,
-                                                       lower:
-                                                           0 as libc::c_int,
-                                                       upper:
-                                                           0 as libc::c_int,};
-                                  init
-                              },
-                          usage:
-                              b"[-t target-session]\x00" as *const u8 as
-                                  *const libc::c_char,
-                          source:
-                              cmd_entry_flag{flag: 0,
-                                             type_0: CMD_FIND_PANE,
-                                             flags: 0,},
-                          target:
-                              {
-                                  let mut init =
-                                      cmd_entry_flag{flag:
-                                                         't' as i32 as
-                                                             libc::c_char,
-                                                     type_0: CMD_FIND_SESSION,
-                                                     flags:
-                                                         0 as libc::c_int,};
-                                  init
-                              },
-                          flags: 0 as libc::c_int,
-                          exec:
-                              Some(cmd_new_session_exec as
-                                       unsafe extern "C" fn(_: *mut cmd,
-                                                            _: *mut cmdq_item)
-                                           -> cmd_retval),};
-            init
-        }
-    };
-unsafe extern "C" fn cmd_new_session_exec(mut self_0: *mut cmd,
-                                          mut item: *mut cmdq_item)
- -> cmd_retval {
+pub static mut cmd_has_session_entry: cmd_entry = unsafe {
+    {
+        let mut init = cmd_entry {
+            name: b"has-session\x00" as *const u8 as *const libc::c_char,
+            alias: b"has\x00" as *const u8 as *const libc::c_char,
+            args: {
+                let mut init = C2RustUnnamed_34 {
+                    template: b"t:\x00" as *const u8 as *const libc::c_char,
+                    lower: 0 as libc::c_int,
+                    upper: 0 as libc::c_int,
+                };
+                init
+            },
+            usage: b"[-t target-session]\x00" as *const u8 as *const libc::c_char,
+            source: cmd_entry_flag {
+                flag: 0,
+                type_0: CMD_FIND_PANE,
+                flags: 0,
+            },
+            target: {
+                let mut init = cmd_entry_flag {
+                    flag: 't' as i32 as libc::c_char,
+                    type_0: CMD_FIND_SESSION,
+                    flags: 0 as libc::c_int,
+                };
+                init
+            },
+            flags: 0 as libc::c_int,
+            exec: Some(
+                cmd_new_session_exec
+                    as unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval,
+            ),
+        };
+        init
+    }
+};
+unsafe extern "C" fn cmd_new_session_exec(
+    mut self_0: *mut cmd,
+    mut item: *mut cmdq_item,
+) -> cmd_retval {
     let mut current_block: u64;
     let mut args: *mut args = cmd_get_args(self_0);
     let mut current: *mut cmd_find_state = cmdq_get_current(item);
@@ -1322,15 +1326,16 @@ unsafe extern "C" fn cmd_new_session_exec(mut self_0: *mut cmd,
     let mut groupwith: *mut session = 0 as *mut session;
     let mut env: *mut environ = 0 as *mut environ;
     let mut oo: *mut options = 0 as *mut options;
-    let mut tio: termios =
-        termios{c_iflag: 0,
-                c_oflag: 0,
-                c_cflag: 0,
-                c_lflag: 0,
-                c_line: 0,
-                c_cc: [0; 32],
-                c_ispeed: 0,
-                c_ospeed: 0,};
+    let mut tio: termios = termios {
+        c_iflag: 0,
+        c_oflag: 0,
+        c_cflag: 0,
+        c_lflag: 0,
+        c_line: 0,
+        c_cc: [0; 32],
+        c_ispeed: 0,
+        c_ospeed: 0,
+    };
     let mut tiop: *mut termios = 0 as *mut termios;
     let mut sg: *mut session_group = 0 as *mut session_group;
     let mut errstr: *const libc::c_char = 0 as *const libc::c_char;
@@ -1351,73 +1356,88 @@ unsafe extern "C" fn cmd_new_session_exec(mut self_0: *mut cmd,
     let mut sy: u_int = 0;
     let mut dsx: u_int = 0;
     let mut dsy: u_int = 0;
-    let mut sc: spawn_context =
-        spawn_context{item: 0 as *mut cmdq_item,
-                      s: 0 as *mut session,
-                      wl: 0 as *mut winlink,
-                      tc: 0 as *mut client,
-                      wp0: 0 as *mut window_pane,
-                      lc: 0 as *mut layout_cell,
-                      name: 0 as *const libc::c_char,
-                      argv: 0 as *mut *mut libc::c_char,
-                      argc: 0,
-                      environ: 0 as *mut environ,
-                      idx: 0,
-                      cwd: 0 as *const libc::c_char,
-                      flags: 0,};
+    let mut sc: spawn_context = spawn_context {
+        item: 0 as *mut cmdq_item,
+        s: 0 as *mut session,
+        wl: 0 as *mut winlink,
+        tc: 0 as *mut client,
+        wp0: 0 as *mut window_pane,
+        lc: 0 as *mut layout_cell,
+        name: 0 as *const libc::c_char,
+        argv: 0 as *mut *mut libc::c_char,
+        argc: 0,
+        environ: 0 as *mut environ,
+        idx: 0,
+        cwd: 0 as *const libc::c_char,
+        flags: 0,
+    };
     let mut retval: cmd_retval = CMD_RETURN_NORMAL;
-    let mut fs: cmd_find_state =
-        cmd_find_state{flags: 0,
-                       current: 0 as *mut cmd_find_state,
-                       s: 0 as *mut session,
-                       wl: 0 as *mut winlink,
-                       w: 0 as *mut window,
-                       wp: 0 as *mut window_pane,
-                       idx: 0,};
+    let mut fs: cmd_find_state = cmd_find_state {
+        flags: 0,
+        current: 0 as *mut cmd_find_state,
+        s: 0 as *mut session,
+        wl: 0 as *mut winlink,
+        w: 0 as *mut window,
+        wp: 0 as *mut window_pane,
+        idx: 0,
+    };
     let mut value: *mut args_value = 0 as *mut args_value;
     if cmd_get_entry(self_0) == &cmd_has_session_entry as *const cmd_entry {
         /*
-		 * cmd_find_target() will fail if the session cannot be found,
-		 * so always return success here.
-		 */
-        return CMD_RETURN_NORMAL
+         * cmd_find_target() will fail if the session cannot be found,
+         * so always return success here.
+         */
+        return CMD_RETURN_NORMAL;
     }
-    if args_has(args, 't' as i32 as u_char) != 0 &&
-           ((*args).argc != 0 as libc::c_int ||
-                args_has(args, 'n' as i32 as u_char) != 0) {
-        cmdq_error(item,
-                   b"command or window name given with target\x00" as
-                       *const u8 as *const libc::c_char);
-        return CMD_RETURN_ERROR
+    if args_has(args, 't' as i32 as u_char) != 0
+        && ((*args).argc != 0 as libc::c_int || args_has(args, 'n' as i32 as u_char) != 0)
+    {
+        cmdq_error(
+            item,
+            b"command or window name given with target\x00" as *const u8 as *const libc::c_char,
+        );
+        return CMD_RETURN_ERROR;
     }
     tmp = args_get(args, 's' as i32 as u_char);
     if !tmp.is_null() {
-        name =
-            format_single(item, tmp, c, 0 as *mut session, 0 as *mut winlink,
-                          0 as *mut window_pane);
+        name = format_single(
+            item,
+            tmp,
+            c,
+            0 as *mut session,
+            0 as *mut winlink,
+            0 as *mut window_pane,
+        );
         newname = session_check_name(name);
         free(name as *mut libc::c_void);
     }
     if args_has(args, 'A' as i32 as u_char) != 0 {
         if !newname.is_null() {
             as_0 = session_find(newname)
-        } else { as_0 = (*target).s }
+        } else {
+            as_0 = (*target).s
+        }
         if !as_0.is_null() {
-            retval =
-                cmd_attach_session(item, (*as_0).name,
-                                   args_has(args, 'D' as i32 as u_char),
-                                   args_has(args, 'X' as i32 as u_char),
-                                   0 as libc::c_int, 0 as *const libc::c_char,
-                                   args_has(args, 'E' as i32 as u_char),
-                                   args_get(args, 'f' as i32 as u_char));
+            retval = cmd_attach_session(
+                item,
+                (*as_0).name,
+                args_has(args, 'D' as i32 as u_char),
+                args_has(args, 'X' as i32 as u_char),
+                0 as libc::c_int,
+                0 as *const libc::c_char,
+                args_has(args, 'E' as i32 as u_char),
+                args_get(args, 'f' as i32 as u_char),
+            );
             free(newname as *mut libc::c_void);
-            return retval
+            return retval;
         }
     }
     if !newname.is_null() && !session_find(newname).is_null() {
-        cmdq_error(item,
-                   b"duplicate session: %s\x00" as *const u8 as
-                       *const libc::c_char, newname);
+        cmdq_error(
+            item,
+            b"duplicate session: %s\x00" as *const u8 as *const libc::c_char,
+            newname,
+        );
     } else {
         /* Is this going to be part of a session group? */
         group = args_get(args, 't' as i32 as u_char);
@@ -1425,12 +1445,16 @@ unsafe extern "C" fn cmd_new_session_exec(mut self_0: *mut cmd,
             groupwith = (*target).s;
             if groupwith.is_null() {
                 sg = session_group_find(group)
-            } else { sg = session_group_contains(groupwith) }
+            } else {
+                sg = session_group_contains(groupwith)
+            }
             if !sg.is_null() {
                 prefix = xstrdup((*sg).name)
             } else if !groupwith.is_null() {
                 prefix = xstrdup((*groupwith).name)
-            } else { prefix = session_check_name(group) }
+            } else {
+                prefix = session_check_name(group)
+            }
         }
         /* Set -d if no client. */
         detached = args_has(args, 'd' as i32 as u_char);
@@ -1447,31 +1471,41 @@ unsafe extern "C" fn cmd_new_session_exec(mut self_0: *mut cmd,
         /* Get the new session working directory. */
         tmp = args_get(args, 'c' as i32 as u_char);
         if !tmp.is_null() {
-            cwd =
-                format_single(item, tmp, c, 0 as *mut session,
-                              0 as *mut winlink, 0 as *mut window_pane)
-        } else { cwd = xstrdup(server_client_get_cwd(c, 0 as *mut session)) }
+            cwd = format_single(
+                item,
+                tmp,
+                c,
+                0 as *mut session,
+                0 as *mut winlink,
+                0 as *mut window_pane,
+            )
+        } else {
+            cwd = xstrdup(server_client_get_cwd(c, 0 as *mut session))
+        }
         /*
-	 * If this is a new client, check for nesting and save the termios
-	 * settings (part of which is used for new windows in this session).
-	 *
-	 * tcgetattr() is used rather than using tty.tio since if the client is
-	 * detached, tty_open won't be called. It must be done before opening
-	 * the terminal as that calls tcsetattr() to prepare for tmux taking
-	 * over.
-	 */
-        if detached == 0 && already_attached == 0 &&
-               (*c).fd != -(1 as libc::c_int) &&
-               !(*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
+         * If this is a new client, check for nesting and save the termios
+         * settings (part of which is used for new windows in this session).
+         *
+         * tcgetattr() is used rather than using tty.tio since if the client is
+         * detached, tty_open won't be called. It must be done before opening
+         * the terminal as that calls tcsetattr() to prepare for tmux taking
+         * over.
+         */
+        if detached == 0
+            && already_attached == 0
+            && (*c).fd != -(1 as libc::c_int)
+            && !(*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0
+        {
             if server_client_check_nested(cmdq_get_client(item)) != 0 {
-                cmdq_error(item,
-                           b"sessions should be nested with care, unset $TMUX to force\x00"
-                               as *const u8 as *const libc::c_char);
+                cmdq_error(
+                    item,
+                    b"sessions should be nested with care, unset $TMUX to force\x00" as *const u8
+                        as *const libc::c_char,
+                );
                 current_block = 16572900422509204778;
             } else {
                 if tcgetattr((*c).fd, &mut tio) != 0 as libc::c_int {
-                    fatal(b"tcgetattr failed\x00" as *const u8 as
-                              *const libc::c_char);
+                    fatal(b"tcgetattr failed\x00" as *const u8 as *const libc::c_char);
                 }
                 tiop = &mut tio;
                 current_block = 13303144130133872306;
@@ -1481,50 +1515,55 @@ unsafe extern "C" fn cmd_new_session_exec(mut self_0: *mut cmd,
             current_block = 13303144130133872306;
         }
         match current_block {
-            16572900422509204778 => { }
+            16572900422509204778 => {}
             _ =>
             /* Open the terminal if necessary. */
             {
                 if detached == 0 && already_attached == 0 {
                     if server_client_open(c, &mut cause) != 0 as libc::c_int {
-                        cmdq_error(item,
-                                   b"open terminal failed: %s\x00" as
-                                       *const u8 as *const libc::c_char,
-                                   cause);
+                        cmdq_error(
+                            item,
+                            b"open terminal failed: %s\x00" as *const u8 as *const libc::c_char,
+                            cause,
+                        );
                         free(cause as *mut libc::c_void);
                         current_block = 16572900422509204778;
-                    } else { current_block = 307447392441238883; }
-                } else { current_block = 307447392441238883; }
+                    } else {
+                        current_block = 307447392441238883;
+                    }
+                } else {
+                    current_block = 307447392441238883;
+                }
                 match current_block {
-                    16572900422509204778 => { }
+                    16572900422509204778 => {}
                     _ =>
                     /* Get default session size. */
                     {
                         if args_has(args, 'x' as i32 as u_char) != 0 {
                             tmp = args_get(args, 'x' as i32 as u_char);
-                            if strcmp(tmp,
-                                      b"-\x00" as *const u8 as
-                                          *const libc::c_char) ==
-                                   0 as libc::c_int {
+                            if strcmp(tmp, b"-\x00" as *const u8 as *const libc::c_char)
+                                == 0 as libc::c_int
+                            {
                                 if !c.is_null() {
                                     dsx = (*c).tty.sx
-                                } else { dsx = 80 as libc::c_int as u_int }
+                                } else {
+                                    dsx = 80 as libc::c_int as u_int
+                                }
                                 current_block = 11052029508375673978;
                             } else {
-                                dsx =
-                                    strtonum(tmp,
-                                             1 as libc::c_int as
-                                                 libc::c_longlong,
-                                             (32767 as libc::c_int *
-                                                  2 as libc::c_int +
-                                                  1 as libc::c_int) as
-                                                 libc::c_longlong,
-                                             &mut errstr) as u_int;
+                                dsx = strtonum(
+                                    tmp,
+                                    1 as libc::c_int as libc::c_longlong,
+                                    (32767 as libc::c_int * 2 as libc::c_int + 1 as libc::c_int)
+                                        as libc::c_longlong,
+                                    &mut errstr,
+                                ) as u_int;
                                 if !errstr.is_null() {
-                                    cmdq_error(item,
-                                               b"width %s\x00" as *const u8 as
-                                                   *const libc::c_char,
-                                               errstr);
+                                    cmdq_error(
+                                        item,
+                                        b"width %s\x00" as *const u8 as *const libc::c_char,
+                                        errstr,
+                                    );
                                     current_block = 16572900422509204778;
                                 } else {
                                     current_block = 11052029508375673978;
@@ -1535,15 +1574,13 @@ unsafe extern "C" fn cmd_new_session_exec(mut self_0: *mut cmd,
                             current_block = 11052029508375673978;
                         }
                         match current_block {
-                            16572900422509204778 => { }
+                            16572900422509204778 => {}
                             _ => {
                                 if args_has(args, 'y' as i32 as u_char) != 0 {
-                                    tmp =
-                                        args_get(args, 'y' as i32 as u_char);
-                                    if strcmp(tmp,
-                                              b"-\x00" as *const u8 as
-                                                  *const libc::c_char) ==
-                                           0 as libc::c_int {
+                                    tmp = args_get(args, 'y' as i32 as u_char);
+                                    if strcmp(tmp, b"-\x00" as *const u8 as *const libc::c_char)
+                                        == 0 as libc::c_int
+                                    {
                                         if !c.is_null() {
                                             dsy = (*c).tty.sy
                                         } else {
@@ -1551,26 +1588,24 @@ unsafe extern "C" fn cmd_new_session_exec(mut self_0: *mut cmd,
                                         }
                                         current_block = 1852451392920375136;
                                     } else {
-                                        dsy =
-                                            strtonum(tmp,
-                                                     1 as libc::c_int as
-                                                         libc::c_longlong,
-                                                     (32767 as libc::c_int *
-                                                          2 as libc::c_int +
-                                                          1 as libc::c_int) as
-                                                         libc::c_longlong,
-                                                     &mut errstr) as u_int;
+                                        dsy = strtonum(
+                                            tmp,
+                                            1 as libc::c_int as libc::c_longlong,
+                                            (32767 as libc::c_int * 2 as libc::c_int
+                                                + 1 as libc::c_int)
+                                                as libc::c_longlong,
+                                            &mut errstr,
+                                        ) as u_int;
                                         if !errstr.is_null() {
-                                            cmdq_error(item,
-                                                       b"height %s\x00" as
-                                                           *const u8 as
-                                                           *const libc::c_char,
-                                                       errstr);
-                                            current_block =
-                                                16572900422509204778;
+                                            cmdq_error(
+                                                item,
+                                                b"height %s\x00" as *const u8
+                                                    as *const libc::c_char,
+                                                errstr,
+                                            );
+                                            current_block = 16572900422509204778;
                                         } else {
-                                            current_block =
-                                                1852451392920375136;
+                                            current_block = 1852451392920375136;
                                         }
                                     }
                                 } else {
@@ -1578,305 +1613,247 @@ unsafe extern "C" fn cmd_new_session_exec(mut self_0: *mut cmd,
                                     current_block = 1852451392920375136;
                                 }
                                 match current_block {
-                                    16572900422509204778 => { }
+                                    16572900422509204778 => {}
                                     _ => {
                                         /* Find new session size. */
                                         if detached == 0 && is_control == 0 {
                                             sx = (*c).tty.sx;
                                             sy = (*c).tty.sy;
-                                            if sy >
-                                                   0 as libc::c_int as
-                                                       libc::c_uint &&
-                                                   options_get_number(global_s_options,
-                                                                      b"status\x00"
-                                                                          as
-                                                                          *const u8
-                                                                          as
-                                                                          *const libc::c_char)
-                                                       != 0 {
+                                            if sy > 0 as libc::c_int as libc::c_uint
+                                                && options_get_number(
+                                                    global_s_options,
+                                                    b"status\x00" as *const u8
+                                                        as *const libc::c_char,
+                                                ) != 0
+                                            {
                                                 sy = sy.wrapping_sub(1)
                                             }
                                         } else {
-                                            tmp =
-                                                options_get_string(global_s_options,
-                                                                   b"default-size\x00"
-                                                                       as
-                                                                       *const u8
-                                                                       as
-                                                                       *const libc::c_char);
-                                            if sscanf(tmp,
-                                                      b"%ux%u\x00" as
-                                                          *const u8 as
-                                                          *const libc::c_char,
-                                                      &mut sx as *mut u_int,
-                                                      &mut sy as *mut u_int)
-                                                   != 2 as libc::c_int {
+                                            tmp = options_get_string(
+                                                global_s_options,
+                                                b"default-size\x00" as *const u8
+                                                    as *const libc::c_char,
+                                            );
+                                            if sscanf(
+                                                tmp,
+                                                b"%ux%u\x00" as *const u8 as *const libc::c_char,
+                                                &mut sx as *mut u_int,
+                                                &mut sy as *mut u_int,
+                                            ) != 2 as libc::c_int
+                                            {
                                                 sx = dsx;
                                                 sy = dsy
                                             } else {
-                                                if args_has(args,
-                                                            'x' as i32 as
-                                                                u_char) != 0 {
+                                                if args_has(args, 'x' as i32 as u_char) != 0 {
                                                     sx = dsx
                                                 }
-                                                if args_has(args,
-                                                            'y' as i32 as
-                                                                u_char) != 0 {
+                                                if args_has(args, 'y' as i32 as u_char) != 0 {
                                                     sy = dsy
                                                 }
                                             }
                                         }
-                                        if sx ==
-                                               0 as libc::c_int as
-                                                   libc::c_uint {
+                                        if sx == 0 as libc::c_int as libc::c_uint {
                                             sx = 1 as libc::c_int as u_int
                                         }
-                                        if sy ==
-                                               0 as libc::c_int as
-                                                   libc::c_uint {
+                                        if sy == 0 as libc::c_int as libc::c_uint {
                                             sy = 1 as libc::c_int as u_int
                                         }
                                         /* Create the new session. */
                                         oo = options_create(global_s_options);
-                                        if args_has(args,
-                                                    'x' as i32 as u_char) != 0
-                                               ||
-                                               args_has(args,
-                                                        'y' as i32 as u_char)
-                                                   != 0 {
-                                            if args_has(args,
-                                                        'x' as i32 as u_char)
-                                                   == 0 {
+                                        if args_has(args, 'x' as i32 as u_char) != 0
+                                            || args_has(args, 'y' as i32 as u_char) != 0
+                                        {
+                                            if args_has(args, 'x' as i32 as u_char) == 0 {
                                                 dsx = sx
                                             }
-                                            if args_has(args,
-                                                        'y' as i32 as u_char)
-                                                   == 0 {
+                                            if args_has(args, 'y' as i32 as u_char) == 0 {
                                                 dsy = sy
                                             }
-                                            options_set_string(oo,
-                                                               b"default-size\x00"
-                                                                   as
-                                                                   *const u8
-                                                                   as
-                                                                   *const libc::c_char,
-                                                               0 as
-                                                                   libc::c_int,
-                                                               b"%ux%u\x00" as
-                                                                   *const u8
-                                                                   as
-                                                                   *const libc::c_char,
-                                                               dsx, dsy);
+                                            options_set_string(
+                                                oo,
+                                                b"default-size\x00" as *const u8
+                                                    as *const libc::c_char,
+                                                0 as libc::c_int,
+                                                b"%ux%u\x00" as *const u8 as *const libc::c_char,
+                                                dsx,
+                                                dsy,
+                                            );
                                         }
                                         env = environ_create();
-                                        if !c.is_null() &&
-                                               args_has(args,
-                                                        'E' as i32 as u_char)
-                                                   == 0 {
-                                            environ_update(global_s_options,
-                                                           (*c).environ, env);
+                                        if !c.is_null() && args_has(args, 'E' as i32 as u_char) == 0
+                                        {
+                                            environ_update(global_s_options, (*c).environ, env);
                                         }
-                                        add =
-                                            args_first_value(args,
-                                                             'e' as i32 as
-                                                                 u_char,
-                                                             &mut value);
+                                        add = args_first_value(
+                                            args,
+                                            'e' as i32 as u_char,
+                                            &mut value,
+                                        );
                                         while !add.is_null() {
-                                            environ_put(env, add,
-                                                        0 as libc::c_int);
+                                            environ_put(env, add, 0 as libc::c_int);
                                             add = args_next_value(&mut value)
                                         }
-                                        s =
-                                            session_create(prefix, newname,
-                                                           cwd, env, oo,
-                                                           tiop);
+                                        s = session_create(prefix, newname, cwd, env, oo, tiop);
                                         /* Spawn the initial window. */
-                                        memset(&mut sc as *mut spawn_context
-                                                   as *mut libc::c_void,
-                                               0 as libc::c_int,
-                                               ::std::mem::size_of::<spawn_context>()
-                                                   as libc::c_ulong);
+                                        memset(
+                                            &mut sc as *mut spawn_context as *mut libc::c_void,
+                                            0 as libc::c_int,
+                                            ::std::mem::size_of::<spawn_context>() as libc::c_ulong,
+                                        );
                                         sc.item = item;
                                         sc.s = s;
-                                        sc.name =
-                                            args_get(args,
-                                                     'n' as i32 as u_char);
+                                        sc.name = args_get(args, 'n' as i32 as u_char);
                                         sc.argc = (*args).argc;
                                         sc.argv = (*args).argv;
                                         sc.idx = -(1 as libc::c_int);
-                                        sc.cwd =
-                                            args_get(args,
-                                                     'c' as i32 as u_char);
+                                        sc.cwd = args_get(args, 'c' as i32 as u_char);
                                         sc.flags = 0 as libc::c_int;
-                                        if spawn_window(&mut sc,
-                                                        &mut cause).is_null()
-                                           {
-                                            session_destroy(s,
-                                                            0 as libc::c_int,
-                                                            (*::std::mem::transmute::<&[u8; 21],
-                                                                                      &[libc::c_char; 21]>(b"cmd_new_session_exec\x00")).as_ptr());
-                                            cmdq_error(item,
-                                                       b"create window failed: %s\x00"
-                                                           as *const u8 as
-                                                           *const libc::c_char,
-                                                       cause);
+                                        if spawn_window(&mut sc, &mut cause).is_null() {
+                                            session_destroy(
+                                                s,
+                                                0 as libc::c_int,
+                                                (*::std::mem::transmute::<
+                                                    &[u8; 21],
+                                                    &[libc::c_char; 21],
+                                                >(
+                                                    b"cmd_new_session_exec\x00"
+                                                ))
+                                                .as_ptr(),
+                                            );
+                                            cmdq_error(
+                                                item,
+                                                b"create window failed: %s\x00" as *const u8
+                                                    as *const libc::c_char,
+                                                cause,
+                                            );
                                             free(cause as *mut libc::c_void);
                                         } else {
                                             /*
-	 * If a target session is given, this is to be part of a session group,
-	 * so add it to the group and synchronize.
-	 */
+                                             * If a target session is given, this is to be part of a session group,
+                                             * so add it to the group and synchronize.
+                                             */
                                             if !group.is_null() {
                                                 if sg.is_null() {
                                                     if !groupwith.is_null() {
-                                                        sg =
-                                                            session_group_new((*groupwith).name);
-                                                        session_group_add(sg,
-                                                                          groupwith);
+                                                        sg = session_group_new((*groupwith).name);
+                                                        session_group_add(sg, groupwith);
                                                     } else {
-                                                        sg =
-                                                            session_group_new(group)
+                                                        sg = session_group_new(group)
                                                     }
                                                 }
                                                 session_group_add(sg, s);
                                                 session_group_synchronize_to(s);
-                                                session_select(s,
-                                                               (*winlinks_RB_MINMAX(&mut (*s).windows,
-                                                                                    -(1
-                                                                                          as
-                                                                                          libc::c_int))).idx);
+                                                session_select(
+                                                    s,
+                                                    (*winlinks_RB_MINMAX(
+                                                        &mut (*s).windows,
+                                                        -(1 as libc::c_int),
+                                                    ))
+                                                    .idx,
+                                                );
                                             }
-                                            notify_session(b"session-created\x00"
-                                                               as *const u8 as
-                                                               *const libc::c_char,
-                                                           s);
+                                            notify_session(
+                                                b"session-created\x00" as *const u8
+                                                    as *const libc::c_char,
+                                                s,
+                                            );
                                             /*
-	 * Set the client to the new session. If a command client exists, it is
-	 * taking this session and needs to get MSG_READY and stay around.
-	 */
+                                             * Set the client to the new session. If a command client exists, it is
+                                             * taking this session and needs to get MSG_READY and stay around.
+                                             */
                                             if detached == 0 {
-                                                if args_has(args,
-                                                            'f' as i32 as
-                                                                u_char) != 0 {
-                                                    server_client_set_flags(c,
-                                                                            args_get(args,
-                                                                                     'f'
-                                                                                         as
-                                                                                         i32
-                                                                                         as
-                                                                                         u_char));
+                                                if args_has(args, 'f' as i32 as u_char) != 0 {
+                                                    server_client_set_flags(
+                                                        c,
+                                                        args_get(args, 'f' as i32 as u_char),
+                                                    );
                                                 }
                                                 if already_attached == 0 {
-                                                    if !(*c).flags &
-                                                           0x2000 as
-                                                               libc::c_int as
-                                                               libc::c_ulong
-                                                           != 0 {
-                                                        proc_send((*c).peer,
-                                                                  MSG_READY,
-                                                                  -(1 as
-                                                                        libc::c_int),
-                                                                  0 as
-                                                                      *const libc::c_void,
-                                                                  0 as
-                                                                      libc::c_int
-                                                                      as
-                                                                      size_t);
+                                                    if !(*c).flags
+                                                        & 0x2000 as libc::c_int as libc::c_ulong
+                                                        != 0
+                                                    {
+                                                        proc_send(
+                                                            (*c).peer,
+                                                            MSG_READY,
+                                                            -(1 as libc::c_int),
+                                                            0 as *const libc::c_void,
+                                                            0 as libc::c_int as size_t,
+                                                        );
                                                     }
-                                                } else if !(*c).session.is_null()
-                                                 {
-                                                    (*c).last_session =
-                                                        (*c).session
+                                                } else if !(*c).session.is_null() {
+                                                    (*c).last_session = (*c).session
                                                 }
                                                 (*c).session = s;
-                                                if !cmdq_get_flags(item) &
-                                                       0x1 as libc::c_int != 0
-                                                   {
-                                                    server_client_set_key_table(c,
-                                                                                0
-                                                                                    as
-                                                                                    *const libc::c_char);
+                                                if !cmdq_get_flags(item) & 0x1 as libc::c_int != 0 {
+                                                    server_client_set_key_table(
+                                                        c,
+                                                        0 as *const libc::c_char,
+                                                    );
                                                 }
                                                 tty_update_client_offset(c);
                                                 status_timer_start(c);
-                                                notify_client(b"client-session-changed\x00"
-                                                                  as *const u8
-                                                                  as
-                                                                  *const libc::c_char,
-                                                              c);
-                                                session_update_activity(s,
-                                                                        0 as
-                                                                            *mut timeval);
-                                                gettimeofday(&mut (*s).last_attached_time,
-                                                             0 as
-                                                                 *mut libc::c_void);
+                                                notify_client(
+                                                    b"client-session-changed\x00" as *const u8
+                                                        as *const libc::c_char,
+                                                    c,
+                                                );
+                                                session_update_activity(s, 0 as *mut timeval);
+                                                gettimeofday(
+                                                    &mut (*s).last_attached_time,
+                                                    0 as *mut libc::c_void,
+                                                );
                                                 server_redraw_client(c);
                                             }
                                             recalculate_sizes();
                                             server_update_socket();
                                             /*
-	 * If there are still configuration file errors to display, put the new
-	 * session's current window into more mode and display them now.
-	 */
+                                             * If there are still configuration file errors to display, put the new
+                                             * session's current window into more mode and display them now.
+                                             */
                                             if cfg_finished != 0 {
                                                 cfg_show_causes(s);
                                             }
                                             /* Print if requested. */
-                                            if args_has(args,
-                                                        'P' as i32 as u_char)
-                                                   != 0 {
-                                                template =
-                                                    args_get(args,
-                                                             'F' as i32 as
-                                                                 u_char);
+                                            if args_has(args, 'P' as i32 as u_char) != 0 {
+                                                template = args_get(args, 'F' as i32 as u_char);
                                                 if template.is_null() {
-                                                    template =
-                                                        b"#{session_name}:\x00"
-                                                            as *const u8 as
-                                                            *const libc::c_char
+                                                    template = b"#{session_name}:\x00" as *const u8
+                                                        as *const libc::c_char
                                                 }
-                                                cp =
-                                                    format_single(item,
-                                                                  template, c,
-                                                                  s,
-                                                                  (*s).curw,
-                                                                  0 as
-                                                                      *mut window_pane);
-                                                cmdq_print(item,
-                                                           b"%s\x00" as
-                                                               *const u8 as
-                                                               *const libc::c_char,
-                                                           cp);
+                                                cp = format_single(
+                                                    item,
+                                                    template,
+                                                    c,
+                                                    s,
+                                                    (*s).curw,
+                                                    0 as *mut window_pane,
+                                                );
+                                                cmdq_print(
+                                                    item,
+                                                    b"%s\x00" as *const u8 as *const libc::c_char,
+                                                    cp,
+                                                );
                                                 free(cp as *mut libc::c_void);
                                             }
                                             if detached == 0 {
-                                                (*c).flags |=
-                                                    0x80 as libc::c_int as
-                                                        libc::c_ulong
+                                                (*c).flags |= 0x80 as libc::c_int as libc::c_ulong
                                             }
-                                            if args_has(args,
-                                                        'd' as i32 as u_char)
-                                                   == 0 {
-                                                cmd_find_from_session(current,
-                                                                      s,
-                                                                      0 as
-                                                                          libc::c_int);
+                                            if args_has(args, 'd' as i32 as u_char) == 0 {
+                                                cmd_find_from_session(current, s, 0 as libc::c_int);
                                             }
-                                            cmd_find_from_session(&mut fs, s,
-                                                                  0 as
-                                                                      libc::c_int);
-                                            cmdq_insert_hook(s, item,
-                                                             &mut fs as
-                                                                 *mut cmd_find_state,
-                                                             b"after-new-session\x00"
-                                                                 as *const u8
-                                                                 as
-                                                                 *const libc::c_char);
+                                            cmd_find_from_session(&mut fs, s, 0 as libc::c_int);
+                                            cmdq_insert_hook(
+                                                s,
+                                                item,
+                                                &mut fs as *mut cmd_find_state,
+                                                b"after-new-session\x00" as *const u8
+                                                    as *const libc::c_char,
+                                            );
                                             free(cwd as *mut libc::c_void);
-                                            free(newname as
-                                                     *mut libc::c_void);
+                                            free(newname as *mut libc::c_void);
                                             free(prefix as *mut libc::c_void);
-                                            return CMD_RETURN_NORMAL
+                                            return CMD_RETURN_NORMAL;
                                         }
                                     }
                                 }

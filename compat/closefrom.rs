@@ -2,8 +2,12 @@ use ::libc;
 extern "C" {
     pub type __dirstream;
     #[no_mangle]
-    fn snprintf(_: *mut libc::c_char, _: libc::c_ulong,
-                _: *const libc::c_char, _: ...) -> libc::c_int;
+    fn snprintf(
+        _: *mut libc::c_char,
+        _: libc::c_ulong,
+        _: *const libc::c_char,
+        _: ...
+    ) -> libc::c_int;
     #[no_mangle]
     fn close(__fd: libc::c_int) -> libc::c_int;
     #[no_mangle]
@@ -11,8 +15,7 @@ extern "C" {
     #[no_mangle]
     fn getpid() -> __pid_t;
     #[no_mangle]
-    fn strtol(_: *const libc::c_char, _: *mut *mut libc::c_char,
-              _: libc::c_int) -> libc::c_long;
+    fn strtol(_: *const libc::c_char, _: *mut *mut libc::c_char, _: libc::c_int) -> libc::c_long;
     #[no_mangle]
     fn opendir(__name: *const libc::c_char) -> *mut DIR;
     #[no_mangle]
@@ -260,17 +263,20 @@ unsafe extern "C" fn closefrom_fallback(mut lowfd: libc::c_int) {
     let mut fd: libc::c_long = 0;
     let mut maxfd: libc::c_long = 0;
     /*
-	 * Fall back on sysconf() or getdtablesize().  We avoid checking
-	 * resource limits since it is possible to open a file descriptor
-	 * and then drop the rlimit such that it is below the open fd.
-	 */
+     * Fall back on sysconf() or getdtablesize().  We avoid checking
+     * resource limits since it is possible to open a file descriptor
+     * and then drop the rlimit such that it is below the open fd.
+     */
     maxfd = sysconf(_SC_OPEN_MAX as libc::c_int);
     /* HAVE_SYSCONF */
     if maxfd < 0 as libc::c_int as libc::c_long {
         maxfd = 256 as libc::c_int as libc::c_long
     }
     fd = lowfd as libc::c_long;
-    while fd < maxfd { close(fd as libc::c_int); fd += 1 };
+    while fd < maxfd {
+        close(fd as libc::c_int);
+        fd += 1
+    }
 }
 /* HAVE_FCNTL_CLOSEM */
 #[no_mangle]
@@ -282,33 +288,37 @@ pub unsafe extern "C" fn closefrom(mut lowfd: libc::c_int) {
     let mut dirp: *mut DIR = 0 as *mut DIR;
     let mut len: libc::c_int = 0;
     /* Check for a /proc/$$/fd directory. */
-    len =
-        snprintf(fdpath.as_mut_ptr(),
-                 ::std::mem::size_of::<[libc::c_char; 4096]>() as
-                     libc::c_ulong,
-                 b"/proc/%ld/fd\x00" as *const u8 as *const libc::c_char,
-                 getpid() as libc::c_long);
-    if len > 0 as libc::c_int &&
-           (len as size_t) <
-               ::std::mem::size_of::<[libc::c_char; 4096]>() as libc::c_ulong
-           && { dirp = opendir(fdpath.as_mut_ptr()); !dirp.is_null() } {
-        loop  {
+    len = snprintf(
+        fdpath.as_mut_ptr(),
+        ::std::mem::size_of::<[libc::c_char; 4096]>() as libc::c_ulong,
+        b"/proc/%ld/fd\x00" as *const u8 as *const libc::c_char,
+        getpid() as libc::c_long,
+    );
+    if len > 0 as libc::c_int
+        && (len as size_t) < ::std::mem::size_of::<[libc::c_char; 4096]>() as libc::c_ulong
+        && {
+            dirp = opendir(fdpath.as_mut_ptr());
+            !dirp.is_null()
+        }
+    {
+        loop {
             dent = readdir(dirp);
-            if dent.is_null() { break ; }
-            fd =
-                strtol((*dent).d_name.as_mut_ptr(), &mut endp,
-                       10 as libc::c_int);
-            if (*dent).d_name.as_mut_ptr() != endp &&
-                   *endp as libc::c_int == '\u{0}' as i32 &&
-                   fd >= 0 as libc::c_int as libc::c_long &&
-                   fd < 2147483647 as libc::c_int as libc::c_long &&
-                   fd >= lowfd as libc::c_long &&
-                   fd != dirfd(dirp) as libc::c_long {
+            if dent.is_null() {
+                break;
+            }
+            fd = strtol((*dent).d_name.as_mut_ptr(), &mut endp, 10 as libc::c_int);
+            if (*dent).d_name.as_mut_ptr() != endp
+                && *endp as libc::c_int == '\u{0}' as i32
+                && fd >= 0 as libc::c_int as libc::c_long
+                && fd < 2147483647 as libc::c_int as libc::c_long
+                && fd >= lowfd as libc::c_long
+                && fd != dirfd(dirp) as libc::c_long
+            {
                 close(fd as libc::c_int);
             }
         }
         closedir(dirp);
-        return
+        return;
     }
     /* /proc/$$/fd strategy failed, fall back to brute force closure */
     closefrom_fallback(lowfd);

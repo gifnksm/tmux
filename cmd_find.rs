@@ -19,37 +19,38 @@ extern "C" {
     pub type tmuxpeer;
     pub type cmdq_item;
     #[no_mangle]
-    fn fnmatch(__pattern: *const libc::c_char, __name: *const libc::c_char,
-               __flags: libc::c_int) -> libc::c_int;
+    fn fnmatch(
+        __pattern: *const libc::c_char,
+        __name: *const libc::c_char,
+        __flags: libc::c_int,
+    ) -> libc::c_int;
     #[no_mangle]
     fn free(__ptr: *mut libc::c_void);
     #[no_mangle]
-    fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong)
-     -> *mut libc::c_void;
+    fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
     #[no_mangle]
     fn strcmp(_: *const libc::c_char, _: *const libc::c_char) -> libc::c_int;
     #[no_mangle]
-    fn strncmp(_: *const libc::c_char, _: *const libc::c_char,
-               _: libc::c_ulong) -> libc::c_int;
+    fn strncmp(_: *const libc::c_char, _: *const libc::c_char, _: libc::c_ulong) -> libc::c_int;
     #[no_mangle]
     fn strchr(_: *const libc::c_char, _: libc::c_int) -> *mut libc::c_char;
     #[no_mangle]
     fn strlen(_: *const libc::c_char) -> libc::c_ulong;
     #[no_mangle]
-    fn strtonum(_: *const libc::c_char, _: libc::c_longlong,
-                _: libc::c_longlong, _: *mut *const libc::c_char)
-     -> libc::c_longlong;
+    fn strtonum(
+        _: *const libc::c_char,
+        _: libc::c_longlong,
+        _: libc::c_longlong,
+        _: *mut *const libc::c_char,
+    ) -> libc::c_longlong;
     #[no_mangle]
-    fn strlcat(_: *mut libc::c_char, _: *const libc::c_char, _: libc::c_ulong)
-     -> libc::c_ulong;
+    fn strlcat(_: *mut libc::c_char, _: *const libc::c_char, _: libc::c_ulong) -> libc::c_ulong;
     #[no_mangle]
-    fn xreallocarray(_: *mut libc::c_void, _: size_t, _: size_t)
-     -> *mut libc::c_void;
+    fn xreallocarray(_: *mut libc::c_void, _: size_t, _: size_t) -> *mut libc::c_void;
     #[no_mangle]
     fn xstrdup(_: *const libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
-    fn environ_find(_: *mut environ, _: *const libc::c_char)
-     -> *mut environ_entry;
+    fn environ_find(_: *mut environ, _: *const libc::c_char) -> *mut environ_entry;
     #[no_mangle]
     fn cmdq_error(_: *mut cmdq_item, _: *const libc::c_char, _: ...);
     #[no_mangle]
@@ -61,11 +62,13 @@ extern "C" {
     #[no_mangle]
     fn server_check_marked() -> libc::c_int;
     #[no_mangle]
-    fn cmd_mouse_window(_: *mut mouse_event, _: *mut *mut session)
-     -> *mut winlink;
+    fn cmd_mouse_window(_: *mut mouse_event, _: *mut *mut session) -> *mut winlink;
     #[no_mangle]
-    fn cmd_mouse_pane(_: *mut mouse_event, _: *mut *mut session,
-                      _: *mut *mut winlink) -> *mut window_pane;
+    fn cmd_mouse_pane(
+        _: *mut mouse_event,
+        _: *mut *mut session,
+        _: *mut *mut winlink,
+    ) -> *mut window_pane;
     #[no_mangle]
     fn cmdq_get_event(_: *mut cmdq_item) -> *mut key_event;
     #[no_mangle]
@@ -73,8 +76,7 @@ extern "C" {
     #[no_mangle]
     fn server_client_get_pane(_: *mut client) -> *mut window_pane;
     #[no_mangle]
-    fn window_pane_tree_RB_MINMAX(_: *mut window_pane_tree, _: libc::c_int)
-     -> *mut window_pane;
+    fn window_pane_tree_RB_MINMAX(_: *mut window_pane_tree, _: libc::c_int) -> *mut window_pane;
     #[no_mangle]
     static mut all_window_panes: window_pane_tree;
     #[no_mangle]
@@ -86,27 +88,30 @@ extern "C" {
     #[no_mangle]
     fn window_pane_find_by_id_str(_: *const libc::c_char) -> *mut window_pane;
     #[no_mangle]
-    fn winlink_find_by_index(_: *mut winlinks, _: libc::c_int)
-     -> *mut winlink;
+    fn winlink_find_by_index(_: *mut winlinks, _: libc::c_int) -> *mut winlink;
     #[no_mangle]
-    fn winlink_previous_by_number(_: *mut winlink, _: *mut session,
-                                  _: libc::c_int) -> *mut winlink;
+    fn winlink_previous_by_number(_: *mut winlink, _: *mut session, _: libc::c_int)
+        -> *mut winlink;
     #[no_mangle]
-    fn winlink_next_by_number(_: *mut winlink, _: *mut session,
-                              _: libc::c_int) -> *mut winlink;
+    fn winlink_next_by_number(_: *mut winlink, _: *mut session, _: libc::c_int) -> *mut winlink;
     #[no_mangle]
     fn window_find_by_id_str(_: *const libc::c_char) -> *mut window;
     #[no_mangle]
-    fn window_find_string(_: *mut window, _: *const libc::c_char)
-     -> *mut window_pane;
+    fn window_find_string(_: *mut window, _: *const libc::c_char) -> *mut window_pane;
     #[no_mangle]
     fn window_pane_at_index(_: *mut window, _: u_int) -> *mut window_pane;
     #[no_mangle]
-    fn window_pane_previous_by_number(_: *mut window, _: *mut window_pane,
-                                      _: u_int) -> *mut window_pane;
+    fn window_pane_previous_by_number(
+        _: *mut window,
+        _: *mut window_pane,
+        _: u_int,
+    ) -> *mut window_pane;
     #[no_mangle]
-    fn window_pane_next_by_number(_: *mut window, _: *mut window_pane,
-                                  _: u_int) -> *mut window_pane;
+    fn window_pane_next_by_number(
+        _: *mut window,
+        _: *mut window_pane,
+        _: u_int,
+    ) -> *mut window_pane;
     #[no_mangle]
     fn window_pane_find_right(_: *mut window_pane) -> *mut window_pane;
     #[no_mangle]
@@ -225,18 +230,13 @@ pub struct event_callback {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub union C2RustUnnamed_6 {
-    pub evcb_callback: Option<unsafe extern "C" fn(_: libc::c_int,
-                                                   _: libc::c_short,
-                                                   _: *mut libc::c_void)
-                                  -> ()>,
-    pub evcb_selfcb: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                 _: *mut libc::c_void) -> ()>,
-    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
-    pub evcb_cbfinalize: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
+    pub evcb_callback:
+        Option<unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> ()>,
+    pub evcb_selfcb:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
+    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event, _: *mut libc::c_void) -> ()>,
+    pub evcb_cbfinalize:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -263,14 +263,10 @@ pub struct bufferevent {
     pub timeout_write: timeval,
     pub enabled: libc::c_short,
 }
-pub type bufferevent_event_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short,
-                                _: *mut libc::c_void) -> ()>;
-pub type bufferevent_data_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void)
-               -> ()>;
+pub type bufferevent_event_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short, _: *mut libc::c_void) -> ()>;
+pub type bufferevent_data_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct event_watermark {
@@ -409,17 +405,19 @@ pub struct C2RustUnnamed_9 {
     pub rbe_parent: *mut client_file,
     pub rbe_color: libc::c_int,
 }
-pub type client_file_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *const libc::c_char,
-                                _: libc::c_int, _: libc::c_int,
-                                _: *mut evbuffer, _: *mut libc::c_void)
-               -> ()>;
+pub type client_file_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: *mut evbuffer,
+        _: *mut libc::c_void,
+    ) -> (),
+>;
 pub type overlay_free_cb = Option<unsafe extern "C" fn(_: *mut client) -> ()>;
-pub type overlay_key_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event)
-               -> libc::c_int>;
+pub type overlay_key_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_event {
@@ -449,10 +447,8 @@ pub struct mouse_event {
     pub sgr_b: u_int,
 }
 pub type key_code = libc::c_ulonglong;
-pub type overlay_draw_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx)
-               -> ()>;
+pub type overlay_draw_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen_redraw_ctx {
@@ -466,10 +462,8 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int)
-               -> *mut screen>;
+pub type overlay_mode_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen {
@@ -563,10 +557,8 @@ pub struct C2RustUnnamed_11 {
     pub bg: u_char,
     pub data: u_char,
 }
-pub type overlay_check_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int)
-               -> libc::c_int>;
+pub type overlay_check_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct session {
@@ -813,24 +805,37 @@ pub struct C2RustUnnamed_24 {
 pub struct window_mode {
     pub name: *const libc::c_char,
     pub default_format: *const libc::c_char,
-    pub init: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                          _: *mut cmd_find_state,
-                                          _: *mut args) -> *mut screen>,
+    pub init: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut cmd_find_state,
+            _: *mut args,
+        ) -> *mut screen,
+    >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
-    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                            _: u_int, _: u_int) -> ()>,
-    pub key: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                         _: *mut client, _: *mut session,
-                                         _: *mut winlink, _: key_code,
-                                         _: *mut mouse_event) -> ()>,
-    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry)
-                              -> *const libc::c_char>,
-    pub command: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut client, _: *mut session,
-                                             _: *mut winlink, _: *mut args,
-                                             _: *mut mouse_event) -> ()>,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut format_tree) -> ()>,
+    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
+    pub key: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: key_code,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> *const libc::c_char>,
+    pub command: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: *mut args,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -867,14 +872,15 @@ pub struct winlink_stack {
 pub type C2RustUnnamed_25 = libc::c_uint;
 pub const PROMPT_COMMAND: C2RustUnnamed_25 = 1;
 pub const PROMPT_ENTRY: C2RustUnnamed_25 = 0;
-pub type prompt_free_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
-pub type prompt_input_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut libc::c_void,
-                                _: *const libc::c_char, _: libc::c_int)
-               -> libc::c_int>;
+pub type prompt_free_cb = Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
+pub type prompt_input_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut libc::c_void,
+        _: *const libc::c_char,
+        _: libc::c_int,
+    ) -> libc::c_int,
+>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_table {
@@ -1045,12 +1051,8 @@ pub struct tty {
     pub mouse_last_y: u_int,
     pub mouse_last_b: u_int,
     pub mouse_drag_flag: libc::c_int,
-    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client,
-                                                       _: *mut mouse_event)
-                                      -> ()>,
-    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client,
-                                                        _: *mut mouse_event)
-                                       -> ()>,
+    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
+    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
     pub key_timer: event,
     pub key_tree: *mut tty_key,
 }
@@ -1138,102 +1140,145 @@ pub struct clients {
 }
 static mut cmd_find_session_table: [[*const libc::c_char; 2]; 1] =
     [[0 as *const libc::c_char, 0 as *const libc::c_char]];
-static mut cmd_find_window_table: [[*const libc::c_char; 2]; 6] =
-    [[b"{start}\x00" as *const u8 as *const libc::c_char,
-      b"^\x00" as *const u8 as *const libc::c_char],
-     [b"{last}\x00" as *const u8 as *const libc::c_char,
-      b"!\x00" as *const u8 as *const libc::c_char],
-     [b"{end}\x00" as *const u8 as *const libc::c_char,
-      b"$\x00" as *const u8 as *const libc::c_char],
-     [b"{next}\x00" as *const u8 as *const libc::c_char,
-      b"+\x00" as *const u8 as *const libc::c_char],
-     [b"{previous}\x00" as *const u8 as *const libc::c_char,
-      b"-\x00" as *const u8 as *const libc::c_char],
-     [0 as *const libc::c_char, 0 as *const libc::c_char]];
-static mut cmd_find_pane_table: [[*const libc::c_char; 2]; 16] =
-    [[b"{last}\x00" as *const u8 as *const libc::c_char,
-      b"!\x00" as *const u8 as *const libc::c_char],
-     [b"{next}\x00" as *const u8 as *const libc::c_char,
-      b"+\x00" as *const u8 as *const libc::c_char],
-     [b"{previous}\x00" as *const u8 as *const libc::c_char,
-      b"-\x00" as *const u8 as *const libc::c_char],
-     [b"{top}\x00" as *const u8 as *const libc::c_char,
-      b"top\x00" as *const u8 as *const libc::c_char],
-     [b"{bottom}\x00" as *const u8 as *const libc::c_char,
-      b"bottom\x00" as *const u8 as *const libc::c_char],
-     [b"{left}\x00" as *const u8 as *const libc::c_char,
-      b"left\x00" as *const u8 as *const libc::c_char],
-     [b"{right}\x00" as *const u8 as *const libc::c_char,
-      b"right\x00" as *const u8 as *const libc::c_char],
-     [b"{top-left}\x00" as *const u8 as *const libc::c_char,
-      b"top-left\x00" as *const u8 as *const libc::c_char],
-     [b"{top-right}\x00" as *const u8 as *const libc::c_char,
-      b"top-right\x00" as *const u8 as *const libc::c_char],
-     [b"{bottom-left}\x00" as *const u8 as *const libc::c_char,
-      b"bottom-left\x00" as *const u8 as *const libc::c_char],
-     [b"{bottom-right}\x00" as *const u8 as *const libc::c_char,
-      b"bottom-right\x00" as *const u8 as *const libc::c_char],
-     [b"{up-of}\x00" as *const u8 as *const libc::c_char,
-      b"{up-of}\x00" as *const u8 as *const libc::c_char],
-     [b"{down-of}\x00" as *const u8 as *const libc::c_char,
-      b"{down-of}\x00" as *const u8 as *const libc::c_char],
-     [b"{left-of}\x00" as *const u8 as *const libc::c_char,
-      b"{left-of}\x00" as *const u8 as *const libc::c_char],
-     [b"{right-of}\x00" as *const u8 as *const libc::c_char,
-      b"{right-of}\x00" as *const u8 as *const libc::c_char],
-     [0 as *const libc::c_char, 0 as *const libc::c_char]];
+static mut cmd_find_window_table: [[*const libc::c_char; 2]; 6] = [
+    [
+        b"{start}\x00" as *const u8 as *const libc::c_char,
+        b"^\x00" as *const u8 as *const libc::c_char,
+    ],
+    [
+        b"{last}\x00" as *const u8 as *const libc::c_char,
+        b"!\x00" as *const u8 as *const libc::c_char,
+    ],
+    [
+        b"{end}\x00" as *const u8 as *const libc::c_char,
+        b"$\x00" as *const u8 as *const libc::c_char,
+    ],
+    [
+        b"{next}\x00" as *const u8 as *const libc::c_char,
+        b"+\x00" as *const u8 as *const libc::c_char,
+    ],
+    [
+        b"{previous}\x00" as *const u8 as *const libc::c_char,
+        b"-\x00" as *const u8 as *const libc::c_char,
+    ],
+    [0 as *const libc::c_char, 0 as *const libc::c_char],
+];
+static mut cmd_find_pane_table: [[*const libc::c_char; 2]; 16] = [
+    [
+        b"{last}\x00" as *const u8 as *const libc::c_char,
+        b"!\x00" as *const u8 as *const libc::c_char,
+    ],
+    [
+        b"{next}\x00" as *const u8 as *const libc::c_char,
+        b"+\x00" as *const u8 as *const libc::c_char,
+    ],
+    [
+        b"{previous}\x00" as *const u8 as *const libc::c_char,
+        b"-\x00" as *const u8 as *const libc::c_char,
+    ],
+    [
+        b"{top}\x00" as *const u8 as *const libc::c_char,
+        b"top\x00" as *const u8 as *const libc::c_char,
+    ],
+    [
+        b"{bottom}\x00" as *const u8 as *const libc::c_char,
+        b"bottom\x00" as *const u8 as *const libc::c_char,
+    ],
+    [
+        b"{left}\x00" as *const u8 as *const libc::c_char,
+        b"left\x00" as *const u8 as *const libc::c_char,
+    ],
+    [
+        b"{right}\x00" as *const u8 as *const libc::c_char,
+        b"right\x00" as *const u8 as *const libc::c_char,
+    ],
+    [
+        b"{top-left}\x00" as *const u8 as *const libc::c_char,
+        b"top-left\x00" as *const u8 as *const libc::c_char,
+    ],
+    [
+        b"{top-right}\x00" as *const u8 as *const libc::c_char,
+        b"top-right\x00" as *const u8 as *const libc::c_char,
+    ],
+    [
+        b"{bottom-left}\x00" as *const u8 as *const libc::c_char,
+        b"bottom-left\x00" as *const u8 as *const libc::c_char,
+    ],
+    [
+        b"{bottom-right}\x00" as *const u8 as *const libc::c_char,
+        b"bottom-right\x00" as *const u8 as *const libc::c_char,
+    ],
+    [
+        b"{up-of}\x00" as *const u8 as *const libc::c_char,
+        b"{up-of}\x00" as *const u8 as *const libc::c_char,
+    ],
+    [
+        b"{down-of}\x00" as *const u8 as *const libc::c_char,
+        b"{down-of}\x00" as *const u8 as *const libc::c_char,
+    ],
+    [
+        b"{left-of}\x00" as *const u8 as *const libc::c_char,
+        b"{left-of}\x00" as *const u8 as *const libc::c_char,
+    ],
+    [
+        b"{right-of}\x00" as *const u8 as *const libc::c_char,
+        b"{right-of}\x00" as *const u8 as *const libc::c_char,
+    ],
+    [0 as *const libc::c_char, 0 as *const libc::c_char],
+];
 /* Find pane containing client if any. */
-unsafe extern "C" fn cmd_find_inside_pane(mut c: *mut client)
- -> *mut window_pane {
+unsafe extern "C" fn cmd_find_inside_pane(mut c: *mut client) -> *mut window_pane {
     let mut wp: *mut window_pane = 0 as *mut window_pane;
     let mut envent: *mut environ_entry = 0 as *mut environ_entry;
-    if c.is_null() { return 0 as *mut window_pane }
-    wp =
-        window_pane_tree_RB_MINMAX(&mut all_window_panes,
-                                   -(1 as libc::c_int));
+    if c.is_null() {
+        return 0 as *mut window_pane;
+    }
+    wp = window_pane_tree_RB_MINMAX(&mut all_window_panes, -(1 as libc::c_int));
     while !wp.is_null() {
-        if (*wp).fd != -(1 as libc::c_int) &&
-               strcmp((*wp).tty.as_mut_ptr(), (*c).ttyname) ==
-                   0 as libc::c_int {
-            break ;
+        if (*wp).fd != -(1 as libc::c_int)
+            && strcmp((*wp).tty.as_mut_ptr(), (*c).ttyname) == 0 as libc::c_int
+        {
+            break;
         }
         wp = window_pane_tree_RB_NEXT(wp)
     }
     if wp.is_null() {
-        envent =
-            environ_find((*c).environ,
-                         b"TMUX_PANE\x00" as *const u8 as
-                             *const libc::c_char);
+        envent = environ_find(
+            (*c).environ,
+            b"TMUX_PANE\x00" as *const u8 as *const libc::c_char,
+        );
         if !envent.is_null() {
             wp = window_pane_find_by_id_str((*envent).value)
         }
     }
     if !wp.is_null() {
-        log_debug(b"%s: got pane %%%u (%s)\x00" as *const u8 as
-                      *const libc::c_char,
-                  (*::std::mem::transmute::<&[u8; 21],
-                                            &[libc::c_char; 21]>(b"cmd_find_inside_pane\x00")).as_ptr(),
-                  (*wp).id, (*wp).tty.as_mut_ptr());
+        log_debug(
+            b"%s: got pane %%%u (%s)\x00" as *const u8 as *const libc::c_char,
+            (*::std::mem::transmute::<&[u8; 21], &[libc::c_char; 21]>(b"cmd_find_inside_pane\x00"))
+                .as_ptr(),
+            (*wp).id,
+            (*wp).tty.as_mut_ptr(),
+        );
     }
     return wp;
 }
 /* Is this client better? */
-unsafe extern "C" fn cmd_find_client_better(mut c: *mut client,
-                                            mut than: *mut client)
- -> libc::c_int {
-    if than.is_null() { return 1 as libc::c_int }
+unsafe extern "C" fn cmd_find_client_better(
+    mut c: *mut client,
+    mut than: *mut client,
+) -> libc::c_int {
+    if than.is_null() {
+        return 1 as libc::c_int;
+    }
     return if (*c).activity_time.tv_sec == (*than).activity_time.tv_sec {
-               ((*c).activity_time.tv_usec > (*than).activity_time.tv_usec) as
-                   libc::c_int
-           } else {
-               ((*c).activity_time.tv_sec > (*than).activity_time.tv_sec) as
-                   libc::c_int
-           };
+        ((*c).activity_time.tv_usec > (*than).activity_time.tv_usec) as libc::c_int
+    } else {
+        ((*c).activity_time.tv_sec > (*than).activity_time.tv_sec) as libc::c_int
+    };
 }
 /* Find best client for session. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_find_best_client(mut s: *mut session)
- -> *mut client {
+pub unsafe extern "C" fn cmd_find_best_client(mut s: *mut session) -> *mut client {
     let mut c_loop: *mut client = 0 as *mut client;
     let mut c: *mut client = 0 as *mut client;
     if (*s).attached == 0 as libc::c_int as libc::c_uint {
@@ -1244,7 +1289,9 @@ pub unsafe extern "C" fn cmd_find_best_client(mut s: *mut session)
     while !c_loop.is_null() {
         if !(*c_loop).session.is_null() {
             if !(!s.is_null() && (*c_loop).session != s) {
-                if cmd_find_client_better(c_loop, c) != 0 { c = c_loop }
+                if cmd_find_client_better(c_loop, c) != 0 {
+                    c = c_loop
+                }
             }
         }
         c_loop = (*c_loop).entry.tqe_next
@@ -1268,53 +1315,51 @@ pub unsafe extern "C" fn cmd_find_best_client(mut s: *mut session)
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 /* Is this session better? */
-unsafe extern "C" fn cmd_find_session_better(mut s: *mut session,
-                                             mut than: *mut session,
-                                             mut flags: libc::c_int)
- -> libc::c_int {
+unsafe extern "C" fn cmd_find_session_better(
+    mut s: *mut session,
+    mut than: *mut session,
+    mut flags: libc::c_int,
+) -> libc::c_int {
     let mut attached: libc::c_int = 0;
-    if than.is_null() { return 1 as libc::c_int }
+    if than.is_null() {
+        return 1 as libc::c_int;
+    }
     if flags & 0x1 as libc::c_int != 0 {
-        attached =
-            ((*than).attached != 0 as libc::c_int as libc::c_uint) as
-                libc::c_int;
-        if attached != 0 && (*s).attached == 0 as libc::c_int as libc::c_uint
-           {
-            return 1 as libc::c_int
+        attached = ((*than).attached != 0 as libc::c_int as libc::c_uint) as libc::c_int;
+        if attached != 0 && (*s).attached == 0 as libc::c_int as libc::c_uint {
+            return 1 as libc::c_int;
         } else {
-            if attached == 0 &&
-                   (*s).attached != 0 as libc::c_int as libc::c_uint {
-                return 0 as libc::c_int
+            if attached == 0 && (*s).attached != 0 as libc::c_int as libc::c_uint {
+                return 0 as libc::c_int;
             }
         }
     }
     return if (*s).activity_time.tv_sec == (*than).activity_time.tv_sec {
-               ((*s).activity_time.tv_usec > (*than).activity_time.tv_usec) as
-                   libc::c_int
-           } else {
-               ((*s).activity_time.tv_sec > (*than).activity_time.tv_sec) as
-                   libc::c_int
-           };
+        ((*s).activity_time.tv_usec > (*than).activity_time.tv_usec) as libc::c_int
+    } else {
+        ((*s).activity_time.tv_sec > (*than).activity_time.tv_sec) as libc::c_int
+    };
 }
 /* Find best session from a list, or all if list is NULL. */
-unsafe extern "C" fn cmd_find_best_session(mut slist: *mut *mut session,
-                                           mut ssize: u_int,
-                                           mut flags: libc::c_int)
- -> *mut session {
+unsafe extern "C" fn cmd_find_best_session(
+    mut slist: *mut *mut session,
+    mut ssize: u_int,
+    mut flags: libc::c_int,
+) -> *mut session {
     let mut s_loop: *mut session = 0 as *mut session;
     let mut s: *mut session = 0 as *mut session;
     let mut i: u_int = 0;
-    log_debug(b"%s: %u sessions to try\x00" as *const u8 as
-                  *const libc::c_char,
-              (*::std::mem::transmute::<&[u8; 22],
-                                        &[libc::c_char; 22]>(b"cmd_find_best_session\x00")).as_ptr(),
-              ssize);
+    log_debug(
+        b"%s: %u sessions to try\x00" as *const u8 as *const libc::c_char,
+        (*::std::mem::transmute::<&[u8; 22], &[libc::c_char; 22]>(b"cmd_find_best_session\x00"))
+            .as_ptr(),
+        ssize,
+    );
     s = 0 as *mut session;
     if !slist.is_null() {
         i = 0 as libc::c_int as u_int;
         while i < ssize {
-            if cmd_find_session_better(*slist.offset(i as isize), s, flags) !=
-                   0 {
+            if cmd_find_session_better(*slist.offset(i as isize), s, flags) != 0 {
                 s = *slist.offset(i as isize)
             }
             i = i.wrapping_add(1)
@@ -1322,33 +1367,36 @@ unsafe extern "C" fn cmd_find_best_session(mut slist: *mut *mut session,
     } else {
         s_loop = sessions_RB_MINMAX(&mut sessions, -(1 as libc::c_int));
         while !s_loop.is_null() {
-            if cmd_find_session_better(s_loop, s, flags) != 0 { s = s_loop }
+            if cmd_find_session_better(s_loop, s, flags) != 0 {
+                s = s_loop
+            }
             s_loop = sessions_RB_NEXT(s_loop)
         }
     }
     return s;
 }
 /* Find best session and winlink for window. */
-unsafe extern "C" fn cmd_find_best_session_with_window(mut fs:
-                                                           *mut cmd_find_state)
- -> libc::c_int {
+unsafe extern "C" fn cmd_find_best_session_with_window(mut fs: *mut cmd_find_state) -> libc::c_int {
     let mut slist: *mut *mut session = 0 as *mut *mut session;
     let mut ssize: u_int = 0;
     let mut s: *mut session = 0 as *mut session;
-    log_debug(b"%s: window is @%u\x00" as *const u8 as *const libc::c_char,
-              (*::std::mem::transmute::<&[u8; 34],
-                                        &[libc::c_char; 34]>(b"cmd_find_best_session_with_window\x00")).as_ptr(),
-              (*(*fs).w).id);
+    log_debug(
+        b"%s: window is @%u\x00" as *const u8 as *const libc::c_char,
+        (*::std::mem::transmute::<&[u8; 34], &[libc::c_char; 34]>(
+            b"cmd_find_best_session_with_window\x00",
+        ))
+        .as_ptr(),
+        (*(*fs).w).id,
+    );
     ssize = 0 as libc::c_int as u_int;
     s = sessions_RB_MINMAX(&mut sessions, -(1 as libc::c_int));
     while !s.is_null() {
         if !(session_has(s, (*fs).w) == 0) {
-            slist =
-                xreallocarray(slist as *mut libc::c_void,
-                              ssize.wrapping_add(1 as libc::c_int as
-                                                     libc::c_uint) as size_t,
-                              ::std::mem::size_of::<*mut session>() as
-                                  libc::c_ulong) as *mut *mut session;
+            slist = xreallocarray(
+                slist as *mut libc::c_void,
+                ssize.wrapping_add(1 as libc::c_int as libc::c_uint) as size_t,
+                ::std::mem::size_of::<*mut session>() as libc::c_ulong,
+            ) as *mut *mut session;
             let fresh0 = ssize;
             ssize = ssize.wrapping_add(1);
             let ref mut fresh1 = *slist.offset(fresh0 as isize);
@@ -1360,7 +1408,7 @@ unsafe extern "C" fn cmd_find_best_session_with_window(mut fs:
         (*fs).s = cmd_find_best_session(slist, ssize, (*fs).flags);
         if !(*fs).s.is_null() {
             free(slist as *mut libc::c_void);
-            return cmd_find_best_winlink_with_window(fs)
+            return cmd_find_best_winlink_with_window(fs);
         }
     }
     free(slist as *mut libc::c_void);
@@ -1370,123 +1418,149 @@ unsafe extern "C" fn cmd_find_best_session_with_window(mut fs:
  * Find the best winlink for a window (the current if it contains the window,
  * otherwise the first).
  */
-unsafe extern "C" fn cmd_find_best_winlink_with_window(mut fs:
-                                                           *mut cmd_find_state)
- -> libc::c_int {
+unsafe extern "C" fn cmd_find_best_winlink_with_window(mut fs: *mut cmd_find_state) -> libc::c_int {
     let mut wl: *mut winlink = 0 as *mut winlink;
     let mut wl_loop: *mut winlink = 0 as *mut winlink;
-    log_debug(b"%s: window is @%u\x00" as *const u8 as *const libc::c_char,
-              (*::std::mem::transmute::<&[u8; 34],
-                                        &[libc::c_char; 34]>(b"cmd_find_best_winlink_with_window\x00")).as_ptr(),
-              (*(*fs).w).id);
+    log_debug(
+        b"%s: window is @%u\x00" as *const u8 as *const libc::c_char,
+        (*::std::mem::transmute::<&[u8; 34], &[libc::c_char; 34]>(
+            b"cmd_find_best_winlink_with_window\x00",
+        ))
+        .as_ptr(),
+        (*(*fs).w).id,
+    );
     wl = 0 as *mut winlink;
     if !(*(*fs).s).curw.is_null() && (*(*(*fs).s).curw).window == (*fs).w {
         wl = (*(*fs).s).curw
     } else {
-        wl_loop =
-            winlinks_RB_MINMAX(&mut (*(*fs).s).windows, -(1 as libc::c_int));
+        wl_loop = winlinks_RB_MINMAX(&mut (*(*fs).s).windows, -(1 as libc::c_int));
         while !wl_loop.is_null() {
             if (*wl_loop).window == (*fs).w {
                 wl = wl_loop;
-                break ;
-            } else { wl_loop = winlinks_RB_NEXT(wl_loop) }
+                break;
+            } else {
+                wl_loop = winlinks_RB_NEXT(wl_loop)
+            }
         }
     }
-    if wl.is_null() { return -(1 as libc::c_int) }
+    if wl.is_null() {
+        return -(1 as libc::c_int);
+    }
     (*fs).wl = wl;
     (*fs).idx = (*(*fs).wl).idx;
     return 0 as libc::c_int;
 }
 /* Maps string in table. */
-unsafe extern "C" fn cmd_find_map_table(mut table:
-                                            *mut [*const libc::c_char; 2],
-                                        mut s: *const libc::c_char)
- -> *const libc::c_char {
+unsafe extern "C" fn cmd_find_map_table(
+    mut table: *mut [*const libc::c_char; 2],
+    mut s: *const libc::c_char,
+) -> *const libc::c_char {
     let mut i: u_int = 0;
     i = 0 as libc::c_int as u_int;
     while !(*table.offset(i as isize))[0 as libc::c_int as usize].is_null() {
-        if strcmp(s, (*table.offset(i as isize))[0 as libc::c_int as usize])
-               == 0 as libc::c_int {
-            return (*table.offset(i as isize))[1 as libc::c_int as usize]
+        if strcmp(s, (*table.offset(i as isize))[0 as libc::c_int as usize]) == 0 as libc::c_int {
+            return (*table.offset(i as isize))[1 as libc::c_int as usize];
         }
         i = i.wrapping_add(1)
     }
     return s;
 }
 /* Find session from string. Fills in s. */
-unsafe extern "C" fn cmd_find_get_session(mut fs: *mut cmd_find_state,
-                                          mut session: *const libc::c_char)
- -> libc::c_int {
+unsafe extern "C" fn cmd_find_get_session(
+    mut fs: *mut cmd_find_state,
+    mut session: *const libc::c_char,
+) -> libc::c_int {
     let mut s: *mut session = 0 as *mut session;
     let mut s_loop: *mut session = 0 as *mut session;
     let mut c: *mut client = 0 as *mut client;
-    log_debug(b"%s: %s\x00" as *const u8 as *const libc::c_char,
-              (*::std::mem::transmute::<&[u8; 21],
-                                        &[libc::c_char; 21]>(b"cmd_find_get_session\x00")).as_ptr(),
-              session);
+    log_debug(
+        b"%s: %s\x00" as *const u8 as *const libc::c_char,
+        (*::std::mem::transmute::<&[u8; 21], &[libc::c_char; 21]>(b"cmd_find_get_session\x00"))
+            .as_ptr(),
+        session,
+    );
     /* Check for session ids starting with $. */
     if *session as libc::c_int == '$' as i32 {
         (*fs).s = session_find_by_id_str(session);
-        if (*fs).s.is_null() { return -(1 as libc::c_int) }
-        return 0 as libc::c_int
+        if (*fs).s.is_null() {
+            return -(1 as libc::c_int);
+        }
+        return 0 as libc::c_int;
     }
     /* Look for exactly this session. */
     (*fs).s = session_find(session);
-    if !(*fs).s.is_null() { return 0 as libc::c_int }
+    if !(*fs).s.is_null() {
+        return 0 as libc::c_int;
+    }
     /* Look for as a client. */
     c = cmd_find_client(0 as *mut cmdq_item, session, 1 as libc::c_int);
     if !c.is_null() && !(*c).session.is_null() {
         (*fs).s = (*c).session;
-        return 0 as libc::c_int
+        return 0 as libc::c_int;
     }
     /* Stop now if exact only. */
-    if (*fs).flags & 0x10 as libc::c_int != 0 { return -(1 as libc::c_int) }
+    if (*fs).flags & 0x10 as libc::c_int != 0 {
+        return -(1 as libc::c_int);
+    }
     /* Otherwise look for prefix. */
     s = 0 as *mut session;
     s_loop = sessions_RB_MINMAX(&mut sessions, -(1 as libc::c_int));
     while !s_loop.is_null() {
-        if strncmp(session, (*s_loop).name, strlen(session)) ==
-               0 as libc::c_int {
-            if !s.is_null() { return -(1 as libc::c_int) }
+        if strncmp(session, (*s_loop).name, strlen(session)) == 0 as libc::c_int {
+            if !s.is_null() {
+                return -(1 as libc::c_int);
+            }
             s = s_loop
         }
         s_loop = sessions_RB_NEXT(s_loop)
     }
-    if !s.is_null() { (*fs).s = s; return 0 as libc::c_int }
+    if !s.is_null() {
+        (*fs).s = s;
+        return 0 as libc::c_int;
+    }
     /* Then as a pattern. */
     s = 0 as *mut session;
     s_loop = sessions_RB_MINMAX(&mut sessions, -(1 as libc::c_int));
     while !s_loop.is_null() {
-        if fnmatch(session, (*s_loop).name, 0 as libc::c_int) ==
-               0 as libc::c_int {
-            if !s.is_null() { return -(1 as libc::c_int) }
+        if fnmatch(session, (*s_loop).name, 0 as libc::c_int) == 0 as libc::c_int {
+            if !s.is_null() {
+                return -(1 as libc::c_int);
+            }
             s = s_loop
         }
         s_loop = sessions_RB_NEXT(s_loop)
     }
-    if !s.is_null() { (*fs).s = s; return 0 as libc::c_int }
+    if !s.is_null() {
+        (*fs).s = s;
+        return 0 as libc::c_int;
+    }
     return -(1 as libc::c_int);
 }
 /* Find window from string. Fills in s, wl, w. */
-unsafe extern "C" fn cmd_find_get_window(mut fs: *mut cmd_find_state,
-                                         mut window: *const libc::c_char,
-                                         mut only: libc::c_int)
- -> libc::c_int {
-    log_debug(b"%s: %s\x00" as *const u8 as *const libc::c_char,
-              (*::std::mem::transmute::<&[u8; 20],
-                                        &[libc::c_char; 20]>(b"cmd_find_get_window\x00")).as_ptr(),
-              window);
+unsafe extern "C" fn cmd_find_get_window(
+    mut fs: *mut cmd_find_state,
+    mut window: *const libc::c_char,
+    mut only: libc::c_int,
+) -> libc::c_int {
+    log_debug(
+        b"%s: %s\x00" as *const u8 as *const libc::c_char,
+        (*::std::mem::transmute::<&[u8; 20], &[libc::c_char; 20]>(b"cmd_find_get_window\x00"))
+            .as_ptr(),
+        window,
+    );
     /* Check for window ids starting with @. */
     if *window as libc::c_int == '@' as i32 {
         (*fs).w = window_find_by_id_str(window);
-        if (*fs).w.is_null() { return -(1 as libc::c_int) }
-        return cmd_find_best_session_with_window(fs)
+        if (*fs).w.is_null() {
+            return -(1 as libc::c_int);
+        }
+        return cmd_find_best_session_with_window(fs);
     }
     /* Not a window id, so use the current session. */
     (*fs).s = (*(*fs).current).s;
     /* We now only need to find the winlink in this session. */
     if cmd_find_get_window_with_session(fs, window) == 0 as libc::c_int {
-        return 0 as libc::c_int
+        return 0 as libc::c_int;
     }
     /* Otherwise try as a session itself. */
     if only == 0 && cmd_find_get_session(fs, window) == 0 as libc::c_int {
@@ -1495,7 +1569,7 @@ unsafe extern "C" fn cmd_find_get_window(mut fs: *mut cmd_find_state,
         if !(*fs).flags & 0x4 as libc::c_int != 0 {
             (*fs).idx = (*(*fs).wl).idx
         }
-        return 0 as libc::c_int
+        return 0 as libc::c_int;
     }
     return -(1 as libc::c_int);
 }
@@ -1503,127 +1577,133 @@ unsafe extern "C" fn cmd_find_get_window(mut fs: *mut cmd_find_state,
  * Find window from string, assuming it is in given session. Needs s, fills in
  * wl and w.
  */
-unsafe extern "C" fn cmd_find_get_window_with_session(mut fs:
-                                                          *mut cmd_find_state,
-                                                      mut window:
-                                                          *const libc::c_char)
- -> libc::c_int {
+unsafe extern "C" fn cmd_find_get_window_with_session(
+    mut fs: *mut cmd_find_state,
+    mut window: *const libc::c_char,
+) -> libc::c_int {
     let mut wl: *mut winlink = 0 as *mut winlink;
     let mut errstr: *const libc::c_char = 0 as *const libc::c_char;
     let mut idx: libc::c_int = 0;
     let mut n: libc::c_int = 0;
     let mut exact: libc::c_int = 0;
     let mut s: *mut session = 0 as *mut session;
-    log_debug(b"%s: %s\x00" as *const u8 as *const libc::c_char,
-              (*::std::mem::transmute::<&[u8; 33],
-                                        &[libc::c_char; 33]>(b"cmd_find_get_window_with_session\x00")).as_ptr(),
-              window);
+    log_debug(
+        b"%s: %s\x00" as *const u8 as *const libc::c_char,
+        (*::std::mem::transmute::<&[u8; 33], &[libc::c_char; 33]>(
+            b"cmd_find_get_window_with_session\x00",
+        ))
+        .as_ptr(),
+        window,
+    );
     exact = (*fs).flags & 0x20 as libc::c_int;
     /*
-	 * Start with the current window as the default. So if only an index is
-	 * found, the window will be the current.
-	 */
+     * Start with the current window as the default. So if only an index is
+     * found, the window will be the current.
+     */
     (*fs).wl = (*(*fs).s).curw;
     (*fs).w = (*(*fs).wl).window;
     /* Check for window ids starting with @. */
     if *window as libc::c_int == '@' as i32 {
         (*fs).w = window_find_by_id_str(window);
         if (*fs).w.is_null() || session_has((*fs).s, (*fs).w) == 0 {
-            return -(1 as libc::c_int)
+            return -(1 as libc::c_int);
         }
-        return cmd_find_best_winlink_with_window(fs)
+        return cmd_find_best_winlink_with_window(fs);
     }
     /* Try as an offset. */
-    if exact == 0 &&
-           (*window.offset(0 as libc::c_int as isize) as libc::c_int ==
-                '+' as i32 ||
-                *window.offset(0 as libc::c_int as isize) as libc::c_int ==
-                    '-' as i32) {
-        if *window.offset(1 as libc::c_int as isize) as libc::c_int !=
-               '\u{0}' as i32 {
-            n =
-                strtonum(window.offset(1 as libc::c_int as isize),
-                         1 as libc::c_int as libc::c_longlong,
-                         2147483647 as libc::c_int as libc::c_longlong,
-                         0 as *mut *const libc::c_char) as libc::c_int
-        } else { n = 1 as libc::c_int }
+    if exact == 0
+        && (*window.offset(0 as libc::c_int as isize) as libc::c_int == '+' as i32
+            || *window.offset(0 as libc::c_int as isize) as libc::c_int == '-' as i32)
+    {
+        if *window.offset(1 as libc::c_int as isize) as libc::c_int != '\u{0}' as i32 {
+            n = strtonum(
+                window.offset(1 as libc::c_int as isize),
+                1 as libc::c_int as libc::c_longlong,
+                2147483647 as libc::c_int as libc::c_longlong,
+                0 as *mut *const libc::c_char,
+            ) as libc::c_int
+        } else {
+            n = 1 as libc::c_int
+        }
         s = (*fs).s;
         if (*fs).flags & 0x4 as libc::c_int != 0 {
-            if *window.offset(0 as libc::c_int as isize) as libc::c_int ==
-                   '+' as i32 {
+            if *window.offset(0 as libc::c_int as isize) as libc::c_int == '+' as i32 {
                 if 2147483647 as libc::c_int - (*(*s).curw).idx < n {
-                    return -(1 as libc::c_int)
+                    return -(1 as libc::c_int);
                 }
                 (*fs).idx = (*(*s).curw).idx + n
             } else {
-                if n > (*(*s).curw).idx { return -(1 as libc::c_int) }
+                if n > (*(*s).curw).idx {
+                    return -(1 as libc::c_int);
+                }
                 (*fs).idx = (*(*s).curw).idx - n
             }
-            return 0 as libc::c_int
+            return 0 as libc::c_int;
         }
-        if *window.offset(0 as libc::c_int as isize) as libc::c_int ==
-               '+' as i32 {
+        if *window.offset(0 as libc::c_int as isize) as libc::c_int == '+' as i32 {
             (*fs).wl = winlink_next_by_number((*s).curw, s, n)
-        } else { (*fs).wl = winlink_previous_by_number((*s).curw, s, n) }
+        } else {
+            (*fs).wl = winlink_previous_by_number((*s).curw, s, n)
+        }
         if !(*fs).wl.is_null() {
             (*fs).idx = (*(*fs).wl).idx;
             (*fs).w = (*(*fs).wl).window;
-            return 0 as libc::c_int
+            return 0 as libc::c_int;
         }
     }
     /* Try special characters. */
     if exact == 0 {
-        if strcmp(window, b"!\x00" as *const u8 as *const libc::c_char) ==
-               0 as libc::c_int {
+        if strcmp(window, b"!\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
             (*fs).wl = (*(*fs).s).lastw.tqh_first;
-            if (*fs).wl.is_null() { return -(1 as libc::c_int) }
+            if (*fs).wl.is_null() {
+                return -(1 as libc::c_int);
+            }
             (*fs).idx = (*(*fs).wl).idx;
             (*fs).w = (*(*fs).wl).window;
-            return 0 as libc::c_int
+            return 0 as libc::c_int;
         } else {
-            if strcmp(window, b"^\x00" as *const u8 as *const libc::c_char) ==
-                   0 as libc::c_int {
-                (*fs).wl =
-                    winlinks_RB_MINMAX(&mut (*(*fs).s).windows,
-                                       -(1 as libc::c_int));
-                if (*fs).wl.is_null() { return -(1 as libc::c_int) }
+            if strcmp(window, b"^\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
+                (*fs).wl = winlinks_RB_MINMAX(&mut (*(*fs).s).windows, -(1 as libc::c_int));
+                if (*fs).wl.is_null() {
+                    return -(1 as libc::c_int);
+                }
                 (*fs).idx = (*(*fs).wl).idx;
                 (*fs).w = (*(*fs).wl).window;
-                return 0 as libc::c_int
+                return 0 as libc::c_int;
             } else {
-                if strcmp(window,
-                          b"$\x00" as *const u8 as *const libc::c_char) ==
-                       0 as libc::c_int {
-                    (*fs).wl =
-                        winlinks_RB_MINMAX(&mut (*(*fs).s).windows,
-                                           1 as libc::c_int);
-                    if (*fs).wl.is_null() { return -(1 as libc::c_int) }
+                if strcmp(window, b"$\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int
+                {
+                    (*fs).wl = winlinks_RB_MINMAX(&mut (*(*fs).s).windows, 1 as libc::c_int);
+                    if (*fs).wl.is_null() {
+                        return -(1 as libc::c_int);
+                    }
                     (*fs).idx = (*(*fs).wl).idx;
                     (*fs).w = (*(*fs).wl).window;
-                    return 0 as libc::c_int
+                    return 0 as libc::c_int;
                 }
             }
         }
     }
     /* First see if this is a valid window index in this session. */
     if *window.offset(0 as libc::c_int as isize) as libc::c_int != '+' as i32
-           &&
-           *window.offset(0 as libc::c_int as isize) as libc::c_int !=
-               '-' as i32 {
-        idx =
-            strtonum(window, 0 as libc::c_int as libc::c_longlong,
-                     2147483647 as libc::c_int as libc::c_longlong,
-                     &mut errstr) as libc::c_int;
+        && *window.offset(0 as libc::c_int as isize) as libc::c_int != '-' as i32
+    {
+        idx = strtonum(
+            window,
+            0 as libc::c_int as libc::c_longlong,
+            2147483647 as libc::c_int as libc::c_longlong,
+            &mut errstr,
+        ) as libc::c_int;
         if errstr.is_null() {
             (*fs).wl = winlink_find_by_index(&mut (*(*fs).s).windows, idx);
             if !(*fs).wl.is_null() {
                 (*fs).idx = (*(*fs).wl).idx;
                 (*fs).w = (*(*fs).wl).window;
-                return 0 as libc::c_int
+                return 0 as libc::c_int;
             }
             if (*fs).flags & 0x4 as libc::c_int != 0 {
                 (*fs).idx = idx;
-                return 0 as libc::c_int
+                return 0 as libc::c_int;
             }
         }
     }
@@ -1632,7 +1712,9 @@ unsafe extern "C" fn cmd_find_get_window_with_session(mut fs:
     wl = winlinks_RB_MINMAX(&mut (*(*fs).s).windows, -(1 as libc::c_int));
     while !wl.is_null() {
         if strcmp(window, (*(*wl).window).name) == 0 as libc::c_int {
-            if !(*fs).wl.is_null() { return -(1 as libc::c_int) }
+            if !(*fs).wl.is_null() {
+                return -(1 as libc::c_int);
+            }
             (*fs).wl = wl
         }
         wl = winlinks_RB_NEXT(wl)
@@ -1640,17 +1722,20 @@ unsafe extern "C" fn cmd_find_get_window_with_session(mut fs:
     if !(*fs).wl.is_null() {
         (*fs).idx = (*(*fs).wl).idx;
         (*fs).w = (*(*fs).wl).window;
-        return 0 as libc::c_int
+        return 0 as libc::c_int;
     }
     /* Stop now if exact only. */
-    if exact != 0 { return -(1 as libc::c_int) }
+    if exact != 0 {
+        return -(1 as libc::c_int);
+    }
     /* Try as the start of a window name, error if multiple. */
     (*fs).wl = 0 as *mut winlink;
     wl = winlinks_RB_MINMAX(&mut (*(*fs).s).windows, -(1 as libc::c_int));
     while !wl.is_null() {
-        if strncmp(window, (*(*wl).window).name, strlen(window)) ==
-               0 as libc::c_int {
-            if !(*fs).wl.is_null() { return -(1 as libc::c_int) }
+        if strncmp(window, (*(*wl).window).name, strlen(window)) == 0 as libc::c_int {
+            if !(*fs).wl.is_null() {
+                return -(1 as libc::c_int);
+            }
             (*fs).wl = wl
         }
         wl = winlinks_RB_NEXT(wl)
@@ -1658,15 +1743,16 @@ unsafe extern "C" fn cmd_find_get_window_with_session(mut fs:
     if !(*fs).wl.is_null() {
         (*fs).idx = (*(*fs).wl).idx;
         (*fs).w = (*(*fs).wl).window;
-        return 0 as libc::c_int
+        return 0 as libc::c_int;
     }
     /* Now look for pattern matches, again error if multiple. */
     (*fs).wl = 0 as *mut winlink;
     wl = winlinks_RB_MINMAX(&mut (*(*fs).s).windows, -(1 as libc::c_int));
     while !wl.is_null() {
-        if fnmatch(window, (*(*wl).window).name, 0 as libc::c_int) ==
-               0 as libc::c_int {
-            if !(*fs).wl.is_null() { return -(1 as libc::c_int) }
+        if fnmatch(window, (*(*wl).window).name, 0 as libc::c_int) == 0 as libc::c_int {
+            if !(*fs).wl.is_null() {
+                return -(1 as libc::c_int);
+            }
             (*fs).wl = wl
         }
         wl = winlinks_RB_NEXT(wl)
@@ -1674,24 +1760,30 @@ unsafe extern "C" fn cmd_find_get_window_with_session(mut fs:
     if !(*fs).wl.is_null() {
         (*fs).idx = (*(*fs).wl).idx;
         (*fs).w = (*(*fs).wl).window;
-        return 0 as libc::c_int
+        return 0 as libc::c_int;
     }
     return -(1 as libc::c_int);
 }
 /* Find pane from string. Fills in s, wl, w, wp. */
-unsafe extern "C" fn cmd_find_get_pane(mut fs: *mut cmd_find_state,
-                                       mut pane: *const libc::c_char,
-                                       mut only: libc::c_int) -> libc::c_int {
-    log_debug(b"%s: %s\x00" as *const u8 as *const libc::c_char,
-              (*::std::mem::transmute::<&[u8; 18],
-                                        &[libc::c_char; 18]>(b"cmd_find_get_pane\x00")).as_ptr(),
-              pane);
+unsafe extern "C" fn cmd_find_get_pane(
+    mut fs: *mut cmd_find_state,
+    mut pane: *const libc::c_char,
+    mut only: libc::c_int,
+) -> libc::c_int {
+    log_debug(
+        b"%s: %s\x00" as *const u8 as *const libc::c_char,
+        (*::std::mem::transmute::<&[u8; 18], &[libc::c_char; 18]>(b"cmd_find_get_pane\x00"))
+            .as_ptr(),
+        pane,
+    );
     /* Check for pane ids starting with %. */
     if *pane as libc::c_int == '%' as i32 {
         (*fs).wp = window_pane_find_by_id_str(pane);
-        if (*fs).wp.is_null() { return -(1 as libc::c_int) }
+        if (*fs).wp.is_null() {
+            return -(1 as libc::c_int);
+        }
         (*fs).w = (*(*fs).wp).window;
-        return cmd_find_best_session_with_window(fs)
+        return cmd_find_best_session_with_window(fs);
     }
     /* Not a pane id, so try the current session and window. */
     (*fs).s = (*(*fs).current).s;
@@ -1700,14 +1792,12 @@ unsafe extern "C" fn cmd_find_get_pane(mut fs: *mut cmd_find_state,
     (*fs).w = (*(*fs).current).w;
     /* We now only need to find the pane in this window. */
     if cmd_find_get_pane_with_window(fs, pane) == 0 as libc::c_int {
-        return 0 as libc::c_int
+        return 0 as libc::c_int;
     }
     /* Otherwise try as a window itself (this will also try as session). */
-    if only == 0 &&
-           cmd_find_get_window(fs, pane, 0 as libc::c_int) == 0 as libc::c_int
-       {
+    if only == 0 && cmd_find_get_window(fs, pane, 0 as libc::c_int) == 0 as libc::c_int {
         (*fs).wp = (*(*fs).w).active;
-        return 0 as libc::c_int
+        return 0 as libc::c_int;
     }
     return -(1 as libc::c_int);
 }
@@ -1715,21 +1805,26 @@ unsafe extern "C" fn cmd_find_get_pane(mut fs: *mut cmd_find_state,
  * Find pane from string, assuming it is in given session. Needs s, fills in wl
  * and w and wp.
  */
-unsafe extern "C" fn cmd_find_get_pane_with_session(mut fs:
-                                                        *mut cmd_find_state,
-                                                    mut pane:
-                                                        *const libc::c_char)
- -> libc::c_int {
-    log_debug(b"%s: %s\x00" as *const u8 as *const libc::c_char,
-              (*::std::mem::transmute::<&[u8; 31],
-                                        &[libc::c_char; 31]>(b"cmd_find_get_pane_with_session\x00")).as_ptr(),
-              pane);
+unsafe extern "C" fn cmd_find_get_pane_with_session(
+    mut fs: *mut cmd_find_state,
+    mut pane: *const libc::c_char,
+) -> libc::c_int {
+    log_debug(
+        b"%s: %s\x00" as *const u8 as *const libc::c_char,
+        (*::std::mem::transmute::<&[u8; 31], &[libc::c_char; 31]>(
+            b"cmd_find_get_pane_with_session\x00",
+        ))
+        .as_ptr(),
+        pane,
+    );
     /* Check for pane ids starting with %. */
     if *pane as libc::c_int == '%' as i32 {
         (*fs).wp = window_pane_find_by_id_str(pane);
-        if (*fs).wp.is_null() { return -(1 as libc::c_int) }
+        if (*fs).wp.is_null() {
+            return -(1 as libc::c_int);
+        }
         (*fs).w = (*(*fs).wp).window;
-        return cmd_find_best_winlink_with_window(fs)
+        return cmd_find_best_winlink_with_window(fs);
     }
     /* Otherwise use the current window. */
     (*fs).wl = (*(*fs).s).curw;
@@ -1742,140 +1837,173 @@ unsafe extern "C" fn cmd_find_get_pane_with_session(mut fs:
  * Find pane from string, assuming it is in the given window. Needs w, fills in
  * wp.
  */
-unsafe extern "C" fn cmd_find_get_pane_with_window(mut fs:
-                                                       *mut cmd_find_state,
-                                                   mut pane:
-                                                       *const libc::c_char)
- -> libc::c_int {
+unsafe extern "C" fn cmd_find_get_pane_with_window(
+    mut fs: *mut cmd_find_state,
+    mut pane: *const libc::c_char,
+) -> libc::c_int {
     let mut errstr: *const libc::c_char = 0 as *const libc::c_char;
     let mut idx: libc::c_int = 0;
     let mut wp: *mut window_pane = 0 as *mut window_pane;
     let mut n: u_int = 0;
-    log_debug(b"%s: %s\x00" as *const u8 as *const libc::c_char,
-              (*::std::mem::transmute::<&[u8; 30],
-                                        &[libc::c_char; 30]>(b"cmd_find_get_pane_with_window\x00")).as_ptr(),
-              pane);
+    log_debug(
+        b"%s: %s\x00" as *const u8 as *const libc::c_char,
+        (*::std::mem::transmute::<&[u8; 30], &[libc::c_char; 30]>(
+            b"cmd_find_get_pane_with_window\x00",
+        ))
+        .as_ptr(),
+        pane,
+    );
     /* Check for pane ids starting with %. */
     if *pane as libc::c_int == '%' as i32 {
         (*fs).wp = window_pane_find_by_id_str(pane);
-        if (*fs).wp.is_null() { return -(1 as libc::c_int) }
-        if (*(*fs).wp).window != (*fs).w { return -(1 as libc::c_int) }
-        return 0 as libc::c_int
+        if (*fs).wp.is_null() {
+            return -(1 as libc::c_int);
+        }
+        if (*(*fs).wp).window != (*fs).w {
+            return -(1 as libc::c_int);
+        }
+        return 0 as libc::c_int;
     }
     /* Try special characters. */
-    if strcmp(pane, b"!\x00" as *const u8 as *const libc::c_char) ==
-           0 as libc::c_int {
+    if strcmp(pane, b"!\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
         (*fs).wp = (*(*fs).w).last;
-        if (*fs).wp.is_null() { return -(1 as libc::c_int) }
-        return 0 as libc::c_int
+        if (*fs).wp.is_null() {
+            return -(1 as libc::c_int);
+        }
+        return 0 as libc::c_int;
     } else {
-        if strcmp(pane, b"{up-of}\x00" as *const u8 as *const libc::c_char) ==
-               0 as libc::c_int {
+        if strcmp(pane, b"{up-of}\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
             (*fs).wp = window_pane_find_up((*(*fs).current).wp);
-            if (*fs).wp.is_null() { return -(1 as libc::c_int) }
-            return 0 as libc::c_int
+            if (*fs).wp.is_null() {
+                return -(1 as libc::c_int);
+            }
+            return 0 as libc::c_int;
         } else {
-            if strcmp(pane,
-                      b"{down-of}\x00" as *const u8 as *const libc::c_char) ==
-                   0 as libc::c_int {
+            if strcmp(pane, b"{down-of}\x00" as *const u8 as *const libc::c_char)
+                == 0 as libc::c_int
+            {
                 (*fs).wp = window_pane_find_down((*(*fs).current).wp);
-                if (*fs).wp.is_null() { return -(1 as libc::c_int) }
-                return 0 as libc::c_int
+                if (*fs).wp.is_null() {
+                    return -(1 as libc::c_int);
+                }
+                return 0 as libc::c_int;
             } else {
-                if strcmp(pane,
-                          b"{left-of}\x00" as *const u8 as
-                              *const libc::c_char) == 0 as libc::c_int {
+                if strcmp(pane, b"{left-of}\x00" as *const u8 as *const libc::c_char)
+                    == 0 as libc::c_int
+                {
                     (*fs).wp = window_pane_find_left((*(*fs).current).wp);
-                    if (*fs).wp.is_null() { return -(1 as libc::c_int) }
-                    return 0 as libc::c_int
+                    if (*fs).wp.is_null() {
+                        return -(1 as libc::c_int);
+                    }
+                    return 0 as libc::c_int;
                 } else {
-                    if strcmp(pane,
-                              b"{right-of}\x00" as *const u8 as
-                                  *const libc::c_char) == 0 as libc::c_int {
-                        (*fs).wp =
-                            window_pane_find_right((*(*fs).current).wp);
-                        if (*fs).wp.is_null() { return -(1 as libc::c_int) }
-                        return 0 as libc::c_int
+                    if strcmp(pane, b"{right-of}\x00" as *const u8 as *const libc::c_char)
+                        == 0 as libc::c_int
+                    {
+                        (*fs).wp = window_pane_find_right((*(*fs).current).wp);
+                        if (*fs).wp.is_null() {
+                            return -(1 as libc::c_int);
+                        }
+                        return 0 as libc::c_int;
                     }
                 }
             }
         }
     }
     /* Try as an offset. */
-    if *pane.offset(0 as libc::c_int as isize) as libc::c_int == '+' as i32 ||
-           *pane.offset(0 as libc::c_int as isize) as libc::c_int ==
-               '-' as i32 {
-        if *pane.offset(1 as libc::c_int as isize) as libc::c_int !=
-               '\u{0}' as i32 {
-            n =
-                strtonum(pane.offset(1 as libc::c_int as isize),
-                         1 as libc::c_int as libc::c_longlong,
-                         2147483647 as libc::c_int as libc::c_longlong,
-                         0 as *mut *const libc::c_char) as u_int
-        } else { n = 1 as libc::c_int as u_int }
+    if *pane.offset(0 as libc::c_int as isize) as libc::c_int == '+' as i32
+        || *pane.offset(0 as libc::c_int as isize) as libc::c_int == '-' as i32
+    {
+        if *pane.offset(1 as libc::c_int as isize) as libc::c_int != '\u{0}' as i32 {
+            n = strtonum(
+                pane.offset(1 as libc::c_int as isize),
+                1 as libc::c_int as libc::c_longlong,
+                2147483647 as libc::c_int as libc::c_longlong,
+                0 as *mut *const libc::c_char,
+            ) as u_int
+        } else {
+            n = 1 as libc::c_int as u_int
+        }
         wp = (*(*fs).current).wp;
-        if *pane.offset(0 as libc::c_int as isize) as libc::c_int ==
-               '+' as i32 {
+        if *pane.offset(0 as libc::c_int as isize) as libc::c_int == '+' as i32 {
             (*fs).wp = window_pane_next_by_number((*fs).w, wp, n)
-        } else { (*fs).wp = window_pane_previous_by_number((*fs).w, wp, n) }
-        if !(*fs).wp.is_null() { return 0 as libc::c_int }
+        } else {
+            (*fs).wp = window_pane_previous_by_number((*fs).w, wp, n)
+        }
+        if !(*fs).wp.is_null() {
+            return 0 as libc::c_int;
+        }
     }
     /* Get pane by index. */
-    idx =
-        strtonum(pane, 0 as libc::c_int as libc::c_longlong,
-                 2147483647 as libc::c_int as libc::c_longlong, &mut errstr)
-            as libc::c_int;
+    idx = strtonum(
+        pane,
+        0 as libc::c_int as libc::c_longlong,
+        2147483647 as libc::c_int as libc::c_longlong,
+        &mut errstr,
+    ) as libc::c_int;
     if errstr.is_null() {
         (*fs).wp = window_pane_at_index((*fs).w, idx as u_int);
-        if !(*fs).wp.is_null() { return 0 as libc::c_int }
+        if !(*fs).wp.is_null() {
+            return 0 as libc::c_int;
+        }
     }
     /* Try as a description. */
     (*fs).wp = window_find_string((*fs).w, pane);
-    if !(*fs).wp.is_null() { return 0 as libc::c_int }
+    if !(*fs).wp.is_null() {
+        return 0 as libc::c_int;
+    }
     return -(1 as libc::c_int);
 }
 /* Clear state. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_find_clear_state(mut fs: *mut cmd_find_state,
-                                              mut flags: libc::c_int) {
-    memset(fs as *mut libc::c_void, 0 as libc::c_int,
-           ::std::mem::size_of::<cmd_find_state>() as libc::c_ulong);
+pub unsafe extern "C" fn cmd_find_clear_state(mut fs: *mut cmd_find_state, mut flags: libc::c_int) {
+    memset(
+        fs as *mut libc::c_void,
+        0 as libc::c_int,
+        ::std::mem::size_of::<cmd_find_state>() as libc::c_ulong,
+    );
     (*fs).flags = flags;
     (*fs).idx = -(1 as libc::c_int);
 }
 /* Check if state is empty. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_find_empty_state(mut fs: *mut cmd_find_state)
- -> libc::c_int {
-    if (*fs).s.is_null() && (*fs).wl.is_null() && (*fs).w.is_null() &&
-           (*fs).wp.is_null() {
-        return 1 as libc::c_int
+pub unsafe extern "C" fn cmd_find_empty_state(mut fs: *mut cmd_find_state) -> libc::c_int {
+    if (*fs).s.is_null() && (*fs).wl.is_null() && (*fs).w.is_null() && (*fs).wp.is_null() {
+        return 1 as libc::c_int;
     }
     return 0 as libc::c_int;
 }
 /* Check if a state if valid. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_find_valid_state(mut fs: *mut cmd_find_state)
- -> libc::c_int {
+pub unsafe extern "C" fn cmd_find_valid_state(mut fs: *mut cmd_find_state) -> libc::c_int {
     let mut wl: *mut winlink = 0 as *mut winlink;
-    if (*fs).s.is_null() || (*fs).wl.is_null() || (*fs).w.is_null() ||
-           (*fs).wp.is_null() {
-        return 0 as libc::c_int
+    if (*fs).s.is_null() || (*fs).wl.is_null() || (*fs).w.is_null() || (*fs).wp.is_null() {
+        return 0 as libc::c_int;
     }
-    if session_alive((*fs).s) == 0 { return 0 as libc::c_int }
+    if session_alive((*fs).s) == 0 {
+        return 0 as libc::c_int;
+    }
     wl = winlinks_RB_MINMAX(&mut (*(*fs).s).windows, -(1 as libc::c_int));
     while !wl.is_null() {
-        if (*wl).window == (*fs).w && wl == (*fs).wl { break ; }
+        if (*wl).window == (*fs).w && wl == (*fs).wl {
+            break;
+        }
         wl = winlinks_RB_NEXT(wl)
     }
-    if wl.is_null() { return 0 as libc::c_int }
-    if (*fs).w != (*(*fs).wl).window { return 0 as libc::c_int }
+    if wl.is_null() {
+        return 0 as libc::c_int;
+    }
+    if (*fs).w != (*(*fs).wl).window {
+        return 0 as libc::c_int;
+    }
     return window_has_pane((*fs).w, (*fs).wp);
 }
 /* Copy a state. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_find_copy_state(mut dst: *mut cmd_find_state,
-                                             mut src: *mut cmd_find_state) {
+pub unsafe extern "C" fn cmd_find_copy_state(
+    mut dst: *mut cmd_find_state,
+    mut src: *mut cmd_find_state,
+) {
     (*dst).s = (*src).s;
     (*dst).wl = (*src).wl;
     (*dst).idx = (*src).idx;
@@ -1883,235 +2011,297 @@ pub unsafe extern "C" fn cmd_find_copy_state(mut dst: *mut cmd_find_state,
     (*dst).wp = (*src).wp;
 }
 /* Log the result. */
-unsafe extern "C" fn cmd_find_log_state(mut prefix: *const libc::c_char,
-                                        mut fs: *mut cmd_find_state) {
+unsafe extern "C" fn cmd_find_log_state(
+    mut prefix: *const libc::c_char,
+    mut fs: *mut cmd_find_state,
+) {
     if !(*fs).s.is_null() {
-        log_debug(b"%s: s=$%u %s\x00" as *const u8 as *const libc::c_char,
-                  prefix, (*(*fs).s).id, (*(*fs).s).name);
+        log_debug(
+            b"%s: s=$%u %s\x00" as *const u8 as *const libc::c_char,
+            prefix,
+            (*(*fs).s).id,
+            (*(*fs).s).name,
+        );
     } else {
-        log_debug(b"%s: s=none\x00" as *const u8 as *const libc::c_char,
-                  prefix);
+        log_debug(
+            b"%s: s=none\x00" as *const u8 as *const libc::c_char,
+            prefix,
+        );
     }
     if !(*fs).wl.is_null() {
-        log_debug(b"%s: wl=%u %d w=@%u %s\x00" as *const u8 as
-                      *const libc::c_char, prefix, (*(*fs).wl).idx,
-                  ((*(*fs).wl).window == (*fs).w) as libc::c_int,
-                  (*(*fs).w).id, (*(*fs).w).name);
+        log_debug(
+            b"%s: wl=%u %d w=@%u %s\x00" as *const u8 as *const libc::c_char,
+            prefix,
+            (*(*fs).wl).idx,
+            ((*(*fs).wl).window == (*fs).w) as libc::c_int,
+            (*(*fs).w).id,
+            (*(*fs).w).name,
+        );
     } else {
-        log_debug(b"%s: wl=none\x00" as *const u8 as *const libc::c_char,
-                  prefix);
+        log_debug(
+            b"%s: wl=none\x00" as *const u8 as *const libc::c_char,
+            prefix,
+        );
     }
     if !(*fs).wp.is_null() {
-        log_debug(b"%s: wp=%%%u\x00" as *const u8 as *const libc::c_char,
-                  prefix, (*(*fs).wp).id);
+        log_debug(
+            b"%s: wp=%%%u\x00" as *const u8 as *const libc::c_char,
+            prefix,
+            (*(*fs).wp).id,
+        );
     } else {
-        log_debug(b"%s: wp=none\x00" as *const u8 as *const libc::c_char,
-                  prefix);
+        log_debug(
+            b"%s: wp=none\x00" as *const u8 as *const libc::c_char,
+            prefix,
+        );
     }
     if (*fs).idx != -(1 as libc::c_int) {
-        log_debug(b"%s: idx=%d\x00" as *const u8 as *const libc::c_char,
-                  prefix, (*fs).idx);
+        log_debug(
+            b"%s: idx=%d\x00" as *const u8 as *const libc::c_char,
+            prefix,
+            (*fs).idx,
+        );
     } else {
-        log_debug(b"%s: idx=none\x00" as *const u8 as *const libc::c_char,
-                  prefix);
+        log_debug(
+            b"%s: idx=none\x00" as *const u8 as *const libc::c_char,
+            prefix,
+        );
     };
 }
 /* Find state from a session. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_find_from_session(mut fs: *mut cmd_find_state,
-                                               mut s: *mut session,
-                                               mut flags: libc::c_int) {
+pub unsafe extern "C" fn cmd_find_from_session(
+    mut fs: *mut cmd_find_state,
+    mut s: *mut session,
+    mut flags: libc::c_int,
+) {
     cmd_find_clear_state(fs, flags);
     (*fs).s = s;
     (*fs).wl = (*(*fs).s).curw;
     (*fs).w = (*(*fs).wl).window;
     (*fs).wp = (*(*fs).w).active;
-    cmd_find_log_state((*::std::mem::transmute::<&[u8; 22],
-                                                 &[libc::c_char; 22]>(b"cmd_find_from_session\x00")).as_ptr(),
-                       fs);
+    cmd_find_log_state(
+        (*::std::mem::transmute::<&[u8; 22], &[libc::c_char; 22]>(b"cmd_find_from_session\x00"))
+            .as_ptr(),
+        fs,
+    );
 }
 /* Find state from a winlink. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_find_from_winlink(mut fs: *mut cmd_find_state,
-                                               mut wl: *mut winlink,
-                                               mut flags: libc::c_int) {
+pub unsafe extern "C" fn cmd_find_from_winlink(
+    mut fs: *mut cmd_find_state,
+    mut wl: *mut winlink,
+    mut flags: libc::c_int,
+) {
     cmd_find_clear_state(fs, flags);
     (*fs).s = (*wl).session;
     (*fs).wl = wl;
     (*fs).w = (*wl).window;
     (*fs).wp = (*(*wl).window).active;
-    cmd_find_log_state((*::std::mem::transmute::<&[u8; 22],
-                                                 &[libc::c_char; 22]>(b"cmd_find_from_winlink\x00")).as_ptr(),
-                       fs);
+    cmd_find_log_state(
+        (*::std::mem::transmute::<&[u8; 22], &[libc::c_char; 22]>(b"cmd_find_from_winlink\x00"))
+            .as_ptr(),
+        fs,
+    );
 }
 /* Find state from a session and window. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_find_from_session_window(mut fs:
-                                                          *mut cmd_find_state,
-                                                      mut s: *mut session,
-                                                      mut w: *mut window,
-                                                      mut flags: libc::c_int)
- -> libc::c_int {
+pub unsafe extern "C" fn cmd_find_from_session_window(
+    mut fs: *mut cmd_find_state,
+    mut s: *mut session,
+    mut w: *mut window,
+    mut flags: libc::c_int,
+) -> libc::c_int {
     cmd_find_clear_state(fs, flags);
     (*fs).s = s;
     (*fs).w = w;
     if cmd_find_best_winlink_with_window(fs) != 0 as libc::c_int {
         cmd_find_clear_state(fs, flags);
-        return -(1 as libc::c_int)
+        return -(1 as libc::c_int);
     }
     (*fs).wp = (*(*fs).w).active;
-    cmd_find_log_state((*::std::mem::transmute::<&[u8; 29],
-                                                 &[libc::c_char; 29]>(b"cmd_find_from_session_window\x00")).as_ptr(),
-                       fs);
+    cmd_find_log_state(
+        (*::std::mem::transmute::<&[u8; 29], &[libc::c_char; 29]>(
+            b"cmd_find_from_session_window\x00",
+        ))
+        .as_ptr(),
+        fs,
+    );
     return 0 as libc::c_int;
 }
 /* Find state from a window. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_find_from_window(mut fs: *mut cmd_find_state,
-                                              mut w: *mut window,
-                                              mut flags: libc::c_int)
- -> libc::c_int {
+pub unsafe extern "C" fn cmd_find_from_window(
+    mut fs: *mut cmd_find_state,
+    mut w: *mut window,
+    mut flags: libc::c_int,
+) -> libc::c_int {
     cmd_find_clear_state(fs, flags);
     (*fs).w = w;
     if cmd_find_best_session_with_window(fs) != 0 as libc::c_int {
         cmd_find_clear_state(fs, flags);
-        return -(1 as libc::c_int)
+        return -(1 as libc::c_int);
     }
     if cmd_find_best_winlink_with_window(fs) != 0 as libc::c_int {
         cmd_find_clear_state(fs, flags);
-        return -(1 as libc::c_int)
+        return -(1 as libc::c_int);
     }
     (*fs).wp = (*(*fs).w).active;
-    cmd_find_log_state((*::std::mem::transmute::<&[u8; 21],
-                                                 &[libc::c_char; 21]>(b"cmd_find_from_window\x00")).as_ptr(),
-                       fs);
+    cmd_find_log_state(
+        (*::std::mem::transmute::<&[u8; 21], &[libc::c_char; 21]>(b"cmd_find_from_window\x00"))
+            .as_ptr(),
+        fs,
+    );
     return 0 as libc::c_int;
 }
 /* Find state from a winlink and pane. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_find_from_winlink_pane(mut fs:
-                                                        *mut cmd_find_state,
-                                                    mut wl: *mut winlink,
-                                                    mut wp: *mut window_pane,
-                                                    mut flags: libc::c_int) {
+pub unsafe extern "C" fn cmd_find_from_winlink_pane(
+    mut fs: *mut cmd_find_state,
+    mut wl: *mut winlink,
+    mut wp: *mut window_pane,
+    mut flags: libc::c_int,
+) {
     cmd_find_clear_state(fs, flags);
     (*fs).s = (*wl).session;
     (*fs).wl = wl;
     (*fs).idx = (*(*fs).wl).idx;
     (*fs).w = (*(*fs).wl).window;
     (*fs).wp = wp;
-    cmd_find_log_state((*::std::mem::transmute::<&[u8; 27],
-                                                 &[libc::c_char; 27]>(b"cmd_find_from_winlink_pane\x00")).as_ptr(),
-                       fs);
+    cmd_find_log_state(
+        (*::std::mem::transmute::<&[u8; 27], &[libc::c_char; 27]>(
+            b"cmd_find_from_winlink_pane\x00",
+        ))
+        .as_ptr(),
+        fs,
+    );
 }
 /* Find state from a pane. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_find_from_pane(mut fs: *mut cmd_find_state,
-                                            mut wp: *mut window_pane,
-                                            mut flags: libc::c_int)
- -> libc::c_int {
+pub unsafe extern "C" fn cmd_find_from_pane(
+    mut fs: *mut cmd_find_state,
+    mut wp: *mut window_pane,
+    mut flags: libc::c_int,
+) -> libc::c_int {
     if cmd_find_from_window(fs, (*wp).window, flags) != 0 as libc::c_int {
-        return -(1 as libc::c_int)
+        return -(1 as libc::c_int);
     }
     (*fs).wp = wp;
-    cmd_find_log_state((*::std::mem::transmute::<&[u8; 19],
-                                                 &[libc::c_char; 19]>(b"cmd_find_from_pane\x00")).as_ptr(),
-                       fs);
+    cmd_find_log_state(
+        (*::std::mem::transmute::<&[u8; 19], &[libc::c_char; 19]>(b"cmd_find_from_pane\x00"))
+            .as_ptr(),
+        fs,
+    );
     return 0 as libc::c_int;
 }
 /* Find state from nothing. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_find_from_nothing(mut fs: *mut cmd_find_state,
-                                               mut flags: libc::c_int)
- -> libc::c_int {
+pub unsafe extern "C" fn cmd_find_from_nothing(
+    mut fs: *mut cmd_find_state,
+    mut flags: libc::c_int,
+) -> libc::c_int {
     cmd_find_clear_state(fs, flags);
-    (*fs).s =
-        cmd_find_best_session(0 as *mut *mut session,
-                              0 as libc::c_int as u_int, flags);
+    (*fs).s = cmd_find_best_session(0 as *mut *mut session, 0 as libc::c_int as u_int, flags);
     if (*fs).s.is_null() {
         cmd_find_clear_state(fs, flags);
-        return -(1 as libc::c_int)
+        return -(1 as libc::c_int);
     }
     (*fs).wl = (*(*fs).s).curw;
     (*fs).idx = (*(*fs).wl).idx;
     (*fs).w = (*(*fs).wl).window;
     (*fs).wp = (*(*fs).w).active;
-    cmd_find_log_state((*::std::mem::transmute::<&[u8; 22],
-                                                 &[libc::c_char; 22]>(b"cmd_find_from_nothing\x00")).as_ptr(),
-                       fs);
+    cmd_find_log_state(
+        (*::std::mem::transmute::<&[u8; 22], &[libc::c_char; 22]>(b"cmd_find_from_nothing\x00"))
+            .as_ptr(),
+        fs,
+    );
     return 0 as libc::c_int;
 }
 /* Find state from mouse. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_find_from_mouse(mut fs: *mut cmd_find_state,
-                                             mut m: *mut mouse_event,
-                                             mut flags: libc::c_int)
- -> libc::c_int {
+pub unsafe extern "C" fn cmd_find_from_mouse(
+    mut fs: *mut cmd_find_state,
+    mut m: *mut mouse_event,
+    mut flags: libc::c_int,
+) -> libc::c_int {
     cmd_find_clear_state(fs, flags);
-    if (*m).valid == 0 { return -(1 as libc::c_int) }
+    if (*m).valid == 0 {
+        return -(1 as libc::c_int);
+    }
     (*fs).wp = cmd_mouse_pane(m, &mut (*fs).s, &mut (*fs).wl);
     if (*fs).wp.is_null() {
         cmd_find_clear_state(fs, flags);
-        return -(1 as libc::c_int)
+        return -(1 as libc::c_int);
     }
     (*fs).w = (*(*fs).wl).window;
-    cmd_find_log_state((*::std::mem::transmute::<&[u8; 20],
-                                                 &[libc::c_char; 20]>(b"cmd_find_from_mouse\x00")).as_ptr(),
-                       fs);
+    cmd_find_log_state(
+        (*::std::mem::transmute::<&[u8; 20], &[libc::c_char; 20]>(b"cmd_find_from_mouse\x00"))
+            .as_ptr(),
+        fs,
+    );
     return 0 as libc::c_int;
 }
 /* Find state from client. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_find_from_client(mut fs: *mut cmd_find_state,
-                                              mut c: *mut client,
-                                              mut flags: libc::c_int)
- -> libc::c_int {
+pub unsafe extern "C" fn cmd_find_from_client(
+    mut fs: *mut cmd_find_state,
+    mut c: *mut client,
+    mut flags: libc::c_int,
+) -> libc::c_int {
     let mut wp: *mut window_pane = 0 as *mut window_pane;
     /* If no client, treat as from nothing. */
-    if c.is_null() { return cmd_find_from_nothing(fs, flags) }
+    if c.is_null() {
+        return cmd_find_from_nothing(fs, flags);
+    }
     /* If this is an attached client, all done. */
     if !(*c).session.is_null() {
         cmd_find_clear_state(fs, flags);
         (*fs).wp = server_client_get_pane(c);
         if (*fs).wp.is_null() {
             cmd_find_from_session(fs, (*c).session, flags);
-            return 0 as libc::c_int
+            return 0 as libc::c_int;
         }
         (*fs).s = (*c).session;
         (*fs).wl = (*(*fs).s).curw;
         (*fs).w = (*(*fs).wl).window;
-        cmd_find_log_state((*::std::mem::transmute::<&[u8; 21],
-                                                     &[libc::c_char; 21]>(b"cmd_find_from_client\x00")).as_ptr(),
-                           fs);
-        return 0 as libc::c_int
+        cmd_find_log_state(
+            (*::std::mem::transmute::<&[u8; 21], &[libc::c_char; 21]>(b"cmd_find_from_client\x00"))
+                .as_ptr(),
+            fs,
+        );
+        return 0 as libc::c_int;
     }
     cmd_find_clear_state(fs, flags);
     /*
-	 * If this is an unattached client running in a pane, we can use that
-	 * to limit the list of sessions to those containing that pane.
-	 */
+     * If this is an unattached client running in a pane, we can use that
+     * to limit the list of sessions to those containing that pane.
+     */
     wp = cmd_find_inside_pane(c);
     if !wp.is_null() {
         /*
-	 * Don't have a session, or it doesn't have this pane. Try all
-	 * sessions.
-	 */
+         * Don't have a session, or it doesn't have this pane. Try all
+         * sessions.
+         */
         (*fs).w = (*wp).window; /* use active pane */
         if !(cmd_find_best_session_with_window(fs) != 0 as libc::c_int) {
             (*fs).wl = (*(*fs).s).curw;
             (*fs).w = (*(*fs).wl).window;
             (*fs).wp = (*(*fs).w).active;
-            cmd_find_log_state((*::std::mem::transmute::<&[u8; 21],
-                                                         &[libc::c_char; 21]>(b"cmd_find_from_client\x00")).as_ptr(),
-                               fs);
-            return 0 as libc::c_int
+            cmd_find_log_state(
+                (*::std::mem::transmute::<&[u8; 21], &[libc::c_char; 21]>(
+                    b"cmd_find_from_client\x00",
+                ))
+                .as_ptr(),
+                fs,
+            );
+            return 0 as libc::c_int;
         }
     }
     /*
-		 * The window may have been destroyed but the pane
-		 * still on all_window_panes due to something else
-		 * holding a reference.
-		 */
+     * The window may have been destroyed but the pane
+     * still on all_window_panes due to something else
+     * holding a reference.
+     */
     /* We can't find the pane so need to guess. */
     return cmd_find_from_nothing(fs, flags);
 }
@@ -2120,23 +2310,24 @@ pub unsafe extern "C" fn cmd_find_from_client(mut fs: *mut cmd_find_state,
  * state. Returns 0 on success or -1 on error.
  */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_find_target(mut fs: *mut cmd_find_state,
-                                         mut item: *mut cmdq_item,
-                                         mut target: *const libc::c_char,
-                                         mut type_0: cmd_find_type,
-                                         mut flags: libc::c_int)
- -> libc::c_int {
+pub unsafe extern "C" fn cmd_find_target(
+    mut fs: *mut cmd_find_state,
+    mut item: *mut cmdq_item,
+    mut target: *const libc::c_char,
+    mut type_0: cmd_find_type,
+    mut flags: libc::c_int,
+) -> libc::c_int {
     let mut current_block: u64;
     let mut m: *mut mouse_event = 0 as *mut mouse_event;
-    let mut current: cmd_find_state =
-        cmd_find_state{flags: 0,
-                       current:
-                           0 as *const cmd_find_state as *mut cmd_find_state,
-                       s: 0 as *const session as *mut session,
-                       wl: 0 as *const winlink as *mut winlink,
-                       w: 0 as *const window as *mut window,
-                       wp: 0 as *const window_pane as *mut window_pane,
-                       idx: 0,};
+    let mut current: cmd_find_state = cmd_find_state {
+        flags: 0,
+        current: 0 as *const cmd_find_state as *mut cmd_find_state,
+        s: 0 as *const session as *mut session,
+        wl: 0 as *const winlink as *mut winlink,
+        w: 0 as *const window as *mut window,
+        wp: 0 as *const window_pane as *mut window_pane,
+        idx: 0,
+    };
     let mut colon: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut period: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut copy: *mut libc::c_char = 0 as *mut libc::c_char;
@@ -2148,143 +2339,162 @@ pub unsafe extern "C" fn cmd_find_target(mut fs: *mut cmd_find_state,
     let mut window_only: libc::c_int = 0 as libc::c_int;
     let mut pane_only: libc::c_int = 0 as libc::c_int;
     /* Can fail flag implies quiet. */
-    if flags & 0x40 as libc::c_int != 0 { flags |= 0x2 as libc::c_int }
+    if flags & 0x40 as libc::c_int != 0 {
+        flags |= 0x2 as libc::c_int
+    }
     /* Log the arguments. */
-    if type_0 as libc::c_uint == CMD_FIND_PANE as libc::c_int as libc::c_uint
-       {
+    if type_0 as libc::c_uint == CMD_FIND_PANE as libc::c_int as libc::c_uint {
         s = b"pane\x00" as *const u8 as *const libc::c_char
-    } else if type_0 as libc::c_uint ==
-                  CMD_FIND_WINDOW as libc::c_int as libc::c_uint {
+    } else if type_0 as libc::c_uint == CMD_FIND_WINDOW as libc::c_int as libc::c_uint {
         s = b"window\x00" as *const u8 as *const libc::c_char
-    } else if type_0 as libc::c_uint ==
-                  CMD_FIND_SESSION as libc::c_int as libc::c_uint {
+    } else if type_0 as libc::c_uint == CMD_FIND_SESSION as libc::c_int as libc::c_uint {
         s = b"session\x00" as *const u8 as *const libc::c_char
-    } else { s = b"unknown\x00" as *const u8 as *const libc::c_char }
+    } else {
+        s = b"unknown\x00" as *const u8 as *const libc::c_char
+    }
     *tmp.as_mut_ptr() = '\u{0}' as i32 as libc::c_char;
     if flags & 0x1 as libc::c_int != 0 {
-        strlcat(tmp.as_mut_ptr(),
-                b"PREFER_UNATTACHED,\x00" as *const u8 as *const libc::c_char,
-                ::std::mem::size_of::<[libc::c_char; 256]>() as
-                    libc::c_ulong);
+        strlcat(
+            tmp.as_mut_ptr(),
+            b"PREFER_UNATTACHED,\x00" as *const u8 as *const libc::c_char,
+            ::std::mem::size_of::<[libc::c_char; 256]>() as libc::c_ulong,
+        );
     }
     if flags & 0x2 as libc::c_int != 0 {
-        strlcat(tmp.as_mut_ptr(),
-                b"QUIET,\x00" as *const u8 as *const libc::c_char,
-                ::std::mem::size_of::<[libc::c_char; 256]>() as
-                    libc::c_ulong);
+        strlcat(
+            tmp.as_mut_ptr(),
+            b"QUIET,\x00" as *const u8 as *const libc::c_char,
+            ::std::mem::size_of::<[libc::c_char; 256]>() as libc::c_ulong,
+        );
     }
     if flags & 0x4 as libc::c_int != 0 {
-        strlcat(tmp.as_mut_ptr(),
-                b"WINDOW_INDEX,\x00" as *const u8 as *const libc::c_char,
-                ::std::mem::size_of::<[libc::c_char; 256]>() as
-                    libc::c_ulong);
+        strlcat(
+            tmp.as_mut_ptr(),
+            b"WINDOW_INDEX,\x00" as *const u8 as *const libc::c_char,
+            ::std::mem::size_of::<[libc::c_char; 256]>() as libc::c_ulong,
+        );
     }
     if flags & 0x8 as libc::c_int != 0 {
-        strlcat(tmp.as_mut_ptr(),
-                b"DEFAULT_MARKED,\x00" as *const u8 as *const libc::c_char,
-                ::std::mem::size_of::<[libc::c_char; 256]>() as
-                    libc::c_ulong);
+        strlcat(
+            tmp.as_mut_ptr(),
+            b"DEFAULT_MARKED,\x00" as *const u8 as *const libc::c_char,
+            ::std::mem::size_of::<[libc::c_char; 256]>() as libc::c_ulong,
+        );
     }
     if flags & 0x10 as libc::c_int != 0 {
-        strlcat(tmp.as_mut_ptr(),
-                b"EXACT_SESSION,\x00" as *const u8 as *const libc::c_char,
-                ::std::mem::size_of::<[libc::c_char; 256]>() as
-                    libc::c_ulong);
+        strlcat(
+            tmp.as_mut_ptr(),
+            b"EXACT_SESSION,\x00" as *const u8 as *const libc::c_char,
+            ::std::mem::size_of::<[libc::c_char; 256]>() as libc::c_ulong,
+        );
     }
     if flags & 0x20 as libc::c_int != 0 {
-        strlcat(tmp.as_mut_ptr(),
-                b"EXACT_WINDOW,\x00" as *const u8 as *const libc::c_char,
-                ::std::mem::size_of::<[libc::c_char; 256]>() as
-                    libc::c_ulong);
+        strlcat(
+            tmp.as_mut_ptr(),
+            b"EXACT_WINDOW,\x00" as *const u8 as *const libc::c_char,
+            ::std::mem::size_of::<[libc::c_char; 256]>() as libc::c_ulong,
+        );
     }
     if flags & 0x40 as libc::c_int != 0 {
-        strlcat(tmp.as_mut_ptr(),
-                b"CANFAIL,\x00" as *const u8 as *const libc::c_char,
-                ::std::mem::size_of::<[libc::c_char; 256]>() as
-                    libc::c_ulong);
+        strlcat(
+            tmp.as_mut_ptr(),
+            b"CANFAIL,\x00" as *const u8 as *const libc::c_char,
+            ::std::mem::size_of::<[libc::c_char; 256]>() as libc::c_ulong,
+        );
     }
     if *tmp.as_mut_ptr() as libc::c_int != '\u{0}' as i32 {
-        tmp[strlen(tmp.as_mut_ptr()).wrapping_sub(1 as libc::c_int as
-                                                      libc::c_ulong) as usize]
-            = '\u{0}' as i32 as libc::c_char
+        tmp[strlen(tmp.as_mut_ptr()).wrapping_sub(1 as libc::c_int as libc::c_ulong) as usize] =
+            '\u{0}' as i32 as libc::c_char
     } else {
-        strlcat(tmp.as_mut_ptr(),
-                b"NONE\x00" as *const u8 as *const libc::c_char,
-                ::std::mem::size_of::<[libc::c_char; 256]>() as
-                    libc::c_ulong);
+        strlcat(
+            tmp.as_mut_ptr(),
+            b"NONE\x00" as *const u8 as *const libc::c_char,
+            ::std::mem::size_of::<[libc::c_char; 256]>() as libc::c_ulong,
+        );
     }
-    log_debug(b"%s: target %s, type %s, item %p, flags %s\x00" as *const u8 as
-                  *const libc::c_char,
-              (*::std::mem::transmute::<&[u8; 16],
-                                        &[libc::c_char; 16]>(b"cmd_find_target\x00")).as_ptr(),
-              if target.is_null() {
-                  b"none\x00" as *const u8 as *const libc::c_char
-              } else { target }, s, item, tmp.as_mut_ptr());
+    log_debug(
+        b"%s: target %s, type %s, item %p, flags %s\x00" as *const u8 as *const libc::c_char,
+        (*::std::mem::transmute::<&[u8; 16], &[libc::c_char; 16]>(b"cmd_find_target\x00")).as_ptr(),
+        if target.is_null() {
+            b"none\x00" as *const u8 as *const libc::c_char
+        } else {
+            target
+        },
+        s,
+        item,
+        tmp.as_mut_ptr(),
+    );
     /* Clear new state. */
     cmd_find_clear_state(fs, flags);
     /* Find current state. */
     if server_check_marked() != 0 && flags & 0x8 as libc::c_int != 0 {
         (*fs).current = &mut marked_pane;
-        log_debug(b"%s: current is marked pane\x00" as *const u8 as
-                      *const libc::c_char,
-                  (*::std::mem::transmute::<&[u8; 16],
-                                            &[libc::c_char; 16]>(b"cmd_find_target\x00")).as_ptr());
+        log_debug(
+            b"%s: current is marked pane\x00" as *const u8 as *const libc::c_char,
+            (*::std::mem::transmute::<&[u8; 16], &[libc::c_char; 16]>(b"cmd_find_target\x00"))
+                .as_ptr(),
+        );
         current_block = 17784502470059252271;
     } else if cmd_find_valid_state(cmdq_get_current(item)) != 0 {
         (*fs).current = cmdq_get_current(item);
-        log_debug(b"%s: current is from queue\x00" as *const u8 as
-                      *const libc::c_char,
-                  (*::std::mem::transmute::<&[u8; 16],
-                                            &[libc::c_char; 16]>(b"cmd_find_target\x00")).as_ptr());
+        log_debug(
+            b"%s: current is from queue\x00" as *const u8 as *const libc::c_char,
+            (*::std::mem::transmute::<&[u8; 16], &[libc::c_char; 16]>(b"cmd_find_target\x00"))
+                .as_ptr(),
+        );
         current_block = 17784502470059252271;
-    } else if cmd_find_from_client(&mut current, cmdq_get_client(item), flags)
-                  == 0 as libc::c_int {
+    } else if cmd_find_from_client(&mut current, cmdq_get_client(item), flags) == 0 as libc::c_int {
         (*fs).current = &mut current;
-        log_debug(b"%s: current is from client\x00" as *const u8 as
-                      *const libc::c_char,
-                  (*::std::mem::transmute::<&[u8; 16],
-                                            &[libc::c_char; 16]>(b"cmd_find_target\x00")).as_ptr());
+        log_debug(
+            b"%s: current is from client\x00" as *const u8 as *const libc::c_char,
+            (*::std::mem::transmute::<&[u8; 16], &[libc::c_char; 16]>(b"cmd_find_target\x00"))
+                .as_ptr(),
+        );
         current_block = 17784502470059252271;
     } else {
         if !flags & 0x2 as libc::c_int != 0 {
-            cmdq_error(item,
-                       b"no current target\x00" as *const u8 as
-                           *const libc::c_char);
+            cmdq_error(
+                item,
+                b"no current target\x00" as *const u8 as *const libc::c_char,
+            );
         }
         current_block = 10029033417334023838;
     }
     match current_block {
         17784502470059252271 => {
             if cmd_find_valid_state((*fs).current) == 0 {
-                fatalx(b"invalid current find state\x00" as *const u8 as
-                           *const libc::c_char);
+                fatalx(b"invalid current find state\x00" as *const u8 as *const libc::c_char);
             }
             /* An empty or NULL target is the current. */
             if target.is_null() || *target as libc::c_int == '\u{0}' as i32 {
                 current_block = 13645261163415976511;
-            } else if strcmp(target,
-                             b"=\x00" as *const u8 as *const libc::c_char) ==
-                          0 as libc::c_int ||
-                          strcmp(target,
-                                 b"{mouse}\x00" as *const u8 as
-                                     *const libc::c_char) == 0 as libc::c_int
-             {
-                m =
-                    &mut (*(cmdq_get_event as
-                                unsafe extern "C" fn(_: *mut cmdq_item)
-                                    -> *mut key_event)(item)).m;
+            } else if strcmp(target, b"=\x00" as *const u8 as *const libc::c_char)
+                == 0 as libc::c_int
+                || strcmp(target, b"{mouse}\x00" as *const u8 as *const libc::c_char)
+                    == 0 as libc::c_int
+            {
+                m = &mut (*(cmdq_get_event
+                    as unsafe extern "C" fn(_: *mut cmdq_item) -> *mut key_event)(
+                    item
+                ))
+                .m;
                 let mut current_block_51: u64;
                 match type_0 as libc::c_uint {
                     0 => {
-                        (*fs).wp =
-                            cmd_mouse_pane(m, &mut (*fs).s, &mut (*fs).wl);
+                        (*fs).wp = cmd_mouse_pane(m, &mut (*fs).s, &mut (*fs).wl);
                         if !(*fs).wp.is_null() {
                             (*fs).w = (*(*fs).wl).window;
                             current_block_51 = 9241535491006583629;
-                        } else { current_block_51 = 12930510239943809441; }
+                        } else {
+                            current_block_51 = 12930510239943809441;
+                        }
                     }
-                    1 | 2 => { current_block_51 = 12930510239943809441; }
-                    _ => { current_block_51 = 9241535491006583629; }
+                    1 | 2 => {
+                        current_block_51 = 12930510239943809441;
+                    }
+                    _ => {
+                        current_block_51 = 9241535491006583629;
+                    }
                 }
                 match current_block_51 {
                     12930510239943809441 =>
@@ -2300,28 +2510,30 @@ pub unsafe extern "C" fn cmd_find_target(mut fs: *mut cmd_find_state,
                             (*fs).wp = (*(*fs).w).active
                         }
                     }
-                    _ => { }
+                    _ => {}
                 }
                 if (*fs).wp.is_null() {
                     if !flags & 0x2 as libc::c_int != 0 {
-                        cmdq_error(item,
-                                   b"no mouse target\x00" as *const u8 as
-                                       *const libc::c_char);
+                        cmdq_error(
+                            item,
+                            b"no mouse target\x00" as *const u8 as *const libc::c_char,
+                        );
                     }
                     current_block = 10029033417334023838;
-                } else { current_block = 6635813614084111333; }
-            } else if strcmp(target,
-                             b"~\x00" as *const u8 as *const libc::c_char) ==
-                          0 as libc::c_int ||
-                          strcmp(target,
-                                 b"{marked}\x00" as *const u8 as
-                                     *const libc::c_char) == 0 as libc::c_int
-             {
+                } else {
+                    current_block = 6635813614084111333;
+                }
+            } else if strcmp(target, b"~\x00" as *const u8 as *const libc::c_char)
+                == 0 as libc::c_int
+                || strcmp(target, b"{marked}\x00" as *const u8 as *const libc::c_char)
+                    == 0 as libc::c_int
+            {
                 if server_check_marked() == 0 {
                     if !flags & 0x2 as libc::c_int != 0 {
-                        cmdq_error(item,
-                                   b"no marked target\x00" as *const u8 as
-                                       *const libc::c_char);
+                        cmdq_error(
+                            item,
+                            b"no marked target\x00" as *const u8 as *const libc::c_char,
+                        );
                     }
                     current_block = 10029033417334023838;
                 } else {
@@ -2340,7 +2552,9 @@ pub unsafe extern "C" fn cmd_find_target(mut fs: *mut cmd_find_state,
                 }
                 if colon.is_null() {
                     period = strchr(copy, '.' as i32)
-                } else { period = strchr(colon, '.' as i32) }
+                } else {
+                    period = strchr(colon, '.' as i32)
+                }
                 if !period.is_null() {
                     let fresh3 = period;
                     period = period.offset(1);
@@ -2372,15 +2586,14 @@ pub unsafe extern "C" fn cmd_find_target(mut fs: *mut cmd_find_state,
                     pane = copy
                 } else {
                     match type_0 as libc::c_uint {
-                        2 => { session = copy }
-                        1 => { window = copy }
-                        0 => { pane = copy }
-                        _ => { }
+                        2 => session = copy,
+                        1 => window = copy,
+                        0 => pane = copy,
+                        _ => {}
                     }
                 }
                 /* Set exact match flags. */
-                if !session.is_null() && *session as libc::c_int == '=' as i32
-                   {
+                if !session.is_null() && *session as libc::c_int == '=' as i32 {
                     session = session.offset(1);
                     (*fs).flags |= 0x10 as libc::c_int
                 }
@@ -2389,12 +2602,10 @@ pub unsafe extern "C" fn cmd_find_target(mut fs: *mut cmd_find_state,
                     (*fs).flags |= 0x20 as libc::c_int
                 }
                 /* Empty is the same as NULL. */
-                if !session.is_null() &&
-                       *session as libc::c_int == '\u{0}' as i32 {
+                if !session.is_null() && *session as libc::c_int == '\u{0}' as i32 {
                     session = 0 as *const libc::c_char
                 }
-                if !window.is_null() &&
-                       *window as libc::c_int == '\u{0}' as i32 {
+                if !window.is_null() && *window as libc::c_int == '\u{0}' as i32 {
                     window = 0 as *const libc::c_char
                 }
                 if !pane.is_null() && *pane as libc::c_int == '\u{0}' as i32 {
@@ -2402,74 +2613,75 @@ pub unsafe extern "C" fn cmd_find_target(mut fs: *mut cmd_find_state,
                 }
                 /* Map though conversion table. */
                 if !session.is_null() {
-                    session =
-                        cmd_find_map_table(cmd_find_session_table.as_mut_ptr(),
-                                           session)
+                    session = cmd_find_map_table(cmd_find_session_table.as_mut_ptr(), session)
                 }
                 if !window.is_null() {
-                    window =
-                        cmd_find_map_table(cmd_find_window_table.as_mut_ptr(),
-                                           window)
+                    window = cmd_find_map_table(cmd_find_window_table.as_mut_ptr(), window)
                 }
                 if !pane.is_null() {
-                    pane =
-                        cmd_find_map_table(cmd_find_pane_table.as_mut_ptr(),
-                                           pane)
+                    pane = cmd_find_map_table(cmd_find_pane_table.as_mut_ptr(), pane)
                 }
-                if !session.is_null() || !window.is_null() || !pane.is_null()
-                   {
-                    log_debug(b"%s: target %s is %s%s%s%s%s%s\x00" as
-                                  *const u8 as *const libc::c_char,
-                              (*::std::mem::transmute::<&[u8; 16],
-                                                        &[libc::c_char; 16]>(b"cmd_find_target\x00")).as_ptr(),
-                              target,
-                              if session.is_null() {
-                                  b"\x00" as *const u8 as *const libc::c_char
-                              } else {
-                                  b"session \x00" as *const u8 as
-                                      *const libc::c_char
-                              },
-                              if session.is_null() {
-                                  b"\x00" as *const u8 as *const libc::c_char
-                              } else { session },
-                              if window.is_null() {
-                                  b"\x00" as *const u8 as *const libc::c_char
-                              } else {
-                                  b"window \x00" as *const u8 as
-                                      *const libc::c_char
-                              },
-                              if window.is_null() {
-                                  b"\x00" as *const u8 as *const libc::c_char
-                              } else { window },
-                              if pane.is_null() {
-                                  b"\x00" as *const u8 as *const libc::c_char
-                              } else {
-                                  b"pane \x00" as *const u8 as
-                                      *const libc::c_char
-                              },
-                              if pane.is_null() {
-                                  b"\x00" as *const u8 as *const libc::c_char
-                              } else { pane });
+                if !session.is_null() || !window.is_null() || !pane.is_null() {
+                    log_debug(
+                        b"%s: target %s is %s%s%s%s%s%s\x00" as *const u8 as *const libc::c_char,
+                        (*::std::mem::transmute::<&[u8; 16], &[libc::c_char; 16]>(
+                            b"cmd_find_target\x00",
+                        ))
+                        .as_ptr(),
+                        target,
+                        if session.is_null() {
+                            b"\x00" as *const u8 as *const libc::c_char
+                        } else {
+                            b"session \x00" as *const u8 as *const libc::c_char
+                        },
+                        if session.is_null() {
+                            b"\x00" as *const u8 as *const libc::c_char
+                        } else {
+                            session
+                        },
+                        if window.is_null() {
+                            b"\x00" as *const u8 as *const libc::c_char
+                        } else {
+                            b"window \x00" as *const u8 as *const libc::c_char
+                        },
+                        if window.is_null() {
+                            b"\x00" as *const u8 as *const libc::c_char
+                        } else {
+                            window
+                        },
+                        if pane.is_null() {
+                            b"\x00" as *const u8 as *const libc::c_char
+                        } else {
+                            b"pane \x00" as *const u8 as *const libc::c_char
+                        },
+                        if pane.is_null() {
+                            b"\x00" as *const u8 as *const libc::c_char
+                        } else {
+                            pane
+                        },
+                    );
                 }
                 /* No pane is allowed if want an index. */
                 if !pane.is_null() && flags & 0x4 as libc::c_int != 0 {
                     if !flags & 0x2 as libc::c_int != 0 {
-                        cmdq_error(item,
-                                   b"can\'t specify pane here\x00" as
-                                       *const u8 as *const libc::c_char);
+                        cmdq_error(
+                            item,
+                            b"can\'t specify pane here\x00" as *const u8 as *const libc::c_char,
+                        );
                     }
                     current_block = 10029033417334023838;
                 } else {
                     /* If the session isn't NULL, look it up. */
                     if !session.is_null() {
                         /* This will fill in session. */
-                        if cmd_find_get_session(fs, session) !=
-                               0 as libc::c_int {
+                        if cmd_find_get_session(fs, session) != 0 as libc::c_int {
                             if !flags & 0x2 as libc::c_int != 0 {
-                                cmdq_error(item,
-                                           b"can\'t find session: %s\x00" as
-                                               *const u8 as
-                                               *const libc::c_char, session);
+                                cmdq_error(
+                                    item,
+                                    b"can\'t find session: %s\x00" as *const u8
+                                        as *const libc::c_char,
+                                    session,
+                                );
                             }
                             current_block = 10029033417334023838;
                         } else if window.is_null() && pane.is_null() {
@@ -2482,8 +2694,7 @@ pub unsafe extern "C" fn cmd_find_target(mut fs: *mut cmd_find_state,
                             /* If window and pane are NULL, use that session's current. */
                             /* If window is present but pane not, find window in session. */
                             /* This will fill in winlink and window. */
-                            if cmd_find_get_window_with_session(fs, window) !=
-                                   0 as libc::c_int {
+                            if cmd_find_get_window_with_session(fs, window) != 0 as libc::c_int {
                                 current_block = 6577947231097195512;
                             } else {
                                 if !(*fs).wl.is_null() {
@@ -2495,38 +2706,38 @@ pub unsafe extern "C" fn cmd_find_target(mut fs: *mut cmd_find_state,
                         } else if window.is_null() && !pane.is_null() {
                             /* If pane is present but window not, find pane. */
                             /* This will fill in winlink and window and pane. */
-                            if cmd_find_get_pane_with_session(fs, pane) !=
-                                   0 as libc::c_int {
+                            if cmd_find_get_pane_with_session(fs, pane) != 0 as libc::c_int {
                                 current_block = 12740893567707959592;
-                            } else { current_block = 6635813614084111333; }
-                        } else if cmd_find_get_window_with_session(fs, window)
-                                      != 0 as libc::c_int {
+                            } else {
+                                current_block = 6635813614084111333;
+                            }
+                        } else if cmd_find_get_window_with_session(fs, window) != 0 as libc::c_int {
                             current_block = 6577947231097195512;
-                        } else if cmd_find_get_pane_with_window(fs, pane) !=
-                                      0 as libc::c_int {
+                        } else if cmd_find_get_pane_with_window(fs, pane) != 0 as libc::c_int {
                             current_block = 12740893567707959592;
-                        } else { current_block = 6635813614084111333; }
+                        } else {
+                            current_block = 6635813614084111333;
+                        }
                     } else if !window.is_null() && !pane.is_null() {
                         /*
-		 * If window and pane are present, find both in session. This
-		 * will fill in winlink and window.
-		 */
+                         * If window and pane are present, find both in session. This
+                         * will fill in winlink and window.
+                         */
                         /* This will fill in pane. */
                         /* No session. If window and pane, try them. */
                         /* This will fill in session, winlink and window. */
-                        if cmd_find_get_window(fs, window, window_only) !=
-                               0 as libc::c_int {
+                        if cmd_find_get_window(fs, window, window_only) != 0 as libc::c_int {
                             current_block = 6577947231097195512;
-                        } else if cmd_find_get_pane_with_window(fs, pane) !=
-                                      0 as libc::c_int {
+                        } else if cmd_find_get_pane_with_window(fs, pane) != 0 as libc::c_int {
                             current_block = 12740893567707959592;
-                        } else { current_block = 6635813614084111333; }
+                        } else {
+                            current_block = 6635813614084111333;
+                        }
                     } else if !window.is_null() && pane.is_null() {
                         /* This will fill in pane. */
                         /* If just window is present, try it. */
                         /* This will fill in session, winlink and window. */
-                        if cmd_find_get_window(fs, window, window_only) !=
-                               0 as libc::c_int {
+                        if cmd_find_get_window(fs, window, window_only) != 0 as libc::c_int {
                             current_block = 6577947231097195512;
                         } else {
                             if !(*fs).wl.is_null() {
@@ -2538,33 +2749,38 @@ pub unsafe extern "C" fn cmd_find_target(mut fs: *mut cmd_find_state,
                     } else if window.is_null() && !pane.is_null() {
                         /* If just pane is present, try it. */
                         /* This will fill in session, winlink, window and pane. */
-                        if cmd_find_get_pane(fs, pane, pane_only) !=
-                               0 as libc::c_int {
+                        if cmd_find_get_pane(fs, pane, pane_only) != 0 as libc::c_int {
                             current_block = 12740893567707959592;
-                        } else { current_block = 6635813614084111333; }
-                    } else { current_block = 13645261163415976511; }
+                        } else {
+                            current_block = 6635813614084111333;
+                        }
+                    } else {
+                        current_block = 13645261163415976511;
+                    }
                     match current_block {
-                        10029033417334023838 => { }
-                        6635813614084111333 => { }
-                        13645261163415976511 => { }
+                        10029033417334023838 => {}
+                        6635813614084111333 => {}
+                        13645261163415976511 => {}
                         _ => {
                             match current_block {
                                 6577947231097195512 => {
                                     if !flags & 0x2 as libc::c_int != 0 {
-                                        cmdq_error(item,
-                                                   b"can\'t find window: %s\x00"
-                                                       as *const u8 as
-                                                       *const libc::c_char,
-                                                   window);
+                                        cmdq_error(
+                                            item,
+                                            b"can\'t find window: %s\x00" as *const u8
+                                                as *const libc::c_char,
+                                            window,
+                                        );
                                     }
                                 }
                                 _ => {
                                     if !flags & 0x2 as libc::c_int != 0 {
-                                        cmdq_error(item,
-                                                   b"can\'t find pane: %s\x00"
-                                                       as *const u8 as
-                                                       *const libc::c_char,
-                                                   pane);
+                                        cmdq_error(
+                                            item,
+                                            b"can\'t find pane: %s\x00" as *const u8
+                                                as *const libc::c_char,
+                                            pane,
+                                        );
                                     }
                                 }
                             }
@@ -2574,7 +2790,7 @@ pub unsafe extern "C" fn cmd_find_target(mut fs: *mut cmd_find_state,
                 }
             }
             match current_block {
-                10029033417334023838 => { }
+                10029033417334023838 => {}
                 _ => {
                     match current_block {
                         13645261163415976511 => {
@@ -2584,115 +2800,144 @@ pub unsafe extern "C" fn cmd_find_target(mut fs: *mut cmd_find_state,
                                 (*fs).idx = -(1 as libc::c_int)
                             }
                         }
-                        _ => { }
+                        _ => {}
                     }
                     (*fs).current = 0 as *mut cmd_find_state;
-                    cmd_find_log_state((*::std::mem::transmute::<&[u8; 16],
-                                                                 &[libc::c_char; 16]>(b"cmd_find_target\x00")).as_ptr(),
-                                       fs);
+                    cmd_find_log_state(
+                        (*::std::mem::transmute::<&[u8; 16], &[libc::c_char; 16]>(
+                            b"cmd_find_target\x00",
+                        ))
+                        .as_ptr(),
+                        fs,
+                    );
                     free(copy as *mut libc::c_void);
-                    return 0 as libc::c_int
+                    return 0 as libc::c_int;
                 }
             }
         }
-        _ => { }
+        _ => {}
     }
     (*fs).current = 0 as *mut cmd_find_state;
-    log_debug(b"%s: error\x00" as *const u8 as *const libc::c_char,
-              (*::std::mem::transmute::<&[u8; 16],
-                                        &[libc::c_char; 16]>(b"cmd_find_target\x00")).as_ptr());
+    log_debug(
+        b"%s: error\x00" as *const u8 as *const libc::c_char,
+        (*::std::mem::transmute::<&[u8; 16], &[libc::c_char; 16]>(b"cmd_find_target\x00")).as_ptr(),
+    );
     free(copy as *mut libc::c_void);
-    if flags & 0x40 as libc::c_int != 0 { return 0 as libc::c_int }
+    if flags & 0x40 as libc::c_int != 0 {
+        return 0 as libc::c_int;
+    }
     return -(1 as libc::c_int);
 }
 /* Find the current client. */
-unsafe extern "C" fn cmd_find_current_client(mut item: *mut cmdq_item,
-                                             mut quiet: libc::c_int)
- -> *mut client {
+unsafe extern "C" fn cmd_find_current_client(
+    mut item: *mut cmdq_item,
+    mut quiet: libc::c_int,
+) -> *mut client {
     let mut c: *mut client = 0 as *mut client;
     let mut found: *mut client = 0 as *mut client;
     let mut s: *mut session = 0 as *mut session;
     let mut wp: *mut window_pane = 0 as *mut window_pane;
-    let mut fs: cmd_find_state =
-        cmd_find_state{flags: 0,
-                       current:
-                           0 as *const cmd_find_state as *mut cmd_find_state,
-                       s: 0 as *const session as *mut session,
-                       wl: 0 as *const winlink as *mut winlink,
-                       w: 0 as *const window as *mut window,
-                       wp: 0 as *const window_pane as *mut window_pane,
-                       idx: 0,};
-    if !item.is_null() { c = cmdq_get_client(item) }
-    if !c.is_null() && !(*c).session.is_null() { return c }
+    let mut fs: cmd_find_state = cmd_find_state {
+        flags: 0,
+        current: 0 as *const cmd_find_state as *mut cmd_find_state,
+        s: 0 as *const session as *mut session,
+        wl: 0 as *const winlink as *mut winlink,
+        w: 0 as *const window as *mut window,
+        wp: 0 as *const window_pane as *mut window_pane,
+        idx: 0,
+    };
+    if !item.is_null() {
+        c = cmdq_get_client(item)
+    }
+    if !c.is_null() && !(*c).session.is_null() {
+        return c;
+    }
     found = 0 as *mut client;
-    if !c.is_null() && { wp = cmd_find_inside_pane(c); !wp.is_null() } {
+    if !c.is_null() && {
+        wp = cmd_find_inside_pane(c);
+        !wp.is_null()
+    } {
         cmd_find_clear_state(&mut fs, 0x2 as libc::c_int);
         fs.w = (*wp).window;
         if cmd_find_best_session_with_window(&mut fs) == 0 as libc::c_int {
             found = cmd_find_best_client(fs.s)
         }
     } else {
-        s =
-            cmd_find_best_session(0 as *mut *mut session,
-                                  0 as libc::c_int as u_int,
-                                  0x2 as libc::c_int);
-        if !s.is_null() { found = cmd_find_best_client(s) }
+        s = cmd_find_best_session(
+            0 as *mut *mut session,
+            0 as libc::c_int as u_int,
+            0x2 as libc::c_int,
+        );
+        if !s.is_null() {
+            found = cmd_find_best_client(s)
+        }
     }
     if found.is_null() && !item.is_null() && quiet == 0 {
-        cmdq_error(item,
-                   b"no current client\x00" as *const u8 as
-                       *const libc::c_char);
+        cmdq_error(
+            item,
+            b"no current client\x00" as *const u8 as *const libc::c_char,
+        );
     }
-    log_debug(b"%s: no target, return %p\x00" as *const u8 as
-                  *const libc::c_char,
-              (*::std::mem::transmute::<&[u8; 24],
-                                        &[libc::c_char; 24]>(b"cmd_find_current_client\x00")).as_ptr(),
-              found);
+    log_debug(
+        b"%s: no target, return %p\x00" as *const u8 as *const libc::c_char,
+        (*::std::mem::transmute::<&[u8; 24], &[libc::c_char; 24]>(b"cmd_find_current_client\x00"))
+            .as_ptr(),
+        found,
+    );
     return found;
 }
 /* Find the target client or report an error and return NULL. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_find_client(mut item: *mut cmdq_item,
-                                         mut target: *const libc::c_char,
-                                         mut quiet: libc::c_int)
- -> *mut client {
+pub unsafe extern "C" fn cmd_find_client(
+    mut item: *mut cmdq_item,
+    mut target: *const libc::c_char,
+    mut quiet: libc::c_int,
+) -> *mut client {
     let mut c: *mut client = 0 as *mut client;
     let mut copy: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut size: size_t = 0;
     /* A NULL argument means the current client. */
-    if target.is_null() { return cmd_find_current_client(item, quiet) }
+    if target.is_null() {
+        return cmd_find_current_client(item, quiet);
+    }
     copy = xstrdup(target);
     /* Trim a single trailing colon if any. */
     size = strlen(copy);
-    if size != 0 as libc::c_int as libc::c_ulong &&
-           *copy.offset(size.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                            as isize) as libc::c_int == ':' as i32 {
-        *copy.offset(size.wrapping_sub(1 as libc::c_int as libc::c_ulong) as
-                         isize) = '\u{0}' as i32 as libc::c_char
+    if size != 0 as libc::c_int as libc::c_ulong
+        && *copy.offset(size.wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize)
+            as libc::c_int
+            == ':' as i32
+    {
+        *copy.offset(size.wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize) =
+            '\u{0}' as i32 as libc::c_char
     }
     /* Check name and path of each client. */
     c = clients.tqh_first;
     while !c.is_null() {
         if !(*c).session.is_null() {
-            if strcmp(copy, (*c).name) == 0 as libc::c_int { break ; }
+            if strcmp(copy, (*c).name) == 0 as libc::c_int {
+                break;
+            }
             if !(*(*c).ttyname as libc::c_int == '\u{0}' as i32) {
-                if strcmp(copy, (*c).ttyname) == 0 as libc::c_int { break ; }
-                if !(strncmp((*c).ttyname,
-                             b"/dev/\x00" as *const u8 as *const libc::c_char,
-                             (::std::mem::size_of::<[libc::c_char; 6]>() as
-                                  libc::c_ulong).wrapping_sub(1 as libc::c_int
-                                                                  as
-                                                                  libc::c_ulong))
-                         != 0 as libc::c_int) {
-                    if strcmp(copy,
-                              (*c).ttyname.offset(::std::mem::size_of::<[libc::c_char; 6]>()
-                                                      as libc::c_ulong as
-                                                      isize).offset(-(1 as
-                                                                          libc::c_int
-                                                                          as
-                                                                          isize)))
-                           == 0 as libc::c_int {
-                        break ;
+                if strcmp(copy, (*c).ttyname) == 0 as libc::c_int {
+                    break;
+                }
+                if !(strncmp(
+                    (*c).ttyname,
+                    b"/dev/\x00" as *const u8 as *const libc::c_char,
+                    (::std::mem::size_of::<[libc::c_char; 6]>() as libc::c_ulong)
+                        .wrapping_sub(1 as libc::c_int as libc::c_ulong),
+                ) != 0 as libc::c_int)
+                {
+                    if strcmp(
+                        copy,
+                        (*c).ttyname
+                            .offset(::std::mem::size_of::<[libc::c_char; 6]>() as libc::c_ulong
+                                as isize)
+                            .offset(-(1 as libc::c_int as isize)),
+                    ) == 0 as libc::c_int
+                    {
+                        break;
                     }
                 }
             }
@@ -2701,15 +2946,18 @@ pub unsafe extern "C" fn cmd_find_client(mut item: *mut cmdq_item,
     }
     /* If no client found, report an error. */
     if c.is_null() && quiet == 0 {
-        cmdq_error(item,
-                   b"can\'t find client: %s\x00" as *const u8 as
-                       *const libc::c_char, copy);
+        cmdq_error(
+            item,
+            b"can\'t find client: %s\x00" as *const u8 as *const libc::c_char,
+            copy,
+        );
     }
     free(copy as *mut libc::c_void);
-    log_debug(b"%s: target %s, return %p\x00" as *const u8 as
-                  *const libc::c_char,
-              (*::std::mem::transmute::<&[u8; 16],
-                                        &[libc::c_char; 16]>(b"cmd_find_client\x00")).as_ptr(),
-              target, c);
+    log_debug(
+        b"%s: target %s, return %p\x00" as *const u8 as *const libc::c_char,
+        (*::std::mem::transmute::<&[u8; 16], &[libc::c_char; 16]>(b"cmd_find_client\x00")).as_ptr(),
+        target,
+        c,
+    );
     return c;
 }

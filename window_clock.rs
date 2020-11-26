@@ -21,15 +21,18 @@ extern "C" {
     #[no_mangle]
     fn free(__ptr: *mut libc::c_void);
     #[no_mangle]
-    fn memcpy(_: *mut libc::c_void, _: *const libc::c_void, _: libc::c_ulong)
-     -> *mut libc::c_void;
+    fn memcpy(_: *mut libc::c_void, _: *const libc::c_void, _: libc::c_ulong) -> *mut libc::c_void;
     #[no_mangle]
     fn strlen(_: *const libc::c_char) -> libc::c_ulong;
     #[no_mangle]
     fn time(__timer: *mut time_t) -> time_t;
     #[no_mangle]
-    fn strftime(__s: *mut libc::c_char, __maxsize: size_t,
-                __format: *const libc::c_char, __tp: *const tm) -> size_t;
+    fn strftime(
+        __s: *mut libc::c_char,
+        __maxsize: size_t,
+        __format: *const libc::c_char,
+        __tp: *const tm,
+    ) -> size_t;
     #[no_mangle]
     fn localtime(__timer: *const time_t) -> *mut tm;
     #[no_mangle]
@@ -39,20 +42,21 @@ extern "C" {
     #[no_mangle]
     fn event_del(_: *mut event) -> libc::c_int;
     #[no_mangle]
-    fn event_set(_: *mut event, _: libc::c_int, _: libc::c_short,
-                 _:
-                     Option<unsafe extern "C" fn(_: libc::c_int,
-                                                 _: libc::c_short,
-                                                 _: *mut libc::c_void) -> ()>,
-                 _: *mut libc::c_void);
+    fn event_set(
+        _: *mut event,
+        _: libc::c_int,
+        _: libc::c_short,
+        _: Option<
+            unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> (),
+        >,
+        _: *mut libc::c_void,
+    );
     #[no_mangle]
-    fn strlcat(_: *mut libc::c_char, _: *const libc::c_char, _: libc::c_ulong)
-     -> libc::c_ulong;
+    fn strlcat(_: *mut libc::c_char, _: *const libc::c_char, _: libc::c_ulong) -> libc::c_ulong;
     #[no_mangle]
     fn xmalloc(_: size_t) -> *mut libc::c_void;
     #[no_mangle]
-    fn options_get_number(_: *mut options, _: *const libc::c_char)
-     -> libc::c_longlong;
+    fn options_get_number(_: *mut options, _: *const libc::c_char) -> libc::c_longlong;
     #[no_mangle]
     static grid_default_cell: grid_cell;
     #[no_mangle]
@@ -60,14 +64,21 @@ extern "C" {
     #[no_mangle]
     fn screen_write_stop(_: *mut screen_write_ctx);
     #[no_mangle]
-    fn screen_write_puts(_: *mut screen_write_ctx, _: *const grid_cell,
-                         _: *const libc::c_char, _: ...);
+    fn screen_write_puts(
+        _: *mut screen_write_ctx,
+        _: *const grid_cell,
+        _: *const libc::c_char,
+        _: ...
+    );
     #[no_mangle]
-    fn screen_write_putc(_: *mut screen_write_ctx, _: *const grid_cell,
-                         _: u_char);
+    fn screen_write_putc(_: *mut screen_write_ctx, _: *const grid_cell, _: u_char);
     #[no_mangle]
-    fn screen_write_cursormove(_: *mut screen_write_ctx, _: libc::c_int,
-                               _: libc::c_int, _: libc::c_int);
+    fn screen_write_cursormove(
+        _: *mut screen_write_ctx,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: libc::c_int,
+    );
     #[no_mangle]
     fn screen_write_clearscreen(_: *mut screen_write_ctx, _: u_int);
     #[no_mangle]
@@ -184,18 +195,13 @@ pub struct event_callback {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub union C2RustUnnamed_6 {
-    pub evcb_callback: Option<unsafe extern "C" fn(_: libc::c_int,
-                                                   _: libc::c_short,
-                                                   _: *mut libc::c_void)
-                                  -> ()>,
-    pub evcb_selfcb: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                 _: *mut libc::c_void) -> ()>,
-    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
-    pub evcb_cbfinalize: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
+    pub evcb_callback:
+        Option<unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> ()>,
+    pub evcb_selfcb:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
+    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event, _: *mut libc::c_void) -> ()>,
+    pub evcb_cbfinalize:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -222,14 +228,10 @@ pub struct bufferevent {
     pub timeout_write: timeval,
     pub enabled: libc::c_short,
 }
-pub type bufferevent_event_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short,
-                                _: *mut libc::c_void) -> ()>;
-pub type bufferevent_data_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void)
-               -> ()>;
+pub type bufferevent_event_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short, _: *mut libc::c_void) -> ()>;
+pub type bufferevent_data_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct event_watermark {
@@ -368,17 +370,19 @@ pub struct C2RustUnnamed_9 {
     pub rbe_parent: *mut client_file,
     pub rbe_color: libc::c_int,
 }
-pub type client_file_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *const libc::c_char,
-                                _: libc::c_int, _: libc::c_int,
-                                _: *mut evbuffer, _: *mut libc::c_void)
-               -> ()>;
+pub type client_file_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: *mut evbuffer,
+        _: *mut libc::c_void,
+    ) -> (),
+>;
 pub type overlay_free_cb = Option<unsafe extern "C" fn(_: *mut client) -> ()>;
-pub type overlay_key_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event)
-               -> libc::c_int>;
+pub type overlay_key_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_event {
@@ -408,10 +412,8 @@ pub struct mouse_event {
     pub sgr_b: u_int,
 }
 pub type key_code = libc::c_ulonglong;
-pub type overlay_draw_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx)
-               -> ()>;
+pub type overlay_draw_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen_redraw_ctx {
@@ -425,10 +427,8 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int)
-               -> *mut screen>;
+pub type overlay_mode_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen {
@@ -522,10 +522,8 @@ pub struct C2RustUnnamed_11 {
     pub bg: u_char,
     pub data: u_char,
 }
-pub type overlay_check_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int)
-               -> libc::c_int>;
+pub type overlay_check_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct session {
@@ -772,24 +770,37 @@ pub struct C2RustUnnamed_24 {
 pub struct window_mode {
     pub name: *const libc::c_char,
     pub default_format: *const libc::c_char,
-    pub init: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                          _: *mut cmd_find_state,
-                                          _: *mut args) -> *mut screen>,
+    pub init: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut cmd_find_state,
+            _: *mut args,
+        ) -> *mut screen,
+    >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
-    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                            _: u_int, _: u_int) -> ()>,
-    pub key: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                         _: *mut client, _: *mut session,
-                                         _: *mut winlink, _: key_code,
-                                         _: *mut mouse_event) -> ()>,
-    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry)
-                              -> *const libc::c_char>,
-    pub command: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut client, _: *mut session,
-                                             _: *mut winlink, _: *mut args,
-                                             _: *mut mouse_event) -> ()>,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut format_tree) -> ()>,
+    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
+    pub key: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: key_code,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> *const libc::c_char>,
+    pub command: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: *mut args,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -826,14 +837,15 @@ pub struct winlink_stack {
 pub type C2RustUnnamed_25 = libc::c_uint;
 pub const PROMPT_COMMAND: C2RustUnnamed_25 = 1;
 pub const PROMPT_ENTRY: C2RustUnnamed_25 = 0;
-pub type prompt_free_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
-pub type prompt_input_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut libc::c_void,
-                                _: *const libc::c_char, _: libc::c_int)
-               -> libc::c_int>;
+pub type prompt_free_cb = Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
+pub type prompt_input_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut libc::c_void,
+        _: *const libc::c_char,
+        _: libc::c_int,
+    ) -> libc::c_int,
+>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_table {
@@ -1004,12 +1016,8 @@ pub struct tty {
     pub mouse_last_y: u_int,
     pub mouse_last_b: u_int,
     pub mouse_drag_flag: libc::c_int,
-    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client,
-                                                       _: *mut mouse_event)
-                                      -> ()>,
-    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client,
-                                                        _: *mut mouse_event)
-                                       -> ()>,
+    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
+    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
     pub key_timer: event,
     pub key_tree: *mut tty_key,
 }
@@ -1074,10 +1082,8 @@ pub struct screen_write_ctx {
     pub written: u_int,
     pub skipped: u_int,
 }
-pub type screen_write_init_ctx_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut screen_write_ctx, _: *mut tty_ctx)
-               -> ()>;
+pub type screen_write_init_ctx_cb =
+    Option<unsafe extern "C" fn(_: *mut screen_write_ctx, _: *mut tty_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct tty_ctx {
@@ -1108,13 +1114,9 @@ pub struct tty_ctx {
     pub wsx: u_int,
     pub wsy: u_int,
 }
-pub type tty_ctx_set_client_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut tty_ctx, _: *mut client)
-               -> libc::c_int>;
-pub type tty_ctx_redraw_cb
-    =
-    Option<unsafe extern "C" fn(_: *const tty_ctx) -> ()>;
+pub type tty_ctx_set_client_cb =
+    Option<unsafe extern "C" fn(_: *mut tty_ctx, _: *mut client) -> libc::c_int>;
+pub type tty_ctx_redraw_cb = Option<unsafe extern "C" fn(_: *const tty_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct window_clock_mode_data {
@@ -1123,308 +1125,616 @@ pub struct window_clock_mode_data {
     pub timer: event,
 }
 #[no_mangle]
-pub static mut window_clock_mode: window_mode =
-    unsafe {
-        {
-            let mut init =
-                window_mode{name:
-                                b"clock-mode\x00" as *const u8 as
-                                    *const libc::c_char,
-                            default_format: 0 as *const libc::c_char,
-                            init:
-                                Some(window_clock_init as
-                                         unsafe extern "C" fn(_:
-                                                                  *mut window_mode_entry,
-                                                              _:
-                                                                  *mut cmd_find_state,
-                                                              _: *mut args)
-                                             -> *mut screen),
-                            free:
-                                Some(window_clock_free as
-                                         unsafe extern "C" fn(_:
-                                                                  *mut window_mode_entry)
-                                             -> ()),
-                            resize:
-                                Some(window_clock_resize as
-                                         unsafe extern "C" fn(_:
-                                                                  *mut window_mode_entry,
-                                                              _: u_int,
-                                                              _: u_int)
-                                             -> ()),
-                            key:
-                                Some(window_clock_key as
-                                         unsafe extern "C" fn(_:
-                                                                  *mut window_mode_entry,
-                                                              _: *mut client,
-                                                              _: *mut session,
-                                                              _: *mut winlink,
-                                                              _: key_code,
-                                                              _:
-                                                                  *mut mouse_event)
-                                             -> ()),
-                            key_table: None,
-                            command: None,
-                            formats: None,};
-            init
-        }
-    };
+pub static mut window_clock_mode: window_mode = unsafe {
+    {
+        let mut init = window_mode {
+            name: b"clock-mode\x00" as *const u8 as *const libc::c_char,
+            default_format: 0 as *const libc::c_char,
+            init: Some(
+                window_clock_init
+                    as unsafe extern "C" fn(
+                        _: *mut window_mode_entry,
+                        _: *mut cmd_find_state,
+                        _: *mut args,
+                    ) -> *mut screen,
+            ),
+            free: Some(window_clock_free as unsafe extern "C" fn(_: *mut window_mode_entry) -> ()),
+            resize: Some(
+                window_clock_resize
+                    as unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> (),
+            ),
+            key: Some(
+                window_clock_key
+                    as unsafe extern "C" fn(
+                        _: *mut window_mode_entry,
+                        _: *mut client,
+                        _: *mut session,
+                        _: *mut winlink,
+                        _: key_code,
+                        _: *mut mouse_event,
+                    ) -> (),
+            ),
+            key_table: None,
+            command: None,
+            formats: None,
+        };
+        init
+    }
+};
 #[no_mangle]
-pub static mut window_clock_table: [[[libc::c_char; 5]; 5]; 14] =
-    [[[1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char]],
-     [[0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char]],
-     [[1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char]],
-     [[1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char]],
-     [[1 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char]],
-     [[1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char]],
-     [[1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char]],
-     [[1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char]],
-     [[1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char]],
-     [[1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char]],
-     [[0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char],
-      [0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char],
-      [0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char],
-      [0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char],
-      [0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char]],
-     [[1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char]],
-     [[1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char]],
-     [[1 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 1 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char],
-      [1 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       0 as libc::c_int as libc::c_char, 0 as libc::c_int as libc::c_char,
-       1 as libc::c_int as libc::c_char]]];
-unsafe extern "C" fn window_clock_timer_callback(mut fd: libc::c_int,
-                                                 mut events: libc::c_short,
-                                                 mut arg: *mut libc::c_void) {
+pub static mut window_clock_table: [[[libc::c_char; 5]; 5]; 14] = [
+    [
+        [
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+    ],
+    [
+        [
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+    ],
+    [
+        [
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+    ],
+    [
+        [
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+    ],
+    [
+        [
+            1 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+    ],
+    [
+        [
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+    ],
+    [
+        [
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+    ],
+    [
+        [
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+    ],
+    [
+        [
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+    ],
+    [
+        [
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+    ],
+    [
+        [
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+        ],
+        [
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+        ],
+        [
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+        ],
+        [
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+        ],
+        [
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+        ],
+    ],
+    [
+        [
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+    ],
+    [
+        [
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+        ],
+    ],
+    [
+        [
+            1 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+        [
+            1 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            0 as libc::c_int as libc::c_char,
+            1 as libc::c_int as libc::c_char,
+        ],
+    ],
+];
+unsafe extern "C" fn window_clock_timer_callback(
+    mut fd: libc::c_int,
+    mut events: libc::c_short,
+    mut arg: *mut libc::c_void,
+) {
     let mut wme: *mut window_mode_entry = arg as *mut window_mode_entry;
     let mut wp: *mut window_pane = (*wme).wp;
-    let mut data: *mut window_clock_mode_data =
-        (*wme).data as *mut window_clock_mode_data;
-    let mut now: tm =
-        tm{tm_sec: 0,
-           tm_min: 0,
-           tm_hour: 0,
-           tm_mday: 0,
-           tm_mon: 0,
-           tm_year: 0,
-           tm_wday: 0,
-           tm_yday: 0,
-           tm_isdst: 0,
-           tm_gmtoff: 0,
-           tm_zone: 0 as *const libc::c_char,};
-    let mut then: tm =
-        tm{tm_sec: 0,
-           tm_min: 0,
-           tm_hour: 0,
-           tm_mday: 0,
-           tm_mon: 0,
-           tm_year: 0,
-           tm_wday: 0,
-           tm_yday: 0,
-           tm_isdst: 0,
-           tm_gmtoff: 0,
-           tm_zone: 0 as *const libc::c_char,};
+    let mut data: *mut window_clock_mode_data = (*wme).data as *mut window_clock_mode_data;
+    let mut now: tm = tm {
+        tm_sec: 0,
+        tm_min: 0,
+        tm_hour: 0,
+        tm_mday: 0,
+        tm_mon: 0,
+        tm_year: 0,
+        tm_wday: 0,
+        tm_yday: 0,
+        tm_isdst: 0,
+        tm_gmtoff: 0,
+        tm_zone: 0 as *const libc::c_char,
+    };
+    let mut then: tm = tm {
+        tm_sec: 0,
+        tm_min: 0,
+        tm_hour: 0,
+        tm_mday: 0,
+        tm_mon: 0,
+        tm_year: 0,
+        tm_wday: 0,
+        tm_yday: 0,
+        tm_isdst: 0,
+        tm_gmtoff: 0,
+        tm_zone: 0 as *const libc::c_char,
+    };
     let mut t: time_t = 0;
-    let mut tv: timeval =
-        {
-            let mut init =
-                timeval{tv_sec: 1 as libc::c_int as __time_t, tv_usec: 0,};
-            init
+    let mut tv: timeval = {
+        let mut init = timeval {
+            tv_sec: 1 as libc::c_int as __time_t,
+            tv_usec: 0,
         };
+        init
+    };
     event_del(&mut (*data).timer);
     event_add(&mut (*data).timer, &mut tv);
-    if (*wp).modes.tqh_first != wme { return }
+    if (*wp).modes.tqh_first != wme {
+        return;
+    }
     t = time(0 as *mut time_t);
     gmtime_r(&mut t, &mut now);
     gmtime_r(&mut (*data).tim, &mut then);
-    if now.tm_min == then.tm_min { return }
+    if now.tm_min == then.tm_min {
+        return;
+    }
     (*data).tim = t;
     window_clock_draw_screen(wme);
     (*wp).flags |= 0x1 as libc::c_int;
@@ -1445,86 +1755,109 @@ unsafe extern "C" fn window_clock_timer_callback(mut fd: libc::c_int,
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-unsafe extern "C" fn window_clock_init(mut wme: *mut window_mode_entry,
-                                       mut fs: *mut cmd_find_state,
-                                       mut args: *mut args) -> *mut screen {
+unsafe extern "C" fn window_clock_init(
+    mut wme: *mut window_mode_entry,
+    mut fs: *mut cmd_find_state,
+    mut args: *mut args,
+) -> *mut screen {
     let mut wp: *mut window_pane = (*wme).wp;
-    let mut data: *mut window_clock_mode_data =
-        0 as *mut window_clock_mode_data;
+    let mut data: *mut window_clock_mode_data = 0 as *mut window_clock_mode_data;
     let mut s: *mut screen = 0 as *mut screen;
-    let mut tv: timeval =
-        {
-            let mut init =
-                timeval{tv_sec: 1 as libc::c_int as __time_t, tv_usec: 0,};
-            init
+    let mut tv: timeval = {
+        let mut init = timeval {
+            tv_sec: 1 as libc::c_int as __time_t,
+            tv_usec: 0,
         };
-    data =
-        xmalloc(::std::mem::size_of::<window_clock_mode_data>() as
-                    libc::c_ulong) as *mut window_clock_mode_data;
+        init
+    };
+    data = xmalloc(::std::mem::size_of::<window_clock_mode_data>() as libc::c_ulong)
+        as *mut window_clock_mode_data;
     (*wme).data = data as *mut libc::c_void;
     (*data).tim = time(0 as *mut time_t);
-    event_set(&mut (*data).timer, -(1 as libc::c_int),
-              0 as libc::c_int as libc::c_short,
-              Some(window_clock_timer_callback as
-                       unsafe extern "C" fn(_: libc::c_int, _: libc::c_short,
-                                            _: *mut libc::c_void) -> ()),
-              wme as *mut libc::c_void);
+    event_set(
+        &mut (*data).timer,
+        -(1 as libc::c_int),
+        0 as libc::c_int as libc::c_short,
+        Some(
+            window_clock_timer_callback
+                as unsafe extern "C" fn(
+                    _: libc::c_int,
+                    _: libc::c_short,
+                    _: *mut libc::c_void,
+                ) -> (),
+        ),
+        wme as *mut libc::c_void,
+    );
     event_add(&mut (*data).timer, &mut tv);
     s = &mut (*data).screen;
-    screen_init(s, (*(*wp).base.grid).sx, (*(*wp).base.grid).sy,
-                0 as libc::c_int as u_int);
+    screen_init(
+        s,
+        (*(*wp).base.grid).sx,
+        (*(*wp).base.grid).sy,
+        0 as libc::c_int as u_int,
+    );
     (*s).mode &= !(0x1 as libc::c_int);
     window_clock_draw_screen(wme);
     return s;
 }
 unsafe extern "C" fn window_clock_free(mut wme: *mut window_mode_entry) {
-    let mut data: *mut window_clock_mode_data =
-        (*wme).data as *mut window_clock_mode_data;
+    let mut data: *mut window_clock_mode_data = (*wme).data as *mut window_clock_mode_data;
     event_del(&mut (*data).timer);
     screen_free(&mut (*data).screen);
     free(data as *mut libc::c_void);
 }
-unsafe extern "C" fn window_clock_resize(mut wme: *mut window_mode_entry,
-                                         mut sx: u_int, mut sy: u_int) {
-    let mut data: *mut window_clock_mode_data =
-        (*wme).data as *mut window_clock_mode_data;
+unsafe extern "C" fn window_clock_resize(
+    mut wme: *mut window_mode_entry,
+    mut sx: u_int,
+    mut sy: u_int,
+) {
+    let mut data: *mut window_clock_mode_data = (*wme).data as *mut window_clock_mode_data;
     let mut s: *mut screen = &mut (*data).screen;
     screen_resize(s, sx, sy, 0 as libc::c_int);
     window_clock_draw_screen(wme);
 }
-unsafe extern "C" fn window_clock_key(mut wme: *mut window_mode_entry,
-                                      mut c: *mut client, mut s: *mut session,
-                                      mut wl: *mut winlink, mut key: key_code,
-                                      mut m: *mut mouse_event) {
+unsafe extern "C" fn window_clock_key(
+    mut wme: *mut window_mode_entry,
+    mut c: *mut client,
+    mut s: *mut session,
+    mut wl: *mut winlink,
+    mut key: key_code,
+    mut m: *mut mouse_event,
+) {
     window_pane_reset_mode((*wme).wp);
 }
-unsafe extern "C" fn window_clock_draw_screen(mut wme:
-                                                  *mut window_mode_entry) {
+unsafe extern "C" fn window_clock_draw_screen(mut wme: *mut window_mode_entry) {
     let mut wp: *mut window_pane = (*wme).wp;
-    let mut data: *mut window_clock_mode_data =
-        (*wme).data as *mut window_clock_mode_data;
-    let mut ctx: screen_write_ctx =
-        screen_write_ctx{wp: 0 as *mut window_pane,
-                         s: 0 as *mut screen,
-                         flags: 0,
-                         init_ctx_cb: None,
-                         arg: 0 as *mut libc::c_void,
-                         item: 0 as *mut screen_write_collect_item,
-                         scrolled: 0,
-                         bg: 0,
-                         cells: 0,
-                         written: 0,
-                         skipped: 0,};
+    let mut data: *mut window_clock_mode_data = (*wme).data as *mut window_clock_mode_data;
+    let mut ctx: screen_write_ctx = screen_write_ctx {
+        wp: 0 as *mut window_pane,
+        s: 0 as *mut screen,
+        flags: 0,
+        init_ctx_cb: None,
+        arg: 0 as *mut libc::c_void,
+        item: 0 as *mut screen_write_collect_item,
+        scrolled: 0,
+        bg: 0,
+        cells: 0,
+        written: 0,
+        skipped: 0,
+    };
     let mut colour: libc::c_int = 0;
     let mut style: libc::c_int = 0;
     let mut s: *mut screen = &mut (*data).screen;
-    let mut gc: grid_cell =
-        grid_cell{data: utf8_data{data: [0; 21], have: 0, size: 0, width: 0,},
-                  attr: 0,
-                  flags: 0,
-                  fg: 0,
-                  bg: 0,
-                  us: 0,};
+    let mut gc: grid_cell = grid_cell {
+        data: utf8_data {
+            data: [0; 21],
+            have: 0,
+            size: 0,
+            width: 0,
+        },
+        attr: 0,
+        flags: 0,
+        fg: 0,
+        bg: 0,
+        us: 0,
+    };
     let mut tim: [libc::c_char; 64] = [0; 64];
     let mut ptr: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut t: time_t = 0;
@@ -1534,95 +1867,105 @@ unsafe extern "C" fn window_clock_draw_screen(mut wme:
     let mut x: u_int = 0;
     let mut y: u_int = 0;
     let mut idx: u_int = 0;
-    colour =
-        options_get_number((*(*wp).window).options,
-                           b"clock-mode-colour\x00" as *const u8 as
-                               *const libc::c_char) as libc::c_int;
-    style =
-        options_get_number((*(*wp).window).options,
-                           b"clock-mode-style\x00" as *const u8 as
-                               *const libc::c_char) as libc::c_int;
+    colour = options_get_number(
+        (*(*wp).window).options,
+        b"clock-mode-colour\x00" as *const u8 as *const libc::c_char,
+    ) as libc::c_int;
+    style = options_get_number(
+        (*(*wp).window).options,
+        b"clock-mode-style\x00" as *const u8 as *const libc::c_char,
+    ) as libc::c_int;
     screen_write_start(&mut ctx, s);
     t = time(0 as *mut time_t);
     tm = localtime(&mut t);
     if style == 0 as libc::c_int {
-        strftime(tim.as_mut_ptr(),
-                 ::std::mem::size_of::<[libc::c_char; 64]>() as libc::c_ulong,
-                 b"%l:%M \x00" as *const u8 as *const libc::c_char,
-                 localtime(&mut t));
+        strftime(
+            tim.as_mut_ptr(),
+            ::std::mem::size_of::<[libc::c_char; 64]>() as libc::c_ulong,
+            b"%l:%M \x00" as *const u8 as *const libc::c_char,
+            localtime(&mut t),
+        );
         if (*tm).tm_hour >= 12 as libc::c_int {
-            strlcat(tim.as_mut_ptr(),
-                    b"PM\x00" as *const u8 as *const libc::c_char,
-                    ::std::mem::size_of::<[libc::c_char; 64]>() as
-                        libc::c_ulong);
+            strlcat(
+                tim.as_mut_ptr(),
+                b"PM\x00" as *const u8 as *const libc::c_char,
+                ::std::mem::size_of::<[libc::c_char; 64]>() as libc::c_ulong,
+            );
         } else {
-            strlcat(tim.as_mut_ptr(),
-                    b"AM\x00" as *const u8 as *const libc::c_char,
-                    ::std::mem::size_of::<[libc::c_char; 64]>() as
-                        libc::c_ulong);
+            strlcat(
+                tim.as_mut_ptr(),
+                b"AM\x00" as *const u8 as *const libc::c_char,
+                ::std::mem::size_of::<[libc::c_char; 64]>() as libc::c_ulong,
+            );
         }
     } else {
-        strftime(tim.as_mut_ptr(),
-                 ::std::mem::size_of::<[libc::c_char; 64]>() as libc::c_ulong,
-                 b"%H:%M\x00" as *const u8 as *const libc::c_char, tm);
+        strftime(
+            tim.as_mut_ptr(),
+            ::std::mem::size_of::<[libc::c_char; 64]>() as libc::c_ulong,
+            b"%H:%M\x00" as *const u8 as *const libc::c_char,
+            tm,
+        );
     }
     screen_write_clearscreen(&mut ctx, 8 as libc::c_int as u_int);
-    if ((*(*s).grid).sx as libc::c_ulong) <
-           (6 as libc::c_int as
-                libc::c_ulong).wrapping_mul(strlen(tim.as_mut_ptr())) ||
-           (*(*s).grid).sy < 6 as libc::c_int as libc::c_uint {
-        if (*(*s).grid).sx as libc::c_ulong >= strlen(tim.as_mut_ptr()) &&
-               (*(*s).grid).sy != 0 as libc::c_int as libc::c_uint {
-            x =
-                ((*(*s).grid).sx.wrapping_div(2 as libc::c_int as
-                                                  libc::c_uint) as
-                     libc::c_ulong).wrapping_sub(strlen(tim.as_mut_ptr()).wrapping_div(2
-                                                                                           as
-                                                                                           libc::c_int
-                                                                                           as
-                                                                                           libc::c_ulong))
-                    as u_int;
-            y =
-                (*(*s).grid).sy.wrapping_div(2 as libc::c_int as
-                                                 libc::c_uint);
-            screen_write_cursormove(&mut ctx, x as libc::c_int,
-                                    y as libc::c_int, 0 as libc::c_int);
-            memcpy(&mut gc as *mut grid_cell as *mut libc::c_void,
-                   &grid_default_cell as *const grid_cell as
-                       *const libc::c_void,
-                   ::std::mem::size_of::<grid_cell>() as libc::c_ulong);
-            gc.flags =
-                (gc.flags as libc::c_int | 0x20 as libc::c_int) as u_char;
+    if ((*(*s).grid).sx as libc::c_ulong)
+        < (6 as libc::c_int as libc::c_ulong).wrapping_mul(strlen(tim.as_mut_ptr()))
+        || (*(*s).grid).sy < 6 as libc::c_int as libc::c_uint
+    {
+        if (*(*s).grid).sx as libc::c_ulong >= strlen(tim.as_mut_ptr())
+            && (*(*s).grid).sy != 0 as libc::c_int as libc::c_uint
+        {
+            x = ((*(*s).grid)
+                .sx
+                .wrapping_div(2 as libc::c_int as libc::c_uint) as libc::c_ulong)
+                .wrapping_sub(
+                    strlen(tim.as_mut_ptr()).wrapping_div(2 as libc::c_int as libc::c_ulong),
+                ) as u_int;
+            y = (*(*s).grid)
+                .sy
+                .wrapping_div(2 as libc::c_int as libc::c_uint);
+            screen_write_cursormove(
+                &mut ctx,
+                x as libc::c_int,
+                y as libc::c_int,
+                0 as libc::c_int,
+            );
+            memcpy(
+                &mut gc as *mut grid_cell as *mut libc::c_void,
+                &grid_default_cell as *const grid_cell as *const libc::c_void,
+                ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+            );
+            gc.flags = (gc.flags as libc::c_int | 0x20 as libc::c_int) as u_char;
             gc.fg = colour;
-            screen_write_puts(&mut ctx as *mut screen_write_ctx,
-                              &mut gc as *mut grid_cell,
-                              b"%s\x00" as *const u8 as *const libc::c_char,
-                              tim.as_mut_ptr());
+            screen_write_puts(
+                &mut ctx as *mut screen_write_ctx,
+                &mut gc as *mut grid_cell,
+                b"%s\x00" as *const u8 as *const libc::c_char,
+                tim.as_mut_ptr(),
+            );
         }
         screen_write_stop(&mut ctx);
-        return
+        return;
     }
-    x =
-        ((*(*s).grid).sx.wrapping_div(2 as libc::c_int as libc::c_uint) as
-             libc::c_ulong).wrapping_sub((3 as libc::c_int as
-                                              libc::c_ulong).wrapping_mul(strlen(tim.as_mut_ptr())))
-            as u_int;
-    y =
-        (*(*s).grid).sy.wrapping_div(2 as libc::c_int as
-                                         libc::c_uint).wrapping_sub(3 as
-                                                                        libc::c_int
-                                                                        as
-                                                                        libc::c_uint);
-    memcpy(&mut gc as *mut grid_cell as *mut libc::c_void,
-           &grid_default_cell as *const grid_cell as *const libc::c_void,
-           ::std::mem::size_of::<grid_cell>() as libc::c_ulong);
+    x = ((*(*s).grid)
+        .sx
+        .wrapping_div(2 as libc::c_int as libc::c_uint) as libc::c_ulong)
+        .wrapping_sub((3 as libc::c_int as libc::c_ulong).wrapping_mul(strlen(tim.as_mut_ptr())))
+        as u_int;
+    y = (*(*s).grid)
+        .sy
+        .wrapping_div(2 as libc::c_int as libc::c_uint)
+        .wrapping_sub(3 as libc::c_int as libc::c_uint);
+    memcpy(
+        &mut gc as *mut grid_cell as *mut libc::c_void,
+        &grid_default_cell as *const grid_cell as *const libc::c_void,
+        ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+    );
     gc.flags = (gc.flags as libc::c_int | 0x20 as libc::c_int) as u_char;
     gc.bg = colour;
     let mut current_block_47: u64;
     ptr = tim.as_mut_ptr();
     while *ptr as libc::c_int != '\u{0}' as i32 {
-        if *ptr as libc::c_int >= '0' as i32 &&
-               *ptr as libc::c_int <= '9' as i32 {
+        if *ptr as libc::c_int >= '0' as i32 && *ptr as libc::c_int <= '9' as i32 {
             idx = (*ptr as libc::c_int - '0' as i32) as u_int;
             current_block_47 = 12997042908615822766;
         } else if *ptr as libc::c_int == ':' as i32 {
@@ -1638,11 +1981,8 @@ unsafe extern "C" fn window_clock_draw_screen(mut wme:
             idx = 13 as libc::c_int as u_int;
             current_block_47 = 12997042908615822766;
         } else {
-            x =
-                (x as
-                     libc::c_uint).wrapping_add(6 as libc::c_int as
-                                                    libc::c_uint) as u_int as
-                    u_int;
+            x = (x as libc::c_uint).wrapping_add(6 as libc::c_int as libc::c_uint) as u_int
+                as u_int;
             current_block_47 = 18377268871191777778;
         }
         match current_block_47 {
@@ -1651,31 +1991,23 @@ unsafe extern "C" fn window_clock_draw_screen(mut wme:
                 while j < 5 as libc::c_int as libc::c_uint {
                     i = 0 as libc::c_int as u_int;
                     while i < 5 as libc::c_int as libc::c_uint {
-                        screen_write_cursormove(&mut ctx,
-                                                x.wrapping_add(i) as
-                                                    libc::c_int,
-                                                y.wrapping_add(j) as
-                                                    libc::c_int,
-                                                0 as libc::c_int);
-                        if window_clock_table[idx as
-                                                  usize][j as
-                                                             usize][i as
-                                                                        usize]
-                               != 0 {
-                            screen_write_putc(&mut ctx, &mut gc,
-                                              ' ' as i32 as u_char);
+                        screen_write_cursormove(
+                            &mut ctx,
+                            x.wrapping_add(i) as libc::c_int,
+                            y.wrapping_add(j) as libc::c_int,
+                            0 as libc::c_int,
+                        );
+                        if window_clock_table[idx as usize][j as usize][i as usize] != 0 {
+                            screen_write_putc(&mut ctx, &mut gc, ' ' as i32 as u_char);
                         }
                         i = i.wrapping_add(1)
                     }
                     j = j.wrapping_add(1)
                 }
-                x =
-                    (x as
-                         libc::c_uint).wrapping_add(6 as libc::c_int as
-                                                        libc::c_uint) as u_int
-                        as u_int
+                x = (x as libc::c_uint).wrapping_add(6 as libc::c_int as libc::c_uint) as u_int
+                    as u_int
             }
-            _ => { }
+            _ => {}
         }
         ptr = ptr.offset(1)
     }

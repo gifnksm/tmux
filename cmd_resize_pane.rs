@@ -22,20 +22,27 @@ extern "C" {
     #[no_mangle]
     fn free(__ptr: *mut libc::c_void);
     #[no_mangle]
-    fn strtonum(_: *const libc::c_char, _: libc::c_longlong,
-                _: libc::c_longlong, _: *mut *const libc::c_char)
-     -> libc::c_longlong;
+    fn strtonum(
+        _: *const libc::c_char,
+        _: libc::c_longlong,
+        _: libc::c_longlong,
+        _: *mut *const libc::c_char,
+    ) -> libc::c_longlong;
     #[no_mangle]
     fn args_has(_: *mut args, _: u_char) -> libc::c_int;
     #[no_mangle]
-    fn args_percentage(_: *mut args, _: u_char, _: libc::c_longlong,
-                       _: libc::c_longlong, _: libc::c_longlong,
-                       _: *mut *mut libc::c_char) -> libc::c_longlong;
+    fn args_percentage(
+        _: *mut args,
+        _: u_char,
+        _: libc::c_longlong,
+        _: libc::c_longlong,
+        _: libc::c_longlong,
+        _: *mut *mut libc::c_char,
+    ) -> libc::c_longlong;
     #[no_mangle]
     fn cmd_get_args(_: *mut cmd) -> *mut args;
     #[no_mangle]
-    fn cmd_mouse_window(_: *mut mouse_event, _: *mut *mut session)
-     -> *mut winlink;
+    fn cmd_mouse_window(_: *mut mouse_event, _: *mut *mut session) -> *mut winlink;
     #[no_mangle]
     fn cmdq_get_client(_: *mut cmdq_item) -> *mut client;
     #[no_mangle]
@@ -51,14 +58,17 @@ extern "C" {
     #[no_mangle]
     fn grid_remove_history(_: *mut grid, _: u_int);
     #[no_mangle]
-    fn layout_resize_layout(_: *mut window, _: *mut layout_cell,
-                            _: layout_type, _: libc::c_int, _: libc::c_int);
+    fn layout_resize_layout(
+        _: *mut window,
+        _: *mut layout_cell,
+        _: layout_type,
+        _: libc::c_int,
+        _: libc::c_int,
+    );
     #[no_mangle]
-    fn layout_search_by_border(_: *mut layout_cell, _: u_int, _: u_int)
-     -> *mut layout_cell;
+    fn layout_search_by_border(_: *mut layout_cell, _: u_int, _: u_int) -> *mut layout_cell;
     #[no_mangle]
-    fn layout_resize_pane(_: *mut window_pane, _: layout_type, _: libc::c_int,
-                          _: libc::c_int);
+    fn layout_resize_pane(_: *mut window_pane, _: layout_type, _: libc::c_int, _: libc::c_int);
     #[no_mangle]
     fn layout_resize_pane_to(_: *mut window_pane, _: layout_type, _: u_int);
     #[no_mangle]
@@ -155,18 +165,13 @@ pub struct event_callback {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub union C2RustUnnamed_6 {
-    pub evcb_callback: Option<unsafe extern "C" fn(_: libc::c_int,
-                                                   _: libc::c_short,
-                                                   _: *mut libc::c_void)
-                                  -> ()>,
-    pub evcb_selfcb: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                 _: *mut libc::c_void) -> ()>,
-    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
-    pub evcb_cbfinalize: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
+    pub evcb_callback:
+        Option<unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> ()>,
+    pub evcb_selfcb:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
+    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event, _: *mut libc::c_void) -> ()>,
+    pub evcb_cbfinalize:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -193,14 +198,10 @@ pub struct bufferevent {
     pub timeout_write: timeval,
     pub enabled: libc::c_short,
 }
-pub type bufferevent_event_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short,
-                                _: *mut libc::c_void) -> ()>;
-pub type bufferevent_data_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void)
-               -> ()>;
+pub type bufferevent_event_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short, _: *mut libc::c_void) -> ()>;
+pub type bufferevent_data_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct event_watermark {
@@ -339,17 +340,19 @@ pub struct C2RustUnnamed_9 {
     pub rbe_parent: *mut client_file,
     pub rbe_color: libc::c_int,
 }
-pub type client_file_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *const libc::c_char,
-                                _: libc::c_int, _: libc::c_int,
-                                _: *mut evbuffer, _: *mut libc::c_void)
-               -> ()>;
+pub type client_file_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: *mut evbuffer,
+        _: *mut libc::c_void,
+    ) -> (),
+>;
 pub type overlay_free_cb = Option<unsafe extern "C" fn(_: *mut client) -> ()>;
-pub type overlay_key_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event)
-               -> libc::c_int>;
+pub type overlay_key_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_event {
@@ -379,10 +382,8 @@ pub struct mouse_event {
     pub sgr_b: u_int,
 }
 pub type key_code = libc::c_ulonglong;
-pub type overlay_draw_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx)
-               -> ()>;
+pub type overlay_draw_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen_redraw_ctx {
@@ -396,10 +397,8 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int)
-               -> *mut screen>;
+pub type overlay_mode_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen {
@@ -493,10 +492,8 @@ pub struct C2RustUnnamed_11 {
     pub bg: u_char,
     pub data: u_char,
 }
-pub type overlay_check_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int)
-               -> libc::c_int>;
+pub type overlay_check_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct session {
@@ -743,24 +740,37 @@ pub struct C2RustUnnamed_24 {
 pub struct window_mode {
     pub name: *const libc::c_char,
     pub default_format: *const libc::c_char,
-    pub init: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                          _: *mut cmd_find_state,
-                                          _: *mut args) -> *mut screen>,
+    pub init: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut cmd_find_state,
+            _: *mut args,
+        ) -> *mut screen,
+    >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
-    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                            _: u_int, _: u_int) -> ()>,
-    pub key: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                         _: *mut client, _: *mut session,
-                                         _: *mut winlink, _: key_code,
-                                         _: *mut mouse_event) -> ()>,
-    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry)
-                              -> *const libc::c_char>,
-    pub command: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut client, _: *mut session,
-                                             _: *mut winlink, _: *mut args,
-                                             _: *mut mouse_event) -> ()>,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut format_tree) -> ()>,
+    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
+    pub key: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: key_code,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> *const libc::c_char>,
+    pub command: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: *mut args,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -797,14 +807,15 @@ pub struct winlink_stack {
 pub type C2RustUnnamed_25 = libc::c_uint;
 pub const PROMPT_COMMAND: C2RustUnnamed_25 = 1;
 pub const PROMPT_ENTRY: C2RustUnnamed_25 = 0;
-pub type prompt_free_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
-pub type prompt_input_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut libc::c_void,
-                                _: *const libc::c_char, _: libc::c_int)
-               -> libc::c_int>;
+pub type prompt_free_cb = Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
+pub type prompt_input_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut libc::c_void,
+        _: *const libc::c_char,
+        _: libc::c_int,
+    ) -> libc::c_int,
+>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_table {
@@ -975,12 +986,8 @@ pub struct tty {
     pub mouse_last_y: u_int,
     pub mouse_last_b: u_int,
     pub mouse_drag_flag: libc::c_int,
-    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client,
-                                                       _: *mut mouse_event)
-                                      -> ()>,
-    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client,
-                                                        _: *mut mouse_event)
-                                       -> ()>,
+    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
+    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
     pub key_timer: event,
     pub key_tree: *mut tty_key,
 }
@@ -1056,8 +1063,7 @@ pub struct cmd_entry {
     pub source: cmd_entry_flag,
     pub target: cmd_entry_flag,
     pub flags: libc::c_int,
-    pub exec: Option<unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item)
-                         -> cmd_retval>,
+    pub exec: Option<unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -1067,56 +1073,43 @@ pub struct C2RustUnnamed_32 {
     pub upper: libc::c_int,
 }
 #[no_mangle]
-pub static mut cmd_resize_pane_entry: cmd_entry =
-    unsafe {
-        {
-            let mut init =
-                cmd_entry{name:
-                              b"resize-pane\x00" as *const u8 as
-                                  *const libc::c_char,
-                          alias:
-                              b"resizep\x00" as *const u8 as
-                                  *const libc::c_char,
-                          args:
-                              {
-                                  let mut init =
-                                      C2RustUnnamed_32{template:
-                                                           b"DLMRTt:Ux:y:Z\x00"
-                                                               as *const u8 as
-                                                               *const libc::c_char,
-                                                       lower:
-                                                           0 as libc::c_int,
-                                                       upper:
-                                                           1 as libc::c_int,};
-                                  init
-                              },
-                          usage:
-                              b"[-DLMRTUZ] [-x width] [-y height] [-t target-pane] [adjustment]\x00"
-                                  as *const u8 as *const libc::c_char,
-                          source:
-                              cmd_entry_flag{flag: 0,
-                                             type_0: CMD_FIND_PANE,
-                                             flags: 0,},
-                          target:
-                              {
-                                  let mut init =
-                                      cmd_entry_flag{flag:
-                                                         't' as i32 as
-                                                             libc::c_char,
-                                                     type_0: CMD_FIND_PANE,
-                                                     flags:
-                                                         0 as libc::c_int,};
-                                  init
-                              },
-                          flags: 0x4 as libc::c_int,
-                          exec:
-                              Some(cmd_resize_pane_exec as
-                                       unsafe extern "C" fn(_: *mut cmd,
-                                                            _: *mut cmdq_item)
-                                           -> cmd_retval),};
-            init
-        }
-    };
+pub static mut cmd_resize_pane_entry: cmd_entry = unsafe {
+    {
+        let mut init = cmd_entry {
+            name: b"resize-pane\x00" as *const u8 as *const libc::c_char,
+            alias: b"resizep\x00" as *const u8 as *const libc::c_char,
+            args: {
+                let mut init = C2RustUnnamed_32 {
+                    template: b"DLMRTt:Ux:y:Z\x00" as *const u8 as *const libc::c_char,
+                    lower: 0 as libc::c_int,
+                    upper: 1 as libc::c_int,
+                };
+                init
+            },
+            usage: b"[-DLMRTUZ] [-x width] [-y height] [-t target-pane] [adjustment]\x00"
+                as *const u8 as *const libc::c_char,
+            source: cmd_entry_flag {
+                flag: 0,
+                type_0: CMD_FIND_PANE,
+                flags: 0,
+            },
+            target: {
+                let mut init = cmd_entry_flag {
+                    flag: 't' as i32 as libc::c_char,
+                    type_0: CMD_FIND_PANE,
+                    flags: 0 as libc::c_int,
+                };
+                init
+            },
+            flags: 0x4 as libc::c_int,
+            exec: Some(
+                cmd_resize_pane_exec
+                    as unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval,
+            ),
+        };
+        init
+    }
+};
 /* $OpenBSD$ */
 /*
  * Copyright (c) 2009 Nicholas Marriott <nicholas.marriott@gmail.com>
@@ -1136,9 +1129,10 @@ pub static mut cmd_resize_pane_entry: cmd_entry =
 /*
  * Increase or decrease pane size.
  */
-unsafe extern "C" fn cmd_resize_pane_exec(mut self_0: *mut cmd,
-                                          mut item: *mut cmdq_item)
- -> cmd_retval {
+unsafe extern "C" fn cmd_resize_pane_exec(
+    mut self_0: *mut cmd,
+    mut item: *mut cmdq_item,
+) -> cmd_retval {
     let mut args: *mut args = cmd_get_args(self_0);
     let mut target: *mut cmd_find_state = cmdq_get_target(item);
     let mut event: *mut key_event = cmdq_get_event(item);
@@ -1154,118 +1148,149 @@ unsafe extern "C" fn cmd_resize_pane_exec(mut self_0: *mut cmd,
     let mut y: libc::c_int = 0;
     let mut gd: *mut grid = (*wp).base.grid;
     if args_has(args, 'T' as i32 as u_char) != 0 {
-        if !(*wp).modes.tqh_first.is_null() { return CMD_RETURN_NORMAL }
-        adjust =
-            (*(*wp).base.grid).sy.wrapping_sub(1 as libc::c_int as
-                                                   libc::c_uint).wrapping_sub((*wp).base.cy);
-        if adjust > (*gd).hsize { adjust = (*gd).hsize }
+        if !(*wp).modes.tqh_first.is_null() {
+            return CMD_RETURN_NORMAL;
+        }
+        adjust = (*(*wp).base.grid)
+            .sy
+            .wrapping_sub(1 as libc::c_int as libc::c_uint)
+            .wrapping_sub((*wp).base.cy);
+        if adjust > (*gd).hsize {
+            adjust = (*gd).hsize
+        }
         grid_remove_history(gd, adjust);
-        (*wp).base.cy =
-            ((*wp).base.cy as libc::c_uint).wrapping_add(adjust) as u_int as
-                u_int;
+        (*wp).base.cy = ((*wp).base.cy as libc::c_uint).wrapping_add(adjust) as u_int as u_int;
         (*wp).flags |= 0x1 as libc::c_int;
-        return CMD_RETURN_NORMAL
+        return CMD_RETURN_NORMAL;
     }
     if args_has(args, 'M' as i32 as u_char) != 0 {
-        if (*event).m.valid == 0 ||
-               cmd_mouse_window(&mut (*event).m, &mut s).is_null() {
-            return CMD_RETURN_NORMAL
+        if (*event).m.valid == 0 || cmd_mouse_window(&mut (*event).m, &mut s).is_null() {
+            return CMD_RETURN_NORMAL;
         }
-        if c.is_null() || (*c).session != s { return CMD_RETURN_NORMAL }
-        (*c).tty.mouse_drag_update =
-            Some(cmd_resize_pane_mouse_update as
-                     unsafe extern "C" fn(_: *mut client, _: *mut mouse_event)
-                         -> ());
+        if c.is_null() || (*c).session != s {
+            return CMD_RETURN_NORMAL;
+        }
+        (*c).tty.mouse_drag_update = Some(
+            cmd_resize_pane_mouse_update
+                as unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> (),
+        );
         cmd_resize_pane_mouse_update(c, &mut (*event).m);
-        return CMD_RETURN_NORMAL
+        return CMD_RETURN_NORMAL;
     }
     if args_has(args, 'Z' as i32 as u_char) != 0 {
         if (*w).flags & 0x8 as libc::c_int != 0 {
             window_unzoom(w);
-        } else { window_zoom(wp); }
+        } else {
+            window_zoom(wp);
+        }
         server_redraw_window(w);
-        return CMD_RETURN_NORMAL
+        return CMD_RETURN_NORMAL;
     }
     server_unzoom_window(w);
     if (*args).argc == 0 as libc::c_int {
         adjust = 1 as libc::c_int as u_int
     } else {
-        adjust =
-            strtonum(*(*args).argv.offset(0 as libc::c_int as isize),
-                     1 as libc::c_int as libc::c_longlong,
-                     2147483647 as libc::c_int as libc::c_longlong,
-                     &mut errstr) as u_int;
+        adjust = strtonum(
+            *(*args).argv.offset(0 as libc::c_int as isize),
+            1 as libc::c_int as libc::c_longlong,
+            2147483647 as libc::c_int as libc::c_longlong,
+            &mut errstr,
+        ) as u_int;
         if !errstr.is_null() {
-            cmdq_error(item,
-                       b"adjustment %s\x00" as *const u8 as
-                           *const libc::c_char, errstr);
-            return CMD_RETURN_ERROR
+            cmdq_error(
+                item,
+                b"adjustment %s\x00" as *const u8 as *const libc::c_char,
+                errstr,
+            );
+            return CMD_RETURN_ERROR;
         }
     }
     if args_has(args, 'x' as i32 as u_char) != 0 {
-        x =
-            args_percentage(args, 'x' as i32 as u_char,
-                            0 as libc::c_int as libc::c_longlong,
-                            2147483647 as libc::c_int as libc::c_longlong,
-                            (*w).sx as libc::c_longlong, &mut cause) as
-                libc::c_int;
+        x = args_percentage(
+            args,
+            'x' as i32 as u_char,
+            0 as libc::c_int as libc::c_longlong,
+            2147483647 as libc::c_int as libc::c_longlong,
+            (*w).sx as libc::c_longlong,
+            &mut cause,
+        ) as libc::c_int;
         if !cause.is_null() {
-            cmdq_error(item,
-                       b"width %s\x00" as *const u8 as *const libc::c_char,
-                       cause);
+            cmdq_error(
+                item,
+                b"width %s\x00" as *const u8 as *const libc::c_char,
+                cause,
+            );
             free(cause as *mut libc::c_void);
-            return CMD_RETURN_ERROR
+            return CMD_RETURN_ERROR;
         }
         layout_resize_pane_to(wp, LAYOUT_LEFTRIGHT, x as u_int);
     }
     if args_has(args, 'y' as i32 as u_char) != 0 {
-        y =
-            args_percentage(args, 'y' as i32 as u_char,
-                            0 as libc::c_int as libc::c_longlong,
-                            2147483647 as libc::c_int as libc::c_longlong,
-                            (*w).sy as libc::c_longlong, &mut cause) as
-                libc::c_int;
+        y = args_percentage(
+            args,
+            'y' as i32 as u_char,
+            0 as libc::c_int as libc::c_longlong,
+            2147483647 as libc::c_int as libc::c_longlong,
+            (*w).sy as libc::c_longlong,
+            &mut cause,
+        ) as libc::c_int;
         if !cause.is_null() {
-            cmdq_error(item,
-                       b"height %s\x00" as *const u8 as *const libc::c_char,
-                       cause);
+            cmdq_error(
+                item,
+                b"height %s\x00" as *const u8 as *const libc::c_char,
+                cause,
+            );
             free(cause as *mut libc::c_void);
-            return CMD_RETURN_ERROR
+            return CMD_RETURN_ERROR;
         }
         layout_resize_pane_to(wp, LAYOUT_TOPBOTTOM, y as u_int);
     }
     if args_has(args, 'L' as i32 as u_char) != 0 {
-        layout_resize_pane(wp, LAYOUT_LEFTRIGHT,
-                           adjust.wrapping_neg() as libc::c_int,
-                           1 as libc::c_int);
+        layout_resize_pane(
+            wp,
+            LAYOUT_LEFTRIGHT,
+            adjust.wrapping_neg() as libc::c_int,
+            1 as libc::c_int,
+        );
     } else if args_has(args, 'R' as i32 as u_char) != 0 {
-        layout_resize_pane(wp, LAYOUT_LEFTRIGHT, adjust as libc::c_int,
-                           1 as libc::c_int);
+        layout_resize_pane(
+            wp,
+            LAYOUT_LEFTRIGHT,
+            adjust as libc::c_int,
+            1 as libc::c_int,
+        );
     } else if args_has(args, 'U' as i32 as u_char) != 0 {
-        layout_resize_pane(wp, LAYOUT_TOPBOTTOM,
-                           adjust.wrapping_neg() as libc::c_int,
-                           1 as libc::c_int);
+        layout_resize_pane(
+            wp,
+            LAYOUT_TOPBOTTOM,
+            adjust.wrapping_neg() as libc::c_int,
+            1 as libc::c_int,
+        );
     } else if args_has(args, 'D' as i32 as u_char) != 0 {
-        layout_resize_pane(wp, LAYOUT_TOPBOTTOM, adjust as libc::c_int,
-                           1 as libc::c_int);
+        layout_resize_pane(
+            wp,
+            LAYOUT_TOPBOTTOM,
+            adjust as libc::c_int,
+            1 as libc::c_int,
+        );
     }
     server_redraw_window((*wl).window);
     return CMD_RETURN_NORMAL;
 }
-unsafe extern "C" fn cmd_resize_pane_mouse_update(mut c: *mut client,
-                                                  mut m: *mut mouse_event) {
+unsafe extern "C" fn cmd_resize_pane_mouse_update(mut c: *mut client, mut m: *mut mouse_event) {
     let mut wl: *mut winlink = 0 as *mut winlink;
     let mut w: *mut window = 0 as *mut window;
     let mut y: u_int = 0;
     let mut ly: u_int = 0;
     let mut x: u_int = 0;
     let mut lx: u_int = 0;
-    static mut offsets: [[libc::c_int; 2]; 5] =
-        [[0 as libc::c_int, 0 as libc::c_int],
-         [0 as libc::c_int, 1 as libc::c_int],
-         [1 as libc::c_int, 0 as libc::c_int],
-         [0 as libc::c_int, -(1 as libc::c_int)],
-         [-(1 as libc::c_int), 0 as libc::c_int]];
+    static mut offsets: [[libc::c_int; 2]; 5] = [
+        [0 as libc::c_int, 0 as libc::c_int],
+        [0 as libc::c_int, 1 as libc::c_int],
+        [1 as libc::c_int, 0 as libc::c_int],
+        [0 as libc::c_int, -(1 as libc::c_int)],
+        [-(1 as libc::c_int), 0 as libc::c_int],
+    ];
     let mut cells: [*mut layout_cell; 5] = [0 as *mut layout_cell; 5];
     let mut lc: *mut layout_cell = 0 as *mut layout_cell;
     let mut ncells: u_int = 0 as libc::c_int as u_int;
@@ -1274,54 +1299,44 @@ unsafe extern "C" fn cmd_resize_pane_mouse_update(mut c: *mut client,
     let mut resizes: u_int = 0 as libc::c_int as u_int;
     let mut type_0: layout_type = LAYOUT_LEFTRIGHT;
     wl = cmd_mouse_window(m, 0 as *mut *mut session);
-    if wl.is_null() { (*c).tty.mouse_drag_update = None; return }
+    if wl.is_null() {
+        (*c).tty.mouse_drag_update = None;
+        return;
+    }
     w = (*wl).window;
     y = (*m).y.wrapping_add((*m).oy);
     x = (*m).x.wrapping_add((*m).ox);
     if (*m).statusat == 0 as libc::c_int && y >= (*m).statuslines {
-        y =
-            (y as libc::c_uint).wrapping_sub((*m).statuslines) as u_int as
-                u_int
-    } else if (*m).statusat > 0 as libc::c_int && y >= (*m).statusat as u_int
-     {
+        y = (y as libc::c_uint).wrapping_sub((*m).statuslines) as u_int as u_int
+    } else if (*m).statusat > 0 as libc::c_int && y >= (*m).statusat as u_int {
         y = ((*m).statusat - 1 as libc::c_int) as u_int
     }
     ly = (*m).ly.wrapping_add((*m).oy);
     lx = (*m).lx.wrapping_add((*m).ox);
     if (*m).statusat == 0 as libc::c_int && ly >= (*m).statuslines {
-        ly =
-            (ly as libc::c_uint).wrapping_sub((*m).statuslines) as u_int as
-                u_int
-    } else if (*m).statusat > 0 as libc::c_int && ly >= (*m).statusat as u_int
-     {
+        ly = (ly as libc::c_uint).wrapping_sub((*m).statuslines) as u_int as u_int
+    } else if (*m).statusat > 0 as libc::c_int && ly >= (*m).statusat as u_int {
         ly = ((*m).statusat - 1 as libc::c_int) as u_int
     }
     i = 0 as libc::c_int as u_int;
-    while (i as libc::c_ulong) <
-              (::std::mem::size_of::<[*mut layout_cell; 5]>() as
-                   libc::c_ulong).wrapping_div(::std::mem::size_of::<*mut layout_cell>()
-                                                   as libc::c_ulong) {
-        lc =
-            layout_search_by_border((*w).layout_root,
-                                    lx.wrapping_add(offsets[i as
-                                                                usize][0 as
-                                                                           libc::c_int
-                                                                           as
-                                                                           usize]
-                                                        as libc::c_uint),
-                                    ly.wrapping_add(offsets[i as
-                                                                usize][1 as
-                                                                           libc::c_int
-                                                                           as
-                                                                           usize]
-                                                        as libc::c_uint));
+    while (i as libc::c_ulong)
+        < (::std::mem::size_of::<[*mut layout_cell; 5]>() as libc::c_ulong)
+            .wrapping_div(::std::mem::size_of::<*mut layout_cell>() as libc::c_ulong)
+    {
+        lc = layout_search_by_border(
+            (*w).layout_root,
+            lx.wrapping_add(offsets[i as usize][0 as libc::c_int as usize] as libc::c_uint),
+            ly.wrapping_add(offsets[i as usize][1 as libc::c_int as usize] as libc::c_uint),
+        );
         if !lc.is_null() {
             j = 0 as libc::c_int as u_int;
             while j < ncells {
                 if cells[j as usize] == lc {
                     lc = 0 as *mut layout_cell;
-                    break ;
-                } else { j = j.wrapping_add(1) }
+                    break;
+                } else {
+                    j = j.wrapping_add(1)
+                }
             }
             if !lc.is_null() {
                 cells[ncells as usize] = lc;
@@ -1330,23 +1345,31 @@ unsafe extern "C" fn cmd_resize_pane_mouse_update(mut c: *mut client,
         }
         i = i.wrapping_add(1)
     }
-    if ncells == 0 as libc::c_int as libc::c_uint { return }
+    if ncells == 0 as libc::c_int as libc::c_uint {
+        return;
+    }
     i = 0 as libc::c_int as u_int;
     while i < ncells {
         type_0 = (*(*cells[i as usize]).parent).type_0;
-        if y != ly &&
-               type_0 as libc::c_uint ==
-                   LAYOUT_TOPBOTTOM as libc::c_int as libc::c_uint {
-            layout_resize_layout(w, cells[i as usize], type_0,
-                                 y.wrapping_sub(ly) as libc::c_int,
-                                 0 as libc::c_int);
+        if y != ly && type_0 as libc::c_uint == LAYOUT_TOPBOTTOM as libc::c_int as libc::c_uint {
+            layout_resize_layout(
+                w,
+                cells[i as usize],
+                type_0,
+                y.wrapping_sub(ly) as libc::c_int,
+                0 as libc::c_int,
+            );
             resizes = resizes.wrapping_add(1)
-        } else if x != lx &&
-                      type_0 as libc::c_uint ==
-                          LAYOUT_LEFTRIGHT as libc::c_int as libc::c_uint {
-            layout_resize_layout(w, cells[i as usize], type_0,
-                                 x.wrapping_sub(lx) as libc::c_int,
-                                 0 as libc::c_int);
+        } else if x != lx
+            && type_0 as libc::c_uint == LAYOUT_LEFTRIGHT as libc::c_int as libc::c_uint
+        {
+            layout_resize_layout(
+                w,
+                cells[i as usize],
+                type_0,
+                x.wrapping_sub(lx) as libc::c_int,
+                0 as libc::c_int,
+            );
             resizes = resizes.wrapping_add(1)
         }
         i = i.wrapping_add(1)

@@ -22,51 +22,76 @@ extern "C" {
     #[no_mangle]
     fn free(__ptr: *mut libc::c_void);
     #[no_mangle]
-    fn memcpy(_: *mut libc::c_void, _: *const libc::c_void, _: libc::c_ulong)
-     -> *mut libc::c_void;
+    fn memcpy(_: *mut libc::c_void, _: *const libc::c_void, _: libc::c_ulong) -> *mut libc::c_void;
     #[no_mangle]
-    fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong)
-     -> *mut libc::c_void;
+    fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
     #[no_mangle]
-    fn format_create(_: *mut client, _: *mut cmdq_item, _: libc::c_int,
-                     _: libc::c_int) -> *mut format_tree;
+    fn format_create(
+        _: *mut client,
+        _: *mut cmdq_item,
+        _: libc::c_int,
+        _: libc::c_int,
+    ) -> *mut format_tree;
     #[no_mangle]
     fn format_free(_: *mut format_tree);
     #[no_mangle]
-    fn format_expand_time(_: *mut format_tree, _: *const libc::c_char)
-     -> *mut libc::c_char;
+    fn format_expand_time(_: *mut format_tree, _: *const libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
-    fn format_create_defaults(_: *mut cmdq_item, _: *mut client,
-                              _: *mut session, _: *mut winlink,
-                              _: *mut window_pane) -> *mut format_tree;
+    fn format_create_defaults(
+        _: *mut cmdq_item,
+        _: *mut client,
+        _: *mut session,
+        _: *mut winlink,
+        _: *mut window_pane,
+    ) -> *mut format_tree;
     #[no_mangle]
-    fn format_defaults(_: *mut format_tree, _: *mut client, _: *mut session,
-                       _: *mut winlink, _: *mut window_pane);
+    fn format_defaults(
+        _: *mut format_tree,
+        _: *mut client,
+        _: *mut session,
+        _: *mut winlink,
+        _: *mut window_pane,
+    );
     #[no_mangle]
-    fn format_draw(_: *mut screen_write_ctx, _: *const grid_cell, _: u_int,
-                   _: *const libc::c_char, _: *mut style_ranges);
+    fn format_draw(
+        _: *mut screen_write_ctx,
+        _: *const grid_cell,
+        _: u_int,
+        _: *const libc::c_char,
+        _: *mut style_ranges,
+    );
     #[no_mangle]
-    fn options_get_string(_: *mut options, _: *const libc::c_char)
-     -> *const libc::c_char;
+    fn options_get_string(_: *mut options, _: *const libc::c_char) -> *const libc::c_char;
     #[no_mangle]
-    fn options_get_number(_: *mut options, _: *const libc::c_char)
-     -> libc::c_longlong;
+    fn options_get_number(_: *mut options, _: *const libc::c_char) -> libc::c_longlong;
     #[no_mangle]
-    fn tty_window_offset(_: *mut tty, _: *mut u_int, _: *mut u_int,
-                         _: *mut u_int, _: *mut u_int) -> libc::c_int;
+    fn tty_window_offset(
+        _: *mut tty,
+        _: *mut u_int,
+        _: *mut u_int,
+        _: *mut u_int,
+        _: *mut u_int,
+    ) -> libc::c_int;
     #[no_mangle]
     fn tty_reset(_: *mut tty);
     #[no_mangle]
     fn tty_cursor(_: *mut tty, _: u_int, _: u_int);
     #[no_mangle]
-    fn tty_cell(_: *mut tty, _: *const grid_cell, _: *const grid_cell,
-                _: *mut libc::c_int);
+    fn tty_cell(_: *mut tty, _: *const grid_cell, _: *const grid_cell, _: *mut libc::c_int);
     #[no_mangle]
     fn tty_update_mode(_: *mut tty, _: libc::c_int, _: *mut screen);
     #[no_mangle]
-    fn tty_draw_line(_: *mut tty, _: *mut screen, _: u_int, _: u_int,
-                     _: u_int, _: u_int, _: u_int, _: *const grid_cell,
-                     _: *mut libc::c_int);
+    fn tty_draw_line(
+        _: *mut tty,
+        _: *mut screen,
+        _: u_int,
+        _: u_int,
+        _: u_int,
+        _: u_int,
+        _: u_int,
+        _: *const grid_cell,
+        _: *mut libc::c_int,
+    );
     #[no_mangle]
     fn tty_sync_start(_: *mut tty);
     #[no_mangle]
@@ -74,8 +99,7 @@ extern "C" {
     #[no_mangle]
     static mut marked_pane: cmd_find_state;
     #[no_mangle]
-    fn server_is_marked(_: *mut session, _: *mut winlink, _: *mut window_pane)
-     -> libc::c_int;
+    fn server_is_marked(_: *mut session, _: *mut winlink, _: *mut window_pane) -> libc::c_int;
     #[no_mangle]
     fn server_client_get_pane(_: *mut client) -> *mut window_pane;
     #[no_mangle]
@@ -93,8 +117,12 @@ extern "C" {
     #[no_mangle]
     fn screen_write_stop(_: *mut screen_write_ctx);
     #[no_mangle]
-    fn screen_write_cursormove(_: *mut screen_write_ctx, _: libc::c_int,
-                               _: libc::c_int, _: libc::c_int);
+    fn screen_write_cursormove(
+        _: *mut screen_write_ctx,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: libc::c_int,
+    );
     #[no_mangle]
     fn screen_write_cell(_: *mut screen_write_ctx, _: *const grid_cell);
     #[no_mangle]
@@ -114,8 +142,7 @@ extern "C" {
     #[no_mangle]
     fn log_debug(_: *const libc::c_char, _: ...);
     #[no_mangle]
-    fn style_apply(_: *mut grid_cell, _: *mut options, _: *const libc::c_char,
-                   _: *mut format_tree);
+    fn style_apply(_: *mut grid_cell, _: *mut options, _: *const libc::c_char, _: *mut format_tree);
 }
 pub type __u_char = libc::c_uchar;
 pub type __u_short = libc::c_ushort;
@@ -206,18 +233,13 @@ pub struct event_callback {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub union C2RustUnnamed_6 {
-    pub evcb_callback: Option<unsafe extern "C" fn(_: libc::c_int,
-                                                   _: libc::c_short,
-                                                   _: *mut libc::c_void)
-                                  -> ()>,
-    pub evcb_selfcb: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                 _: *mut libc::c_void) -> ()>,
-    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
-    pub evcb_cbfinalize: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
+    pub evcb_callback:
+        Option<unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> ()>,
+    pub evcb_selfcb:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
+    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event, _: *mut libc::c_void) -> ()>,
+    pub evcb_cbfinalize:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -244,14 +266,10 @@ pub struct bufferevent {
     pub timeout_write: timeval,
     pub enabled: libc::c_short,
 }
-pub type bufferevent_event_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short,
-                                _: *mut libc::c_void) -> ()>;
-pub type bufferevent_data_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void)
-               -> ()>;
+pub type bufferevent_event_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short, _: *mut libc::c_void) -> ()>;
+pub type bufferevent_data_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct event_watermark {
@@ -390,17 +408,19 @@ pub struct C2RustUnnamed_9 {
     pub rbe_parent: *mut client_file,
     pub rbe_color: libc::c_int,
 }
-pub type client_file_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *const libc::c_char,
-                                _: libc::c_int, _: libc::c_int,
-                                _: *mut evbuffer, _: *mut libc::c_void)
-               -> ()>;
+pub type client_file_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: *mut evbuffer,
+        _: *mut libc::c_void,
+    ) -> (),
+>;
 pub type overlay_free_cb = Option<unsafe extern "C" fn(_: *mut client) -> ()>;
-pub type overlay_key_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event)
-               -> libc::c_int>;
+pub type overlay_key_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_event {
@@ -430,10 +450,8 @@ pub struct mouse_event {
     pub sgr_b: u_int,
 }
 pub type key_code = libc::c_ulonglong;
-pub type overlay_draw_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx)
-               -> ()>;
+pub type overlay_draw_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen_redraw_ctx {
@@ -447,10 +465,8 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int)
-               -> *mut screen>;
+pub type overlay_mode_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen {
@@ -544,10 +560,8 @@ pub struct C2RustUnnamed_11 {
     pub bg: u_char,
     pub data: u_char,
 }
-pub type overlay_check_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int)
-               -> libc::c_int>;
+pub type overlay_check_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct session {
@@ -794,24 +808,37 @@ pub struct C2RustUnnamed_24 {
 pub struct window_mode {
     pub name: *const libc::c_char,
     pub default_format: *const libc::c_char,
-    pub init: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                          _: *mut cmd_find_state,
-                                          _: *mut args) -> *mut screen>,
+    pub init: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut cmd_find_state,
+            _: *mut args,
+        ) -> *mut screen,
+    >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
-    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                            _: u_int, _: u_int) -> ()>,
-    pub key: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                         _: *mut client, _: *mut session,
-                                         _: *mut winlink, _: key_code,
-                                         _: *mut mouse_event) -> ()>,
-    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry)
-                              -> *const libc::c_char>,
-    pub command: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut client, _: *mut session,
-                                             _: *mut winlink, _: *mut args,
-                                             _: *mut mouse_event) -> ()>,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut format_tree) -> ()>,
+    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
+    pub key: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: key_code,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> *const libc::c_char>,
+    pub command: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: *mut args,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -848,14 +875,15 @@ pub struct winlink_stack {
 pub type C2RustUnnamed_25 = libc::c_uint;
 pub const PROMPT_COMMAND: C2RustUnnamed_25 = 1;
 pub const PROMPT_ENTRY: C2RustUnnamed_25 = 0;
-pub type prompt_free_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
-pub type prompt_input_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut libc::c_void,
-                                _: *const libc::c_char, _: libc::c_int)
-               -> libc::c_int>;
+pub type prompt_free_cb = Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
+pub type prompt_input_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut libc::c_void,
+        _: *const libc::c_char,
+        _: libc::c_int,
+    ) -> libc::c_int,
+>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_table {
@@ -1026,12 +1054,8 @@ pub struct tty {
     pub mouse_last_y: u_int,
     pub mouse_last_b: u_int,
     pub mouse_drag_flag: libc::c_int,
-    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client,
-                                                       _: *mut mouse_event)
-                                      -> ()>,
-    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client,
-                                                        _: *mut mouse_event)
-                                       -> ()>,
+    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
+    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
     pub key_timer: event,
     pub key_tree: *mut tty_key,
 }
@@ -1096,10 +1120,8 @@ pub struct screen_write_ctx {
     pub written: u_int,
     pub skipped: u_int,
 }
-pub type screen_write_init_ctx_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut screen_write_ctx, _: *mut tty_ctx)
-               -> ()>;
+pub type screen_write_init_ctx_cb =
+    Option<unsafe extern "C" fn(_: *mut screen_write_ctx, _: *mut tty_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct tty_ctx {
@@ -1130,508 +1152,498 @@ pub struct tty_ctx {
     pub wsx: u_int,
     pub wsy: u_int,
 }
-pub type tty_ctx_set_client_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut tty_ctx, _: *mut client)
-               -> libc::c_int>;
-pub type tty_ctx_redraw_cb
-    =
-    Option<unsafe extern "C" fn(_: *const tty_ctx) -> ()>;
+pub type tty_ctx_set_client_cb =
+    Option<unsafe extern "C" fn(_: *mut tty_ctx, _: *mut client) -> libc::c_int>;
+pub type tty_ctx_redraw_cb = Option<unsafe extern "C" fn(_: *const tty_ctx) -> ()>;
 pub const SCREEN_REDRAW_BORDER: screen_redraw_border_type = 2;
 pub type screen_redraw_border_type = libc::c_uint;
 pub const SCREEN_REDRAW_INSIDE: screen_redraw_border_type = 1;
 pub const SCREEN_REDRAW_OUTSIDE: screen_redraw_border_type = 0;
-static mut screen_redraw_double_borders: [utf8_data; 13] =
-    unsafe {
-        [{
-             let mut init =
+static mut screen_redraw_double_borders: [utf8_data; 13] = unsafe {
+    [
+        {
+            let mut init =
                  utf8_data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
                            size: 0 as libc::c_int as u_char,
                            width: 0 as libc::c_int as u_char,};
-             init
-         },
-         {
-             let mut init =
+            init
+        },
+        {
+            let mut init =
                  utf8_data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x95\x91\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
                            size: 3 as libc::c_int as u_char,
                            width: 1 as libc::c_int as u_char,};
-             init
-         },
-         {
-             let mut init =
+            init
+        },
+        {
+            let mut init =
                  utf8_data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x95\x90\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
                            size: 3 as libc::c_int as u_char,
                            width: 1 as libc::c_int as u_char,};
-             init
-         },
-         {
-             let mut init =
+            init
+        },
+        {
+            let mut init =
                  utf8_data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x95\x94\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
                            size: 3 as libc::c_int as u_char,
                            width: 1 as libc::c_int as u_char,};
-             init
-         },
-         {
-             let mut init =
+            init
+        },
+        {
+            let mut init =
                  utf8_data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x95\x97\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
                            size: 3 as libc::c_int as u_char,
                            width: 1 as libc::c_int as u_char,};
-             init
-         },
-         {
-             let mut init =
+            init
+        },
+        {
+            let mut init =
                  utf8_data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x95\x9a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
                            size: 3 as libc::c_int as u_char,
                            width: 1 as libc::c_int as u_char,};
-             init
-         },
-         {
-             let mut init =
+            init
+        },
+        {
+            let mut init =
                  utf8_data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x95\x9d\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
                            size: 3 as libc::c_int as u_char,
                            width: 1 as libc::c_int as u_char,};
-             init
-         },
-         {
-             let mut init =
+            init
+        },
+        {
+            let mut init =
                  utf8_data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x95\xa6\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
                            size: 3 as libc::c_int as u_char,
                            width: 1 as libc::c_int as u_char,};
-             init
-         },
-         {
-             let mut init =
+            init
+        },
+        {
+            let mut init =
                  utf8_data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x95\xa9\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
                            size: 3 as libc::c_int as u_char,
                            width: 1 as libc::c_int as u_char,};
-             init
-         },
-         {
-             let mut init =
+            init
+        },
+        {
+            let mut init =
                  utf8_data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x95\xa0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
                            size: 3 as libc::c_int as u_char,
                            width: 1 as libc::c_int as u_char,};
-             init
-         },
-         {
-             let mut init =
+            init
+        },
+        {
+            let mut init =
                  utf8_data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x95\xa3\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
                            size: 3 as libc::c_int as u_char,
                            width: 1 as libc::c_int as u_char,};
-             init
-         },
-         {
-             let mut init =
+            init
+        },
+        {
+            let mut init =
                  utf8_data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x95\xac\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
                            size: 3 as libc::c_int as u_char,
                            width: 1 as libc::c_int as u_char,};
-             init
-         },
-         {
-             let mut init =
+            init
+        },
+        {
+            let mut init =
                  utf8_data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xc2\xb7\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
                            size: 2 as libc::c_int as u_char,
                            width: 1 as libc::c_int as u_char,};
-             init
-         }]
-    };
-static mut screen_redraw_heavy_borders: [utf8_data; 13] =
-    unsafe {
-        [{
-             let mut init =
+            init
+        },
+    ]
+};
+static mut screen_redraw_heavy_borders: [utf8_data; 13] = unsafe {
+    [
+        {
+            let mut init =
                  utf8_data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
                            size: 0 as libc::c_int as u_char,
                            width: 0 as libc::c_int as u_char,};
-             init
-         },
-         {
-             let mut init =
+            init
+        },
+        {
+            let mut init =
                  utf8_data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x94\x83\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
                            size: 3 as libc::c_int as u_char,
                            width: 1 as libc::c_int as u_char,};
-             init
-         },
-         {
-             let mut init =
+            init
+        },
+        {
+            let mut init =
                  utf8_data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x94\x81\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
                            size: 3 as libc::c_int as u_char,
                            width: 1 as libc::c_int as u_char,};
-             init
-         },
-         {
-             let mut init =
+            init
+        },
+        {
+            let mut init =
                  utf8_data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x94\x93\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
                            size: 3 as libc::c_int as u_char,
                            width: 1 as libc::c_int as u_char,};
-             init
-         },
-         {
-             let mut init =
+            init
+        },
+        {
+            let mut init =
                  utf8_data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x94\x8f\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
                            size: 3 as libc::c_int as u_char,
                            width: 1 as libc::c_int as u_char,};
-             init
-         },
-         {
-             let mut init =
+            init
+        },
+        {
+            let mut init =
                  utf8_data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x94\x97\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
                            size: 3 as libc::c_int as u_char,
                            width: 1 as libc::c_int as u_char,};
-             init
-         },
-         {
-             let mut init =
+            init
+        },
+        {
+            let mut init =
                  utf8_data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x94\x9b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
                            size: 3 as libc::c_int as u_char,
                            width: 1 as libc::c_int as u_char,};
-             init
-         },
-         {
-             let mut init =
+            init
+        },
+        {
+            let mut init =
                  utf8_data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x94\xb3\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
                            size: 3 as libc::c_int as u_char,
                            width: 1 as libc::c_int as u_char,};
-             init
-         },
-         {
-             let mut init =
+            init
+        },
+        {
+            let mut init =
                  utf8_data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x94\xbb\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
                            size: 3 as libc::c_int as u_char,
                            width: 1 as libc::c_int as u_char,};
-             init
-         },
-         {
-             let mut init =
+            init
+        },
+        {
+            let mut init =
                  utf8_data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x94\xa3\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
                            size: 3 as libc::c_int as u_char,
                            width: 1 as libc::c_int as u_char,};
-             init
-         },
-         {
-             let mut init =
+            init
+        },
+        {
+            let mut init =
                  utf8_data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x94\xab\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
                            size: 3 as libc::c_int as u_char,
                            width: 1 as libc::c_int as u_char,};
-             init
-         },
-         {
-             let mut init =
+            init
+        },
+        {
+            let mut init =
                  utf8_data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x95\x8b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
                            size: 3 as libc::c_int as u_char,
                            width: 1 as libc::c_int as u_char,};
-             init
-         },
-         {
-             let mut init =
+            init
+        },
+        {
+            let mut init =
                  utf8_data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xc2\xb7\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
                            size: 2 as libc::c_int as u_char,
                            width: 1 as libc::c_int as u_char,};
-             init
-         }]
-    };
+            init
+        },
+    ]
+};
 /* Get cell border character. */
-unsafe extern "C" fn screen_redraw_border_set(mut wp: *mut window_pane,
-                                              mut pane_lines: libc::c_int,
-                                              mut cell_type: libc::c_int,
-                                              mut gc: *mut grid_cell) {
+unsafe extern "C" fn screen_redraw_border_set(
+    mut wp: *mut window_pane,
+    mut pane_lines: libc::c_int,
+    mut cell_type: libc::c_int,
+    mut gc: *mut grid_cell,
+) {
     let mut idx: u_int = 0;
     match pane_lines {
         4 => {
             if cell_type == 12 as libc::c_int {
-                (*gc).attr =
-                    ((*gc).attr as libc::c_int | 0x80 as libc::c_int) as
-                        u_short;
-                utf8_set(&mut (*gc).data,
-                         (*::std::mem::transmute::<&[u8; 14],
-                                                   &[libc::c_char; 14]>(b" xqlkmjwvtun~\x00"))[12
-                                                                                                   as
-                                                                                                   libc::c_int
-                                                                                                   as
-                                                                                                   usize]
-                             as u_char);
+                (*gc).attr = ((*gc).attr as libc::c_int | 0x80 as libc::c_int) as u_short;
+                utf8_set(
+                    &mut (*gc).data,
+                    (*::std::mem::transmute::<&[u8; 14], &[libc::c_char; 14]>(b" xqlkmjwvtun~\x00"))
+                        [12 as libc::c_int as usize] as u_char,
+                );
             } else {
-                (*gc).attr =
-                    ((*gc).attr as libc::c_int & !(0x80 as libc::c_int)) as
-                        u_short;
-                if !wp.is_null() &&
-                       window_pane_index(wp, &mut idx) == 0 as libc::c_int {
-                    utf8_set(&mut (*gc).data,
-                             ('0' as i32 as
-                                  libc::c_uint).wrapping_add(idx.wrapping_rem(10
-                                                                                  as
-                                                                                  libc::c_int
-                                                                                  as
-                                                                                  libc::c_uint))
-                                 as u_char);
-                } else { utf8_set(&mut (*gc).data, '*' as i32 as u_char); }
+                (*gc).attr = ((*gc).attr as libc::c_int & !(0x80 as libc::c_int)) as u_short;
+                if !wp.is_null() && window_pane_index(wp, &mut idx) == 0 as libc::c_int {
+                    utf8_set(
+                        &mut (*gc).data,
+                        ('0' as i32 as libc::c_uint)
+                            .wrapping_add(idx.wrapping_rem(10 as libc::c_int as libc::c_uint))
+                            as u_char,
+                    );
+                } else {
+                    utf8_set(&mut (*gc).data, '*' as i32 as u_char);
+                }
             }
         }
         1 => {
-            (*gc).attr =
-                ((*gc).attr as libc::c_int & !(0x80 as libc::c_int)) as
-                    u_short;
-            utf8_copy(&mut (*gc).data,
-                      &*screen_redraw_double_borders.as_ptr().offset(cell_type
-                                                                         as
-                                                                         isize));
+            (*gc).attr = ((*gc).attr as libc::c_int & !(0x80 as libc::c_int)) as u_short;
+            utf8_copy(
+                &mut (*gc).data,
+                &*screen_redraw_double_borders
+                    .as_ptr()
+                    .offset(cell_type as isize),
+            );
         }
         2 => {
-            (*gc).attr =
-                ((*gc).attr as libc::c_int & !(0x80 as libc::c_int)) as
-                    u_short;
-            utf8_copy(&mut (*gc).data,
-                      &*screen_redraw_heavy_borders.as_ptr().offset(cell_type
-                                                                        as
-                                                                        isize));
+            (*gc).attr = ((*gc).attr as libc::c_int & !(0x80 as libc::c_int)) as u_short;
+            utf8_copy(
+                &mut (*gc).data,
+                &*screen_redraw_heavy_borders
+                    .as_ptr()
+                    .offset(cell_type as isize),
+            );
         }
         3 => {
-            (*gc).attr =
-                ((*gc).attr as libc::c_int & !(0x80 as libc::c_int)) as
-                    u_short;
-            utf8_set(&mut (*gc).data,
-                     (*::std::mem::transmute::<&[u8; 14],
-                                               &[libc::c_char; 14]>(b" |-+++++++++.\x00"))[cell_type
-                                                                                               as
-                                                                                               usize]
-                         as u_char);
+            (*gc).attr = ((*gc).attr as libc::c_int & !(0x80 as libc::c_int)) as u_short;
+            utf8_set(
+                &mut (*gc).data,
+                (*::std::mem::transmute::<&[u8; 14], &[libc::c_char; 14]>(b" |-+++++++++.\x00"))
+                    [cell_type as usize] as u_char,
+            );
         }
         _ => {
-            (*gc).attr =
-                ((*gc).attr as libc::c_int | 0x80 as libc::c_int) as u_short;
-            utf8_set(&mut (*gc).data,
-                     (*::std::mem::transmute::<&[u8; 14],
-                                               &[libc::c_char; 14]>(b" xqlkmjwvtun~\x00"))[cell_type
-                                                                                               as
-                                                                                               usize]
-                         as u_char);
+            (*gc).attr = ((*gc).attr as libc::c_int | 0x80 as libc::c_int) as u_short;
+            utf8_set(
+                &mut (*gc).data,
+                (*::std::mem::transmute::<&[u8; 14], &[libc::c_char; 14]>(b" xqlkmjwvtun~\x00"))
+                    [cell_type as usize] as u_char,
+            );
         }
     };
 }
 /* Return if window has only two panes. */
-unsafe extern "C" fn screen_redraw_two_panes(mut w: *mut window,
-                                             mut direction: libc::c_int)
- -> libc::c_int {
+unsafe extern "C" fn screen_redraw_two_panes(
+    mut w: *mut window,
+    mut direction: libc::c_int,
+) -> libc::c_int {
     let mut wp: *mut window_pane = 0 as *mut window_pane; /* one pane */
     wp = (*(*w).panes.tqh_first).entry.tqe_next; /* more than two panes */
-    if wp.is_null() { return 0 as libc::c_int }
-    if !(*wp).entry.tqe_next.is_null() { return 0 as libc::c_int }
-    if direction == 0 as libc::c_int &&
-           (*wp).xoff == 0 as libc::c_int as libc::c_uint {
-        return 0 as libc::c_int
+    if wp.is_null() {
+        return 0 as libc::c_int;
     }
-    if direction == 1 as libc::c_int &&
-           (*wp).yoff == 0 as libc::c_int as libc::c_uint {
-        return 0 as libc::c_int
+    if !(*wp).entry.tqe_next.is_null() {
+        return 0 as libc::c_int;
+    }
+    if direction == 0 as libc::c_int && (*wp).xoff == 0 as libc::c_int as libc::c_uint {
+        return 0 as libc::c_int;
+    }
+    if direction == 1 as libc::c_int && (*wp).yoff == 0 as libc::c_int as libc::c_uint {
+        return 0 as libc::c_int;
     }
     return 1 as libc::c_int;
 }
 /* Check if cell is on the border of a pane. */
-unsafe extern "C" fn screen_redraw_pane_border(mut wp: *mut window_pane,
-                                               mut px: u_int, mut py: u_int,
-                                               mut pane_status: libc::c_int)
- -> screen_redraw_border_type {
+unsafe extern "C" fn screen_redraw_pane_border(
+    mut wp: *mut window_pane,
+    mut px: u_int,
+    mut py: u_int,
+    mut pane_status: libc::c_int,
+) -> screen_redraw_border_type {
     let mut ex: u_int = (*wp).xoff.wrapping_add((*wp).sx);
     let mut ey: u_int = (*wp).yoff.wrapping_add((*wp).sy);
     /* Inside pane. */
     if px >= (*wp).xoff && px < ex && py >= (*wp).yoff && py < ey {
-        return SCREEN_REDRAW_INSIDE
+        return SCREEN_REDRAW_INSIDE;
     }
     /* Left/right borders. */
     if pane_status == 0 as libc::c_int {
         if screen_redraw_two_panes((*wp).window, 0 as libc::c_int) != 0 {
-            if (*wp).xoff == 0 as libc::c_int as libc::c_uint &&
-                   px == (*wp).sx &&
-                   py <=
-                       (*wp).sy.wrapping_div(2 as libc::c_int as libc::c_uint)
-               {
-                return SCREEN_REDRAW_BORDER
+            if (*wp).xoff == 0 as libc::c_int as libc::c_uint
+                && px == (*wp).sx
+                && py <= (*wp).sy.wrapping_div(2 as libc::c_int as libc::c_uint)
+            {
+                return SCREEN_REDRAW_BORDER;
             }
-            if (*wp).xoff != 0 as libc::c_int as libc::c_uint &&
-                   px ==
-                       (*wp).xoff.wrapping_sub(1 as libc::c_int as
-                                                   libc::c_uint) &&
-                   py >
-                       (*wp).sy.wrapping_div(2 as libc::c_int as libc::c_uint)
-               {
-                return SCREEN_REDRAW_BORDER
+            if (*wp).xoff != 0 as libc::c_int as libc::c_uint
+                && px == (*wp).xoff.wrapping_sub(1 as libc::c_int as libc::c_uint)
+                && py > (*wp).sy.wrapping_div(2 as libc::c_int as libc::c_uint)
+            {
+                return SCREEN_REDRAW_BORDER;
             }
-        } else if ((*wp).yoff == 0 as libc::c_int as libc::c_uint ||
-                       py >=
-                           (*wp).yoff.wrapping_sub(1 as libc::c_int as
-                                                       libc::c_uint)) &&
-                      py <= ey {
-            if (*wp).xoff != 0 as libc::c_int as libc::c_uint &&
-                   px ==
-                       (*wp).xoff.wrapping_sub(1 as libc::c_int as
-                                                   libc::c_uint) {
-                return SCREEN_REDRAW_BORDER
+        } else if ((*wp).yoff == 0 as libc::c_int as libc::c_uint
+            || py >= (*wp).yoff.wrapping_sub(1 as libc::c_int as libc::c_uint))
+            && py <= ey
+        {
+            if (*wp).xoff != 0 as libc::c_int as libc::c_uint
+                && px == (*wp).xoff.wrapping_sub(1 as libc::c_int as libc::c_uint)
+            {
+                return SCREEN_REDRAW_BORDER;
             }
-            if px == ex { return SCREEN_REDRAW_BORDER }
+            if px == ex {
+                return SCREEN_REDRAW_BORDER;
+            }
         }
-    } else if ((*wp).yoff == 0 as libc::c_int as libc::c_uint ||
-                   py >=
-                       (*wp).yoff.wrapping_sub(1 as libc::c_int as
-                                                   libc::c_uint)) && py <= ey
-     {
-        if (*wp).xoff != 0 as libc::c_int as libc::c_uint &&
-               px == (*wp).xoff.wrapping_sub(1 as libc::c_int as libc::c_uint)
-           {
-            return SCREEN_REDRAW_BORDER
+    } else if ((*wp).yoff == 0 as libc::c_int as libc::c_uint
+        || py >= (*wp).yoff.wrapping_sub(1 as libc::c_int as libc::c_uint))
+        && py <= ey
+    {
+        if (*wp).xoff != 0 as libc::c_int as libc::c_uint
+            && px == (*wp).xoff.wrapping_sub(1 as libc::c_int as libc::c_uint)
+        {
+            return SCREEN_REDRAW_BORDER;
         }
-        if px == ex { return SCREEN_REDRAW_BORDER }
+        if px == ex {
+            return SCREEN_REDRAW_BORDER;
+        }
     }
     /* Top/bottom borders. */
     if pane_status == 0 as libc::c_int {
         if screen_redraw_two_panes((*wp).window, 1 as libc::c_int) != 0 {
-            if (*wp).yoff == 0 as libc::c_int as libc::c_uint &&
-                   py == (*wp).sy &&
-                   px <=
-                       (*wp).sx.wrapping_div(2 as libc::c_int as libc::c_uint)
-               {
-                return SCREEN_REDRAW_BORDER
+            if (*wp).yoff == 0 as libc::c_int as libc::c_uint
+                && py == (*wp).sy
+                && px <= (*wp).sx.wrapping_div(2 as libc::c_int as libc::c_uint)
+            {
+                return SCREEN_REDRAW_BORDER;
             }
-            if (*wp).yoff != 0 as libc::c_int as libc::c_uint &&
-                   py ==
-                       (*wp).yoff.wrapping_sub(1 as libc::c_int as
-                                                   libc::c_uint) &&
-                   px >
-                       (*wp).sx.wrapping_div(2 as libc::c_int as libc::c_uint)
-               {
-                return SCREEN_REDRAW_BORDER
+            if (*wp).yoff != 0 as libc::c_int as libc::c_uint
+                && py == (*wp).yoff.wrapping_sub(1 as libc::c_int as libc::c_uint)
+                && px > (*wp).sx.wrapping_div(2 as libc::c_int as libc::c_uint)
+            {
+                return SCREEN_REDRAW_BORDER;
             }
-        } else if ((*wp).xoff == 0 as libc::c_int as libc::c_uint ||
-                       px >=
-                           (*wp).xoff.wrapping_sub(1 as libc::c_int as
-                                                       libc::c_uint)) &&
-                      px <= ex {
-            if (*wp).yoff != 0 as libc::c_int as libc::c_uint &&
-                   py ==
-                       (*wp).yoff.wrapping_sub(1 as libc::c_int as
-                                                   libc::c_uint) {
-                return SCREEN_REDRAW_BORDER
+        } else if ((*wp).xoff == 0 as libc::c_int as libc::c_uint
+            || px >= (*wp).xoff.wrapping_sub(1 as libc::c_int as libc::c_uint))
+            && px <= ex
+        {
+            if (*wp).yoff != 0 as libc::c_int as libc::c_uint
+                && py == (*wp).yoff.wrapping_sub(1 as libc::c_int as libc::c_uint)
+            {
+                return SCREEN_REDRAW_BORDER;
             }
-            if py == ey { return SCREEN_REDRAW_BORDER }
+            if py == ey {
+                return SCREEN_REDRAW_BORDER;
+            }
         }
     } else if pane_status == 1 as libc::c_int {
-        if ((*wp).xoff == 0 as libc::c_int as libc::c_uint ||
-                px >=
-                    (*wp).xoff.wrapping_sub(1 as libc::c_int as libc::c_uint))
-               && px <= ex {
-            if (*wp).yoff != 0 as libc::c_int as libc::c_uint &&
-                   py ==
-                       (*wp).yoff.wrapping_sub(1 as libc::c_int as
-                                                   libc::c_uint) {
-                return SCREEN_REDRAW_BORDER
+        if ((*wp).xoff == 0 as libc::c_int as libc::c_uint
+            || px >= (*wp).xoff.wrapping_sub(1 as libc::c_int as libc::c_uint))
+            && px <= ex
+        {
+            if (*wp).yoff != 0 as libc::c_int as libc::c_uint
+                && py == (*wp).yoff.wrapping_sub(1 as libc::c_int as libc::c_uint)
+            {
+                return SCREEN_REDRAW_BORDER;
             }
         }
-    } else if ((*wp).xoff == 0 as libc::c_int as libc::c_uint ||
-                   px >=
-                       (*wp).xoff.wrapping_sub(1 as libc::c_int as
-                                                   libc::c_uint)) && px <= ex
-     {
-        if py == ey { return SCREEN_REDRAW_BORDER }
+    } else if ((*wp).xoff == 0 as libc::c_int as libc::c_uint
+        || px >= (*wp).xoff.wrapping_sub(1 as libc::c_int as libc::c_uint))
+        && px <= ex
+    {
+        if py == ey {
+            return SCREEN_REDRAW_BORDER;
+        }
     }
     /* Outside pane. */
     return SCREEN_REDRAW_OUTSIDE;
 }
 /* Check if a cell is on a border. */
-unsafe extern "C" fn screen_redraw_cell_border(mut c: *mut client,
-                                               mut px: u_int, mut py: u_int,
-                                               mut pane_status: libc::c_int)
- -> libc::c_int {
+unsafe extern "C" fn screen_redraw_cell_border(
+    mut c: *mut client,
+    mut px: u_int,
+    mut py: u_int,
+    mut pane_status: libc::c_int,
+) -> libc::c_int {
     let mut w: *mut window = (*(*(*c).session).curw).window;
     let mut wp: *mut window_pane = 0 as *mut window_pane;
     /* Outside the window? */
-    if px > (*w).sx || py > (*w).sy { return 0 as libc::c_int }
+    if px > (*w).sx || py > (*w).sy {
+        return 0 as libc::c_int;
+    }
     /* On the window border? */
-    if px == (*w).sx || py == (*w).sy { return 1 as libc::c_int }
+    if px == (*w).sx || py == (*w).sy {
+        return 1 as libc::c_int;
+    }
     /* Check all the panes. */
     wp = (*w).panes.tqh_first;
     while !wp.is_null() {
         if !(window_pane_visible(wp) == 0) {
-            match screen_redraw_pane_border(wp, px, py, pane_status) as
-                      libc::c_uint {
-                1 => { return 0 as libc::c_int }
-                2 => { return 1 as libc::c_int }
-                0 | _ => { }
+            match screen_redraw_pane_border(wp, px, py, pane_status) as libc::c_uint {
+                1 => return 0 as libc::c_int,
+                2 => return 1 as libc::c_int,
+                0 | _ => {}
             }
         }
         wp = (*wp).entry.tqe_next
@@ -1639,138 +1651,168 @@ unsafe extern "C" fn screen_redraw_cell_border(mut c: *mut client,
     return 0 as libc::c_int;
 }
 /* Work out type of border cell from surrounding cells. */
-unsafe extern "C" fn screen_redraw_type_of_cell(mut c: *mut client,
-                                                mut px: u_int, mut py: u_int,
-                                                mut pane_status: libc::c_int)
- -> libc::c_int {
+unsafe extern "C" fn screen_redraw_type_of_cell(
+    mut c: *mut client,
+    mut px: u_int,
+    mut py: u_int,
+    mut pane_status: libc::c_int,
+) -> libc::c_int {
     let mut w: *mut window = (*(*(*c).session).curw).window;
     let mut sx: u_int = (*w).sx;
     let mut sy: u_int = (*w).sy;
     let mut borders: libc::c_int = 0 as libc::c_int;
     /* Is this outside the window? */
-    if px > sx || py > sy { return 12 as libc::c_int }
+    if px > sx || py > sy {
+        return 12 as libc::c_int;
+    }
     /*
-	 * Construct a bitmask of whether the cells to the left (bit 4), right,
-	 * top, and bottom (bit 1) of this cell are borders.
-	 */
-    if px == 0 as libc::c_int as libc::c_uint ||
-           screen_redraw_cell_border(c,
-                                     px.wrapping_sub(1 as libc::c_int as
-                                                         libc::c_uint), py,
-                                     pane_status) != 0 {
+     * Construct a bitmask of whether the cells to the left (bit 4), right,
+     * top, and bottom (bit 1) of this cell are borders.
+     */
+    if px == 0 as libc::c_int as libc::c_uint
+        || screen_redraw_cell_border(
+            c,
+            px.wrapping_sub(1 as libc::c_int as libc::c_uint),
+            py,
+            pane_status,
+        ) != 0
+    {
         borders |= 8 as libc::c_int
     }
-    if px <= sx &&
-           screen_redraw_cell_border(c,
-                                     px.wrapping_add(1 as libc::c_int as
-                                                         libc::c_uint), py,
-                                     pane_status) != 0 {
+    if px <= sx
+        && screen_redraw_cell_border(
+            c,
+            px.wrapping_add(1 as libc::c_int as libc::c_uint),
+            py,
+            pane_status,
+        ) != 0
+    {
         borders |= 4 as libc::c_int
     }
     if pane_status == 1 as libc::c_int {
-        if py != 0 as libc::c_int as libc::c_uint &&
-               screen_redraw_cell_border(c, px,
-                                         py.wrapping_sub(1 as libc::c_int as
-                                                             libc::c_uint),
-                                         pane_status) != 0 {
+        if py != 0 as libc::c_int as libc::c_uint
+            && screen_redraw_cell_border(
+                c,
+                px,
+                py.wrapping_sub(1 as libc::c_int as libc::c_uint),
+                pane_status,
+            ) != 0
+        {
             borders |= 2 as libc::c_int
         }
-        if screen_redraw_cell_border(c, px,
-                                     py.wrapping_add(1 as libc::c_int as
-                                                         libc::c_uint),
-                                     pane_status) != 0 {
+        if screen_redraw_cell_border(
+            c,
+            px,
+            py.wrapping_add(1 as libc::c_int as libc::c_uint),
+            pane_status,
+        ) != 0
+        {
             borders |= 1 as libc::c_int
         }
     } else if pane_status == 2 as libc::c_int {
-        if py == 0 as libc::c_int as libc::c_uint ||
-               screen_redraw_cell_border(c, px,
-                                         py.wrapping_sub(1 as libc::c_int as
-                                                             libc::c_uint),
-                                         pane_status) != 0 {
+        if py == 0 as libc::c_int as libc::c_uint
+            || screen_redraw_cell_border(
+                c,
+                px,
+                py.wrapping_sub(1 as libc::c_int as libc::c_uint),
+                pane_status,
+            ) != 0
+        {
             borders |= 2 as libc::c_int
         }
-        if py != sy.wrapping_sub(1 as libc::c_int as libc::c_uint) &&
-               screen_redraw_cell_border(c, px,
-                                         py.wrapping_add(1 as libc::c_int as
-                                                             libc::c_uint),
-                                         pane_status) != 0 {
+        if py != sy.wrapping_sub(1 as libc::c_int as libc::c_uint)
+            && screen_redraw_cell_border(
+                c,
+                px,
+                py.wrapping_add(1 as libc::c_int as libc::c_uint),
+                pane_status,
+            ) != 0
+        {
             borders |= 1 as libc::c_int
         }
     } else {
-        if py == 0 as libc::c_int as libc::c_uint ||
-               screen_redraw_cell_border(c, px,
-                                         py.wrapping_sub(1 as libc::c_int as
-                                                             libc::c_uint),
-                                         pane_status) != 0 {
+        if py == 0 as libc::c_int as libc::c_uint
+            || screen_redraw_cell_border(
+                c,
+                px,
+                py.wrapping_sub(1 as libc::c_int as libc::c_uint),
+                pane_status,
+            ) != 0
+        {
             borders |= 2 as libc::c_int
         }
-        if screen_redraw_cell_border(c, px,
-                                     py.wrapping_add(1 as libc::c_int as
-                                                         libc::c_uint),
-                                     pane_status) != 0 {
+        if screen_redraw_cell_border(
+            c,
+            px,
+            py.wrapping_add(1 as libc::c_int as libc::c_uint),
+            pane_status,
+        ) != 0
+        {
             borders |= 1 as libc::c_int
         }
     }
     /*
-	 * Figure out what kind of border this cell is. Only one bit set
-	 * doesn't make sense (can't have a border cell with no others
-	 * connected).
-	 */
+     * Figure out what kind of border this cell is. Only one bit set
+     * doesn't make sense (can't have a border cell with no others
+     * connected).
+     */
     match borders {
         15 => {
             /* 1111, left right top bottom */
-            return 11 as libc::c_int
+            return 11 as libc::c_int;
         }
         14 => {
             /* 1110, left right top */
-            return 8 as libc::c_int
+            return 8 as libc::c_int;
         }
         13 => {
             /* 1101, left right bottom */
-            return 7 as libc::c_int
+            return 7 as libc::c_int;
         }
         12 => {
             /* 1100, left right */
-            return 2 as libc::c_int
+            return 2 as libc::c_int;
         }
         11 => {
             /* 1011, left top bottom */
-            return 10 as libc::c_int
+            return 10 as libc::c_int;
         }
         10 => {
             /* 1010, left top */
-            return 6 as libc::c_int
+            return 6 as libc::c_int;
         }
         9 => {
             /* 1001, left bottom */
-            return 4 as libc::c_int
+            return 4 as libc::c_int;
         }
         7 => {
             /* 0111, right top bottom */
-            return 9 as libc::c_int
+            return 9 as libc::c_int;
         }
         6 => {
             /* 0110, right top */
-            return 5 as libc::c_int
+            return 5 as libc::c_int;
         }
         5 => {
             /* 0101, right bottom */
-            return 3 as libc::c_int
+            return 3 as libc::c_int;
         }
         3 => {
             /* 0011, top bottom */
-            return 1 as libc::c_int
+            return 1 as libc::c_int;
         }
-        _ => { }
+        _ => {}
     }
     return 12 as libc::c_int;
 }
 /* Check if cell inside a pane. */
-unsafe extern "C" fn screen_redraw_check_cell(mut c: *mut client,
-                                              mut px: u_int, mut py: u_int,
-                                              mut pane_status: libc::c_int,
-                                              mut wpp: *mut *mut window_pane)
- -> libc::c_int {
+unsafe extern "C" fn screen_redraw_check_cell(
+    mut c: *mut client,
+    mut px: u_int,
+    mut py: u_int,
+    mut pane_status: libc::c_int,
+    mut wpp: *mut *mut window_pane,
+) -> libc::c_int {
     let mut w: *mut window = (*(*(*c).session).curw).window;
     let mut wp: *mut window_pane = 0 as *mut window_pane;
     let mut active: *mut window_pane = 0 as *mut window_pane;
@@ -1778,97 +1820,105 @@ unsafe extern "C" fn screen_redraw_check_cell(mut c: *mut client,
     let mut right: u_int = 0;
     let mut line: u_int = 0;
     *wpp = 0 as *mut window_pane;
-    if px > (*w).sx || py > (*w).sy { return 12 as libc::c_int }
+    if px > (*w).sx || py > (*w).sy {
+        return 12 as libc::c_int;
+    }
     if px == (*w).sx || py == (*w).sy {
         /* window border */
-        return screen_redraw_type_of_cell(c, px, py, pane_status)
+        return screen_redraw_type_of_cell(c, px, py, pane_status);
     }
     if pane_status != 0 as libc::c_int {
         wp = server_client_get_pane(c);
         active = wp;
-        loop  {
+        loop {
             if !(window_pane_visible(wp) == 0) {
                 if pane_status == 1 as libc::c_int {
-                    line =
-                        (*wp).yoff.wrapping_sub(1 as libc::c_int as
-                                                    libc::c_uint)
-                } else { line = (*wp).yoff.wrapping_add((*wp).sy) }
-                right =
-                    ((*wp).xoff.wrapping_add(2 as libc::c_int as libc::c_uint)
-                         as
-                         libc::c_ulong).wrapping_add((*wp).status_size).wrapping_sub(1
-                                                                                         as
-                                                                                         libc::c_int
-                                                                                         as
-                                                                                         libc::c_ulong)
-                        as u_int;
-                if py == line &&
-                       px >=
-                           (*wp).xoff.wrapping_add(2 as libc::c_int as
-                                                       libc::c_uint) &&
-                       px <= right {
-                    return 0 as libc::c_int
+                    line = (*wp).yoff.wrapping_sub(1 as libc::c_int as libc::c_uint)
+                } else {
+                    line = (*wp).yoff.wrapping_add((*wp).sy)
+                }
+                right = ((*wp).xoff.wrapping_add(2 as libc::c_int as libc::c_uint) as libc::c_ulong)
+                    .wrapping_add((*wp).status_size)
+                    .wrapping_sub(1 as libc::c_int as libc::c_ulong)
+                    as u_int;
+                if py == line
+                    && px >= (*wp).xoff.wrapping_add(2 as libc::c_int as libc::c_uint)
+                    && px <= right
+                {
+                    return 0 as libc::c_int;
                 }
             }
             wp = (*wp).entry.tqe_next;
-            if wp.is_null() { wp = (*w).panes.tqh_first }
-            if !(wp != active) { break ; }
+            if wp.is_null() {
+                wp = (*w).panes.tqh_first
+            }
+            if !(wp != active) {
+                break;
+            }
         }
     }
     wp = server_client_get_pane(c);
     active = wp;
-    loop  {
+    loop {
         if !(window_pane_visible(wp) == 0) {
             *wpp = wp;
             /*
-		 * If definitely inside, return. If not on border, skip.
-		 * Otherwise work out the cell.
-		 */
-            border =
-                screen_redraw_pane_border(wp, px, py, pane_status) as
-                    libc::c_int;
+             * If definitely inside, return. If not on border, skip.
+             * Otherwise work out the cell.
+             */
+            border = screen_redraw_pane_border(wp, px, py, pane_status) as libc::c_int;
             if border == SCREEN_REDRAW_INSIDE as libc::c_int {
-                return 0 as libc::c_int
+                return 0 as libc::c_int;
             }
             if !(border == SCREEN_REDRAW_OUTSIDE as libc::c_int) {
-                return screen_redraw_type_of_cell(c, px, py, pane_status)
+                return screen_redraw_type_of_cell(c, px, py, pane_status);
             }
         }
         wp = (*wp).entry.tqe_next;
-        if wp.is_null() { wp = (*w).panes.tqh_first }
-        if !(wp != active) { break ; }
+        if wp.is_null() {
+            wp = (*w).panes.tqh_first
+        }
+        if !(wp != active) {
+            break;
+        }
     }
     return 12 as libc::c_int;
 }
 /* Check if the border of a particular pane. */
-unsafe extern "C" fn screen_redraw_check_is(mut px: u_int, mut py: u_int,
-                                            mut pane_status: libc::c_int,
-                                            mut wp: *mut window_pane)
- -> libc::c_int {
+unsafe extern "C" fn screen_redraw_check_is(
+    mut px: u_int,
+    mut py: u_int,
+    mut pane_status: libc::c_int,
+    mut wp: *mut window_pane,
+) -> libc::c_int {
     let mut border: screen_redraw_border_type = SCREEN_REDRAW_OUTSIDE;
     border = screen_redraw_pane_border(wp, px, py, pane_status);
-    if border as libc::c_uint ==
-           SCREEN_REDRAW_BORDER as libc::c_int as libc::c_uint {
-        return 1 as libc::c_int
+    if border as libc::c_uint == SCREEN_REDRAW_BORDER as libc::c_int as libc::c_uint {
+        return 1 as libc::c_int;
     }
     return 0 as libc::c_int;
 }
 /* Update pane status. */
-unsafe extern "C" fn screen_redraw_make_pane_status(mut c: *mut client,
-                                                    mut wp: *mut window_pane,
-                                                    mut rctx:
-                                                        *mut screen_redraw_ctx,
-                                                    mut pane_lines:
-                                                        libc::c_int)
- -> libc::c_int {
+unsafe extern "C" fn screen_redraw_make_pane_status(
+    mut c: *mut client,
+    mut wp: *mut window_pane,
+    mut rctx: *mut screen_redraw_ctx,
+    mut pane_lines: libc::c_int,
+) -> libc::c_int {
     let mut w: *mut window = (*wp).window;
-    let mut gc: grid_cell =
-        grid_cell{data: utf8_data{data: [0; 21], have: 0, size: 0, width: 0,},
-                  attr: 0,
-                  flags: 0,
-                  fg: 0,
-                  bg: 0,
-                  us: 0,};
+    let mut gc: grid_cell = grid_cell {
+        data: utf8_data {
+            data: [0; 21],
+            have: 0,
+            size: 0,
+            width: 0,
+        },
+        attr: 0,
+        flags: 0,
+        fg: 0,
+        bg: 0,
+        us: 0,
+    };
     let mut fmt: *const libc::c_char = 0 as *const libc::c_char;
     let mut ft: *mut format_tree = 0 as *mut format_tree;
     let mut expanded: *mut libc::c_char = 0 as *mut libc::c_char;
@@ -1879,66 +1929,78 @@ unsafe extern "C" fn screen_redraw_make_pane_status(mut c: *mut client,
     let mut top: u_int = 0;
     let mut px: u_int = 0;
     let mut py: u_int = 0;
-    let mut ctx: screen_write_ctx =
-        screen_write_ctx{wp: 0 as *mut window_pane,
-                         s: 0 as *mut screen,
-                         flags: 0,
-                         init_ctx_cb: None,
-                         arg: 0 as *mut libc::c_void,
-                         item: 0 as *mut screen_write_collect_item,
-                         scrolled: 0,
-                         bg: 0,
-                         cells: 0,
-                         written: 0,
-                         skipped: 0,};
-    let mut old: screen =
-        screen{title: 0 as *mut libc::c_char,
-               path: 0 as *mut libc::c_char,
-               titles: 0 as *mut screen_titles,
-               grid: 0 as *mut grid,
-               cx: 0,
-               cy: 0,
-               cstyle: 0,
-               ccolour: 0 as *mut libc::c_char,
-               rupper: 0,
-               rlower: 0,
-               mode: 0,
-               saved_cx: 0,
-               saved_cy: 0,
-               saved_grid: 0 as *mut grid,
-               saved_cell:
-                   grid_cell{data:
-                                 utf8_data{data: [0; 21],
-                                           have: 0,
-                                           size: 0,
-                                           width: 0,},
-                             attr: 0,
-                             flags: 0,
-                             fg: 0,
-                             bg: 0,
-                             us: 0,},
-               saved_flags: 0,
-               tabs: 0 as *mut bitstr_t,
-               sel: 0 as *mut screen_sel,
-               write_list: 0 as *mut screen_write_collect_line,};
-    ft =
-        format_create(c, 0 as *mut cmdq_item,
-                      (0x80000000 as libc::c_uint | (*wp).id) as libc::c_int,
-                      0x1 as libc::c_int);
+    let mut ctx: screen_write_ctx = screen_write_ctx {
+        wp: 0 as *mut window_pane,
+        s: 0 as *mut screen,
+        flags: 0,
+        init_ctx_cb: None,
+        arg: 0 as *mut libc::c_void,
+        item: 0 as *mut screen_write_collect_item,
+        scrolled: 0,
+        bg: 0,
+        cells: 0,
+        written: 0,
+        skipped: 0,
+    };
+    let mut old: screen = screen {
+        title: 0 as *mut libc::c_char,
+        path: 0 as *mut libc::c_char,
+        titles: 0 as *mut screen_titles,
+        grid: 0 as *mut grid,
+        cx: 0,
+        cy: 0,
+        cstyle: 0,
+        ccolour: 0 as *mut libc::c_char,
+        rupper: 0,
+        rlower: 0,
+        mode: 0,
+        saved_cx: 0,
+        saved_cy: 0,
+        saved_grid: 0 as *mut grid,
+        saved_cell: grid_cell {
+            data: utf8_data {
+                data: [0; 21],
+                have: 0,
+                size: 0,
+                width: 0,
+            },
+            attr: 0,
+            flags: 0,
+            fg: 0,
+            bg: 0,
+            us: 0,
+        },
+        saved_flags: 0,
+        tabs: 0 as *mut bitstr_t,
+        sel: 0 as *mut screen_sel,
+        write_list: 0 as *mut screen_write_collect_line,
+    };
+    ft = format_create(
+        c,
+        0 as *mut cmdq_item,
+        (0x80000000 as libc::c_uint | (*wp).id) as libc::c_int,
+        0x1 as libc::c_int,
+    );
     format_defaults(ft, c, (*c).session, (*(*c).session).curw, wp);
     if wp == server_client_get_pane(c) {
-        style_apply(&mut gc, (*w).options,
-                    b"pane-active-border-style\x00" as *const u8 as
-                        *const libc::c_char, ft);
+        style_apply(
+            &mut gc,
+            (*w).options,
+            b"pane-active-border-style\x00" as *const u8 as *const libc::c_char,
+            ft,
+        );
     } else {
-        style_apply(&mut gc, (*w).options,
-                    b"pane-border-style\x00" as *const u8 as
-                        *const libc::c_char, ft);
+        style_apply(
+            &mut gc,
+            (*w).options,
+            b"pane-border-style\x00" as *const u8 as *const libc::c_char,
+            ft,
+        );
     }
-    fmt =
-        options_get_string((*w).options,
-                           b"pane-border-format\x00" as *const u8 as
-                               *const libc::c_char);
+    fmt = options_get_string(
+        (*w).options,
+        b"pane-border-format\x00" as *const u8 as *const libc::c_char,
+    );
     expanded = format_expand_time(ft, fmt);
     if (*wp).sx < 4 as libc::c_int as libc::c_uint {
         width = 0 as libc::c_int as u_int;
@@ -1947,50 +2009,62 @@ unsafe extern "C" fn screen_redraw_make_pane_status(mut c: *mut client,
         width = (*wp).sx.wrapping_sub(4 as libc::c_int as libc::c_uint);
         (*wp).status_size = width as size_t
     }
-    memcpy(&mut old as *mut screen as *mut libc::c_void,
-           &mut (*wp).status_screen as *mut screen as *const libc::c_void,
-           ::std::mem::size_of::<screen>() as libc::c_ulong);
-    screen_init(&mut (*wp).status_screen, width, 1 as libc::c_int as u_int,
-                0 as libc::c_int as u_int);
+    memcpy(
+        &mut old as *mut screen as *mut libc::c_void,
+        &mut (*wp).status_screen as *mut screen as *const libc::c_void,
+        ::std::mem::size_of::<screen>() as libc::c_ulong,
+    );
+    screen_init(
+        &mut (*wp).status_screen,
+        width,
+        1 as libc::c_int as u_int,
+        0 as libc::c_int as u_int,
+    );
     (*wp).status_screen.mode = 0 as libc::c_int;
     screen_write_start(&mut ctx, &mut (*wp).status_screen);
     if (*rctx).statustop != 0 {
         top = (*rctx).statuslines
-    } else { top = 0 as libc::c_int as u_int }
+    } else {
+        top = 0 as libc::c_int as u_int
+    }
     i = 0 as libc::c_int as u_int;
     while i < width {
-        px =
-            (*wp).xoff.wrapping_add(2 as libc::c_int as
-                                        libc::c_uint).wrapping_add(i);
+        px = (*wp)
+            .xoff
+            .wrapping_add(2 as libc::c_int as libc::c_uint)
+            .wrapping_add(i);
         if (*rctx).pane_status == 1 as libc::c_int {
-            py =
-                top.wrapping_add((*wp).yoff).wrapping_sub(1 as libc::c_int as
-                                                              libc::c_uint)
-        } else { py = top.wrapping_add((*wp).yoff).wrapping_add((*wp).sy) }
-        cell_type =
-            screen_redraw_type_of_cell(c, px, py, pane_status) as u_int;
-        screen_redraw_border_set(wp, pane_lines, cell_type as libc::c_int,
-                                 &mut gc);
+            py = top
+                .wrapping_add((*wp).yoff)
+                .wrapping_sub(1 as libc::c_int as libc::c_uint)
+        } else {
+            py = top.wrapping_add((*wp).yoff).wrapping_add((*wp).sy)
+        }
+        cell_type = screen_redraw_type_of_cell(c, px, py, pane_status) as u_int;
+        screen_redraw_border_set(wp, pane_lines, cell_type as libc::c_int, &mut gc);
         screen_write_cell(&mut ctx, &mut gc);
         i = i.wrapping_add(1)
     }
     gc.attr = (gc.attr as libc::c_int & !(0x80 as libc::c_int)) as u_short;
-    screen_write_cursormove(&mut ctx, 0 as libc::c_int, 0 as libc::c_int,
-                            0 as libc::c_int);
+    screen_write_cursormove(
+        &mut ctx,
+        0 as libc::c_int,
+        0 as libc::c_int,
+        0 as libc::c_int,
+    );
     format_draw(&mut ctx, &mut gc, width, expanded, 0 as *mut style_ranges);
     screen_write_stop(&mut ctx);
     free(expanded as *mut libc::c_void);
     format_free(ft);
     if grid_compare((*wp).status_screen.grid, old.grid) == 0 as libc::c_int {
         screen_free(&mut old);
-        return 0 as libc::c_int
+        return 0 as libc::c_int;
     }
     screen_free(&mut old);
     return 1 as libc::c_int;
 }
 /* Draw pane status. */
-unsafe extern "C" fn screen_redraw_draw_pane_status(mut ctx:
-                                                        *mut screen_redraw_ctx) {
+unsafe extern "C" fn screen_redraw_draw_pane_status(mut ctx: *mut screen_redraw_ctx) {
     let mut c: *mut client = (*ctx).c;
     let mut w: *mut window = (*(*(*c).session).curw).window;
     let mut tty: *mut tty = &mut (*c).tty;
@@ -2002,34 +2076,40 @@ unsafe extern "C" fn screen_redraw_draw_pane_status(mut ctx:
     let mut xoff: u_int = 0;
     let mut yoff: u_int = 0;
     let mut size: u_int = 0;
-    log_debug(b"%s: %s @%u\x00" as *const u8 as *const libc::c_char,
-              (*::std::mem::transmute::<&[u8; 31],
-                                        &[libc::c_char; 31]>(b"screen_redraw_draw_pane_status\x00")).as_ptr(),
-              (*c).name, (*w).id);
+    log_debug(
+        b"%s: %s @%u\x00" as *const u8 as *const libc::c_char,
+        (*::std::mem::transmute::<&[u8; 31], &[libc::c_char; 31]>(
+            b"screen_redraw_draw_pane_status\x00",
+        ))
+        .as_ptr(),
+        (*c).name,
+        (*w).id,
+    );
     wp = (*w).panes.tqh_first;
     while !wp.is_null() {
         if !(window_pane_visible(wp) == 0) {
             s = &mut (*wp).status_screen;
             size = (*wp).status_size as u_int;
             if (*ctx).pane_status == 1 as libc::c_int {
-                yoff =
-                    (*wp).yoff.wrapping_sub(1 as libc::c_int as libc::c_uint)
-            } else { yoff = (*wp).yoff.wrapping_add((*wp).sy) }
+                yoff = (*wp).yoff.wrapping_sub(1 as libc::c_int as libc::c_uint)
+            } else {
+                yoff = (*wp).yoff.wrapping_add((*wp).sy)
+            }
             xoff = (*wp).xoff.wrapping_add(2 as libc::c_int as libc::c_uint);
-            if !(xoff.wrapping_add(size) <= (*ctx).ox ||
-                     xoff >= (*ctx).ox.wrapping_add((*ctx).sx) ||
-                     yoff < (*ctx).oy ||
-                     yoff >= (*ctx).oy.wrapping_add((*ctx).sy)) {
-                if xoff >= (*ctx).ox &&
-                       xoff.wrapping_add(size) <=
-                           (*ctx).ox.wrapping_add((*ctx).sx) {
+            if !(xoff.wrapping_add(size) <= (*ctx).ox
+                || xoff >= (*ctx).ox.wrapping_add((*ctx).sx)
+                || yoff < (*ctx).oy
+                || yoff >= (*ctx).oy.wrapping_add((*ctx).sy))
+            {
+                if xoff >= (*ctx).ox && xoff.wrapping_add(size) <= (*ctx).ox.wrapping_add((*ctx).sx)
+                {
                     /* All visible. */
                     i = 0 as libc::c_int as u_int;
                     x = xoff.wrapping_sub((*ctx).ox);
                     width = size
-                } else if xoff < (*ctx).ox &&
-                              xoff.wrapping_add(size) >
-                                  (*ctx).ox.wrapping_add((*ctx).sx) {
+                } else if xoff < (*ctx).ox
+                    && xoff.wrapping_add(size) > (*ctx).ox.wrapping_add((*ctx).sx)
+                {
                     /* Both left and right not visible. */
                     i = (*ctx).ox;
                     x = 0 as libc::c_int as u_int;
@@ -2046,14 +2126,19 @@ unsafe extern "C" fn screen_redraw_draw_pane_status(mut ctx:
                     width = size.wrapping_sub(x)
                 }
                 if (*ctx).statustop != 0 {
-                    yoff =
-                        (yoff as
-                             libc::c_uint).wrapping_add((*ctx).statuslines) as
-                            u_int as u_int
+                    yoff = (yoff as libc::c_uint).wrapping_add((*ctx).statuslines) as u_int as u_int
                 }
-                tty_draw_line(tty, s, i, 0 as libc::c_int as u_int, width, x,
-                              yoff.wrapping_sub((*ctx).oy),
-                              &grid_default_cell, 0 as *mut libc::c_int);
+                tty_draw_line(
+                    tty,
+                    s,
+                    i,
+                    0 as libc::c_int as u_int,
+                    width,
+                    x,
+                    yoff.wrapping_sub((*ctx).oy),
+                    &grid_default_cell,
+                    0 as *mut libc::c_int,
+                );
             }
         }
         wp = (*wp).entry.tqe_next
@@ -2061,42 +2146,49 @@ unsafe extern "C" fn screen_redraw_draw_pane_status(mut ctx:
     tty_cursor(tty, 0 as libc::c_int as u_int, 0 as libc::c_int as u_int);
 }
 /* Update status line and change flags if unchanged. */
-unsafe extern "C" fn screen_redraw_update(mut c: *mut client,
-                                          mut flags: libc::c_int)
- -> libc::c_int {
+unsafe extern "C" fn screen_redraw_update(
+    mut c: *mut client,
+    mut flags: libc::c_int,
+) -> libc::c_int {
     let mut w: *mut window = (*(*(*c).session).curw).window;
     let mut wp: *mut window_pane = 0 as *mut window_pane;
     let mut wo: *mut options = (*w).options;
     let mut redraw: libc::c_int = 0;
     let mut lines: libc::c_int = 0;
-    let mut ctx: screen_redraw_ctx =
-        screen_redraw_ctx{c: 0 as *mut client,
-                          statuslines: 0,
-                          statustop: 0,
-                          pane_status: 0,
-                          pane_lines: 0,
-                          sx: 0,
-                          sy: 0,
-                          ox: 0,
-                          oy: 0,};
+    let mut ctx: screen_redraw_ctx = screen_redraw_ctx {
+        c: 0 as *mut client,
+        statuslines: 0,
+        statustop: 0,
+        pane_status: 0,
+        pane_lines: 0,
+        sx: 0,
+        sy: 0,
+        ox: 0,
+        oy: 0,
+    };
     if !(*c).message_string.is_null() {
         redraw = status_message_redraw(c)
     } else if !(*c).prompt_string.is_null() {
         redraw = status_prompt_redraw(c)
-    } else { redraw = status_redraw(c) }
+    } else {
+        redraw = status_redraw(c)
+    }
     if redraw == 0 && !flags & 0x1000000 as libc::c_int != 0 {
         flags &= !(0x10 as libc::c_int)
     }
-    if (*c).overlay_draw.is_some() { flags |= 0x2000000 as libc::c_int }
-    if options_get_number(wo,
-                          b"pane-border-status\x00" as *const u8 as
-                              *const libc::c_char) !=
-           0 as libc::c_int as libc::c_longlong {
+    if (*c).overlay_draw.is_some() {
+        flags |= 0x2000000 as libc::c_int
+    }
+    if options_get_number(
+        wo,
+        b"pane-border-status\x00" as *const u8 as *const libc::c_char,
+    ) != 0 as libc::c_int as libc::c_longlong
+    {
         screen_redraw_set_context(c, &mut ctx);
-        lines =
-            options_get_number(wo,
-                               b"pane-border-lines\x00" as *const u8 as
-                                   *const libc::c_char) as libc::c_int;
+        lines = options_get_number(
+            wo,
+            b"pane-border-lines\x00" as *const u8 as *const libc::c_char,
+        ) as libc::c_int;
         redraw = 0 as libc::c_int;
         wp = (*w).panes.tqh_first;
         while !wp.is_null() {
@@ -2105,121 +2197,161 @@ unsafe extern "C" fn screen_redraw_update(mut c: *mut client,
             }
             wp = (*wp).entry.tqe_next
         }
-        if redraw != 0 { flags |= 0x400 as libc::c_int }
+        if redraw != 0 {
+            flags |= 0x400 as libc::c_int
+        }
     }
     return flags;
 }
 /* Set up redraw context. */
-unsafe extern "C" fn screen_redraw_set_context(mut c: *mut client,
-                                               mut ctx:
-                                                   *mut screen_redraw_ctx) {
+unsafe extern "C" fn screen_redraw_set_context(
+    mut c: *mut client,
+    mut ctx: *mut screen_redraw_ctx,
+) {
     let mut s: *mut session = (*c).session;
     let mut oo: *mut options = (*s).options;
     let mut w: *mut window = (*(*s).curw).window;
     let mut wo: *mut options = (*w).options;
     let mut lines: u_int = 0;
-    memset(ctx as *mut libc::c_void, 0 as libc::c_int,
-           ::std::mem::size_of::<screen_redraw_ctx>() as libc::c_ulong);
+    memset(
+        ctx as *mut libc::c_void,
+        0 as libc::c_int,
+        ::std::mem::size_of::<screen_redraw_ctx>() as libc::c_ulong,
+    );
     (*ctx).c = c;
     lines = status_line_size(c);
     if !(*c).message_string.is_null() || !(*c).prompt_string.is_null() {
-        lines =
-            if lines == 0 as libc::c_int as libc::c_uint {
-                1 as libc::c_int as libc::c_uint
-            } else { lines }
+        lines = if lines == 0 as libc::c_int as libc::c_uint {
+            1 as libc::c_int as libc::c_uint
+        } else {
+            lines
+        }
     }
-    if lines != 0 as libc::c_int as libc::c_uint &&
-           options_get_number(oo,
-                              b"status-position\x00" as *const u8 as
-                                  *const libc::c_char) ==
-               0 as libc::c_int as libc::c_longlong {
+    if lines != 0 as libc::c_int as libc::c_uint
+        && options_get_number(
+            oo,
+            b"status-position\x00" as *const u8 as *const libc::c_char,
+        ) == 0 as libc::c_int as libc::c_longlong
+    {
         (*ctx).statustop = 1 as libc::c_int
     }
     (*ctx).statuslines = lines;
-    (*ctx).pane_status =
-        options_get_number(wo,
-                           b"pane-border-status\x00" as *const u8 as
-                               *const libc::c_char) as libc::c_int;
-    (*ctx).pane_lines =
-        options_get_number(wo,
-                           b"pane-border-lines\x00" as *const u8 as
-                               *const libc::c_char) as libc::c_int;
-    tty_window_offset(&mut (*c).tty, &mut (*ctx).ox, &mut (*ctx).oy,
-                      &mut (*ctx).sx, &mut (*ctx).sy);
-    log_debug(b"%s: %s @%u ox=%u oy=%u sx=%u sy=%u %u/%d\x00" as *const u8 as
-                  *const libc::c_char,
-              (*::std::mem::transmute::<&[u8; 26],
-                                        &[libc::c_char; 26]>(b"screen_redraw_set_context\x00")).as_ptr(),
-              (*c).name, (*w).id, (*ctx).ox, (*ctx).oy, (*ctx).sx, (*ctx).sy,
-              (*ctx).statuslines, (*ctx).statustop);
+    (*ctx).pane_status = options_get_number(
+        wo,
+        b"pane-border-status\x00" as *const u8 as *const libc::c_char,
+    ) as libc::c_int;
+    (*ctx).pane_lines = options_get_number(
+        wo,
+        b"pane-border-lines\x00" as *const u8 as *const libc::c_char,
+    ) as libc::c_int;
+    tty_window_offset(
+        &mut (*c).tty,
+        &mut (*ctx).ox,
+        &mut (*ctx).oy,
+        &mut (*ctx).sx,
+        &mut (*ctx).sy,
+    );
+    log_debug(
+        b"%s: %s @%u ox=%u oy=%u sx=%u sy=%u %u/%d\x00" as *const u8 as *const libc::c_char,
+        (*::std::mem::transmute::<&[u8; 26], &[libc::c_char; 26]>(
+            b"screen_redraw_set_context\x00",
+        ))
+        .as_ptr(),
+        (*c).name,
+        (*w).id,
+        (*ctx).ox,
+        (*ctx).oy,
+        (*ctx).sx,
+        (*ctx).sy,
+        (*ctx).statuslines,
+        (*ctx).statustop,
+    );
 }
 /* Redraw entire screen. */
 #[no_mangle]
 pub unsafe extern "C" fn screen_redraw_screen(mut c: *mut client) {
-    let mut ctx: screen_redraw_ctx =
-        screen_redraw_ctx{c: 0 as *mut client,
-                          statuslines: 0,
-                          statustop: 0,
-                          pane_status: 0,
-                          pane_lines: 0,
-                          sx: 0,
-                          sy: 0,
-                          ox: 0,
-                          oy: 0,};
+    let mut ctx: screen_redraw_ctx = screen_redraw_ctx {
+        c: 0 as *mut client,
+        statuslines: 0,
+        statustop: 0,
+        pane_status: 0,
+        pane_lines: 0,
+        sx: 0,
+        sy: 0,
+        ox: 0,
+        oy: 0,
+    };
     let mut flags: libc::c_int = 0;
-    if (*c).flags & 0x40 as libc::c_int as libc::c_ulong != 0 { return }
+    if (*c).flags & 0x40 as libc::c_int as libc::c_ulong != 0 {
+        return;
+    }
     flags = screen_redraw_update(c, (*c).flags as libc::c_int);
-    if flags &
-           (0x8 as libc::c_int | 0x10 as libc::c_int |
-                0x1000000 as libc::c_int | 0x400 as libc::c_int |
-                0x2000000 as libc::c_int | 0x20000000 as libc::c_int) ==
-           0 as libc::c_int {
-        return
+    if flags
+        & (0x8 as libc::c_int
+            | 0x10 as libc::c_int
+            | 0x1000000 as libc::c_int
+            | 0x400 as libc::c_int
+            | 0x2000000 as libc::c_int
+            | 0x20000000 as libc::c_int)
+        == 0 as libc::c_int
+    {
+        return;
     }
     screen_redraw_set_context(c, &mut ctx);
     tty_update_mode(&mut (*c).tty, (*c).tty.mode, 0 as *mut screen);
     tty_sync_start(&mut (*c).tty);
     if flags & (0x8 as libc::c_int | 0x400 as libc::c_int) != 0 {
-        log_debug(b"%s: redrawing borders\x00" as *const u8 as
-                      *const libc::c_char, (*c).name);
+        log_debug(
+            b"%s: redrawing borders\x00" as *const u8 as *const libc::c_char,
+            (*c).name,
+        );
         if ctx.pane_status != 0 as libc::c_int {
             screen_redraw_draw_pane_status(&mut ctx);
         }
         screen_redraw_draw_borders(&mut ctx);
     }
     if flags & 0x8 as libc::c_int != 0 {
-        log_debug(b"%s: redrawing panes\x00" as *const u8 as
-                      *const libc::c_char, (*c).name);
+        log_debug(
+            b"%s: redrawing panes\x00" as *const u8 as *const libc::c_char,
+            (*c).name,
+        );
         screen_redraw_draw_panes(&mut ctx);
     }
-    if ctx.statuslines != 0 as libc::c_int as libc::c_uint &&
-           flags & (0x10 as libc::c_int | 0x1000000 as libc::c_int) != 0 {
-        log_debug(b"%s: redrawing status\x00" as *const u8 as
-                      *const libc::c_char, (*c).name);
+    if ctx.statuslines != 0 as libc::c_int as libc::c_uint
+        && flags & (0x10 as libc::c_int | 0x1000000 as libc::c_int) != 0
+    {
+        log_debug(
+            b"%s: redrawing status\x00" as *const u8 as *const libc::c_char,
+            (*c).name,
+        );
         screen_redraw_draw_status(&mut ctx);
     }
     if (*c).overlay_draw.is_some() && flags & 0x2000000 as libc::c_int != 0 {
-        log_debug(b"%s: redrawing overlay\x00" as *const u8 as
-                      *const libc::c_char, (*c).name);
+        log_debug(
+            b"%s: redrawing overlay\x00" as *const u8 as *const libc::c_char,
+            (*c).name,
+        );
         (*c).overlay_draw.expect("non-null function pointer")(c, &mut ctx);
     }
     tty_reset(&mut (*c).tty);
 }
 /* Redraw a single pane. */
 #[no_mangle]
-pub unsafe extern "C" fn screen_redraw_pane(mut c: *mut client,
-                                            mut wp: *mut window_pane) {
-    let mut ctx: screen_redraw_ctx =
-        screen_redraw_ctx{c: 0 as *mut client,
-                          statuslines: 0,
-                          statustop: 0,
-                          pane_status: 0,
-                          pane_lines: 0,
-                          sx: 0,
-                          sy: 0,
-                          ox: 0,
-                          oy: 0,};
-    if (*c).overlay_draw.is_some() || window_pane_visible(wp) == 0 { return }
+pub unsafe extern "C" fn screen_redraw_pane(mut c: *mut client, mut wp: *mut window_pane) {
+    let mut ctx: screen_redraw_ctx = screen_redraw_ctx {
+        c: 0 as *mut client,
+        statuslines: 0,
+        statustop: 0,
+        pane_status: 0,
+        pane_lines: 0,
+        sx: 0,
+        sy: 0,
+        ox: 0,
+        oy: 0,
+    };
+    if (*c).overlay_draw.is_some() || window_pane_visible(wp) == 0 {
+        return;
+    }
     screen_redraw_set_context(c, &mut ctx);
     tty_update_mode(&mut (*c).tty, (*c).tty.mode, 0 as *mut screen);
     tty_sync_start(&mut (*c).tty);
@@ -2227,39 +2359,47 @@ pub unsafe extern "C" fn screen_redraw_pane(mut c: *mut client,
     tty_reset(&mut (*c).tty);
 }
 /* Get border cell style. */
-unsafe extern "C" fn screen_redraw_draw_borders_style(mut ctx:
-                                                          *mut screen_redraw_ctx,
-                                                      mut x: u_int,
-                                                      mut y: u_int,
-                                                      mut wp:
-                                                          *mut window_pane)
- -> *const grid_cell {
+unsafe extern "C" fn screen_redraw_draw_borders_style(
+    mut ctx: *mut screen_redraw_ctx,
+    mut x: u_int,
+    mut y: u_int,
+    mut wp: *mut window_pane,
+) -> *const grid_cell {
     let mut c: *mut client = (*ctx).c;
     let mut s: *mut session = (*c).session;
     let mut w: *mut window = (*(*s).curw).window;
     let mut active: *mut window_pane = server_client_get_pane(c);
     let mut oo: *mut options = (*w).options;
     let mut ft: *mut format_tree = 0 as *mut format_tree;
-    if (*wp).border_gc_set != 0 { return &mut (*wp).border_gc }
+    if (*wp).border_gc_set != 0 {
+        return &mut (*wp).border_gc;
+    }
     (*wp).border_gc_set = 1 as libc::c_int;
     ft = format_create_defaults(0 as *mut cmdq_item, c, s, (*s).curw, wp);
     if screen_redraw_check_is(x, y, (*ctx).pane_status, active) != 0 {
-        style_apply(&mut (*wp).border_gc, oo,
-                    b"pane-active-border-style\x00" as *const u8 as
-                        *const libc::c_char, ft);
+        style_apply(
+            &mut (*wp).border_gc,
+            oo,
+            b"pane-active-border-style\x00" as *const u8 as *const libc::c_char,
+            ft,
+        );
     } else {
-        style_apply(&mut (*wp).border_gc, oo,
-                    b"pane-border-style\x00" as *const u8 as
-                        *const libc::c_char, ft);
+        style_apply(
+            &mut (*wp).border_gc,
+            oo,
+            b"pane-border-style\x00" as *const u8 as *const libc::c_char,
+            ft,
+        );
     }
     format_free(ft);
     return &mut (*wp).border_gc;
 }
 /* Draw a border cell. */
-unsafe extern "C" fn screen_redraw_draw_borders_cell(mut ctx:
-                                                         *mut screen_redraw_ctx,
-                                                     mut i: u_int,
-                                                     mut j: u_int) {
+unsafe extern "C" fn screen_redraw_draw_borders_cell(
+    mut ctx: *mut screen_redraw_ctx,
+    mut i: u_int,
+    mut j: u_int,
+) {
     let mut c: *mut client = (*ctx).c;
     let mut s: *mut session = (*c).session;
     let mut tty: *mut tty = &mut (*c).tty;
@@ -2268,44 +2408,57 @@ unsafe extern "C" fn screen_redraw_draw_borders_cell(mut ctx:
     let mut x: u_int = (*ctx).ox.wrapping_add(i);
     let mut y: u_int = (*ctx).oy.wrapping_add(j);
     let mut pane_status: libc::c_int = (*ctx).pane_status;
-    let mut gc: grid_cell =
-        grid_cell{data: utf8_data{data: [0; 21], have: 0, size: 0, width: 0,},
-                  attr: 0,
-                  flags: 0,
-                  fg: 0,
-                  bg: 0,
-                  us: 0,};
+    let mut gc: grid_cell = grid_cell {
+        data: utf8_data {
+            data: [0; 21],
+            have: 0,
+            size: 0,
+            width: 0,
+        },
+        attr: 0,
+        flags: 0,
+        fg: 0,
+        bg: 0,
+        us: 0,
+    };
     let mut tmp: *const grid_cell = 0 as *const grid_cell;
-    if (*c).overlay_check.is_some() &&
-           (*c).overlay_check.expect("non-null function pointer")(c, x, y) ==
-               0 {
-        return
+    if (*c).overlay_check.is_some()
+        && (*c).overlay_check.expect("non-null function pointer")(c, x, y) == 0
+    {
+        return;
     }
-    cell_type =
-        screen_redraw_check_cell(c, x, y, pane_status, &mut wp) as u_int;
-    if cell_type == 0 as libc::c_int as libc::c_uint { return }
+    cell_type = screen_redraw_check_cell(c, x, y, pane_status, &mut wp) as u_int;
+    if cell_type == 0 as libc::c_int as libc::c_uint {
+        return;
+    }
     if wp.is_null() {
-        memcpy(&mut gc as *mut grid_cell as *mut libc::c_void,
-               &grid_default_cell as *const grid_cell as *const libc::c_void,
-               ::std::mem::size_of::<grid_cell>() as libc::c_ulong);
+        memcpy(
+            &mut gc as *mut grid_cell as *mut libc::c_void,
+            &grid_default_cell as *const grid_cell as *const libc::c_void,
+            ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+        );
     } else {
         tmp = screen_redraw_draw_borders_style(ctx, x, y, wp);
-        if tmp.is_null() { return }
-        memcpy(&mut gc as *mut grid_cell as *mut libc::c_void,
-               tmp as *const libc::c_void,
-               ::std::mem::size_of::<grid_cell>() as libc::c_ulong);
-        if server_is_marked(s, (*s).curw, marked_pane.wp) != 0 &&
-               screen_redraw_check_is(x, y, pane_status, marked_pane.wp) != 0
-           {
-            gc.attr =
-                (gc.attr as libc::c_int ^ 0x10 as libc::c_int) as u_short
+        if tmp.is_null() {
+            return;
+        }
+        memcpy(
+            &mut gc as *mut grid_cell as *mut libc::c_void,
+            tmp as *const libc::c_void,
+            ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+        );
+        if server_is_marked(s, (*s).curw, marked_pane.wp) != 0
+            && screen_redraw_check_is(x, y, pane_status, marked_pane.wp) != 0
+        {
+            gc.attr = (gc.attr as libc::c_int ^ 0x10 as libc::c_int) as u_short
         }
     }
-    screen_redraw_border_set(wp, (*ctx).pane_lines, cell_type as libc::c_int,
-                             &mut gc);
+    screen_redraw_border_set(wp, (*ctx).pane_lines, cell_type as libc::c_int, &mut gc);
     if (*ctx).statustop != 0 {
         tty_cursor(tty, i, (*ctx).statuslines.wrapping_add(j));
-    } else { tty_cursor(tty, i, j); }
+    } else {
+        tty_cursor(tty, i, j);
+    }
     tty_cell(tty, &mut gc, &grid_default_cell, 0 as *mut libc::c_int);
 }
 /* $OpenBSD$ */
@@ -2325,18 +2478,22 @@ unsafe extern "C" fn screen_redraw_draw_borders_cell(mut ctx:
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 /* Draw the borders. */
-unsafe extern "C" fn screen_redraw_draw_borders(mut ctx:
-                                                    *mut screen_redraw_ctx) {
+unsafe extern "C" fn screen_redraw_draw_borders(mut ctx: *mut screen_redraw_ctx) {
     let mut c: *mut client = (*ctx).c;
     let mut s: *mut session = (*c).session;
     let mut w: *mut window = (*(*s).curw).window;
     let mut wp: *mut window_pane = 0 as *mut window_pane;
     let mut i: u_int = 0;
     let mut j: u_int = 0;
-    log_debug(b"%s: %s @%u\x00" as *const u8 as *const libc::c_char,
-              (*::std::mem::transmute::<&[u8; 27],
-                                        &[libc::c_char; 27]>(b"screen_redraw_draw_borders\x00")).as_ptr(),
-              (*c).name, (*w).id);
+    log_debug(
+        b"%s: %s @%u\x00" as *const u8 as *const libc::c_char,
+        (*::std::mem::transmute::<&[u8; 27], &[libc::c_char; 27]>(
+            b"screen_redraw_draw_borders\x00",
+        ))
+        .as_ptr(),
+        (*c).name,
+        (*w).id,
+    );
     wp = (*w).panes.tqh_first;
     while !wp.is_null() {
         (*wp).border_gc_set = 0 as libc::c_int;
@@ -2350,102 +2507,134 @@ unsafe extern "C" fn screen_redraw_draw_borders(mut ctx:
             i = i.wrapping_add(1)
         }
         j = j.wrapping_add(1)
-    };
+    }
 }
 /* Draw the panes. */
-unsafe extern "C" fn screen_redraw_draw_panes(mut ctx:
-                                                  *mut screen_redraw_ctx) {
+unsafe extern "C" fn screen_redraw_draw_panes(mut ctx: *mut screen_redraw_ctx) {
     let mut c: *mut client = (*ctx).c;
     let mut w: *mut window = (*(*(*c).session).curw).window;
     let mut wp: *mut window_pane = 0 as *mut window_pane;
-    log_debug(b"%s: %s @%u\x00" as *const u8 as *const libc::c_char,
-              (*::std::mem::transmute::<&[u8; 25],
-                                        &[libc::c_char; 25]>(b"screen_redraw_draw_panes\x00")).as_ptr(),
-              (*c).name, (*w).id);
+    log_debug(
+        b"%s: %s @%u\x00" as *const u8 as *const libc::c_char,
+        (*::std::mem::transmute::<&[u8; 25], &[libc::c_char; 25]>(b"screen_redraw_draw_panes\x00"))
+            .as_ptr(),
+        (*c).name,
+        (*w).id,
+    );
     wp = (*w).panes.tqh_first;
     while !wp.is_null() {
-        if window_pane_visible(wp) != 0 { screen_redraw_draw_pane(ctx, wp); }
+        if window_pane_visible(wp) != 0 {
+            screen_redraw_draw_pane(ctx, wp);
+        }
         wp = (*wp).entry.tqe_next
-    };
+    }
 }
 /* Draw the status line. */
-unsafe extern "C" fn screen_redraw_draw_status(mut ctx:
-                                                   *mut screen_redraw_ctx) {
+unsafe extern "C" fn screen_redraw_draw_status(mut ctx: *mut screen_redraw_ctx) {
     let mut c: *mut client = (*ctx).c;
     let mut w: *mut window = (*(*(*c).session).curw).window;
     let mut tty: *mut tty = &mut (*c).tty;
     let mut s: *mut screen = (*c).status.active;
     let mut i: u_int = 0;
     let mut y: u_int = 0;
-    log_debug(b"%s: %s @%u\x00" as *const u8 as *const libc::c_char,
-              (*::std::mem::transmute::<&[u8; 26],
-                                        &[libc::c_char; 26]>(b"screen_redraw_draw_status\x00")).as_ptr(),
-              (*c).name, (*w).id);
+    log_debug(
+        b"%s: %s @%u\x00" as *const u8 as *const libc::c_char,
+        (*::std::mem::transmute::<&[u8; 26], &[libc::c_char; 26]>(
+            b"screen_redraw_draw_status\x00",
+        ))
+        .as_ptr(),
+        (*c).name,
+        (*w).id,
+    );
     if (*ctx).statustop != 0 {
         y = 0 as libc::c_int as u_int
-    } else { y = (*c).tty.sy.wrapping_sub((*ctx).statuslines) }
+    } else {
+        y = (*c).tty.sy.wrapping_sub((*ctx).statuslines)
+    }
     i = 0 as libc::c_int as u_int;
     while i < (*ctx).statuslines {
-        tty_draw_line(tty, s, 0 as libc::c_int as u_int, i,
-                      (2147483647 as libc::c_int as
-                           libc::c_uint).wrapping_mul(2 as
-                                                          libc::c_uint).wrapping_add(1
-                                                                                         as
-                                                                                         libc::c_uint),
-                      0 as libc::c_int as u_int, y.wrapping_add(i),
-                      &grid_default_cell, 0 as *mut libc::c_int);
+        tty_draw_line(
+            tty,
+            s,
+            0 as libc::c_int as u_int,
+            i,
+            (2147483647 as libc::c_int as libc::c_uint)
+                .wrapping_mul(2 as libc::c_uint)
+                .wrapping_add(1 as libc::c_uint),
+            0 as libc::c_int as u_int,
+            y.wrapping_add(i),
+            &grid_default_cell,
+            0 as *mut libc::c_int,
+        );
         i = i.wrapping_add(1)
-    };
+    }
 }
 /* Draw one pane. */
-unsafe extern "C" fn screen_redraw_draw_pane(mut ctx: *mut screen_redraw_ctx,
-                                             mut wp: *mut window_pane) {
+unsafe extern "C" fn screen_redraw_draw_pane(
+    mut ctx: *mut screen_redraw_ctx,
+    mut wp: *mut window_pane,
+) {
     let mut c: *mut client = (*ctx).c;
     let mut w: *mut window = (*(*(*c).session).curw).window;
     let mut tty: *mut tty = &mut (*c).tty;
     let mut s: *mut screen = 0 as *mut screen;
-    let mut defaults: grid_cell =
-        grid_cell{data: utf8_data{data: [0; 21], have: 0, size: 0, width: 0,},
-                  attr: 0,
-                  flags: 0,
-                  fg: 0,
-                  bg: 0,
-                  us: 0,};
+    let mut defaults: grid_cell = grid_cell {
+        data: utf8_data {
+            data: [0; 21],
+            have: 0,
+            size: 0,
+            width: 0,
+        },
+        attr: 0,
+        flags: 0,
+        fg: 0,
+        bg: 0,
+        us: 0,
+    };
     let mut i: u_int = 0;
     let mut j: u_int = 0;
     let mut top: u_int = 0;
     let mut x: u_int = 0;
     let mut y: u_int = 0;
     let mut width: u_int = 0;
-    log_debug(b"%s: %s @%u %%%u\x00" as *const u8 as *const libc::c_char,
-              (*::std::mem::transmute::<&[u8; 24],
-                                        &[libc::c_char; 24]>(b"screen_redraw_draw_pane\x00")).as_ptr(),
-              (*c).name, (*w).id, (*wp).id);
-    if (*wp).xoff.wrapping_add((*wp).sx) <= (*ctx).ox ||
-           (*wp).xoff >= (*ctx).ox.wrapping_add((*ctx).sx) {
-        return
+    log_debug(
+        b"%s: %s @%u %%%u\x00" as *const u8 as *const libc::c_char,
+        (*::std::mem::transmute::<&[u8; 24], &[libc::c_char; 24]>(b"screen_redraw_draw_pane\x00"))
+            .as_ptr(),
+        (*c).name,
+        (*w).id,
+        (*wp).id,
+    );
+    if (*wp).xoff.wrapping_add((*wp).sx) <= (*ctx).ox
+        || (*wp).xoff >= (*ctx).ox.wrapping_add((*ctx).sx)
+    {
+        return;
     }
     if (*ctx).statustop != 0 {
         top = (*ctx).statuslines
-    } else { top = 0 as libc::c_int as u_int }
+    } else {
+        top = 0 as libc::c_int as u_int
+    }
     s = (*wp).screen;
     j = 0 as libc::c_int as u_int;
     while j < (*wp).sy {
-        if !((*wp).yoff.wrapping_add(j) < (*ctx).oy ||
-                 (*wp).yoff.wrapping_add(j) >=
-                     (*ctx).oy.wrapping_add((*ctx).sy)) {
-            y =
-                top.wrapping_add((*wp).yoff).wrapping_add(j).wrapping_sub((*ctx).oy);
-            if (*wp).xoff >= (*ctx).ox &&
-                   (*wp).xoff.wrapping_add((*wp).sx) <=
-                       (*ctx).ox.wrapping_add((*ctx).sx) {
+        if !((*wp).yoff.wrapping_add(j) < (*ctx).oy
+            || (*wp).yoff.wrapping_add(j) >= (*ctx).oy.wrapping_add((*ctx).sy))
+        {
+            y = top
+                .wrapping_add((*wp).yoff)
+                .wrapping_add(j)
+                .wrapping_sub((*ctx).oy);
+            if (*wp).xoff >= (*ctx).ox
+                && (*wp).xoff.wrapping_add((*wp).sx) <= (*ctx).ox.wrapping_add((*ctx).sx)
+            {
                 /* All visible. */
                 i = 0 as libc::c_int as u_int;
                 x = (*wp).xoff.wrapping_sub((*ctx).ox);
                 width = (*wp).sx
-            } else if (*wp).xoff < (*ctx).ox &&
-                          (*wp).xoff.wrapping_add((*wp).sx) >
-                              (*ctx).ox.wrapping_add((*ctx).sx) {
+            } else if (*wp).xoff < (*ctx).ox
+                && (*wp).xoff.wrapping_add((*wp).sx) > (*ctx).ox.wrapping_add((*ctx).sx)
+            {
                 /* Both left and right not visible. */
                 i = (*ctx).ox;
                 x = 0 as libc::c_int as u_int;
@@ -2461,15 +2650,24 @@ unsafe extern "C" fn screen_redraw_draw_pane(mut ctx: *mut screen_redraw_ctx,
                 x = (*wp).xoff.wrapping_sub((*ctx).ox);
                 width = (*ctx).sx.wrapping_sub(x)
             }
-            log_debug(b"%s: %s %%%u line %u,%u at %u,%u, width %u\x00" as
-                          *const u8 as *const libc::c_char,
-                      (*::std::mem::transmute::<&[u8; 24],
-                                                &[libc::c_char; 24]>(b"screen_redraw_draw_pane\x00")).as_ptr(),
-                      (*c).name, (*wp).id, i, j, x, y, width);
+            log_debug(
+                b"%s: %s %%%u line %u,%u at %u,%u, width %u\x00" as *const u8
+                    as *const libc::c_char,
+                (*::std::mem::transmute::<&[u8; 24], &[libc::c_char; 24]>(
+                    b"screen_redraw_draw_pane\x00",
+                ))
+                .as_ptr(),
+                (*c).name,
+                (*wp).id,
+                i,
+                j,
+                x,
+                y,
+                width,
+            );
             tty_default_colours(&mut defaults, wp);
-            tty_draw_line(tty, s, i, j, width, x, y, &mut defaults,
-                          (*wp).palette);
+            tty_draw_line(tty, s, i, j, width, x, y, &mut defaults, (*wp).palette);
         }
         j = j.wrapping_add(1)
-    };
+    }
 }

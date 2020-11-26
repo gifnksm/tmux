@@ -36,8 +36,7 @@ pub struct cmd_entry {
     pub source: cmd_entry_flag,
     pub target: cmd_entry_flag,
     pub flags: libc::c_int,
-    pub exec: Option<unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item)
-                         -> cmd_retval>,
+    pub exec: Option<unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -47,83 +46,73 @@ pub struct C2RustUnnamed {
     pub upper: libc::c_int,
 }
 #[no_mangle]
-pub static mut cmd_kill_server_entry: cmd_entry =
-    unsafe {
-        {
-            let mut init =
-                cmd_entry{name:
-                              b"kill-server\x00" as *const u8 as
-                                  *const libc::c_char,
-                          alias: 0 as *const libc::c_char,
-                          args:
-                              {
-                                  let mut init =
-                                      C2RustUnnamed{template:
-                                                        b"\x00" as *const u8
-                                                            as
-                                                            *const libc::c_char,
-                                                    lower: 0 as libc::c_int,
-                                                    upper: 0 as libc::c_int,};
-                                  init
-                              },
-                          usage: b"\x00" as *const u8 as *const libc::c_char,
-                          source:
-                              cmd_entry_flag{flag: 0,
-                                             type_0: CMD_FIND_PANE,
-                                             flags: 0,},
-                          target:
-                              cmd_entry_flag{flag: 0,
-                                             type_0: CMD_FIND_PANE,
-                                             flags: 0,},
-                          flags: 0 as libc::c_int,
-                          exec:
-                              Some(cmd_kill_server_exec as
-                                       unsafe extern "C" fn(_: *mut cmd,
-                                                            _: *mut cmdq_item)
-                                           -> cmd_retval),};
-            init
-        }
-    };
+pub static mut cmd_kill_server_entry: cmd_entry = unsafe {
+    {
+        let mut init = cmd_entry {
+            name: b"kill-server\x00" as *const u8 as *const libc::c_char,
+            alias: 0 as *const libc::c_char,
+            args: {
+                let mut init = C2RustUnnamed {
+                    template: b"\x00" as *const u8 as *const libc::c_char,
+                    lower: 0 as libc::c_int,
+                    upper: 0 as libc::c_int,
+                };
+                init
+            },
+            usage: b"\x00" as *const u8 as *const libc::c_char,
+            source: cmd_entry_flag {
+                flag: 0,
+                type_0: CMD_FIND_PANE,
+                flags: 0,
+            },
+            target: cmd_entry_flag {
+                flag: 0,
+                type_0: CMD_FIND_PANE,
+                flags: 0,
+            },
+            flags: 0 as libc::c_int,
+            exec: Some(
+                cmd_kill_server_exec
+                    as unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval,
+            ),
+        };
+        init
+    }
+};
 #[no_mangle]
-pub static mut cmd_start_server_entry: cmd_entry =
-    unsafe {
-        {
-            let mut init =
-                cmd_entry{name:
-                              b"start-server\x00" as *const u8 as
-                                  *const libc::c_char,
-                          alias:
-                              b"start\x00" as *const u8 as
-                                  *const libc::c_char,
-                          args:
-                              {
-                                  let mut init =
-                                      C2RustUnnamed{template:
-                                                        b"\x00" as *const u8
-                                                            as
-                                                            *const libc::c_char,
-                                                    lower: 0 as libc::c_int,
-                                                    upper: 0 as libc::c_int,};
-                                  init
-                              },
-                          usage: b"\x00" as *const u8 as *const libc::c_char,
-                          source:
-                              cmd_entry_flag{flag: 0,
-                                             type_0: CMD_FIND_PANE,
-                                             flags: 0,},
-                          target:
-                              cmd_entry_flag{flag: 0,
-                                             type_0: CMD_FIND_PANE,
-                                             flags: 0,},
-                          flags: 0x1 as libc::c_int,
-                          exec:
-                              Some(cmd_kill_server_exec as
-                                       unsafe extern "C" fn(_: *mut cmd,
-                                                            _: *mut cmdq_item)
-                                           -> cmd_retval),};
-            init
-        }
-    };
+pub static mut cmd_start_server_entry: cmd_entry = unsafe {
+    {
+        let mut init = cmd_entry {
+            name: b"start-server\x00" as *const u8 as *const libc::c_char,
+            alias: b"start\x00" as *const u8 as *const libc::c_char,
+            args: {
+                let mut init = C2RustUnnamed {
+                    template: b"\x00" as *const u8 as *const libc::c_char,
+                    lower: 0 as libc::c_int,
+                    upper: 0 as libc::c_int,
+                };
+                init
+            },
+            usage: b"\x00" as *const u8 as *const libc::c_char,
+            source: cmd_entry_flag {
+                flag: 0,
+                type_0: CMD_FIND_PANE,
+                flags: 0,
+            },
+            target: cmd_entry_flag {
+                flag: 0,
+                type_0: CMD_FIND_PANE,
+                flags: 0,
+            },
+            flags: 0x1 as libc::c_int,
+            exec: Some(
+                cmd_kill_server_exec
+                    as unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval,
+            ),
+        };
+        init
+    }
+};
 /* $OpenBSD$ */
 /*
  * Copyright (c) 2007 Nicholas Marriott <nicholas.marriott@gmail.com>
@@ -143,9 +132,10 @@ pub static mut cmd_start_server_entry: cmd_entry =
 /*
  * Kill the server and do nothing else.
  */
-unsafe extern "C" fn cmd_kill_server_exec(mut self_0: *mut cmd,
-                                          mut item: *mut cmdq_item)
- -> cmd_retval {
+unsafe extern "C" fn cmd_kill_server_exec(
+    mut self_0: *mut cmd,
+    mut item: *mut cmdq_item,
+) -> cmd_retval {
     if cmd_get_entry(self_0) == &cmd_kill_server_entry as *const cmd_entry {
         kill(getpid(), 15 as libc::c_int);
     }

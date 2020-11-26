@@ -24,18 +24,15 @@ extern "C" {
     #[no_mangle]
     fn strcmp(_: *const libc::c_char, _: *const libc::c_char) -> libc::c_int;
     #[no_mangle]
-    fn strncmp(_: *const libc::c_char, _: *const libc::c_char,
-               _: libc::c_ulong) -> libc::c_int;
+    fn strncmp(_: *const libc::c_char, _: *const libc::c_char, _: libc::c_ulong) -> libc::c_int;
     #[no_mangle]
     fn strchr(_: *const libc::c_char, _: libc::c_int) -> *mut libc::c_char;
     #[no_mangle]
     fn strlen(_: *const libc::c_char) -> libc::c_ulong;
     #[no_mangle]
-    fn strlcpy(_: *mut libc::c_char, _: *const libc::c_char, _: libc::c_ulong)
-     -> libc::c_ulong;
+    fn strlcpy(_: *mut libc::c_char, _: *const libc::c_char, _: libc::c_ulong) -> libc::c_ulong;
     #[no_mangle]
-    fn strlcat(_: *mut libc::c_char, _: *const libc::c_char, _: libc::c_ulong)
-     -> libc::c_ulong;
+    fn strlcat(_: *mut libc::c_char, _: *const libc::c_char, _: libc::c_ulong) -> libc::c_ulong;
     #[no_mangle]
     fn xmalloc(_: size_t) -> *mut libc::c_void;
     #[no_mangle]
@@ -43,32 +40,29 @@ extern "C" {
     #[no_mangle]
     fn xrealloc(_: *mut libc::c_void, _: size_t) -> *mut libc::c_void;
     #[no_mangle]
-    fn xreallocarray(_: *mut libc::c_void, _: size_t, _: size_t)
-     -> *mut libc::c_void;
+    fn xreallocarray(_: *mut libc::c_void, _: size_t, _: size_t) -> *mut libc::c_void;
     #[no_mangle]
     fn xstrdup(_: *const libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
-    fn xasprintf(_: *mut *mut libc::c_char, _: *const libc::c_char, _: ...)
-     -> libc::c_int;
+    fn xasprintf(_: *mut *mut libc::c_char, _: *const libc::c_char, _: ...) -> libc::c_int;
     #[no_mangle]
-    fn xvasprintf(_: *mut *mut libc::c_char, _: *const libc::c_char,
-                  _: ::std::ffi::VaList) -> libc::c_int;
+    fn xvasprintf(
+        _: *mut *mut libc::c_char,
+        _: *const libc::c_char,
+        _: ::std::ffi::VaList,
+    ) -> libc::c_int;
     #[no_mangle]
     static mut global_options: *mut options;
     #[no_mangle]
-    fn options_get_only(_: *mut options, _: *const libc::c_char)
-     -> *mut options_entry;
+    fn options_get_only(_: *mut options, _: *const libc::c_char) -> *mut options_entry;
     #[no_mangle]
     fn options_array_first(_: *mut options_entry) -> *mut options_array_item;
     #[no_mangle]
-    fn options_array_next(_: *mut options_array_item)
-     -> *mut options_array_item;
+    fn options_array_next(_: *mut options_array_item) -> *mut options_array_item;
     #[no_mangle]
-    fn options_array_item_value(_: *mut options_array_item)
-     -> *mut options_value;
+    fn options_array_item_value(_: *mut options_array_item) -> *mut options_value;
     #[no_mangle]
-    fn args_parse(_: *const libc::c_char, _: libc::c_int,
-                  _: *mut *mut libc::c_char) -> *mut args;
+    fn args_parse(_: *const libc::c_char, _: libc::c_int, _: *mut *mut libc::c_char) -> *mut args;
     #[no_mangle]
     fn args_free(_: *mut args);
     #[no_mangle]
@@ -82,28 +76,27 @@ extern "C" {
     #[no_mangle]
     fn window_find_by_id(_: u_int) -> *mut window;
     #[no_mangle]
-    fn winlink_find_by_window(_: *mut winlinks, _: *mut window)
-     -> *mut winlink;
+    fn winlink_find_by_window(_: *mut winlinks, _: *mut window) -> *mut winlink;
     #[no_mangle]
     fn session_find_by_id(_: u_int) -> *mut session;
     #[no_mangle]
     fn log_debug(_: *const libc::c_char, _: ...);
     /* $OpenBSD$ */
     /*
- * Copyright (c) 2007 Nicholas Marriott <nicholas.marriott@gmail.com>
- *
- * Permission to use, copy, modify, and distribute this software for any
- * purpose with or without fee is hereby granted, provided that the above
- * copyright notice and this permission notice appear in all copies.
- *
- * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
- * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
- * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
- * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
- * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
- * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
+     * Copyright (c) 2007 Nicholas Marriott <nicholas.marriott@gmail.com>
+     *
+     * Permission to use, copy, modify, and distribute this software for any
+     * purpose with or without fee is hereby granted, provided that the above
+     * copyright notice and this permission notice appear in all copies.
+     *
+     * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+     * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+     * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+     * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+     * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
+     * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
+     * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+     */
     #[no_mangle]
     static cmd_attach_session_entry: cmd_entry;
     #[no_mangle]
@@ -378,18 +371,13 @@ pub struct event_callback {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub union C2RustUnnamed_6 {
-    pub evcb_callback: Option<unsafe extern "C" fn(_: libc::c_int,
-                                                   _: libc::c_short,
-                                                   _: *mut libc::c_void)
-                                  -> ()>,
-    pub evcb_selfcb: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                 _: *mut libc::c_void) -> ()>,
-    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
-    pub evcb_cbfinalize: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
+    pub evcb_callback:
+        Option<unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> ()>,
+    pub evcb_selfcb:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
+    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event, _: *mut libc::c_void) -> ()>,
+    pub evcb_cbfinalize:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -416,14 +404,10 @@ pub struct bufferevent {
     pub timeout_write: timeval,
     pub enabled: libc::c_short,
 }
-pub type bufferevent_event_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short,
-                                _: *mut libc::c_void) -> ()>;
-pub type bufferevent_data_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void)
-               -> ()>;
+pub type bufferevent_event_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short, _: *mut libc::c_void) -> ()>;
+pub type bufferevent_data_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct event_watermark {
@@ -562,17 +546,19 @@ pub struct C2RustUnnamed_9 {
     pub rbe_parent: *mut client_file,
     pub rbe_color: libc::c_int,
 }
-pub type client_file_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *const libc::c_char,
-                                _: libc::c_int, _: libc::c_int,
-                                _: *mut evbuffer, _: *mut libc::c_void)
-               -> ()>;
+pub type client_file_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: *mut evbuffer,
+        _: *mut libc::c_void,
+    ) -> (),
+>;
 pub type overlay_free_cb = Option<unsafe extern "C" fn(_: *mut client) -> ()>;
-pub type overlay_key_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event)
-               -> libc::c_int>;
+pub type overlay_key_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_event {
@@ -602,10 +588,8 @@ pub struct mouse_event {
     pub sgr_b: u_int,
 }
 pub type key_code = libc::c_ulonglong;
-pub type overlay_draw_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx)
-               -> ()>;
+pub type overlay_draw_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen_redraw_ctx {
@@ -619,10 +603,8 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int)
-               -> *mut screen>;
+pub type overlay_mode_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen {
@@ -716,10 +698,8 @@ pub struct C2RustUnnamed_11 {
     pub bg: u_char,
     pub data: u_char,
 }
-pub type overlay_check_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int)
-               -> libc::c_int>;
+pub type overlay_check_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct session {
@@ -966,24 +946,37 @@ pub struct C2RustUnnamed_24 {
 pub struct window_mode {
     pub name: *const libc::c_char,
     pub default_format: *const libc::c_char,
-    pub init: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                          _: *mut cmd_find_state,
-                                          _: *mut args) -> *mut screen>,
+    pub init: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut cmd_find_state,
+            _: *mut args,
+        ) -> *mut screen,
+    >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
-    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                            _: u_int, _: u_int) -> ()>,
-    pub key: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                         _: *mut client, _: *mut session,
-                                         _: *mut winlink, _: key_code,
-                                         _: *mut mouse_event) -> ()>,
-    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry)
-                              -> *const libc::c_char>,
-    pub command: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut client, _: *mut session,
-                                             _: *mut winlink, _: *mut args,
-                                             _: *mut mouse_event) -> ()>,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut format_tree) -> ()>,
+    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
+    pub key: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: key_code,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> *const libc::c_char>,
+    pub command: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: *mut args,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -1020,14 +1013,15 @@ pub struct winlink_stack {
 pub type C2RustUnnamed_25 = libc::c_uint;
 pub const PROMPT_COMMAND: C2RustUnnamed_25 = 1;
 pub const PROMPT_ENTRY: C2RustUnnamed_25 = 0;
-pub type prompt_free_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
-pub type prompt_input_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut libc::c_void,
-                                _: *const libc::c_char, _: libc::c_int)
-               -> libc::c_int>;
+pub type prompt_free_cb = Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
+pub type prompt_input_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut libc::c_void,
+        _: *const libc::c_char,
+        _: libc::c_int,
+    ) -> libc::c_int,
+>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_table {
@@ -1110,8 +1104,7 @@ pub struct cmd_entry {
     pub source: cmd_entry_flag,
     pub target: cmd_entry_flag,
     pub flags: libc::c_int,
-    pub exec: Option<unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item)
-                         -> cmd_retval>,
+    pub exec: Option<unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval>,
 }
 pub type cmd_retval = libc::c_int;
 pub const CMD_RETURN_STOP: cmd_retval = 2;
@@ -1260,12 +1253,8 @@ pub struct tty {
     pub mouse_last_y: u_int,
     pub mouse_last_b: u_int,
     pub mouse_drag_flag: libc::c_int,
-    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client,
-                                                       _: *mut mouse_event)
-                                      -> ()>,
-    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client,
-                                                        _: *mut mouse_event)
-                                       -> ()>,
+    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
+    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
     pub key_timer: event,
     pub key_tree: *mut tty_key,
 }
@@ -1357,104 +1346,108 @@ pub union options_value {
     pub cmdlist: *mut cmd_list,
 }
 #[no_mangle]
-pub static mut cmd_table: [*const cmd_entry; 88] =
-    unsafe {
-        [&cmd_attach_session_entry as *const cmd_entry,
-         &cmd_bind_key_entry as *const cmd_entry,
-         &cmd_break_pane_entry as *const cmd_entry,
-         &cmd_capture_pane_entry as *const cmd_entry,
-         &cmd_choose_buffer_entry as *const cmd_entry,
-         &cmd_choose_client_entry as *const cmd_entry,
-         &cmd_choose_tree_entry as *const cmd_entry,
-         &cmd_clear_history_entry as *const cmd_entry,
-         &cmd_clock_mode_entry as *const cmd_entry,
-         &cmd_command_prompt_entry as *const cmd_entry,
-         &cmd_confirm_before_entry as *const cmd_entry,
-         &cmd_copy_mode_entry as *const cmd_entry,
-         &cmd_customize_mode_entry as *const cmd_entry,
-         &cmd_delete_buffer_entry as *const cmd_entry,
-         &cmd_detach_client_entry as *const cmd_entry,
-         &cmd_display_menu_entry as *const cmd_entry,
-         &cmd_display_message_entry as *const cmd_entry,
-         &cmd_display_popup_entry as *const cmd_entry,
-         &cmd_display_panes_entry as *const cmd_entry,
-         &cmd_find_window_entry as *const cmd_entry,
-         &cmd_has_session_entry as *const cmd_entry,
-         &cmd_if_shell_entry as *const cmd_entry,
-         &cmd_join_pane_entry as *const cmd_entry,
-         &cmd_kill_pane_entry as *const cmd_entry,
-         &cmd_kill_server_entry as *const cmd_entry,
-         &cmd_kill_session_entry as *const cmd_entry,
-         &cmd_kill_window_entry as *const cmd_entry,
-         &cmd_last_pane_entry as *const cmd_entry,
-         &cmd_last_window_entry as *const cmd_entry,
-         &cmd_link_window_entry as *const cmd_entry,
-         &cmd_list_buffers_entry as *const cmd_entry,
-         &cmd_list_clients_entry as *const cmd_entry,
-         &cmd_list_commands_entry as *const cmd_entry,
-         &cmd_list_keys_entry as *const cmd_entry,
-         &cmd_list_panes_entry as *const cmd_entry,
-         &cmd_list_sessions_entry as *const cmd_entry,
-         &cmd_list_windows_entry as *const cmd_entry,
-         &cmd_load_buffer_entry as *const cmd_entry,
-         &cmd_lock_client_entry as *const cmd_entry,
-         &cmd_lock_server_entry as *const cmd_entry,
-         &cmd_lock_session_entry as *const cmd_entry,
-         &cmd_move_pane_entry as *const cmd_entry,
-         &cmd_move_window_entry as *const cmd_entry,
-         &cmd_new_session_entry as *const cmd_entry,
-         &cmd_new_window_entry as *const cmd_entry,
-         &cmd_next_layout_entry as *const cmd_entry,
-         &cmd_next_window_entry as *const cmd_entry,
-         &cmd_paste_buffer_entry as *const cmd_entry,
-         &cmd_pipe_pane_entry as *const cmd_entry,
-         &cmd_previous_layout_entry as *const cmd_entry,
-         &cmd_previous_window_entry as *const cmd_entry,
-         &cmd_refresh_client_entry as *const cmd_entry,
-         &cmd_rename_session_entry as *const cmd_entry,
-         &cmd_rename_window_entry as *const cmd_entry,
-         &cmd_resize_pane_entry as *const cmd_entry,
-         &cmd_resize_window_entry as *const cmd_entry,
-         &cmd_respawn_pane_entry as *const cmd_entry,
-         &cmd_respawn_window_entry as *const cmd_entry,
-         &cmd_rotate_window_entry as *const cmd_entry,
-         &cmd_run_shell_entry as *const cmd_entry,
-         &cmd_save_buffer_entry as *const cmd_entry,
-         &cmd_select_layout_entry as *const cmd_entry,
-         &cmd_select_pane_entry as *const cmd_entry,
-         &cmd_select_window_entry as *const cmd_entry,
-         &cmd_send_keys_entry as *const cmd_entry,
-         &cmd_send_prefix_entry as *const cmd_entry,
-         &cmd_set_buffer_entry as *const cmd_entry,
-         &cmd_set_environment_entry as *const cmd_entry,
-         &cmd_set_hook_entry as *const cmd_entry,
-         &cmd_set_option_entry as *const cmd_entry,
-         &cmd_set_window_option_entry as *const cmd_entry,
-         &cmd_show_buffer_entry as *const cmd_entry,
-         &cmd_show_environment_entry as *const cmd_entry,
-         &cmd_show_hooks_entry as *const cmd_entry,
-         &cmd_show_messages_entry as *const cmd_entry,
-         &cmd_show_options_entry as *const cmd_entry,
-         &cmd_show_window_options_entry as *const cmd_entry,
-         &cmd_source_file_entry as *const cmd_entry,
-         &cmd_split_window_entry as *const cmd_entry,
-         &cmd_start_server_entry as *const cmd_entry,
-         &cmd_suspend_client_entry as *const cmd_entry,
-         &cmd_swap_pane_entry as *const cmd_entry,
-         &cmd_swap_window_entry as *const cmd_entry,
-         &cmd_switch_client_entry as *const cmd_entry,
-         &cmd_unbind_key_entry as *const cmd_entry,
-         &cmd_unlink_window_entry as *const cmd_entry,
-         &cmd_wait_for_entry as *const cmd_entry, 0 as *const cmd_entry]
-    };
+pub static mut cmd_table: [*const cmd_entry; 88] = unsafe {
+    [
+        &cmd_attach_session_entry as *const cmd_entry,
+        &cmd_bind_key_entry as *const cmd_entry,
+        &cmd_break_pane_entry as *const cmd_entry,
+        &cmd_capture_pane_entry as *const cmd_entry,
+        &cmd_choose_buffer_entry as *const cmd_entry,
+        &cmd_choose_client_entry as *const cmd_entry,
+        &cmd_choose_tree_entry as *const cmd_entry,
+        &cmd_clear_history_entry as *const cmd_entry,
+        &cmd_clock_mode_entry as *const cmd_entry,
+        &cmd_command_prompt_entry as *const cmd_entry,
+        &cmd_confirm_before_entry as *const cmd_entry,
+        &cmd_copy_mode_entry as *const cmd_entry,
+        &cmd_customize_mode_entry as *const cmd_entry,
+        &cmd_delete_buffer_entry as *const cmd_entry,
+        &cmd_detach_client_entry as *const cmd_entry,
+        &cmd_display_menu_entry as *const cmd_entry,
+        &cmd_display_message_entry as *const cmd_entry,
+        &cmd_display_popup_entry as *const cmd_entry,
+        &cmd_display_panes_entry as *const cmd_entry,
+        &cmd_find_window_entry as *const cmd_entry,
+        &cmd_has_session_entry as *const cmd_entry,
+        &cmd_if_shell_entry as *const cmd_entry,
+        &cmd_join_pane_entry as *const cmd_entry,
+        &cmd_kill_pane_entry as *const cmd_entry,
+        &cmd_kill_server_entry as *const cmd_entry,
+        &cmd_kill_session_entry as *const cmd_entry,
+        &cmd_kill_window_entry as *const cmd_entry,
+        &cmd_last_pane_entry as *const cmd_entry,
+        &cmd_last_window_entry as *const cmd_entry,
+        &cmd_link_window_entry as *const cmd_entry,
+        &cmd_list_buffers_entry as *const cmd_entry,
+        &cmd_list_clients_entry as *const cmd_entry,
+        &cmd_list_commands_entry as *const cmd_entry,
+        &cmd_list_keys_entry as *const cmd_entry,
+        &cmd_list_panes_entry as *const cmd_entry,
+        &cmd_list_sessions_entry as *const cmd_entry,
+        &cmd_list_windows_entry as *const cmd_entry,
+        &cmd_load_buffer_entry as *const cmd_entry,
+        &cmd_lock_client_entry as *const cmd_entry,
+        &cmd_lock_server_entry as *const cmd_entry,
+        &cmd_lock_session_entry as *const cmd_entry,
+        &cmd_move_pane_entry as *const cmd_entry,
+        &cmd_move_window_entry as *const cmd_entry,
+        &cmd_new_session_entry as *const cmd_entry,
+        &cmd_new_window_entry as *const cmd_entry,
+        &cmd_next_layout_entry as *const cmd_entry,
+        &cmd_next_window_entry as *const cmd_entry,
+        &cmd_paste_buffer_entry as *const cmd_entry,
+        &cmd_pipe_pane_entry as *const cmd_entry,
+        &cmd_previous_layout_entry as *const cmd_entry,
+        &cmd_previous_window_entry as *const cmd_entry,
+        &cmd_refresh_client_entry as *const cmd_entry,
+        &cmd_rename_session_entry as *const cmd_entry,
+        &cmd_rename_window_entry as *const cmd_entry,
+        &cmd_resize_pane_entry as *const cmd_entry,
+        &cmd_resize_window_entry as *const cmd_entry,
+        &cmd_respawn_pane_entry as *const cmd_entry,
+        &cmd_respawn_window_entry as *const cmd_entry,
+        &cmd_rotate_window_entry as *const cmd_entry,
+        &cmd_run_shell_entry as *const cmd_entry,
+        &cmd_save_buffer_entry as *const cmd_entry,
+        &cmd_select_layout_entry as *const cmd_entry,
+        &cmd_select_pane_entry as *const cmd_entry,
+        &cmd_select_window_entry as *const cmd_entry,
+        &cmd_send_keys_entry as *const cmd_entry,
+        &cmd_send_prefix_entry as *const cmd_entry,
+        &cmd_set_buffer_entry as *const cmd_entry,
+        &cmd_set_environment_entry as *const cmd_entry,
+        &cmd_set_hook_entry as *const cmd_entry,
+        &cmd_set_option_entry as *const cmd_entry,
+        &cmd_set_window_option_entry as *const cmd_entry,
+        &cmd_show_buffer_entry as *const cmd_entry,
+        &cmd_show_environment_entry as *const cmd_entry,
+        &cmd_show_hooks_entry as *const cmd_entry,
+        &cmd_show_messages_entry as *const cmd_entry,
+        &cmd_show_options_entry as *const cmd_entry,
+        &cmd_show_window_options_entry as *const cmd_entry,
+        &cmd_source_file_entry as *const cmd_entry,
+        &cmd_split_window_entry as *const cmd_entry,
+        &cmd_start_server_entry as *const cmd_entry,
+        &cmd_suspend_client_entry as *const cmd_entry,
+        &cmd_swap_pane_entry as *const cmd_entry,
+        &cmd_swap_window_entry as *const cmd_entry,
+        &cmd_switch_client_entry as *const cmd_entry,
+        &cmd_unbind_key_entry as *const cmd_entry,
+        &cmd_unlink_window_entry as *const cmd_entry,
+        &cmd_wait_for_entry as *const cmd_entry,
+        0 as *const cmd_entry,
+    ]
+};
 /* Next group number for new command list. */
 static mut cmd_list_next_group: u_int = 1 as libc::c_int as u_int;
 /* Log an argument vector. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_log_argv(mut argc: libc::c_int,
-                                      mut argv: *mut *mut libc::c_char,
-                                      mut fmt: *const libc::c_char,
-                                      mut args: ...) {
+pub unsafe extern "C" fn cmd_log_argv(
+    mut argc: libc::c_int,
+    mut argv: *mut *mut libc::c_char,
+    mut fmt: *const libc::c_char,
+    mut args: ...
+) {
     let mut prefix: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut ap: ::std::ffi::VaListImpl;
     let mut i: libc::c_int = 0;
@@ -1462,31 +1455,35 @@ pub unsafe extern "C" fn cmd_log_argv(mut argc: libc::c_int,
     xvasprintf(&mut prefix, fmt, ap.as_va_list());
     i = 0 as libc::c_int;
     while i < argc {
-        log_debug(b"%s: argv[%d]=%s\x00" as *const u8 as *const libc::c_char,
-                  prefix, i, *argv.offset(i as isize));
+        log_debug(
+            b"%s: argv[%d]=%s\x00" as *const u8 as *const libc::c_char,
+            prefix,
+            i,
+            *argv.offset(i as isize),
+        );
         i += 1
     }
     free(prefix as *mut libc::c_void);
 }
 /* Prepend to an argument vector. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_prepend_argv(mut argc: *mut libc::c_int,
-                                          mut argv:
-                                              *mut *mut *mut libc::c_char,
-                                          mut arg: *mut libc::c_char) {
+pub unsafe extern "C" fn cmd_prepend_argv(
+    mut argc: *mut libc::c_int,
+    mut argv: *mut *mut *mut libc::c_char,
+    mut arg: *mut libc::c_char,
+) {
     let mut new_argv: *mut *mut libc::c_char = 0 as *mut *mut libc::c_char;
     let mut i: libc::c_int = 0;
-    new_argv =
-        xreallocarray(0 as *mut libc::c_void,
-                      (*argc + 1 as libc::c_int) as size_t,
-                      ::std::mem::size_of::<*mut libc::c_char>() as
-                          libc::c_ulong) as *mut *mut libc::c_char;
+    new_argv = xreallocarray(
+        0 as *mut libc::c_void,
+        (*argc + 1 as libc::c_int) as size_t,
+        ::std::mem::size_of::<*mut libc::c_char>() as libc::c_ulong,
+    ) as *mut *mut libc::c_char;
     let ref mut fresh0 = *new_argv.offset(0 as libc::c_int as isize);
     *fresh0 = xstrdup(arg);
     i = 0 as libc::c_int;
     while i < *argc {
-        let ref mut fresh1 =
-            *new_argv.offset((1 as libc::c_int + i) as isize);
+        let ref mut fresh1 = *new_argv.offset((1 as libc::c_int + i) as isize);
         *fresh1 = *(*argv).offset(i as isize);
         i += 1
     }
@@ -1496,15 +1493,16 @@ pub unsafe extern "C" fn cmd_prepend_argv(mut argc: *mut libc::c_int,
 }
 /* Append to an argument vector. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_append_argv(mut argc: *mut libc::c_int,
-                                         mut argv:
-                                             *mut *mut *mut libc::c_char,
-                                         mut arg: *mut libc::c_char) {
-    *argv =
-        xreallocarray(*argv as *mut libc::c_void,
-                      (*argc + 1 as libc::c_int) as size_t,
-                      ::std::mem::size_of::<*mut libc::c_char>() as
-                          libc::c_ulong) as *mut *mut libc::c_char;
+pub unsafe extern "C" fn cmd_append_argv(
+    mut argc: *mut libc::c_int,
+    mut argv: *mut *mut *mut libc::c_char,
+    mut arg: *mut libc::c_char,
+) {
+    *argv = xreallocarray(
+        *argv as *mut libc::c_void,
+        (*argc + 1 as libc::c_int) as size_t,
+        ::std::mem::size_of::<*mut libc::c_char>() as libc::c_ulong,
+    ) as *mut *mut libc::c_char;
     let fresh2 = *argc;
     *argc = *argc + 1;
     let ref mut fresh3 = *(*argv).offset(fresh2 as isize);
@@ -1512,26 +1510,30 @@ pub unsafe extern "C" fn cmd_append_argv(mut argc: *mut libc::c_int,
 }
 /* Pack an argument vector up into a buffer. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_pack_argv(mut argc: libc::c_int,
-                                       mut argv: *mut *mut libc::c_char,
-                                       mut buf: *mut libc::c_char,
-                                       mut len: size_t) -> libc::c_int {
+pub unsafe extern "C" fn cmd_pack_argv(
+    mut argc: libc::c_int,
+    mut argv: *mut *mut libc::c_char,
+    mut buf: *mut libc::c_char,
+    mut len: size_t,
+) -> libc::c_int {
     let mut arglen: size_t = 0;
     let mut i: libc::c_int = 0;
-    if argc == 0 as libc::c_int { return 0 as libc::c_int }
-    cmd_log_argv(argc, argv, b"%s\x00" as *const u8 as *const libc::c_char,
-                 (*::std::mem::transmute::<&[u8; 14],
-                                           &[libc::c_char; 14]>(b"cmd_pack_argv\x00")).as_ptr());
+    if argc == 0 as libc::c_int {
+        return 0 as libc::c_int;
+    }
+    cmd_log_argv(
+        argc,
+        argv,
+        b"%s\x00" as *const u8 as *const libc::c_char,
+        (*::std::mem::transmute::<&[u8; 14], &[libc::c_char; 14]>(b"cmd_pack_argv\x00")).as_ptr(),
+    );
     *buf = '\u{0}' as i32 as libc::c_char;
     i = 0 as libc::c_int;
     while i < argc {
         if strlcpy(buf, *argv.offset(i as isize), len) >= len {
-            return -(1 as libc::c_int)
+            return -(1 as libc::c_int);
         }
-        arglen =
-            strlen(*argv.offset(i as
-                                    isize)).wrapping_add(1 as libc::c_int as
-                                                             libc::c_ulong);
+        arglen = strlen(*argv.offset(i as isize)).wrapping_add(1 as libc::c_int as libc::c_ulong);
         buf = buf.offset(arglen as isize);
         len = (len as libc::c_ulong).wrapping_sub(arglen) as size_t as size_t;
         i += 1
@@ -1540,26 +1542,28 @@ pub unsafe extern "C" fn cmd_pack_argv(mut argc: libc::c_int,
 }
 /* Unpack an argument vector from a packed buffer. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_unpack_argv(mut buf: *mut libc::c_char,
-                                         mut len: size_t,
-                                         mut argc: libc::c_int,
-                                         mut argv:
-                                             *mut *mut *mut libc::c_char)
- -> libc::c_int {
+pub unsafe extern "C" fn cmd_unpack_argv(
+    mut buf: *mut libc::c_char,
+    mut len: size_t,
+    mut argc: libc::c_int,
+    mut argv: *mut *mut *mut libc::c_char,
+) -> libc::c_int {
     let mut i: libc::c_int = 0;
     let mut arglen: size_t = 0;
-    if argc == 0 as libc::c_int { return 0 as libc::c_int }
-    *argv =
-        xcalloc(argc as size_t,
-                ::std::mem::size_of::<*mut libc::c_char>() as libc::c_ulong)
-            as *mut *mut libc::c_char;
-    *buf.offset(len.wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize)
-        = '\u{0}' as i32 as libc::c_char;
+    if argc == 0 as libc::c_int {
+        return 0 as libc::c_int;
+    }
+    *argv = xcalloc(
+        argc as size_t,
+        ::std::mem::size_of::<*mut libc::c_char>() as libc::c_ulong,
+    ) as *mut *mut libc::c_char;
+    *buf.offset(len.wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize) =
+        '\u{0}' as i32 as libc::c_char;
     i = 0 as libc::c_int;
     while i < argc {
         if len == 0 as libc::c_int as libc::c_ulong {
             cmd_free_argv(argc, *argv);
-            return -(1 as libc::c_int)
+            return -(1 as libc::c_int);
         }
         arglen = strlen(buf).wrapping_add(1 as libc::c_int as libc::c_ulong);
         let ref mut fresh4 = *(*argv).offset(i as isize);
@@ -1568,23 +1572,29 @@ pub unsafe extern "C" fn cmd_unpack_argv(mut buf: *mut libc::c_char,
         len = (len as libc::c_ulong).wrapping_sub(arglen) as size_t as size_t;
         i += 1
     }
-    cmd_log_argv(argc, *argv, b"%s\x00" as *const u8 as *const libc::c_char,
-                 (*::std::mem::transmute::<&[u8; 16],
-                                           &[libc::c_char; 16]>(b"cmd_unpack_argv\x00")).as_ptr());
+    cmd_log_argv(
+        argc,
+        *argv,
+        b"%s\x00" as *const u8 as *const libc::c_char,
+        (*::std::mem::transmute::<&[u8; 16], &[libc::c_char; 16]>(b"cmd_unpack_argv\x00")).as_ptr(),
+    );
     return 0 as libc::c_int;
 }
 /* Copy an argument vector, ensuring it is terminated by NULL. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_copy_argv(mut argc: libc::c_int,
-                                       mut argv: *mut *mut libc::c_char)
- -> *mut *mut libc::c_char {
+pub unsafe extern "C" fn cmd_copy_argv(
+    mut argc: libc::c_int,
+    mut argv: *mut *mut libc::c_char,
+) -> *mut *mut libc::c_char {
     let mut new_argv: *mut *mut libc::c_char = 0 as *mut *mut libc::c_char;
     let mut i: libc::c_int = 0;
-    if argc == 0 as libc::c_int { return 0 as *mut *mut libc::c_char }
-    new_argv =
-        xcalloc((argc + 1 as libc::c_int) as size_t,
-                ::std::mem::size_of::<*mut libc::c_char>() as libc::c_ulong)
-            as *mut *mut libc::c_char;
+    if argc == 0 as libc::c_int {
+        return 0 as *mut *mut libc::c_char;
+    }
+    new_argv = xcalloc(
+        (argc + 1 as libc::c_int) as size_t,
+        ::std::mem::size_of::<*mut libc::c_char>() as libc::c_ulong,
+    ) as *mut *mut libc::c_char;
     i = 0 as libc::c_int;
     while i < argc {
         if !(*argv.offset(i as isize)).is_null() {
@@ -1597,10 +1607,11 @@ pub unsafe extern "C" fn cmd_copy_argv(mut argc: libc::c_int,
 }
 /* Free an argument vector. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_free_argv(mut argc: libc::c_int,
-                                       mut argv: *mut *mut libc::c_char) {
+pub unsafe extern "C" fn cmd_free_argv(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) {
     let mut i: libc::c_int = 0;
-    if argc == 0 as libc::c_int { return }
+    if argc == 0 as libc::c_int {
+        return;
+    }
     i = 0 as libc::c_int;
     while i < argc {
         free(*argv.offset(i as isize) as *mut libc::c_void);
@@ -1610,30 +1621,31 @@ pub unsafe extern "C" fn cmd_free_argv(mut argc: libc::c_int,
 }
 /* Convert argument vector to a string. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_stringify_argv(mut argc: libc::c_int,
-                                            mut argv: *mut *mut libc::c_char)
- -> *mut libc::c_char {
+pub unsafe extern "C" fn cmd_stringify_argv(
+    mut argc: libc::c_int,
+    mut argv: *mut *mut libc::c_char,
+) -> *mut libc::c_char {
     let mut buf: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut s: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut len: size_t = 0 as libc::c_int as size_t;
     let mut i: libc::c_int = 0;
     if argc == 0 as libc::c_int {
-        return xstrdup(b"\x00" as *const u8 as *const libc::c_char)
+        return xstrdup(b"\x00" as *const u8 as *const libc::c_char);
     }
     i = 0 as libc::c_int;
     while i < argc {
         s = args_escape(*argv.offset(i as isize));
-        log_debug(b"%s: %u %s = %s\x00" as *const u8 as *const libc::c_char,
-                  (*::std::mem::transmute::<&[u8; 19],
-                                            &[libc::c_char; 19]>(b"cmd_stringify_argv\x00")).as_ptr(),
-                  i, *argv.offset(i as isize), s);
-        len =
-            (len as
-                 libc::c_ulong).wrapping_add(strlen(s).wrapping_add(1 as
-                                                                        libc::c_int
-                                                                        as
-                                                                        libc::c_ulong))
-                as size_t as size_t;
+        log_debug(
+            b"%s: %u %s = %s\x00" as *const u8 as *const libc::c_char,
+            (*::std::mem::transmute::<&[u8; 19], &[libc::c_char; 19]>(b"cmd_stringify_argv\x00"))
+                .as_ptr(),
+            i,
+            *argv.offset(i as isize),
+            s,
+        );
+        len = (len as libc::c_ulong)
+            .wrapping_add(strlen(s).wrapping_add(1 as libc::c_int as libc::c_ulong))
+            as size_t as size_t;
         buf = xrealloc(buf as *mut libc::c_void, len) as *mut libc::c_char;
         if i == 0 as libc::c_int {
             *buf = '\u{0}' as i32 as libc::c_char
@@ -1648,8 +1660,7 @@ pub unsafe extern "C" fn cmd_stringify_argv(mut argc: libc::c_int,
 }
 /* Get entry for command. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_get_entry(mut cmd: *mut cmd)
- -> *const cmd_entry {
+pub unsafe extern "C" fn cmd_get_entry(mut cmd: *mut cmd) -> *const cmd_entry {
     return (*cmd).entry;
 }
 /* Get arguments for command. */
@@ -1664,39 +1675,43 @@ pub unsafe extern "C" fn cmd_get_group(mut cmd: *mut cmd) -> u_int {
 }
 /* Get file and line for command. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_get_source(mut cmd: *mut cmd,
-                                        mut file: *mut *const libc::c_char,
-                                        mut line: *mut u_int) {
-    if !file.is_null() { *file = (*cmd).file }
-    if !line.is_null() { *line = (*cmd).line };
+pub unsafe extern "C" fn cmd_get_source(
+    mut cmd: *mut cmd,
+    mut file: *mut *const libc::c_char,
+    mut line: *mut u_int,
+) {
+    if !file.is_null() {
+        *file = (*cmd).file
+    }
+    if !line.is_null() {
+        *line = (*cmd).line
+    };
 }
 /* Look for an alias for a command. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_get_alias(mut name: *const libc::c_char)
- -> *mut libc::c_char {
+pub unsafe extern "C" fn cmd_get_alias(mut name: *const libc::c_char) -> *mut libc::c_char {
     let mut o: *mut options_entry = 0 as *mut options_entry;
     let mut a: *mut options_array_item = 0 as *mut options_array_item;
     let mut ov: *mut options_value = 0 as *mut options_value;
     let mut wanted: size_t = 0;
     let mut n: size_t = 0;
     let mut equals: *const libc::c_char = 0 as *const libc::c_char;
-    o =
-        options_get_only(global_options,
-                         b"command-alias\x00" as *const u8 as
-                             *const libc::c_char);
-    if o.is_null() { return 0 as *mut libc::c_char }
+    o = options_get_only(
+        global_options,
+        b"command-alias\x00" as *const u8 as *const libc::c_char,
+    );
+    if o.is_null() {
+        return 0 as *mut libc::c_char;
+    }
     wanted = strlen(name);
     a = options_array_first(o);
     while !a.is_null() {
         ov = options_array_item_value(a);
         equals = strchr((*ov).string, '=' as i32);
         if !equals.is_null() {
-            n =
-                equals.wrapping_offset_from((*ov).string) as libc::c_long as
-                    size_t;
-            if n == wanted &&
-                   strncmp(name, (*ov).string, n) == 0 as libc::c_int {
-                return xstrdup(equals.offset(1 as libc::c_int as isize))
+            n = equals.wrapping_offset_from((*ov).string) as libc::c_long as size_t;
+            if n == wanted && strncmp(name, (*ov).string, n) == 0 as libc::c_int {
+                return xstrdup(equals.offset(1 as libc::c_int as isize));
             }
         }
         a = options_array_next(a)
@@ -1704,9 +1719,10 @@ pub unsafe extern "C" fn cmd_get_alias(mut name: *const libc::c_char)
     return 0 as *mut libc::c_char;
 }
 /* Look up a command entry by name. */
-unsafe extern "C" fn cmd_find(mut name: *const libc::c_char,
-                              mut cause: *mut *mut libc::c_char)
- -> *const cmd_entry {
+unsafe extern "C" fn cmd_find(
+    mut name: *const libc::c_char,
+    mut cause: *mut *mut libc::c_char,
+) -> *const cmd_entry {
     let mut loop_0: *mut *const cmd_entry = 0 as *mut *const cmd_entry;
     let mut entry: *const cmd_entry = 0 as *const cmd_entry;
     let mut found: *const cmd_entry = 0 as *const cmd_entry;
@@ -1716,17 +1732,19 @@ unsafe extern "C" fn cmd_find(mut name: *const libc::c_char,
     loop_0 = cmd_table.as_mut_ptr();
     while !(*loop_0).is_null() {
         entry = *loop_0;
-        if !(*entry).alias.is_null() &&
-               strcmp((*entry).alias, name) == 0 as libc::c_int {
+        if !(*entry).alias.is_null() && strcmp((*entry).alias, name) == 0 as libc::c_int {
             ambiguous = 0 as libc::c_int;
             found = entry;
-            break ;
+            break;
         } else {
-            if !(strncmp((*entry).name, name, strlen(name)) !=
-                     0 as libc::c_int) {
-                if !found.is_null() { ambiguous = 1 as libc::c_int }
+            if !(strncmp((*entry).name, name, strlen(name)) != 0 as libc::c_int) {
+                if !found.is_null() {
+                    ambiguous = 1 as libc::c_int
+                }
                 found = entry;
-                if strcmp((*entry).name, name) == 0 as libc::c_int { break ; }
+                if strcmp((*entry).name, name) == 0 as libc::c_int {
+                    break;
+                }
             }
             loop_0 = loop_0.offset(1)
         }
@@ -1736,92 +1754,106 @@ unsafe extern "C" fn cmd_find(mut name: *const libc::c_char,
         loop_0 = cmd_table.as_mut_ptr();
         while !(*loop_0).is_null() {
             entry = *loop_0;
-            if !(strncmp((*entry).name, name, strlen(name)) !=
-                     0 as libc::c_int) {
-                if strlcat(s.as_mut_ptr(), (*entry).name,
-                           ::std::mem::size_of::<[libc::c_char; 8192]>() as
-                               libc::c_ulong) >=
-                       ::std::mem::size_of::<[libc::c_char; 8192]>() as
-                           libc::c_ulong {
-                    break ;
+            if !(strncmp((*entry).name, name, strlen(name)) != 0 as libc::c_int) {
+                if strlcat(
+                    s.as_mut_ptr(),
+                    (*entry).name,
+                    ::std::mem::size_of::<[libc::c_char; 8192]>() as libc::c_ulong,
+                ) >= ::std::mem::size_of::<[libc::c_char; 8192]>() as libc::c_ulong
+                {
+                    break;
                 }
-                if strlcat(s.as_mut_ptr(),
-                           b", \x00" as *const u8 as *const libc::c_char,
-                           ::std::mem::size_of::<[libc::c_char; 8192]>() as
-                               libc::c_ulong) >=
-                       ::std::mem::size_of::<[libc::c_char; 8192]>() as
-                           libc::c_ulong {
-                    break ;
+                if strlcat(
+                    s.as_mut_ptr(),
+                    b", \x00" as *const u8 as *const libc::c_char,
+                    ::std::mem::size_of::<[libc::c_char; 8192]>() as libc::c_ulong,
+                ) >= ::std::mem::size_of::<[libc::c_char; 8192]>() as libc::c_ulong
+                {
+                    break;
                 }
             }
             loop_0 = loop_0.offset(1)
         }
-        s[strlen(s.as_mut_ptr()).wrapping_sub(2 as libc::c_int as
-                                                  libc::c_ulong) as usize] =
+        s[strlen(s.as_mut_ptr()).wrapping_sub(2 as libc::c_int as libc::c_ulong) as usize] =
             '\u{0}' as i32 as libc::c_char;
-        xasprintf(cause,
-                  b"ambiguous command: %s, could be: %s\x00" as *const u8 as
-                      *const libc::c_char, name, s.as_mut_ptr());
-        return 0 as *const cmd_entry
+        xasprintf(
+            cause,
+            b"ambiguous command: %s, could be: %s\x00" as *const u8 as *const libc::c_char,
+            name,
+            s.as_mut_ptr(),
+        );
+        return 0 as *const cmd_entry;
     } else {
         if found.is_null() {
-            xasprintf(cause,
-                      b"unknown command: %s\x00" as *const u8 as
-                          *const libc::c_char, name);
-            return 0 as *const cmd_entry
+            xasprintf(
+                cause,
+                b"unknown command: %s\x00" as *const u8 as *const libc::c_char,
+                name,
+            );
+            return 0 as *const cmd_entry;
         }
-        return found
+        return found;
     };
 }
 /* Parse a single command from an argument vector. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_parse(mut argc: libc::c_int,
-                                   mut argv: *mut *mut libc::c_char,
-                                   mut file: *const libc::c_char,
-                                   mut line: u_int,
-                                   mut cause: *mut *mut libc::c_char)
- -> *mut cmd {
+pub unsafe extern "C" fn cmd_parse(
+    mut argc: libc::c_int,
+    mut argv: *mut *mut libc::c_char,
+    mut file: *const libc::c_char,
+    mut line: u_int,
+    mut cause: *mut *mut libc::c_char,
+) -> *mut cmd {
     let mut entry: *const cmd_entry = 0 as *const cmd_entry;
     let mut name: *const libc::c_char = 0 as *const libc::c_char;
     let mut cmd: *mut cmd = 0 as *mut cmd;
     let mut args: *mut args = 0 as *mut args;
     if argc == 0 as libc::c_int {
-        xasprintf(cause,
-                  b"no command\x00" as *const u8 as *const libc::c_char);
-        return 0 as *mut cmd
+        xasprintf(cause, b"no command\x00" as *const u8 as *const libc::c_char);
+        return 0 as *mut cmd;
     }
     name = *argv.offset(0 as libc::c_int as isize);
     entry = cmd_find(name, cause);
-    if entry.is_null() { return 0 as *mut cmd }
-    cmd_log_argv(argc, argv,
-                 b"%s: %s\x00" as *const u8 as *const libc::c_char,
-                 (*::std::mem::transmute::<&[u8; 10],
-                                           &[libc::c_char; 10]>(b"cmd_parse\x00")).as_ptr(),
-                 (*entry).name);
+    if entry.is_null() {
+        return 0 as *mut cmd;
+    }
+    cmd_log_argv(
+        argc,
+        argv,
+        b"%s: %s\x00" as *const u8 as *const libc::c_char,
+        (*::std::mem::transmute::<&[u8; 10], &[libc::c_char; 10]>(b"cmd_parse\x00")).as_ptr(),
+        (*entry).name,
+    );
     args = args_parse((*entry).args.template, argc, argv);
     if !args.is_null() {
-        if !((*entry).args.lower != -(1 as libc::c_int) &&
-                 (*args).argc < (*entry).args.lower) {
-            if !((*entry).args.upper != -(1 as libc::c_int) &&
-                     (*args).argc > (*entry).args.upper) {
-                cmd =
-                    xcalloc(1 as libc::c_int as size_t,
-                            ::std::mem::size_of::<cmd>() as libc::c_ulong) as
-                        *mut cmd;
+        if !((*entry).args.lower != -(1 as libc::c_int) && (*args).argc < (*entry).args.lower) {
+            if !((*entry).args.upper != -(1 as libc::c_int) && (*args).argc > (*entry).args.upper) {
+                cmd = xcalloc(
+                    1 as libc::c_int as size_t,
+                    ::std::mem::size_of::<cmd>() as libc::c_ulong,
+                ) as *mut cmd;
                 (*cmd).entry = entry;
                 (*cmd).args = args;
-                if !file.is_null() { (*cmd).file = xstrdup(file) }
+                if !file.is_null() {
+                    (*cmd).file = xstrdup(file)
+                }
                 (*cmd).line = line;
                 (*cmd).alias = 0 as *mut libc::c_char;
                 (*cmd).argc = argc;
                 (*cmd).argv = cmd_copy_argv(argc, argv);
-                return cmd
+                return cmd;
             }
         }
     }
-    if !args.is_null() { args_free(args); }
-    xasprintf(cause, b"usage: %s %s\x00" as *const u8 as *const libc::c_char,
-              (*entry).name, (*entry).usage);
+    if !args.is_null() {
+        args_free(args);
+    }
+    xasprintf(
+        cause,
+        b"usage: %s %s\x00" as *const u8 as *const libc::c_char,
+        (*entry).name,
+        (*entry).usage,
+    );
     return 0 as *mut cmd;
 }
 /* Free a command. */
@@ -1840,10 +1872,15 @@ pub unsafe extern "C" fn cmd_print(mut cmd: *mut cmd) -> *mut libc::c_char {
     let mut s: *mut libc::c_char = 0 as *mut libc::c_char;
     s = args_print((*cmd).args);
     if *s as libc::c_int != '\u{0}' as i32 {
-        xasprintf(&mut out as *mut *mut libc::c_char,
-                  b"%s %s\x00" as *const u8 as *const libc::c_char,
-                  (*(*cmd).entry).name, s);
-    } else { out = xstrdup((*(*cmd).entry).name) }
+        xasprintf(
+            &mut out as *mut *mut libc::c_char,
+            b"%s %s\x00" as *const u8 as *const libc::c_char,
+            (*(*cmd).entry).name,
+            s,
+        );
+    } else {
+        out = xstrdup((*(*cmd).entry).name)
+    }
     free(s as *mut libc::c_void);
     return out;
 }
@@ -1851,25 +1888,25 @@ pub unsafe extern "C" fn cmd_print(mut cmd: *mut cmd) -> *mut libc::c_char {
 #[no_mangle]
 pub unsafe extern "C" fn cmd_list_new() -> *mut cmd_list {
     let mut cmdlist: *mut cmd_list = 0 as *mut cmd_list;
-    cmdlist =
-        xcalloc(1 as libc::c_int as size_t,
-                ::std::mem::size_of::<cmd_list>() as libc::c_ulong) as
-            *mut cmd_list;
+    cmdlist = xcalloc(
+        1 as libc::c_int as size_t,
+        ::std::mem::size_of::<cmd_list>() as libc::c_ulong,
+    ) as *mut cmd_list;
     (*cmdlist).references = 1 as libc::c_int;
     let fresh6 = cmd_list_next_group;
     cmd_list_next_group = cmd_list_next_group.wrapping_add(1);
     (*cmdlist).group = fresh6;
-    (*cmdlist).list =
-        xcalloc(1 as libc::c_int as size_t,
-                ::std::mem::size_of::<cmds>() as libc::c_ulong) as *mut cmds;
+    (*cmdlist).list = xcalloc(
+        1 as libc::c_int as size_t,
+        ::std::mem::size_of::<cmds>() as libc::c_ulong,
+    ) as *mut cmds;
     (*(*cmdlist).list).tqh_first = 0 as *mut cmd;
     (*(*cmdlist).list).tqh_last = &mut (*(*cmdlist).list).tqh_first;
     return cmdlist;
 }
 /* Append a command to a command list. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_list_append(mut cmdlist: *mut cmd_list,
-                                         mut cmd: *mut cmd) {
+pub unsafe extern "C" fn cmd_list_append(mut cmdlist: *mut cmd_list, mut cmd: *mut cmd) {
     (*cmd).group = (*cmdlist).group;
     (*cmd).qentry.tqe_next = 0 as *mut cmd;
     (*cmd).qentry.tqe_prev = (*(*cmdlist).list).tqh_last;
@@ -1878,12 +1915,10 @@ pub unsafe extern "C" fn cmd_list_append(mut cmdlist: *mut cmd_list,
 }
 /* Move all commands from one command list to another */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_list_move(mut cmdlist: *mut cmd_list,
-                                       mut from: *mut cmd_list) {
+pub unsafe extern "C" fn cmd_list_move(mut cmdlist: *mut cmd_list, mut from: *mut cmd_list) {
     if !(*(*from).list).tqh_first.is_null() {
         *(*(*cmdlist).list).tqh_last = (*(*from).list).tqh_first;
-        (*(*(*from).list).tqh_first).qentry.tqe_prev =
-            (*(*cmdlist).list).tqh_last;
+        (*(*(*from).list).tqh_first).qentry.tqe_prev = (*(*cmdlist).list).tqh_last;
         (*(*cmdlist).list).tqh_last = (*(*from).list).tqh_last;
         (*(*from).list).tqh_first = 0 as *mut cmd;
         (*(*from).list).tqh_last = &mut (*(*from).list).tqh_first
@@ -1898,13 +1933,19 @@ pub unsafe extern "C" fn cmd_list_free(mut cmdlist: *mut cmd_list) {
     let mut cmd: *mut cmd = 0 as *mut cmd;
     let mut cmd1: *mut cmd = 0 as *mut cmd;
     (*cmdlist).references -= 1;
-    if (*cmdlist).references != 0 as libc::c_int { return }
+    if (*cmdlist).references != 0 as libc::c_int {
+        return;
+    }
     cmd = (*(*cmdlist).list).tqh_first;
-    while !cmd.is_null() &&
-              { cmd1 = (*cmd).qentry.tqe_next; (1 as libc::c_int) != 0 } {
+    while !cmd.is_null() && {
+        cmd1 = (*cmd).qentry.tqe_next;
+        (1 as libc::c_int) != 0
+    } {
         if !(*cmd).qentry.tqe_next.is_null() {
             (*(*cmd).qentry.tqe_next).qentry.tqe_prev = (*cmd).qentry.tqe_prev
-        } else { (*(*cmdlist).list).tqh_last = (*cmd).qentry.tqe_prev }
+        } else {
+            (*(*cmdlist).list).tqh_last = (*cmd).qentry.tqe_prev
+        }
         *(*cmd).qentry.tqe_prev = (*cmd).qentry.tqe_next;
         cmd_free(cmd);
         cmd = cmd1
@@ -1914,9 +1955,10 @@ pub unsafe extern "C" fn cmd_list_free(mut cmdlist: *mut cmd_list) {
 }
 /* Get a command list as a string. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_list_print(mut cmdlist: *mut cmd_list,
-                                        mut escaped: libc::c_int)
- -> *mut libc::c_char {
+pub unsafe extern "C" fn cmd_list_print(
+    mut cmdlist: *mut cmd_list,
+    mut escaped: libc::c_int,
+) -> *mut libc::c_char {
     let mut cmd: *mut cmd = 0 as *mut cmd;
     let mut next: *mut cmd = 0 as *mut cmd;
     let mut buf: *mut libc::c_char = 0 as *mut libc::c_char;
@@ -1927,33 +1969,27 @@ pub unsafe extern "C" fn cmd_list_print(mut cmdlist: *mut cmd_list,
     cmd = (*(*cmdlist).list).tqh_first;
     while !cmd.is_null() {
         this = cmd_print(cmd);
-        len =
-            (len as
-                 libc::c_ulong).wrapping_add(strlen(this).wrapping_add(6 as
-                                                                           libc::c_int
-                                                                           as
-                                                                           libc::c_ulong))
-                as size_t as size_t;
+        len = (len as libc::c_ulong)
+            .wrapping_add(strlen(this).wrapping_add(6 as libc::c_int as libc::c_ulong))
+            as size_t as size_t;
         buf = xrealloc(buf as *mut libc::c_void, len) as *mut libc::c_char;
         strlcat(buf, this, len);
         next = (*cmd).qentry.tqe_next;
         if !next.is_null() {
             if (*cmd).group != (*next).group {
                 if escaped != 0 {
-                    strlcat(buf,
-                            b" \\;\\; \x00" as *const u8 as
-                                *const libc::c_char, len);
+                    strlcat(
+                        buf,
+                        b" \\;\\; \x00" as *const u8 as *const libc::c_char,
+                        len,
+                    );
                 } else {
-                    strlcat(buf,
-                            b" ;; \x00" as *const u8 as *const libc::c_char,
-                            len);
+                    strlcat(buf, b" ;; \x00" as *const u8 as *const libc::c_char, len);
                 }
             } else if escaped != 0 {
-                strlcat(buf, b" \\; \x00" as *const u8 as *const libc::c_char,
-                        len);
+                strlcat(buf, b" \\; \x00" as *const u8 as *const libc::c_char, len);
             } else {
-                strlcat(buf, b" ; \x00" as *const u8 as *const libc::c_char,
-                        len);
+                strlcat(buf, b" ; \x00" as *const u8 as *const libc::c_char, len);
             }
         }
         free(this as *mut libc::c_void);
@@ -1963,8 +1999,7 @@ pub unsafe extern "C" fn cmd_list_print(mut cmdlist: *mut cmd_list,
 }
 /* Get first command in list. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_list_first(mut cmdlist: *mut cmd_list)
- -> *mut cmd {
+pub unsafe extern "C" fn cmd_list_first(mut cmdlist: *mut cmd_list) -> *mut cmd {
     return (*(*cmdlist).list).tqh_first;
 }
 /* Get next command in list. */
@@ -1974,36 +2009,45 @@ pub unsafe extern "C" fn cmd_list_next(mut cmd: *mut cmd) -> *mut cmd {
 }
 /* Do all of the commands in this command list have this flag? */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_list_all_have(mut cmdlist: *mut cmd_list,
-                                           mut flag: libc::c_int)
- -> libc::c_int {
+pub unsafe extern "C" fn cmd_list_all_have(
+    mut cmdlist: *mut cmd_list,
+    mut flag: libc::c_int,
+) -> libc::c_int {
     let mut cmd: *mut cmd = 0 as *mut cmd;
     cmd = (*(*cmdlist).list).tqh_first;
     while !cmd.is_null() {
-        if !(*(*cmd).entry).flags & flag != 0 { return 0 as libc::c_int }
+        if !(*(*cmd).entry).flags & flag != 0 {
+            return 0 as libc::c_int;
+        }
         cmd = (*cmd).qentry.tqe_next
     }
     return 1 as libc::c_int;
 }
 /* Do any of the commands in this command list have this flag? */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_list_any_have(mut cmdlist: *mut cmd_list,
-                                           mut flag: libc::c_int)
- -> libc::c_int {
+pub unsafe extern "C" fn cmd_list_any_have(
+    mut cmdlist: *mut cmd_list,
+    mut flag: libc::c_int,
+) -> libc::c_int {
     let mut cmd: *mut cmd = 0 as *mut cmd;
     cmd = (*(*cmdlist).list).tqh_first;
     while !cmd.is_null() {
-        if (*(*cmd).entry).flags & flag != 0 { return 1 as libc::c_int }
+        if (*(*cmd).entry).flags & flag != 0 {
+            return 1 as libc::c_int;
+        }
         cmd = (*cmd).qentry.tqe_next
     }
     return 0 as libc::c_int;
 }
 /* Adjust current mouse position for a pane. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_mouse_at(mut wp: *mut window_pane,
-                                      mut m: *mut mouse_event,
-                                      mut xp: *mut u_int, mut yp: *mut u_int,
-                                      mut last: libc::c_int) -> libc::c_int {
+pub unsafe extern "C" fn cmd_mouse_at(
+    mut wp: *mut window_pane,
+    mut m: *mut mouse_event,
+    mut xp: *mut u_int,
+    mut yp: *mut u_int,
+    mut last: libc::c_int,
+) -> libc::c_int {
     let mut x: u_int = 0;
     let mut y: u_int = 0;
     if last != 0 {
@@ -2013,85 +2057,110 @@ pub unsafe extern "C" fn cmd_mouse_at(mut wp: *mut window_pane,
         x = (*m).x.wrapping_add((*m).ox);
         y = (*m).y.wrapping_add((*m).oy)
     }
-    log_debug(b"%s: x=%u, y=%u%s\x00" as *const u8 as *const libc::c_char,
-              (*::std::mem::transmute::<&[u8; 13],
-                                        &[libc::c_char; 13]>(b"cmd_mouse_at\x00")).as_ptr(),
-              x, y,
-              if last != 0 {
-                  b" (last)\x00" as *const u8 as *const libc::c_char
-              } else { b"\x00" as *const u8 as *const libc::c_char });
+    log_debug(
+        b"%s: x=%u, y=%u%s\x00" as *const u8 as *const libc::c_char,
+        (*::std::mem::transmute::<&[u8; 13], &[libc::c_char; 13]>(b"cmd_mouse_at\x00")).as_ptr(),
+        x,
+        y,
+        if last != 0 {
+            b" (last)\x00" as *const u8 as *const libc::c_char
+        } else {
+            b"\x00" as *const u8 as *const libc::c_char
+        },
+    );
     if (*m).statusat == 0 as libc::c_int && y >= (*m).statuslines {
-        y =
-            (y as libc::c_uint).wrapping_sub((*m).statuslines) as u_int as
-                u_int
+        y = (y as libc::c_uint).wrapping_sub((*m).statuslines) as u_int as u_int
     }
     if x < (*wp).xoff || x >= (*wp).xoff.wrapping_add((*wp).sx) {
-        return -(1 as libc::c_int)
+        return -(1 as libc::c_int);
     }
     if y < (*wp).yoff || y >= (*wp).yoff.wrapping_add((*wp).sy) {
-        return -(1 as libc::c_int)
+        return -(1 as libc::c_int);
     }
-    if !xp.is_null() { *xp = x.wrapping_sub((*wp).xoff) }
-    if !yp.is_null() { *yp = y.wrapping_sub((*wp).yoff) }
+    if !xp.is_null() {
+        *xp = x.wrapping_sub((*wp).xoff)
+    }
+    if !yp.is_null() {
+        *yp = y.wrapping_sub((*wp).yoff)
+    }
     return 0 as libc::c_int;
 }
 /* Get current mouse window if any. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_mouse_window(mut m: *mut mouse_event,
-                                          mut sp: *mut *mut session)
- -> *mut winlink {
+pub unsafe extern "C" fn cmd_mouse_window(
+    mut m: *mut mouse_event,
+    mut sp: *mut *mut session,
+) -> *mut winlink {
     let mut s: *mut session = 0 as *mut session;
     let mut w: *mut window = 0 as *mut window;
     let mut wl: *mut winlink = 0 as *mut winlink;
-    if (*m).valid == 0 { return 0 as *mut winlink }
-    if (*m).s == -(1 as libc::c_int) ||
-           { s = session_find_by_id((*m).s as u_int); s.is_null() } {
-        return 0 as *mut winlink
+    if (*m).valid == 0 {
+        return 0 as *mut winlink;
+    }
+    if (*m).s == -(1 as libc::c_int) || {
+        s = session_find_by_id((*m).s as u_int);
+        s.is_null()
+    } {
+        return 0 as *mut winlink;
     }
     if (*m).w == -(1 as libc::c_int) {
         wl = (*s).curw
     } else {
         w = window_find_by_id((*m).w as u_int);
-        if w.is_null() { return 0 as *mut winlink }
+        if w.is_null() {
+            return 0 as *mut winlink;
+        }
         wl = winlink_find_by_window(&mut (*s).windows, w)
     }
-    if !sp.is_null() { *sp = s }
+    if !sp.is_null() {
+        *sp = s
+    }
     return wl;
 }
 /* Get current mouse pane if any. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_mouse_pane(mut m: *mut mouse_event,
-                                        mut sp: *mut *mut session,
-                                        mut wlp: *mut *mut winlink)
- -> *mut window_pane {
+pub unsafe extern "C" fn cmd_mouse_pane(
+    mut m: *mut mouse_event,
+    mut sp: *mut *mut session,
+    mut wlp: *mut *mut winlink,
+) -> *mut window_pane {
     let mut wl: *mut winlink = 0 as *mut winlink;
     let mut wp: *mut window_pane = 0 as *mut window_pane;
     wl = cmd_mouse_window(m, sp);
-    if wl.is_null() { return 0 as *mut window_pane }
+    if wl.is_null() {
+        return 0 as *mut window_pane;
+    }
     wp = window_pane_find_by_id((*m).wp as u_int);
-    if wp.is_null() { return 0 as *mut window_pane }
-    if window_has_pane((*wl).window, wp) == 0 { return 0 as *mut window_pane }
-    if !wlp.is_null() { *wlp = wl }
+    if wp.is_null() {
+        return 0 as *mut window_pane;
+    }
+    if window_has_pane((*wl).window, wp) == 0 {
+        return 0 as *mut window_pane;
+    }
+    if !wlp.is_null() {
+        *wlp = wl
+    }
     return wp;
 }
 /* Replace the first %% or %idx in template by s. */
 #[no_mangle]
-pub unsafe extern "C" fn cmd_template_replace(mut template:
-                                                  *const libc::c_char,
-                                              mut s: *const libc::c_char,
-                                              mut idx: libc::c_int)
- -> *mut libc::c_char {
+pub unsafe extern "C" fn cmd_template_replace(
+    mut template: *const libc::c_char,
+    mut s: *const libc::c_char,
+    mut idx: libc::c_int,
+) -> *mut libc::c_char {
     let mut ch: libc::c_char = 0;
     let mut buf: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut ptr: *const libc::c_char = 0 as *const libc::c_char;
     let mut cp: *const libc::c_char = 0 as *const libc::c_char;
     let quote: [libc::c_char; 6] =
-        *::std::mem::transmute::<&[u8; 6],
-                                 &[libc::c_char; 6]>(b"\"\\$;~\x00");
+        *::std::mem::transmute::<&[u8; 6], &[libc::c_char; 6]>(b"\"\\$;~\x00");
     let mut replaced: libc::c_int = 0;
     let mut quoted: libc::c_int = 0;
     let mut len: size_t = 0;
-    if strchr(template, '%' as i32).is_null() { return xstrdup(template) }
+    if strchr(template, '%' as i32).is_null() {
+        return xstrdup(template);
+    }
     buf = xmalloc(1 as libc::c_int as size_t) as *mut libc::c_char;
     *buf = '\u{0}' as i32 as libc::c_char;
     len = 0 as libc::c_int as size_t;
@@ -2104,63 +2173,58 @@ pub unsafe extern "C" fn cmd_template_replace(mut template:
         ch = *fresh8;
         match ch as libc::c_int {
             37 => {
-                if (*ptr as libc::c_int) < '1' as i32 ||
-                       *ptr as libc::c_int > '9' as i32 ||
-                       *ptr as libc::c_int - '0' as i32 != idx {
+                if (*ptr as libc::c_int) < '1' as i32
+                    || *ptr as libc::c_int > '9' as i32
+                    || *ptr as libc::c_int - '0' as i32 != idx
+                {
                     if *ptr as libc::c_int != '%' as i32 || replaced != 0 {
                         current_block_22 = 16203760046146113240;
                     } else {
                         replaced = 1 as libc::c_int;
                         current_block_22 = 10599921512955367680;
                     }
-                } else { current_block_22 = 10599921512955367680; }
+                } else {
+                    current_block_22 = 10599921512955367680;
+                }
                 match current_block_22 {
-                    16203760046146113240 => { }
+                    16203760046146113240 => {}
                     _ => {
                         ptr = ptr.offset(1);
-                        quoted =
-                            (*ptr as libc::c_int == '%' as i32) as
-                                libc::c_int;
-                        if quoted != 0 { ptr = ptr.offset(1) }
-                        buf =
-                            xrealloc(buf as *mut libc::c_void,
-                                     len.wrapping_add(strlen(s).wrapping_mul(3
-                                                                                 as
-                                                                                 libc::c_int
-                                                                                 as
-                                                                                 libc::c_ulong)).wrapping_add(1
-                                                                                                                  as
-                                                                                                                  libc::c_int
-                                                                                                                  as
-                                                                                                                  libc::c_ulong))
-                                as *mut libc::c_char;
+                        quoted = (*ptr as libc::c_int == '%' as i32) as libc::c_int;
+                        if quoted != 0 {
+                            ptr = ptr.offset(1)
+                        }
+                        buf = xrealloc(
+                            buf as *mut libc::c_void,
+                            len.wrapping_add(
+                                strlen(s).wrapping_mul(3 as libc::c_int as libc::c_ulong),
+                            )
+                            .wrapping_add(1 as libc::c_int as libc::c_ulong),
+                        ) as *mut libc::c_char;
                         cp = s;
                         while *cp as libc::c_int != '\u{0}' as i32 {
-                            if quoted != 0 &&
-                                   !strchr(quote.as_ptr(),
-                                           *cp as libc::c_int).is_null() {
+                            if quoted != 0 && !strchr(quote.as_ptr(), *cp as libc::c_int).is_null()
+                            {
                                 let fresh9 = len;
                                 len = len.wrapping_add(1);
-                                *buf.offset(fresh9 as isize) =
-                                    '\\' as i32 as libc::c_char
+                                *buf.offset(fresh9 as isize) = '\\' as i32 as libc::c_char
                             }
                             let fresh10 = len;
                             len = len.wrapping_add(1);
                             *buf.offset(fresh10 as isize) = *cp;
                             cp = cp.offset(1)
                         }
-                        *buf.offset(len as isize) =
-                            '\u{0}' as i32 as libc::c_char;
-                        continue ;
+                        *buf.offset(len as isize) = '\u{0}' as i32 as libc::c_char;
+                        continue;
                     }
                 }
             }
-            _ => { }
+            _ => {}
         }
-        buf =
-            xrealloc(buf as *mut libc::c_void,
-                     len.wrapping_add(2 as libc::c_int as libc::c_ulong)) as
-                *mut libc::c_char;
+        buf = xrealloc(
+            buf as *mut libc::c_void,
+            len.wrapping_add(2 as libc::c_int as libc::c_ulong),
+        ) as *mut libc::c_char;
         let fresh11 = len;
         len = len.wrapping_add(1);
         *buf.offset(fresh11 as isize) = ch;

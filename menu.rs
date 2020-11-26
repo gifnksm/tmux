@@ -23,41 +23,58 @@ extern "C" {
     #[no_mangle]
     fn free(__ptr: *mut libc::c_void);
     #[no_mangle]
-    fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong)
-     -> *mut libc::c_void;
+    fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
     #[no_mangle]
     fn xcalloc(_: size_t, _: size_t) -> *mut libc::c_void;
     #[no_mangle]
-    fn xreallocarray(_: *mut libc::c_void, _: size_t, _: size_t)
-     -> *mut libc::c_void;
+    fn xreallocarray(_: *mut libc::c_void, _: size_t, _: size_t) -> *mut libc::c_void;
     #[no_mangle]
     fn xstrdup(_: *const libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
-    fn xasprintf(_: *mut *mut libc::c_char, _: *const libc::c_char, _: ...)
-     -> libc::c_int;
+    fn xasprintf(_: *mut *mut libc::c_char, _: *const libc::c_char, _: ...) -> libc::c_int;
     #[no_mangle]
-    fn format_single(_: *mut cmdq_item, _: *const libc::c_char,
-                     _: *mut client, _: *mut session, _: *mut winlink,
-                     _: *mut window_pane) -> *mut libc::c_char;
+    fn format_single(
+        _: *mut cmdq_item,
+        _: *const libc::c_char,
+        _: *mut client,
+        _: *mut session,
+        _: *mut winlink,
+        _: *mut window_pane,
+    ) -> *mut libc::c_char;
     #[no_mangle]
-    fn format_single_from_state(_: *mut cmdq_item, _: *const libc::c_char,
-                                _: *mut client, _: *mut cmd_find_state)
-     -> *mut libc::c_char;
+    fn format_single_from_state(
+        _: *mut cmdq_item,
+        _: *const libc::c_char,
+        _: *mut client,
+        _: *mut cmd_find_state,
+    ) -> *mut libc::c_char;
     #[no_mangle]
     fn format_width(_: *const libc::c_char) -> u_int;
     #[no_mangle]
-    fn tty_draw_line(_: *mut tty, _: *mut screen, _: u_int, _: u_int,
-                     _: u_int, _: u_int, _: u_int, _: *const grid_cell,
-                     _: *mut libc::c_int);
+    fn tty_draw_line(
+        _: *mut tty,
+        _: *mut screen,
+        _: u_int,
+        _: u_int,
+        _: u_int,
+        _: u_int,
+        _: u_int,
+        _: *const grid_cell,
+        _: *mut libc::c_int,
+    );
     #[no_mangle]
     fn cmd_find_copy_state(_: *mut cmd_find_state, _: *mut cmd_find_state);
     #[no_mangle]
-    fn cmd_parse_and_append(_: *const libc::c_char, _: *mut cmd_parse_input,
-                            _: *mut client, _: *mut cmdq_state,
-                            _: *mut *mut libc::c_char) -> cmd_parse_status;
+    fn cmd_parse_and_append(
+        _: *const libc::c_char,
+        _: *mut cmd_parse_input,
+        _: *mut client,
+        _: *mut cmdq_state,
+        _: *mut *mut libc::c_char,
+    ) -> cmd_parse_status;
     #[no_mangle]
-    fn cmdq_new_state(_: *mut cmd_find_state, _: *mut key_event,
-                      _: libc::c_int) -> *mut cmdq_state;
+    fn cmdq_new_state(_: *mut cmd_find_state, _: *mut key_event, _: libc::c_int)
+        -> *mut cmdq_state;
     #[no_mangle]
     fn cmdq_free_state(_: *mut cmdq_state);
     #[no_mangle]
@@ -69,13 +86,18 @@ extern "C" {
     #[no_mangle]
     fn cmdq_continue(_: *mut cmdq_item);
     #[no_mangle]
-    fn key_string_lookup_key(_: key_code, _: libc::c_int)
-     -> *const libc::c_char;
+    fn key_string_lookup_key(_: key_code, _: libc::c_int) -> *const libc::c_char;
     #[no_mangle]
-    fn server_client_set_overlay(_: *mut client, _: u_int,
-                                 _: overlay_check_cb, _: overlay_mode_cb,
-                                 _: overlay_draw_cb, _: overlay_key_cb,
-                                 _: overlay_free_cb, _: *mut libc::c_void);
+    fn server_client_set_overlay(
+        _: *mut client,
+        _: u_int,
+        _: overlay_check_cb,
+        _: overlay_mode_cb,
+        _: overlay_draw_cb,
+        _: overlay_key_cb,
+        _: overlay_free_cb,
+        _: *mut libc::c_void,
+    );
     #[no_mangle]
     static grid_default_cell: grid_cell;
     #[no_mangle]
@@ -83,8 +105,12 @@ extern "C" {
     #[no_mangle]
     fn screen_write_stop(_: *mut screen_write_ctx);
     #[no_mangle]
-    fn screen_write_menu(_: *mut screen_write_ctx, _: *mut menu,
-                         _: libc::c_int, _: *const grid_cell);
+    fn screen_write_menu(
+        _: *mut screen_write_ctx,
+        _: *mut menu,
+        _: libc::c_int,
+        _: *const grid_cell,
+    );
     #[no_mangle]
     fn screen_write_clearscreen(_: *mut screen_write_ctx, _: u_int);
     #[no_mangle]
@@ -92,8 +118,7 @@ extern "C" {
     #[no_mangle]
     fn screen_free(_: *mut screen);
     #[no_mangle]
-    fn style_apply(_: *mut grid_cell, _: *mut options, _: *const libc::c_char,
-                   _: *mut format_tree);
+    fn style_apply(_: *mut grid_cell, _: *mut options, _: *const libc::c_char, _: *mut format_tree);
 }
 pub type __u_char = libc::c_uchar;
 pub type __u_short = libc::c_ushort;
@@ -184,18 +209,13 @@ pub struct event_callback {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub union C2RustUnnamed_6 {
-    pub evcb_callback: Option<unsafe extern "C" fn(_: libc::c_int,
-                                                   _: libc::c_short,
-                                                   _: *mut libc::c_void)
-                                  -> ()>,
-    pub evcb_selfcb: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                 _: *mut libc::c_void) -> ()>,
-    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
-    pub evcb_cbfinalize: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
+    pub evcb_callback:
+        Option<unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> ()>,
+    pub evcb_selfcb:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
+    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event, _: *mut libc::c_void) -> ()>,
+    pub evcb_cbfinalize:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -222,14 +242,10 @@ pub struct bufferevent {
     pub timeout_write: timeval,
     pub enabled: libc::c_short,
 }
-pub type bufferevent_event_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short,
-                                _: *mut libc::c_void) -> ()>;
-pub type bufferevent_data_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void)
-               -> ()>;
+pub type bufferevent_event_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short, _: *mut libc::c_void) -> ()>;
+pub type bufferevent_data_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct event_watermark {
@@ -368,17 +384,19 @@ pub struct C2RustUnnamed_9 {
     pub rbe_parent: *mut client_file,
     pub rbe_color: libc::c_int,
 }
-pub type client_file_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *const libc::c_char,
-                                _: libc::c_int, _: libc::c_int,
-                                _: *mut evbuffer, _: *mut libc::c_void)
-               -> ()>;
+pub type client_file_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: *mut evbuffer,
+        _: *mut libc::c_void,
+    ) -> (),
+>;
 pub type overlay_free_cb = Option<unsafe extern "C" fn(_: *mut client) -> ()>;
-pub type overlay_key_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event)
-               -> libc::c_int>;
+pub type overlay_key_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_event {
@@ -408,10 +426,8 @@ pub struct mouse_event {
     pub sgr_b: u_int,
 }
 pub type key_code = libc::c_ulonglong;
-pub type overlay_draw_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx)
-               -> ()>;
+pub type overlay_draw_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen_redraw_ctx {
@@ -425,10 +441,8 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int)
-               -> *mut screen>;
+pub type overlay_mode_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen {
@@ -522,10 +536,8 @@ pub struct C2RustUnnamed_11 {
     pub bg: u_char,
     pub data: u_char,
 }
-pub type overlay_check_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int)
-               -> libc::c_int>;
+pub type overlay_check_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct session {
@@ -772,24 +784,37 @@ pub struct C2RustUnnamed_24 {
 pub struct window_mode {
     pub name: *const libc::c_char,
     pub default_format: *const libc::c_char,
-    pub init: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                          _: *mut cmd_find_state,
-                                          _: *mut args) -> *mut screen>,
+    pub init: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut cmd_find_state,
+            _: *mut args,
+        ) -> *mut screen,
+    >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
-    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                            _: u_int, _: u_int) -> ()>,
-    pub key: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                         _: *mut client, _: *mut session,
-                                         _: *mut winlink, _: key_code,
-                                         _: *mut mouse_event) -> ()>,
-    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry)
-                              -> *const libc::c_char>,
-    pub command: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut client, _: *mut session,
-                                             _: *mut winlink, _: *mut args,
-                                             _: *mut mouse_event) -> ()>,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut format_tree) -> ()>,
+    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
+    pub key: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: key_code,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> *const libc::c_char>,
+    pub command: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: *mut args,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -826,14 +851,15 @@ pub struct winlink_stack {
 pub type C2RustUnnamed_25 = libc::c_uint;
 pub const PROMPT_COMMAND: C2RustUnnamed_25 = 1;
 pub const PROMPT_ENTRY: C2RustUnnamed_25 = 0;
-pub type prompt_free_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
-pub type prompt_input_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut libc::c_void,
-                                _: *const libc::c_char, _: libc::c_int)
-               -> libc::c_int>;
+pub type prompt_free_cb = Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
+pub type prompt_input_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut libc::c_void,
+        _: *const libc::c_char,
+        _: libc::c_int,
+    ) -> libc::c_int,
+>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_table {
@@ -1004,12 +1030,8 @@ pub struct tty {
     pub mouse_last_y: u_int,
     pub mouse_last_b: u_int,
     pub mouse_drag_flag: libc::c_int,
-    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client,
-                                                       _: *mut mouse_event)
-                                      -> ()>,
-    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client,
-                                                        _: *mut mouse_event)
-                                       -> ()>,
+    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
+    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
     pub key_timer: event,
     pub key_tree: *mut tty_key,
 }
@@ -1074,10 +1096,8 @@ pub struct screen_write_ctx {
     pub written: u_int,
     pub skipped: u_int,
 }
-pub type screen_write_init_ctx_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut screen_write_ctx, _: *mut tty_ctx)
-               -> ()>;
+pub type screen_write_init_ctx_cb =
+    Option<unsafe extern "C" fn(_: *mut screen_write_ctx, _: *mut tty_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct tty_ctx {
@@ -1108,13 +1128,9 @@ pub struct tty_ctx {
     pub wsx: u_int,
     pub wsy: u_int,
 }
-pub type tty_ctx_set_client_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut tty_ctx, _: *mut client)
-               -> libc::c_int>;
-pub type tty_ctx_redraw_cb
-    =
-    Option<unsafe extern "C" fn(_: *const tty_ctx) -> ()>;
+pub type tty_ctx_set_client_cb =
+    Option<unsafe extern "C" fn(_: *mut tty_ctx, _: *mut client) -> libc::c_int>;
+pub type tty_ctx_redraw_cb = Option<unsafe extern "C" fn(_: *const tty_ctx) -> ()>;
 pub type C2RustUnnamed_32 = libc::c_ulong;
 pub const KEYC_KP_PERIOD: C2RustUnnamed_32 = 68719476927;
 pub const KEYC_KP_ZERO: C2RustUnnamed_32 = 68719476926;
@@ -1323,10 +1339,8 @@ pub struct menu {
     pub count: u_int,
     pub width: u_int,
 }
-pub type menu_choice_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut menu, _: u_int, _: key_code,
-                                _: *mut libc::c_void) -> ()>;
+pub type menu_choice_cb =
+    Option<unsafe extern "C" fn(_: *mut menu, _: u_int, _: key_code, _: *mut libc::c_void) -> ()>;
 pub type cmd_parse_status = libc::c_uint;
 pub const CMD_PARSE_SUCCESS: cmd_parse_status = 2;
 pub const CMD_PARSE_ERROR: cmd_parse_status = 1;
@@ -1372,24 +1386,28 @@ pub struct menu_data {
     pub data: *mut libc::c_void,
 }
 #[no_mangle]
-pub unsafe extern "C" fn menu_add_items(mut menu: *mut menu,
-                                        mut items: *const menu_item,
-                                        mut qitem: *mut cmdq_item,
-                                        mut c: *mut client,
-                                        mut fs: *mut cmd_find_state) {
+pub unsafe extern "C" fn menu_add_items(
+    mut menu: *mut menu,
+    mut items: *const menu_item,
+    mut qitem: *mut cmdq_item,
+    mut c: *mut client,
+    mut fs: *mut cmd_find_state,
+) {
     let mut loop_0: *const menu_item = 0 as *const menu_item;
     loop_0 = items;
     while !(*loop_0).name.is_null() {
         menu_add_item(menu, loop_0, qitem, c, fs);
         loop_0 = loop_0.offset(1)
-    };
+    }
 }
 #[no_mangle]
-pub unsafe extern "C" fn menu_add_item(mut menu: *mut menu,
-                                       mut item: *const menu_item,
-                                       mut qitem: *mut cmdq_item,
-                                       mut c: *mut client,
-                                       mut fs: *mut cmd_find_state) {
+pub unsafe extern "C" fn menu_add_item(
+    mut menu: *mut menu,
+    mut item: *const menu_item,
+    mut qitem: *mut cmdq_item,
+    mut c: *mut client,
+    mut fs: *mut cmd_find_state,
+) {
     let mut new_item: *mut menu_item = 0 as *mut menu_item;
     let mut key: *const libc::c_char = 0 as *const libc::c_char;
     let mut cmd: *const libc::c_char = 0 as *const libc::c_char;
@@ -1397,46 +1415,62 @@ pub unsafe extern "C" fn menu_add_item(mut menu: *mut menu,
     let mut name: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut width: u_int = 0;
     let mut line: libc::c_int = 0;
-    line =
-        (item.is_null() || (*item).name.is_null() ||
-             *(*item).name as libc::c_int == '\u{0}' as i32) as libc::c_int;
+    line = (item.is_null()
+        || (*item).name.is_null()
+        || *(*item).name as libc::c_int == '\u{0}' as i32) as libc::c_int;
     if line != 0 && (*menu).count == 0 as libc::c_int as libc::c_uint {
-        return
+        return;
     }
-    (*menu).items =
-        xreallocarray((*menu).items as *mut libc::c_void,
-                      (*menu).count.wrapping_add(1 as libc::c_int as
-                                                     libc::c_uint) as size_t,
-                      ::std::mem::size_of::<menu_item>() as libc::c_ulong) as
-            *mut menu_item;
+    (*menu).items = xreallocarray(
+        (*menu).items as *mut libc::c_void,
+        (*menu).count.wrapping_add(1 as libc::c_int as libc::c_uint) as size_t,
+        ::std::mem::size_of::<menu_item>() as libc::c_ulong,
+    ) as *mut menu_item;
     let fresh0 = (*menu).count;
     (*menu).count = (*menu).count.wrapping_add(1);
     new_item = &mut *(*menu).items.offset(fresh0 as isize) as *mut menu_item;
-    memset(new_item as *mut libc::c_void, 0 as libc::c_int,
-           ::std::mem::size_of::<menu_item>() as libc::c_ulong);
-    if line != 0 { return }
+    memset(
+        new_item as *mut libc::c_void,
+        0 as libc::c_int,
+        ::std::mem::size_of::<menu_item>() as libc::c_ulong,
+    );
+    if line != 0 {
+        return;
+    }
     if !fs.is_null() {
         s = format_single_from_state(qitem, (*item).name, c, fs)
     } else {
-        s =
-            format_single(qitem, (*item).name, c, 0 as *mut session,
-                          0 as *mut winlink, 0 as *mut window_pane)
+        s = format_single(
+            qitem,
+            (*item).name,
+            c,
+            0 as *mut session,
+            0 as *mut winlink,
+            0 as *mut window_pane,
+        )
     }
     if *s as libc::c_int == '\u{0}' as i32 {
         /* no item if empty after format expanded */
         (*menu).count = (*menu).count.wrapping_sub(1);
-        return
+        return;
     }
-    if *s as libc::c_int != '-' as i32 &&
-           (*item).key != 0xfe000000000 as libc::c_ulonglong &&
-           (*item).key != 0xff000000000 as libc::c_ulonglong {
+    if *s as libc::c_int != '-' as i32
+        && (*item).key != 0xfe000000000 as libc::c_ulonglong
+        && (*item).key != 0xff000000000 as libc::c_ulonglong
+    {
         key = key_string_lookup_key((*item).key, 0 as libc::c_int);
-        xasprintf(&mut name as *mut *mut libc::c_char,
-                  b"%s#[default] #[align=right](%s)\x00" as *const u8 as
-                      *const libc::c_char, s, key);
+        xasprintf(
+            &mut name as *mut *mut libc::c_char,
+            b"%s#[default] #[align=right](%s)\x00" as *const u8 as *const libc::c_char,
+            s,
+            key,
+        );
     } else {
-        xasprintf(&mut name as *mut *mut libc::c_char,
-                  b"%s\x00" as *const u8 as *const libc::c_char, s);
+        xasprintf(
+            &mut name as *mut *mut libc::c_char,
+            b"%s\x00" as *const u8 as *const libc::c_char,
+            s,
+        );
     }
     (*new_item).name = name;
     free(s as *mut libc::c_void);
@@ -1445,23 +1479,32 @@ pub unsafe extern "C" fn menu_add_item(mut menu: *mut menu,
         if !fs.is_null() {
             s = format_single_from_state(qitem, cmd, c, fs)
         } else {
-            s =
-                format_single(qitem, cmd, c, 0 as *mut session,
-                              0 as *mut winlink, 0 as *mut window_pane)
+            s = format_single(
+                qitem,
+                cmd,
+                c,
+                0 as *mut session,
+                0 as *mut winlink,
+                0 as *mut window_pane,
+            )
         }
-    } else { s = 0 as *mut libc::c_char }
+    } else {
+        s = 0 as *mut libc::c_char
+    }
     (*new_item).command = s;
     (*new_item).key = (*item).key;
     width = format_width((*new_item).name);
-    if width > (*menu).width { (*menu).width = width };
+    if width > (*menu).width {
+        (*menu).width = width
+    };
 }
 #[no_mangle]
-pub unsafe extern "C" fn menu_create(mut title: *const libc::c_char)
- -> *mut menu {
+pub unsafe extern "C" fn menu_create(mut title: *const libc::c_char) -> *mut menu {
     let mut menu: *mut menu = 0 as *mut menu;
-    menu =
-        xcalloc(1 as libc::c_int as size_t,
-                ::std::mem::size_of::<menu>() as libc::c_ulong) as *mut menu;
+    menu = xcalloc(
+        1 as libc::c_int as size_t,
+        ::std::mem::size_of::<menu>() as libc::c_ulong,
+    ) as *mut menu;
     (*menu).title = xstrdup(title);
     (*menu).width = format_width(title);
     return menu;
@@ -1472,86 +1515,101 @@ pub unsafe extern "C" fn menu_free(mut menu: *mut menu) {
     i = 0 as libc::c_int as u_int;
     while i < (*menu).count {
         free((*(*menu).items.offset(i as isize)).name as *mut libc::c_void);
-        free((*(*menu).items.offset(i as isize)).command as
-                 *mut libc::c_void);
+        free((*(*menu).items.offset(i as isize)).command as *mut libc::c_void);
         i = i.wrapping_add(1)
     }
     free((*menu).items as *mut libc::c_void);
     free((*menu).title as *mut libc::c_void);
     free(menu as *mut libc::c_void);
 }
-unsafe extern "C" fn menu_mode_cb(mut c: *mut client, mut cx: *mut u_int,
-                                  mut cy: *mut u_int) -> *mut screen {
+unsafe extern "C" fn menu_mode_cb(
+    mut c: *mut client,
+    mut cx: *mut u_int,
+    mut cy: *mut u_int,
+) -> *mut screen {
     let mut md: *mut menu_data = (*c).overlay_data as *mut menu_data;
     return &mut (*md).s;
 }
-unsafe extern "C" fn menu_draw_cb(mut c: *mut client,
-                                  mut ctx0: *mut screen_redraw_ctx) {
+unsafe extern "C" fn menu_draw_cb(mut c: *mut client, mut ctx0: *mut screen_redraw_ctx) {
     let mut md: *mut menu_data = (*c).overlay_data as *mut menu_data;
     let mut tty: *mut tty = &mut (*c).tty;
     let mut s: *mut screen = &mut (*md).s;
     let mut menu: *mut menu = (*md).menu;
-    let mut ctx: screen_write_ctx =
-        screen_write_ctx{wp: 0 as *mut window_pane,
-                         s: 0 as *mut screen,
-                         flags: 0,
-                         init_ctx_cb: None,
-                         arg: 0 as *mut libc::c_void,
-                         item: 0 as *mut screen_write_collect_item,
-                         scrolled: 0,
-                         bg: 0,
-                         cells: 0,
-                         written: 0,
-                         skipped: 0,};
+    let mut ctx: screen_write_ctx = screen_write_ctx {
+        wp: 0 as *mut window_pane,
+        s: 0 as *mut screen,
+        flags: 0,
+        init_ctx_cb: None,
+        arg: 0 as *mut libc::c_void,
+        item: 0 as *mut screen_write_collect_item,
+        scrolled: 0,
+        bg: 0,
+        cells: 0,
+        written: 0,
+        skipped: 0,
+    };
     let mut i: u_int = 0;
     let mut px: u_int = (*md).px;
     let mut py: u_int = (*md).py;
-    let mut gc: grid_cell =
-        grid_cell{data: utf8_data{data: [0; 21], have: 0, size: 0, width: 0,},
-                  attr: 0,
-                  flags: 0,
-                  fg: 0,
-                  bg: 0,
-                  us: 0,};
-    style_apply(&mut gc, (*(*(*(*c).session).curw).window).options,
-                b"mode-style\x00" as *const u8 as *const libc::c_char,
-                0 as *mut format_tree);
+    let mut gc: grid_cell = grid_cell {
+        data: utf8_data {
+            data: [0; 21],
+            have: 0,
+            size: 0,
+            width: 0,
+        },
+        attr: 0,
+        flags: 0,
+        fg: 0,
+        bg: 0,
+        us: 0,
+    };
+    style_apply(
+        &mut gc,
+        (*(*(*(*c).session).curw).window).options,
+        b"mode-style\x00" as *const u8 as *const libc::c_char,
+        0 as *mut format_tree,
+    );
     screen_write_start(&mut ctx, s);
     screen_write_clearscreen(&mut ctx, 8 as libc::c_int as u_int);
     screen_write_menu(&mut ctx, menu, (*md).choice, &mut gc);
     screen_write_stop(&mut ctx);
     i = 0 as libc::c_int as u_int;
     while i < (*(*md).s.grid).sy {
-        tty_draw_line(tty, s, 0 as libc::c_int as u_int, i,
-                      (*menu).width.wrapping_add(4 as libc::c_int as
-                                                     libc::c_uint), px,
-                      py.wrapping_add(i), &grid_default_cell,
-                      0 as *mut libc::c_int);
+        tty_draw_line(
+            tty,
+            s,
+            0 as libc::c_int as u_int,
+            i,
+            (*menu).width.wrapping_add(4 as libc::c_int as libc::c_uint),
+            px,
+            py.wrapping_add(i),
+            &grid_default_cell,
+            0 as *mut libc::c_int,
+        );
         i = i.wrapping_add(1)
-    };
+    }
 }
 unsafe extern "C" fn menu_free_cb(mut c: *mut client) {
     let mut md: *mut menu_data = (*c).overlay_data as *mut menu_data;
-    if !(*md).item.is_null() { cmdq_continue((*md).item); }
+    if !(*md).item.is_null() {
+        cmdq_continue((*md).item);
+    }
     if (*md).cb.is_some() {
-        (*md).cb.expect("non-null function pointer")((*md).menu,
-                                                     (2147483647 as
-                                                          libc::c_int as
-                                                          libc::c_uint).wrapping_mul(2
-                                                                                         as
-                                                                                         libc::c_uint).wrapping_add(1
-                                                                                                                        as
-                                                                                                                        libc::c_uint),
-                                                     0xff000000000 as
-                                                         libc::c_ulonglong,
-                                                     (*md).data);
+        (*md).cb.expect("non-null function pointer")(
+            (*md).menu,
+            (2147483647 as libc::c_int as libc::c_uint)
+                .wrapping_mul(2 as libc::c_uint)
+                .wrapping_add(1 as libc::c_uint),
+            0xff000000000 as libc::c_ulonglong,
+            (*md).data,
+        );
     }
     screen_free(&mut (*md).s);
     menu_free((*md).menu);
     free(md as *mut libc::c_void);
 }
-unsafe extern "C" fn menu_key_cb(mut c: *mut client,
-                                 mut event: *mut key_event) -> libc::c_int {
+unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) -> libc::c_int {
     let mut current_block: u64;
     let mut md: *mut menu_data = (*c).overlay_data as *mut menu_data;
     let mut menu: *mut menu = (*md).menu;
@@ -1564,131 +1622,128 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client,
     let mut state: *mut cmdq_state = 0 as *mut cmdq_state;
     let mut status: cmd_parse_status = CMD_PARSE_EMPTY;
     let mut error: *mut libc::c_char = 0 as *mut libc::c_char;
-    if (*event).key & 0xfffffffffff as libc::c_ulonglong >=
-           KEYC_MOUSE as libc::c_ulong as libc::c_ulonglong &&
-           ((*event).key & 0xfffffffffff as libc::c_ulonglong) <
-               KEYC_BSPACE as libc::c_ulong as libc::c_ulonglong {
+    if (*event).key & 0xfffffffffff as libc::c_ulonglong
+        >= KEYC_MOUSE as libc::c_ulong as libc::c_ulonglong
+        && ((*event).key & 0xfffffffffff as libc::c_ulonglong)
+            < KEYC_BSPACE as libc::c_ulong as libc::c_ulonglong
+    {
         if (*md).flags & 0x1 as libc::c_int != 0 {
-            if (*m).b & 3 as libc::c_int as libc::c_uint !=
-                   0 as libc::c_int as libc::c_uint {
-                return 1 as libc::c_int
+            if (*m).b & 3 as libc::c_int as libc::c_uint != 0 as libc::c_int as libc::c_uint {
+                return 1 as libc::c_int;
             }
-            return 0 as libc::c_int
+            return 0 as libc::c_int;
         }
-        if (*m).x < (*md).px ||
-               (*m).x >
-                   (*md).px.wrapping_add(4 as libc::c_int as
-                                             libc::c_uint).wrapping_add((*menu).width)
-               ||
-               (*m).y <
-                   (*md).py.wrapping_add(1 as libc::c_int as libc::c_uint) ||
-               (*m).y >
-                   (*md).py.wrapping_add(1 as libc::c_int as
-                                             libc::c_uint).wrapping_add(count
-                                                                            as
-                                                                            libc::c_uint).wrapping_sub(1
-                                                                                                           as
-                                                                                                           libc::c_int
-                                                                                                           as
-                                                                                                           libc::c_uint)
-           {
+        if (*m).x < (*md).px
+            || (*m).x
+                > (*md)
+                    .px
+                    .wrapping_add(4 as libc::c_int as libc::c_uint)
+                    .wrapping_add((*menu).width)
+            || (*m).y < (*md).py.wrapping_add(1 as libc::c_int as libc::c_uint)
+            || (*m).y
+                > (*md)
+                    .py
+                    .wrapping_add(1 as libc::c_int as libc::c_uint)
+                    .wrapping_add(count as libc::c_uint)
+                    .wrapping_sub(1 as libc::c_int as libc::c_uint)
+        {
             if !(*md).flags & 0x4 as libc::c_int != 0 {
-                if (*m).b & 3 as libc::c_int as libc::c_uint ==
-                       3 as libc::c_int as libc::c_uint {
-                    return 1 as libc::c_int
+                if (*m).b & 3 as libc::c_int as libc::c_uint == 3 as libc::c_int as libc::c_uint {
+                    return 1 as libc::c_int;
                 }
-            } else if !((*m).b & 3 as libc::c_int as libc::c_uint ==
-                            3 as libc::c_int as libc::c_uint) &&
-                          (*m).b & 64 as libc::c_int as libc::c_uint ==
-                              0 as libc::c_int as libc::c_uint &&
-                          (*m).b & 32 as libc::c_int as libc::c_uint == 0 {
-                return 1 as libc::c_int
+            } else if !((*m).b & 3 as libc::c_int as libc::c_uint
+                == 3 as libc::c_int as libc::c_uint)
+                && (*m).b & 64 as libc::c_int as libc::c_uint == 0 as libc::c_int as libc::c_uint
+                && (*m).b & 32 as libc::c_int as libc::c_uint == 0
+            {
+                return 1 as libc::c_int;
             }
             if (*md).choice != -(1 as libc::c_int) {
                 (*md).choice = -(1 as libc::c_int);
                 (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong
             }
-            return 0 as libc::c_int
+            return 0 as libc::c_int;
         }
         if !(*md).flags & 0x4 as libc::c_int != 0 {
-            if (*m).b & 3 as libc::c_int as libc::c_uint ==
-                   3 as libc::c_int as libc::c_uint {
+            if (*m).b & 3 as libc::c_int as libc::c_uint == 3 as libc::c_int as libc::c_uint {
                 current_block = 13409614927677246897;
-            } else { current_block = 15925075030174552612; }
-        } else if (*m).b & 64 as libc::c_int as libc::c_uint ==
-                      0 as libc::c_int as libc::c_uint &&
-                      (*m).b & 32 as libc::c_int as libc::c_uint == 0 {
+            } else {
+                current_block = 15925075030174552612;
+            }
+        } else if (*m).b & 64 as libc::c_int as libc::c_uint == 0 as libc::c_int as libc::c_uint
+            && (*m).b & 32 as libc::c_int as libc::c_uint == 0
+        {
             current_block = 13409614927677246897;
-        } else { current_block = 15925075030174552612; }
+        } else {
+            current_block = 15925075030174552612;
+        }
         match current_block {
-            13409614927677246897 => { }
+            13409614927677246897 => {}
             _ => {
-                (*md).choice =
-                    (*m).y.wrapping_sub((*md).py.wrapping_add(1 as libc::c_int
-                                                                  as
-                                                                  libc::c_uint))
-                        as libc::c_int;
+                (*md).choice = (*m)
+                    .y
+                    .wrapping_sub((*md).py.wrapping_add(1 as libc::c_int as libc::c_uint))
+                    as libc::c_int;
                 if (*md).choice != old {
                     (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong
                 }
-                return 0 as libc::c_int
+                return 0 as libc::c_int;
             }
         }
     } else {
         i = 0 as libc::c_int as u_int;
-        loop  {
+        loop {
             if !(i < count as u_int) {
                 current_block = 7746103178988627676;
-                break ;
+                break;
             }
             name = (*(*menu).items.offset(i as isize)).name;
             if !(name.is_null() || *name as libc::c_int == '-' as i32) {
                 if (*event).key == (*(*menu).items.offset(i as isize)).key {
                     (*md).choice = i as libc::c_int;
                     current_block = 13409614927677246897;
-                    break ;
+                    break;
                 }
             }
             i = i.wrapping_add(1)
         }
         match current_block {
-            13409614927677246897 => { }
+            13409614927677246897 => {}
             _ => {
-                match (*event).key & !(0xff000000000000 as libc::c_ulonglong)
-                    {
+                match (*event).key & !(0xff000000000000 as libc::c_ulonglong) {
                     68719476908 | 107 => {
                         current_block = 11976616061117098778;
                         match current_block {
                             7328775138574252198 => {
                                 if (*md).choice > count - 6 as libc::c_int {
                                     (*md).choice = count - 1 as libc::c_int
-                                } else { (*md).choice += 5 as libc::c_int }
-                                while (*md).choice != -(1 as libc::c_int) &&
-                                          (name.is_null() ||
-                                               *name as libc::c_int ==
-                                                   '-' as i32) {
+                                } else {
+                                    (*md).choice += 5 as libc::c_int
+                                }
+                                while (*md).choice != -(1 as libc::c_int)
+                                    && (name.is_null() || *name as libc::c_int == '-' as i32)
+                                {
                                     (*md).choice -= 1
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
                                 current_block = 18383263831861166299;
                             }
                             7272745134570625308 => {
                                 /* C-b */
                                 if (*md).choice > 5 as libc::c_int {
                                     (*md).choice -= 5 as libc::c_int
-                                } else { (*md).choice = 0 as libc::c_int }
-                                while (*md).choice != count &&
-                                          (name.is_null() ||
-                                               *name as libc::c_int ==
-                                                   '-' as i32) {
+                                } else {
+                                    (*md).choice = 0 as libc::c_int
+                                }
+                                while (*md).choice != count
+                                    && (name.is_null() || *name as libc::c_int == '-' as i32)
+                                {
                                     (*md).choice += 1
                                 }
                                 if (*md).choice == count {
                                     (*md).choice = -(1 as libc::c_int)
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
                                 current_block = 18383263831861166299;
                             }
                             2215219764755711832 =>
@@ -1697,9 +1752,8 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client,
                                 if !(*md).flags & 0x2 as libc::c_int != 0 {
                                     current_block = 18383263831861166299;
                                 } else {
-                                    if (*md).choice ==
-                                           count - 1 as libc::c_int {
-                                        return 1 as libc::c_int
+                                    if (*md).choice == count - 1 as libc::c_int {
+                                        return 1 as libc::c_int;
                                     }
                                     current_block = 10827572169919271282;
                                 }
@@ -1707,38 +1761,38 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client,
                             4625365797902618311 => {
                                 if !(*md).flags & 0x2 as libc::c_int != 0 {
                                     current_block = 18383263831861166299;
-                                } else { return 1 as libc::c_int }
+                                } else {
+                                    return 1 as libc::c_int;
+                                }
                             }
                             11976616061117098778 => {
                                 if old == -(1 as libc::c_int) {
                                     old = 0 as libc::c_int
                                 }
-                                loop  {
-                                    if (*md).choice == -(1 as libc::c_int) ||
-                                           (*md).choice == 0 as libc::c_int {
-                                        (*md).choice =
-                                            count - 1 as libc::c_int
-                                    } else { (*md).choice -= 1 }
-                                    name =
-                                        (*(*menu).items.offset((*md).choice as
-                                                                   isize)).name;
-                                    if !((name.is_null() ||
-                                              *name as libc::c_int ==
-                                                  '-' as i32) &&
-                                             (*md).choice != old) {
-                                        break ;
+                                loop {
+                                    if (*md).choice == -(1 as libc::c_int)
+                                        || (*md).choice == 0 as libc::c_int
+                                    {
+                                        (*md).choice = count - 1 as libc::c_int
+                                    } else {
+                                        (*md).choice -= 1
+                                    }
+                                    name = (*(*menu).items.offset((*md).choice as isize)).name;
+                                    if !((name.is_null() || *name as libc::c_int == '-' as i32)
+                                        && (*md).choice != old)
+                                    {
+                                        break;
                                     }
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                return 0 as libc::c_int;
                             }
                             8312313396388474857 =>
                             /* Escape */
                             {
                                 current_block = 5768530447596251282;
                             }
-                            _ => { }
+                            _ => {}
                         }
                         match current_block {
                             10827572169919271282 =>
@@ -1747,25 +1801,23 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client,
                                 if old == -(1 as libc::c_int) {
                                     old = 0 as libc::c_int
                                 }
-                                loop  {
-                                    if (*md).choice == -(1 as libc::c_int) ||
-                                           (*md).choice ==
-                                               count - 1 as libc::c_int {
+                                loop {
+                                    if (*md).choice == -(1 as libc::c_int)
+                                        || (*md).choice == count - 1 as libc::c_int
+                                    {
                                         (*md).choice = 0 as libc::c_int
-                                    } else { (*md).choice += 1 }
-                                    name =
-                                        (*(*menu).items.offset((*md).choice as
-                                                                   isize)).name;
-                                    if !((name.is_null() ||
-                                              *name as libc::c_int ==
-                                                  '-' as i32) &&
-                                             (*md).choice != old) {
-                                        break ;
+                                    } else {
+                                        (*md).choice += 1
+                                    }
+                                    name = (*(*menu).items.offset((*md).choice as isize)).name;
+                                    if !((name.is_null() || *name as libc::c_int == '-' as i32)
+                                        && (*md).choice != old)
+                                    {
+                                        break;
                                     }
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                return 0 as libc::c_int;
                             }
                             18383263831861166299 =>
                             /* C-f */
@@ -1773,13 +1825,12 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client,
                                 return 0 as libc::c_int
                             }
                             5768530447596251282 =>
-                            /* C-c */
-                            {
-                            }
-                            _ => { }
+                                /* C-c */
+                                {}
+                            _ => {}
                         }
                         /* C-g */
-                        return 1 as libc::c_int
+                        return 1 as libc::c_int;
                     }
                     68719476888 => {
                         current_block = 4625365797902618311;
@@ -1787,41 +1838,40 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client,
                             7328775138574252198 => {
                                 if (*md).choice > count - 6 as libc::c_int {
                                     (*md).choice = count - 1 as libc::c_int
-                                } else { (*md).choice += 5 as libc::c_int }
-                                while (*md).choice != -(1 as libc::c_int) &&
-                                          (name.is_null() ||
-                                               *name as libc::c_int ==
-                                                   '-' as i32) {
+                                } else {
+                                    (*md).choice += 5 as libc::c_int
+                                }
+                                while (*md).choice != -(1 as libc::c_int)
+                                    && (name.is_null() || *name as libc::c_int == '-' as i32)
+                                {
                                     (*md).choice -= 1
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
                                 current_block = 18383263831861166299;
                             }
                             7272745134570625308 => {
                                 if (*md).choice > 5 as libc::c_int {
                                     (*md).choice -= 5 as libc::c_int
-                                } else { (*md).choice = 0 as libc::c_int }
-                                while (*md).choice != count &&
-                                          (name.is_null() ||
-                                               *name as libc::c_int ==
-                                                   '-' as i32) {
+                                } else {
+                                    (*md).choice = 0 as libc::c_int
+                                }
+                                while (*md).choice != count
+                                    && (name.is_null() || *name as libc::c_int == '-' as i32)
+                                {
                                     (*md).choice += 1
                                 }
                                 if (*md).choice == count {
                                     (*md).choice = -(1 as libc::c_int)
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
                                 current_block = 18383263831861166299;
                             }
                             2215219764755711832 => {
                                 if !(*md).flags & 0x2 as libc::c_int != 0 {
                                     current_block = 18383263831861166299;
                                 } else {
-                                    if (*md).choice ==
-                                           count - 1 as libc::c_int {
-                                        return 1 as libc::c_int
+                                    if (*md).choice == count - 1 as libc::c_int {
+                                        return 1 as libc::c_int;
                                     }
                                     current_block = 10827572169919271282;
                                 }
@@ -1829,69 +1879,65 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client,
                             4625365797902618311 => {
                                 if !(*md).flags & 0x2 as libc::c_int != 0 {
                                     current_block = 18383263831861166299;
-                                } else { return 1 as libc::c_int }
+                                } else {
+                                    return 1 as libc::c_int;
+                                }
                             }
                             11976616061117098778 => {
                                 if old == -(1 as libc::c_int) {
                                     old = 0 as libc::c_int
                                 }
-                                loop  {
-                                    if (*md).choice == -(1 as libc::c_int) ||
-                                           (*md).choice == 0 as libc::c_int {
-                                        (*md).choice =
-                                            count - 1 as libc::c_int
-                                    } else { (*md).choice -= 1 }
-                                    name =
-                                        (*(*menu).items.offset((*md).choice as
-                                                                   isize)).name;
-                                    if !((name.is_null() ||
-                                              *name as libc::c_int ==
-                                                  '-' as i32) &&
-                                             (*md).choice != old) {
-                                        break ;
+                                loop {
+                                    if (*md).choice == -(1 as libc::c_int)
+                                        || (*md).choice == 0 as libc::c_int
+                                    {
+                                        (*md).choice = count - 1 as libc::c_int
+                                    } else {
+                                        (*md).choice -= 1
+                                    }
+                                    name = (*(*menu).items.offset((*md).choice as isize)).name;
+                                    if !((name.is_null() || *name as libc::c_int == '-' as i32)
+                                        && (*md).choice != old)
+                                    {
+                                        break;
                                     }
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                return 0 as libc::c_int;
                             }
                             8312313396388474857 => {
                                 current_block = 5768530447596251282;
                             }
-                            _ => { }
+                            _ => {}
                         }
                         match current_block {
                             10827572169919271282 => {
                                 if old == -(1 as libc::c_int) {
                                     old = 0 as libc::c_int
                                 }
-                                loop  {
-                                    if (*md).choice == -(1 as libc::c_int) ||
-                                           (*md).choice ==
-                                               count - 1 as libc::c_int {
+                                loop {
+                                    if (*md).choice == -(1 as libc::c_int)
+                                        || (*md).choice == count - 1 as libc::c_int
+                                    {
                                         (*md).choice = 0 as libc::c_int
-                                    } else { (*md).choice += 1 }
-                                    name =
-                                        (*(*menu).items.offset((*md).choice as
-                                                                   isize)).name;
-                                    if !((name.is_null() ||
-                                              *name as libc::c_int ==
-                                                  '-' as i32) &&
-                                             (*md).choice != old) {
-                                        break ;
+                                    } else {
+                                        (*md).choice += 1
+                                    }
+                                    name = (*(*menu).items.offset((*md).choice as isize)).name;
+                                    if !((name.is_null() || *name as libc::c_int == '-' as i32)
+                                        && (*md).choice != old)
+                                    {
+                                        break;
                                     }
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                return 0 as libc::c_int;
                             }
-                            18383263831861166299 => {
-                                return 0 as libc::c_int
-                            }
-                            5768530447596251282 => { }
-                            _ => { }
+                            18383263831861166299 => return 0 as libc::c_int,
+                            5768530447596251282 => {}
+                            _ => {}
                         }
-                        return 1 as libc::c_int
+                        return 1 as libc::c_int;
                     }
                     9 => {
                         current_block = 2215219764755711832;
@@ -1899,41 +1945,40 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client,
                             7328775138574252198 => {
                                 if (*md).choice > count - 6 as libc::c_int {
                                     (*md).choice = count - 1 as libc::c_int
-                                } else { (*md).choice += 5 as libc::c_int }
-                                while (*md).choice != -(1 as libc::c_int) &&
-                                          (name.is_null() ||
-                                               *name as libc::c_int ==
-                                                   '-' as i32) {
+                                } else {
+                                    (*md).choice += 5 as libc::c_int
+                                }
+                                while (*md).choice != -(1 as libc::c_int)
+                                    && (name.is_null() || *name as libc::c_int == '-' as i32)
+                                {
                                     (*md).choice -= 1
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
                                 current_block = 18383263831861166299;
                             }
                             7272745134570625308 => {
                                 if (*md).choice > 5 as libc::c_int {
                                     (*md).choice -= 5 as libc::c_int
-                                } else { (*md).choice = 0 as libc::c_int }
-                                while (*md).choice != count &&
-                                          (name.is_null() ||
-                                               *name as libc::c_int ==
-                                                   '-' as i32) {
+                                } else {
+                                    (*md).choice = 0 as libc::c_int
+                                }
+                                while (*md).choice != count
+                                    && (name.is_null() || *name as libc::c_int == '-' as i32)
+                                {
                                     (*md).choice += 1
                                 }
                                 if (*md).choice == count {
                                     (*md).choice = -(1 as libc::c_int)
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
                                 current_block = 18383263831861166299;
                             }
                             2215219764755711832 => {
                                 if !(*md).flags & 0x2 as libc::c_int != 0 {
                                     current_block = 18383263831861166299;
                                 } else {
-                                    if (*md).choice ==
-                                           count - 1 as libc::c_int {
-                                        return 1 as libc::c_int
+                                    if (*md).choice == count - 1 as libc::c_int {
+                                        return 1 as libc::c_int;
                                     }
                                     current_block = 10827572169919271282;
                                 }
@@ -1941,69 +1986,65 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client,
                             4625365797902618311 => {
                                 if !(*md).flags & 0x2 as libc::c_int != 0 {
                                     current_block = 18383263831861166299;
-                                } else { return 1 as libc::c_int }
+                                } else {
+                                    return 1 as libc::c_int;
+                                }
                             }
                             11976616061117098778 => {
                                 if old == -(1 as libc::c_int) {
                                     old = 0 as libc::c_int
                                 }
-                                loop  {
-                                    if (*md).choice == -(1 as libc::c_int) ||
-                                           (*md).choice == 0 as libc::c_int {
-                                        (*md).choice =
-                                            count - 1 as libc::c_int
-                                    } else { (*md).choice -= 1 }
-                                    name =
-                                        (*(*menu).items.offset((*md).choice as
-                                                                   isize)).name;
-                                    if !((name.is_null() ||
-                                              *name as libc::c_int ==
-                                                  '-' as i32) &&
-                                             (*md).choice != old) {
-                                        break ;
+                                loop {
+                                    if (*md).choice == -(1 as libc::c_int)
+                                        || (*md).choice == 0 as libc::c_int
+                                    {
+                                        (*md).choice = count - 1 as libc::c_int
+                                    } else {
+                                        (*md).choice -= 1
+                                    }
+                                    name = (*(*menu).items.offset((*md).choice as isize)).name;
+                                    if !((name.is_null() || *name as libc::c_int == '-' as i32)
+                                        && (*md).choice != old)
+                                    {
+                                        break;
                                     }
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                return 0 as libc::c_int;
                             }
                             8312313396388474857 => {
                                 current_block = 5768530447596251282;
                             }
-                            _ => { }
+                            _ => {}
                         }
                         match current_block {
                             10827572169919271282 => {
                                 if old == -(1 as libc::c_int) {
                                     old = 0 as libc::c_int
                                 }
-                                loop  {
-                                    if (*md).choice == -(1 as libc::c_int) ||
-                                           (*md).choice ==
-                                               count - 1 as libc::c_int {
+                                loop {
+                                    if (*md).choice == -(1 as libc::c_int)
+                                        || (*md).choice == count - 1 as libc::c_int
+                                    {
                                         (*md).choice = 0 as libc::c_int
-                                    } else { (*md).choice += 1 }
-                                    name =
-                                        (*(*menu).items.offset((*md).choice as
-                                                                   isize)).name;
-                                    if !((name.is_null() ||
-                                              *name as libc::c_int ==
-                                                  '-' as i32) &&
-                                             (*md).choice != old) {
-                                        break ;
+                                    } else {
+                                        (*md).choice += 1
+                                    }
+                                    name = (*(*menu).items.offset((*md).choice as isize)).name;
+                                    if !((name.is_null() || *name as libc::c_int == '-' as i32)
+                                        && (*md).choice != old)
+                                    {
+                                        break;
                                     }
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                return 0 as libc::c_int;
                             }
-                            18383263831861166299 => {
-                                return 0 as libc::c_int
-                            }
-                            5768530447596251282 => { }
-                            _ => { }
+                            18383263831861166299 => return 0 as libc::c_int,
+                            5768530447596251282 => {}
+                            _ => {}
                         }
-                        return 1 as libc::c_int
+                        return 1 as libc::c_int;
                     }
                     68719476909 | 106 => {
                         current_block = 10827572169919271282;
@@ -2011,41 +2052,40 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client,
                             7328775138574252198 => {
                                 if (*md).choice > count - 6 as libc::c_int {
                                     (*md).choice = count - 1 as libc::c_int
-                                } else { (*md).choice += 5 as libc::c_int }
-                                while (*md).choice != -(1 as libc::c_int) &&
-                                          (name.is_null() ||
-                                               *name as libc::c_int ==
-                                                   '-' as i32) {
+                                } else {
+                                    (*md).choice += 5 as libc::c_int
+                                }
+                                while (*md).choice != -(1 as libc::c_int)
+                                    && (name.is_null() || *name as libc::c_int == '-' as i32)
+                                {
                                     (*md).choice -= 1
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
                                 current_block = 18383263831861166299;
                             }
                             7272745134570625308 => {
                                 if (*md).choice > 5 as libc::c_int {
                                     (*md).choice -= 5 as libc::c_int
-                                } else { (*md).choice = 0 as libc::c_int }
-                                while (*md).choice != count &&
-                                          (name.is_null() ||
-                                               *name as libc::c_int ==
-                                                   '-' as i32) {
+                                } else {
+                                    (*md).choice = 0 as libc::c_int
+                                }
+                                while (*md).choice != count
+                                    && (name.is_null() || *name as libc::c_int == '-' as i32)
+                                {
                                     (*md).choice += 1
                                 }
                                 if (*md).choice == count {
                                     (*md).choice = -(1 as libc::c_int)
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
                                 current_block = 18383263831861166299;
                             }
                             2215219764755711832 => {
                                 if !(*md).flags & 0x2 as libc::c_int != 0 {
                                     current_block = 18383263831861166299;
                                 } else {
-                                    if (*md).choice ==
-                                           count - 1 as libc::c_int {
-                                        return 1 as libc::c_int
+                                    if (*md).choice == count - 1 as libc::c_int {
+                                        return 1 as libc::c_int;
                                     }
                                     current_block = 10827572169919271282;
                                 }
@@ -2053,69 +2093,65 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client,
                             4625365797902618311 => {
                                 if !(*md).flags & 0x2 as libc::c_int != 0 {
                                     current_block = 18383263831861166299;
-                                } else { return 1 as libc::c_int }
+                                } else {
+                                    return 1 as libc::c_int;
+                                }
                             }
                             11976616061117098778 => {
                                 if old == -(1 as libc::c_int) {
                                     old = 0 as libc::c_int
                                 }
-                                loop  {
-                                    if (*md).choice == -(1 as libc::c_int) ||
-                                           (*md).choice == 0 as libc::c_int {
-                                        (*md).choice =
-                                            count - 1 as libc::c_int
-                                    } else { (*md).choice -= 1 }
-                                    name =
-                                        (*(*menu).items.offset((*md).choice as
-                                                                   isize)).name;
-                                    if !((name.is_null() ||
-                                              *name as libc::c_int ==
-                                                  '-' as i32) &&
-                                             (*md).choice != old) {
-                                        break ;
+                                loop {
+                                    if (*md).choice == -(1 as libc::c_int)
+                                        || (*md).choice == 0 as libc::c_int
+                                    {
+                                        (*md).choice = count - 1 as libc::c_int
+                                    } else {
+                                        (*md).choice -= 1
+                                    }
+                                    name = (*(*menu).items.offset((*md).choice as isize)).name;
+                                    if !((name.is_null() || *name as libc::c_int == '-' as i32)
+                                        && (*md).choice != old)
+                                    {
+                                        break;
                                     }
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                return 0 as libc::c_int;
                             }
                             8312313396388474857 => {
                                 current_block = 5768530447596251282;
                             }
-                            _ => { }
+                            _ => {}
                         }
                         match current_block {
                             10827572169919271282 => {
                                 if old == -(1 as libc::c_int) {
                                     old = 0 as libc::c_int
                                 }
-                                loop  {
-                                    if (*md).choice == -(1 as libc::c_int) ||
-                                           (*md).choice ==
-                                               count - 1 as libc::c_int {
+                                loop {
+                                    if (*md).choice == -(1 as libc::c_int)
+                                        || (*md).choice == count - 1 as libc::c_int
+                                    {
                                         (*md).choice = 0 as libc::c_int
-                                    } else { (*md).choice += 1 }
-                                    name =
-                                        (*(*menu).items.offset((*md).choice as
-                                                                   isize)).name;
-                                    if !((name.is_null() ||
-                                              *name as libc::c_int ==
-                                                  '-' as i32) &&
-                                             (*md).choice != old) {
-                                        break ;
+                                    } else {
+                                        (*md).choice += 1
+                                    }
+                                    name = (*(*menu).items.offset((*md).choice as isize)).name;
+                                    if !((name.is_null() || *name as libc::c_int == '-' as i32)
+                                        && (*md).choice != old)
+                                    {
+                                        break;
                                     }
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                return 0 as libc::c_int;
                             }
-                            18383263831861166299 => {
-                                return 0 as libc::c_int
-                            }
-                            5768530447596251282 => { }
-                            _ => { }
+                            18383263831861166299 => return 0 as libc::c_int,
+                            5768530447596251282 => {}
+                            _ => {}
                         }
-                        return 1 as libc::c_int
+                        return 1 as libc::c_int;
                     }
                     103 | 68719476906 | 2 => {
                         current_block = 7272745134570625308;
@@ -2123,41 +2159,40 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client,
                             7328775138574252198 => {
                                 if (*md).choice > count - 6 as libc::c_int {
                                     (*md).choice = count - 1 as libc::c_int
-                                } else { (*md).choice += 5 as libc::c_int }
-                                while (*md).choice != -(1 as libc::c_int) &&
-                                          (name.is_null() ||
-                                               *name as libc::c_int ==
-                                                   '-' as i32) {
+                                } else {
+                                    (*md).choice += 5 as libc::c_int
+                                }
+                                while (*md).choice != -(1 as libc::c_int)
+                                    && (name.is_null() || *name as libc::c_int == '-' as i32)
+                                {
                                     (*md).choice -= 1
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
                                 current_block = 18383263831861166299;
                             }
                             7272745134570625308 => {
                                 if (*md).choice > 5 as libc::c_int {
                                     (*md).choice -= 5 as libc::c_int
-                                } else { (*md).choice = 0 as libc::c_int }
-                                while (*md).choice != count &&
-                                          (name.is_null() ||
-                                               *name as libc::c_int ==
-                                                   '-' as i32) {
+                                } else {
+                                    (*md).choice = 0 as libc::c_int
+                                }
+                                while (*md).choice != count
+                                    && (name.is_null() || *name as libc::c_int == '-' as i32)
+                                {
                                     (*md).choice += 1
                                 }
                                 if (*md).choice == count {
                                     (*md).choice = -(1 as libc::c_int)
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
                                 current_block = 18383263831861166299;
                             }
                             2215219764755711832 => {
                                 if !(*md).flags & 0x2 as libc::c_int != 0 {
                                     current_block = 18383263831861166299;
                                 } else {
-                                    if (*md).choice ==
-                                           count - 1 as libc::c_int {
-                                        return 1 as libc::c_int
+                                    if (*md).choice == count - 1 as libc::c_int {
+                                        return 1 as libc::c_int;
                                     }
                                     current_block = 10827572169919271282;
                                 }
@@ -2165,69 +2200,65 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client,
                             4625365797902618311 => {
                                 if !(*md).flags & 0x2 as libc::c_int != 0 {
                                     current_block = 18383263831861166299;
-                                } else { return 1 as libc::c_int }
+                                } else {
+                                    return 1 as libc::c_int;
+                                }
                             }
                             11976616061117098778 => {
                                 if old == -(1 as libc::c_int) {
                                     old = 0 as libc::c_int
                                 }
-                                loop  {
-                                    if (*md).choice == -(1 as libc::c_int) ||
-                                           (*md).choice == 0 as libc::c_int {
-                                        (*md).choice =
-                                            count - 1 as libc::c_int
-                                    } else { (*md).choice -= 1 }
-                                    name =
-                                        (*(*menu).items.offset((*md).choice as
-                                                                   isize)).name;
-                                    if !((name.is_null() ||
-                                              *name as libc::c_int ==
-                                                  '-' as i32) &&
-                                             (*md).choice != old) {
-                                        break ;
+                                loop {
+                                    if (*md).choice == -(1 as libc::c_int)
+                                        || (*md).choice == 0 as libc::c_int
+                                    {
+                                        (*md).choice = count - 1 as libc::c_int
+                                    } else {
+                                        (*md).choice -= 1
+                                    }
+                                    name = (*(*menu).items.offset((*md).choice as isize)).name;
+                                    if !((name.is_null() || *name as libc::c_int == '-' as i32)
+                                        && (*md).choice != old)
+                                    {
+                                        break;
                                     }
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                return 0 as libc::c_int;
                             }
                             8312313396388474857 => {
                                 current_block = 5768530447596251282;
                             }
-                            _ => { }
+                            _ => {}
                         }
                         match current_block {
                             10827572169919271282 => {
                                 if old == -(1 as libc::c_int) {
                                     old = 0 as libc::c_int
                                 }
-                                loop  {
-                                    if (*md).choice == -(1 as libc::c_int) ||
-                                           (*md).choice ==
-                                               count - 1 as libc::c_int {
+                                loop {
+                                    if (*md).choice == -(1 as libc::c_int)
+                                        || (*md).choice == count - 1 as libc::c_int
+                                    {
                                         (*md).choice = 0 as libc::c_int
-                                    } else { (*md).choice += 1 }
-                                    name =
-                                        (*(*menu).items.offset((*md).choice as
-                                                                   isize)).name;
-                                    if !((name.is_null() ||
-                                              *name as libc::c_int ==
-                                                  '-' as i32) &&
-                                             (*md).choice != old) {
-                                        break ;
+                                    } else {
+                                        (*md).choice += 1
+                                    }
+                                    name = (*(*menu).items.offset((*md).choice as isize)).name;
+                                    if !((name.is_null() || *name as libc::c_int == '-' as i32)
+                                        && (*md).choice != old)
+                                    {
+                                        break;
                                     }
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                return 0 as libc::c_int;
                             }
-                            18383263831861166299 => {
-                                return 0 as libc::c_int
-                            }
-                            5768530447596251282 => { }
-                            _ => { }
+                            18383263831861166299 => return 0 as libc::c_int,
+                            5768530447596251282 => {}
+                            _ => {}
                         }
-                        return 1 as libc::c_int
+                        return 1 as libc::c_int;
                     }
                     71 | 68719476905 => {
                         current_block = 7328775138574252198;
@@ -2235,41 +2266,40 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client,
                             7328775138574252198 => {
                                 if (*md).choice > count - 6 as libc::c_int {
                                     (*md).choice = count - 1 as libc::c_int
-                                } else { (*md).choice += 5 as libc::c_int }
-                                while (*md).choice != -(1 as libc::c_int) &&
-                                          (name.is_null() ||
-                                               *name as libc::c_int ==
-                                                   '-' as i32) {
+                                } else {
+                                    (*md).choice += 5 as libc::c_int
+                                }
+                                while (*md).choice != -(1 as libc::c_int)
+                                    && (name.is_null() || *name as libc::c_int == '-' as i32)
+                                {
                                     (*md).choice -= 1
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
                                 current_block = 18383263831861166299;
                             }
                             7272745134570625308 => {
                                 if (*md).choice > 5 as libc::c_int {
                                     (*md).choice -= 5 as libc::c_int
-                                } else { (*md).choice = 0 as libc::c_int }
-                                while (*md).choice != count &&
-                                          (name.is_null() ||
-                                               *name as libc::c_int ==
-                                                   '-' as i32) {
+                                } else {
+                                    (*md).choice = 0 as libc::c_int
+                                }
+                                while (*md).choice != count
+                                    && (name.is_null() || *name as libc::c_int == '-' as i32)
+                                {
                                     (*md).choice += 1
                                 }
                                 if (*md).choice == count {
                                     (*md).choice = -(1 as libc::c_int)
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
                                 current_block = 18383263831861166299;
                             }
                             2215219764755711832 => {
                                 if !(*md).flags & 0x2 as libc::c_int != 0 {
                                     current_block = 18383263831861166299;
                                 } else {
-                                    if (*md).choice ==
-                                           count - 1 as libc::c_int {
-                                        return 1 as libc::c_int
+                                    if (*md).choice == count - 1 as libc::c_int {
+                                        return 1 as libc::c_int;
                                     }
                                     current_block = 10827572169919271282;
                                 }
@@ -2277,112 +2307,107 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client,
                             4625365797902618311 => {
                                 if !(*md).flags & 0x2 as libc::c_int != 0 {
                                     current_block = 18383263831861166299;
-                                } else { return 1 as libc::c_int }
+                                } else {
+                                    return 1 as libc::c_int;
+                                }
                             }
                             11976616061117098778 => {
                                 if old == -(1 as libc::c_int) {
                                     old = 0 as libc::c_int
                                 }
-                                loop  {
-                                    if (*md).choice == -(1 as libc::c_int) ||
-                                           (*md).choice == 0 as libc::c_int {
-                                        (*md).choice =
-                                            count - 1 as libc::c_int
-                                    } else { (*md).choice -= 1 }
-                                    name =
-                                        (*(*menu).items.offset((*md).choice as
-                                                                   isize)).name;
-                                    if !((name.is_null() ||
-                                              *name as libc::c_int ==
-                                                  '-' as i32) &&
-                                             (*md).choice != old) {
-                                        break ;
+                                loop {
+                                    if (*md).choice == -(1 as libc::c_int)
+                                        || (*md).choice == 0 as libc::c_int
+                                    {
+                                        (*md).choice = count - 1 as libc::c_int
+                                    } else {
+                                        (*md).choice -= 1
+                                    }
+                                    name = (*(*menu).items.offset((*md).choice as isize)).name;
+                                    if !((name.is_null() || *name as libc::c_int == '-' as i32)
+                                        && (*md).choice != old)
+                                    {
+                                        break;
                                     }
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                return 0 as libc::c_int;
                             }
                             8312313396388474857 => {
                                 current_block = 5768530447596251282;
                             }
-                            _ => { }
+                            _ => {}
                         }
                         match current_block {
                             10827572169919271282 => {
                                 if old == -(1 as libc::c_int) {
                                     old = 0 as libc::c_int
                                 }
-                                loop  {
-                                    if (*md).choice == -(1 as libc::c_int) ||
-                                           (*md).choice ==
-                                               count - 1 as libc::c_int {
+                                loop {
+                                    if (*md).choice == -(1 as libc::c_int)
+                                        || (*md).choice == count - 1 as libc::c_int
+                                    {
                                         (*md).choice = 0 as libc::c_int
-                                    } else { (*md).choice += 1 }
-                                    name =
-                                        (*(*menu).items.offset((*md).choice as
-                                                                   isize)).name;
-                                    if !((name.is_null() ||
-                                              *name as libc::c_int ==
-                                                  '-' as i32) &&
-                                             (*md).choice != old) {
-                                        break ;
+                                    } else {
+                                        (*md).choice += 1
+                                    }
+                                    name = (*(*menu).items.offset((*md).choice as isize)).name;
+                                    if !((name.is_null() || *name as libc::c_int == '-' as i32)
+                                        && (*md).choice != old)
+                                    {
+                                        break;
                                     }
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                return 0 as libc::c_int;
                             }
-                            18383263831861166299 => {
-                                return 0 as libc::c_int
-                            }
-                            5768530447596251282 => { }
-                            _ => { }
+                            18383263831861166299 => return 0 as libc::c_int,
+                            5768530447596251282 => {}
+                            _ => {}
                         }
-                        return 1 as libc::c_int
+                        return 1 as libc::c_int;
                     }
-                    13 => { }
+                    13 => {}
                     27 => {
                         current_block = 8312313396388474857;
                         match current_block {
                             7328775138574252198 => {
                                 if (*md).choice > count - 6 as libc::c_int {
                                     (*md).choice = count - 1 as libc::c_int
-                                } else { (*md).choice += 5 as libc::c_int }
-                                while (*md).choice != -(1 as libc::c_int) &&
-                                          (name.is_null() ||
-                                               *name as libc::c_int ==
-                                                   '-' as i32) {
+                                } else {
+                                    (*md).choice += 5 as libc::c_int
+                                }
+                                while (*md).choice != -(1 as libc::c_int)
+                                    && (name.is_null() || *name as libc::c_int == '-' as i32)
+                                {
                                     (*md).choice -= 1
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
                                 current_block = 18383263831861166299;
                             }
                             7272745134570625308 => {
                                 if (*md).choice > 5 as libc::c_int {
                                     (*md).choice -= 5 as libc::c_int
-                                } else { (*md).choice = 0 as libc::c_int }
-                                while (*md).choice != count &&
-                                          (name.is_null() ||
-                                               *name as libc::c_int ==
-                                                   '-' as i32) {
+                                } else {
+                                    (*md).choice = 0 as libc::c_int
+                                }
+                                while (*md).choice != count
+                                    && (name.is_null() || *name as libc::c_int == '-' as i32)
+                                {
                                     (*md).choice += 1
                                 }
                                 if (*md).choice == count {
                                     (*md).choice = -(1 as libc::c_int)
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
                                 current_block = 18383263831861166299;
                             }
                             2215219764755711832 => {
                                 if !(*md).flags & 0x2 as libc::c_int != 0 {
                                     current_block = 18383263831861166299;
                                 } else {
-                                    if (*md).choice ==
-                                           count - 1 as libc::c_int {
-                                        return 1 as libc::c_int
+                                    if (*md).choice == count - 1 as libc::c_int {
+                                        return 1 as libc::c_int;
                                     }
                                     current_block = 10827572169919271282;
                                 }
@@ -2390,69 +2415,65 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client,
                             4625365797902618311 => {
                                 if !(*md).flags & 0x2 as libc::c_int != 0 {
                                     current_block = 18383263831861166299;
-                                } else { return 1 as libc::c_int }
+                                } else {
+                                    return 1 as libc::c_int;
+                                }
                             }
                             11976616061117098778 => {
                                 if old == -(1 as libc::c_int) {
                                     old = 0 as libc::c_int
                                 }
-                                loop  {
-                                    if (*md).choice == -(1 as libc::c_int) ||
-                                           (*md).choice == 0 as libc::c_int {
-                                        (*md).choice =
-                                            count - 1 as libc::c_int
-                                    } else { (*md).choice -= 1 }
-                                    name =
-                                        (*(*menu).items.offset((*md).choice as
-                                                                   isize)).name;
-                                    if !((name.is_null() ||
-                                              *name as libc::c_int ==
-                                                  '-' as i32) &&
-                                             (*md).choice != old) {
-                                        break ;
+                                loop {
+                                    if (*md).choice == -(1 as libc::c_int)
+                                        || (*md).choice == 0 as libc::c_int
+                                    {
+                                        (*md).choice = count - 1 as libc::c_int
+                                    } else {
+                                        (*md).choice -= 1
+                                    }
+                                    name = (*(*menu).items.offset((*md).choice as isize)).name;
+                                    if !((name.is_null() || *name as libc::c_int == '-' as i32)
+                                        && (*md).choice != old)
+                                    {
+                                        break;
                                     }
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                return 0 as libc::c_int;
                             }
                             8312313396388474857 => {
                                 current_block = 5768530447596251282;
                             }
-                            _ => { }
+                            _ => {}
                         }
                         match current_block {
                             10827572169919271282 => {
                                 if old == -(1 as libc::c_int) {
                                     old = 0 as libc::c_int
                                 }
-                                loop  {
-                                    if (*md).choice == -(1 as libc::c_int) ||
-                                           (*md).choice ==
-                                               count - 1 as libc::c_int {
+                                loop {
+                                    if (*md).choice == -(1 as libc::c_int)
+                                        || (*md).choice == count - 1 as libc::c_int
+                                    {
                                         (*md).choice = 0 as libc::c_int
-                                    } else { (*md).choice += 1 }
-                                    name =
-                                        (*(*menu).items.offset((*md).choice as
-                                                                   isize)).name;
-                                    if !((name.is_null() ||
-                                              *name as libc::c_int ==
-                                                  '-' as i32) &&
-                                             (*md).choice != old) {
-                                        break ;
+                                    } else {
+                                        (*md).choice += 1
+                                    }
+                                    name = (*(*menu).items.offset((*md).choice as isize)).name;
+                                    if !((name.is_null() || *name as libc::c_int == '-' as i32)
+                                        && (*md).choice != old)
+                                    {
+                                        break;
                                     }
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                return 0 as libc::c_int;
                             }
-                            18383263831861166299 => {
-                                return 0 as libc::c_int
-                            }
-                            5768530447596251282 => { }
-                            _ => { }
+                            18383263831861166299 => return 0 as libc::c_int,
+                            5768530447596251282 => {}
+                            _ => {}
                         }
-                        return 1 as libc::c_int
+                        return 1 as libc::c_int;
                     }
                     3 => {
                         current_block = 5768530447596251282;
@@ -2460,41 +2481,40 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client,
                             7328775138574252198 => {
                                 if (*md).choice > count - 6 as libc::c_int {
                                     (*md).choice = count - 1 as libc::c_int
-                                } else { (*md).choice += 5 as libc::c_int }
-                                while (*md).choice != -(1 as libc::c_int) &&
-                                          (name.is_null() ||
-                                               *name as libc::c_int ==
-                                                   '-' as i32) {
+                                } else {
+                                    (*md).choice += 5 as libc::c_int
+                                }
+                                while (*md).choice != -(1 as libc::c_int)
+                                    && (name.is_null() || *name as libc::c_int == '-' as i32)
+                                {
                                     (*md).choice -= 1
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
                                 current_block = 18383263831861166299;
                             }
                             7272745134570625308 => {
                                 if (*md).choice > 5 as libc::c_int {
                                     (*md).choice -= 5 as libc::c_int
-                                } else { (*md).choice = 0 as libc::c_int }
-                                while (*md).choice != count &&
-                                          (name.is_null() ||
-                                               *name as libc::c_int ==
-                                                   '-' as i32) {
+                                } else {
+                                    (*md).choice = 0 as libc::c_int
+                                }
+                                while (*md).choice != count
+                                    && (name.is_null() || *name as libc::c_int == '-' as i32)
+                                {
                                     (*md).choice += 1
                                 }
                                 if (*md).choice == count {
                                     (*md).choice = -(1 as libc::c_int)
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
                                 current_block = 18383263831861166299;
                             }
                             2215219764755711832 => {
                                 if !(*md).flags & 0x2 as libc::c_int != 0 {
                                     current_block = 18383263831861166299;
                                 } else {
-                                    if (*md).choice ==
-                                           count - 1 as libc::c_int {
-                                        return 1 as libc::c_int
+                                    if (*md).choice == count - 1 as libc::c_int {
+                                        return 1 as libc::c_int;
                                     }
                                     current_block = 10827572169919271282;
                                 }
@@ -2502,69 +2522,65 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client,
                             4625365797902618311 => {
                                 if !(*md).flags & 0x2 as libc::c_int != 0 {
                                     current_block = 18383263831861166299;
-                                } else { return 1 as libc::c_int }
+                                } else {
+                                    return 1 as libc::c_int;
+                                }
                             }
                             11976616061117098778 => {
                                 if old == -(1 as libc::c_int) {
                                     old = 0 as libc::c_int
                                 }
-                                loop  {
-                                    if (*md).choice == -(1 as libc::c_int) ||
-                                           (*md).choice == 0 as libc::c_int {
-                                        (*md).choice =
-                                            count - 1 as libc::c_int
-                                    } else { (*md).choice -= 1 }
-                                    name =
-                                        (*(*menu).items.offset((*md).choice as
-                                                                   isize)).name;
-                                    if !((name.is_null() ||
-                                              *name as libc::c_int ==
-                                                  '-' as i32) &&
-                                             (*md).choice != old) {
-                                        break ;
+                                loop {
+                                    if (*md).choice == -(1 as libc::c_int)
+                                        || (*md).choice == 0 as libc::c_int
+                                    {
+                                        (*md).choice = count - 1 as libc::c_int
+                                    } else {
+                                        (*md).choice -= 1
+                                    }
+                                    name = (*(*menu).items.offset((*md).choice as isize)).name;
+                                    if !((name.is_null() || *name as libc::c_int == '-' as i32)
+                                        && (*md).choice != old)
+                                    {
+                                        break;
                                     }
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                return 0 as libc::c_int;
                             }
                             8312313396388474857 => {
                                 current_block = 5768530447596251282;
                             }
-                            _ => { }
+                            _ => {}
                         }
                         match current_block {
                             10827572169919271282 => {
                                 if old == -(1 as libc::c_int) {
                                     old = 0 as libc::c_int
                                 }
-                                loop  {
-                                    if (*md).choice == -(1 as libc::c_int) ||
-                                           (*md).choice ==
-                                               count - 1 as libc::c_int {
+                                loop {
+                                    if (*md).choice == -(1 as libc::c_int)
+                                        || (*md).choice == count - 1 as libc::c_int
+                                    {
                                         (*md).choice = 0 as libc::c_int
-                                    } else { (*md).choice += 1 }
-                                    name =
-                                        (*(*menu).items.offset((*md).choice as
-                                                                   isize)).name;
-                                    if !((name.is_null() ||
-                                              *name as libc::c_int ==
-                                                  '-' as i32) &&
-                                             (*md).choice != old) {
-                                        break ;
+                                    } else {
+                                        (*md).choice += 1
+                                    }
+                                    name = (*(*menu).items.offset((*md).choice as isize)).name;
+                                    if !((name.is_null() || *name as libc::c_int == '-' as i32)
+                                        && (*md).choice != old)
+                                    {
+                                        break;
                                     }
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                return 0 as libc::c_int;
                             }
-                            18383263831861166299 => {
-                                return 0 as libc::c_int
-                            }
-                            5768530447596251282 => { }
-                            _ => { }
+                            18383263831861166299 => return 0 as libc::c_int,
+                            5768530447596251282 => {}
+                            _ => {}
                         }
-                        return 1 as libc::c_int
+                        return 1 as libc::c_int;
                     }
                     7 | 113 => {
                         current_block = 13300134386176516907;
@@ -2572,41 +2588,40 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client,
                             7328775138574252198 => {
                                 if (*md).choice > count - 6 as libc::c_int {
                                     (*md).choice = count - 1 as libc::c_int
-                                } else { (*md).choice += 5 as libc::c_int }
-                                while (*md).choice != -(1 as libc::c_int) &&
-                                          (name.is_null() ||
-                                               *name as libc::c_int ==
-                                                   '-' as i32) {
+                                } else {
+                                    (*md).choice += 5 as libc::c_int
+                                }
+                                while (*md).choice != -(1 as libc::c_int)
+                                    && (name.is_null() || *name as libc::c_int == '-' as i32)
+                                {
                                     (*md).choice -= 1
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
                                 current_block = 18383263831861166299;
                             }
                             7272745134570625308 => {
                                 if (*md).choice > 5 as libc::c_int {
                                     (*md).choice -= 5 as libc::c_int
-                                } else { (*md).choice = 0 as libc::c_int }
-                                while (*md).choice != count &&
-                                          (name.is_null() ||
-                                               *name as libc::c_int ==
-                                                   '-' as i32) {
+                                } else {
+                                    (*md).choice = 0 as libc::c_int
+                                }
+                                while (*md).choice != count
+                                    && (name.is_null() || *name as libc::c_int == '-' as i32)
+                                {
                                     (*md).choice += 1
                                 }
                                 if (*md).choice == count {
                                     (*md).choice = -(1 as libc::c_int)
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
                                 current_block = 18383263831861166299;
                             }
                             2215219764755711832 => {
                                 if !(*md).flags & 0x2 as libc::c_int != 0 {
                                     current_block = 18383263831861166299;
                                 } else {
-                                    if (*md).choice ==
-                                           count - 1 as libc::c_int {
-                                        return 1 as libc::c_int
+                                    if (*md).choice == count - 1 as libc::c_int {
+                                        return 1 as libc::c_int;
                                     }
                                     current_block = 10827572169919271282;
                                 }
@@ -2614,69 +2629,65 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client,
                             4625365797902618311 => {
                                 if !(*md).flags & 0x2 as libc::c_int != 0 {
                                     current_block = 18383263831861166299;
-                                } else { return 1 as libc::c_int }
+                                } else {
+                                    return 1 as libc::c_int;
+                                }
                             }
                             11976616061117098778 => {
                                 if old == -(1 as libc::c_int) {
                                     old = 0 as libc::c_int
                                 }
-                                loop  {
-                                    if (*md).choice == -(1 as libc::c_int) ||
-                                           (*md).choice == 0 as libc::c_int {
-                                        (*md).choice =
-                                            count - 1 as libc::c_int
-                                    } else { (*md).choice -= 1 }
-                                    name =
-                                        (*(*menu).items.offset((*md).choice as
-                                                                   isize)).name;
-                                    if !((name.is_null() ||
-                                              *name as libc::c_int ==
-                                                  '-' as i32) &&
-                                             (*md).choice != old) {
-                                        break ;
+                                loop {
+                                    if (*md).choice == -(1 as libc::c_int)
+                                        || (*md).choice == 0 as libc::c_int
+                                    {
+                                        (*md).choice = count - 1 as libc::c_int
+                                    } else {
+                                        (*md).choice -= 1
+                                    }
+                                    name = (*(*menu).items.offset((*md).choice as isize)).name;
+                                    if !((name.is_null() || *name as libc::c_int == '-' as i32)
+                                        && (*md).choice != old)
+                                    {
+                                        break;
                                     }
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                return 0 as libc::c_int;
                             }
                             8312313396388474857 => {
                                 current_block = 5768530447596251282;
                             }
-                            _ => { }
+                            _ => {}
                         }
                         match current_block {
                             10827572169919271282 => {
                                 if old == -(1 as libc::c_int) {
                                     old = 0 as libc::c_int
                                 }
-                                loop  {
-                                    if (*md).choice == -(1 as libc::c_int) ||
-                                           (*md).choice ==
-                                               count - 1 as libc::c_int {
+                                loop {
+                                    if (*md).choice == -(1 as libc::c_int)
+                                        || (*md).choice == count - 1 as libc::c_int
+                                    {
                                         (*md).choice = 0 as libc::c_int
-                                    } else { (*md).choice += 1 }
-                                    name =
-                                        (*(*menu).items.offset((*md).choice as
-                                                                   isize)).name;
-                                    if !((name.is_null() ||
-                                              *name as libc::c_int ==
-                                                  '-' as i32) &&
-                                             (*md).choice != old) {
-                                        break ;
+                                    } else {
+                                        (*md).choice += 1
+                                    }
+                                    name = (*(*menu).items.offset((*md).choice as isize)).name;
+                                    if !((name.is_null() || *name as libc::c_int == '-' as i32)
+                                        && (*md).choice != old)
+                                    {
+                                        break;
                                     }
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                return 0 as libc::c_int;
                             }
-                            18383263831861166299 => {
-                                return 0 as libc::c_int
-                            }
-                            5768530447596251282 => { }
-                            _ => { }
+                            18383263831861166299 => return 0 as libc::c_int,
+                            5768530447596251282 => {}
+                            _ => {}
                         }
-                        return 1 as libc::c_int
+                        return 1 as libc::c_int;
                     }
                     6 | _ => {
                         current_block = 18383263831861166299;
@@ -2684,41 +2695,40 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client,
                             7328775138574252198 => {
                                 if (*md).choice > count - 6 as libc::c_int {
                                     (*md).choice = count - 1 as libc::c_int
-                                } else { (*md).choice += 5 as libc::c_int }
-                                while (*md).choice != -(1 as libc::c_int) &&
-                                          (name.is_null() ||
-                                               *name as libc::c_int ==
-                                                   '-' as i32) {
+                                } else {
+                                    (*md).choice += 5 as libc::c_int
+                                }
+                                while (*md).choice != -(1 as libc::c_int)
+                                    && (name.is_null() || *name as libc::c_int == '-' as i32)
+                                {
                                     (*md).choice -= 1
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
                                 current_block = 18383263831861166299;
                             }
                             7272745134570625308 => {
                                 if (*md).choice > 5 as libc::c_int {
                                     (*md).choice -= 5 as libc::c_int
-                                } else { (*md).choice = 0 as libc::c_int }
-                                while (*md).choice != count &&
-                                          (name.is_null() ||
-                                               *name as libc::c_int ==
-                                                   '-' as i32) {
+                                } else {
+                                    (*md).choice = 0 as libc::c_int
+                                }
+                                while (*md).choice != count
+                                    && (name.is_null() || *name as libc::c_int == '-' as i32)
+                                {
                                     (*md).choice += 1
                                 }
                                 if (*md).choice == count {
                                     (*md).choice = -(1 as libc::c_int)
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
                                 current_block = 18383263831861166299;
                             }
                             2215219764755711832 => {
                                 if !(*md).flags & 0x2 as libc::c_int != 0 {
                                     current_block = 18383263831861166299;
                                 } else {
-                                    if (*md).choice ==
-                                           count - 1 as libc::c_int {
-                                        return 1 as libc::c_int
+                                    if (*md).choice == count - 1 as libc::c_int {
+                                        return 1 as libc::c_int;
                                     }
                                     current_block = 10827572169919271282;
                                 }
@@ -2726,97 +2736,104 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client,
                             4625365797902618311 => {
                                 if !(*md).flags & 0x2 as libc::c_int != 0 {
                                     current_block = 18383263831861166299;
-                                } else { return 1 as libc::c_int }
+                                } else {
+                                    return 1 as libc::c_int;
+                                }
                             }
                             11976616061117098778 => {
                                 if old == -(1 as libc::c_int) {
                                     old = 0 as libc::c_int
                                 }
-                                loop  {
-                                    if (*md).choice == -(1 as libc::c_int) ||
-                                           (*md).choice == 0 as libc::c_int {
-                                        (*md).choice =
-                                            count - 1 as libc::c_int
-                                    } else { (*md).choice -= 1 }
-                                    name =
-                                        (*(*menu).items.offset((*md).choice as
-                                                                   isize)).name;
-                                    if !((name.is_null() ||
-                                              *name as libc::c_int ==
-                                                  '-' as i32) &&
-                                             (*md).choice != old) {
-                                        break ;
+                                loop {
+                                    if (*md).choice == -(1 as libc::c_int)
+                                        || (*md).choice == 0 as libc::c_int
+                                    {
+                                        (*md).choice = count - 1 as libc::c_int
+                                    } else {
+                                        (*md).choice -= 1
+                                    }
+                                    name = (*(*menu).items.offset((*md).choice as isize)).name;
+                                    if !((name.is_null() || *name as libc::c_int == '-' as i32)
+                                        && (*md).choice != old)
+                                    {
+                                        break;
                                     }
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                return 0 as libc::c_int;
                             }
                             8312313396388474857 => {
                                 current_block = 5768530447596251282;
                             }
-                            _ => { }
+                            _ => {}
                         }
                         match current_block {
                             10827572169919271282 => {
                                 if old == -(1 as libc::c_int) {
                                     old = 0 as libc::c_int
                                 }
-                                loop  {
-                                    if (*md).choice == -(1 as libc::c_int) ||
-                                           (*md).choice ==
-                                               count - 1 as libc::c_int {
+                                loop {
+                                    if (*md).choice == -(1 as libc::c_int)
+                                        || (*md).choice == count - 1 as libc::c_int
+                                    {
                                         (*md).choice = 0 as libc::c_int
-                                    } else { (*md).choice += 1 }
-                                    name =
-                                        (*(*menu).items.offset((*md).choice as
-                                                                   isize)).name;
-                                    if !((name.is_null() ||
-                                              *name as libc::c_int ==
-                                                  '-' as i32) &&
-                                             (*md).choice != old) {
-                                        break ;
+                                    } else {
+                                        (*md).choice += 1
+                                    }
+                                    name = (*(*menu).items.offset((*md).choice as isize)).name;
+                                    if !((name.is_null() || *name as libc::c_int == '-' as i32)
+                                        && (*md).choice != old)
+                                    {
+                                        break;
                                     }
                                 }
-                                (*c).flags |=
-                                    0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int
+                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                return 0 as libc::c_int;
                             }
-                            18383263831861166299 => {
-                                return 0 as libc::c_int
-                            }
-                            5768530447596251282 => { }
-                            _ => { }
+                            18383263831861166299 => return 0 as libc::c_int,
+                            5768530447596251282 => {}
+                            _ => {}
                         }
-                        return 1 as libc::c_int
+                        return 1 as libc::c_int;
                     }
                 }
             }
         }
     }
-    if (*md).choice == -(1 as libc::c_int) { return 1 as libc::c_int }
-    item =
-        &mut *(*menu).items.offset((*md).choice as isize) as *mut menu_item;
+    if (*md).choice == -(1 as libc::c_int) {
+        return 1 as libc::c_int;
+    }
+    item = &mut *(*menu).items.offset((*md).choice as isize) as *mut menu_item;
     if (*item).name.is_null() || *(*item).name as libc::c_int == '-' as i32 {
-        if (*md).flags & 0x4 as libc::c_int != 0 { return 0 as libc::c_int }
-        return 1 as libc::c_int
+        if (*md).flags & 0x4 as libc::c_int != 0 {
+            return 0 as libc::c_int;
+        }
+        return 1 as libc::c_int;
     }
     if (*md).cb.is_some() {
-        (*md).cb.expect("non-null function pointer")((*md).menu,
-                                                     (*md).choice as u_int,
-                                                     (*item).key, (*md).data);
+        (*md).cb.expect("non-null function pointer")(
+            (*md).menu,
+            (*md).choice as u_int,
+            (*item).key,
+            (*md).data,
+        );
         (*md).cb = None;
-        return 1 as libc::c_int
+        return 1 as libc::c_int;
     }
     if !(*md).item.is_null() {
         event = cmdq_get_event((*md).item)
-    } else { event = 0 as *mut key_event }
+    } else {
+        event = 0 as *mut key_event
+    }
     state = cmdq_new_state(&mut (*md).fs, event, 0 as libc::c_int);
-    status =
-        cmd_parse_and_append((*item).command, 0 as *mut cmd_parse_input, c,
-                             state, &mut error);
-    if status as libc::c_uint ==
-           CMD_PARSE_ERROR as libc::c_int as libc::c_uint {
+    status = cmd_parse_and_append(
+        (*item).command,
+        0 as *mut cmd_parse_input,
+        c,
+        state,
+        &mut error,
+    );
+    if status as libc::c_uint == CMD_PARSE_ERROR as libc::c_int as libc::c_uint {
         cmdq_append(c, cmdq_get_error(error));
         free(error as *mut libc::c_void);
     }
@@ -2824,52 +2841,62 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client,
     return 1 as libc::c_int;
 }
 #[no_mangle]
-pub unsafe extern "C" fn menu_display(mut menu: *mut menu,
-                                      mut flags: libc::c_int,
-                                      mut item: *mut cmdq_item, mut px: u_int,
-                                      mut py: u_int, mut c: *mut client,
-                                      mut fs: *mut cmd_find_state,
-                                      mut cb: menu_choice_cb,
-                                      mut data: *mut libc::c_void)
- -> libc::c_int {
+pub unsafe extern "C" fn menu_display(
+    mut menu: *mut menu,
+    mut flags: libc::c_int,
+    mut item: *mut cmdq_item,
+    mut px: u_int,
+    mut py: u_int,
+    mut c: *mut client,
+    mut fs: *mut cmd_find_state,
+    mut cb: menu_choice_cb,
+    mut data: *mut libc::c_void,
+) -> libc::c_int {
     let mut md: *mut menu_data = 0 as *mut menu_data;
     let mut i: u_int = 0;
     let mut name: *const libc::c_char = 0 as *const libc::c_char;
-    if (*c).tty.sx <
-           (*menu).width.wrapping_add(4 as libc::c_int as libc::c_uint) ||
-           (*c).tty.sy <
-               (*menu).count.wrapping_add(2 as libc::c_int as libc::c_uint) {
-        return -(1 as libc::c_int)
+    if (*c).tty.sx < (*menu).width.wrapping_add(4 as libc::c_int as libc::c_uint)
+        || (*c).tty.sy < (*menu).count.wrapping_add(2 as libc::c_int as libc::c_uint)
+    {
+        return -(1 as libc::c_int);
     }
-    if px.wrapping_add((*menu).width).wrapping_add(4 as libc::c_int as
-                                                       libc::c_uint) >
-           (*c).tty.sx {
-        px =
-            (*c).tty.sx.wrapping_sub((*menu).width).wrapping_sub(4 as
-                                                                     libc::c_int
-                                                                     as
-                                                                     libc::c_uint)
+    if px
+        .wrapping_add((*menu).width)
+        .wrapping_add(4 as libc::c_int as libc::c_uint)
+        > (*c).tty.sx
+    {
+        px = (*c)
+            .tty
+            .sx
+            .wrapping_sub((*menu).width)
+            .wrapping_sub(4 as libc::c_int as libc::c_uint)
     }
-    if py.wrapping_add((*menu).count).wrapping_add(2 as libc::c_int as
-                                                       libc::c_uint) >
-           (*c).tty.sy {
-        py =
-            (*c).tty.sy.wrapping_sub((*menu).count).wrapping_sub(2 as
-                                                                     libc::c_int
-                                                                     as
-                                                                     libc::c_uint)
+    if py
+        .wrapping_add((*menu).count)
+        .wrapping_add(2 as libc::c_int as libc::c_uint)
+        > (*c).tty.sy
+    {
+        py = (*c)
+            .tty
+            .sy
+            .wrapping_sub((*menu).count)
+            .wrapping_sub(2 as libc::c_int as libc::c_uint)
     }
-    md =
-        xcalloc(1 as libc::c_int as size_t,
-                ::std::mem::size_of::<menu_data>() as libc::c_ulong) as
-            *mut menu_data;
+    md = xcalloc(
+        1 as libc::c_int as size_t,
+        ::std::mem::size_of::<menu_data>() as libc::c_ulong,
+    ) as *mut menu_data;
     (*md).item = item;
     (*md).flags = flags;
-    if !fs.is_null() { cmd_find_copy_state(&mut (*md).fs, fs); }
-    screen_init(&mut (*md).s,
-                (*menu).width.wrapping_add(4 as libc::c_int as libc::c_uint),
-                (*menu).count.wrapping_add(2 as libc::c_int as libc::c_uint),
-                0 as libc::c_int as u_int);
+    if !fs.is_null() {
+        cmd_find_copy_state(&mut (*md).fs, fs);
+    }
+    screen_init(
+        &mut (*md).s,
+        (*menu).width.wrapping_add(4 as libc::c_int as libc::c_uint),
+        (*menu).count.wrapping_add(2 as libc::c_int as libc::c_uint),
+        0 as libc::c_int as u_int,
+    );
     if !(*md).flags & 0x1 as libc::c_int != 0 {
         (*md).s.mode |= 0x1000 as libc::c_int
     }
@@ -2882,33 +2909,36 @@ pub unsafe extern "C" fn menu_display(mut menu: *mut menu,
         while i < (*menu).count {
             name = (*(*menu).items.offset(i as isize)).name;
             if !name.is_null() && *name as libc::c_int != '-' as i32 {
-                break ;
+                break;
             }
             i = i.wrapping_add(1)
         }
         if i != (*menu).count {
             (*md).choice = i as libc::c_int
-        } else { (*md).choice = -(1 as libc::c_int) }
-    } else { (*md).choice = -(1 as libc::c_int) }
+        } else {
+            (*md).choice = -(1 as libc::c_int)
+        }
+    } else {
+        (*md).choice = -(1 as libc::c_int)
+    }
     (*md).cb = cb;
     (*md).data = data;
-    server_client_set_overlay(c, 0 as libc::c_int as u_int, None,
-                              Some(menu_mode_cb as
-                                       unsafe extern "C" fn(_: *mut client,
-                                                            _: *mut u_int,
-                                                            _: *mut u_int)
-                                           -> *mut screen),
-                              Some(menu_draw_cb as
-                                       unsafe extern "C" fn(_: *mut client,
-                                                            _:
-                                                                *mut screen_redraw_ctx)
-                                           -> ()),
-                              Some(menu_key_cb as
-                                       unsafe extern "C" fn(_: *mut client,
-                                                            _: *mut key_event)
-                                           -> libc::c_int),
-                              Some(menu_free_cb as
-                                       unsafe extern "C" fn(_: *mut client)
-                                           -> ()), md as *mut libc::c_void);
+    server_client_set_overlay(
+        c,
+        0 as libc::c_int as u_int,
+        None,
+        Some(
+            menu_mode_cb
+                as unsafe extern "C" fn(
+                    _: *mut client,
+                    _: *mut u_int,
+                    _: *mut u_int,
+                ) -> *mut screen,
+        ),
+        Some(menu_draw_cb as unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx) -> ()),
+        Some(menu_key_cb as unsafe extern "C" fn(_: *mut client, _: *mut key_event) -> libc::c_int),
+        Some(menu_free_cb as unsafe extern "C" fn(_: *mut client) -> ()),
+        md as *mut libc::c_void,
+    );
     return 0 as libc::c_int;
 }

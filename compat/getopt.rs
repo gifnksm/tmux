@@ -92,71 +92,79 @@ pub static mut BSDoptopt: libc::c_int = 0;
 pub static mut BSDoptreset: libc::c_int = 0;
 /* reset getopt */
 #[no_mangle]
-pub static mut BSDoptarg: *mut libc::c_char =
-    0 as *const libc::c_char as *mut libc::c_char;
+pub static mut BSDoptarg: *mut libc::c_char = 0 as *const libc::c_char as *mut libc::c_char;
 /*
  * getopt --
  *	Parse argc/argv argument vector.
  */
 #[no_mangle]
-pub unsafe extern "C" fn BSDgetopt(mut nargc: libc::c_int,
-                                   mut nargv: *const *mut libc::c_char,
-                                   mut ostr: *const libc::c_char)
- -> libc::c_int {
-    static mut place: *const libc::c_char =
-        b"\x00" as *const u8 as
-            *const libc::c_char; /* option letter processing */
-    let mut oli: *mut libc::c_char =
-        0 as *mut libc::c_char; /* option letter list index */
-    if ostr.is_null() { return -(1 as libc::c_int) } /* option letter okay? */
+pub unsafe extern "C" fn BSDgetopt(
+    mut nargc: libc::c_int,
+    mut nargv: *const *mut libc::c_char,
+    mut ostr: *const libc::c_char,
+) -> libc::c_int {
+    static mut place: *const libc::c_char = b"\x00" as *const u8 as *const libc::c_char; /* option letter processing */
+    let mut oli: *mut libc::c_char = 0 as *mut libc::c_char; /* option letter list index */
+    if ostr.is_null() {
+        return -(1 as libc::c_int);
+    } /* option letter okay? */
     if BSDoptreset != 0 || *place == 0 {
         /* update scanning pointer */
         BSDoptreset = 0 as libc::c_int;
-        if BSDoptind >= nargc ||
-               {
-                   place = *nargv.offset(BSDoptind as isize);
-                   (*place as libc::c_int) != '-' as i32
-               } {
+        if BSDoptind >= nargc || {
+            place = *nargv.offset(BSDoptind as isize);
+            (*place as libc::c_int) != '-' as i32
+        } {
             place = b"\x00" as *const u8 as *const libc::c_char;
-            return -(1 as libc::c_int)
+            return -(1 as libc::c_int);
         }
-        if *place.offset(1 as libc::c_int as isize) as libc::c_int != 0 &&
-               {
-                   place = place.offset(1);
-                   (*place as libc::c_int) == '-' as i32
-               } {
+        if *place.offset(1 as libc::c_int as isize) as libc::c_int != 0 && {
+            place = place.offset(1);
+            (*place as libc::c_int) == '-' as i32
+        } {
             /* found "--" */
             if *place.offset(1 as libc::c_int as isize) != 0 {
-                return '?' as i32
+                return '?' as i32;
             }
             BSDoptind += 1;
             place = b"\x00" as *const u8 as *const libc::c_char;
-            return -(1 as libc::c_int)
+            return -(1 as libc::c_int);
         }
     }
     let fresh0 = place;
     place = place.offset(1);
     BSDoptopt = *fresh0 as libc::c_int;
-    if BSDoptopt == ':' as i32 ||
-           { oli = strchr(ostr, BSDoptopt); oli.is_null() } {
+    if BSDoptopt == ':' as i32 || {
+        oli = strchr(ostr, BSDoptopt);
+        oli.is_null()
+    } {
         /*
-		 * if the user didn't specify '-' as an option,
-		 * assume it means -1.
-		 */
-        if BSDoptopt == '-' as i32 { return -(1 as libc::c_int) }
-        if *place == 0 { BSDoptind += 1 }
-        if BSDopterr != 0 && *ostr as libc::c_int != ':' as i32 {
-            fprintf(stderr,
-                    b"%s: unknown option -- %c\n\x00" as *const u8 as
-                        *const libc::c_char, getprogname(), BSDoptopt);
+         * if the user didn't specify '-' as an option,
+         * assume it means -1.
+         */
+        if BSDoptopt == '-' as i32 {
+            return -(1 as libc::c_int);
         }
-        return '?' as i32
+        if *place == 0 {
+            BSDoptind += 1
+        }
+        if BSDopterr != 0 && *ostr as libc::c_int != ':' as i32 {
+            fprintf(
+                stderr,
+                b"%s: unknown option -- %c\n\x00" as *const u8 as *const libc::c_char,
+                getprogname(),
+                BSDoptopt,
+            );
+        }
+        return '?' as i32;
     }
     oli = oli.offset(1);
     if *oli as libc::c_int != ':' as i32 {
         /* don't need argument */
         BSDoptarg = 0 as *mut libc::c_char;
-        if *place == 0 { BSDoptind += 1 }
+        if *place == 0 {
+            BSDoptind += 1
+        }
     } else {
         /* need an argument */
         if *place != 0 {
@@ -167,14 +175,19 @@ pub unsafe extern "C" fn BSDgetopt(mut nargc: libc::c_int,
             if nargc <= BSDoptind {
                 /* no arg */
                 place = b"\x00" as *const u8 as *const libc::c_char;
-                if *ostr as libc::c_int == ':' as i32 { return ':' as i32 }
-                if BSDopterr != 0 {
-                    fprintf(stderr,
-                            b"%s: option requires an argument -- %c\n\x00" as
-                                *const u8 as *const libc::c_char,
-                            getprogname(), BSDoptopt);
+                if *ostr as libc::c_int == ':' as i32 {
+                    return ':' as i32;
                 }
-                return '?' as i32
+                if BSDopterr != 0 {
+                    fprintf(
+                        stderr,
+                        b"%s: option requires an argument -- %c\n\x00" as *const u8
+                            as *const libc::c_char,
+                        getprogname(),
+                        BSDoptopt,
+                    );
+                }
+                return '?' as i32;
             } else {
                 /* white space */
                 BSDoptarg = *nargv.offset(BSDoptind as isize)

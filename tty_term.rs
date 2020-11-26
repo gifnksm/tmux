@@ -28,66 +28,67 @@ extern "C" {
     #[no_mangle]
     fn tparm(_: *const libc::c_char, _: ...) -> *mut libc::c_char;
     #[no_mangle]
-    fn fnmatch(__pattern: *const libc::c_char, __name: *const libc::c_char,
-               __flags: libc::c_int) -> libc::c_int;
+    fn fnmatch(
+        __pattern: *const libc::c_char,
+        __name: *const libc::c_char,
+        __flags: libc::c_int,
+    ) -> libc::c_int;
     #[no_mangle]
     fn free(__ptr: *mut libc::c_void);
     #[no_mangle]
-    fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong)
-     -> *mut libc::c_void;
+    fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
     #[no_mangle]
     fn strcmp(_: *const libc::c_char, _: *const libc::c_char) -> libc::c_int;
     #[no_mangle]
-    fn strncmp(_: *const libc::c_char, _: *const libc::c_char,
-               _: libc::c_ulong) -> libc::c_int;
+    fn strncmp(_: *const libc::c_char, _: *const libc::c_char, _: libc::c_ulong) -> libc::c_int;
     #[no_mangle]
     fn strchr(_: *const libc::c_char, _: libc::c_int) -> *mut libc::c_char;
     #[no_mangle]
     fn strlen(_: *const libc::c_char) -> libc::c_ulong;
     #[no_mangle]
-    fn setupterm(_: *const libc::c_char, _: libc::c_int, _: *mut libc::c_int)
-     -> libc::c_int;
+    fn setupterm(_: *const libc::c_char, _: libc::c_int, _: *mut libc::c_int) -> libc::c_int;
     #[no_mangle]
     fn del_curterm(_: *mut TERMINAL) -> libc::c_int;
     #[no_mangle]
     static mut cur_term: *mut TERMINAL;
     #[no_mangle]
-    fn strnvis(_: *mut libc::c_char, _: *const libc::c_char, _: size_t,
-               _: libc::c_int) -> libc::c_int;
+    fn strnvis(
+        _: *mut libc::c_char,
+        _: *const libc::c_char,
+        _: size_t,
+        _: libc::c_int,
+    ) -> libc::c_int;
     #[no_mangle]
     fn strunvis(_: *mut libc::c_char, _: *const libc::c_char) -> libc::c_int;
     #[no_mangle]
-    fn strtonum(_: *const libc::c_char, _: libc::c_longlong,
-                _: libc::c_longlong, _: *mut *const libc::c_char)
-     -> libc::c_longlong;
+    fn strtonum(
+        _: *const libc::c_char,
+        _: libc::c_longlong,
+        _: libc::c_longlong,
+        _: *mut *const libc::c_char,
+    ) -> libc::c_longlong;
     #[no_mangle]
     fn xcalloc(_: size_t, _: size_t) -> *mut libc::c_void;
     #[no_mangle]
     fn xstrdup(_: *const libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
-    fn xasprintf(_: *mut *mut libc::c_char, _: *const libc::c_char, _: ...)
-     -> libc::c_int;
+    fn xasprintf(_: *mut *mut libc::c_char, _: *const libc::c_char, _: ...) -> libc::c_int;
     #[no_mangle]
-    fn xsnprintf(_: *mut libc::c_char, _: size_t, _: *const libc::c_char,
-                 _: ...) -> libc::c_int;
+    fn xsnprintf(_: *mut libc::c_char, _: size_t, _: *const libc::c_char, _: ...) -> libc::c_int;
     #[no_mangle]
     static mut global_options: *mut options;
     #[no_mangle]
-    fn options_get_only(_: *mut options, _: *const libc::c_char)
-     -> *mut options_entry;
+    fn options_get_only(_: *mut options, _: *const libc::c_char) -> *mut options_entry;
     #[no_mangle]
     fn options_array_first(_: *mut options_entry) -> *mut options_array_item;
     #[no_mangle]
-    fn options_array_next(_: *mut options_array_item)
-     -> *mut options_array_item;
+    fn options_array_next(_: *mut options_array_item) -> *mut options_array_item;
     #[no_mangle]
-    fn options_array_item_value(_: *mut options_array_item)
-     -> *mut options_value;
+    fn options_array_item_value(_: *mut options_array_item) -> *mut options_value;
     #[no_mangle]
     fn tty_apply_features(_: *mut tty_term, _: libc::c_int) -> libc::c_int;
     #[no_mangle]
-    fn tty_add_features(_: *mut libc::c_int, _: *const libc::c_char,
-                        _: *const libc::c_char);
+    fn tty_add_features(_: *mut libc::c_int, _: *const libc::c_char, _: *const libc::c_char);
     #[no_mangle]
     fn log_debug(_: *const libc::c_char, _: ...);
     #[no_mangle]
@@ -292,18 +293,13 @@ pub struct event_callback {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub union C2RustUnnamed_8 {
-    pub evcb_callback: Option<unsafe extern "C" fn(_: libc::c_int,
-                                                   _: libc::c_short,
-                                                   _: *mut libc::c_void)
-                                  -> ()>,
-    pub evcb_selfcb: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                 _: *mut libc::c_void) -> ()>,
-    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
-    pub evcb_cbfinalize: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
+    pub evcb_callback:
+        Option<unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> ()>,
+    pub evcb_selfcb:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
+    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event, _: *mut libc::c_void) -> ()>,
+    pub evcb_cbfinalize:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -330,14 +326,10 @@ pub struct bufferevent {
     pub timeout_write: timeval,
     pub enabled: libc::c_short,
 }
-pub type bufferevent_event_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short,
-                                _: *mut libc::c_void) -> ()>;
-pub type bufferevent_data_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void)
-               -> ()>;
+pub type bufferevent_event_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short, _: *mut libc::c_void) -> ()>;
+pub type bufferevent_data_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct event_watermark {
@@ -460,17 +452,19 @@ pub struct C2RustUnnamed_11 {
     pub rbe_parent: *mut client_file,
     pub rbe_color: libc::c_int,
 }
-pub type client_file_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *const libc::c_char,
-                                _: libc::c_int, _: libc::c_int,
-                                _: *mut evbuffer, _: *mut libc::c_void)
-               -> ()>;
+pub type client_file_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: *mut evbuffer,
+        _: *mut libc::c_void,
+    ) -> (),
+>;
 pub type overlay_free_cb = Option<unsafe extern "C" fn(_: *mut client) -> ()>;
-pub type overlay_key_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event)
-               -> libc::c_int>;
+pub type overlay_key_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_event {
@@ -500,10 +494,8 @@ pub struct mouse_event {
     pub sgr_b: u_int,
 }
 pub type key_code = libc::c_ulonglong;
-pub type overlay_draw_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx)
-               -> ()>;
+pub type overlay_draw_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen_redraw_ctx {
@@ -517,14 +509,10 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int)
-               -> *mut screen>;
-pub type overlay_check_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int)
-               -> libc::c_int>;
+pub type overlay_mode_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
+pub type overlay_check_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct session {
@@ -771,24 +759,37 @@ pub struct C2RustUnnamed_24 {
 pub struct window_mode {
     pub name: *const libc::c_char,
     pub default_format: *const libc::c_char,
-    pub init: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                          _: *mut cmd_find_state,
-                                          _: *mut args) -> *mut screen>,
+    pub init: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut cmd_find_state,
+            _: *mut args,
+        ) -> *mut screen,
+    >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
-    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                            _: u_int, _: u_int) -> ()>,
-    pub key: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                         _: *mut client, _: *mut session,
-                                         _: *mut winlink, _: key_code,
-                                         _: *mut mouse_event) -> ()>,
-    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry)
-                              -> *const libc::c_char>,
-    pub command: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut client, _: *mut session,
-                                             _: *mut winlink, _: *mut args,
-                                             _: *mut mouse_event) -> ()>,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut format_tree) -> ()>,
+    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
+    pub key: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: key_code,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> *const libc::c_char>,
+    pub command: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: *mut args,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -825,14 +826,15 @@ pub struct winlink_stack {
 pub type C2RustUnnamed_25 = libc::c_uint;
 pub const PROMPT_COMMAND: C2RustUnnamed_25 = 1;
 pub const PROMPT_ENTRY: C2RustUnnamed_25 = 0;
-pub type prompt_free_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
-pub type prompt_input_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut libc::c_void,
-                                _: *const libc::c_char, _: libc::c_int)
-               -> libc::c_int>;
+pub type prompt_free_cb = Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
+pub type prompt_input_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut libc::c_void,
+        _: *const libc::c_char,
+        _: libc::c_int,
+    ) -> libc::c_int,
+>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_table {
@@ -1003,12 +1005,8 @@ pub struct tty {
     pub mouse_last_y: u_int,
     pub mouse_last_b: u_int,
     pub mouse_drag_flag: libc::c_int,
-    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client,
-                                                       _: *mut mouse_event)
-                                      -> ()>,
-    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client,
-                                                        _: *mut mouse_event)
-                                       -> ()>,
+    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
+    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
     pub key_timer: event,
     pub key_tree: *mut tty_key,
 }
@@ -1355,1818 +1353,1594 @@ pub struct tty_term_code_entry {
     pub name: *const libc::c_char,
 }
 #[no_mangle]
-pub static mut tty_terms: tty_terms =
-    {
-        let mut init =
-            tty_terms{lh_first: 0 as *const tty_term as *mut tty_term,};
-        init
+pub static mut tty_terms: tty_terms = {
+    let mut init = tty_terms {
+        lh_first: 0 as *const tty_term as *mut tty_term,
     };
-static mut tty_term_codes: [tty_term_code_entry; 225] =
-    [{
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"acsc\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_FLAG,
-                                 name:
-                                     b"am\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_FLAG,
-                                 name:
-                                     b"AX\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_FLAG,
-                                 name:
-                                     b"bce\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"bel\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"blink\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"bold\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"civis\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"clear\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"Clmg\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"Cmg\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"cnorm\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_NUMBER,
-                                 name:
-                                     b"colors\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"Cr\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"Cs\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"csr\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"cub\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"cub1\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"cud\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"cud1\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"cuf\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"cuf1\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"cup\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"cuu\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"cuu1\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"cvvis\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"dch\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"dch1\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"dim\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"dl\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"dl1\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"Dsbp\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"Dseks\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"Dsfcs\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"Dsmg\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"E3\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"ech\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"ed\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"el\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"el1\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"enacs\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"Enbp\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"Eneks\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"Enfcs\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"Enmg\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"fsl\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"home\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"hpa\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"ich\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"ich1\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"il\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"il1\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"indn\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"invis\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kcbt\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kcub1\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kcud1\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kcuf1\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kcuu1\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kDC\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kDC3\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kDC4\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kDC5\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kDC6\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kDC7\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kdch1\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kDN\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kDN3\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kDN4\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kDN5\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kDN6\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kDN7\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kend\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kEND\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kEND3\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kEND4\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kEND5\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kEND6\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kEND7\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf1\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf10\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf11\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf12\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf13\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf14\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf15\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf16\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf17\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf18\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf19\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf2\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf20\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf21\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf22\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf23\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf24\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf25\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf26\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf27\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf28\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf29\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf3\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf30\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf31\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf32\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf33\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf34\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf35\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf36\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf37\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf38\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf39\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf4\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf40\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf41\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf42\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf43\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf44\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf45\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf46\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf47\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf48\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf49\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf5\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf50\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf51\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf52\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf53\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf54\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf55\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf56\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf57\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf58\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf59\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf6\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf60\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf61\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf62\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf63\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf7\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf8\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kf9\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kHOM\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kHOM3\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kHOM4\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kHOM5\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kHOM6\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kHOM7\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"khome\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kIC\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kIC3\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kIC4\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kIC5\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kIC6\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kIC7\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kich1\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kind\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kLFT\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kLFT3\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kLFT4\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kLFT5\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kLFT6\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kLFT7\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kmous\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"knp\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kNXT\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kNXT3\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kNXT4\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kNXT5\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kNXT6\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kNXT7\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kpp\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kPRV\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kPRV3\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kPRV4\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kPRV5\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kPRV6\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kPRV7\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kri\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kRIT\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kRIT3\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kRIT4\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kRIT5\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kRIT6\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kRIT7\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kUP\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kUP3\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kUP4\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kUP5\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kUP6\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"kUP7\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"Ms\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"ol\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"op\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"rev\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_FLAG,
-                                 name:
-                                     b"RGB\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"ri\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"rin\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"rmacs\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"rmcup\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"rmkx\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"Se\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"setab\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"setaf\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"setal\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"setrgbb\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"setrgbf\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"Setulc\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"sgr0\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"sitm\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"smacs\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"smcup\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"smkx\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"Smol\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"smso\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"smul\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"Smulx\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"smxx\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"Ss\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"Sync\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_FLAG,
-                                 name:
-                                     b"Tc\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"tsl\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_NUMBER,
-                                 name:
-                                     b"U8\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_STRING,
-                                 name:
-                                     b"vpa\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     },
-     {
-         let mut init =
-             tty_term_code_entry{type_0: TTYCODE_FLAG,
-                                 name:
-                                     b"XT\x00" as *const u8 as
-                                         *const libc::c_char,};
-         init
-     }];
+    init
+};
+static mut tty_term_codes: [tty_term_code_entry; 225] = [
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"acsc\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_FLAG,
+            name: b"am\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_FLAG,
+            name: b"AX\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_FLAG,
+            name: b"bce\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"bel\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"blink\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"bold\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"civis\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"clear\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"Clmg\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"Cmg\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"cnorm\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_NUMBER,
+            name: b"colors\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"Cr\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"Cs\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"csr\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"cub\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"cub1\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"cud\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"cud1\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"cuf\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"cuf1\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"cup\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"cuu\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"cuu1\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"cvvis\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"dch\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"dch1\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"dim\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"dl\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"dl1\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"Dsbp\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"Dseks\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"Dsfcs\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"Dsmg\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"E3\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"ech\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"ed\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"el\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"el1\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"enacs\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"Enbp\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"Eneks\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"Enfcs\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"Enmg\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"fsl\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"home\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"hpa\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"ich\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"ich1\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"il\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"il1\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"indn\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"invis\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kcbt\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kcub1\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kcud1\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kcuf1\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kcuu1\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kDC\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kDC3\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kDC4\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kDC5\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kDC6\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kDC7\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kdch1\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kDN\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kDN3\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kDN4\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kDN5\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kDN6\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kDN7\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kend\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kEND\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kEND3\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kEND4\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kEND5\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kEND6\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kEND7\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf1\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf10\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf11\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf12\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf13\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf14\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf15\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf16\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf17\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf18\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf19\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf2\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf20\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf21\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf22\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf23\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf24\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf25\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf26\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf27\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf28\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf29\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf3\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf30\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf31\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf32\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf33\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf34\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf35\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf36\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf37\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf38\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf39\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf4\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf40\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf41\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf42\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf43\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf44\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf45\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf46\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf47\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf48\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf49\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf5\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf50\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf51\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf52\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf53\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf54\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf55\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf56\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf57\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf58\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf59\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf6\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf60\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf61\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf62\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf63\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf7\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf8\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kf9\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kHOM\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kHOM3\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kHOM4\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kHOM5\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kHOM6\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kHOM7\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"khome\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kIC\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kIC3\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kIC4\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kIC5\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kIC6\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kIC7\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kich1\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kind\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kLFT\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kLFT3\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kLFT4\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kLFT5\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kLFT6\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kLFT7\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kmous\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"knp\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kNXT\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kNXT3\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kNXT4\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kNXT5\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kNXT6\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kNXT7\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kpp\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kPRV\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kPRV3\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kPRV4\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kPRV5\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kPRV6\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kPRV7\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kri\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kRIT\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kRIT3\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kRIT4\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kRIT5\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kRIT6\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kRIT7\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kUP\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kUP3\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kUP4\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kUP5\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kUP6\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"kUP7\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"Ms\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"ol\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"op\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"rev\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_FLAG,
+            name: b"RGB\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"ri\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"rin\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"rmacs\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"rmcup\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"rmkx\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"Se\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"setab\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"setaf\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"setal\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"setrgbb\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"setrgbf\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"Setulc\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"sgr0\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"sitm\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"smacs\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"smcup\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"smkx\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"Smol\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"smso\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"smul\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"Smulx\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"smxx\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"Ss\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"Sync\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_FLAG,
+            name: b"Tc\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"tsl\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_NUMBER,
+            name: b"U8\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_STRING,
+            name: b"vpa\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+    {
+        let mut init = tty_term_code_entry {
+            type_0: TTYCODE_FLAG,
+            name: b"XT\x00" as *const u8 as *const libc::c_char,
+        };
+        init
+    },
+];
 #[no_mangle]
 pub unsafe extern "C" fn tty_term_ncodes() -> u_int {
-    return (::std::mem::size_of::<[tty_term_code_entry; 225]>() as
-                libc::c_ulong).wrapping_div(::std::mem::size_of::<tty_term_code_entry>()
-                                                as libc::c_ulong) as u_int;
+    return (::std::mem::size_of::<[tty_term_code_entry; 225]>() as libc::c_ulong)
+        .wrapping_div(::std::mem::size_of::<tty_term_code_entry>() as libc::c_ulong)
+        as u_int;
 }
 /* $OpenBSD$ */
 /*
@@ -3184,86 +2958,93 @@ pub unsafe extern "C" fn tty_term_ncodes() -> u_int {
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-unsafe extern "C" fn tty_term_strip(mut s: *const libc::c_char)
- -> *mut libc::c_char {
+unsafe extern "C" fn tty_term_strip(mut s: *const libc::c_char) -> *mut libc::c_char {
     let mut ptr: *const libc::c_char = 0 as *const libc::c_char;
     static mut buf: [libc::c_char; 8192] = [0; 8192];
     let mut len: size_t = 0;
     /* Ignore strings with no padding. */
-    if strchr(s, '$' as i32).is_null() { return xstrdup(s) }
+    if strchr(s, '$' as i32).is_null() {
+        return xstrdup(s);
+    }
     len = 0 as libc::c_int as size_t;
     ptr = s;
     while *ptr as libc::c_int != '\u{0}' as i32 {
-        if *ptr as libc::c_int == '$' as i32 &&
-               *ptr.offset(1 as libc::c_int as isize) as libc::c_int ==
-                   '<' as i32 {
-            while *ptr as libc::c_int != '\u{0}' as i32 &&
-                      *ptr as libc::c_int != '>' as i32 {
+        if *ptr as libc::c_int == '$' as i32
+            && *ptr.offset(1 as libc::c_int as isize) as libc::c_int == '<' as i32
+        {
+            while *ptr as libc::c_int != '\u{0}' as i32 && *ptr as libc::c_int != '>' as i32 {
                 ptr = ptr.offset(1)
             }
-            if *ptr as libc::c_int == '>' as i32 { ptr = ptr.offset(1) }
-            if *ptr as libc::c_int == '\u{0}' as i32 { break ; }
+            if *ptr as libc::c_int == '>' as i32 {
+                ptr = ptr.offset(1)
+            }
+            if *ptr as libc::c_int == '\u{0}' as i32 {
+                break;
+            }
         }
         let fresh0 = len;
         len = len.wrapping_add(1);
         buf[fresh0 as usize] = *ptr;
-        if len ==
-               (::std::mem::size_of::<[libc::c_char; 8192]>() as
-                    libc::c_ulong).wrapping_sub(1 as libc::c_int as
-                                                    libc::c_ulong) {
-            break ;
+        if len
+            == (::std::mem::size_of::<[libc::c_char; 8192]>() as libc::c_ulong)
+                .wrapping_sub(1 as libc::c_int as libc::c_ulong)
+        {
+            break;
         }
         ptr = ptr.offset(1)
     }
     buf[len as usize] = '\u{0}' as i32 as libc::c_char;
     return xstrdup(buf.as_mut_ptr());
 }
-unsafe extern "C" fn tty_term_override_next(mut s: *const libc::c_char,
-                                            mut offset: *mut size_t)
- -> *mut libc::c_char {
+unsafe extern "C" fn tty_term_override_next(
+    mut s: *const libc::c_char,
+    mut offset: *mut size_t,
+) -> *mut libc::c_char {
     static mut value: [libc::c_char; 8192] = [0; 8192];
     let mut n: size_t = 0 as libc::c_int as size_t;
     let mut at: size_t = *offset;
     if *s.offset(at as isize) as libc::c_int == '\u{0}' as i32 {
-        return 0 as *mut libc::c_char
+        return 0 as *mut libc::c_char;
     }
     while *s.offset(at as isize) as libc::c_int != '\u{0}' as i32 {
         if *s.offset(at as isize) as libc::c_int == ':' as i32 {
-            if !(*s.offset(at.wrapping_add(1 as libc::c_int as libc::c_ulong)
-                               as isize) as libc::c_int == ':' as i32) {
-                break ;
+            if !(*s.offset(at.wrapping_add(1 as libc::c_int as libc::c_ulong) as isize)
+                as libc::c_int
+                == ':' as i32)
+            {
+                break;
             }
             let fresh1 = n;
             n = n.wrapping_add(1);
             value[fresh1 as usize] = ':' as i32 as libc::c_char;
-            at =
-                (at as
-                     libc::c_ulong).wrapping_add(2 as libc::c_int as
-                                                     libc::c_ulong) as size_t
-                    as size_t
+            at = (at as libc::c_ulong).wrapping_add(2 as libc::c_int as libc::c_ulong) as size_t
+                as size_t
         } else {
             let fresh2 = n;
             n = n.wrapping_add(1);
             value[fresh2 as usize] = *s.offset(at as isize);
             at = at.wrapping_add(1)
         }
-        if n ==
-               (::std::mem::size_of::<[libc::c_char; 8192]>() as
-                    libc::c_ulong).wrapping_sub(1 as libc::c_int as
-                                                    libc::c_ulong) {
-            return 0 as *mut libc::c_char
+        if n == (::std::mem::size_of::<[libc::c_char; 8192]>() as libc::c_ulong)
+            .wrapping_sub(1 as libc::c_int as libc::c_ulong)
+        {
+            return 0 as *mut libc::c_char;
         }
     }
     if *s.offset(at as isize) as libc::c_int != '\u{0}' as i32 {
         *offset = at.wrapping_add(1 as libc::c_int as libc::c_ulong)
-    } else { *offset = at }
+    } else {
+        *offset = at
+    }
     value[n as usize] = '\u{0}' as i32 as libc::c_char;
     return value.as_mut_ptr();
 }
 #[no_mangle]
-pub unsafe extern "C" fn tty_term_apply(mut term: *mut tty_term,
-                                        mut capabilities: *const libc::c_char,
-                                        mut quiet: libc::c_int) {
+pub unsafe extern "C" fn tty_term_apply(
+    mut term: *mut tty_term,
+    mut capabilities: *const libc::c_char,
+    mut quiet: libc::c_int,
+) {
     let mut ent: *const tty_term_code_entry = 0 as *const tty_term_code_entry;
     let mut code: *mut tty_code = 0 as *mut tty_code;
     let mut offset: size_t = 0 as libc::c_int as size_t;
@@ -3275,10 +3056,14 @@ pub unsafe extern "C" fn tty_term_apply(mut term: *mut tty_term,
     let mut i: u_int = 0;
     let mut n: libc::c_int = 0;
     let mut remove: libc::c_int = 0;
-    loop  {
+    loop {
         s = tty_term_override_next(capabilities, &mut offset);
-        if s.is_null() { break ; }
-        if *s as libc::c_int == '\u{0}' as i32 { continue ; }
+        if s.is_null() {
+            break;
+        }
+        if *s as libc::c_int == '\u{0}' as i32 {
+            continue;
+        }
         value = 0 as *mut libc::c_char;
         remove = 0 as libc::c_int;
         cp = strchr(s, '=' as i32);
@@ -3291,11 +3076,11 @@ pub unsafe extern "C" fn tty_term_apply(mut term: *mut tty_term,
                 free(value as *mut libc::c_void);
                 value = xstrdup(cp)
             }
-        } else if *s.offset(strlen(s).wrapping_sub(1 as libc::c_int as
-                                                       libc::c_ulong) as
-                                isize) as libc::c_int == '@' as i32 {
-            *s.offset(strlen(s).wrapping_sub(1 as libc::c_int as
-                                                 libc::c_ulong) as isize) =
+        } else if *s.offset(strlen(s).wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize)
+            as libc::c_int
+            == '@' as i32
+        {
+            *s.offset(strlen(s).wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize) =
                 '\u{0}' as i32 as libc::c_char;
             remove = 1 as libc::c_int
         } else {
@@ -3303,45 +3088,51 @@ pub unsafe extern "C" fn tty_term_apply(mut term: *mut tty_term,
         }
         if quiet == 0 {
             if remove != 0 {
-                log_debug(b"%s override: %s@\x00" as *const u8 as
-                              *const libc::c_char, name, s);
+                log_debug(
+                    b"%s override: %s@\x00" as *const u8 as *const libc::c_char,
+                    name,
+                    s,
+                );
             } else if *value as libc::c_int == '\u{0}' as i32 {
-                log_debug(b"%s override: %s\x00" as *const u8 as
-                              *const libc::c_char, name, s);
+                log_debug(
+                    b"%s override: %s\x00" as *const u8 as *const libc::c_char,
+                    name,
+                    s,
+                );
             } else {
-                log_debug(b"%s override: %s=%s\x00" as *const u8 as
-                              *const libc::c_char, name, s, value);
+                log_debug(
+                    b"%s override: %s=%s\x00" as *const u8 as *const libc::c_char,
+                    name,
+                    s,
+                    value,
+                );
             }
         }
         i = 0 as libc::c_int as u_int;
         while i < tty_term_ncodes() {
-            ent =
-                &*tty_term_codes.as_ptr().offset(i as isize) as
-                    *const tty_term_code_entry;
+            ent = &*tty_term_codes.as_ptr().offset(i as isize) as *const tty_term_code_entry;
             if !(strcmp(s, (*ent).name) != 0 as libc::c_int) {
-                code =
-                    &mut *(*term).codes.offset(i as isize) as *mut tty_code;
+                code = &mut *(*term).codes.offset(i as isize) as *mut tty_code;
                 if remove != 0 {
                     (*code).type_0 = TTYCODE_NONE
                 } else {
                     match (*ent).type_0 as libc::c_uint {
                         1 => {
-                            if (*code).type_0 as libc::c_uint ==
-                                   TTYCODE_STRING as libc::c_int as
-                                       libc::c_uint {
-                                free((*code).value.string as
-                                         *mut libc::c_void);
+                            if (*code).type_0 as libc::c_uint
+                                == TTYCODE_STRING as libc::c_int as libc::c_uint
+                            {
+                                free((*code).value.string as *mut libc::c_void);
                             }
                             (*code).value.string = xstrdup(value);
                             (*code).type_0 = (*ent).type_0
                         }
                         2 => {
-                            n =
-                                strtonum(value,
-                                         0 as libc::c_int as libc::c_longlong,
-                                         2147483647 as libc::c_int as
-                                             libc::c_longlong, &mut errstr) as
-                                    libc::c_int;
+                            n = strtonum(
+                                value,
+                                0 as libc::c_int as libc::c_longlong,
+                                2147483647 as libc::c_int as libc::c_longlong,
+                                &mut errstr,
+                            ) as libc::c_int;
                             if errstr.is_null() {
                                 (*code).value.number = n;
                                 (*code).type_0 = (*ent).type_0
@@ -3351,14 +3142,14 @@ pub unsafe extern "C" fn tty_term_apply(mut term: *mut tty_term,
                             (*code).value.flag = 1 as libc::c_int;
                             (*code).type_0 = (*ent).type_0
                         }
-                        0 | _ => { }
+                        0 | _ => {}
                     }
                 }
             }
             i = i.wrapping_add(1)
         }
         free(value as *mut libc::c_void);
-    };
+    }
 }
 #[no_mangle]
 pub unsafe extern "C" fn tty_term_apply_overrides(mut term: *mut tty_term) {
@@ -3368,31 +3159,30 @@ pub unsafe extern "C" fn tty_term_apply_overrides(mut term: *mut tty_term) {
     let mut s: *const libc::c_char = 0 as *const libc::c_char;
     let mut offset: size_t = 0;
     let mut first: *mut libc::c_char = 0 as *mut libc::c_char;
-    o =
-        options_get_only(global_options,
-                         b"terminal-overrides\x00" as *const u8 as
-                             *const libc::c_char);
+    o = options_get_only(
+        global_options,
+        b"terminal-overrides\x00" as *const u8 as *const libc::c_char,
+    );
     a = options_array_first(o);
     while !a.is_null() {
         ov = options_array_item_value(a);
         s = (*ov).string;
         offset = 0 as libc::c_int as size_t;
         first = tty_term_override_next(s, &mut offset);
-        if !first.is_null() &&
-               fnmatch(first, (*term).name, 0 as libc::c_int) ==
-                   0 as libc::c_int {
+        if !first.is_null() && fnmatch(first, (*term).name, 0 as libc::c_int) == 0 as libc::c_int {
             tty_term_apply(term, s.offset(offset as isize), 0 as libc::c_int);
         }
         a = options_array_next(a)
-    };
+    }
 }
 #[no_mangle]
-pub unsafe extern "C" fn tty_term_create(mut tty: *mut tty,
-                                         mut name: *mut libc::c_char,
-                                         mut feat: *mut libc::c_int,
-                                         mut fd: libc::c_int,
-                                         mut cause: *mut *mut libc::c_char)
- -> *mut tty_term {
+pub unsafe extern "C" fn tty_term_create(
+    mut tty: *mut tty,
+    mut name: *mut libc::c_char,
+    mut feat: *mut libc::c_int,
+    mut fd: libc::c_int,
+    mut cause: *mut *mut libc::c_char,
+) -> *mut tty_term {
     let mut term: *mut tty_term = 0 as *mut tty_term;
     let mut ent: *const tty_term_code_entry = 0 as *const tty_term_code_entry;
     let mut code: *mut tty_code = 0 as *mut tty_code;
@@ -3406,18 +3196,20 @@ pub unsafe extern "C" fn tty_term_create(mut tty: *mut tty,
     let mut acs: *const libc::c_char = 0 as *const libc::c_char;
     let mut offset: size_t = 0;
     let mut first: *mut libc::c_char = 0 as *mut libc::c_char;
-    log_debug(b"adding term %s\x00" as *const u8 as *const libc::c_char,
-              name);
-    term =
-        xcalloc(1 as libc::c_int as size_t,
-                ::std::mem::size_of::<tty_term>() as libc::c_ulong) as
-            *mut tty_term;
+    log_debug(
+        b"adding term %s\x00" as *const u8 as *const libc::c_char,
+        name,
+    );
+    term = xcalloc(
+        1 as libc::c_int as size_t,
+        ::std::mem::size_of::<tty_term>() as libc::c_ulong,
+    ) as *mut tty_term;
     (*term).tty = tty;
     (*term).name = xstrdup(name);
-    (*term).codes =
-        xcalloc(tty_term_ncodes() as size_t,
-                ::std::mem::size_of::<tty_code>() as libc::c_ulong) as
-            *mut tty_code;
+    (*term).codes = xcalloc(
+        tty_term_ncodes() as size_t,
+        ::std::mem::size_of::<tty_code>() as libc::c_ulong,
+    ) as *mut tty_code;
     (*term).entry.le_next = tty_terms.lh_first;
     if !(*term).entry.le_next.is_null() {
         (*tty_terms.lh_first).entry.le_prev = &mut (*term).entry.le_next
@@ -3428,50 +3220,52 @@ pub unsafe extern "C" fn tty_term_create(mut tty: *mut tty,
     if setupterm(name, fd, &mut error) != 0 as libc::c_int {
         match error {
             1 => {
-                xasprintf(cause,
-                          b"can\'t use hardcopy terminal: %s\x00" as *const u8
-                              as *const libc::c_char, name);
+                xasprintf(
+                    cause,
+                    b"can\'t use hardcopy terminal: %s\x00" as *const u8 as *const libc::c_char,
+                    name,
+                );
             }
             0 => {
-                xasprintf(cause,
-                          b"missing or unsuitable terminal: %s\x00" as
-                              *const u8 as *const libc::c_char, name);
+                xasprintf(
+                    cause,
+                    b"missing or unsuitable terminal: %s\x00" as *const u8 as *const libc::c_char,
+                    name,
+                );
             }
             -1 => {
-                xasprintf(cause,
-                          b"can\'t find terminfo database\x00" as *const u8 as
-                              *const libc::c_char);
+                xasprintf(
+                    cause,
+                    b"can\'t find terminfo database\x00" as *const u8 as *const libc::c_char,
+                );
             }
             _ => {
-                xasprintf(cause,
-                          b"unknown error\x00" as *const u8 as
-                              *const libc::c_char);
+                xasprintf(
+                    cause,
+                    b"unknown error\x00" as *const u8 as *const libc::c_char,
+                );
             }
         }
     } else {
         /* Fill in codes. */
         i = 0 as libc::c_int as u_int;
         while i < tty_term_ncodes() {
-            ent =
-                &*tty_term_codes.as_ptr().offset(i as isize) as
-                    *const tty_term_code_entry;
+            ent = &*tty_term_codes.as_ptr().offset(i as isize) as *const tty_term_code_entry;
             code = &mut *(*term).codes.offset(i as isize) as *mut tty_code;
             (*code).type_0 = TTYCODE_NONE;
             match (*ent).type_0 as libc::c_uint {
                 1 => {
                     s = tigetstr((*ent).name as *mut libc::c_char);
-                    if !(s.is_null() ||
-                             s ==
-                                 -(1 as libc::c_int) as *mut libc::c_char as
-                                     *const libc::c_char) {
+                    if !(s.is_null()
+                        || s == -(1 as libc::c_int) as *mut libc::c_char as *const libc::c_char)
+                    {
                         (*code).type_0 = TTYCODE_STRING;
                         (*code).value.string = tty_term_strip(s)
                     }
                 }
                 2 => {
                     n = tigetnum((*ent).name as *mut libc::c_char);
-                    if !(n == -(1 as libc::c_int) || n == -(2 as libc::c_int))
-                       {
+                    if !(n == -(1 as libc::c_int) || n == -(2 as libc::c_int)) {
                         (*code).type_0 = TTYCODE_NUMBER;
                         (*code).value.number = n
                     }
@@ -3483,27 +3277,29 @@ pub unsafe extern "C" fn tty_term_create(mut tty: *mut tty,
                         (*code).value.flag = n
                     }
                 }
-                0 | _ => { }
+                0 | _ => {}
             }
             i = i.wrapping_add(1)
         }
         /* Apply terminal features. */
-        o =
-            options_get_only(global_options,
-                             b"terminal-features\x00" as *const u8 as
-                                 *const libc::c_char);
+        o = options_get_only(
+            global_options,
+            b"terminal-features\x00" as *const u8 as *const libc::c_char,
+        );
         a = options_array_first(o);
         while !a.is_null() {
             ov = options_array_item_value(a);
             s = (*ov).string;
             offset = 0 as libc::c_int as size_t;
             first = tty_term_override_next(s, &mut offset);
-            if !first.is_null() &&
-                   fnmatch(first, (*term).name, 0 as libc::c_int) ==
-                       0 as libc::c_int {
-                tty_add_features(feat, s.offset(offset as isize),
-                                 b":\x00" as *const u8 as
-                                     *const libc::c_char);
+            if !first.is_null()
+                && fnmatch(first, (*term).name, 0 as libc::c_int) == 0 as libc::c_int
+            {
+                tty_add_features(
+                    feat,
+                    s.offset(offset as isize),
+                    b":\x00" as *const u8 as *const libc::c_char,
+                );
             }
             a = options_array_next(a)
         }
@@ -3513,104 +3309,107 @@ pub unsafe extern "C" fn tty_term_create(mut tty: *mut tty,
         tty_term_apply_overrides(term);
         /* These are always required. */
         if tty_term_has(term, TTYC_CLEAR) == 0 {
-            xasprintf(cause,
-                      b"terminal does not support clear\x00" as *const u8 as
-                          *const libc::c_char);
+            xasprintf(
+                cause,
+                b"terminal does not support clear\x00" as *const u8 as *const libc::c_char,
+            );
         } else if tty_term_has(term, TTYC_CUP) == 0 {
-            xasprintf(cause,
-                      b"terminal does not support cup\x00" as *const u8 as
-                          *const libc::c_char);
+            xasprintf(
+                cause,
+                b"terminal does not support cup\x00" as *const u8 as *const libc::c_char,
+            );
         } else {
             /*
-	 * If TERM has XT or clear starts with CSI then it is safe to assume
-	 * the terminal is derived from the VT100. This controls whether device
-	 * attributes requests are sent to get more information.
-	 *
-	 * This is a bit of a hack but there aren't that many alternatives.
-	 * Worst case tmux will just fall back to using whatever terminfo(5)
-	 * says without trying to correct anything that is missing.
-	 *
-	 * Also add few features that VT100-like terminals should either
-	 * support or safely ignore.
-	 */
+             * If TERM has XT or clear starts with CSI then it is safe to assume
+             * the terminal is derived from the VT100. This controls whether device
+             * attributes requests are sent to get more information.
+             *
+             * This is a bit of a hack but there aren't that many alternatives.
+             * Worst case tmux will just fall back to using whatever terminfo(5)
+             * says without trying to correct anything that is missing.
+             *
+             * Also add few features that VT100-like terminals should either
+             * support or safely ignore.
+             */
             s = tty_term_string(term, TTYC_CLEAR);
-            if tty_term_flag(term, TTYC_XT) != 0 ||
-                   strncmp(s,
-                           b"\x1b[\x00" as *const u8 as *const libc::c_char,
-                           2 as libc::c_int as libc::c_ulong) ==
-                       0 as libc::c_int {
+            if tty_term_flag(term, TTYC_XT) != 0
+                || strncmp(
+                    s,
+                    b"\x1b[\x00" as *const u8 as *const libc::c_char,
+                    2 as libc::c_int as libc::c_ulong,
+                ) == 0 as libc::c_int
+            {
                 (*term).flags |= 0x20 as libc::c_int;
-                tty_add_features(feat,
-                                 b"bpaste,focus,title\x00" as *const u8 as
-                                     *const libc::c_char,
-                                 b",\x00" as *const u8 as
-                                     *const libc::c_char);
+                tty_add_features(
+                    feat,
+                    b"bpaste,focus,title\x00" as *const u8 as *const libc::c_char,
+                    b",\x00" as *const u8 as *const libc::c_char,
+                );
             }
             /* Add RGB feature if terminal has RGB colours. */
-            if (tty_term_flag(term, TTYC_TC) != 0 ||
-                    tty_term_has(term, TTYC_RGB) != 0) &&
-                   (tty_term_has(term, TTYC_SETRGBF) == 0 ||
-                        tty_term_has(term, TTYC_SETRGBB) == 0) {
-                tty_add_features(feat,
-                                 b"RGB\x00" as *const u8 as
-                                     *const libc::c_char,
-                                 b",\x00" as *const u8 as
-                                     *const libc::c_char);
+            if (tty_term_flag(term, TTYC_TC) != 0 || tty_term_has(term, TTYC_RGB) != 0)
+                && (tty_term_has(term, TTYC_SETRGBF) == 0 || tty_term_has(term, TTYC_SETRGBB) == 0)
+            {
+                tty_add_features(
+                    feat,
+                    b"RGB\x00" as *const u8 as *const libc::c_char,
+                    b",\x00" as *const u8 as *const libc::c_char,
+                );
             }
-            if tty_term_has(term, TTYC_SETRGBF) != 0 &&
-                   tty_term_has(term, TTYC_SETRGBB) != 0 {
+            if tty_term_has(term, TTYC_SETRGBF) != 0 && tty_term_has(term, TTYC_SETRGBB) != 0 {
                 (*term).flags |= 0x10 as libc::c_int
             }
             /* Apply the features and overrides again. */
             tty_apply_features(term, *feat);
             tty_term_apply_overrides(term);
             /*
-	 * Terminals without am (auto right margin) wrap at at $COLUMNS - 1
-	 * rather than $COLUMNS (the cursor can never be beyond $COLUMNS - 1).
-	 *
-	 * Terminals without xenl (eat newline glitch) ignore a newline beyond
-	 * the right edge of the terminal, but tmux doesn't care about this -
-	 * it always uses absolute only moves the cursor with a newline when
-	 * also sending a linefeed.
-	 *
-	 * This is irritating, most notably because it is painful to write to
-	 * the very bottom-right of the screen without scrolling.
-	 *
-	 * Flag the terminal here and apply some workarounds in other places to
-	 * do the best possible.
-	 */
+             * Terminals without am (auto right margin) wrap at at $COLUMNS - 1
+             * rather than $COLUMNS (the cursor can never be beyond $COLUMNS - 1).
+             *
+             * Terminals without xenl (eat newline glitch) ignore a newline beyond
+             * the right edge of the terminal, but tmux doesn't care about this -
+             * it always uses absolute only moves the cursor with a newline when
+             * also sending a linefeed.
+             *
+             * This is irritating, most notably because it is painful to write to
+             * the very bottom-right of the screen without scrolling.
+             *
+             * Flag the terminal here and apply some workarounds in other places to
+             * do the best possible.
+             */
             if tty_term_flag(term, TTYC_AM) == 0 {
                 (*term).flags |= 0x2 as libc::c_int
             }
             /* Generate ACS table. If none is present, use nearest ASCII. */
-            memset((*term).acs.as_mut_ptr() as *mut libc::c_void,
-                   0 as libc::c_int,
-                   ::std::mem::size_of::<[[libc::c_char; 2]; 256]>() as
-                       libc::c_ulong);
+            memset(
+                (*term).acs.as_mut_ptr() as *mut libc::c_void,
+                0 as libc::c_int,
+                ::std::mem::size_of::<[[libc::c_char; 2]; 256]>() as libc::c_ulong,
+            );
             if tty_term_has(term, TTYC_ACSC) != 0 {
                 acs = tty_term_string(term, TTYC_ACSC)
             } else {
-                acs =
-                    b"a#j+k+l+m+n+o-p-q-r-s-t+u+v+w+x|y<z>~.\x00" as *const u8
-                        as *const libc::c_char
+                acs = b"a#j+k+l+m+n+o-p-q-r-s-t+u+v+w+x|y<z>~.\x00" as *const u8
+                    as *const libc::c_char
             }
-            while *acs.offset(0 as libc::c_int as isize) as libc::c_int !=
-                      '\u{0}' as i32 &&
-                      *acs.offset(1 as libc::c_int as isize) as libc::c_int !=
-                          '\u{0}' as i32 {
-                (*term).acs[*acs.offset(0 as libc::c_int as isize) as u_char
-                                as usize][0 as libc::c_int as usize] =
-                    *acs.offset(1 as libc::c_int as isize);
+            while *acs.offset(0 as libc::c_int as isize) as libc::c_int != '\u{0}' as i32
+                && *acs.offset(1 as libc::c_int as isize) as libc::c_int != '\u{0}' as i32
+            {
+                (*term).acs[*acs.offset(0 as libc::c_int as isize) as u_char as usize]
+                    [0 as libc::c_int as usize] = *acs.offset(1 as libc::c_int as isize);
                 acs = acs.offset(2 as libc::c_int as isize)
             }
             /* Log the capabilities. */
             i = 0 as libc::c_int as u_int;
             while i < tty_term_ncodes() {
-                log_debug(b"%s%s\x00" as *const u8 as *const libc::c_char,
-                          name, tty_term_describe(term, i as tty_code_code));
+                log_debug(
+                    b"%s%s\x00" as *const u8 as *const libc::c_char,
+                    name,
+                    tty_term_describe(term, i as tty_code_code),
+                );
                 i = i.wrapping_add(1)
             }
-            return term
+            return term;
         }
     }
     tty_term_free(term);
@@ -3619,14 +3418,16 @@ pub unsafe extern "C" fn tty_term_create(mut tty: *mut tty,
 #[no_mangle]
 pub unsafe extern "C" fn tty_term_free(mut term: *mut tty_term) {
     let mut i: u_int = 0;
-    log_debug(b"removing term %s\x00" as *const u8 as *const libc::c_char,
-              (*term).name);
+    log_debug(
+        b"removing term %s\x00" as *const u8 as *const libc::c_char,
+        (*term).name,
+    );
     i = 0 as libc::c_int as u_int;
     while i < tty_term_ncodes() {
-        if (*(*term).codes.offset(i as isize)).type_0 as libc::c_uint ==
-               TTYCODE_STRING as libc::c_int as libc::c_uint {
-            free((*(*term).codes.offset(i as isize)).value.string as
-                     *mut libc::c_void);
+        if (*(*term).codes.offset(i as isize)).type_0 as libc::c_uint
+            == TTYCODE_STRING as libc::c_int as libc::c_uint
+        {
+            free((*(*term).codes.offset(i as isize)).value.string as *mut libc::c_void);
         }
         i = i.wrapping_add(1)
     }
@@ -3639,156 +3440,224 @@ pub unsafe extern "C" fn tty_term_free(mut term: *mut tty_term) {
     free(term as *mut libc::c_void);
 }
 #[no_mangle]
-pub unsafe extern "C" fn tty_term_has(mut term: *mut tty_term,
-                                      mut code: tty_code_code)
- -> libc::c_int {
-    return ((*(*term).codes.offset(code as isize)).type_0 as libc::c_uint !=
-                TTYCODE_NONE as libc::c_int as libc::c_uint) as libc::c_int;
+pub unsafe extern "C" fn tty_term_has(
+    mut term: *mut tty_term,
+    mut code: tty_code_code,
+) -> libc::c_int {
+    return ((*(*term).codes.offset(code as isize)).type_0 as libc::c_uint
+        != TTYCODE_NONE as libc::c_int as libc::c_uint) as libc::c_int;
 }
 #[no_mangle]
-pub unsafe extern "C" fn tty_term_string(mut term: *mut tty_term,
-                                         mut code: tty_code_code)
- -> *const libc::c_char {
+pub unsafe extern "C" fn tty_term_string(
+    mut term: *mut tty_term,
+    mut code: tty_code_code,
+) -> *const libc::c_char {
     if tty_term_has(term, code) == 0 {
-        return b"\x00" as *const u8 as *const libc::c_char
+        return b"\x00" as *const u8 as *const libc::c_char;
     }
-    if (*(*term).codes.offset(code as isize)).type_0 as libc::c_uint !=
-           TTYCODE_STRING as libc::c_int as libc::c_uint {
-        fatalx(b"not a string: %d\x00" as *const u8 as *const libc::c_char,
-               code as libc::c_uint);
+    if (*(*term).codes.offset(code as isize)).type_0 as libc::c_uint
+        != TTYCODE_STRING as libc::c_int as libc::c_uint
+    {
+        fatalx(
+            b"not a string: %d\x00" as *const u8 as *const libc::c_char,
+            code as libc::c_uint,
+        );
     }
     return (*(*term).codes.offset(code as isize)).value.string;
 }
 #[no_mangle]
-pub unsafe extern "C" fn tty_term_string1(mut term: *mut tty_term,
-                                          mut code: tty_code_code,
-                                          mut a: libc::c_int)
- -> *const libc::c_char {
-    return tparm(tty_term_string(term, code) as *mut libc::c_char, a,
-                 0 as libc::c_int, 0 as libc::c_int, 0 as libc::c_int,
-                 0 as libc::c_int, 0 as libc::c_int, 0 as libc::c_int,
-                 0 as libc::c_int, 0 as libc::c_int);
+pub unsafe extern "C" fn tty_term_string1(
+    mut term: *mut tty_term,
+    mut code: tty_code_code,
+    mut a: libc::c_int,
+) -> *const libc::c_char {
+    return tparm(
+        tty_term_string(term, code) as *mut libc::c_char,
+        a,
+        0 as libc::c_int,
+        0 as libc::c_int,
+        0 as libc::c_int,
+        0 as libc::c_int,
+        0 as libc::c_int,
+        0 as libc::c_int,
+        0 as libc::c_int,
+        0 as libc::c_int,
+    );
 }
 #[no_mangle]
-pub unsafe extern "C" fn tty_term_string2(mut term: *mut tty_term,
-                                          mut code: tty_code_code,
-                                          mut a: libc::c_int,
-                                          mut b: libc::c_int)
- -> *const libc::c_char {
-    return tparm(tty_term_string(term, code) as *mut libc::c_char, a, b,
-                 0 as libc::c_int, 0 as libc::c_int, 0 as libc::c_int,
-                 0 as libc::c_int, 0 as libc::c_int, 0 as libc::c_int,
-                 0 as libc::c_int);
+pub unsafe extern "C" fn tty_term_string2(
+    mut term: *mut tty_term,
+    mut code: tty_code_code,
+    mut a: libc::c_int,
+    mut b: libc::c_int,
+) -> *const libc::c_char {
+    return tparm(
+        tty_term_string(term, code) as *mut libc::c_char,
+        a,
+        b,
+        0 as libc::c_int,
+        0 as libc::c_int,
+        0 as libc::c_int,
+        0 as libc::c_int,
+        0 as libc::c_int,
+        0 as libc::c_int,
+        0 as libc::c_int,
+    );
 }
 #[no_mangle]
-pub unsafe extern "C" fn tty_term_string3(mut term: *mut tty_term,
-                                          mut code: tty_code_code,
-                                          mut a: libc::c_int,
-                                          mut b: libc::c_int,
-                                          mut c: libc::c_int)
- -> *const libc::c_char {
-    return tparm(tty_term_string(term, code) as *mut libc::c_char, a, b, c,
-                 0 as libc::c_int, 0 as libc::c_int, 0 as libc::c_int,
-                 0 as libc::c_int, 0 as libc::c_int, 0 as libc::c_int);
+pub unsafe extern "C" fn tty_term_string3(
+    mut term: *mut tty_term,
+    mut code: tty_code_code,
+    mut a: libc::c_int,
+    mut b: libc::c_int,
+    mut c: libc::c_int,
+) -> *const libc::c_char {
+    return tparm(
+        tty_term_string(term, code) as *mut libc::c_char,
+        a,
+        b,
+        c,
+        0 as libc::c_int,
+        0 as libc::c_int,
+        0 as libc::c_int,
+        0 as libc::c_int,
+        0 as libc::c_int,
+        0 as libc::c_int,
+    );
 }
 #[no_mangle]
-pub unsafe extern "C" fn tty_term_ptr1(mut term: *mut tty_term,
-                                       mut code: tty_code_code,
-                                       mut a: *const libc::c_void)
- -> *const libc::c_char {
-    return tparm(tty_term_string(term, code) as *mut libc::c_char,
-                 a as libc::c_long, 0 as libc::c_int, 0 as libc::c_int,
-                 0 as libc::c_int, 0 as libc::c_int, 0 as libc::c_int,
-                 0 as libc::c_int, 0 as libc::c_int, 0 as libc::c_int);
+pub unsafe extern "C" fn tty_term_ptr1(
+    mut term: *mut tty_term,
+    mut code: tty_code_code,
+    mut a: *const libc::c_void,
+) -> *const libc::c_char {
+    return tparm(
+        tty_term_string(term, code) as *mut libc::c_char,
+        a as libc::c_long,
+        0 as libc::c_int,
+        0 as libc::c_int,
+        0 as libc::c_int,
+        0 as libc::c_int,
+        0 as libc::c_int,
+        0 as libc::c_int,
+        0 as libc::c_int,
+        0 as libc::c_int,
+    );
 }
 #[no_mangle]
-pub unsafe extern "C" fn tty_term_ptr2(mut term: *mut tty_term,
-                                       mut code: tty_code_code,
-                                       mut a: *const libc::c_void,
-                                       mut b: *const libc::c_void)
- -> *const libc::c_char {
-    return tparm(tty_term_string(term, code) as *mut libc::c_char,
-                 a as libc::c_long, b as libc::c_long, 0 as libc::c_int,
-                 0 as libc::c_int, 0 as libc::c_int, 0 as libc::c_int,
-                 0 as libc::c_int, 0 as libc::c_int, 0 as libc::c_int);
+pub unsafe extern "C" fn tty_term_ptr2(
+    mut term: *mut tty_term,
+    mut code: tty_code_code,
+    mut a: *const libc::c_void,
+    mut b: *const libc::c_void,
+) -> *const libc::c_char {
+    return tparm(
+        tty_term_string(term, code) as *mut libc::c_char,
+        a as libc::c_long,
+        b as libc::c_long,
+        0 as libc::c_int,
+        0 as libc::c_int,
+        0 as libc::c_int,
+        0 as libc::c_int,
+        0 as libc::c_int,
+        0 as libc::c_int,
+        0 as libc::c_int,
+    );
 }
 #[no_mangle]
-pub unsafe extern "C" fn tty_term_number(mut term: *mut tty_term,
-                                         mut code: tty_code_code)
- -> libc::c_int {
-    if tty_term_has(term, code) == 0 { return 0 as libc::c_int }
-    if (*(*term).codes.offset(code as isize)).type_0 as libc::c_uint !=
-           TTYCODE_NUMBER as libc::c_int as libc::c_uint {
-        fatalx(b"not a number: %d\x00" as *const u8 as *const libc::c_char,
-               code as libc::c_uint);
+pub unsafe extern "C" fn tty_term_number(
+    mut term: *mut tty_term,
+    mut code: tty_code_code,
+) -> libc::c_int {
+    if tty_term_has(term, code) == 0 {
+        return 0 as libc::c_int;
+    }
+    if (*(*term).codes.offset(code as isize)).type_0 as libc::c_uint
+        != TTYCODE_NUMBER as libc::c_int as libc::c_uint
+    {
+        fatalx(
+            b"not a number: %d\x00" as *const u8 as *const libc::c_char,
+            code as libc::c_uint,
+        );
     }
     return (*(*term).codes.offset(code as isize)).value.number;
 }
 #[no_mangle]
-pub unsafe extern "C" fn tty_term_flag(mut term: *mut tty_term,
-                                       mut code: tty_code_code)
- -> libc::c_int {
-    if tty_term_has(term, code) == 0 { return 0 as libc::c_int }
-    if (*(*term).codes.offset(code as isize)).type_0 as libc::c_uint !=
-           TTYCODE_FLAG as libc::c_int as libc::c_uint {
-        fatalx(b"not a flag: %d\x00" as *const u8 as *const libc::c_char,
-               code as libc::c_uint);
+pub unsafe extern "C" fn tty_term_flag(
+    mut term: *mut tty_term,
+    mut code: tty_code_code,
+) -> libc::c_int {
+    if tty_term_has(term, code) == 0 {
+        return 0 as libc::c_int;
+    }
+    if (*(*term).codes.offset(code as isize)).type_0 as libc::c_uint
+        != TTYCODE_FLAG as libc::c_int as libc::c_uint
+    {
+        fatalx(
+            b"not a flag: %d\x00" as *const u8 as *const libc::c_char,
+            code as libc::c_uint,
+        );
     }
     return (*(*term).codes.offset(code as isize)).value.flag;
 }
 #[no_mangle]
-pub unsafe extern "C" fn tty_term_describe(mut term: *mut tty_term,
-                                           mut code: tty_code_code)
- -> *const libc::c_char {
+pub unsafe extern "C" fn tty_term_describe(
+    mut term: *mut tty_term,
+    mut code: tty_code_code,
+) -> *const libc::c_char {
     static mut s: [libc::c_char; 256] = [0; 256];
     let mut out: [libc::c_char; 128] = [0; 128];
     match (*(*term).codes.offset(code as isize)).type_0 as libc::c_uint {
         0 => {
-            xsnprintf(s.as_mut_ptr(),
-                      ::std::mem::size_of::<[libc::c_char; 256]>() as
-                          libc::c_ulong,
-                      b"%4u: %s: [missing]\x00" as *const u8 as
-                          *const libc::c_char, code as libc::c_uint,
-                      tty_term_codes[code as usize].name);
+            xsnprintf(
+                s.as_mut_ptr(),
+                ::std::mem::size_of::<[libc::c_char; 256]>() as libc::c_ulong,
+                b"%4u: %s: [missing]\x00" as *const u8 as *const libc::c_char,
+                code as libc::c_uint,
+                tty_term_codes[code as usize].name,
+            );
         }
         1 => {
-            strnvis(out.as_mut_ptr(),
-                    (*(*term).codes.offset(code as isize)).value.string,
-                    ::std::mem::size_of::<[libc::c_char; 128]>() as
-                        libc::c_ulong,
-                    0x1 as libc::c_int | 0x2 as libc::c_int |
-                        0x8 as libc::c_int | 0x10 as libc::c_int);
-            xsnprintf(s.as_mut_ptr(),
-                      ::std::mem::size_of::<[libc::c_char; 256]>() as
-                          libc::c_ulong,
-                      b"%4u: %s: (string) %s\x00" as *const u8 as
-                          *const libc::c_char, code as libc::c_uint,
-                      tty_term_codes[code as usize].name, out.as_mut_ptr());
+            strnvis(
+                out.as_mut_ptr(),
+                (*(*term).codes.offset(code as isize)).value.string,
+                ::std::mem::size_of::<[libc::c_char; 128]>() as libc::c_ulong,
+                0x1 as libc::c_int | 0x2 as libc::c_int | 0x8 as libc::c_int | 0x10 as libc::c_int,
+            );
+            xsnprintf(
+                s.as_mut_ptr(),
+                ::std::mem::size_of::<[libc::c_char; 256]>() as libc::c_ulong,
+                b"%4u: %s: (string) %s\x00" as *const u8 as *const libc::c_char,
+                code as libc::c_uint,
+                tty_term_codes[code as usize].name,
+                out.as_mut_ptr(),
+            );
         }
         2 => {
-            xsnprintf(s.as_mut_ptr(),
-                      ::std::mem::size_of::<[libc::c_char; 256]>() as
-                          libc::c_ulong,
-                      b"%4u: %s: (number) %d\x00" as *const u8 as
-                          *const libc::c_char, code as libc::c_uint,
-                      tty_term_codes[code as usize].name,
-                      (*(*term).codes.offset(code as isize)).value.number);
+            xsnprintf(
+                s.as_mut_ptr(),
+                ::std::mem::size_of::<[libc::c_char; 256]>() as libc::c_ulong,
+                b"%4u: %s: (number) %d\x00" as *const u8 as *const libc::c_char,
+                code as libc::c_uint,
+                tty_term_codes[code as usize].name,
+                (*(*term).codes.offset(code as isize)).value.number,
+            );
         }
         3 => {
-            xsnprintf(s.as_mut_ptr(),
-                      ::std::mem::size_of::<[libc::c_char; 256]>() as
-                          libc::c_ulong,
-                      b"%4u: %s: (flag) %s\x00" as *const u8 as
-                          *const libc::c_char, code as libc::c_uint,
-                      tty_term_codes[code as usize].name,
-                      if (*(*term).codes.offset(code as isize)).value.flag !=
-                             0 {
-                          b"true\x00" as *const u8 as *const libc::c_char
-                      } else {
-                          b"false\x00" as *const u8 as *const libc::c_char
-                      });
+            xsnprintf(
+                s.as_mut_ptr(),
+                ::std::mem::size_of::<[libc::c_char; 256]>() as libc::c_ulong,
+                b"%4u: %s: (flag) %s\x00" as *const u8 as *const libc::c_char,
+                code as libc::c_uint,
+                tty_term_codes[code as usize].name,
+                if (*(*term).codes.offset(code as isize)).value.flag != 0 {
+                    b"true\x00" as *const u8 as *const libc::c_char
+                } else {
+                    b"false\x00" as *const u8 as *const libc::c_char
+                },
+            );
         }
-        _ => { }
+        _ => {}
     }
     return s.as_mut_ptr();
 }

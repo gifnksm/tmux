@@ -12,16 +12,22 @@ extern "C" {
     #[no_mangle]
     fn fopen(_: *const libc::c_char, _: *const libc::c_char) -> *mut FILE;
     #[no_mangle]
-    fn setvbuf(__stream: *mut FILE, __buf: *mut libc::c_char,
-               __modes: libc::c_int, __n: size_t) -> libc::c_int;
+    fn setvbuf(
+        __stream: *mut FILE,
+        __buf: *mut libc::c_char,
+        __modes: libc::c_int,
+        __n: size_t,
+    ) -> libc::c_int;
     #[no_mangle]
     fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> libc::c_int;
     #[no_mangle]
-    fn vasprintf(__ptr: *mut *mut libc::c_char, __f: *const libc::c_char,
-                 __arg: ::std::ffi::VaList) -> libc::c_int;
+    fn vasprintf(
+        __ptr: *mut *mut libc::c_char,
+        __f: *const libc::c_char,
+        __arg: ::std::ffi::VaList,
+    ) -> libc::c_int;
     #[no_mangle]
-    fn asprintf(__ptr: *mut *mut libc::c_char, __fmt: *const libc::c_char,
-                _: ...) -> libc::c_int;
+    fn asprintf(__ptr: *mut *mut libc::c_char, __fmt: *const libc::c_char, _: ...) -> libc::c_int;
     #[no_mangle]
     fn free(__ptr: *mut libc::c_void);
     #[no_mangle]
@@ -33,14 +39,11 @@ extern "C" {
     #[no_mangle]
     fn event_set_log_callback(cb: event_log_cb);
     #[no_mangle]
-    fn stravis(_: *mut *mut libc::c_char, _: *const libc::c_char,
-               _: libc::c_int) -> libc::c_int;
+    fn stravis(_: *mut *mut libc::c_char, _: *const libc::c_char, _: libc::c_int) -> libc::c_int;
     #[no_mangle]
-    fn xasprintf(_: *mut *mut libc::c_char, _: *const libc::c_char, _: ...)
-     -> libc::c_int;
+    fn xasprintf(_: *mut *mut libc::c_char, _: *const libc::c_char, _: ...) -> libc::c_int;
     #[no_mangle]
-    fn gettimeofday(__tv: *mut timeval, __tz: *mut libc::c_void)
-     -> libc::c_int;
+    fn gettimeofday(__tv: *mut timeval, __tz: *mut libc::c_void) -> libc::c_int;
 }
 pub type __builtin_va_list = [__va_list_tag; 1];
 #[derive(Copy, Clone)]
@@ -99,10 +102,7 @@ pub struct _IO_FILE {
 }
 pub type _IO_lock_t = ();
 pub type FILE = _IO_FILE;
-pub type event_log_cb
-    =
-    Option<unsafe extern "C" fn(_: libc::c_int, _: *const libc::c_char)
-               -> ()>;
+pub type event_log_cb = Option<unsafe extern "C" fn(_: libc::c_int, _: *const libc::c_char) -> ()>;
 /* $OpenBSD$ */
 /*
  * Copyright (c) 2007 Nicholas Marriott <nicholas.marriott@gmail.com>
@@ -122,35 +122,47 @@ pub type event_log_cb
 static mut log_file: *mut FILE = 0 as *const FILE as *mut FILE;
 static mut log_level: libc::c_int = 0;
 /* Log callback for libevent. */
-unsafe extern "C" fn log_event_cb(mut severity: libc::c_int,
-                                  mut msg: *const libc::c_char) {
+unsafe extern "C" fn log_event_cb(mut severity: libc::c_int, mut msg: *const libc::c_char) {
     log_debug(b"%s\x00" as *const u8 as *const libc::c_char, msg);
 }
 /* Increment log level. */
 #[no_mangle]
-pub unsafe extern "C" fn log_add_level() { log_level += 1; }
+pub unsafe extern "C" fn log_add_level() {
+    log_level += 1;
+}
 /* Get log level. */
 #[no_mangle]
-pub unsafe extern "C" fn log_get_level() -> libc::c_int { return log_level; }
+pub unsafe extern "C" fn log_get_level() -> libc::c_int {
+    return log_level;
+}
 /* Open logging to file. */
 #[no_mangle]
 pub unsafe extern "C" fn log_open(mut name: *const libc::c_char) {
     let mut path: *mut libc::c_char = 0 as *mut libc::c_char;
-    if log_level == 0 as libc::c_int { return }
+    if log_level == 0 as libc::c_int {
+        return;
+    }
     log_close();
-    xasprintf(&mut path as *mut *mut libc::c_char,
-              b"tmux-%s-%ld.log\x00" as *const u8 as *const libc::c_char,
-              name, getpid() as libc::c_long);
+    xasprintf(
+        &mut path as *mut *mut libc::c_char,
+        b"tmux-%s-%ld.log\x00" as *const u8 as *const libc::c_char,
+        name,
+        getpid() as libc::c_long,
+    );
     log_file = fopen(path, b"a\x00" as *const u8 as *const libc::c_char);
     free(path as *mut libc::c_void);
-    if log_file.is_null() { return }
-    setvbuf(log_file, 0 as *mut libc::c_char, 1 as libc::c_int,
-            0 as libc::c_int as size_t);
-    event_set_log_callback(Some(log_event_cb as
-                                    unsafe extern "C" fn(_: libc::c_int,
-                                                         _:
-                                                             *const libc::c_char)
-                                        -> ()));
+    if log_file.is_null() {
+        return;
+    }
+    setvbuf(
+        log_file,
+        0 as *mut libc::c_char,
+        1 as libc::c_int,
+        0 as libc::c_int as size_t,
+    );
+    event_set_log_callback(Some(
+        log_event_cb as unsafe extern "C" fn(_: libc::c_int, _: *const libc::c_char) -> (),
+    ));
 }
 /* Toggle logging. */
 #[no_mangle]
@@ -168,30 +180,43 @@ pub unsafe extern "C" fn log_toggle(mut name: *const libc::c_char) {
 /* Close logging. */
 #[no_mangle]
 pub unsafe extern "C" fn log_close() {
-    if !log_file.is_null() { fclose(log_file); }
+    if !log_file.is_null() {
+        fclose(log_file);
+    }
     log_file = 0 as *mut FILE;
     event_set_log_callback(None);
 }
 /* Write a log message. */
-unsafe extern "C" fn log_vwrite(mut msg: *const libc::c_char,
-                                mut ap: ::std::ffi::VaList) {
+unsafe extern "C" fn log_vwrite(mut msg: *const libc::c_char, mut ap: ::std::ffi::VaList) {
     let mut fmt: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut out: *mut libc::c_char = 0 as *mut libc::c_char;
-    let mut tv: timeval = timeval{tv_sec: 0, tv_usec: 0,};
-    if log_file.is_null() { return }
+    let mut tv: timeval = timeval {
+        tv_sec: 0,
+        tv_usec: 0,
+    };
+    if log_file.is_null() {
+        return;
+    }
     if vasprintf(&mut fmt, msg, ap.as_va_list()) == -(1 as libc::c_int) {
         exit(1 as libc::c_int);
     }
-    if stravis(&mut out, fmt,
-               0x1 as libc::c_int | 0x2 as libc::c_int | 0x8 as libc::c_int |
-                   0x10 as libc::c_int) == -(1 as libc::c_int) {
+    if stravis(
+        &mut out,
+        fmt,
+        0x1 as libc::c_int | 0x2 as libc::c_int | 0x8 as libc::c_int | 0x10 as libc::c_int,
+    ) == -(1 as libc::c_int)
+    {
         exit(1 as libc::c_int);
     }
     gettimeofday(&mut tv, 0 as *mut libc::c_void);
-    if fprintf(log_file,
-               b"%lld.%06d %s\n\x00" as *const u8 as *const libc::c_char,
-               tv.tv_sec as libc::c_longlong, tv.tv_usec as libc::c_int, out)
-           == -(1 as libc::c_int) {
+    if fprintf(
+        log_file,
+        b"%lld.%06d %s\n\x00" as *const u8 as *const libc::c_char,
+        tv.tv_sec as libc::c_longlong,
+        tv.tv_usec as libc::c_int,
+        out,
+    ) == -(1 as libc::c_int)
+    {
         exit(1 as libc::c_int);
     }
     fflush(log_file);
@@ -200,23 +225,27 @@ unsafe extern "C" fn log_vwrite(mut msg: *const libc::c_char,
 }
 /* Log a debug message. */
 #[no_mangle]
-pub unsafe extern "C" fn log_debug(mut msg: *const libc::c_char,
-                                   mut args: ...) {
+pub unsafe extern "C" fn log_debug(mut msg: *const libc::c_char, mut args: ...) {
     let mut ap: ::std::ffi::VaListImpl;
-    if log_file.is_null() { return }
+    if log_file.is_null() {
+        return;
+    }
     ap = args.clone();
     log_vwrite(msg, ap.as_va_list());
 }
 /* Log a critical error with error string and die. */
 #[no_mangle]
-pub unsafe extern "C" fn fatal(mut msg: *const libc::c_char, mut args: ...)
- -> ! {
+pub unsafe extern "C" fn fatal(mut msg: *const libc::c_char, mut args: ...) -> ! {
     let mut fmt: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut ap: ::std::ffi::VaListImpl;
     ap = args.clone();
-    if asprintf(&mut fmt as *mut *mut libc::c_char,
-                b"fatal: %s: %s\x00" as *const u8 as *const libc::c_char, msg,
-                strerror(*__errno_location())) == -(1 as libc::c_int) {
+    if asprintf(
+        &mut fmt as *mut *mut libc::c_char,
+        b"fatal: %s: %s\x00" as *const u8 as *const libc::c_char,
+        msg,
+        strerror(*__errno_location()),
+    ) == -(1 as libc::c_int)
+    {
         exit(1 as libc::c_int);
     }
     log_vwrite(fmt, ap.as_va_list());
@@ -224,14 +253,16 @@ pub unsafe extern "C" fn fatal(mut msg: *const libc::c_char, mut args: ...)
 }
 /* Log a critical error and die. */
 #[no_mangle]
-pub unsafe extern "C" fn fatalx(mut msg: *const libc::c_char, mut args: ...)
- -> ! {
+pub unsafe extern "C" fn fatalx(mut msg: *const libc::c_char, mut args: ...) -> ! {
     let mut fmt: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut ap: ::std::ffi::VaListImpl;
     ap = args.clone();
-    if asprintf(&mut fmt as *mut *mut libc::c_char,
-                b"fatal: %s\x00" as *const u8 as *const libc::c_char, msg) ==
-           -(1 as libc::c_int) {
+    if asprintf(
+        &mut fmt as *mut *mut libc::c_char,
+        b"fatal: %s\x00" as *const u8 as *const libc::c_char,
+        msg,
+    ) == -(1 as libc::c_int)
+    {
         exit(1 as libc::c_int);
     }
     log_vwrite(fmt, ap.as_va_list());

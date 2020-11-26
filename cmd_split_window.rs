@@ -23,20 +23,27 @@ extern "C" {
     #[no_mangle]
     fn free(__ptr: *mut libc::c_void);
     #[no_mangle]
-    fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong)
-     -> *mut libc::c_void;
+    fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
     #[no_mangle]
     fn strlen(_: *const libc::c_char) -> libc::c_ulong;
     #[no_mangle]
-    fn strtonum(_: *const libc::c_char, _: libc::c_longlong,
-                _: libc::c_longlong, _: *mut *const libc::c_char)
-     -> libc::c_longlong;
+    fn strtonum(
+        _: *const libc::c_char,
+        _: libc::c_longlong,
+        _: libc::c_longlong,
+        _: *mut *const libc::c_char,
+    ) -> libc::c_longlong;
     #[no_mangle]
     fn xstrdup(_: *const libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
-    fn format_single(_: *mut cmdq_item, _: *const libc::c_char,
-                     _: *mut client, _: *mut session, _: *mut winlink,
-                     _: *mut window_pane) -> *mut libc::c_char;
+    fn format_single(
+        _: *mut cmdq_item,
+        _: *const libc::c_char,
+        _: *mut client,
+        _: *mut session,
+        _: *mut winlink,
+        _: *mut window_pane,
+    ) -> *mut libc::c_char;
     #[no_mangle]
     fn environ_create() -> *mut environ;
     #[no_mangle]
@@ -48,17 +55,24 @@ extern "C" {
     #[no_mangle]
     fn args_get(_: *mut args, _: u_char) -> *const libc::c_char;
     #[no_mangle]
-    fn args_first_value(_: *mut args, _: u_char, _: *mut *mut args_value)
-     -> *const libc::c_char;
+    fn args_first_value(_: *mut args, _: u_char, _: *mut *mut args_value) -> *const libc::c_char;
     #[no_mangle]
     fn args_next_value(_: *mut *mut args_value) -> *const libc::c_char;
     #[no_mangle]
-    fn args_strtonum(_: *mut args, _: u_char, _: libc::c_longlong,
-                     _: libc::c_longlong, _: *mut *mut libc::c_char)
-     -> libc::c_longlong;
+    fn args_strtonum(
+        _: *mut args,
+        _: u_char,
+        _: libc::c_longlong,
+        _: libc::c_longlong,
+        _: *mut *mut libc::c_char,
+    ) -> libc::c_longlong;
     #[no_mangle]
-    fn cmd_find_from_winlink_pane(_: *mut cmd_find_state, _: *mut winlink,
-                                  _: *mut window_pane, _: libc::c_int);
+    fn cmd_find_from_winlink_pane(
+        _: *mut cmd_find_state,
+        _: *mut winlink,
+        _: *mut window_pane,
+        _: libc::c_int,
+    );
     #[no_mangle]
     fn cmd_get_args(_: *mut cmd) -> *mut args;
     #[no_mangle]
@@ -68,9 +82,13 @@ extern "C" {
     #[no_mangle]
     fn cmdq_get_current(_: *mut cmdq_item) -> *mut cmd_find_state;
     #[no_mangle]
-    fn cmdq_insert_hook(_: *mut session, _: *mut cmdq_item,
-                        _: *mut cmd_find_state, _: *const libc::c_char,
-                        _: ...);
+    fn cmdq_insert_hook(
+        _: *mut session,
+        _: *mut cmdq_item,
+        _: *mut cmd_find_state,
+        _: *const libc::c_char,
+        _: ...
+    );
     #[no_mangle]
     fn cmdq_print(_: *mut cmdq_item, _: *const libc::c_char, _: ...);
     #[no_mangle]
@@ -86,16 +104,22 @@ extern "C" {
     #[no_mangle]
     fn window_remove_pane(_: *mut window, _: *mut window_pane);
     #[no_mangle]
-    fn window_pane_start_input(_: *mut window_pane, _: *mut cmdq_item,
-                               _: *mut *mut libc::c_char) -> libc::c_int;
+    fn window_pane_start_input(
+        _: *mut window_pane,
+        _: *mut cmdq_item,
+        _: *mut *mut libc::c_char,
+    ) -> libc::c_int;
     #[no_mangle]
-    fn layout_split_pane(_: *mut window_pane, _: layout_type, _: libc::c_int,
-                         _: libc::c_int) -> *mut layout_cell;
+    fn layout_split_pane(
+        _: *mut window_pane,
+        _: layout_type,
+        _: libc::c_int,
+        _: libc::c_int,
+    ) -> *mut layout_cell;
     #[no_mangle]
     fn layout_close_pane(_: *mut window_pane);
     #[no_mangle]
-    fn spawn_pane(_: *mut spawn_context, _: *mut *mut libc::c_char)
-     -> *mut window_pane;
+    fn spawn_pane(_: *mut spawn_context, _: *mut *mut libc::c_char) -> *mut window_pane;
 }
 pub type __u_char = libc::c_uchar;
 pub type __u_short = libc::c_ushort;
@@ -186,18 +210,13 @@ pub struct event_callback {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub union C2RustUnnamed_6 {
-    pub evcb_callback: Option<unsafe extern "C" fn(_: libc::c_int,
-                                                   _: libc::c_short,
-                                                   _: *mut libc::c_void)
-                                  -> ()>,
-    pub evcb_selfcb: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                 _: *mut libc::c_void) -> ()>,
-    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
-    pub evcb_cbfinalize: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
+    pub evcb_callback:
+        Option<unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> ()>,
+    pub evcb_selfcb:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
+    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event, _: *mut libc::c_void) -> ()>,
+    pub evcb_cbfinalize:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -224,14 +243,10 @@ pub struct bufferevent {
     pub timeout_write: timeval,
     pub enabled: libc::c_short,
 }
-pub type bufferevent_event_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short,
-                                _: *mut libc::c_void) -> ()>;
-pub type bufferevent_data_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void)
-               -> ()>;
+pub type bufferevent_event_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short, _: *mut libc::c_void) -> ()>;
+pub type bufferevent_data_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct event_watermark {
@@ -370,17 +385,19 @@ pub struct C2RustUnnamed_9 {
     pub rbe_parent: *mut client_file,
     pub rbe_color: libc::c_int,
 }
-pub type client_file_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *const libc::c_char,
-                                _: libc::c_int, _: libc::c_int,
-                                _: *mut evbuffer, _: *mut libc::c_void)
-               -> ()>;
+pub type client_file_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: *mut evbuffer,
+        _: *mut libc::c_void,
+    ) -> (),
+>;
 pub type overlay_free_cb = Option<unsafe extern "C" fn(_: *mut client) -> ()>;
-pub type overlay_key_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event)
-               -> libc::c_int>;
+pub type overlay_key_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_event {
@@ -410,10 +427,8 @@ pub struct mouse_event {
     pub sgr_b: u_int,
 }
 pub type key_code = libc::c_ulonglong;
-pub type overlay_draw_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx)
-               -> ()>;
+pub type overlay_draw_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen_redraw_ctx {
@@ -427,10 +442,8 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int)
-               -> *mut screen>;
+pub type overlay_mode_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen {
@@ -524,10 +537,8 @@ pub struct C2RustUnnamed_11 {
     pub bg: u_char,
     pub data: u_char,
 }
-pub type overlay_check_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int)
-               -> libc::c_int>;
+pub type overlay_check_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct session {
@@ -774,24 +785,37 @@ pub struct C2RustUnnamed_24 {
 pub struct window_mode {
     pub name: *const libc::c_char,
     pub default_format: *const libc::c_char,
-    pub init: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                          _: *mut cmd_find_state,
-                                          _: *mut args) -> *mut screen>,
+    pub init: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut cmd_find_state,
+            _: *mut args,
+        ) -> *mut screen,
+    >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
-    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                            _: u_int, _: u_int) -> ()>,
-    pub key: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                         _: *mut client, _: *mut session,
-                                         _: *mut winlink, _: key_code,
-                                         _: *mut mouse_event) -> ()>,
-    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry)
-                              -> *const libc::c_char>,
-    pub command: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut client, _: *mut session,
-                                             _: *mut winlink, _: *mut args,
-                                             _: *mut mouse_event) -> ()>,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut format_tree) -> ()>,
+    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
+    pub key: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: key_code,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> *const libc::c_char>,
+    pub command: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: *mut args,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -828,14 +852,15 @@ pub struct winlink_stack {
 pub type C2RustUnnamed_25 = libc::c_uint;
 pub const PROMPT_COMMAND: C2RustUnnamed_25 = 1;
 pub const PROMPT_ENTRY: C2RustUnnamed_25 = 0;
-pub type prompt_free_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
-pub type prompt_input_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut libc::c_void,
-                                _: *const libc::c_char, _: libc::c_int)
-               -> libc::c_int>;
+pub type prompt_free_cb = Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
+pub type prompt_input_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut libc::c_void,
+        _: *const libc::c_char,
+        _: libc::c_int,
+    ) -> libc::c_int,
+>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_table {
@@ -1006,12 +1031,8 @@ pub struct tty {
     pub mouse_last_y: u_int,
     pub mouse_last_b: u_int,
     pub mouse_drag_flag: libc::c_int,
-    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client,
-                                                       _: *mut mouse_event)
-                                      -> ()>,
-    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client,
-                                                        _: *mut mouse_event)
-                                       -> ()>,
+    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
+    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
     pub key_timer: event,
     pub key_tree: *mut tty_key,
 }
@@ -1087,8 +1108,7 @@ pub struct cmd_entry {
     pub source: cmd_entry_flag,
     pub target: cmd_entry_flag,
     pub flags: libc::c_int,
-    pub exec: Option<unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item)
-                         -> cmd_retval>,
+    pub exec: Option<unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -1115,10 +1135,9 @@ pub struct spawn_context {
     pub flags: libc::c_int,
 }
 #[no_mangle]
-pub static mut cmd_split_window_entry: cmd_entry =
-    unsafe {
-        {
-            let mut init =
+pub static mut cmd_split_window_entry: cmd_entry = unsafe {
+    {
+        let mut init =
                 cmd_entry{name:
                               b"split-window\x00" as *const u8 as
                                   *const libc::c_char,
@@ -1163,29 +1182,31 @@ pub static mut cmd_split_window_entry: cmd_entry =
                                        unsafe extern "C" fn(_: *mut cmd,
                                                             _: *mut cmdq_item)
                                            -> cmd_retval),};
-            init
-        }
-    };
-unsafe extern "C" fn cmd_split_window_exec(mut self_0: *mut cmd,
-                                           mut item: *mut cmdq_item)
- -> cmd_retval {
+        init
+    }
+};
+unsafe extern "C" fn cmd_split_window_exec(
+    mut self_0: *mut cmd,
+    mut item: *mut cmdq_item,
+) -> cmd_retval {
     let mut args: *mut args = cmd_get_args(self_0);
     let mut current: *mut cmd_find_state = cmdq_get_current(item);
     let mut target: *mut cmd_find_state = cmdq_get_target(item);
-    let mut sc: spawn_context =
-        spawn_context{item: 0 as *mut cmdq_item,
-                      s: 0 as *mut session,
-                      wl: 0 as *mut winlink,
-                      tc: 0 as *mut client,
-                      wp0: 0 as *mut window_pane,
-                      lc: 0 as *mut layout_cell,
-                      name: 0 as *const libc::c_char,
-                      argv: 0 as *mut *mut libc::c_char,
-                      argc: 0,
-                      environ: 0 as *mut environ,
-                      idx: 0,
-                      cwd: 0 as *const libc::c_char,
-                      flags: 0,};
+    let mut sc: spawn_context = spawn_context {
+        item: 0 as *mut cmdq_item,
+        s: 0 as *mut session,
+        wl: 0 as *mut winlink,
+        tc: 0 as *mut client,
+        wp0: 0 as *mut window_pane,
+        lc: 0 as *mut layout_cell,
+        name: 0 as *const libc::c_char,
+        argv: 0 as *mut *mut libc::c_char,
+        argc: 0,
+        environ: 0 as *mut environ,
+        idx: 0,
+        cwd: 0 as *const libc::c_char,
+        flags: 0,
+    };
     let mut tc: *mut client = cmdq_get_target_client(item);
     let mut s: *mut session = (*target).s;
     let mut wl: *mut winlink = (*target).wl;
@@ -1193,14 +1214,15 @@ unsafe extern "C" fn cmd_split_window_exec(mut self_0: *mut cmd,
     let mut new_wp: *mut window_pane = 0 as *mut window_pane;
     let mut type_0: layout_type = LAYOUT_LEFTRIGHT;
     let mut lc: *mut layout_cell = 0 as *mut layout_cell;
-    let mut fs: cmd_find_state =
-        cmd_find_state{flags: 0,
-                       current: 0 as *mut cmd_find_state,
-                       s: 0 as *mut session,
-                       wl: 0 as *mut winlink,
-                       w: 0 as *mut window,
-                       wp: 0 as *mut window_pane,
-                       idx: 0,};
+    let mut fs: cmd_find_state = cmd_find_state {
+        flags: 0,
+        current: 0 as *mut cmd_find_state,
+        s: 0 as *mut session,
+        wl: 0 as *mut winlink,
+        w: 0 as *mut window,
+        wp: 0 as *mut window_pane,
+        idx: 0,
+    };
     let mut size: libc::c_int = 0;
     let mut percentage: libc::c_int = 0;
     let mut flags: libc::c_int = 0;
@@ -1216,96 +1238,98 @@ unsafe extern "C" fn cmd_split_window_exec(mut self_0: *mut cmd,
     let mut value: *mut args_value = 0 as *mut args_value;
     if args_has(args, 'h' as i32 as u_char) != 0 {
         type_0 = LAYOUT_LEFTRIGHT
-    } else { type_0 = LAYOUT_TOPBOTTOM }
+    } else {
+        type_0 = LAYOUT_TOPBOTTOM
+    }
     p = args_get(args, 'l' as i32 as u_char);
     if !p.is_null() {
         plen = strlen(p);
-        if *p.offset(plen.wrapping_sub(1 as libc::c_int as libc::c_ulong) as
-                         isize) as libc::c_int == '%' as i32 {
+        if *p.offset(plen.wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize) as libc::c_int
+            == '%' as i32
+        {
             copy = xstrdup(p);
-            *copy.offset(plen.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                             as isize) = '\u{0}' as i32 as libc::c_char;
-            percentage =
-                strtonum(copy, 0 as libc::c_int as libc::c_longlong,
-                         2147483647 as libc::c_int as libc::c_longlong,
-                         &mut errstr) as libc::c_int;
+            *copy.offset(plen.wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize) =
+                '\u{0}' as i32 as libc::c_char;
+            percentage = strtonum(
+                copy,
+                0 as libc::c_int as libc::c_longlong,
+                2147483647 as libc::c_int as libc::c_longlong,
+                &mut errstr,
+            ) as libc::c_int;
             free(copy as *mut libc::c_void);
             if !errstr.is_null() {
-                cmdq_error(item,
-                           b"percentage %s\x00" as *const u8 as
-                               *const libc::c_char, errstr);
-                return CMD_RETURN_ERROR
+                cmdq_error(
+                    item,
+                    b"percentage %s\x00" as *const u8 as *const libc::c_char,
+                    errstr,
+                );
+                return CMD_RETURN_ERROR;
             }
-            if type_0 as libc::c_uint ==
-                   LAYOUT_TOPBOTTOM as libc::c_int as libc::c_uint {
-                size =
-                    (*wp).sy.wrapping_mul(percentage as
-                                              libc::c_uint).wrapping_div(100
-                                                                             as
-                                                                             libc::c_int
-                                                                             as
-                                                                             libc::c_uint)
-                        as libc::c_int
+            if type_0 as libc::c_uint == LAYOUT_TOPBOTTOM as libc::c_int as libc::c_uint {
+                size = (*wp)
+                    .sy
+                    .wrapping_mul(percentage as libc::c_uint)
+                    .wrapping_div(100 as libc::c_int as libc::c_uint)
+                    as libc::c_int
             } else {
-                size =
-                    (*wp).sx.wrapping_mul(percentage as
-                                              libc::c_uint).wrapping_div(100
-                                                                             as
-                                                                             libc::c_int
-                                                                             as
-                                                                             libc::c_uint)
-                        as libc::c_int
+                size = (*wp)
+                    .sx
+                    .wrapping_mul(percentage as libc::c_uint)
+                    .wrapping_div(100 as libc::c_int as libc::c_uint)
+                    as libc::c_int
             }
         } else {
-            size =
-                args_strtonum(args, 'l' as i32 as u_char,
-                              0 as libc::c_int as libc::c_longlong,
-                              2147483647 as libc::c_int as libc::c_longlong,
-                              &mut cause) as libc::c_int;
+            size = args_strtonum(
+                args,
+                'l' as i32 as u_char,
+                0 as libc::c_int as libc::c_longlong,
+                2147483647 as libc::c_int as libc::c_longlong,
+                &mut cause,
+            ) as libc::c_int;
             if !cause.is_null() {
-                cmdq_error(item,
-                           b"lines %s\x00" as *const u8 as
-                               *const libc::c_char, cause);
+                cmdq_error(
+                    item,
+                    b"lines %s\x00" as *const u8 as *const libc::c_char,
+                    cause,
+                );
                 free(cause as *mut libc::c_void);
-                return CMD_RETURN_ERROR
+                return CMD_RETURN_ERROR;
             }
         }
     } else if args_has(args, 'p' as i32 as u_char) != 0 {
-        percentage =
-            args_strtonum(args, 'p' as i32 as u_char,
-                          0 as libc::c_int as libc::c_longlong,
-                          2147483647 as libc::c_int as libc::c_longlong,
-                          &mut cause) as libc::c_int;
+        percentage = args_strtonum(
+            args,
+            'p' as i32 as u_char,
+            0 as libc::c_int as libc::c_longlong,
+            2147483647 as libc::c_int as libc::c_longlong,
+            &mut cause,
+        ) as libc::c_int;
         if !cause.is_null() {
-            cmdq_error(item,
-                       b"create pane failed: -p %s\x00" as *const u8 as
-                           *const libc::c_char, cause);
+            cmdq_error(
+                item,
+                b"create pane failed: -p %s\x00" as *const u8 as *const libc::c_char,
+                cause,
+            );
             free(cause as *mut libc::c_void);
-            return CMD_RETURN_ERROR
+            return CMD_RETURN_ERROR;
         }
-        if type_0 as libc::c_uint ==
-               LAYOUT_TOPBOTTOM as libc::c_int as libc::c_uint {
-            size =
-                (*wp).sy.wrapping_mul(percentage as
-                                          libc::c_uint).wrapping_div(100 as
-                                                                         libc::c_int
-                                                                         as
-                                                                         libc::c_uint)
-                    as libc::c_int
+        if type_0 as libc::c_uint == LAYOUT_TOPBOTTOM as libc::c_int as libc::c_uint {
+            size = (*wp)
+                .sy
+                .wrapping_mul(percentage as libc::c_uint)
+                .wrapping_div(100 as libc::c_int as libc::c_uint) as libc::c_int
         } else {
-            size =
-                (*wp).sx.wrapping_mul(percentage as
-                                          libc::c_uint).wrapping_div(100 as
-                                                                         libc::c_int
-                                                                         as
-                                                                         libc::c_uint)
-                    as libc::c_int
+            size = (*wp)
+                .sx
+                .wrapping_mul(percentage as libc::c_uint)
+                .wrapping_div(100 as libc::c_int as libc::c_uint) as libc::c_int
         }
-    } else { size = -(1 as libc::c_int) }
+    } else {
+        size = -(1 as libc::c_int)
+    }
     server_unzoom_window((*wp).window);
-    input =
-        (args_has(args, 'I' as i32 as u_char) != 0 &&
-             (*args).argc == 0 as libc::c_int) as libc::c_int;
+    input = (args_has(args, 'I' as i32 as u_char) != 0 && (*args).argc == 0 as libc::c_int)
+        as libc::c_int;
     flags = 0 as libc::c_int;
     if args_has(args, 'b' as i32 as u_char) != 0 {
         flags |= 0x8 as libc::c_int
@@ -1313,22 +1337,25 @@ unsafe extern "C" fn cmd_split_window_exec(mut self_0: *mut cmd,
     if args_has(args, 'f' as i32 as u_char) != 0 {
         flags |= 0x20 as libc::c_int
     }
-    if input != 0 ||
-           (*args).argc == 1 as libc::c_int &&
-               **(*args).argv.offset(0 as libc::c_int as isize) as libc::c_int
-                   == '\u{0}' as i32 {
+    if input != 0
+        || (*args).argc == 1 as libc::c_int
+            && **(*args).argv.offset(0 as libc::c_int as isize) as libc::c_int == '\u{0}' as i32
+    {
         flags |= 0x40 as libc::c_int
     }
     lc = layout_split_pane(wp, type_0, size, flags);
     if lc.is_null() {
-        cmdq_error(item,
-                   b"no space for new pane\x00" as *const u8 as
-                       *const libc::c_char);
-        return CMD_RETURN_ERROR
+        cmdq_error(
+            item,
+            b"no space for new pane\x00" as *const u8 as *const libc::c_char,
+        );
+        return CMD_RETURN_ERROR;
     }
-    memset(&mut sc as *mut spawn_context as *mut libc::c_void,
-           0 as libc::c_int,
-           ::std::mem::size_of::<spawn_context>() as libc::c_ulong);
+    memset(
+        &mut sc as *mut spawn_context as *mut libc::c_void,
+        0 as libc::c_int,
+        ::std::mem::size_of::<spawn_context>() as libc::c_ulong,
+    );
     sc.item = item;
     sc.s = s;
     sc.wl = wl;
@@ -1351,22 +1378,21 @@ unsafe extern "C" fn cmd_split_window_exec(mut self_0: *mut cmd,
     }
     new_wp = spawn_pane(&mut sc, &mut cause);
     if new_wp.is_null() {
-        cmdq_error(item,
-                   b"create pane failed: %s\x00" as *const u8 as
-                       *const libc::c_char, cause);
+        cmdq_error(
+            item,
+            b"create pane failed: %s\x00" as *const u8 as *const libc::c_char,
+            cause,
+        );
         free(cause as *mut libc::c_void);
-        return CMD_RETURN_ERROR
+        return CMD_RETURN_ERROR;
     }
-    if input != 0 &&
-           window_pane_start_input(new_wp, item, &mut cause) !=
-               0 as libc::c_int {
+    if input != 0 && window_pane_start_input(new_wp, item, &mut cause) != 0 as libc::c_int {
         server_client_remove_pane(new_wp);
         layout_close_pane(new_wp);
         window_remove_pane((*wp).window, new_wp);
-        cmdq_error(item, b"%s\x00" as *const u8 as *const libc::c_char,
-                   cause);
+        cmdq_error(item, b"%s\x00" as *const u8 as *const libc::c_char, cause);
         free(cause as *mut libc::c_void);
-        return CMD_RETURN_ERROR
+        return CMD_RETURN_ERROR;
     }
     if args_has(args, 'd' as i32 as u_char) == 0 {
         cmd_find_from_winlink_pane(current, wl, new_wp, 0 as libc::c_int);
@@ -1376,19 +1402,23 @@ unsafe extern "C" fn cmd_split_window_exec(mut self_0: *mut cmd,
     if args_has(args, 'P' as i32 as u_char) != 0 {
         template = args_get(args, 'F' as i32 as u_char);
         if template.is_null() {
-            template =
-                b"#{session_name}:#{window_index}.#{pane_index}\x00" as
-                    *const u8 as *const libc::c_char
+            template = b"#{session_name}:#{window_index}.#{pane_index}\x00" as *const u8
+                as *const libc::c_char
         }
         cp = format_single(item, template, tc, s, wl, new_wp);
         cmdq_print(item, b"%s\x00" as *const u8 as *const libc::c_char, cp);
         free(cp as *mut libc::c_void);
     }
     cmd_find_from_winlink_pane(&mut fs, wl, new_wp, 0 as libc::c_int);
-    cmdq_insert_hook(s, item, &mut fs as *mut cmd_find_state,
-                     b"after-split-window\x00" as *const u8 as
-                         *const libc::c_char);
+    cmdq_insert_hook(
+        s,
+        item,
+        &mut fs as *mut cmd_find_state,
+        b"after-split-window\x00" as *const u8 as *const libc::c_char,
+    );
     environ_free(sc.environ);
-    if input != 0 { return CMD_RETURN_WAIT }
+    if input != 0 {
+        return CMD_RETURN_WAIT;
+    }
     return CMD_RETURN_NORMAL;
 }

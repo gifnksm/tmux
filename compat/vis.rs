@@ -5,8 +5,7 @@ extern "C" {
     #[no_mangle]
     fn __ctype_b_loc() -> *mut *const libc::c_ushort;
     #[no_mangle]
-    fn memcpy(_: *mut libc::c_void, _: *const libc::c_void, _: libc::c_ulong)
-     -> *mut libc::c_void;
+    fn memcpy(_: *mut libc::c_void, _: *const libc::c_void, _: libc::c_ulong) -> *mut libc::c_void;
     #[no_mangle]
     fn strlen(_: *const libc::c_char) -> libc::c_ulong;
     #[no_mangle]
@@ -36,42 +35,37 @@ pub const _ISupper: C2RustUnnamed = 256;
  * vis - visually encode characters
  */
 #[no_mangle]
-pub unsafe extern "C" fn vis(mut dst: *mut libc::c_char, mut c: libc::c_int,
-                             mut flag: libc::c_int, mut nextc: libc::c_int)
- -> *mut libc::c_char {
+pub unsafe extern "C" fn vis(
+    mut dst: *mut libc::c_char,
+    mut c: libc::c_int,
+    mut flag: libc::c_int,
+    mut nextc: libc::c_int,
+) -> *mut libc::c_char {
     let mut current_block: u64;
     if (c == '\\' as i32 || flag & 0x400 as libc::c_int == 0 as libc::c_int)
-           &&
-           (c as u_int <=
-                (127 as libc::c_int * 2 as libc::c_int + 1 as libc::c_int) as
-                    libc::c_uint &&
-                c as u_char as libc::c_int & !(0x7f as libc::c_int) ==
-                    0 as libc::c_int &&
-                (c != '*' as i32 && c != '?' as i32 && c != '[' as i32 &&
-                     c != '#' as i32 ||
-                     flag & 0x100 as libc::c_int == 0 as libc::c_int) &&
-                *(*__ctype_b_loc()).offset(c as u_char as libc::c_int as
-                                               isize) as libc::c_int &
-                    _ISgraph as libc::c_int as libc::c_ushort as libc::c_int
-                    != 0 ||
-                flag & 0x4 as libc::c_int == 0 as libc::c_int &&
-                    c == ' ' as i32 ||
-                flag & 0x8 as libc::c_int == 0 as libc::c_int &&
-                    c == '\t' as i32 ||
-                flag & 0x10 as libc::c_int == 0 as libc::c_int &&
-                    c == '\n' as i32 ||
-                flag & 0x20 as libc::c_int != 0 &&
-                    (c == '\u{8}' as i32 || c == '\u{7}' as i32 ||
-                         c == '\r' as i32 ||
-                         *(*__ctype_b_loc()).offset(c as u_char as libc::c_int
-                                                        as isize) as
-                             libc::c_int &
-                             _ISgraph as libc::c_int as libc::c_ushort as
-                                 libc::c_int != 0)) {
+        && (c as u_int
+            <= (127 as libc::c_int * 2 as libc::c_int + 1 as libc::c_int) as libc::c_uint
+            && c as u_char as libc::c_int & !(0x7f as libc::c_int) == 0 as libc::c_int
+            && (c != '*' as i32 && c != '?' as i32 && c != '[' as i32 && c != '#' as i32
+                || flag & 0x100 as libc::c_int == 0 as libc::c_int)
+            && *(*__ctype_b_loc()).offset(c as u_char as libc::c_int as isize) as libc::c_int
+                & _ISgraph as libc::c_int as libc::c_ushort as libc::c_int
+                != 0
+            || flag & 0x4 as libc::c_int == 0 as libc::c_int && c == ' ' as i32
+            || flag & 0x8 as libc::c_int == 0 as libc::c_int && c == '\t' as i32
+            || flag & 0x10 as libc::c_int == 0 as libc::c_int && c == '\n' as i32
+            || flag & 0x20 as libc::c_int != 0
+                && (c == '\u{8}' as i32
+                    || c == '\u{7}' as i32
+                    || c == '\r' as i32
+                    || *(*__ctype_b_loc()).offset(c as u_char as libc::c_int as isize)
+                        as libc::c_int
+                        & _ISgraph as libc::c_int as libc::c_ushort as libc::c_int
+                        != 0))
+    {
         if c == '\"' as i32 && flag & 0x200 as libc::c_int != 0 as libc::c_int
-               ||
-               c == '\\' as i32 &&
-                   flag & 0x40 as libc::c_int == 0 as libc::c_int {
+            || c == '\\' as i32 && flag & 0x40 as libc::c_int == 0 as libc::c_int
+        {
             let fresh0 = dst;
             dst = dst.offset(1);
             *fresh0 = '\\' as i32 as libc::c_char
@@ -80,7 +74,7 @@ pub unsafe extern "C" fn vis(mut dst: *mut libc::c_char, mut c: libc::c_int,
         dst = dst.offset(1);
         *fresh1 = c as libc::c_char;
         *dst = '\u{0}' as i32 as libc::c_char;
-        return dst
+        return dst;
     }
     if flag & 0x2 as libc::c_int != 0 {
         match c {
@@ -158,8 +152,9 @@ pub unsafe extern "C" fn vis(mut dst: *mut libc::c_char, mut c: libc::c_int,
                         let fresh19 = dst;
                         dst = dst.offset(1);
                         *fresh19 = '0' as i32 as libc::c_char;
-                        if nextc as u_char as libc::c_int >= '0' as i32 &&
-                               nextc as u_char as libc::c_int <= '7' as i32 {
+                        if nextc as u_char as libc::c_int >= '0' as i32
+                            && nextc as u_char as libc::c_int <= '7' as i32
+                        {
                             let fresh20 = dst;
                             dst = dst.offset(1);
                             *fresh20 = '0' as i32 as libc::c_char;
@@ -245,8 +240,9 @@ pub unsafe extern "C" fn vis(mut dst: *mut libc::c_char, mut c: libc::c_int,
                         let fresh19 = dst;
                         dst = dst.offset(1);
                         *fresh19 = '0' as i32 as libc::c_char;
-                        if nextc as u_char as libc::c_int >= '0' as i32 &&
-                               nextc as u_char as libc::c_int <= '7' as i32 {
+                        if nextc as u_char as libc::c_int >= '0' as i32
+                            && nextc as u_char as libc::c_int <= '7' as i32
+                        {
                             let fresh20 = dst;
                             dst = dst.offset(1);
                             *fresh20 = '0' as i32 as libc::c_char;
@@ -332,8 +328,9 @@ pub unsafe extern "C" fn vis(mut dst: *mut libc::c_char, mut c: libc::c_int,
                         let fresh19 = dst;
                         dst = dst.offset(1);
                         *fresh19 = '0' as i32 as libc::c_char;
-                        if nextc as u_char as libc::c_int >= '0' as i32 &&
-                               nextc as u_char as libc::c_int <= '7' as i32 {
+                        if nextc as u_char as libc::c_int >= '0' as i32
+                            && nextc as u_char as libc::c_int <= '7' as i32
+                        {
                             let fresh20 = dst;
                             dst = dst.offset(1);
                             *fresh20 = '0' as i32 as libc::c_char;
@@ -419,8 +416,9 @@ pub unsafe extern "C" fn vis(mut dst: *mut libc::c_char, mut c: libc::c_int,
                         let fresh19 = dst;
                         dst = dst.offset(1);
                         *fresh19 = '0' as i32 as libc::c_char;
-                        if nextc as u_char as libc::c_int >= '0' as i32 &&
-                               nextc as u_char as libc::c_int <= '7' as i32 {
+                        if nextc as u_char as libc::c_int >= '0' as i32
+                            && nextc as u_char as libc::c_int <= '7' as i32
+                        {
                             let fresh20 = dst;
                             dst = dst.offset(1);
                             *fresh20 = '0' as i32 as libc::c_char;
@@ -506,8 +504,9 @@ pub unsafe extern "C" fn vis(mut dst: *mut libc::c_char, mut c: libc::c_int,
                         let fresh19 = dst;
                         dst = dst.offset(1);
                         *fresh19 = '0' as i32 as libc::c_char;
-                        if nextc as u_char as libc::c_int >= '0' as i32 &&
-                               nextc as u_char as libc::c_int <= '7' as i32 {
+                        if nextc as u_char as libc::c_int >= '0' as i32
+                            && nextc as u_char as libc::c_int <= '7' as i32
+                        {
                             let fresh20 = dst;
                             dst = dst.offset(1);
                             *fresh20 = '0' as i32 as libc::c_char;
@@ -593,8 +592,9 @@ pub unsafe extern "C" fn vis(mut dst: *mut libc::c_char, mut c: libc::c_int,
                         let fresh19 = dst;
                         dst = dst.offset(1);
                         *fresh19 = '0' as i32 as libc::c_char;
-                        if nextc as u_char as libc::c_int >= '0' as i32 &&
-                               nextc as u_char as libc::c_int <= '7' as i32 {
+                        if nextc as u_char as libc::c_int >= '0' as i32
+                            && nextc as u_char as libc::c_int <= '7' as i32
+                        {
                             let fresh20 = dst;
                             dst = dst.offset(1);
                             *fresh20 = '0' as i32 as libc::c_char;
@@ -680,8 +680,9 @@ pub unsafe extern "C" fn vis(mut dst: *mut libc::c_char, mut c: libc::c_int,
                         let fresh19 = dst;
                         dst = dst.offset(1);
                         *fresh19 = '0' as i32 as libc::c_char;
-                        if nextc as u_char as libc::c_int >= '0' as i32 &&
-                               nextc as u_char as libc::c_int <= '7' as i32 {
+                        if nextc as u_char as libc::c_int >= '0' as i32
+                            && nextc as u_char as libc::c_int <= '7' as i32
+                        {
                             let fresh20 = dst;
                             dst = dst.offset(1);
                             *fresh20 = '0' as i32 as libc::c_char;
@@ -767,8 +768,9 @@ pub unsafe extern "C" fn vis(mut dst: *mut libc::c_char, mut c: libc::c_int,
                         let fresh19 = dst;
                         dst = dst.offset(1);
                         *fresh19 = '0' as i32 as libc::c_char;
-                        if nextc as u_char as libc::c_int >= '0' as i32 &&
-                               nextc as u_char as libc::c_int <= '7' as i32 {
+                        if nextc as u_char as libc::c_int >= '0' as i32
+                            && nextc as u_char as libc::c_int <= '7' as i32
+                        {
                             let fresh20 = dst;
                             dst = dst.offset(1);
                             *fresh20 = '0' as i32 as libc::c_char;
@@ -854,8 +856,9 @@ pub unsafe extern "C" fn vis(mut dst: *mut libc::c_char, mut c: libc::c_int,
                         let fresh19 = dst;
                         dst = dst.offset(1);
                         *fresh19 = '0' as i32 as libc::c_char;
-                        if nextc as u_char as libc::c_int >= '0' as i32 &&
-                               nextc as u_char as libc::c_int <= '7' as i32 {
+                        if nextc as u_char as libc::c_int >= '0' as i32
+                            && nextc as u_char as libc::c_int <= '7' as i32
+                        {
                             let fresh20 = dst;
                             dst = dst.offset(1);
                             *fresh20 = '0' as i32 as libc::c_char;
@@ -867,34 +870,35 @@ pub unsafe extern "C" fn vis(mut dst: *mut libc::c_char, mut c: libc::c_int,
                 }
                 current_block = 18394067709589936313;
             }
-            _ => { current_block = 1118134448028020070; }
+            _ => {
+                current_block = 1118134448028020070;
+            }
         }
-    } else { current_block = 1118134448028020070; }
+    } else {
+        current_block = 1118134448028020070;
+    }
     match current_block {
         1118134448028020070 => {
-            if c & 0o177 as libc::c_int == ' ' as i32 ||
-                   flag & 0x1 as libc::c_int != 0 ||
-                   flag & 0x100 as libc::c_int != 0 &&
-                       (c == '*' as i32 || c == '?' as i32 || c == '[' as i32
-                            || c == '#' as i32) {
+            if c & 0o177 as libc::c_int == ' ' as i32
+                || flag & 0x1 as libc::c_int != 0
+                || flag & 0x100 as libc::c_int != 0
+                    && (c == '*' as i32 || c == '?' as i32 || c == '[' as i32 || c == '#' as i32)
+            {
                 let fresh22 = dst;
                 dst = dst.offset(1);
                 *fresh22 = '\\' as i32 as libc::c_char;
                 let fresh23 = dst;
                 dst = dst.offset(1);
-                *fresh23 =
-                    ((c as u_char as libc::c_int >> 6 as libc::c_int &
-                          0o7 as libc::c_int) + '0' as i32) as libc::c_char;
+                *fresh23 = ((c as u_char as libc::c_int >> 6 as libc::c_int & 0o7 as libc::c_int)
+                    + '0' as i32) as libc::c_char;
                 let fresh24 = dst;
                 dst = dst.offset(1);
-                *fresh24 =
-                    ((c as u_char as libc::c_int >> 3 as libc::c_int &
-                          0o7 as libc::c_int) + '0' as i32) as libc::c_char;
+                *fresh24 = ((c as u_char as libc::c_int >> 3 as libc::c_int & 0o7 as libc::c_int)
+                    + '0' as i32) as libc::c_char;
                 let fresh25 = dst;
                 dst = dst.offset(1);
                 *fresh25 =
-                    ((c as u_char as libc::c_int & 0o7 as libc::c_int) +
-                         '0' as i32) as libc::c_char
+                    ((c as u_char as libc::c_int & 0o7 as libc::c_int) + '0' as i32) as libc::c_char
             } else {
                 if flag & 0x40 as libc::c_int == 0 as libc::c_int {
                     let fresh26 = dst;
@@ -907,10 +911,10 @@ pub unsafe extern "C" fn vis(mut dst: *mut libc::c_char, mut c: libc::c_int,
                     dst = dst.offset(1);
                     *fresh27 = 'M' as i32 as libc::c_char
                 }
-                if *(*__ctype_b_loc()).offset(c as u_char as libc::c_int as
-                                                  isize) as libc::c_int &
-                       _IScntrl as libc::c_int as libc::c_ushort as
-                           libc::c_int != 0 {
+                if *(*__ctype_b_loc()).offset(c as u_char as libc::c_int as isize) as libc::c_int
+                    & _IScntrl as libc::c_int as libc::c_ushort as libc::c_int
+                    != 0
+                {
                     let fresh28 = dst;
                     dst = dst.offset(1);
                     *fresh28 = '^' as i32 as libc::c_char;
@@ -933,17 +937,17 @@ pub unsafe extern "C" fn vis(mut dst: *mut libc::c_char, mut c: libc::c_int,
                 }
             }
         }
-        _ => { }
+        _ => {}
     }
     *dst = '\u{0}' as i32 as libc::c_char;
     return dst;
 }
 /*
  * strvis, strnvis, strvisx - visually encode characters from src into dst
- *	
+ *
  *	Dst must be 4 times the size of src to account for possible
  *	expansion.  The length of dst, not including the trailing NULL,
- *	is returned. 
+ *	is returned.
  *
  *	Strnvis will write no more than siz-1 bytes (and will NULL terminate).
  *	The number of bytes needed to fully encode the string is returned.
@@ -952,15 +956,19 @@ pub unsafe extern "C" fn vis(mut dst: *mut libc::c_char, mut c: libc::c_int,
  *	This is useful for encoding a block of data.
  */
 #[no_mangle]
-pub unsafe extern "C" fn strvis(mut dst: *mut libc::c_char,
-                                mut src: *const libc::c_char,
-                                mut flag: libc::c_int) -> libc::c_int {
+pub unsafe extern "C" fn strvis(
+    mut dst: *mut libc::c_char,
+    mut src: *const libc::c_char,
+    mut flag: libc::c_int,
+) -> libc::c_int {
     let mut c: libc::c_char = 0;
     let mut start: *mut libc::c_char = 0 as *mut libc::c_char;
     start = dst;
-    loop  {
+    loop {
         c = *src;
-        if !(c != 0) { break ; }
+        if !(c != 0) {
+            break;
+        }
         src = src.offset(1);
         dst = vis(dst, c as libc::c_int, flag, *src as libc::c_int)
     }
@@ -968,10 +976,12 @@ pub unsafe extern "C" fn strvis(mut dst: *mut libc::c_char,
     return dst.wrapping_offset_from(start) as libc::c_long as libc::c_int;
 }
 #[no_mangle]
-pub unsafe extern "C" fn strnvis(mut dst: *mut libc::c_char,
-                                 mut src: *const libc::c_char,
-                                 mut siz: size_t, mut flag: libc::c_int)
- -> libc::c_int {
+pub unsafe extern "C" fn strnvis(
+    mut dst: *mut libc::c_char,
+    mut src: *const libc::c_char,
+    mut siz: size_t,
+    mut flag: libc::c_int,
+) -> libc::c_int {
     let mut start: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut end: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut tbuf: [libc::c_char; 5] = [0; 5];
@@ -979,47 +989,42 @@ pub unsafe extern "C" fn strnvis(mut dst: *mut libc::c_char,
     let mut i: libc::c_int = 0;
     i = 0 as libc::c_int;
     start = dst;
-    end = start.offset(siz as isize).offset(-(1 as libc::c_int as isize));
-    loop  {
+    end = start
+        .offset(siz as isize)
+        .offset(-(1 as libc::c_int as isize));
+    loop {
         c = *src as libc::c_int;
-        if !(c != 0 && dst < end) { break ; }
-        if (c == '\\' as i32 ||
-                flag & 0x400 as libc::c_int == 0 as libc::c_int) &&
-               (c as u_int <=
-                    (127 as libc::c_int * 2 as libc::c_int + 1 as libc::c_int)
-                        as libc::c_uint &&
-                    c as u_char as libc::c_int & !(0x7f as libc::c_int) ==
-                        0 as libc::c_int &&
-                    (c != '*' as i32 && c != '?' as i32 && c != '[' as i32 &&
-                         c != '#' as i32 ||
-                         flag & 0x100 as libc::c_int == 0 as libc::c_int) &&
-                    *(*__ctype_b_loc()).offset(c as u_char as libc::c_int as
-                                                   isize) as libc::c_int &
-                        _ISgraph as libc::c_int as libc::c_ushort as
-                            libc::c_int != 0 ||
-                    flag & 0x4 as libc::c_int == 0 as libc::c_int &&
-                        c == ' ' as i32 ||
-                    flag & 0x8 as libc::c_int == 0 as libc::c_int &&
-                        c == '\t' as i32 ||
-                    flag & 0x10 as libc::c_int == 0 as libc::c_int &&
-                        c == '\n' as i32 ||
-                    flag & 0x20 as libc::c_int != 0 &&
-                        (c == '\u{8}' as i32 || c == '\u{7}' as i32 ||
-                             c == '\r' as i32 ||
-                             *(*__ctype_b_loc()).offset(c as u_char as
-                                                            libc::c_int as
-                                                            isize) as
-                                 libc::c_int &
-                                 _ISgraph as libc::c_int as libc::c_ushort as
-                                     libc::c_int != 0)) {
-            if c == '\"' as i32 &&
-                   flag & 0x200 as libc::c_int != 0 as libc::c_int ||
-                   c == '\\' as i32 &&
-                       flag & 0x40 as libc::c_int == 0 as libc::c_int {
+        if !(c != 0 && dst < end) {
+            break;
+        }
+        if (c == '\\' as i32 || flag & 0x400 as libc::c_int == 0 as libc::c_int)
+            && (c as u_int
+                <= (127 as libc::c_int * 2 as libc::c_int + 1 as libc::c_int) as libc::c_uint
+                && c as u_char as libc::c_int & !(0x7f as libc::c_int) == 0 as libc::c_int
+                && (c != '*' as i32 && c != '?' as i32 && c != '[' as i32 && c != '#' as i32
+                    || flag & 0x100 as libc::c_int == 0 as libc::c_int)
+                && *(*__ctype_b_loc()).offset(c as u_char as libc::c_int as isize) as libc::c_int
+                    & _ISgraph as libc::c_int as libc::c_ushort as libc::c_int
+                    != 0
+                || flag & 0x4 as libc::c_int == 0 as libc::c_int && c == ' ' as i32
+                || flag & 0x8 as libc::c_int == 0 as libc::c_int && c == '\t' as i32
+                || flag & 0x10 as libc::c_int == 0 as libc::c_int && c == '\n' as i32
+                || flag & 0x20 as libc::c_int != 0
+                    && (c == '\u{8}' as i32
+                        || c == '\u{7}' as i32
+                        || c == '\r' as i32
+                        || *(*__ctype_b_loc()).offset(c as u_char as libc::c_int as isize)
+                            as libc::c_int
+                            & _ISgraph as libc::c_int as libc::c_ushort as libc::c_int
+                            != 0))
+        {
+            if c == '\"' as i32 && flag & 0x200 as libc::c_int != 0 as libc::c_int
+                || c == '\\' as i32 && flag & 0x40 as libc::c_int == 0 as libc::c_int
+            {
                 /* need space for the extra '\\' */
                 if dst.offset(1 as libc::c_int as isize) >= end {
                     i = 2 as libc::c_int;
-                    break ;
+                    break;
                 } else {
                     let fresh33 = dst;
                     dst = dst.offset(1);
@@ -1033,64 +1038,78 @@ pub unsafe extern "C" fn strnvis(mut dst: *mut libc::c_char,
             src = src.offset(1)
         } else {
             src = src.offset(1);
-            i =
-                vis(tbuf.as_mut_ptr(), c, flag,
-                    *src as
-                        libc::c_int).wrapping_offset_from(tbuf.as_mut_ptr())
-                    as libc::c_long as libc::c_int;
+            i = vis(tbuf.as_mut_ptr(), c, flag, *src as libc::c_int)
+                .wrapping_offset_from(tbuf.as_mut_ptr()) as libc::c_long
+                as libc::c_int;
             if dst.offset(i as isize) <= end {
-                memcpy(dst as *mut libc::c_void,
-                       tbuf.as_mut_ptr() as *const libc::c_void,
-                       i as libc::c_ulong);
+                memcpy(
+                    dst as *mut libc::c_void,
+                    tbuf.as_mut_ptr() as *const libc::c_void,
+                    i as libc::c_ulong,
+                );
                 dst = dst.offset(i as isize)
-            } else { src = src.offset(-1); break ; }
+            } else {
+                src = src.offset(-1);
+                break;
+            }
         }
     }
     if siz > 0 as libc::c_int as libc::c_ulong {
         *dst = '\u{0}' as i32 as libc::c_char
     }
     if dst.offset(i as isize) > end {
-        loop 
-             /* adjust return value for truncation */
-             {
+        loop
+        /* adjust return value for truncation */
+        {
             c = *src as libc::c_int;
-            if !(c != 0) { break ; }
+            if !(c != 0) {
+                break;
+            }
             src = src.offset(1);
-            dst =
-                dst.offset(vis(tbuf.as_mut_ptr(), c, flag,
-                               *src as
-                                   libc::c_int).wrapping_offset_from(tbuf.as_mut_ptr())
-                               as libc::c_long as isize)
+            dst = dst.offset(
+                vis(tbuf.as_mut_ptr(), c, flag, *src as libc::c_int)
+                    .wrapping_offset_from(tbuf.as_mut_ptr()) as libc::c_long
+                    as isize,
+            )
         }
     }
     return dst.wrapping_offset_from(start) as libc::c_long as libc::c_int;
 }
 #[no_mangle]
-pub unsafe extern "C" fn stravis(mut outp: *mut *mut libc::c_char,
-                                 mut src: *const libc::c_char,
-                                 mut flag: libc::c_int) -> libc::c_int {
+pub unsafe extern "C" fn stravis(
+    mut outp: *mut *mut libc::c_char,
+    mut src: *const libc::c_char,
+    mut flag: libc::c_int,
+) -> libc::c_int {
     let mut buf: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut len: libc::c_int = 0;
     let mut serrno: libc::c_int = 0;
-    buf =
-        calloc(4 as libc::c_int as libc::c_ulong,
-               strlen(src).wrapping_add(1 as libc::c_int as libc::c_ulong)) as
-            *mut libc::c_char;
-    if buf.is_null() { return -(1 as libc::c_int) }
+    buf = calloc(
+        4 as libc::c_int as libc::c_ulong,
+        strlen(src).wrapping_add(1 as libc::c_int as libc::c_ulong),
+    ) as *mut libc::c_char;
+    if buf.is_null() {
+        return -(1 as libc::c_int);
+    }
     len = strvis(buf, src, flag);
     serrno = *__errno_location();
-    *outp =
-        realloc(buf as *mut libc::c_void,
-                (len + 1 as libc::c_int) as libc::c_ulong) as
-            *mut libc::c_char;
-    if (*outp).is_null() { *outp = buf; *__errno_location() = serrno }
+    *outp = realloc(
+        buf as *mut libc::c_void,
+        (len + 1 as libc::c_int) as libc::c_ulong,
+    ) as *mut libc::c_char;
+    if (*outp).is_null() {
+        *outp = buf;
+        *__errno_location() = serrno
+    }
     return len;
 }
 #[no_mangle]
-pub unsafe extern "C" fn strvisx(mut dst: *mut libc::c_char,
-                                 mut src: *const libc::c_char,
-                                 mut len: size_t, mut flag: libc::c_int)
- -> libc::c_int {
+pub unsafe extern "C" fn strvisx(
+    mut dst: *mut libc::c_char,
+    mut src: *const libc::c_char,
+    mut len: size_t,
+    mut flag: libc::c_int,
+) -> libc::c_int {
     let mut c: libc::c_char = 0;
     let mut start: *mut libc::c_char = 0 as *mut libc::c_char;
     start = dst;
@@ -1100,7 +1119,9 @@ pub unsafe extern "C" fn strvisx(mut dst: *mut libc::c_char,
         dst = vis(dst, c as libc::c_int, flag, *src as libc::c_int);
         len = len.wrapping_sub(1)
     }
-    if len != 0 { dst = vis(dst, *src as libc::c_int, flag, '\u{0}' as i32) }
+    if len != 0 {
+        dst = vis(dst, *src as libc::c_int, flag, '\u{0}' as i32)
+    }
     *dst = '\u{0}' as i32 as libc::c_char;
     return dst.wrapping_offset_from(start) as libc::c_long as libc::c_int;
 }

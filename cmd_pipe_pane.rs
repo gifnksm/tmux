@@ -21,24 +21,28 @@ extern "C" {
     pub type cmdq_item;
     pub type tmuxproc;
     #[no_mangle]
-    fn socketpair(__domain: libc::c_int, __type: libc::c_int,
-                  __protocol: libc::c_int, __fds: *mut libc::c_int)
-     -> libc::c_int;
+    fn socketpair(
+        __domain: libc::c_int,
+        __type: libc::c_int,
+        __protocol: libc::c_int,
+        __fds: *mut libc::c_int,
+    ) -> libc::c_int;
     #[no_mangle]
     fn __errno_location() -> *mut libc::c_int;
     #[no_mangle]
-    fn open(__file: *const libc::c_char, __oflag: libc::c_int, _: ...)
-     -> libc::c_int;
+    fn open(__file: *const libc::c_char, __oflag: libc::c_int, _: ...) -> libc::c_int;
     #[no_mangle]
     fn sigfillset(__set: *mut sigset_t) -> libc::c_int;
     #[no_mangle]
-    fn sigprocmask(__how: libc::c_int, __set: *const sigset_t,
-                   __oset: *mut sigset_t) -> libc::c_int;
+    fn sigprocmask(
+        __how: libc::c_int,
+        __set: *const sigset_t,
+        __oset: *mut sigset_t,
+    ) -> libc::c_int;
     #[no_mangle]
     fn free(__ptr: *mut libc::c_void);
     #[no_mangle]
-    fn memcpy(_: *mut libc::c_void, _: *const libc::c_void, _: libc::c_ulong)
-     -> *mut libc::c_void;
+    fn memcpy(_: *mut libc::c_void, _: *const libc::c_void, _: libc::c_ulong) -> *mut libc::c_void;
     #[no_mangle]
     fn strerror(_: libc::c_int) -> *mut libc::c_char;
     #[no_mangle]
@@ -46,8 +50,7 @@ extern "C" {
     #[no_mangle]
     fn dup2(__fd: libc::c_int, __fd2: libc::c_int) -> libc::c_int;
     #[no_mangle]
-    fn execl(__path: *const libc::c_char, __arg: *const libc::c_char, _: ...)
-     -> libc::c_int;
+    fn execl(__path: *const libc::c_char, __arg: *const libc::c_char, _: ...) -> libc::c_int;
     #[no_mangle]
     fn _exit(_: libc::c_int) -> !;
     #[no_mangle]
@@ -59,19 +62,23 @@ extern "C" {
     #[no_mangle]
     fn evbuffer_drain(buf: *mut evbuffer, len: size_t) -> libc::c_int;
     #[no_mangle]
-    fn evbuffer_pullup(buf: *mut evbuffer, size: ssize_t)
-     -> *mut libc::c_uchar;
+    fn evbuffer_pullup(buf: *mut evbuffer, size: ssize_t) -> *mut libc::c_uchar;
     #[no_mangle]
-    fn bufferevent_write(bufev: *mut bufferevent, data: *const libc::c_void,
-                         size: size_t) -> libc::c_int;
+    fn bufferevent_write(
+        bufev: *mut bufferevent,
+        data: *const libc::c_void,
+        size: size_t,
+    ) -> libc::c_int;
     #[no_mangle]
-    fn bufferevent_enable(bufev: *mut bufferevent, event: libc::c_short)
-     -> libc::c_int;
+    fn bufferevent_enable(bufev: *mut bufferevent, event: libc::c_short) -> libc::c_int;
     #[no_mangle]
-    fn bufferevent_new(fd: libc::c_int, readcb: bufferevent_data_cb,
-                       writecb: bufferevent_data_cb,
-                       errorcb: bufferevent_event_cb,
-                       cbarg: *mut libc::c_void) -> *mut bufferevent;
+    fn bufferevent_new(
+        fd: libc::c_int,
+        readcb: bufferevent_data_cb,
+        writecb: bufferevent_data_cb,
+        errorcb: bufferevent_event_cb,
+        cbarg: *mut libc::c_void,
+    ) -> *mut bufferevent;
     #[no_mangle]
     fn closefrom(_: libc::c_int);
     #[no_mangle]
@@ -79,16 +86,24 @@ extern "C" {
     #[no_mangle]
     fn proc_clear_signals(_: *mut tmuxproc, _: libc::c_int);
     #[no_mangle]
-    fn format_create(_: *mut client, _: *mut cmdq_item, _: libc::c_int,
-                     _: libc::c_int) -> *mut format_tree;
+    fn format_create(
+        _: *mut client,
+        _: *mut cmdq_item,
+        _: libc::c_int,
+        _: libc::c_int,
+    ) -> *mut format_tree;
     #[no_mangle]
     fn format_free(_: *mut format_tree);
     #[no_mangle]
-    fn format_expand_time(_: *mut format_tree, _: *const libc::c_char)
-     -> *mut libc::c_char;
+    fn format_expand_time(_: *mut format_tree, _: *const libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
-    fn format_defaults(_: *mut format_tree, _: *mut client, _: *mut session,
-                       _: *mut winlink, _: *mut window_pane);
+    fn format_defaults(
+        _: *mut format_tree,
+        _: *mut client,
+        _: *mut session,
+        _: *mut winlink,
+        _: *mut window_pane,
+    );
     #[no_mangle]
     fn args_has(_: *mut args, _: u_char) -> libc::c_int;
     #[no_mangle]
@@ -219,18 +234,13 @@ pub struct event_callback {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub union C2RustUnnamed_6 {
-    pub evcb_callback: Option<unsafe extern "C" fn(_: libc::c_int,
-                                                   _: libc::c_short,
-                                                   _: *mut libc::c_void)
-                                  -> ()>,
-    pub evcb_selfcb: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                 _: *mut libc::c_void) -> ()>,
-    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
-    pub evcb_cbfinalize: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
+    pub evcb_callback:
+        Option<unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> ()>,
+    pub evcb_selfcb:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
+    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event, _: *mut libc::c_void) -> ()>,
+    pub evcb_cbfinalize:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -257,14 +267,10 @@ pub struct bufferevent {
     pub timeout_write: timeval,
     pub enabled: libc::c_short,
 }
-pub type bufferevent_event_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short,
-                                _: *mut libc::c_void) -> ()>;
-pub type bufferevent_data_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void)
-               -> ()>;
+pub type bufferevent_event_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short, _: *mut libc::c_void) -> ()>;
+pub type bufferevent_data_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct event_watermark {
@@ -403,17 +409,19 @@ pub struct C2RustUnnamed_9 {
     pub rbe_parent: *mut client_file,
     pub rbe_color: libc::c_int,
 }
-pub type client_file_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *const libc::c_char,
-                                _: libc::c_int, _: libc::c_int,
-                                _: *mut evbuffer, _: *mut libc::c_void)
-               -> ()>;
+pub type client_file_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: *mut evbuffer,
+        _: *mut libc::c_void,
+    ) -> (),
+>;
 pub type overlay_free_cb = Option<unsafe extern "C" fn(_: *mut client) -> ()>;
-pub type overlay_key_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event)
-               -> libc::c_int>;
+pub type overlay_key_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_event {
@@ -443,10 +451,8 @@ pub struct mouse_event {
     pub sgr_b: u_int,
 }
 pub type key_code = libc::c_ulonglong;
-pub type overlay_draw_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx)
-               -> ()>;
+pub type overlay_draw_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen_redraw_ctx {
@@ -460,10 +466,8 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int)
-               -> *mut screen>;
+pub type overlay_mode_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen {
@@ -557,10 +561,8 @@ pub struct C2RustUnnamed_11 {
     pub bg: u_char,
     pub data: u_char,
 }
-pub type overlay_check_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int)
-               -> libc::c_int>;
+pub type overlay_check_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct session {
@@ -807,24 +809,37 @@ pub struct C2RustUnnamed_24 {
 pub struct window_mode {
     pub name: *const libc::c_char,
     pub default_format: *const libc::c_char,
-    pub init: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                          _: *mut cmd_find_state,
-                                          _: *mut args) -> *mut screen>,
+    pub init: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut cmd_find_state,
+            _: *mut args,
+        ) -> *mut screen,
+    >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
-    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                            _: u_int, _: u_int) -> ()>,
-    pub key: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                         _: *mut client, _: *mut session,
-                                         _: *mut winlink, _: key_code,
-                                         _: *mut mouse_event) -> ()>,
-    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry)
-                              -> *const libc::c_char>,
-    pub command: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut client, _: *mut session,
-                                             _: *mut winlink, _: *mut args,
-                                             _: *mut mouse_event) -> ()>,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut format_tree) -> ()>,
+    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
+    pub key: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: key_code,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> *const libc::c_char>,
+    pub command: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: *mut args,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -861,14 +876,15 @@ pub struct winlink_stack {
 pub type C2RustUnnamed_25 = libc::c_uint;
 pub const PROMPT_COMMAND: C2RustUnnamed_25 = 1;
 pub const PROMPT_ENTRY: C2RustUnnamed_25 = 0;
-pub type prompt_free_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
-pub type prompt_input_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut libc::c_void,
-                                _: *const libc::c_char, _: libc::c_int)
-               -> libc::c_int>;
+pub type prompt_free_cb = Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
+pub type prompt_input_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut libc::c_void,
+        _: *const libc::c_char,
+        _: libc::c_int,
+    ) -> libc::c_int,
+>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_table {
@@ -1039,12 +1055,8 @@ pub struct tty {
     pub mouse_last_y: u_int,
     pub mouse_last_b: u_int,
     pub mouse_drag_flag: libc::c_int,
-    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client,
-                                                       _: *mut mouse_event)
-                                      -> ()>,
-    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client,
-                                                        _: *mut mouse_event)
-                                       -> ()>,
+    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
+    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
     pub key_timer: event,
     pub key_tree: *mut tty_key,
 }
@@ -1120,8 +1132,7 @@ pub struct cmd_entry {
     pub source: cmd_entry_flag,
     pub target: cmd_entry_flag,
     pub flags: libc::c_int,
-    pub exec: Option<unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item)
-                         -> cmd_retval>,
+    pub exec: Option<unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -1131,56 +1142,42 @@ pub struct C2RustUnnamed_32 {
     pub upper: libc::c_int,
 }
 #[no_mangle]
-pub static mut cmd_pipe_pane_entry: cmd_entry =
-    unsafe {
-        {
-            let mut init =
-                cmd_entry{name:
-                              b"pipe-pane\x00" as *const u8 as
-                                  *const libc::c_char,
-                          alias:
-                              b"pipep\x00" as *const u8 as
-                                  *const libc::c_char,
-                          args:
-                              {
-                                  let mut init =
-                                      C2RustUnnamed_32{template:
-                                                           b"IOot:\x00" as
-                                                               *const u8 as
-                                                               *const libc::c_char,
-                                                       lower:
-                                                           0 as libc::c_int,
-                                                       upper:
-                                                           1 as libc::c_int,};
-                                  init
-                              },
-                          usage:
-                              b"[-IOo] [-t target-pane] [command]\x00" as
-                                  *const u8 as *const libc::c_char,
-                          source:
-                              cmd_entry_flag{flag: 0,
-                                             type_0: CMD_FIND_PANE,
-                                             flags: 0,},
-                          target:
-                              {
-                                  let mut init =
-                                      cmd_entry_flag{flag:
-                                                         't' as i32 as
-                                                             libc::c_char,
-                                                     type_0: CMD_FIND_PANE,
-                                                     flags:
-                                                         0 as libc::c_int,};
-                                  init
-                              },
-                          flags: 0x4 as libc::c_int,
-                          exec:
-                              Some(cmd_pipe_pane_exec as
-                                       unsafe extern "C" fn(_: *mut cmd,
-                                                            _: *mut cmdq_item)
-                                           -> cmd_retval),};
-            init
-        }
-    };
+pub static mut cmd_pipe_pane_entry: cmd_entry = unsafe {
+    {
+        let mut init = cmd_entry {
+            name: b"pipe-pane\x00" as *const u8 as *const libc::c_char,
+            alias: b"pipep\x00" as *const u8 as *const libc::c_char,
+            args: {
+                let mut init = C2RustUnnamed_32 {
+                    template: b"IOot:\x00" as *const u8 as *const libc::c_char,
+                    lower: 0 as libc::c_int,
+                    upper: 1 as libc::c_int,
+                };
+                init
+            },
+            usage: b"[-IOo] [-t target-pane] [command]\x00" as *const u8 as *const libc::c_char,
+            source: cmd_entry_flag {
+                flag: 0,
+                type_0: CMD_FIND_PANE,
+                flags: 0,
+            },
+            target: {
+                let mut init = cmd_entry_flag {
+                    flag: 't' as i32 as libc::c_char,
+                    type_0: CMD_FIND_PANE,
+                    flags: 0 as libc::c_int,
+                };
+                init
+            },
+            flags: 0x4 as libc::c_int,
+            exec: Some(
+                cmd_pipe_pane_exec
+                    as unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval,
+            ),
+        };
+        init
+    }
+};
 /* $OpenBSD$ */
 /*
  * Copyright (c) 2009 Nicholas Marriott <nicholas.marriott@gmail.com>
@@ -1200,9 +1197,10 @@ pub static mut cmd_pipe_pane_entry: cmd_entry =
 /*
  * Open pipe to redirect pane output. If already open, close first.
  */
-unsafe extern "C" fn cmd_pipe_pane_exec(mut self_0: *mut cmd,
-                                        mut item: *mut cmdq_item)
- -> cmd_retval {
+unsafe extern "C" fn cmd_pipe_pane_exec(
+    mut self_0: *mut cmd,
+    mut item: *mut cmdq_item,
+) -> cmd_retval {
     let mut args: *mut args = cmd_get_args(self_0);
     let mut target: *mut cmd_find_state = cmdq_get_target(item);
     let mut tc: *mut client = cmdq_get_target_client(item);
@@ -1217,8 +1215,8 @@ unsafe extern "C" fn cmd_pipe_pane_exec(mut self_0: *mut cmd,
     let mut in_0: libc::c_int = 0;
     let mut out: libc::c_int = 0;
     let mut ft: *mut format_tree = 0 as *mut format_tree;
-    let mut set: sigset_t = sigset_t{__val: [0; 16],};
-    let mut oldset: sigset_t = sigset_t{__val: [0; 16],};
+    let mut set: sigset_t = sigset_t { __val: [0; 16] };
+    let mut oldset: sigset_t = sigset_t { __val: [0; 16] };
     /* Destroy the old pipe. */
     old_fd = (*wp).pipe_fd;
     if (*wp).pipe_fd != -(1 as libc::c_int) {
@@ -1227,47 +1225,56 @@ unsafe extern "C" fn cmd_pipe_pane_exec(mut self_0: *mut cmd,
         (*wp).pipe_fd = -(1 as libc::c_int);
         if window_pane_destroy_ready(wp) != 0 {
             server_destroy_pane(wp, 1 as libc::c_int);
-            return CMD_RETURN_NORMAL
+            return CMD_RETURN_NORMAL;
         }
     }
     /* If no pipe command, that is enough. */
-    if (*args).argc == 0 as libc::c_int ||
-           **(*args).argv.offset(0 as libc::c_int as isize) as libc::c_int ==
-               '\u{0}' as i32 {
-        return CMD_RETURN_NORMAL
+    if (*args).argc == 0 as libc::c_int
+        || **(*args).argv.offset(0 as libc::c_int as isize) as libc::c_int == '\u{0}' as i32
+    {
+        return CMD_RETURN_NORMAL;
     }
     /*
-	 * With -o, only open the new pipe if there was no previous one. This
-	 * allows a pipe to be toggled with a single key, for example:
-	 *
-	 *	bind ^p pipep -o 'cat >>~/output'
-	 */
-    if args_has(args, 'o' as i32 as u_char) != 0 &&
-           old_fd != -(1 as libc::c_int) {
-        return CMD_RETURN_NORMAL
+     * With -o, only open the new pipe if there was no previous one. This
+     * allows a pipe to be toggled with a single key, for example:
+     *
+     *	bind ^p pipep -o 'cat >>~/output'
+     */
+    if args_has(args, 'o' as i32 as u_char) != 0 && old_fd != -(1 as libc::c_int) {
+        return CMD_RETURN_NORMAL;
     }
     /* What do we want to do? Neither -I or -O is -O. */
     if args_has(args, 'I' as i32 as u_char) != 0 {
         in_0 = 1 as libc::c_int;
         out = args_has(args, 'O' as i32 as u_char)
-    } else { in_0 = 0 as libc::c_int; out = 1 as libc::c_int }
+    } else {
+        in_0 = 0 as libc::c_int;
+        out = 1 as libc::c_int
+    }
     /* Open the new pipe. */
-    if socketpair(1 as libc::c_int, SOCK_STREAM as libc::c_int,
-                  0 as libc::c_int, pipe_fd.as_mut_ptr()) != 0 as libc::c_int
-       {
-        cmdq_error(item,
-                   b"socketpair error: %s\x00" as *const u8 as
-                       *const libc::c_char, strerror(*__errno_location()));
-        return CMD_RETURN_ERROR
+    if socketpair(
+        1 as libc::c_int,
+        SOCK_STREAM as libc::c_int,
+        0 as libc::c_int,
+        pipe_fd.as_mut_ptr(),
+    ) != 0 as libc::c_int
+    {
+        cmdq_error(
+            item,
+            b"socketpair error: %s\x00" as *const u8 as *const libc::c_char,
+            strerror(*__errno_location()),
+        );
+        return CMD_RETURN_ERROR;
     }
     /* Expand the command. */
-    ft =
-        format_create(cmdq_get_client(item), item, 0 as libc::c_int,
-                      0 as libc::c_int);
+    ft = format_create(
+        cmdq_get_client(item),
+        item,
+        0 as libc::c_int,
+        0 as libc::c_int,
+    );
     format_defaults(ft, tc, s, wl, wp);
-    cmd =
-        format_expand_time(ft,
-                           *(*args).argv.offset(0 as libc::c_int as isize));
+    cmd = format_expand_time(ft, *(*args).argv.offset(0 as libc::c_int as isize));
     format_free(ft);
     /* Fork the child. */
     sigfillset(&mut set);
@@ -1275,32 +1282,35 @@ unsafe extern "C" fn cmd_pipe_pane_exec(mut self_0: *mut cmd,
     match fork() {
         -1 => {
             sigprocmask(2 as libc::c_int, &mut oldset, 0 as *mut sigset_t);
-            cmdq_error(item,
-                       b"fork error: %s\x00" as *const u8 as
-                           *const libc::c_char,
-                       strerror(*__errno_location()));
+            cmdq_error(
+                item,
+                b"fork error: %s\x00" as *const u8 as *const libc::c_char,
+                strerror(*__errno_location()),
+            );
             free(cmd as *mut libc::c_void);
-            return CMD_RETURN_ERROR
+            return CMD_RETURN_ERROR;
         }
         0 => {
             /* Child process. */
             proc_clear_signals(server_proc, 1 as libc::c_int);
             sigprocmask(2 as libc::c_int, &mut oldset, 0 as *mut sigset_t);
             close(pipe_fd[0 as libc::c_int as usize]);
-            null_fd =
-                open(b"/dev/null\x00" as *const u8 as *const libc::c_char,
-                     0o1 as libc::c_int, 0 as libc::c_int);
+            null_fd = open(
+                b"/dev/null\x00" as *const u8 as *const libc::c_char,
+                0o1 as libc::c_int,
+                0 as libc::c_int,
+            );
             if out != 0 {
-                if dup2(pipe_fd[1 as libc::c_int as usize], 0 as libc::c_int)
-                       == -(1 as libc::c_int) {
+                if dup2(pipe_fd[1 as libc::c_int as usize], 0 as libc::c_int) == -(1 as libc::c_int)
+                {
                     _exit(1 as libc::c_int);
                 }
             } else if dup2(null_fd, 0 as libc::c_int) == -(1 as libc::c_int) {
                 _exit(1 as libc::c_int);
             }
             if in_0 != 0 {
-                if dup2(pipe_fd[1 as libc::c_int as usize], 1 as libc::c_int)
-                       == -(1 as libc::c_int) {
+                if dup2(pipe_fd[1 as libc::c_int as usize], 1 as libc::c_int) == -(1 as libc::c_int)
+                {
                     _exit(1 as libc::c_int);
                 }
                 if pipe_fd[1 as libc::c_int as usize] != 1 as libc::c_int {
@@ -1313,10 +1323,13 @@ unsafe extern "C" fn cmd_pipe_pane_exec(mut self_0: *mut cmd,
                 _exit(1 as libc::c_int);
             }
             closefrom(2 as libc::c_int + 1 as libc::c_int);
-            execl(b"/bin/sh\x00" as *const u8 as *const libc::c_char,
-                  b"sh\x00" as *const u8 as *const libc::c_char,
-                  b"-c\x00" as *const u8 as *const libc::c_char, cmd,
-                  0 as *mut libc::c_void as *mut libc::c_char);
+            execl(
+                b"/bin/sh\x00" as *const u8 as *const libc::c_char,
+                b"sh\x00" as *const u8 as *const libc::c_char,
+                b"-c\x00" as *const u8 as *const libc::c_char,
+                cmd,
+                0 as *mut libc::c_void as *mut libc::c_char,
+            );
             _exit(1 as libc::c_int);
         }
         _ => {
@@ -1324,85 +1337,92 @@ unsafe extern "C" fn cmd_pipe_pane_exec(mut self_0: *mut cmd,
             sigprocmask(2 as libc::c_int, &mut oldset, 0 as *mut sigset_t);
             close(pipe_fd[1 as libc::c_int as usize]);
             (*wp).pipe_fd = pipe_fd[0 as libc::c_int as usize];
-            memcpy(wpo as *mut libc::c_void,
-                   &mut (*wp).offset as *mut window_pane_offset as
-                       *const libc::c_void,
-                   ::std::mem::size_of::<window_pane_offset>() as
-                       libc::c_ulong);
+            memcpy(
+                wpo as *mut libc::c_void,
+                &mut (*wp).offset as *mut window_pane_offset as *const libc::c_void,
+                ::std::mem::size_of::<window_pane_offset>() as libc::c_ulong,
+            );
             setblocking((*wp).pipe_fd, 0 as libc::c_int);
-            (*wp).pipe_event =
-                bufferevent_new((*wp).pipe_fd,
-                                Some(cmd_pipe_pane_read_callback as
-                                         unsafe extern "C" fn(_:
-                                                                  *mut bufferevent,
-                                                              _:
-                                                                  *mut libc::c_void)
-                                             -> ()),
-                                Some(cmd_pipe_pane_write_callback as
-                                         unsafe extern "C" fn(_:
-                                                                  *mut bufferevent,
-                                                              _:
-                                                                  *mut libc::c_void)
-                                             -> ()),
-                                Some(cmd_pipe_pane_error_callback as
-                                         unsafe extern "C" fn(_:
-                                                                  *mut bufferevent,
-                                                              _:
-                                                                  libc::c_short,
-                                                              _:
-                                                                  *mut libc::c_void)
-                                             -> ()), wp as *mut libc::c_void);
+            (*wp).pipe_event = bufferevent_new(
+                (*wp).pipe_fd,
+                Some(
+                    cmd_pipe_pane_read_callback
+                        as unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void) -> (),
+                ),
+                Some(
+                    cmd_pipe_pane_write_callback
+                        as unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void) -> (),
+                ),
+                Some(
+                    cmd_pipe_pane_error_callback
+                        as unsafe extern "C" fn(
+                            _: *mut bufferevent,
+                            _: libc::c_short,
+                            _: *mut libc::c_void,
+                        ) -> (),
+                ),
+                wp as *mut libc::c_void,
+            );
             if (*wp).pipe_event.is_null() {
-                fatalx(b"out of memory\x00" as *const u8 as
-                           *const libc::c_char);
+                fatalx(b"out of memory\x00" as *const u8 as *const libc::c_char);
             }
             if out != 0 {
-                bufferevent_enable((*wp).pipe_event,
-                                   0x4 as libc::c_int as libc::c_short);
+                bufferevent_enable((*wp).pipe_event, 0x4 as libc::c_int as libc::c_short);
             }
             if in_0 != 0 {
-                bufferevent_enable((*wp).pipe_event,
-                                   0x2 as libc::c_int as libc::c_short);
+                bufferevent_enable((*wp).pipe_event, 0x2 as libc::c_int as libc::c_short);
             }
             free(cmd as *mut libc::c_void);
-            return CMD_RETURN_NORMAL
+            return CMD_RETURN_NORMAL;
         }
     };
 }
-unsafe extern "C" fn cmd_pipe_pane_read_callback(mut bufev: *mut bufferevent,
-                                                 mut data:
-                                                     *mut libc::c_void) {
+unsafe extern "C" fn cmd_pipe_pane_read_callback(
+    mut bufev: *mut bufferevent,
+    mut data: *mut libc::c_void,
+) {
     let mut wp: *mut window_pane = data as *mut window_pane;
     let mut evb: *mut evbuffer = (*(*wp).pipe_event).input;
     let mut available: size_t = 0;
     available = evbuffer_get_length(evb);
-    log_debug(b"%%%u pipe read %zu\x00" as *const u8 as *const libc::c_char,
-              (*wp).id, available);
-    bufferevent_write((*wp).event,
-                      evbuffer_pullup(evb, -(1 as libc::c_int) as ssize_t) as
-                          *const libc::c_void, available);
+    log_debug(
+        b"%%%u pipe read %zu\x00" as *const u8 as *const libc::c_char,
+        (*wp).id,
+        available,
+    );
+    bufferevent_write(
+        (*wp).event,
+        evbuffer_pullup(evb, -(1 as libc::c_int) as ssize_t) as *const libc::c_void,
+        available,
+    );
     evbuffer_drain(evb, available);
     if window_pane_destroy_ready(wp) != 0 {
         server_destroy_pane(wp, 1 as libc::c_int);
     };
 }
-unsafe extern "C" fn cmd_pipe_pane_write_callback(mut bufev: *mut bufferevent,
-                                                  mut data:
-                                                      *mut libc::c_void) {
+unsafe extern "C" fn cmd_pipe_pane_write_callback(
+    mut bufev: *mut bufferevent,
+    mut data: *mut libc::c_void,
+) {
     let mut wp: *mut window_pane = data as *mut window_pane;
-    log_debug(b"%%%u pipe empty\x00" as *const u8 as *const libc::c_char,
-              (*wp).id);
+    log_debug(
+        b"%%%u pipe empty\x00" as *const u8 as *const libc::c_char,
+        (*wp).id,
+    );
     if window_pane_destroy_ready(wp) != 0 {
         server_destroy_pane(wp, 1 as libc::c_int);
     };
 }
-unsafe extern "C" fn cmd_pipe_pane_error_callback(mut bufev: *mut bufferevent,
-                                                  mut what: libc::c_short,
-                                                  mut data:
-                                                      *mut libc::c_void) {
+unsafe extern "C" fn cmd_pipe_pane_error_callback(
+    mut bufev: *mut bufferevent,
+    mut what: libc::c_short,
+    mut data: *mut libc::c_void,
+) {
     let mut wp: *mut window_pane = data as *mut window_pane;
-    log_debug(b"%%%u pipe error\x00" as *const u8 as *const libc::c_char,
-              (*wp).id);
+    log_debug(
+        b"%%%u pipe error\x00" as *const u8 as *const libc::c_char,
+        (*wp).id,
+    );
     bufferevent_free((*wp).pipe_event);
     close((*wp).pipe_fd);
     (*wp).pipe_fd = -(1 as libc::c_int);

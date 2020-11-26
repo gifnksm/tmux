@@ -20,45 +20,49 @@ extern "C" {
     #[no_mangle]
     fn __ctype_b_loc() -> *mut *const libc::c_ushort;
     #[no_mangle]
-    fn fnmatch(__pattern: *const libc::c_char, __name: *const libc::c_char,
-               __flags: libc::c_int) -> libc::c_int;
+    fn fnmatch(
+        __pattern: *const libc::c_char,
+        __name: *const libc::c_char,
+        __flags: libc::c_int,
+    ) -> libc::c_int;
     #[no_mangle]
     fn free(__ptr: *mut libc::c_void);
     #[no_mangle]
     fn strcmp(_: *const libc::c_char, _: *const libc::c_char) -> libc::c_int;
     #[no_mangle]
-    fn strncmp(_: *const libc::c_char, _: *const libc::c_char,
-               _: libc::c_ulong) -> libc::c_int;
+    fn strncmp(_: *const libc::c_char, _: *const libc::c_char, _: libc::c_ulong) -> libc::c_int;
     #[no_mangle]
     fn strchr(_: *const libc::c_char, _: libc::c_int) -> *mut libc::c_char;
     #[no_mangle]
-    fn strstr(_: *const libc::c_char, _: *const libc::c_char)
-     -> *mut libc::c_char;
+    fn strstr(_: *const libc::c_char, _: *const libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
     fn strlen(_: *const libc::c_char) -> libc::c_ulong;
     #[no_mangle]
     fn strsep(__stringp: *mut *mut libc::c_char, __delim: *const libc::c_char)
-     -> *mut libc::c_char;
+        -> *mut libc::c_char;
     #[no_mangle]
-    fn strcasecmp(_: *const libc::c_char, _: *const libc::c_char)
-     -> libc::c_int;
+    fn strcasecmp(_: *const libc::c_char, _: *const libc::c_char) -> libc::c_int;
     #[no_mangle]
-    fn sscanf(_: *const libc::c_char, _: *const libc::c_char, _: ...)
-     -> libc::c_int;
+    fn sscanf(_: *const libc::c_char, _: *const libc::c_char, _: ...) -> libc::c_int;
     #[no_mangle]
-    fn strtonum(_: *const libc::c_char, _: libc::c_longlong,
-                _: libc::c_longlong, _: *mut *const libc::c_char)
-     -> libc::c_longlong;
+    fn strtonum(
+        _: *const libc::c_char,
+        _: libc::c_longlong,
+        _: libc::c_longlong,
+        _: *mut *const libc::c_char,
+    ) -> libc::c_longlong;
     #[no_mangle]
     fn xcalloc(_: size_t, _: size_t) -> *mut libc::c_void;
     #[no_mangle]
     fn xstrdup(_: *const libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
-    fn xasprintf(_: *mut *mut libc::c_char, _: *const libc::c_char, _: ...)
-     -> libc::c_int;
+    fn xasprintf(_: *mut *mut libc::c_char, _: *const libc::c_char, _: ...) -> libc::c_int;
     #[no_mangle]
-    fn xvasprintf(_: *mut *mut libc::c_char, _: *const libc::c_char,
-                  _: ::std::ffi::VaList) -> libc::c_int;
+    fn xvasprintf(
+        _: *mut *mut libc::c_char,
+        _: *const libc::c_char,
+        _: ::std::ffi::VaList,
+    ) -> libc::c_int;
     #[no_mangle]
     static mut global_options: *mut options;
     #[no_mangle]
@@ -68,20 +72,20 @@ extern "C" {
     #[no_mangle]
     fn checkshell(_: *const libc::c_char) -> libc::c_int;
     #[no_mangle]
-    fn format_expand(_: *mut format_tree, _: *const libc::c_char)
-     -> *mut libc::c_char;
+    fn format_expand(_: *mut format_tree, _: *const libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
     fn cmd_list_free(_: *mut cmd_list);
     #[no_mangle]
     static options_other_names: [options_name_map; 0];
     #[no_mangle]
-    fn cmd_parse_from_string(_: *const libc::c_char, _: *mut cmd_parse_input)
-     -> *mut cmd_parse_result;
+    fn cmd_parse_from_string(
+        _: *const libc::c_char,
+        _: *mut cmd_parse_input,
+    ) -> *mut cmd_parse_result;
     #[no_mangle]
     fn colour_tostring(_: libc::c_int) -> *const libc::c_char;
     #[no_mangle]
-    fn key_string_lookup_key(_: key_code, _: libc::c_int)
-     -> *const libc::c_char;
+    fn key_string_lookup_key(_: key_code, _: libc::c_int) -> *const libc::c_char;
     #[no_mangle]
     fn cmd_list_print(_: *mut cmd_list, _: libc::c_int) -> *mut libc::c_char;
     #[no_mangle]
@@ -115,8 +119,7 @@ extern "C" {
     #[no_mangle]
     static mut all_window_panes: window_pane_tree;
     #[no_mangle]
-    fn window_pane_tree_RB_MINMAX(_: *mut window_pane_tree, _: libc::c_int)
-     -> *mut window_pane;
+    fn window_pane_tree_RB_MINMAX(_: *mut window_pane_tree, _: libc::c_int) -> *mut window_pane;
     #[no_mangle]
     fn alerts_reset_all();
     #[no_mangle]
@@ -138,8 +141,7 @@ extern "C" {
     #[no_mangle]
     fn fatalx(_: *const libc::c_char, _: ...) -> !;
     #[no_mangle]
-    fn style_parse(_: *mut style, _: *const grid_cell, _: *const libc::c_char)
-     -> libc::c_int;
+    fn style_parse(_: *mut style, _: *const grid_cell, _: *const libc::c_char) -> libc::c_int;
     #[no_mangle]
     fn style_set(_: *mut style, _: *const grid_cell);
 }
@@ -255,18 +257,13 @@ pub struct event_callback {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub union C2RustUnnamed_7 {
-    pub evcb_callback: Option<unsafe extern "C" fn(_: libc::c_int,
-                                                   _: libc::c_short,
-                                                   _: *mut libc::c_void)
-                                  -> ()>,
-    pub evcb_selfcb: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                 _: *mut libc::c_void) -> ()>,
-    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
-    pub evcb_cbfinalize: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
+    pub evcb_callback:
+        Option<unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> ()>,
+    pub evcb_selfcb:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
+    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event, _: *mut libc::c_void) -> ()>,
+    pub evcb_cbfinalize:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -293,14 +290,10 @@ pub struct bufferevent {
     pub timeout_write: timeval,
     pub enabled: libc::c_short,
 }
-pub type bufferevent_event_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short,
-                                _: *mut libc::c_void) -> ()>;
-pub type bufferevent_data_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void)
-               -> ()>;
+pub type bufferevent_event_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short, _: *mut libc::c_void) -> ()>;
+pub type bufferevent_data_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct event_watermark {
@@ -439,17 +432,19 @@ pub struct C2RustUnnamed_10 {
     pub rbe_parent: *mut client_file,
     pub rbe_color: libc::c_int,
 }
-pub type client_file_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *const libc::c_char,
-                                _: libc::c_int, _: libc::c_int,
-                                _: *mut evbuffer, _: *mut libc::c_void)
-               -> ()>;
+pub type client_file_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: *mut evbuffer,
+        _: *mut libc::c_void,
+    ) -> (),
+>;
 pub type overlay_free_cb = Option<unsafe extern "C" fn(_: *mut client) -> ()>;
-pub type overlay_key_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event)
-               -> libc::c_int>;
+pub type overlay_key_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_event {
@@ -479,10 +474,8 @@ pub struct mouse_event {
     pub sgr_b: u_int,
 }
 pub type key_code = libc::c_ulonglong;
-pub type overlay_draw_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx)
-               -> ()>;
+pub type overlay_draw_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen_redraw_ctx {
@@ -496,10 +489,8 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int)
-               -> *mut screen>;
+pub type overlay_mode_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen {
@@ -593,10 +584,8 @@ pub struct C2RustUnnamed_12 {
     pub bg: u_char,
     pub data: u_char,
 }
-pub type overlay_check_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int)
-               -> libc::c_int>;
+pub type overlay_check_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct session {
@@ -988,24 +977,37 @@ pub struct C2RustUnnamed_27 {
 pub struct window_mode {
     pub name: *const libc::c_char,
     pub default_format: *const libc::c_char,
-    pub init: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                          _: *mut cmd_find_state,
-                                          _: *mut args) -> *mut screen>,
+    pub init: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut cmd_find_state,
+            _: *mut args,
+        ) -> *mut screen,
+    >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
-    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                            _: u_int, _: u_int) -> ()>,
-    pub key: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                         _: *mut client, _: *mut session,
-                                         _: *mut winlink, _: key_code,
-                                         _: *mut mouse_event) -> ()>,
-    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry)
-                              -> *const libc::c_char>,
-    pub command: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut client, _: *mut session,
-                                             _: *mut winlink, _: *mut args,
-                                             _: *mut mouse_event) -> ()>,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut format_tree) -> ()>,
+    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
+    pub key: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: key_code,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> *const libc::c_char>,
+    pub command: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: *mut args,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -1042,14 +1044,15 @@ pub struct winlink_stack {
 pub type C2RustUnnamed_28 = libc::c_uint;
 pub const PROMPT_COMMAND: C2RustUnnamed_28 = 1;
 pub const PROMPT_ENTRY: C2RustUnnamed_28 = 0;
-pub type prompt_free_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
-pub type prompt_input_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut libc::c_void,
-                                _: *const libc::c_char, _: libc::c_int)
-               -> libc::c_int>;
+pub type prompt_free_cb = Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
+pub type prompt_input_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut libc::c_void,
+        _: *const libc::c_char,
+        _: libc::c_int,
+    ) -> libc::c_int,
+>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_table {
@@ -1208,12 +1211,8 @@ pub struct tty {
     pub mouse_last_y: u_int,
     pub mouse_last_b: u_int,
     pub mouse_drag_flag: libc::c_int,
-    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client,
-                                                       _: *mut mouse_event)
-                                      -> ()>,
-    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client,
-                                                        _: *mut mouse_event)
-                                       -> ()>,
+    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
+    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
     pub key_timer: event,
     pub key_tree: *mut tty_key,
 }
@@ -1311,52 +1310,62 @@ pub struct options_name_map {
     pub from: *const libc::c_char,
     pub to: *const libc::c_char,
 }
-unsafe extern "C" fn options_array_cmp(mut a1: *mut options_array_item,
-                                       mut a2: *mut options_array_item)
- -> libc::c_int {
-    if (*a1).index < (*a2).index { return -(1 as libc::c_int) }
-    if (*a1).index > (*a2).index { return 1 as libc::c_int }
+unsafe extern "C" fn options_array_cmp(
+    mut a1: *mut options_array_item,
+    mut a2: *mut options_array_item,
+) -> libc::c_int {
+    if (*a1).index < (*a2).index {
+        return -(1 as libc::c_int);
+    }
+    if (*a1).index > (*a2).index {
+        return 1 as libc::c_int;
+    }
     return 0 as libc::c_int;
 }
-unsafe extern "C" fn options_array_RB_MINMAX(mut head: *mut options_array,
-                                             mut val: libc::c_int)
- -> *mut options_array_item {
+unsafe extern "C" fn options_array_RB_MINMAX(
+    mut head: *mut options_array,
+    mut val: libc::c_int,
+) -> *mut options_array_item {
     let mut tmp: *mut options_array_item = (*head).rbh_root;
     let mut parent: *mut options_array_item = 0 as *mut options_array_item;
     while !tmp.is_null() {
         parent = tmp;
         if val < 0 as libc::c_int {
             tmp = (*tmp).entry.rbe_left
-        } else { tmp = (*tmp).entry.rbe_right }
+        } else {
+            tmp = (*tmp).entry.rbe_right
+        }
     }
     return parent;
 }
-unsafe extern "C" fn options_array_RB_NEXT(mut elm: *mut options_array_item)
- -> *mut options_array_item {
+unsafe extern "C" fn options_array_RB_NEXT(
+    mut elm: *mut options_array_item,
+) -> *mut options_array_item {
     if !(*elm).entry.rbe_right.is_null() {
         elm = (*elm).entry.rbe_right;
-        while !(*elm).entry.rbe_left.is_null() { elm = (*elm).entry.rbe_left }
-    } else if !(*elm).entry.rbe_parent.is_null() &&
-                  elm == (*(*elm).entry.rbe_parent).entry.rbe_left {
+        while !(*elm).entry.rbe_left.is_null() {
+            elm = (*elm).entry.rbe_left
+        }
+    } else if !(*elm).entry.rbe_parent.is_null() && elm == (*(*elm).entry.rbe_parent).entry.rbe_left
+    {
         elm = (*elm).entry.rbe_parent
     } else {
-        while !(*elm).entry.rbe_parent.is_null() &&
-                  elm == (*(*elm).entry.rbe_parent).entry.rbe_right {
+        while !(*elm).entry.rbe_parent.is_null()
+            && elm == (*(*elm).entry.rbe_parent).entry.rbe_right
+        {
             elm = (*elm).entry.rbe_parent
         }
         elm = (*elm).entry.rbe_parent
     }
     return elm;
 }
-unsafe extern "C" fn options_array_RB_REMOVE_COLOR(mut head:
-                                                       *mut options_array,
-                                                   mut parent:
-                                                       *mut options_array_item,
-                                                   mut elm:
-                                                       *mut options_array_item) {
+unsafe extern "C" fn options_array_RB_REMOVE_COLOR(
+    mut head: *mut options_array,
+    mut parent: *mut options_array_item,
+    mut elm: *mut options_array_item,
+) {
     let mut tmp: *mut options_array_item = 0 as *mut options_array_item;
-    while (elm.is_null() || (*elm).entry.rbe_color == 0 as libc::c_int) &&
-              elm != (*head).rbh_root {
+    while (elm.is_null() || (*elm).entry.rbe_color == 0 as libc::c_int) && elm != (*head).rbh_root {
         if (*parent).entry.rbe_left == elm {
             tmp = (*parent).entry.rbe_right;
             if (*tmp).entry.rbe_color == 1 as libc::c_int {
@@ -1369,33 +1378,32 @@ unsafe extern "C" fn options_array_RB_REMOVE_COLOR(mut head:
                 }
                 (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
                 if !(*tmp).entry.rbe_parent.is_null() {
-                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left
-                       {
+                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left {
                         (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
                     } else {
                         (*(*parent).entry.rbe_parent).entry.rbe_right = tmp
                     }
-                } else { (*head).rbh_root = tmp }
+                } else {
+                    (*head).rbh_root = tmp
+                }
                 (*tmp).entry.rbe_left = parent;
                 (*parent).entry.rbe_parent = tmp;
                 !(*tmp).entry.rbe_parent.is_null();
                 tmp = (*parent).entry.rbe_right
             }
-            if ((*tmp).entry.rbe_left.is_null() ||
-                    (*(*tmp).entry.rbe_left).entry.rbe_color ==
-                        0 as libc::c_int) &&
-                   ((*tmp).entry.rbe_right.is_null() ||
-                        (*(*tmp).entry.rbe_right).entry.rbe_color ==
-                            0 as libc::c_int) {
+            if ((*tmp).entry.rbe_left.is_null()
+                || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int)
+                && ((*tmp).entry.rbe_right.is_null()
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int)
+            {
                 (*tmp).entry.rbe_color = 1 as libc::c_int;
                 elm = parent;
                 parent = (*elm).entry.rbe_parent
             } else {
-                if (*tmp).entry.rbe_right.is_null() ||
-                       (*(*tmp).entry.rbe_right).entry.rbe_color ==
-                           0 as libc::c_int {
-                    let mut oleft: *mut options_array_item =
-                        0 as *mut options_array_item;
+                if (*tmp).entry.rbe_right.is_null()
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int
+                {
+                    let mut oleft: *mut options_array_item = 0 as *mut options_array_item;
                     oleft = (*tmp).entry.rbe_left;
                     if !oleft.is_null() {
                         (*oleft).entry.rbe_color = 0 as libc::c_int
@@ -1413,7 +1421,9 @@ unsafe extern "C" fn options_array_RB_REMOVE_COLOR(mut head:
                         } else {
                             (*(*tmp).entry.rbe_parent).entry.rbe_right = oleft
                         }
-                    } else { (*head).rbh_root = oleft }
+                    } else {
+                        (*head).rbh_root = oleft
+                    }
                     (*oleft).entry.rbe_right = tmp;
                     (*tmp).entry.rbe_parent = oleft;
                     !(*oleft).entry.rbe_parent.is_null();
@@ -1422,8 +1432,7 @@ unsafe extern "C" fn options_array_RB_REMOVE_COLOR(mut head:
                 (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
                 (*parent).entry.rbe_color = 0 as libc::c_int;
                 if !(*tmp).entry.rbe_right.is_null() {
-                    (*(*tmp).entry.rbe_right).entry.rbe_color =
-                        0 as libc::c_int
+                    (*(*tmp).entry.rbe_right).entry.rbe_color = 0 as libc::c_int
                 }
                 tmp = (*parent).entry.rbe_right;
                 (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
@@ -1432,18 +1441,19 @@ unsafe extern "C" fn options_array_RB_REMOVE_COLOR(mut head:
                 }
                 (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
                 if !(*tmp).entry.rbe_parent.is_null() {
-                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left
-                       {
+                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left {
                         (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
                     } else {
                         (*(*parent).entry.rbe_parent).entry.rbe_right = tmp
                     }
-                } else { (*head).rbh_root = tmp }
+                } else {
+                    (*head).rbh_root = tmp
+                }
                 (*tmp).entry.rbe_left = parent;
                 (*parent).entry.rbe_parent = tmp;
                 !(*tmp).entry.rbe_parent.is_null();
                 elm = (*head).rbh_root;
-                break ;
+                break;
             }
         } else {
             tmp = (*parent).entry.rbe_left;
@@ -1457,33 +1467,32 @@ unsafe extern "C" fn options_array_RB_REMOVE_COLOR(mut head:
                 }
                 (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
                 if !(*tmp).entry.rbe_parent.is_null() {
-                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left
-                       {
+                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left {
                         (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
                     } else {
                         (*(*parent).entry.rbe_parent).entry.rbe_right = tmp
                     }
-                } else { (*head).rbh_root = tmp }
+                } else {
+                    (*head).rbh_root = tmp
+                }
                 (*tmp).entry.rbe_right = parent;
                 (*parent).entry.rbe_parent = tmp;
                 !(*tmp).entry.rbe_parent.is_null();
                 tmp = (*parent).entry.rbe_left
             }
-            if ((*tmp).entry.rbe_left.is_null() ||
-                    (*(*tmp).entry.rbe_left).entry.rbe_color ==
-                        0 as libc::c_int) &&
-                   ((*tmp).entry.rbe_right.is_null() ||
-                        (*(*tmp).entry.rbe_right).entry.rbe_color ==
-                            0 as libc::c_int) {
+            if ((*tmp).entry.rbe_left.is_null()
+                || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int)
+                && ((*tmp).entry.rbe_right.is_null()
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int)
+            {
                 (*tmp).entry.rbe_color = 1 as libc::c_int;
                 elm = parent;
                 parent = (*elm).entry.rbe_parent
             } else {
-                if (*tmp).entry.rbe_left.is_null() ||
-                       (*(*tmp).entry.rbe_left).entry.rbe_color ==
-                           0 as libc::c_int {
-                    let mut oright: *mut options_array_item =
-                        0 as *mut options_array_item;
+                if (*tmp).entry.rbe_left.is_null()
+                    || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int
+                {
+                    let mut oright: *mut options_array_item = 0 as *mut options_array_item;
                     oright = (*tmp).entry.rbe_right;
                     if !oright.is_null() {
                         (*oright).entry.rbe_color = 0 as libc::c_int
@@ -1499,10 +1508,11 @@ unsafe extern "C" fn options_array_RB_REMOVE_COLOR(mut head:
                         if tmp == (*(*tmp).entry.rbe_parent).entry.rbe_left {
                             (*(*tmp).entry.rbe_parent).entry.rbe_left = oright
                         } else {
-                            (*(*tmp).entry.rbe_parent).entry.rbe_right =
-                                oright
+                            (*(*tmp).entry.rbe_parent).entry.rbe_right = oright
                         }
-                    } else { (*head).rbh_root = oright }
+                    } else {
+                        (*head).rbh_root = oright
+                    }
                     (*oright).entry.rbe_left = tmp;
                     (*tmp).entry.rbe_parent = oright;
                     !(*oright).entry.rbe_parent.is_null();
@@ -1511,8 +1521,7 @@ unsafe extern "C" fn options_array_RB_REMOVE_COLOR(mut head:
                 (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
                 (*parent).entry.rbe_color = 0 as libc::c_int;
                 if !(*tmp).entry.rbe_left.is_null() {
-                    (*(*tmp).entry.rbe_left).entry.rbe_color =
-                        0 as libc::c_int
+                    (*(*tmp).entry.rbe_left).entry.rbe_color = 0 as libc::c_int
                 }
                 tmp = (*parent).entry.rbe_left;
                 (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
@@ -1521,26 +1530,30 @@ unsafe extern "C" fn options_array_RB_REMOVE_COLOR(mut head:
                 }
                 (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
                 if !(*tmp).entry.rbe_parent.is_null() {
-                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left
-                       {
+                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left {
                         (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
                     } else {
                         (*(*parent).entry.rbe_parent).entry.rbe_right = tmp
                     }
-                } else { (*head).rbh_root = tmp }
+                } else {
+                    (*head).rbh_root = tmp
+                }
                 (*tmp).entry.rbe_right = parent;
                 (*parent).entry.rbe_parent = tmp;
                 !(*tmp).entry.rbe_parent.is_null();
                 elm = (*head).rbh_root;
-                break ;
+                break;
             }
         }
     }
-    if !elm.is_null() { (*elm).entry.rbe_color = 0 as libc::c_int };
+    if !elm.is_null() {
+        (*elm).entry.rbe_color = 0 as libc::c_int
+    };
 }
-unsafe extern "C" fn options_array_RB_REMOVE(mut head: *mut options_array,
-                                             mut elm: *mut options_array_item)
- -> *mut options_array_item {
+unsafe extern "C" fn options_array_RB_REMOVE(
+    mut head: *mut options_array,
+    mut elm: *mut options_array_item,
+) -> *mut options_array_item {
     let mut current_block: u64;
     let mut child: *mut options_array_item = 0 as *mut options_array_item;
     let mut parent: *mut options_array_item = 0 as *mut options_array_item;
@@ -1555,36 +1568,52 @@ unsafe extern "C" fn options_array_RB_REMOVE(mut head: *mut options_array,
     } else {
         let mut left: *mut options_array_item = 0 as *mut options_array_item;
         elm = (*elm).entry.rbe_right;
-        loop  {
+        loop {
             left = (*elm).entry.rbe_left;
-            if left.is_null() { break ; }
+            if left.is_null() {
+                break;
+            }
             elm = left
         }
         child = (*elm).entry.rbe_right;
         parent = (*elm).entry.rbe_parent;
         color = (*elm).entry.rbe_color;
-        if !child.is_null() { (*child).entry.rbe_parent = parent }
+        if !child.is_null() {
+            (*child).entry.rbe_parent = parent
+        }
         if !parent.is_null() {
             if (*parent).entry.rbe_left == elm {
                 (*parent).entry.rbe_left = child
-            } else { (*parent).entry.rbe_right = child }
-        } else { (*head).rbh_root = child }
-        if (*elm).entry.rbe_parent == old { parent = elm }
+            } else {
+                (*parent).entry.rbe_right = child
+            }
+        } else {
+            (*head).rbh_root = child
+        }
+        if (*elm).entry.rbe_parent == old {
+            parent = elm
+        }
         (*elm).entry = (*old).entry;
         if !(*old).entry.rbe_parent.is_null() {
             if (*(*old).entry.rbe_parent).entry.rbe_left == old {
                 (*(*old).entry.rbe_parent).entry.rbe_left = elm
-            } else { (*(*old).entry.rbe_parent).entry.rbe_right = elm }
-        } else { (*head).rbh_root = elm }
+            } else {
+                (*(*old).entry.rbe_parent).entry.rbe_right = elm
+            }
+        } else {
+            (*head).rbh_root = elm
+        }
         (*(*old).entry.rbe_left).entry.rbe_parent = elm;
         if !(*old).entry.rbe_right.is_null() {
             (*(*old).entry.rbe_right).entry.rbe_parent = elm
         }
         if !parent.is_null() {
             left = parent;
-            loop  {
+            loop {
                 left = (*left).entry.rbe_parent;
-                if left.is_null() { break ; }
+                if left.is_null() {
+                    break;
+                }
             }
         }
         current_block = 7114279629446095448;
@@ -1593,23 +1622,30 @@ unsafe extern "C" fn options_array_RB_REMOVE(mut head: *mut options_array,
         7226443171521532240 => {
             parent = (*elm).entry.rbe_parent;
             color = (*elm).entry.rbe_color;
-            if !child.is_null() { (*child).entry.rbe_parent = parent }
+            if !child.is_null() {
+                (*child).entry.rbe_parent = parent
+            }
             if !parent.is_null() {
                 if (*parent).entry.rbe_left == elm {
                     (*parent).entry.rbe_left = child
-                } else { (*parent).entry.rbe_right = child }
-            } else { (*head).rbh_root = child }
+                } else {
+                    (*parent).entry.rbe_right = child
+                }
+            } else {
+                (*head).rbh_root = child
+            }
         }
-        _ => { }
+        _ => {}
     }
     if color == 0 as libc::c_int {
         options_array_RB_REMOVE_COLOR(head, parent, child);
     }
     return old;
 }
-unsafe extern "C" fn options_array_RB_INSERT(mut head: *mut options_array,
-                                             mut elm: *mut options_array_item)
- -> *mut options_array_item {
+unsafe extern "C" fn options_array_RB_INSERT(
+    mut head: *mut options_array,
+    mut elm: *mut options_array_item,
+) -> *mut options_array_item {
     let mut tmp: *mut options_array_item = 0 as *mut options_array_item;
     let mut parent: *mut options_array_item = 0 as *mut options_array_item;
     let mut comp: libc::c_int = 0 as libc::c_int;
@@ -1621,7 +1657,9 @@ unsafe extern "C" fn options_array_RB_INSERT(mut head: *mut options_array,
             tmp = (*tmp).entry.rbe_left
         } else if comp > 0 as libc::c_int {
             tmp = (*tmp).entry.rbe_right
-        } else { return tmp }
+        } else {
+            return tmp;
+        }
     }
     (*elm).entry.rbe_parent = parent;
     (*elm).entry.rbe_right = 0 as *mut options_array_item;
@@ -1630,14 +1668,19 @@ unsafe extern "C" fn options_array_RB_INSERT(mut head: *mut options_array,
     if !parent.is_null() {
         if comp < 0 as libc::c_int {
             (*parent).entry.rbe_left = elm
-        } else { (*parent).entry.rbe_right = elm }
-    } else { (*head).rbh_root = elm }
+        } else {
+            (*parent).entry.rbe_right = elm
+        }
+    } else {
+        (*head).rbh_root = elm
+    }
     options_array_RB_INSERT_COLOR(head, elm);
     return 0 as *mut options_array_item;
 }
-unsafe extern "C" fn options_array_RB_FIND(mut head: *mut options_array,
-                                           mut elm: *mut options_array_item)
- -> *mut options_array_item {
+unsafe extern "C" fn options_array_RB_FIND(
+    mut head: *mut options_array,
+    mut elm: *mut options_array_item,
+) -> *mut options_array_item {
     let mut tmp: *mut options_array_item = (*head).rbh_root;
     let mut comp: libc::c_int = 0;
     while !tmp.is_null() {
@@ -1646,22 +1689,23 @@ unsafe extern "C" fn options_array_RB_FIND(mut head: *mut options_array,
             tmp = (*tmp).entry.rbe_left
         } else if comp > 0 as libc::c_int {
             tmp = (*tmp).entry.rbe_right
-        } else { return tmp }
+        } else {
+            return tmp;
+        }
     }
     return 0 as *mut options_array_item;
 }
-unsafe extern "C" fn options_array_RB_INSERT_COLOR(mut head:
-                                                       *mut options_array,
-                                                   mut elm:
-                                                       *mut options_array_item) {
+unsafe extern "C" fn options_array_RB_INSERT_COLOR(
+    mut head: *mut options_array,
+    mut elm: *mut options_array_item,
+) {
     let mut parent: *mut options_array_item = 0 as *mut options_array_item;
     let mut gparent: *mut options_array_item = 0 as *mut options_array_item;
     let mut tmp: *mut options_array_item = 0 as *mut options_array_item;
-    loop  {
+    loop {
         parent = (*elm).entry.rbe_parent;
-        if !(!parent.is_null() &&
-                 (*parent).entry.rbe_color == 1 as libc::c_int) {
-            break ;
+        if !(!parent.is_null() && (*parent).entry.rbe_color == 1 as libc::c_int) {
+            break;
         }
         gparent = (*parent).entry.rbe_parent;
         if parent == (*gparent).entry.rbe_left {
@@ -1680,14 +1724,14 @@ unsafe extern "C" fn options_array_RB_INSERT_COLOR(mut head:
                     }
                     (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
                     if !(*tmp).entry.rbe_parent.is_null() {
-                        if parent ==
-                               (*(*parent).entry.rbe_parent).entry.rbe_left {
+                        if parent == (*(*parent).entry.rbe_parent).entry.rbe_left {
                             (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
                         } else {
-                            (*(*parent).entry.rbe_parent).entry.rbe_right =
-                                tmp
+                            (*(*parent).entry.rbe_parent).entry.rbe_right = tmp
                         }
-                    } else { (*head).rbh_root = tmp }
+                    } else {
+                        (*head).rbh_root = tmp
+                    }
                     (*tmp).entry.rbe_left = parent;
                     (*parent).entry.rbe_parent = tmp;
                     !(*tmp).entry.rbe_parent.is_null();
@@ -1704,13 +1748,14 @@ unsafe extern "C" fn options_array_RB_INSERT_COLOR(mut head:
                 }
                 (*tmp).entry.rbe_parent = (*gparent).entry.rbe_parent;
                 if !(*tmp).entry.rbe_parent.is_null() {
-                    if gparent ==
-                           (*(*gparent).entry.rbe_parent).entry.rbe_left {
+                    if gparent == (*(*gparent).entry.rbe_parent).entry.rbe_left {
                         (*(*gparent).entry.rbe_parent).entry.rbe_left = tmp
                     } else {
                         (*(*gparent).entry.rbe_parent).entry.rbe_right = tmp
                     }
-                } else { (*head).rbh_root = tmp }
+                } else {
+                    (*head).rbh_root = tmp
+                }
                 (*tmp).entry.rbe_right = gparent;
                 (*gparent).entry.rbe_parent = tmp;
                 !(*tmp).entry.rbe_parent.is_null();
@@ -1731,14 +1776,14 @@ unsafe extern "C" fn options_array_RB_INSERT_COLOR(mut head:
                     }
                     (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
                     if !(*tmp).entry.rbe_parent.is_null() {
-                        if parent ==
-                               (*(*parent).entry.rbe_parent).entry.rbe_left {
+                        if parent == (*(*parent).entry.rbe_parent).entry.rbe_left {
                             (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
                         } else {
-                            (*(*parent).entry.rbe_parent).entry.rbe_right =
-                                tmp
+                            (*(*parent).entry.rbe_parent).entry.rbe_right = tmp
                         }
-                    } else { (*head).rbh_root = tmp }
+                    } else {
+                        (*head).rbh_root = tmp
+                    }
                     (*tmp).entry.rbe_right = parent;
                     (*parent).entry.rbe_parent = tmp;
                     !(*tmp).entry.rbe_parent.is_null();
@@ -1755,13 +1800,14 @@ unsafe extern "C" fn options_array_RB_INSERT_COLOR(mut head:
                 }
                 (*tmp).entry.rbe_parent = (*gparent).entry.rbe_parent;
                 if !(*tmp).entry.rbe_parent.is_null() {
-                    if gparent ==
-                           (*(*gparent).entry.rbe_parent).entry.rbe_left {
+                    if gparent == (*(*gparent).entry.rbe_parent).entry.rbe_left {
                         (*(*gparent).entry.rbe_parent).entry.rbe_left = tmp
                     } else {
                         (*(*gparent).entry.rbe_parent).entry.rbe_right = tmp
                     }
-                } else { (*head).rbh_root = tmp }
+                } else {
+                    (*head).rbh_root = tmp
+                }
                 (*tmp).entry.rbe_left = gparent;
                 (*gparent).entry.rbe_parent = tmp;
                 !(*tmp).entry.rbe_parent.is_null();
@@ -1770,22 +1816,26 @@ unsafe extern "C" fn options_array_RB_INSERT_COLOR(mut head:
     }
     (*(*head).rbh_root).entry.rbe_color = 0 as libc::c_int;
 }
-unsafe extern "C" fn options_tree_RB_MINMAX(mut head: *mut options_tree,
-                                            mut val: libc::c_int)
- -> *mut options_entry {
+unsafe extern "C" fn options_tree_RB_MINMAX(
+    mut head: *mut options_tree,
+    mut val: libc::c_int,
+) -> *mut options_entry {
     let mut tmp: *mut options_entry = (*head).rbh_root;
     let mut parent: *mut options_entry = 0 as *mut options_entry;
     while !tmp.is_null() {
         parent = tmp;
         if val < 0 as libc::c_int {
             tmp = (*tmp).entry.rbe_left
-        } else { tmp = (*tmp).entry.rbe_right }
+        } else {
+            tmp = (*tmp).entry.rbe_right
+        }
     }
     return parent;
 }
-unsafe extern "C" fn options_tree_RB_FIND(mut head: *mut options_tree,
-                                          mut elm: *mut options_entry)
- -> *mut options_entry {
+unsafe extern "C" fn options_tree_RB_FIND(
+    mut head: *mut options_tree,
+    mut elm: *mut options_entry,
+) -> *mut options_entry {
     let mut tmp: *mut options_entry = (*head).rbh_root;
     let mut comp: libc::c_int = 0;
     while !tmp.is_null() {
@@ -1794,21 +1844,23 @@ unsafe extern "C" fn options_tree_RB_FIND(mut head: *mut options_tree,
             tmp = (*tmp).entry.rbe_left
         } else if comp > 0 as libc::c_int {
             tmp = (*tmp).entry.rbe_right
-        } else { return tmp }
+        } else {
+            return tmp;
+        }
     }
     return 0 as *mut options_entry;
 }
-unsafe extern "C" fn options_tree_RB_INSERT_COLOR(mut head: *mut options_tree,
-                                                  mut elm:
-                                                      *mut options_entry) {
+unsafe extern "C" fn options_tree_RB_INSERT_COLOR(
+    mut head: *mut options_tree,
+    mut elm: *mut options_entry,
+) {
     let mut parent: *mut options_entry = 0 as *mut options_entry;
     let mut gparent: *mut options_entry = 0 as *mut options_entry;
     let mut tmp: *mut options_entry = 0 as *mut options_entry;
-    loop  {
+    loop {
         parent = (*elm).entry.rbe_parent;
-        if !(!parent.is_null() &&
-                 (*parent).entry.rbe_color == 1 as libc::c_int) {
-            break ;
+        if !(!parent.is_null() && (*parent).entry.rbe_color == 1 as libc::c_int) {
+            break;
         }
         gparent = (*parent).entry.rbe_parent;
         if parent == (*gparent).entry.rbe_left {
@@ -1827,14 +1879,14 @@ unsafe extern "C" fn options_tree_RB_INSERT_COLOR(mut head: *mut options_tree,
                     }
                     (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
                     if !(*tmp).entry.rbe_parent.is_null() {
-                        if parent ==
-                               (*(*parent).entry.rbe_parent).entry.rbe_left {
+                        if parent == (*(*parent).entry.rbe_parent).entry.rbe_left {
                             (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
                         } else {
-                            (*(*parent).entry.rbe_parent).entry.rbe_right =
-                                tmp
+                            (*(*parent).entry.rbe_parent).entry.rbe_right = tmp
                         }
-                    } else { (*head).rbh_root = tmp }
+                    } else {
+                        (*head).rbh_root = tmp
+                    }
                     (*tmp).entry.rbe_left = parent;
                     (*parent).entry.rbe_parent = tmp;
                     !(*tmp).entry.rbe_parent.is_null();
@@ -1851,13 +1903,14 @@ unsafe extern "C" fn options_tree_RB_INSERT_COLOR(mut head: *mut options_tree,
                 }
                 (*tmp).entry.rbe_parent = (*gparent).entry.rbe_parent;
                 if !(*tmp).entry.rbe_parent.is_null() {
-                    if gparent ==
-                           (*(*gparent).entry.rbe_parent).entry.rbe_left {
+                    if gparent == (*(*gparent).entry.rbe_parent).entry.rbe_left {
                         (*(*gparent).entry.rbe_parent).entry.rbe_left = tmp
                     } else {
                         (*(*gparent).entry.rbe_parent).entry.rbe_right = tmp
                     }
-                } else { (*head).rbh_root = tmp }
+                } else {
+                    (*head).rbh_root = tmp
+                }
                 (*tmp).entry.rbe_right = gparent;
                 (*gparent).entry.rbe_parent = tmp;
                 !(*tmp).entry.rbe_parent.is_null();
@@ -1878,14 +1931,14 @@ unsafe extern "C" fn options_tree_RB_INSERT_COLOR(mut head: *mut options_tree,
                     }
                     (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
                     if !(*tmp).entry.rbe_parent.is_null() {
-                        if parent ==
-                               (*(*parent).entry.rbe_parent).entry.rbe_left {
+                        if parent == (*(*parent).entry.rbe_parent).entry.rbe_left {
                             (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
                         } else {
-                            (*(*parent).entry.rbe_parent).entry.rbe_right =
-                                tmp
+                            (*(*parent).entry.rbe_parent).entry.rbe_right = tmp
                         }
-                    } else { (*head).rbh_root = tmp }
+                    } else {
+                        (*head).rbh_root = tmp
+                    }
                     (*tmp).entry.rbe_right = parent;
                     (*parent).entry.rbe_parent = tmp;
                     !(*tmp).entry.rbe_parent.is_null();
@@ -1902,13 +1955,14 @@ unsafe extern "C" fn options_tree_RB_INSERT_COLOR(mut head: *mut options_tree,
                 }
                 (*tmp).entry.rbe_parent = (*gparent).entry.rbe_parent;
                 if !(*tmp).entry.rbe_parent.is_null() {
-                    if gparent ==
-                           (*(*gparent).entry.rbe_parent).entry.rbe_left {
+                    if gparent == (*(*gparent).entry.rbe_parent).entry.rbe_left {
                         (*(*gparent).entry.rbe_parent).entry.rbe_left = tmp
                     } else {
                         (*(*gparent).entry.rbe_parent).entry.rbe_right = tmp
                     }
-                } else { (*head).rbh_root = tmp }
+                } else {
+                    (*head).rbh_root = tmp
+                }
                 (*tmp).entry.rbe_left = gparent;
                 (*gparent).entry.rbe_parent = tmp;
                 !(*tmp).entry.rbe_parent.is_null();
@@ -1917,9 +1971,10 @@ unsafe extern "C" fn options_tree_RB_INSERT_COLOR(mut head: *mut options_tree,
     }
     (*(*head).rbh_root).entry.rbe_color = 0 as libc::c_int;
 }
-unsafe extern "C" fn options_tree_RB_INSERT(mut head: *mut options_tree,
-                                            mut elm: *mut options_entry)
- -> *mut options_entry {
+unsafe extern "C" fn options_tree_RB_INSERT(
+    mut head: *mut options_tree,
+    mut elm: *mut options_entry,
+) -> *mut options_entry {
     let mut tmp: *mut options_entry = 0 as *mut options_entry;
     let mut parent: *mut options_entry = 0 as *mut options_entry;
     let mut comp: libc::c_int = 0 as libc::c_int;
@@ -1931,7 +1986,9 @@ unsafe extern "C" fn options_tree_RB_INSERT(mut head: *mut options_tree,
             tmp = (*tmp).entry.rbe_left
         } else if comp > 0 as libc::c_int {
             tmp = (*tmp).entry.rbe_right
-        } else { return tmp }
+        } else {
+            return tmp;
+        }
     }
     (*elm).entry.rbe_parent = parent;
     (*elm).entry.rbe_right = 0 as *mut options_entry;
@@ -1940,14 +1997,19 @@ unsafe extern "C" fn options_tree_RB_INSERT(mut head: *mut options_tree,
     if !parent.is_null() {
         if comp < 0 as libc::c_int {
             (*parent).entry.rbe_left = elm
-        } else { (*parent).entry.rbe_right = elm }
-    } else { (*head).rbh_root = elm }
+        } else {
+            (*parent).entry.rbe_right = elm
+        }
+    } else {
+        (*head).rbh_root = elm
+    }
     options_tree_RB_INSERT_COLOR(head, elm);
     return 0 as *mut options_entry;
 }
-unsafe extern "C" fn options_tree_RB_REMOVE(mut head: *mut options_tree,
-                                            mut elm: *mut options_entry)
- -> *mut options_entry {
+unsafe extern "C" fn options_tree_RB_REMOVE(
+    mut head: *mut options_tree,
+    mut elm: *mut options_entry,
+) -> *mut options_entry {
     let mut current_block: u64;
     let mut child: *mut options_entry = 0 as *mut options_entry;
     let mut parent: *mut options_entry = 0 as *mut options_entry;
@@ -1962,36 +2024,52 @@ unsafe extern "C" fn options_tree_RB_REMOVE(mut head: *mut options_tree,
     } else {
         let mut left: *mut options_entry = 0 as *mut options_entry;
         elm = (*elm).entry.rbe_right;
-        loop  {
+        loop {
             left = (*elm).entry.rbe_left;
-            if left.is_null() { break ; }
+            if left.is_null() {
+                break;
+            }
             elm = left
         }
         child = (*elm).entry.rbe_right;
         parent = (*elm).entry.rbe_parent;
         color = (*elm).entry.rbe_color;
-        if !child.is_null() { (*child).entry.rbe_parent = parent }
+        if !child.is_null() {
+            (*child).entry.rbe_parent = parent
+        }
         if !parent.is_null() {
             if (*parent).entry.rbe_left == elm {
                 (*parent).entry.rbe_left = child
-            } else { (*parent).entry.rbe_right = child }
-        } else { (*head).rbh_root = child }
-        if (*elm).entry.rbe_parent == old { parent = elm }
+            } else {
+                (*parent).entry.rbe_right = child
+            }
+        } else {
+            (*head).rbh_root = child
+        }
+        if (*elm).entry.rbe_parent == old {
+            parent = elm
+        }
         (*elm).entry = (*old).entry;
         if !(*old).entry.rbe_parent.is_null() {
             if (*(*old).entry.rbe_parent).entry.rbe_left == old {
                 (*(*old).entry.rbe_parent).entry.rbe_left = elm
-            } else { (*(*old).entry.rbe_parent).entry.rbe_right = elm }
-        } else { (*head).rbh_root = elm }
+            } else {
+                (*(*old).entry.rbe_parent).entry.rbe_right = elm
+            }
+        } else {
+            (*head).rbh_root = elm
+        }
         (*(*old).entry.rbe_left).entry.rbe_parent = elm;
         if !(*old).entry.rbe_right.is_null() {
             (*(*old).entry.rbe_right).entry.rbe_parent = elm
         }
         if !parent.is_null() {
             left = parent;
-            loop  {
+            loop {
                 left = (*left).entry.rbe_parent;
-                if left.is_null() { break ; }
+                if left.is_null() {
+                    break;
+                }
             }
         }
         current_block = 9245580858887543803;
@@ -2000,28 +2078,33 @@ unsafe extern "C" fn options_tree_RB_REMOVE(mut head: *mut options_tree,
         7226443171521532240 => {
             parent = (*elm).entry.rbe_parent;
             color = (*elm).entry.rbe_color;
-            if !child.is_null() { (*child).entry.rbe_parent = parent }
+            if !child.is_null() {
+                (*child).entry.rbe_parent = parent
+            }
             if !parent.is_null() {
                 if (*parent).entry.rbe_left == elm {
                     (*parent).entry.rbe_left = child
-                } else { (*parent).entry.rbe_right = child }
-            } else { (*head).rbh_root = child }
+                } else {
+                    (*parent).entry.rbe_right = child
+                }
+            } else {
+                (*head).rbh_root = child
+            }
         }
-        _ => { }
+        _ => {}
     }
     if color == 0 as libc::c_int {
         options_tree_RB_REMOVE_COLOR(head, parent, child);
     }
     return old;
 }
-unsafe extern "C" fn options_tree_RB_REMOVE_COLOR(mut head: *mut options_tree,
-                                                  mut parent:
-                                                      *mut options_entry,
-                                                  mut elm:
-                                                      *mut options_entry) {
+unsafe extern "C" fn options_tree_RB_REMOVE_COLOR(
+    mut head: *mut options_tree,
+    mut parent: *mut options_entry,
+    mut elm: *mut options_entry,
+) {
     let mut tmp: *mut options_entry = 0 as *mut options_entry;
-    while (elm.is_null() || (*elm).entry.rbe_color == 0 as libc::c_int) &&
-              elm != (*head).rbh_root {
+    while (elm.is_null() || (*elm).entry.rbe_color == 0 as libc::c_int) && elm != (*head).rbh_root {
         if (*parent).entry.rbe_left == elm {
             tmp = (*parent).entry.rbe_right;
             if (*tmp).entry.rbe_color == 1 as libc::c_int {
@@ -2034,33 +2117,32 @@ unsafe extern "C" fn options_tree_RB_REMOVE_COLOR(mut head: *mut options_tree,
                 }
                 (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
                 if !(*tmp).entry.rbe_parent.is_null() {
-                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left
-                       {
+                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left {
                         (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
                     } else {
                         (*(*parent).entry.rbe_parent).entry.rbe_right = tmp
                     }
-                } else { (*head).rbh_root = tmp }
+                } else {
+                    (*head).rbh_root = tmp
+                }
                 (*tmp).entry.rbe_left = parent;
                 (*parent).entry.rbe_parent = tmp;
                 !(*tmp).entry.rbe_parent.is_null();
                 tmp = (*parent).entry.rbe_right
             }
-            if ((*tmp).entry.rbe_left.is_null() ||
-                    (*(*tmp).entry.rbe_left).entry.rbe_color ==
-                        0 as libc::c_int) &&
-                   ((*tmp).entry.rbe_right.is_null() ||
-                        (*(*tmp).entry.rbe_right).entry.rbe_color ==
-                            0 as libc::c_int) {
+            if ((*tmp).entry.rbe_left.is_null()
+                || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int)
+                && ((*tmp).entry.rbe_right.is_null()
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int)
+            {
                 (*tmp).entry.rbe_color = 1 as libc::c_int;
                 elm = parent;
                 parent = (*elm).entry.rbe_parent
             } else {
-                if (*tmp).entry.rbe_right.is_null() ||
-                       (*(*tmp).entry.rbe_right).entry.rbe_color ==
-                           0 as libc::c_int {
-                    let mut oleft: *mut options_entry =
-                        0 as *mut options_entry;
+                if (*tmp).entry.rbe_right.is_null()
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int
+                {
+                    let mut oleft: *mut options_entry = 0 as *mut options_entry;
                     oleft = (*tmp).entry.rbe_left;
                     if !oleft.is_null() {
                         (*oleft).entry.rbe_color = 0 as libc::c_int
@@ -2078,7 +2160,9 @@ unsafe extern "C" fn options_tree_RB_REMOVE_COLOR(mut head: *mut options_tree,
                         } else {
                             (*(*tmp).entry.rbe_parent).entry.rbe_right = oleft
                         }
-                    } else { (*head).rbh_root = oleft }
+                    } else {
+                        (*head).rbh_root = oleft
+                    }
                     (*oleft).entry.rbe_right = tmp;
                     (*tmp).entry.rbe_parent = oleft;
                     !(*oleft).entry.rbe_parent.is_null();
@@ -2087,8 +2171,7 @@ unsafe extern "C" fn options_tree_RB_REMOVE_COLOR(mut head: *mut options_tree,
                 (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
                 (*parent).entry.rbe_color = 0 as libc::c_int;
                 if !(*tmp).entry.rbe_right.is_null() {
-                    (*(*tmp).entry.rbe_right).entry.rbe_color =
-                        0 as libc::c_int
+                    (*(*tmp).entry.rbe_right).entry.rbe_color = 0 as libc::c_int
                 }
                 tmp = (*parent).entry.rbe_right;
                 (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
@@ -2097,18 +2180,19 @@ unsafe extern "C" fn options_tree_RB_REMOVE_COLOR(mut head: *mut options_tree,
                 }
                 (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
                 if !(*tmp).entry.rbe_parent.is_null() {
-                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left
-                       {
+                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left {
                         (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
                     } else {
                         (*(*parent).entry.rbe_parent).entry.rbe_right = tmp
                     }
-                } else { (*head).rbh_root = tmp }
+                } else {
+                    (*head).rbh_root = tmp
+                }
                 (*tmp).entry.rbe_left = parent;
                 (*parent).entry.rbe_parent = tmp;
                 !(*tmp).entry.rbe_parent.is_null();
                 elm = (*head).rbh_root;
-                break ;
+                break;
             }
         } else {
             tmp = (*parent).entry.rbe_left;
@@ -2122,33 +2206,32 @@ unsafe extern "C" fn options_tree_RB_REMOVE_COLOR(mut head: *mut options_tree,
                 }
                 (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
                 if !(*tmp).entry.rbe_parent.is_null() {
-                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left
-                       {
+                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left {
                         (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
                     } else {
                         (*(*parent).entry.rbe_parent).entry.rbe_right = tmp
                     }
-                } else { (*head).rbh_root = tmp }
+                } else {
+                    (*head).rbh_root = tmp
+                }
                 (*tmp).entry.rbe_right = parent;
                 (*parent).entry.rbe_parent = tmp;
                 !(*tmp).entry.rbe_parent.is_null();
                 tmp = (*parent).entry.rbe_left
             }
-            if ((*tmp).entry.rbe_left.is_null() ||
-                    (*(*tmp).entry.rbe_left).entry.rbe_color ==
-                        0 as libc::c_int) &&
-                   ((*tmp).entry.rbe_right.is_null() ||
-                        (*(*tmp).entry.rbe_right).entry.rbe_color ==
-                            0 as libc::c_int) {
+            if ((*tmp).entry.rbe_left.is_null()
+                || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int)
+                && ((*tmp).entry.rbe_right.is_null()
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int)
+            {
                 (*tmp).entry.rbe_color = 1 as libc::c_int;
                 elm = parent;
                 parent = (*elm).entry.rbe_parent
             } else {
-                if (*tmp).entry.rbe_left.is_null() ||
-                       (*(*tmp).entry.rbe_left).entry.rbe_color ==
-                           0 as libc::c_int {
-                    let mut oright: *mut options_entry =
-                        0 as *mut options_entry;
+                if (*tmp).entry.rbe_left.is_null()
+                    || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int
+                {
+                    let mut oright: *mut options_entry = 0 as *mut options_entry;
                     oright = (*tmp).entry.rbe_right;
                     if !oright.is_null() {
                         (*oright).entry.rbe_color = 0 as libc::c_int
@@ -2164,10 +2247,11 @@ unsafe extern "C" fn options_tree_RB_REMOVE_COLOR(mut head: *mut options_tree,
                         if tmp == (*(*tmp).entry.rbe_parent).entry.rbe_left {
                             (*(*tmp).entry.rbe_parent).entry.rbe_left = oright
                         } else {
-                            (*(*tmp).entry.rbe_parent).entry.rbe_right =
-                                oright
+                            (*(*tmp).entry.rbe_parent).entry.rbe_right = oright
                         }
-                    } else { (*head).rbh_root = oright }
+                    } else {
+                        (*head).rbh_root = oright
+                    }
                     (*oright).entry.rbe_left = tmp;
                     (*tmp).entry.rbe_parent = oright;
                     !(*oright).entry.rbe_parent.is_null();
@@ -2176,8 +2260,7 @@ unsafe extern "C" fn options_tree_RB_REMOVE_COLOR(mut head: *mut options_tree,
                 (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
                 (*parent).entry.rbe_color = 0 as libc::c_int;
                 if !(*tmp).entry.rbe_left.is_null() {
-                    (*(*tmp).entry.rbe_left).entry.rbe_color =
-                        0 as libc::c_int
+                    (*(*tmp).entry.rbe_left).entry.rbe_color = 0 as libc::c_int
                 }
                 tmp = (*parent).entry.rbe_left;
                 (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
@@ -2186,160 +2269,174 @@ unsafe extern "C" fn options_tree_RB_REMOVE_COLOR(mut head: *mut options_tree,
                 }
                 (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
                 if !(*tmp).entry.rbe_parent.is_null() {
-                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left
-                       {
+                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left {
                         (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
                     } else {
                         (*(*parent).entry.rbe_parent).entry.rbe_right = tmp
                     }
-                } else { (*head).rbh_root = tmp }
+                } else {
+                    (*head).rbh_root = tmp
+                }
                 (*tmp).entry.rbe_right = parent;
                 (*parent).entry.rbe_parent = tmp;
                 !(*tmp).entry.rbe_parent.is_null();
                 elm = (*head).rbh_root;
-                break ;
+                break;
             }
         }
     }
-    if !elm.is_null() { (*elm).entry.rbe_color = 0 as libc::c_int };
+    if !elm.is_null() {
+        (*elm).entry.rbe_color = 0 as libc::c_int
+    };
 }
-unsafe extern "C" fn options_tree_RB_NEXT(mut elm: *mut options_entry)
- -> *mut options_entry {
+unsafe extern "C" fn options_tree_RB_NEXT(mut elm: *mut options_entry) -> *mut options_entry {
     if !(*elm).entry.rbe_right.is_null() {
         elm = (*elm).entry.rbe_right;
-        while !(*elm).entry.rbe_left.is_null() { elm = (*elm).entry.rbe_left }
-    } else if !(*elm).entry.rbe_parent.is_null() &&
-                  elm == (*(*elm).entry.rbe_parent).entry.rbe_left {
+        while !(*elm).entry.rbe_left.is_null() {
+            elm = (*elm).entry.rbe_left
+        }
+    } else if !(*elm).entry.rbe_parent.is_null() && elm == (*(*elm).entry.rbe_parent).entry.rbe_left
+    {
         elm = (*elm).entry.rbe_parent
     } else {
-        while !(*elm).entry.rbe_parent.is_null() &&
-                  elm == (*(*elm).entry.rbe_parent).entry.rbe_right {
+        while !(*elm).entry.rbe_parent.is_null()
+            && elm == (*(*elm).entry.rbe_parent).entry.rbe_right
+        {
             elm = (*elm).entry.rbe_parent
         }
         elm = (*elm).entry.rbe_parent
     }
     return elm;
 }
-unsafe extern "C" fn options_cmp(mut lhs: *mut options_entry,
-                                 mut rhs: *mut options_entry) -> libc::c_int {
+unsafe extern "C" fn options_cmp(
+    mut lhs: *mut options_entry,
+    mut rhs: *mut options_entry,
+) -> libc::c_int {
     return strcmp((*lhs).name, (*rhs).name);
 }
-unsafe extern "C" fn options_map_name(mut name: *const libc::c_char)
- -> *const libc::c_char {
+unsafe extern "C" fn options_map_name(mut name: *const libc::c_char) -> *const libc::c_char {
     let mut map: *const options_name_map = 0 as *const options_name_map;
     map = options_other_names.as_ptr();
     while !(*map).from.is_null() {
-        if strcmp((*map).from, name) == 0 as libc::c_int { return (*map).to }
+        if strcmp((*map).from, name) == 0 as libc::c_int {
+            return (*map).to;
+        }
         map = map.offset(1)
     }
     return name;
 }
-unsafe extern "C" fn options_parent_table_entry(mut oo: *mut options,
-                                                mut s: *const libc::c_char)
- -> *const options_table_entry {
+unsafe extern "C" fn options_parent_table_entry(
+    mut oo: *mut options,
+    mut s: *const libc::c_char,
+) -> *const options_table_entry {
     let mut o: *mut options_entry = 0 as *mut options_entry;
     if (*oo).parent.is_null() {
-        fatalx(b"no parent options for %s\x00" as *const u8 as
-                   *const libc::c_char, s);
+        fatalx(
+            b"no parent options for %s\x00" as *const u8 as *const libc::c_char,
+            s,
+        );
     }
     o = options_get((*oo).parent, s);
     if o.is_null() {
-        fatalx(b"%s not in parent options\x00" as *const u8 as
-                   *const libc::c_char, s);
+        fatalx(
+            b"%s not in parent options\x00" as *const u8 as *const libc::c_char,
+            s,
+        );
     }
     return (*o).tableentry;
 }
-unsafe extern "C" fn options_value_free(mut o: *mut options_entry,
-                                        mut ov: *mut options_value) {
-    if (*o).tableentry.is_null() ||
-           (*(*o).tableentry).type_0 as libc::c_uint ==
-               OPTIONS_TABLE_STRING as libc::c_int as libc::c_uint {
+unsafe extern "C" fn options_value_free(mut o: *mut options_entry, mut ov: *mut options_value) {
+    if (*o).tableentry.is_null()
+        || (*(*o).tableentry).type_0 as libc::c_uint
+            == OPTIONS_TABLE_STRING as libc::c_int as libc::c_uint
+    {
         free((*ov).string as *mut libc::c_void);
     }
-    if !(*o).tableentry.is_null() &&
-           (*(*o).tableentry).type_0 as libc::c_uint ==
-               OPTIONS_TABLE_COMMAND as libc::c_int as libc::c_uint &&
-           !(*ov).cmdlist.is_null() {
+    if !(*o).tableentry.is_null()
+        && (*(*o).tableentry).type_0 as libc::c_uint
+            == OPTIONS_TABLE_COMMAND as libc::c_int as libc::c_uint
+        && !(*ov).cmdlist.is_null()
+    {
         cmd_list_free((*ov).cmdlist);
     };
 }
-unsafe extern "C" fn options_value_to_string(mut o: *mut options_entry,
-                                             mut ov: *mut options_value,
-                                             mut numeric: libc::c_int)
- -> *mut libc::c_char {
+unsafe extern "C" fn options_value_to_string(
+    mut o: *mut options_entry,
+    mut ov: *mut options_value,
+    mut numeric: libc::c_int,
+) -> *mut libc::c_char {
     let mut s: *mut libc::c_char = 0 as *mut libc::c_char;
-    if !(*o).tableentry.is_null() &&
-           (*(*o).tableentry).type_0 as libc::c_uint ==
-               OPTIONS_TABLE_COMMAND as libc::c_int as libc::c_uint {
-        return cmd_list_print((*ov).cmdlist, 0 as libc::c_int)
+    if !(*o).tableentry.is_null()
+        && (*(*o).tableentry).type_0 as libc::c_uint
+            == OPTIONS_TABLE_COMMAND as libc::c_int as libc::c_uint
+    {
+        return cmd_list_print((*ov).cmdlist, 0 as libc::c_int);
     }
-    if !(*o).tableentry.is_null() &&
-           ((*(*o).tableentry).type_0 as libc::c_uint ==
-                OPTIONS_TABLE_NUMBER as libc::c_int as libc::c_uint ||
-                (*(*o).tableentry).type_0 as libc::c_uint ==
-                    OPTIONS_TABLE_KEY as libc::c_int as libc::c_uint ||
-                (*(*o).tableentry).type_0 as libc::c_uint ==
-                    OPTIONS_TABLE_COLOUR as libc::c_int as libc::c_uint ||
-                (*(*o).tableentry).type_0 as libc::c_uint ==
-                    OPTIONS_TABLE_FLAG as libc::c_int as libc::c_uint ||
-                (*(*o).tableentry).type_0 as libc::c_uint ==
-                    OPTIONS_TABLE_CHOICE as libc::c_int as libc::c_uint) {
+    if !(*o).tableentry.is_null()
+        && ((*(*o).tableentry).type_0 as libc::c_uint
+            == OPTIONS_TABLE_NUMBER as libc::c_int as libc::c_uint
+            || (*(*o).tableentry).type_0 as libc::c_uint
+                == OPTIONS_TABLE_KEY as libc::c_int as libc::c_uint
+            || (*(*o).tableentry).type_0 as libc::c_uint
+                == OPTIONS_TABLE_COLOUR as libc::c_int as libc::c_uint
+            || (*(*o).tableentry).type_0 as libc::c_uint
+                == OPTIONS_TABLE_FLAG as libc::c_int as libc::c_uint
+            || (*(*o).tableentry).type_0 as libc::c_uint
+                == OPTIONS_TABLE_CHOICE as libc::c_int as libc::c_uint)
+    {
         match (*(*o).tableentry).type_0 as libc::c_uint {
             1 => {
-                xasprintf(&mut s as *mut *mut libc::c_char,
-                          b"%lld\x00" as *const u8 as *const libc::c_char,
-                          (*ov).number);
+                xasprintf(
+                    &mut s as *mut *mut libc::c_char,
+                    b"%lld\x00" as *const u8 as *const libc::c_char,
+                    (*ov).number,
+                );
             }
             2 => {
-                s =
-                    xstrdup(key_string_lookup_key((*ov).number as key_code,
-                                                  0 as libc::c_int))
+                s = xstrdup(key_string_lookup_key(
+                    (*ov).number as key_code,
+                    0 as libc::c_int,
+                ))
             }
-            3 => { s = xstrdup(colour_tostring((*ov).number as libc::c_int)) }
+            3 => s = xstrdup(colour_tostring((*ov).number as libc::c_int)),
             4 => {
                 if numeric != 0 {
-                    xasprintf(&mut s as *mut *mut libc::c_char,
-                              b"%lld\x00" as *const u8 as *const libc::c_char,
-                              (*ov).number);
+                    xasprintf(
+                        &mut s as *mut *mut libc::c_char,
+                        b"%lld\x00" as *const u8 as *const libc::c_char,
+                        (*ov).number,
+                    );
                 } else {
-                    s =
-                        xstrdup(if (*ov).number != 0 {
-                                    b"on\x00" as *const u8 as
-                                        *const libc::c_char
-                                } else {
-                                    b"off\x00" as *const u8 as
-                                        *const libc::c_char
-                                })
+                    s = xstrdup(if (*ov).number != 0 {
+                        b"on\x00" as *const u8 as *const libc::c_char
+                    } else {
+                        b"off\x00" as *const u8 as *const libc::c_char
+                    })
                 }
             }
-            5 => {
-                s =
-                    xstrdup(*(*(*o).tableentry).choices.offset((*ov).number as
-                                                                   isize))
-            }
+            5 => s = xstrdup(*(*(*o).tableentry).choices.offset((*ov).number as isize)),
             0 | 6 => {
-                fatalx(b"not a number option type\x00" as *const u8 as
-                           *const libc::c_char);
+                fatalx(b"not a number option type\x00" as *const u8 as *const libc::c_char);
             }
-            _ => { }
+            _ => {}
         }
-        return s
+        return s;
     }
-    if (*o).tableentry.is_null() ||
-           (*(*o).tableentry).type_0 as libc::c_uint ==
-               OPTIONS_TABLE_STRING as libc::c_int as libc::c_uint {
-        return xstrdup((*ov).string)
+    if (*o).tableentry.is_null()
+        || (*(*o).tableentry).type_0 as libc::c_uint
+            == OPTIONS_TABLE_STRING as libc::c_int as libc::c_uint
+    {
+        return xstrdup((*ov).string);
     }
     return xstrdup(b"\x00" as *const u8 as *const libc::c_char);
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_create(mut parent: *mut options)
- -> *mut options {
+pub unsafe extern "C" fn options_create(mut parent: *mut options) -> *mut options {
     let mut oo: *mut options = 0 as *mut options;
-    oo =
-        xcalloc(1 as libc::c_int as size_t,
-                ::std::mem::size_of::<options>() as libc::c_ulong) as
-            *mut options;
+    oo = xcalloc(
+        1 as libc::c_int as size_t,
+        ::std::mem::size_of::<options>() as libc::c_ulong,
+    ) as *mut options;
     (*oo).tree.rbh_root = 0 as *mut options_entry;
     (*oo).parent = parent;
     return oo;
@@ -2349,107 +2446,105 @@ pub unsafe extern "C" fn options_free(mut oo: *mut options) {
     let mut o: *mut options_entry = 0 as *mut options_entry;
     let mut tmp: *mut options_entry = 0 as *mut options_entry;
     o = options_tree_RB_MINMAX(&mut (*oo).tree, -(1 as libc::c_int));
-    while !o.is_null() &&
-              { tmp = options_tree_RB_NEXT(o); (1 as libc::c_int) != 0 } {
+    while !o.is_null() && {
+        tmp = options_tree_RB_NEXT(o);
+        (1 as libc::c_int) != 0
+    } {
         options_remove(o);
         o = tmp
     }
     free(oo as *mut libc::c_void);
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_get_parent(mut oo: *mut options)
- -> *mut options {
+pub unsafe extern "C" fn options_get_parent(mut oo: *mut options) -> *mut options {
     return (*oo).parent;
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_set_parent(mut oo: *mut options,
-                                            mut parent: *mut options) {
+pub unsafe extern "C" fn options_set_parent(mut oo: *mut options, mut parent: *mut options) {
     (*oo).parent = parent;
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_first(mut oo: *mut options)
- -> *mut options_entry {
+pub unsafe extern "C" fn options_first(mut oo: *mut options) -> *mut options_entry {
     return options_tree_RB_MINMAX(&mut (*oo).tree, -(1 as libc::c_int));
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_next(mut o: *mut options_entry)
- -> *mut options_entry {
+pub unsafe extern "C" fn options_next(mut o: *mut options_entry) -> *mut options_entry {
     return options_tree_RB_NEXT(o);
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_get_only(mut oo: *mut options,
-                                          mut name: *const libc::c_char)
- -> *mut options_entry {
-    let mut o: options_entry =
-        {
-            let mut init =
-                options_entry{owner: 0 as *mut options,
-                              name: name,
-                              tableentry: 0 as *const options_table_entry,
-                              value:
-                                  options_value{string:
-                                                    0 as *mut libc::c_char,},
-                              cached: 0,
-                              style:
-                                  style{gc:
-                                            grid_cell{data:
-                                                          utf8_data{data:
-                                                                        [0;
-                                                                            21],
-                                                                    have: 0,
-                                                                    size: 0,
-                                                                    width:
-                                                                        0,},
-                                                      attr: 0,
-                                                      flags: 0,
-                                                      fg: 0,
-                                                      bg: 0,
-                                                      us: 0,},
-                                        ignore: 0,
-                                        fill: 0,
-                                        align: STYLE_ALIGN_DEFAULT,
-                                        list: STYLE_LIST_OFF,
-                                        range_type: STYLE_RANGE_NONE,
-                                        range_argument: 0,
-                                        default_type: STYLE_DEFAULT_BASE,},
-                              entry:
-                                  C2RustUnnamed_15{rbe_left:
-                                                       0 as
-                                                           *mut options_entry,
-                                                   rbe_right:
-                                                       0 as
-                                                           *mut options_entry,
-                                                   rbe_parent:
-                                                       0 as
-                                                           *mut options_entry,
-                                                   rbe_color: 0,},};
-            init
+pub unsafe extern "C" fn options_get_only(
+    mut oo: *mut options,
+    mut name: *const libc::c_char,
+) -> *mut options_entry {
+    let mut o: options_entry = {
+        let mut init = options_entry {
+            owner: 0 as *mut options,
+            name: name,
+            tableentry: 0 as *const options_table_entry,
+            value: options_value {
+                string: 0 as *mut libc::c_char,
+            },
+            cached: 0,
+            style: style {
+                gc: grid_cell {
+                    data: utf8_data {
+                        data: [0; 21],
+                        have: 0,
+                        size: 0,
+                        width: 0,
+                    },
+                    attr: 0,
+                    flags: 0,
+                    fg: 0,
+                    bg: 0,
+                    us: 0,
+                },
+                ignore: 0,
+                fill: 0,
+                align: STYLE_ALIGN_DEFAULT,
+                list: STYLE_LIST_OFF,
+                range_type: STYLE_RANGE_NONE,
+                range_argument: 0,
+                default_type: STYLE_DEFAULT_BASE,
+            },
+            entry: C2RustUnnamed_15 {
+                rbe_left: 0 as *mut options_entry,
+                rbe_right: 0 as *mut options_entry,
+                rbe_parent: 0 as *mut options_entry,
+                rbe_color: 0,
+            },
         };
+        init
+    };
     let mut found: *mut options_entry = 0 as *mut options_entry;
     found = options_tree_RB_FIND(&mut (*oo).tree, &mut o);
     if found.is_null() {
         o.name = options_map_name(name);
-        return options_tree_RB_FIND(&mut (*oo).tree, &mut o)
+        return options_tree_RB_FIND(&mut (*oo).tree, &mut o);
     }
     return found;
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_get(mut oo: *mut options,
-                                     mut name: *const libc::c_char)
- -> *mut options_entry {
+pub unsafe extern "C" fn options_get(
+    mut oo: *mut options,
+    mut name: *const libc::c_char,
+) -> *mut options_entry {
     let mut o: *mut options_entry = 0 as *mut options_entry;
     o = options_get_only(oo, name);
     while o.is_null() {
         oo = (*oo).parent;
-        if oo.is_null() { break ; }
+        if oo.is_null() {
+            break;
+        }
         o = options_get_only(oo, name)
     }
     return o;
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_empty(mut oo: *mut options,
-                                       mut oe: *const options_table_entry)
- -> *mut options_entry {
+pub unsafe extern "C" fn options_empty(
+    mut oo: *mut options,
+    mut oe: *const options_table_entry,
+) -> *mut options_entry {
     let mut o: *mut options_entry = 0 as *mut options_entry;
     o = options_add(oo, (*oe).name);
     (*o).tableentry = oe;
@@ -2459,9 +2554,10 @@ pub unsafe extern "C" fn options_empty(mut oo: *mut options,
     return o;
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_default(mut oo: *mut options,
-                                         mut oe: *const options_table_entry)
- -> *mut options_entry {
+pub unsafe extern "C" fn options_default(
+    mut oo: *mut options,
+    mut oe: *const options_table_entry,
+) -> *mut options_entry {
     let mut o: *mut options_entry = 0 as *mut options_entry;
     let mut ov: *mut options_value = 0 as *mut options_value;
     let mut i: u_int = 0;
@@ -2469,69 +2565,74 @@ pub unsafe extern "C" fn options_default(mut oo: *mut options,
     ov = &mut (*o).value;
     if (*oe).flags & 0x1 as libc::c_int != 0 {
         if (*oe).default_arr.is_null() {
-            options_array_assign(o, (*oe).default_str,
-                                 0 as *mut *mut libc::c_char);
-            return o
+            options_array_assign(o, (*oe).default_str, 0 as *mut *mut libc::c_char);
+            return o;
         }
         i = 0 as libc::c_int as u_int;
         while !(*(*oe).default_arr.offset(i as isize)).is_null() {
-            options_array_set(o, i, *(*oe).default_arr.offset(i as isize),
-                              0 as libc::c_int, 0 as *mut *mut libc::c_char);
+            options_array_set(
+                o,
+                i,
+                *(*oe).default_arr.offset(i as isize),
+                0 as libc::c_int,
+                0 as *mut *mut libc::c_char,
+            );
             i = i.wrapping_add(1)
         }
-        return o
+        return o;
     }
     match (*oe).type_0 as libc::c_uint {
-        0 => { (*ov).string = xstrdup((*oe).default_str) }
-        _ => { (*ov).number = (*oe).default_num }
+        0 => (*ov).string = xstrdup((*oe).default_str),
+        _ => (*ov).number = (*oe).default_num,
     }
     return o;
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_default_to_string(mut oe:
-                                                       *const options_table_entry)
- -> *mut libc::c_char {
+pub unsafe extern "C" fn options_default_to_string(
+    mut oe: *const options_table_entry,
+) -> *mut libc::c_char {
     let mut s: *mut libc::c_char = 0 as *mut libc::c_char;
     match (*oe).type_0 as libc::c_uint {
-        0 | 6 => { s = xstrdup((*oe).default_str) }
+        0 | 6 => s = xstrdup((*oe).default_str),
         1 => {
-            xasprintf(&mut s as *mut *mut libc::c_char,
-                      b"%lld\x00" as *const u8 as *const libc::c_char,
-                      (*oe).default_num);
+            xasprintf(
+                &mut s as *mut *mut libc::c_char,
+                b"%lld\x00" as *const u8 as *const libc::c_char,
+                (*oe).default_num,
+            );
         }
         2 => {
-            s =
-                xstrdup(key_string_lookup_key((*oe).default_num as key_code,
-                                              0 as libc::c_int))
+            s = xstrdup(key_string_lookup_key(
+                (*oe).default_num as key_code,
+                0 as libc::c_int,
+            ))
         }
-        3 => {
-            s = xstrdup(colour_tostring((*oe).default_num as libc::c_int))
-        }
+        3 => s = xstrdup(colour_tostring((*oe).default_num as libc::c_int)),
         4 => {
-            s =
-                xstrdup(if (*oe).default_num != 0 {
-                            b"on\x00" as *const u8 as *const libc::c_char
-                        } else {
-                            b"off\x00" as *const u8 as *const libc::c_char
-                        })
+            s = xstrdup(if (*oe).default_num != 0 {
+                b"on\x00" as *const u8 as *const libc::c_char
+            } else {
+                b"off\x00" as *const u8 as *const libc::c_char
+            })
         }
-        5 => {
-            s = xstrdup(*(*oe).choices.offset((*oe).default_num as isize))
-        }
-        _ => { }
+        5 => s = xstrdup(*(*oe).choices.offset((*oe).default_num as isize)),
+        _ => {}
     }
     return s;
 }
-unsafe extern "C" fn options_add(mut oo: *mut options,
-                                 mut name: *const libc::c_char)
- -> *mut options_entry {
+unsafe extern "C" fn options_add(
+    mut oo: *mut options,
+    mut name: *const libc::c_char,
+) -> *mut options_entry {
     let mut o: *mut options_entry = 0 as *mut options_entry;
     o = options_get_only(oo, name);
-    if !o.is_null() { options_remove(o); }
-    o =
-        xcalloc(1 as libc::c_int as size_t,
-                ::std::mem::size_of::<options_entry>() as libc::c_ulong) as
-            *mut options_entry;
+    if !o.is_null() {
+        options_remove(o);
+    }
+    o = xcalloc(
+        1 as libc::c_int as size_t,
+        ::std::mem::size_of::<options_entry>() as libc::c_ulong,
+    ) as *mut options_entry;
     (*o).owner = oo;
     (*o).name = xstrdup(name);
     options_tree_RB_INSERT(&mut (*oo).tree, o);
@@ -2539,64 +2640,62 @@ unsafe extern "C" fn options_add(mut oo: *mut options,
 }
 unsafe extern "C" fn options_remove(mut o: *mut options_entry) {
     let mut oo: *mut options = (*o).owner;
-    if !(*o).tableentry.is_null() &&
-           (*(*o).tableentry).flags & 0x1 as libc::c_int != 0 {
+    if !(*o).tableentry.is_null() && (*(*o).tableentry).flags & 0x1 as libc::c_int != 0 {
         options_array_clear(o);
-    } else { options_value_free(o, &mut (*o).value); }
+    } else {
+        options_value_free(o, &mut (*o).value);
+    }
     options_tree_RB_REMOVE(&mut (*oo).tree, o);
     free((*o).name as *mut libc::c_void);
     free(o as *mut libc::c_void);
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_name(mut o: *mut options_entry)
- -> *const libc::c_char {
+pub unsafe extern "C" fn options_name(mut o: *mut options_entry) -> *const libc::c_char {
     return (*o).name;
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_owner(mut o: *mut options_entry)
- -> *mut options {
+pub unsafe extern "C" fn options_owner(mut o: *mut options_entry) -> *mut options {
     return (*o).owner;
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_table_entry(mut o: *mut options_entry)
- -> *const options_table_entry {
+pub unsafe extern "C" fn options_table_entry(
+    mut o: *mut options_entry,
+) -> *const options_table_entry {
     return (*o).tableentry;
 }
-unsafe extern "C" fn options_array_item(mut o: *mut options_entry,
-                                        mut idx: u_int)
- -> *mut options_array_item {
-    let mut a: options_array_item =
-        options_array_item{index: 0,
-                           value:
-                               options_value{string: 0 as *mut libc::c_char,},
-                           entry:
-                               C2RustUnnamed_16{rbe_left:
-                                                    0 as
-                                                        *mut options_array_item,
-                                                rbe_right:
-                                                    0 as
-                                                        *mut options_array_item,
-                                                rbe_parent:
-                                                    0 as
-                                                        *mut options_array_item,
-                                                rbe_color: 0,},};
+unsafe extern "C" fn options_array_item(
+    mut o: *mut options_entry,
+    mut idx: u_int,
+) -> *mut options_array_item {
+    let mut a: options_array_item = options_array_item {
+        index: 0,
+        value: options_value {
+            string: 0 as *mut libc::c_char,
+        },
+        entry: C2RustUnnamed_16 {
+            rbe_left: 0 as *mut options_array_item,
+            rbe_right: 0 as *mut options_array_item,
+            rbe_parent: 0 as *mut options_array_item,
+            rbe_color: 0,
+        },
+    };
     a.index = idx;
     return options_array_RB_FIND(&mut (*o).value.array, &mut a);
 }
-unsafe extern "C" fn options_array_new(mut o: *mut options_entry,
-                                       mut idx: u_int)
- -> *mut options_array_item {
+unsafe extern "C" fn options_array_new(
+    mut o: *mut options_entry,
+    mut idx: u_int,
+) -> *mut options_array_item {
     let mut a: *mut options_array_item = 0 as *mut options_array_item;
-    a =
-        xcalloc(1 as libc::c_int as size_t,
-                ::std::mem::size_of::<options_array_item>() as libc::c_ulong)
-            as *mut options_array_item;
+    a = xcalloc(
+        1 as libc::c_int as size_t,
+        ::std::mem::size_of::<options_array_item>() as libc::c_ulong,
+    ) as *mut options_array_item;
     (*a).index = idx;
     options_array_RB_INSERT(&mut (*o).value.array, a);
     return a;
 }
-unsafe extern "C" fn options_array_free(mut o: *mut options_entry,
-                                        mut a: *mut options_array_item) {
+unsafe extern "C" fn options_array_free(mut o: *mut options_entry, mut a: *mut options_array_item) {
     options_value_free(o, &mut (*a).value);
     options_array_RB_REMOVE(&mut (*o).value.array, a);
     free(a as *mut libc::c_void);
@@ -2605,110 +2704,122 @@ unsafe extern "C" fn options_array_free(mut o: *mut options_entry,
 pub unsafe extern "C" fn options_array_clear(mut o: *mut options_entry) {
     let mut a: *mut options_array_item = 0 as *mut options_array_item;
     let mut a1: *mut options_array_item = 0 as *mut options_array_item;
-    if !(!(*o).tableentry.is_null() &&
-             (*(*o).tableentry).flags & 0x1 as libc::c_int != 0) {
-        return
+    if !(!(*o).tableentry.is_null() && (*(*o).tableentry).flags & 0x1 as libc::c_int != 0) {
+        return;
     }
     a = options_array_RB_MINMAX(&mut (*o).value.array, -(1 as libc::c_int));
-    while !a.is_null() &&
-              { a1 = options_array_RB_NEXT(a); (1 as libc::c_int) != 0 } {
+    while !a.is_null() && {
+        a1 = options_array_RB_NEXT(a);
+        (1 as libc::c_int) != 0
+    } {
         options_array_free(o, a);
         a = a1
-    };
+    }
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_array_get(mut o: *mut options_entry,
-                                           mut idx: u_int)
- -> *mut options_value {
+pub unsafe extern "C" fn options_array_get(
+    mut o: *mut options_entry,
+    mut idx: u_int,
+) -> *mut options_value {
     let mut a: *mut options_array_item = 0 as *mut options_array_item;
-    if !(!(*o).tableentry.is_null() &&
-             (*(*o).tableentry).flags & 0x1 as libc::c_int != 0) {
-        return 0 as *mut options_value
+    if !(!(*o).tableentry.is_null() && (*(*o).tableentry).flags & 0x1 as libc::c_int != 0) {
+        return 0 as *mut options_value;
     }
     a = options_array_item(o, idx);
-    if a.is_null() { return 0 as *mut options_value }
+    if a.is_null() {
+        return 0 as *mut options_value;
+    }
     return &mut (*a).value;
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_array_set(mut o: *mut options_entry,
-                                           mut idx: u_int,
-                                           mut value: *const libc::c_char,
-                                           mut append: libc::c_int,
-                                           mut cause: *mut *mut libc::c_char)
- -> libc::c_int {
+pub unsafe extern "C" fn options_array_set(
+    mut o: *mut options_entry,
+    mut idx: u_int,
+    mut value: *const libc::c_char,
+    mut append: libc::c_int,
+    mut cause: *mut *mut libc::c_char,
+) -> libc::c_int {
     let mut a: *mut options_array_item = 0 as *mut options_array_item;
     let mut new: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut pr: *mut cmd_parse_result = 0 as *mut cmd_parse_result;
-    if !(!(*o).tableentry.is_null() &&
-             (*(*o).tableentry).flags & 0x1 as libc::c_int != 0) {
+    if !(!(*o).tableentry.is_null() && (*(*o).tableentry).flags & 0x1 as libc::c_int != 0) {
         if !cause.is_null() {
-            *cause =
-                xstrdup(b"not an array\x00" as *const u8 as
-                            *const libc::c_char)
+            *cause = xstrdup(b"not an array\x00" as *const u8 as *const libc::c_char)
         }
-        return -(1 as libc::c_int)
+        return -(1 as libc::c_int);
     }
     if value.is_null() {
         a = options_array_item(o, idx);
-        if !a.is_null() { options_array_free(o, a); }
-        return 0 as libc::c_int
+        if !a.is_null() {
+            options_array_free(o, a);
+        }
+        return 0 as libc::c_int;
     }
-    if !(*o).tableentry.is_null() &&
-           (*(*o).tableentry).type_0 as libc::c_uint ==
-               OPTIONS_TABLE_COMMAND as libc::c_int as libc::c_uint {
+    if !(*o).tableentry.is_null()
+        && (*(*o).tableentry).type_0 as libc::c_uint
+            == OPTIONS_TABLE_COMMAND as libc::c_int as libc::c_uint
+    {
         pr = cmd_parse_from_string(value, 0 as *mut cmd_parse_input);
         match (*pr).status as libc::c_uint {
             0 => {
                 if !cause.is_null() {
-                    *cause =
-                        xstrdup(b"empty command\x00" as *const u8 as
-                                    *const libc::c_char)
+                    *cause = xstrdup(b"empty command\x00" as *const u8 as *const libc::c_char)
                 }
-                return -(1 as libc::c_int)
+                return -(1 as libc::c_int);
             }
             1 => {
                 if !cause.is_null() {
                     *cause = (*pr).error
-                } else { free((*pr).error as *mut libc::c_void); }
-                return -(1 as libc::c_int)
+                } else {
+                    free((*pr).error as *mut libc::c_void);
+                }
+                return -(1 as libc::c_int);
             }
-            2 | _ => { }
+            2 | _ => {}
         }
         a = options_array_item(o, idx);
         if a.is_null() {
             a = options_array_new(o, idx)
-        } else { options_value_free(o, &mut (*a).value); }
+        } else {
+            options_value_free(o, &mut (*a).value);
+        }
         (*a).value.cmdlist = (*pr).cmdlist;
-        return 0 as libc::c_int
+        return 0 as libc::c_int;
     }
-    if (*o).tableentry.is_null() ||
-           (*(*o).tableentry).type_0 as libc::c_uint ==
-               OPTIONS_TABLE_STRING as libc::c_int as libc::c_uint {
+    if (*o).tableentry.is_null()
+        || (*(*o).tableentry).type_0 as libc::c_uint
+            == OPTIONS_TABLE_STRING as libc::c_int as libc::c_uint
+    {
         a = options_array_item(o, idx);
         if !a.is_null() && append != 0 {
-            xasprintf(&mut new as *mut *mut libc::c_char,
-                      b"%s%s\x00" as *const u8 as *const libc::c_char,
-                      (*a).value.string, value);
-        } else { new = xstrdup(value) }
+            xasprintf(
+                &mut new as *mut *mut libc::c_char,
+                b"%s%s\x00" as *const u8 as *const libc::c_char,
+                (*a).value.string,
+                value,
+            );
+        } else {
+            new = xstrdup(value)
+        }
         if a.is_null() {
             a = options_array_new(o, idx)
-        } else { options_value_free(o, &mut (*a).value); }
+        } else {
+            options_value_free(o, &mut (*a).value);
+        }
         (*a).value.string = new;
-        return 0 as libc::c_int
+        return 0 as libc::c_int;
     }
     if !cause.is_null() {
-        *cause =
-            xstrdup(b"wrong array type\x00" as *const u8 as
-                        *const libc::c_char)
+        *cause = xstrdup(b"wrong array type\x00" as *const u8 as *const libc::c_char)
     }
     return -(1 as libc::c_int);
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_array_assign(mut o: *mut options_entry,
-                                              mut s: *const libc::c_char,
-                                              mut cause:
-                                                  *mut *mut libc::c_char)
- -> libc::c_int {
+pub unsafe extern "C" fn options_array_assign(
+    mut o: *mut options_entry,
+    mut s: *const libc::c_char,
+    mut cause: *mut *mut libc::c_char,
+) -> libc::c_int {
     let mut separator: *const libc::c_char = 0 as *const libc::c_char;
     let mut copy: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut next: *mut libc::c_char = 0 as *mut libc::c_char;
@@ -2719,182 +2830,190 @@ pub unsafe extern "C" fn options_array_assign(mut o: *mut options_entry,
         separator = b" ,\x00" as *const u8 as *const libc::c_char
     }
     if *separator as libc::c_int == '\u{0}' as i32 {
-        if *s as libc::c_int == '\u{0}' as i32 { return 0 as libc::c_int }
+        if *s as libc::c_int == '\u{0}' as i32 {
+            return 0 as libc::c_int;
+        }
         i = 0 as libc::c_int as u_int;
-        while i <
-                  (2147483647 as libc::c_int as
-                       libc::c_uint).wrapping_mul(2 as
-                                                      libc::c_uint).wrapping_add(1
-                                                                                     as
-                                                                                     libc::c_uint)
-              {
-            if options_array_item(o, i).is_null() { break ; }
+        while i
+            < (2147483647 as libc::c_int as libc::c_uint)
+                .wrapping_mul(2 as libc::c_uint)
+                .wrapping_add(1 as libc::c_uint)
+        {
+            if options_array_item(o, i).is_null() {
+                break;
+            }
             i = i.wrapping_add(1)
         }
-        return options_array_set(o, i, s, 0 as libc::c_int, cause)
+        return options_array_set(o, i, s, 0 as libc::c_int, cause);
     }
-    if *s as libc::c_int == '\u{0}' as i32 { return 0 as libc::c_int }
+    if *s as libc::c_int == '\u{0}' as i32 {
+        return 0 as libc::c_int;
+    }
     string = xstrdup(s);
     copy = string;
-    loop  {
+    loop {
         next = strsep(&mut string, separator);
-        if next.is_null() { break ; }
-        if *next as libc::c_int == '\u{0}' as i32 { continue ; }
+        if next.is_null() {
+            break;
+        }
+        if *next as libc::c_int == '\u{0}' as i32 {
+            continue;
+        }
         i = 0 as libc::c_int as u_int;
-        while i <
-                  (2147483647 as libc::c_int as
-                       libc::c_uint).wrapping_mul(2 as
-                                                      libc::c_uint).wrapping_add(1
-                                                                                     as
-                                                                                     libc::c_uint)
-              {
-            if options_array_item(o, i).is_null() { break ; }
+        while i
+            < (2147483647 as libc::c_int as libc::c_uint)
+                .wrapping_mul(2 as libc::c_uint)
+                .wrapping_add(1 as libc::c_uint)
+        {
+            if options_array_item(o, i).is_null() {
+                break;
+            }
             i = i.wrapping_add(1)
         }
-        if i ==
-               (2147483647 as libc::c_int as
-                    libc::c_uint).wrapping_mul(2 as
-                                                   libc::c_uint).wrapping_add(1
-                                                                                  as
-                                                                                  libc::c_uint)
-           {
-            break ;
+        if i == (2147483647 as libc::c_int as libc::c_uint)
+            .wrapping_mul(2 as libc::c_uint)
+            .wrapping_add(1 as libc::c_uint)
+        {
+            break;
         }
-        if options_array_set(o, i, next, 0 as libc::c_int, cause) !=
-               0 as libc::c_int {
+        if options_array_set(o, i, next, 0 as libc::c_int, cause) != 0 as libc::c_int {
             free(copy as *mut libc::c_void);
-            return -(1 as libc::c_int)
+            return -(1 as libc::c_int);
         }
     }
     free(copy as *mut libc::c_void);
     return 0 as libc::c_int;
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_array_first(mut o: *mut options_entry)
- -> *mut options_array_item {
-    if !(!(*o).tableentry.is_null() &&
-             (*(*o).tableentry).flags & 0x1 as libc::c_int != 0) {
-        return 0 as *mut options_array_item
+pub unsafe extern "C" fn options_array_first(mut o: *mut options_entry) -> *mut options_array_item {
+    if !(!(*o).tableentry.is_null() && (*(*o).tableentry).flags & 0x1 as libc::c_int != 0) {
+        return 0 as *mut options_array_item;
     }
-    return options_array_RB_MINMAX(&mut (*o).value.array,
-                                   -(1 as libc::c_int));
+    return options_array_RB_MINMAX(&mut (*o).value.array, -(1 as libc::c_int));
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_array_next(mut a: *mut options_array_item)
- -> *mut options_array_item {
+pub unsafe extern "C" fn options_array_next(
+    mut a: *mut options_array_item,
+) -> *mut options_array_item {
     return options_array_RB_NEXT(a);
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_array_item_index(mut a:
-                                                      *mut options_array_item)
- -> u_int {
+pub unsafe extern "C" fn options_array_item_index(mut a: *mut options_array_item) -> u_int {
     return (*a).index;
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_array_item_value(mut a:
-                                                      *mut options_array_item)
- -> *mut options_value {
+pub unsafe extern "C" fn options_array_item_value(
+    mut a: *mut options_array_item,
+) -> *mut options_value {
     return &mut (*a).value;
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_is_array(mut o: *mut options_entry)
- -> libc::c_int {
-    return (!(*o).tableentry.is_null() &&
-                (*(*o).tableentry).flags & 0x1 as libc::c_int != 0) as
-               libc::c_int;
+pub unsafe extern "C" fn options_is_array(mut o: *mut options_entry) -> libc::c_int {
+    return (!(*o).tableentry.is_null() && (*(*o).tableentry).flags & 0x1 as libc::c_int != 0)
+        as libc::c_int;
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_is_string(mut o: *mut options_entry)
- -> libc::c_int {
-    return ((*o).tableentry.is_null() ||
-                (*(*o).tableentry).type_0 as libc::c_uint ==
-                    OPTIONS_TABLE_STRING as libc::c_int as libc::c_uint) as
-               libc::c_int;
+pub unsafe extern "C" fn options_is_string(mut o: *mut options_entry) -> libc::c_int {
+    return ((*o).tableentry.is_null()
+        || (*(*o).tableentry).type_0 as libc::c_uint
+            == OPTIONS_TABLE_STRING as libc::c_int as libc::c_uint) as libc::c_int;
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_to_string(mut o: *mut options_entry,
-                                           mut idx: libc::c_int,
-                                           mut numeric: libc::c_int)
- -> *mut libc::c_char {
+pub unsafe extern "C" fn options_to_string(
+    mut o: *mut options_entry,
+    mut idx: libc::c_int,
+    mut numeric: libc::c_int,
+) -> *mut libc::c_char {
     let mut a: *mut options_array_item = 0 as *mut options_array_item;
-    if !(*o).tableentry.is_null() &&
-           (*(*o).tableentry).flags & 0x1 as libc::c_int != 0 {
+    if !(*o).tableentry.is_null() && (*(*o).tableentry).flags & 0x1 as libc::c_int != 0 {
         if idx == -(1 as libc::c_int) {
-            return xstrdup(b"\x00" as *const u8 as *const libc::c_char)
+            return xstrdup(b"\x00" as *const u8 as *const libc::c_char);
         }
         a = options_array_item(o, idx as u_int);
         if a.is_null() {
-            return xstrdup(b"\x00" as *const u8 as *const libc::c_char)
+            return xstrdup(b"\x00" as *const u8 as *const libc::c_char);
         }
-        return options_value_to_string(o, &mut (*a).value, numeric)
+        return options_value_to_string(o, &mut (*a).value, numeric);
     }
     return options_value_to_string(o, &mut (*o).value, numeric);
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_parse(mut name: *const libc::c_char,
-                                       mut idx: *mut libc::c_int)
- -> *mut libc::c_char {
+pub unsafe extern "C" fn options_parse(
+    mut name: *const libc::c_char,
+    mut idx: *mut libc::c_int,
+) -> *mut libc::c_char {
     let mut copy: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut cp: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut end: *mut libc::c_char = 0 as *mut libc::c_char;
     if *name as libc::c_int == '\u{0}' as i32 {
-        return 0 as *mut libc::c_char
+        return 0 as *mut libc::c_char;
     }
     copy = xstrdup(name);
     cp = strchr(copy, '[' as i32);
-    if cp.is_null() { *idx = -(1 as libc::c_int); return copy }
-    end = strchr(cp.offset(1 as libc::c_int as isize), ']' as i32);
-    if end.is_null() ||
-           *end.offset(1 as libc::c_int as isize) as libc::c_int !=
-               '\u{0}' as i32 ||
-           *(*__ctype_b_loc()).offset(*end.offset(-(1 as libc::c_int) as
-                                                      isize) as u_char as
-                                          libc::c_int as isize) as libc::c_int
-               & _ISdigit as libc::c_int as libc::c_ushort as libc::c_int == 0
-       {
-        free(copy as *mut libc::c_void);
-        return 0 as *mut libc::c_char
+    if cp.is_null() {
+        *idx = -(1 as libc::c_int);
+        return copy;
     }
-    if sscanf(cp, b"[%d]\x00" as *const u8 as *const libc::c_char, idx) !=
-           1 as libc::c_int || *idx < 0 as libc::c_int {
+    end = strchr(cp.offset(1 as libc::c_int as isize), ']' as i32);
+    if end.is_null()
+        || *end.offset(1 as libc::c_int as isize) as libc::c_int != '\u{0}' as i32
+        || *(*__ctype_b_loc())
+            .offset(*end.offset(-(1 as libc::c_int) as isize) as u_char as libc::c_int as isize)
+            as libc::c_int
+            & _ISdigit as libc::c_int as libc::c_ushort as libc::c_int
+            == 0
+    {
         free(copy as *mut libc::c_void);
-        return 0 as *mut libc::c_char
+        return 0 as *mut libc::c_char;
+    }
+    if sscanf(cp, b"[%d]\x00" as *const u8 as *const libc::c_char, idx) != 1 as libc::c_int
+        || *idx < 0 as libc::c_int
+    {
+        free(copy as *mut libc::c_void);
+        return 0 as *mut libc::c_char;
     }
     *cp = '\u{0}' as i32 as libc::c_char;
     return copy;
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_parse_get(mut oo: *mut options,
-                                           mut s: *const libc::c_char,
-                                           mut idx: *mut libc::c_int,
-                                           mut only: libc::c_int)
- -> *mut options_entry {
+pub unsafe extern "C" fn options_parse_get(
+    mut oo: *mut options,
+    mut s: *const libc::c_char,
+    mut idx: *mut libc::c_int,
+    mut only: libc::c_int,
+) -> *mut options_entry {
     let mut o: *mut options_entry = 0 as *mut options_entry;
     let mut name: *mut libc::c_char = 0 as *mut libc::c_char;
     name = options_parse(s, idx);
-    if name.is_null() { return 0 as *mut options_entry }
+    if name.is_null() {
+        return 0 as *mut options_entry;
+    }
     if only != 0 {
         o = options_get_only(oo, name)
-    } else { o = options_get(oo, name) }
+    } else {
+        o = options_get(oo, name)
+    }
     free(name as *mut libc::c_void);
     return o;
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_match(mut s: *const libc::c_char,
-                                       mut idx: *mut libc::c_int,
-                                       mut ambiguous: *mut libc::c_int)
- -> *mut libc::c_char {
+pub unsafe extern "C" fn options_match(
+    mut s: *const libc::c_char,
+    mut idx: *mut libc::c_int,
+    mut ambiguous: *mut libc::c_int,
+) -> *mut libc::c_char {
     let mut oe: *const options_table_entry = 0 as *const options_table_entry;
-    let mut found: *const options_table_entry =
-        0 as *const options_table_entry;
+    let mut found: *const options_table_entry = 0 as *const options_table_entry;
     let mut parsed: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut name: *const libc::c_char = 0 as *const libc::c_char;
     let mut namelen: size_t = 0;
     parsed = options_parse(s, idx);
-    if parsed.is_null() { return 0 as *mut libc::c_char }
+    if parsed.is_null() {
+        return 0 as *mut libc::c_char;
+    }
     if *parsed as libc::c_int == '@' as i32 {
         *ambiguous = 0 as libc::c_int;
-        return parsed
+        return parsed;
     }
     name = options_map_name(parsed);
     namelen = strlen(name);
@@ -2903,13 +3022,13 @@ pub unsafe extern "C" fn options_match(mut s: *const libc::c_char,
     while !(*oe).name.is_null() {
         if strcmp((*oe).name, name) == 0 as libc::c_int {
             found = oe;
-            break ;
+            break;
         } else {
             if strncmp((*oe).name, name, namelen) == 0 as libc::c_int {
                 if !found.is_null() {
                     *ambiguous = 1 as libc::c_int;
                     free(parsed as *mut libc::c_void);
-                    return 0 as *mut libc::c_char
+                    return 0 as *mut libc::c_char;
                 }
                 found = oe
             }
@@ -2919,114 +3038,144 @@ pub unsafe extern "C" fn options_match(mut s: *const libc::c_char,
     free(parsed as *mut libc::c_void);
     if found.is_null() {
         *ambiguous = 0 as libc::c_int;
-        return 0 as *mut libc::c_char
+        return 0 as *mut libc::c_char;
     }
     return xstrdup((*found).name);
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_match_get(mut oo: *mut options,
-                                           mut s: *const libc::c_char,
-                                           mut idx: *mut libc::c_int,
-                                           mut only: libc::c_int,
-                                           mut ambiguous: *mut libc::c_int)
- -> *mut options_entry {
+pub unsafe extern "C" fn options_match_get(
+    mut oo: *mut options,
+    mut s: *const libc::c_char,
+    mut idx: *mut libc::c_int,
+    mut only: libc::c_int,
+    mut ambiguous: *mut libc::c_int,
+) -> *mut options_entry {
     let mut name: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut o: *mut options_entry = 0 as *mut options_entry;
     name = options_match(s, idx, ambiguous);
-    if name.is_null() { return 0 as *mut options_entry }
+    if name.is_null() {
+        return 0 as *mut options_entry;
+    }
     *ambiguous = 0 as libc::c_int;
     if only != 0 {
         o = options_get_only(oo, name)
-    } else { o = options_get(oo, name) }
+    } else {
+        o = options_get(oo, name)
+    }
     free(name as *mut libc::c_void);
     return o;
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_get_string(mut oo: *mut options,
-                                            mut name: *const libc::c_char)
- -> *const libc::c_char {
+pub unsafe extern "C" fn options_get_string(
+    mut oo: *mut options,
+    mut name: *const libc::c_char,
+) -> *const libc::c_char {
     let mut o: *mut options_entry = 0 as *mut options_entry;
     o = options_get(oo, name);
     if o.is_null() {
-        fatalx(b"missing option %s\x00" as *const u8 as *const libc::c_char,
-               name);
+        fatalx(
+            b"missing option %s\x00" as *const u8 as *const libc::c_char,
+            name,
+        );
     }
-    if !((*o).tableentry.is_null() ||
-             (*(*o).tableentry).type_0 as libc::c_uint ==
-                 OPTIONS_TABLE_STRING as libc::c_int as libc::c_uint) {
-        fatalx(b"option %s is not a string\x00" as *const u8 as
-                   *const libc::c_char, name);
+    if !((*o).tableentry.is_null()
+        || (*(*o).tableentry).type_0 as libc::c_uint
+            == OPTIONS_TABLE_STRING as libc::c_int as libc::c_uint)
+    {
+        fatalx(
+            b"option %s is not a string\x00" as *const u8 as *const libc::c_char,
+            name,
+        );
     }
     return (*o).value.string;
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_get_number(mut oo: *mut options,
-                                            mut name: *const libc::c_char)
- -> libc::c_longlong {
+pub unsafe extern "C" fn options_get_number(
+    mut oo: *mut options,
+    mut name: *const libc::c_char,
+) -> libc::c_longlong {
     let mut o: *mut options_entry = 0 as *mut options_entry;
     o = options_get(oo, name);
     if o.is_null() {
-        fatalx(b"missing option %s\x00" as *const u8 as *const libc::c_char,
-               name);
+        fatalx(
+            b"missing option %s\x00" as *const u8 as *const libc::c_char,
+            name,
+        );
     }
-    if !(!(*o).tableentry.is_null() &&
-             ((*(*o).tableentry).type_0 as libc::c_uint ==
-                  OPTIONS_TABLE_NUMBER as libc::c_int as libc::c_uint ||
-                  (*(*o).tableentry).type_0 as libc::c_uint ==
-                      OPTIONS_TABLE_KEY as libc::c_int as libc::c_uint ||
-                  (*(*o).tableentry).type_0 as libc::c_uint ==
-                      OPTIONS_TABLE_COLOUR as libc::c_int as libc::c_uint ||
-                  (*(*o).tableentry).type_0 as libc::c_uint ==
-                      OPTIONS_TABLE_FLAG as libc::c_int as libc::c_uint ||
-                  (*(*o).tableentry).type_0 as libc::c_uint ==
-                      OPTIONS_TABLE_CHOICE as libc::c_int as libc::c_uint)) {
-        fatalx(b"option %s is not a number\x00" as *const u8 as
-                   *const libc::c_char, name);
+    if !(!(*o).tableentry.is_null()
+        && ((*(*o).tableentry).type_0 as libc::c_uint
+            == OPTIONS_TABLE_NUMBER as libc::c_int as libc::c_uint
+            || (*(*o).tableentry).type_0 as libc::c_uint
+                == OPTIONS_TABLE_KEY as libc::c_int as libc::c_uint
+            || (*(*o).tableentry).type_0 as libc::c_uint
+                == OPTIONS_TABLE_COLOUR as libc::c_int as libc::c_uint
+            || (*(*o).tableentry).type_0 as libc::c_uint
+                == OPTIONS_TABLE_FLAG as libc::c_int as libc::c_uint
+            || (*(*o).tableentry).type_0 as libc::c_uint
+                == OPTIONS_TABLE_CHOICE as libc::c_int as libc::c_uint))
+    {
+        fatalx(
+            b"option %s is not a number\x00" as *const u8 as *const libc::c_char,
+            name,
+        );
     }
     return (*o).value.number;
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_set_string(mut oo: *mut options,
-                                            mut name: *const libc::c_char,
-                                            mut append: libc::c_int,
-                                            mut fmt: *const libc::c_char,
-                                            mut args: ...)
- -> *mut options_entry {
+pub unsafe extern "C" fn options_set_string(
+    mut oo: *mut options,
+    mut name: *const libc::c_char,
+    mut append: libc::c_int,
+    mut fmt: *const libc::c_char,
+    mut args: ...
+) -> *mut options_entry {
     let mut o: *mut options_entry = 0 as *mut options_entry;
     let mut ap: ::std::ffi::VaListImpl;
-    let mut separator: *const libc::c_char =
-        b"\x00" as *const u8 as *const libc::c_char;
+    let mut separator: *const libc::c_char = b"\x00" as *const u8 as *const libc::c_char;
     let mut s: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut value: *mut libc::c_char = 0 as *mut libc::c_char;
     ap = args.clone();
     xvasprintf(&mut s, fmt, ap.as_va_list());
     o = options_get_only(oo, name);
-    if !o.is_null() && append != 0 &&
-           ((*o).tableentry.is_null() ||
-                (*(*o).tableentry).type_0 as libc::c_uint ==
-                    OPTIONS_TABLE_STRING as libc::c_int as libc::c_uint) {
+    if !o.is_null()
+        && append != 0
+        && ((*o).tableentry.is_null()
+            || (*(*o).tableentry).type_0 as libc::c_uint
+                == OPTIONS_TABLE_STRING as libc::c_int as libc::c_uint)
+    {
         if *name as libc::c_int != '@' as i32 {
             separator = (*(*o).tableentry).separator;
             if separator.is_null() {
                 separator = b"\x00" as *const u8 as *const libc::c_char
             }
         }
-        xasprintf(&mut value as *mut *mut libc::c_char,
-                  b"%s%s%s\x00" as *const u8 as *const libc::c_char,
-                  (*o).value.string, separator, s);
+        xasprintf(
+            &mut value as *mut *mut libc::c_char,
+            b"%s%s%s\x00" as *const u8 as *const libc::c_char,
+            (*o).value.string,
+            separator,
+            s,
+        );
         free(s as *mut libc::c_void);
-    } else { value = s }
+    } else {
+        value = s
+    }
     if o.is_null() && *name as libc::c_int == '@' as i32 {
         o = options_add(oo, name)
     } else if o.is_null() {
         o = options_default(oo, options_parent_table_entry(oo, name));
-        if o.is_null() { return 0 as *mut options_entry }
+        if o.is_null() {
+            return 0 as *mut options_entry;
+        }
     }
-    if !((*o).tableentry.is_null() ||
-             (*(*o).tableentry).type_0 as libc::c_uint ==
-                 OPTIONS_TABLE_STRING as libc::c_int as libc::c_uint) {
-        fatalx(b"option %s is not a string\x00" as *const u8 as
-                   *const libc::c_char, name);
+    if !((*o).tableentry.is_null()
+        || (*(*o).tableentry).type_0 as libc::c_uint
+            == OPTIONS_TABLE_STRING as libc::c_int as libc::c_uint)
+    {
+        fatalx(
+            b"option %s is not a string\x00" as *const u8 as *const libc::c_char,
+            name,
+        );
     }
     free((*o).value.string as *mut libc::c_void);
     (*o).value.string = value;
@@ -3034,67 +3183,77 @@ pub unsafe extern "C" fn options_set_string(mut oo: *mut options,
     return o;
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_set_number(mut oo: *mut options,
-                                            mut name: *const libc::c_char,
-                                            mut value: libc::c_longlong)
- -> *mut options_entry {
+pub unsafe extern "C" fn options_set_number(
+    mut oo: *mut options,
+    mut name: *const libc::c_char,
+    mut value: libc::c_longlong,
+) -> *mut options_entry {
     let mut o: *mut options_entry = 0 as *mut options_entry;
     if *name as libc::c_int == '@' as i32 {
-        fatalx(b"user option %s must be a string\x00" as *const u8 as
-                   *const libc::c_char, name);
+        fatalx(
+            b"user option %s must be a string\x00" as *const u8 as *const libc::c_char,
+            name,
+        );
     }
     o = options_get_only(oo, name);
     if o.is_null() {
         o = options_default(oo, options_parent_table_entry(oo, name));
-        if o.is_null() { return 0 as *mut options_entry }
+        if o.is_null() {
+            return 0 as *mut options_entry;
+        }
     }
-    if !(!(*o).tableentry.is_null() &&
-             ((*(*o).tableentry).type_0 as libc::c_uint ==
-                  OPTIONS_TABLE_NUMBER as libc::c_int as libc::c_uint ||
-                  (*(*o).tableentry).type_0 as libc::c_uint ==
-                      OPTIONS_TABLE_KEY as libc::c_int as libc::c_uint ||
-                  (*(*o).tableentry).type_0 as libc::c_uint ==
-                      OPTIONS_TABLE_COLOUR as libc::c_int as libc::c_uint ||
-                  (*(*o).tableentry).type_0 as libc::c_uint ==
-                      OPTIONS_TABLE_FLAG as libc::c_int as libc::c_uint ||
-                  (*(*o).tableentry).type_0 as libc::c_uint ==
-                      OPTIONS_TABLE_CHOICE as libc::c_int as libc::c_uint)) {
-        fatalx(b"option %s is not a number\x00" as *const u8 as
-                   *const libc::c_char, name);
+    if !(!(*o).tableentry.is_null()
+        && ((*(*o).tableentry).type_0 as libc::c_uint
+            == OPTIONS_TABLE_NUMBER as libc::c_int as libc::c_uint
+            || (*(*o).tableentry).type_0 as libc::c_uint
+                == OPTIONS_TABLE_KEY as libc::c_int as libc::c_uint
+            || (*(*o).tableentry).type_0 as libc::c_uint
+                == OPTIONS_TABLE_COLOUR as libc::c_int as libc::c_uint
+            || (*(*o).tableentry).type_0 as libc::c_uint
+                == OPTIONS_TABLE_FLAG as libc::c_int as libc::c_uint
+            || (*(*o).tableentry).type_0 as libc::c_uint
+                == OPTIONS_TABLE_CHOICE as libc::c_int as libc::c_uint))
+    {
+        fatalx(
+            b"option %s is not a number\x00" as *const u8 as *const libc::c_char,
+            name,
+        );
     }
     (*o).value.number = value;
     return o;
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_scope_from_name(mut args: *mut args,
-                                                 mut window: libc::c_int,
-                                                 mut name:
-                                                     *const libc::c_char,
-                                                 mut fs: *mut cmd_find_state,
-                                                 mut oo: *mut *mut options,
-                                                 mut cause:
-                                                     *mut *mut libc::c_char)
- -> libc::c_int {
+pub unsafe extern "C" fn options_scope_from_name(
+    mut args: *mut args,
+    mut window: libc::c_int,
+    mut name: *const libc::c_char,
+    mut fs: *mut cmd_find_state,
+    mut oo: *mut *mut options,
+    mut cause: *mut *mut libc::c_char,
+) -> libc::c_int {
     let mut s: *mut session = (*fs).s;
     let mut wl: *mut winlink = (*fs).wl;
     let mut wp: *mut window_pane = (*fs).wp;
-    let mut target: *const libc::c_char =
-        args_get(args, 't' as i32 as u_char);
+    let mut target: *const libc::c_char = args_get(args, 't' as i32 as u_char);
     let mut oe: *const options_table_entry = 0 as *const options_table_entry;
     let mut scope: libc::c_int = 0 as libc::c_int;
     if *name as libc::c_int == '@' as i32 {
-        return options_scope_from_flags(args, window, fs, oo, cause)
+        return options_scope_from_flags(args, window, fs, oo, cause);
     }
     oe = options_table.as_ptr();
     while !(*oe).name.is_null() {
-        if strcmp((*oe).name, name) == 0 as libc::c_int { break ; }
+        if strcmp((*oe).name, name) == 0 as libc::c_int {
+            break;
+        }
         oe = oe.offset(1)
     }
     if (*oe).name.is_null() {
-        xasprintf(cause,
-                  b"unknown option: %s\x00" as *const u8 as
-                      *const libc::c_char, name);
-        return 0 as libc::c_int
+        xasprintf(
+            cause,
+            b"unknown option: %s\x00" as *const u8 as *const libc::c_char,
+            name,
+        );
+        return 0 as libc::c_int;
     }
     let mut current_block_38: u64;
     match (*oe).scope {
@@ -3108,32 +3267,50 @@ pub unsafe extern "C" fn options_scope_from_name(mut args: *mut args,
                 *oo = global_s_options;
                 scope = 0x2 as libc::c_int
             } else if s.is_null() && !target.is_null() {
-                xasprintf(cause,
-                          b"no such session: %s\x00" as *const u8 as
-                              *const libc::c_char, target);
+                xasprintf(
+                    cause,
+                    b"no such session: %s\x00" as *const u8 as *const libc::c_char,
+                    target,
+                );
             } else if s.is_null() {
-                xasprintf(cause,
-                          b"no current session\x00" as *const u8 as
-                              *const libc::c_char);
-            } else { *oo = (*s).options; scope = 0x2 as libc::c_int }
+                xasprintf(
+                    cause,
+                    b"no current session\x00" as *const u8 as *const libc::c_char,
+                );
+            } else {
+                *oo = (*s).options;
+                scope = 0x2 as libc::c_int
+            }
             current_block_38 = 6717214610478484138;
         }
         12 => {
             if args_has(args, 'p' as i32 as u_char) != 0 {
                 if wp.is_null() && !target.is_null() {
-                    xasprintf(cause,
-                              b"no such pane: %s\x00" as *const u8 as
-                                  *const libc::c_char, target);
+                    xasprintf(
+                        cause,
+                        b"no such pane: %s\x00" as *const u8 as *const libc::c_char,
+                        target,
+                    );
                 } else if wp.is_null() {
-                    xasprintf(cause,
-                              b"no current pane\x00" as *const u8 as
-                                  *const libc::c_char);
-                } else { *oo = (*wp).options; scope = 0x8 as libc::c_int }
+                    xasprintf(
+                        cause,
+                        b"no current pane\x00" as *const u8 as *const libc::c_char,
+                    );
+                } else {
+                    *oo = (*wp).options;
+                    scope = 0x8 as libc::c_int
+                }
                 current_block_38 = 6717214610478484138;
-            } else { current_block_38 = 15958660329489593307; }
+            } else {
+                current_block_38 = 15958660329489593307;
+            }
         }
-        4 => { current_block_38 = 15958660329489593307; }
-        _ => { current_block_38 = 6717214610478484138; }
+        4 => {
+            current_block_38 = 15958660329489593307;
+        }
+        _ => {
+            current_block_38 = 6717214610478484138;
+        }
     }
     match current_block_38 {
         15958660329489593307 =>
@@ -3143,267 +3320,290 @@ pub unsafe extern "C" fn options_scope_from_name(mut args: *mut args,
                 *oo = global_w_options;
                 scope = 0x4 as libc::c_int
             } else if wl.is_null() && !target.is_null() {
-                xasprintf(cause,
-                          b"no such window: %s\x00" as *const u8 as
-                              *const libc::c_char, target);
+                xasprintf(
+                    cause,
+                    b"no such window: %s\x00" as *const u8 as *const libc::c_char,
+                    target,
+                );
             } else if wl.is_null() {
-                xasprintf(cause,
-                          b"no current window\x00" as *const u8 as
-                              *const libc::c_char);
+                xasprintf(
+                    cause,
+                    b"no current window\x00" as *const u8 as *const libc::c_char,
+                );
             } else {
                 *oo = (*(*wl).window).options;
                 scope = 0x4 as libc::c_int
             }
         }
-        _ => { }
+        _ => {}
     }
     return scope;
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_scope_from_flags(mut args: *mut args,
-                                                  mut window: libc::c_int,
-                                                  mut fs: *mut cmd_find_state,
-                                                  mut oo: *mut *mut options,
-                                                  mut cause:
-                                                      *mut *mut libc::c_char)
- -> libc::c_int {
+pub unsafe extern "C" fn options_scope_from_flags(
+    mut args: *mut args,
+    mut window: libc::c_int,
+    mut fs: *mut cmd_find_state,
+    mut oo: *mut *mut options,
+    mut cause: *mut *mut libc::c_char,
+) -> libc::c_int {
     let mut s: *mut session = (*fs).s;
     let mut wl: *mut winlink = (*fs).wl;
     let mut wp: *mut window_pane = (*fs).wp;
-    let mut target: *const libc::c_char =
-        args_get(args, 't' as i32 as u_char);
+    let mut target: *const libc::c_char = args_get(args, 't' as i32 as u_char);
     if args_has(args, 's' as i32 as u_char) != 0 {
         *oo = global_options;
-        return 0x1 as libc::c_int
+        return 0x1 as libc::c_int;
     }
     if args_has(args, 'p' as i32 as u_char) != 0 {
         if wp.is_null() {
             if !target.is_null() {
-                xasprintf(cause,
-                          b"no such pane: %s\x00" as *const u8 as
-                              *const libc::c_char, target);
+                xasprintf(
+                    cause,
+                    b"no such pane: %s\x00" as *const u8 as *const libc::c_char,
+                    target,
+                );
             } else {
-                xasprintf(cause,
-                          b"no current pane\x00" as *const u8 as
-                              *const libc::c_char);
+                xasprintf(
+                    cause,
+                    b"no current pane\x00" as *const u8 as *const libc::c_char,
+                );
             }
-            return 0 as libc::c_int
+            return 0 as libc::c_int;
         }
         *oo = (*wp).options;
-        return 0x8 as libc::c_int
+        return 0x8 as libc::c_int;
     } else if window != 0 || args_has(args, 'w' as i32 as u_char) != 0 {
         if args_has(args, 'g' as i32 as u_char) != 0 {
             *oo = global_w_options;
-            return 0x4 as libc::c_int
+            return 0x4 as libc::c_int;
         }
         if wl.is_null() {
             if !target.is_null() {
-                xasprintf(cause,
-                          b"no such window: %s\x00" as *const u8 as
-                              *const libc::c_char, target);
+                xasprintf(
+                    cause,
+                    b"no such window: %s\x00" as *const u8 as *const libc::c_char,
+                    target,
+                );
             } else {
-                xasprintf(cause,
-                          b"no current window\x00" as *const u8 as
-                              *const libc::c_char);
+                xasprintf(
+                    cause,
+                    b"no current window\x00" as *const u8 as *const libc::c_char,
+                );
             }
-            return 0 as libc::c_int
+            return 0 as libc::c_int;
         }
         *oo = (*(*wl).window).options;
-        return 0x4 as libc::c_int
+        return 0x4 as libc::c_int;
     } else {
         if args_has(args, 'g' as i32 as u_char) != 0 {
             *oo = global_s_options;
-            return 0x2 as libc::c_int
+            return 0x2 as libc::c_int;
         }
         if s.is_null() {
             if !target.is_null() {
-                xasprintf(cause,
-                          b"no such session: %s\x00" as *const u8 as
-                              *const libc::c_char, target);
+                xasprintf(
+                    cause,
+                    b"no such session: %s\x00" as *const u8 as *const libc::c_char,
+                    target,
+                );
             } else {
-                xasprintf(cause,
-                          b"no current session\x00" as *const u8 as
-                              *const libc::c_char);
+                xasprintf(
+                    cause,
+                    b"no current session\x00" as *const u8 as *const libc::c_char,
+                );
             }
-            return 0 as libc::c_int
+            return 0 as libc::c_int;
         }
         *oo = (*s).options;
-        return 0x2 as libc::c_int
+        return 0x2 as libc::c_int;
     };
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_string_to_style(mut oo: *mut options,
-                                                 mut name:
-                                                     *const libc::c_char,
-                                                 mut ft: *mut format_tree)
- -> *mut style {
+pub unsafe extern "C" fn options_string_to_style(
+    mut oo: *mut options,
+    mut name: *const libc::c_char,
+    mut ft: *mut format_tree,
+) -> *mut style {
     let mut o: *mut options_entry = 0 as *mut options_entry;
     let mut s: *const libc::c_char = 0 as *const libc::c_char;
     let mut expanded: *mut libc::c_char = 0 as *mut libc::c_char;
     o = options_get(oo, name);
-    if o.is_null() ||
-           !((*o).tableentry.is_null() ||
-                 (*(*o).tableentry).type_0 as libc::c_uint ==
-                     OPTIONS_TABLE_STRING as libc::c_int as libc::c_uint) {
-        return 0 as *mut style
+    if o.is_null()
+        || !((*o).tableentry.is_null()
+            || (*(*o).tableentry).type_0 as libc::c_uint
+                == OPTIONS_TABLE_STRING as libc::c_int as libc::c_uint)
+    {
+        return 0 as *mut style;
     }
-    if (*o).cached != 0 { return &mut (*o).style }
+    if (*o).cached != 0 {
+        return &mut (*o).style;
+    }
     s = (*o).value.string;
-    log_debug(b"%s: %s is \'%s\'\x00" as *const u8 as *const libc::c_char,
-              (*::std::mem::transmute::<&[u8; 24],
-                                        &[libc::c_char; 24]>(b"options_string_to_style\x00")).as_ptr(),
-              name, s);
+    log_debug(
+        b"%s: %s is \'%s\'\x00" as *const u8 as *const libc::c_char,
+        (*::std::mem::transmute::<&[u8; 24], &[libc::c_char; 24]>(b"options_string_to_style\x00"))
+            .as_ptr(),
+        name,
+        s,
+    );
     style_set(&mut (*o).style, &grid_default_cell);
-    (*o).cached =
-        (strstr(s, b"#{\x00" as *const u8 as *const libc::c_char) ==
-             0 as *mut libc::c_void as *mut libc::c_char) as libc::c_int;
+    (*o).cached = (strstr(s, b"#{\x00" as *const u8 as *const libc::c_char)
+        == 0 as *mut libc::c_void as *mut libc::c_char) as libc::c_int;
     if !ft.is_null() && (*o).cached == 0 {
         expanded = format_expand(ft, s);
-        if style_parse(&mut (*o).style, &grid_default_cell, expanded) !=
-               0 as libc::c_int {
+        if style_parse(&mut (*o).style, &grid_default_cell, expanded) != 0 as libc::c_int {
             free(expanded as *mut libc::c_void);
-            return 0 as *mut style
+            return 0 as *mut style;
         }
         free(expanded as *mut libc::c_void);
-    } else if style_parse(&mut (*o).style, &grid_default_cell, s) !=
-                  0 as libc::c_int {
-        return 0 as *mut style
+    } else if style_parse(&mut (*o).style, &grid_default_cell, s) != 0 as libc::c_int {
+        return 0 as *mut style;
     }
     return &mut (*o).style;
 }
-unsafe extern "C" fn options_from_string_check(mut oe:
-                                                   *const options_table_entry,
-                                               mut value: *const libc::c_char,
-                                               mut cause:
-                                                   *mut *mut libc::c_char)
- -> libc::c_int {
-    let mut sy: style =
-        style{gc:
-                  grid_cell{data:
-                                utf8_data{data: [0; 21],
-                                          have: 0,
-                                          size: 0,
-                                          width: 0,},
-                            attr: 0,
-                            flags: 0,
-                            fg: 0,
-                            bg: 0,
-                            us: 0,},
-              ignore: 0,
-              fill: 0,
-              align: STYLE_ALIGN_DEFAULT,
-              list: STYLE_LIST_OFF,
-              range_type: STYLE_RANGE_NONE,
-              range_argument: 0,
-              default_type: STYLE_DEFAULT_BASE,};
-    if oe.is_null() { return 0 as libc::c_int }
-    if strcmp((*oe).name,
-              b"default-shell\x00" as *const u8 as *const libc::c_char) ==
-           0 as libc::c_int && checkshell(value) == 0 {
-        xasprintf(cause,
-                  b"not a suitable shell: %s\x00" as *const u8 as
-                      *const libc::c_char, value);
-        return -(1 as libc::c_int)
+unsafe extern "C" fn options_from_string_check(
+    mut oe: *const options_table_entry,
+    mut value: *const libc::c_char,
+    mut cause: *mut *mut libc::c_char,
+) -> libc::c_int {
+    let mut sy: style = style {
+        gc: grid_cell {
+            data: utf8_data {
+                data: [0; 21],
+                have: 0,
+                size: 0,
+                width: 0,
+            },
+            attr: 0,
+            flags: 0,
+            fg: 0,
+            bg: 0,
+            us: 0,
+        },
+        ignore: 0,
+        fill: 0,
+        align: STYLE_ALIGN_DEFAULT,
+        list: STYLE_LIST_OFF,
+        range_type: STYLE_RANGE_NONE,
+        range_argument: 0,
+        default_type: STYLE_DEFAULT_BASE,
+    };
+    if oe.is_null() {
+        return 0 as libc::c_int;
     }
-    if !(*oe).pattern.is_null() &&
-           fnmatch((*oe).pattern, value, 0 as libc::c_int) != 0 as libc::c_int
-       {
-        xasprintf(cause,
-                  b"value is invalid: %s\x00" as *const u8 as
-                      *const libc::c_char, value);
-        return -(1 as libc::c_int)
+    if strcmp(
+        (*oe).name,
+        b"default-shell\x00" as *const u8 as *const libc::c_char,
+    ) == 0 as libc::c_int
+        && checkshell(value) == 0
+    {
+        xasprintf(
+            cause,
+            b"not a suitable shell: %s\x00" as *const u8 as *const libc::c_char,
+            value,
+        );
+        return -(1 as libc::c_int);
     }
-    if (*oe).flags & 0x4 as libc::c_int != 0 &&
-           strstr(value,
-                  b"#{\x00" as *const u8 as *const libc::c_char).is_null() &&
-           style_parse(&mut sy, &grid_default_cell, value) != 0 as libc::c_int
-       {
-        xasprintf(cause,
-                  b"invalid style: %s\x00" as *const u8 as
-                      *const libc::c_char, value);
-        return -(1 as libc::c_int)
+    if !(*oe).pattern.is_null()
+        && fnmatch((*oe).pattern, value, 0 as libc::c_int) != 0 as libc::c_int
+    {
+        xasprintf(
+            cause,
+            b"value is invalid: %s\x00" as *const u8 as *const libc::c_char,
+            value,
+        );
+        return -(1 as libc::c_int);
+    }
+    if (*oe).flags & 0x4 as libc::c_int != 0
+        && strstr(value, b"#{\x00" as *const u8 as *const libc::c_char).is_null()
+        && style_parse(&mut sy, &grid_default_cell, value) != 0 as libc::c_int
+    {
+        xasprintf(
+            cause,
+            b"invalid style: %s\x00" as *const u8 as *const libc::c_char,
+            value,
+        );
+        return -(1 as libc::c_int);
     }
     return 0 as libc::c_int;
 }
-unsafe extern "C" fn options_from_string_flag(mut oo: *mut options,
-                                              mut name: *const libc::c_char,
-                                              mut value: *const libc::c_char,
-                                              mut cause:
-                                                  *mut *mut libc::c_char)
- -> libc::c_int {
+unsafe extern "C" fn options_from_string_flag(
+    mut oo: *mut options,
+    mut name: *const libc::c_char,
+    mut value: *const libc::c_char,
+    mut cause: *mut *mut libc::c_char,
+) -> libc::c_int {
     let mut flag: libc::c_int = 0;
     if value.is_null() || *value as libc::c_int == '\u{0}' as i32 {
         flag = (options_get_number(oo, name) == 0) as libc::c_int
-    } else if strcmp(value, b"1\x00" as *const u8 as *const libc::c_char) ==
-                  0 as libc::c_int ||
-                  strcasecmp(value,
-                             b"on\x00" as *const u8 as *const libc::c_char) ==
-                      0 as libc::c_int ||
-                  strcasecmp(value,
-                             b"yes\x00" as *const u8 as *const libc::c_char)
-                      == 0 as libc::c_int {
+    } else if strcmp(value, b"1\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int
+        || strcasecmp(value, b"on\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int
+        || strcasecmp(value, b"yes\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int
+    {
         flag = 1 as libc::c_int
-    } else if strcmp(value, b"0\x00" as *const u8 as *const libc::c_char) ==
-                  0 as libc::c_int ||
-                  strcasecmp(value,
-                             b"off\x00" as *const u8 as *const libc::c_char)
-                      == 0 as libc::c_int ||
-                  strcasecmp(value,
-                             b"no\x00" as *const u8 as *const libc::c_char) ==
-                      0 as libc::c_int {
+    } else if strcmp(value, b"0\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int
+        || strcasecmp(value, b"off\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int
+        || strcasecmp(value, b"no\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int
+    {
         flag = 0 as libc::c_int
     } else {
-        xasprintf(cause,
-                  b"bad value: %s\x00" as *const u8 as *const libc::c_char,
-                  value);
-        return -(1 as libc::c_int)
+        xasprintf(
+            cause,
+            b"bad value: %s\x00" as *const u8 as *const libc::c_char,
+            value,
+        );
+        return -(1 as libc::c_int);
     }
     options_set_number(oo, name, flag as libc::c_longlong);
     return 0 as libc::c_int;
 }
-unsafe extern "C" fn options_from_string_choice(mut oe:
-                                                    *const options_table_entry,
-                                                mut oo: *mut options,
-                                                mut name: *const libc::c_char,
-                                                mut value:
-                                                    *const libc::c_char,
-                                                mut cause:
-                                                    *mut *mut libc::c_char)
- -> libc::c_int {
+unsafe extern "C" fn options_from_string_choice(
+    mut oe: *const options_table_entry,
+    mut oo: *mut options,
+    mut name: *const libc::c_char,
+    mut value: *const libc::c_char,
+    mut cause: *mut *mut libc::c_char,
+) -> libc::c_int {
     let mut cp: *mut *const libc::c_char = 0 as *mut *const libc::c_char;
     let mut n: libc::c_int = 0;
     let mut choice: libc::c_int = -(1 as libc::c_int);
     if value.is_null() {
         choice = options_get_number(oo, name) as libc::c_int;
-        if choice < 2 as libc::c_int { choice = (choice == 0) as libc::c_int }
+        if choice < 2 as libc::c_int {
+            choice = (choice == 0) as libc::c_int
+        }
     } else {
         n = 0 as libc::c_int;
         cp = (*oe).choices;
         while !(*cp).is_null() {
-            if strcmp(*cp, value) == 0 as libc::c_int { choice = n }
+            if strcmp(*cp, value) == 0 as libc::c_int {
+                choice = n
+            }
             n += 1;
             cp = cp.offset(1)
         }
         if choice == -(1 as libc::c_int) {
-            xasprintf(cause,
-                      b"unknown value: %s\x00" as *const u8 as
-                          *const libc::c_char, value);
-            return -(1 as libc::c_int)
+            xasprintf(
+                cause,
+                b"unknown value: %s\x00" as *const u8 as *const libc::c_char,
+                value,
+            );
+            return -(1 as libc::c_int);
         }
     }
     options_set_number(oo, name, choice as libc::c_longlong);
     return 0 as libc::c_int;
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_from_string(mut oo: *mut options,
-                                             mut oe:
-                                                 *const options_table_entry,
-                                             mut name: *const libc::c_char,
-                                             mut value: *const libc::c_char,
-                                             mut append: libc::c_int,
-                                             mut cause:
-                                                 *mut *mut libc::c_char)
- -> libc::c_int {
+pub unsafe extern "C" fn options_from_string(
+    mut oo: *mut options,
+    mut oe: *const options_table_entry,
+    mut name: *const libc::c_char,
+    mut value: *const libc::c_char,
+    mut append: libc::c_int,
+    mut cause: *mut *mut libc::c_char,
+) -> libc::c_int {
     let mut type_0: options_table_type = OPTIONS_TABLE_STRING;
     let mut number: libc::c_longlong = 0;
     let mut errstr: *const libc::c_char = 0 as *const libc::c_char;
@@ -3411,80 +3611,100 @@ pub unsafe extern "C" fn options_from_string(mut oo: *mut options,
     let mut old: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut key: key_code = 0;
     if !oe.is_null() {
-        if value.is_null() &&
-               (*oe).type_0 as libc::c_uint !=
-                   OPTIONS_TABLE_FLAG as libc::c_int as libc::c_uint &&
-               (*oe).type_0 as libc::c_uint !=
-                   OPTIONS_TABLE_CHOICE as libc::c_int as libc::c_uint {
-            xasprintf(cause,
-                      b"empty value\x00" as *const u8 as *const libc::c_char);
-            return -(1 as libc::c_int)
+        if value.is_null()
+            && (*oe).type_0 as libc::c_uint != OPTIONS_TABLE_FLAG as libc::c_int as libc::c_uint
+            && (*oe).type_0 as libc::c_uint != OPTIONS_TABLE_CHOICE as libc::c_int as libc::c_uint
+        {
+            xasprintf(
+                cause,
+                b"empty value\x00" as *const u8 as *const libc::c_char,
+            );
+            return -(1 as libc::c_int);
         }
         type_0 = (*oe).type_0
     } else {
         if *name as libc::c_int != '@' as i32 {
-            xasprintf(cause,
-                      b"bad option name\x00" as *const u8 as
-                          *const libc::c_char);
-            return -(1 as libc::c_int)
+            xasprintf(
+                cause,
+                b"bad option name\x00" as *const u8 as *const libc::c_char,
+            );
+            return -(1 as libc::c_int);
         }
         type_0 = OPTIONS_TABLE_STRING
     }
     match type_0 as libc::c_uint {
         0 => {
             old = xstrdup(options_get_string(oo, name));
-            options_set_string(oo, name, append,
-                               b"%s\x00" as *const u8 as *const libc::c_char,
-                               value);
+            options_set_string(
+                oo,
+                name,
+                append,
+                b"%s\x00" as *const u8 as *const libc::c_char,
+                value,
+            );
             new = options_get_string(oo, name);
             if options_from_string_check(oe, new, cause) != 0 as libc::c_int {
-                options_set_string(oo, name, 0 as libc::c_int,
-                                   b"%s\x00" as *const u8 as
-                                       *const libc::c_char, old);
+                options_set_string(
+                    oo,
+                    name,
+                    0 as libc::c_int,
+                    b"%s\x00" as *const u8 as *const libc::c_char,
+                    old,
+                );
                 free(old as *mut libc::c_void);
-                return -(1 as libc::c_int)
+                return -(1 as libc::c_int);
             }
             free(old as *mut libc::c_void);
-            return 0 as libc::c_int
+            return 0 as libc::c_int;
         }
         1 => {
-            number =
-                strtonum(value, (*oe).minimum as libc::c_longlong,
-                         (*oe).maximum as libc::c_longlong, &mut errstr);
+            number = strtonum(
+                value,
+                (*oe).minimum as libc::c_longlong,
+                (*oe).maximum as libc::c_longlong,
+                &mut errstr,
+            );
             if !errstr.is_null() {
-                xasprintf(cause,
-                          b"value is %s: %s\x00" as *const u8 as
-                              *const libc::c_char, errstr, value);
-                return -(1 as libc::c_int)
+                xasprintf(
+                    cause,
+                    b"value is %s: %s\x00" as *const u8 as *const libc::c_char,
+                    errstr,
+                    value,
+                );
+                return -(1 as libc::c_int);
             }
             options_set_number(oo, name, number);
-            return 0 as libc::c_int
+            return 0 as libc::c_int;
         }
         2 => {
             key = key_string_lookup_string(value);
             if key == 0xfe000000000 as libc::c_ulonglong {
-                xasprintf(cause,
-                          b"bad key: %s\x00" as *const u8 as
-                              *const libc::c_char, value);
-                return -(1 as libc::c_int)
+                xasprintf(
+                    cause,
+                    b"bad key: %s\x00" as *const u8 as *const libc::c_char,
+                    value,
+                );
+                return -(1 as libc::c_int);
             }
             options_set_number(oo, name, key as libc::c_longlong);
-            return 0 as libc::c_int
+            return 0 as libc::c_int;
         }
         3 => {
             number = colour_fromstring(value) as libc::c_longlong;
             if number == -(1 as libc::c_int) as libc::c_longlong {
-                xasprintf(cause,
-                          b"bad colour: %s\x00" as *const u8 as
-                              *const libc::c_char, value);
-                return -(1 as libc::c_int)
+                xasprintf(
+                    cause,
+                    b"bad colour: %s\x00" as *const u8 as *const libc::c_char,
+                    value,
+                );
+                return -(1 as libc::c_int);
             }
             options_set_number(oo, name, number);
-            return 0 as libc::c_int
+            return 0 as libc::c_int;
         }
-        4 => { return options_from_string_flag(oo, name, value, cause) }
-        5 => { return options_from_string_choice(oe, oo, name, value, cause) }
-        6 | _ => { }
+        4 => return options_from_string_flag(oo, name, value, cause),
+        5 => return options_from_string_choice(oe, oo, name, value, cause),
+        6 | _ => {}
     }
     return -(1 as libc::c_int);
 }
@@ -3494,31 +3714,33 @@ pub unsafe extern "C" fn options_push_changes(mut name: *const libc::c_char) {
     let mut s: *mut session = 0 as *mut session;
     let mut w: *mut window = 0 as *mut window;
     let mut wp: *mut window_pane = 0 as *mut window_pane;
-    if strcmp(name,
-              b"automatic-rename\x00" as *const u8 as *const libc::c_char) ==
-           0 as libc::c_int {
+    if strcmp(
+        name,
+        b"automatic-rename\x00" as *const u8 as *const libc::c_char,
+    ) == 0 as libc::c_int
+    {
         w = windows_RB_MINMAX(&mut windows, -(1 as libc::c_int));
         while !w.is_null() {
             if !(*w).active.is_null() {
-                if options_get_number((*w).options,
-                                      b"automatic-rename\x00" as *const u8 as
-                                          *const libc::c_char) != 0 {
+                if options_get_number(
+                    (*w).options,
+                    b"automatic-rename\x00" as *const u8 as *const libc::c_char,
+                ) != 0
+                {
                     (*(*w).active).flags |= 0x80 as libc::c_int
                 }
             }
             w = windows_RB_NEXT(w)
         }
     }
-    if strcmp(name, b"key-table\x00" as *const u8 as *const libc::c_char) ==
-           0 as libc::c_int {
+    if strcmp(name, b"key-table\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
         loop_0 = clients.tqh_first;
         while !loop_0.is_null() {
             server_client_set_key_table(loop_0, 0 as *const libc::c_char);
             loop_0 = (*loop_0).entry.tqe_next
         }
     }
-    if strcmp(name, b"user-keys\x00" as *const u8 as *const libc::c_char) ==
-           0 as libc::c_int {
+    if strcmp(name, b"user-keys\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
         loop_0 = clients.tqh_first;
         while !loop_0.is_null() {
             if (*loop_0).tty.flags & 0x20 as libc::c_int != 0 {
@@ -3527,62 +3749,85 @@ pub unsafe extern "C" fn options_push_changes(mut name: *const libc::c_char) {
             loop_0 = (*loop_0).entry.tqe_next
         }
     }
-    if strcmp(name, b"status\x00" as *const u8 as *const libc::c_char) ==
-           0 as libc::c_int ||
-           strcmp(name,
-                  b"status-interval\x00" as *const u8 as *const libc::c_char)
-               == 0 as libc::c_int {
+    if strcmp(name, b"status\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int
+        || strcmp(
+            name,
+            b"status-interval\x00" as *const u8 as *const libc::c_char,
+        ) == 0 as libc::c_int
+    {
         status_timer_start_all();
     }
-    if strcmp(name,
-              b"monitor-silence\x00" as *const u8 as *const libc::c_char) ==
-           0 as libc::c_int {
+    if strcmp(
+        name,
+        b"monitor-silence\x00" as *const u8 as *const libc::c_char,
+    ) == 0 as libc::c_int
+    {
         alerts_reset_all();
     }
-    if strcmp(name, b"window-style\x00" as *const u8 as *const libc::c_char)
-           == 0 as libc::c_int ||
-           strcmp(name,
-                  b"window-active-style\x00" as *const u8 as
-                      *const libc::c_char) == 0 as libc::c_int {
-        wp =
-            window_pane_tree_RB_MINMAX(&mut all_window_panes,
-                                       -(1 as libc::c_int));
+    if strcmp(
+        name,
+        b"window-style\x00" as *const u8 as *const libc::c_char,
+    ) == 0 as libc::c_int
+        || strcmp(
+            name,
+            b"window-active-style\x00" as *const u8 as *const libc::c_char,
+        ) == 0 as libc::c_int
+    {
+        wp = window_pane_tree_RB_MINMAX(&mut all_window_panes, -(1 as libc::c_int));
         while !wp.is_null() {
             (*wp).flags |= 0x1000 as libc::c_int;
             wp = window_pane_tree_RB_NEXT(wp)
         }
     }
-    if strcmp(name,
-              b"pane-border-status\x00" as *const u8 as *const libc::c_char)
-           == 0 as libc::c_int {
+    if strcmp(
+        name,
+        b"pane-border-status\x00" as *const u8 as *const libc::c_char,
+    ) == 0 as libc::c_int
+    {
         w = windows_RB_MINMAX(&mut windows, -(1 as libc::c_int));
-        while !w.is_null() { layout_fix_panes(w); w = windows_RB_NEXT(w) }
+        while !w.is_null() {
+            layout_fix_panes(w);
+            w = windows_RB_NEXT(w)
+        }
     }
     s = sessions_RB_MINMAX(&mut sessions, -(1 as libc::c_int));
-    while !s.is_null() { status_update_cache(s); s = sessions_RB_NEXT(s) }
+    while !s.is_null() {
+        status_update_cache(s);
+        s = sessions_RB_NEXT(s)
+    }
     recalculate_sizes();
     loop_0 = clients.tqh_first;
     while !loop_0.is_null() {
-        if !(*loop_0).session.is_null() { server_redraw_client(loop_0); }
+        if !(*loop_0).session.is_null() {
+            server_redraw_client(loop_0);
+        }
         loop_0 = (*loop_0).entry.tqe_next
-    };
+    }
 }
 #[no_mangle]
-pub unsafe extern "C" fn options_remove_or_default(mut o: *mut options_entry,
-                                                   mut idx: libc::c_int,
-                                                   mut cause:
-                                                       *mut *mut libc::c_char)
- -> libc::c_int {
+pub unsafe extern "C" fn options_remove_or_default(
+    mut o: *mut options_entry,
+    mut idx: libc::c_int,
+    mut cause: *mut *mut libc::c_char,
+) -> libc::c_int {
     let mut oo: *mut options = (*o).owner;
     if idx == -(1 as libc::c_int) {
-        if !(*o).tableentry.is_null() &&
-               (oo == global_options || oo == global_s_options ||
-                    oo == global_w_options) {
+        if !(*o).tableentry.is_null()
+            && (oo == global_options || oo == global_s_options || oo == global_w_options)
+        {
             options_default(oo, (*o).tableentry);
-        } else { options_remove(o); }
-    } else if options_array_set(o, idx as u_int, 0 as *const libc::c_char,
-                                0 as libc::c_int, cause) != 0 as libc::c_int {
-        return -(1 as libc::c_int)
+        } else {
+            options_remove(o);
+        }
+    } else if options_array_set(
+        o,
+        idx as u_int,
+        0 as *const libc::c_char,
+        0 as libc::c_int,
+        cause,
+    ) != 0 as libc::c_int
+    {
+        return -(1 as libc::c_int);
     }
     return 0 as libc::c_int;
 }

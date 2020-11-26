@@ -22,16 +22,19 @@ extern "C" {
     #[no_mangle]
     fn free(__ptr: *mut libc::c_void);
     #[no_mangle]
-    fn options_get_number(_: *mut options, _: *const libc::c_char)
-     -> libc::c_longlong;
+    fn options_get_number(_: *mut options, _: *const libc::c_char) -> libc::c_longlong;
     #[no_mangle]
     fn args_has(_: *mut args, _: u_char) -> libc::c_int;
     #[no_mangle]
     fn args_get(_: *mut args, _: u_char) -> *const libc::c_char;
     #[no_mangle]
-    fn cmd_find_target(_: *mut cmd_find_state, _: *mut cmdq_item,
-                       _: *const libc::c_char, _: cmd_find_type,
-                       _: libc::c_int) -> libc::c_int;
+    fn cmd_find_target(
+        _: *mut cmd_find_state,
+        _: *mut cmdq_item,
+        _: *const libc::c_char,
+        _: cmd_find_type,
+        _: libc::c_int,
+    ) -> libc::c_int;
     #[no_mangle]
     fn cmd_get_entry(_: *mut cmd) -> *const cmd_entry;
     #[no_mangle]
@@ -43,16 +46,21 @@ extern "C" {
     #[no_mangle]
     fn server_status_session(_: *mut session);
     #[no_mangle]
-    fn server_link_window(_: *mut session, _: *mut winlink, _: *mut session,
-                          _: libc::c_int, _: libc::c_int, _: libc::c_int,
-                          _: *mut *mut libc::c_char) -> libc::c_int;
+    fn server_link_window(
+        _: *mut session,
+        _: *mut winlink,
+        _: *mut session,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: *mut *mut libc::c_char,
+    ) -> libc::c_int;
     #[no_mangle]
     fn server_unlink_window(_: *mut session, _: *mut winlink);
     #[no_mangle]
     fn recalculate_sizes();
     #[no_mangle]
-    fn winlink_shuffle_up(_: *mut session, _: *mut winlink, _: libc::c_int)
-     -> libc::c_int;
+    fn winlink_shuffle_up(_: *mut session, _: *mut winlink, _: libc::c_int) -> libc::c_int;
     #[no_mangle]
     fn session_renumber_windows(_: *mut session);
 }
@@ -145,18 +153,13 @@ pub struct event_callback {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub union C2RustUnnamed_6 {
-    pub evcb_callback: Option<unsafe extern "C" fn(_: libc::c_int,
-                                                   _: libc::c_short,
-                                                   _: *mut libc::c_void)
-                                  -> ()>,
-    pub evcb_selfcb: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                 _: *mut libc::c_void) -> ()>,
-    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
-    pub evcb_cbfinalize: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
+    pub evcb_callback:
+        Option<unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> ()>,
+    pub evcb_selfcb:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
+    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event, _: *mut libc::c_void) -> ()>,
+    pub evcb_cbfinalize:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -183,14 +186,10 @@ pub struct bufferevent {
     pub timeout_write: timeval,
     pub enabled: libc::c_short,
 }
-pub type bufferevent_event_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short,
-                                _: *mut libc::c_void) -> ()>;
-pub type bufferevent_data_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void)
-               -> ()>;
+pub type bufferevent_event_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short, _: *mut libc::c_void) -> ()>;
+pub type bufferevent_data_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct event_watermark {
@@ -329,17 +328,19 @@ pub struct C2RustUnnamed_9 {
     pub rbe_parent: *mut client_file,
     pub rbe_color: libc::c_int,
 }
-pub type client_file_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *const libc::c_char,
-                                _: libc::c_int, _: libc::c_int,
-                                _: *mut evbuffer, _: *mut libc::c_void)
-               -> ()>;
+pub type client_file_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: *mut evbuffer,
+        _: *mut libc::c_void,
+    ) -> (),
+>;
 pub type overlay_free_cb = Option<unsafe extern "C" fn(_: *mut client) -> ()>;
-pub type overlay_key_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event)
-               -> libc::c_int>;
+pub type overlay_key_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_event {
@@ -369,10 +370,8 @@ pub struct mouse_event {
     pub sgr_b: u_int,
 }
 pub type key_code = libc::c_ulonglong;
-pub type overlay_draw_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx)
-               -> ()>;
+pub type overlay_draw_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen_redraw_ctx {
@@ -386,10 +385,8 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int)
-               -> *mut screen>;
+pub type overlay_mode_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen {
@@ -483,10 +480,8 @@ pub struct C2RustUnnamed_11 {
     pub bg: u_char,
     pub data: u_char,
 }
-pub type overlay_check_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int)
-               -> libc::c_int>;
+pub type overlay_check_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct session {
@@ -733,24 +728,37 @@ pub struct C2RustUnnamed_24 {
 pub struct window_mode {
     pub name: *const libc::c_char,
     pub default_format: *const libc::c_char,
-    pub init: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                          _: *mut cmd_find_state,
-                                          _: *mut args) -> *mut screen>,
+    pub init: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut cmd_find_state,
+            _: *mut args,
+        ) -> *mut screen,
+    >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
-    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                            _: u_int, _: u_int) -> ()>,
-    pub key: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                         _: *mut client, _: *mut session,
-                                         _: *mut winlink, _: key_code,
-                                         _: *mut mouse_event) -> ()>,
-    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry)
-                              -> *const libc::c_char>,
-    pub command: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut client, _: *mut session,
-                                             _: *mut winlink, _: *mut args,
-                                             _: *mut mouse_event) -> ()>,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut format_tree) -> ()>,
+    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
+    pub key: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: key_code,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> *const libc::c_char>,
+    pub command: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: *mut args,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -787,14 +795,15 @@ pub struct winlink_stack {
 pub type C2RustUnnamed_25 = libc::c_uint;
 pub const PROMPT_COMMAND: C2RustUnnamed_25 = 1;
 pub const PROMPT_ENTRY: C2RustUnnamed_25 = 0;
-pub type prompt_free_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
-pub type prompt_input_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut libc::c_void,
-                                _: *const libc::c_char, _: libc::c_int)
-               -> libc::c_int>;
+pub type prompt_free_cb = Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
+pub type prompt_input_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut libc::c_void,
+        _: *const libc::c_char,
+        _: libc::c_int,
+    ) -> libc::c_int,
+>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_table {
@@ -965,12 +974,8 @@ pub struct tty {
     pub mouse_last_y: u_int,
     pub mouse_last_b: u_int,
     pub mouse_drag_flag: libc::c_int,
-    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client,
-                                                       _: *mut mouse_event)
-                                      -> ()>,
-    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client,
-                                                        _: *mut mouse_event)
-                                       -> ()>,
+    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
+    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
     pub key_timer: event,
     pub key_tree: *mut tty_key,
 }
@@ -1046,8 +1051,7 @@ pub struct cmd_entry {
     pub source: cmd_entry_flag,
     pub target: cmd_entry_flag,
     pub flags: libc::c_int,
-    pub exec: Option<unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item)
-                         -> cmd_retval>,
+    pub exec: Option<unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -1057,107 +1061,81 @@ pub struct C2RustUnnamed_32 {
     pub upper: libc::c_int,
 }
 #[no_mangle]
-pub static mut cmd_move_window_entry: cmd_entry =
-    unsafe {
-        {
-            let mut init =
-                cmd_entry{name:
-                              b"move-window\x00" as *const u8 as
-                                  *const libc::c_char,
-                          alias:
-                              b"movew\x00" as *const u8 as
-                                  *const libc::c_char,
-                          args:
-                              {
-                                  let mut init =
-                                      C2RustUnnamed_32{template:
-                                                           b"abdkrs:t:\x00" as
-                                                               *const u8 as
-                                                               *const libc::c_char,
-                                                       lower:
-                                                           0 as libc::c_int,
-                                                       upper:
-                                                           0 as libc::c_int,};
-                                  init
-                              },
-                          usage:
-                              b"[-abdkr] [-s src-window] [-t dst-window]\x00"
-                                  as *const u8 as *const libc::c_char,
-                          source:
-                              {
-                                  let mut init =
-                                      cmd_entry_flag{flag:
-                                                         's' as i32 as
-                                                             libc::c_char,
-                                                     type_0: CMD_FIND_WINDOW,
-                                                     flags:
-                                                         0 as libc::c_int,};
-                                  init
-                              },
-                          target:
-                              cmd_entry_flag{flag: 0,
-                                             type_0: CMD_FIND_PANE,
-                                             flags: 0,},
-                          flags: 0 as libc::c_int,
-                          exec:
-                              Some(cmd_move_window_exec as
-                                       unsafe extern "C" fn(_: *mut cmd,
-                                                            _: *mut cmdq_item)
-                                           -> cmd_retval),};
-            init
-        }
-    };
+pub static mut cmd_move_window_entry: cmd_entry = unsafe {
+    {
+        let mut init = cmd_entry {
+            name: b"move-window\x00" as *const u8 as *const libc::c_char,
+            alias: b"movew\x00" as *const u8 as *const libc::c_char,
+            args: {
+                let mut init = C2RustUnnamed_32 {
+                    template: b"abdkrs:t:\x00" as *const u8 as *const libc::c_char,
+                    lower: 0 as libc::c_int,
+                    upper: 0 as libc::c_int,
+                };
+                init
+            },
+            usage: b"[-abdkr] [-s src-window] [-t dst-window]\x00" as *const u8
+                as *const libc::c_char,
+            source: {
+                let mut init = cmd_entry_flag {
+                    flag: 's' as i32 as libc::c_char,
+                    type_0: CMD_FIND_WINDOW,
+                    flags: 0 as libc::c_int,
+                };
+                init
+            },
+            target: cmd_entry_flag {
+                flag: 0,
+                type_0: CMD_FIND_PANE,
+                flags: 0,
+            },
+            flags: 0 as libc::c_int,
+            exec: Some(
+                cmd_move_window_exec
+                    as unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval,
+            ),
+        };
+        init
+    }
+};
 #[no_mangle]
-pub static mut cmd_link_window_entry: cmd_entry =
-    unsafe {
-        {
-            let mut init =
-                cmd_entry{name:
-                              b"link-window\x00" as *const u8 as
-                                  *const libc::c_char,
-                          alias:
-                              b"linkw\x00" as *const u8 as
-                                  *const libc::c_char,
-                          args:
-                              {
-                                  let mut init =
-                                      C2RustUnnamed_32{template:
-                                                           b"abdks:t:\x00" as
-                                                               *const u8 as
-                                                               *const libc::c_char,
-                                                       lower:
-                                                           0 as libc::c_int,
-                                                       upper:
-                                                           0 as libc::c_int,};
-                                  init
-                              },
-                          usage:
-                              b"[-abdk] [-s src-window] [-t dst-window]\x00"
-                                  as *const u8 as *const libc::c_char,
-                          source:
-                              {
-                                  let mut init =
-                                      cmd_entry_flag{flag:
-                                                         's' as i32 as
-                                                             libc::c_char,
-                                                     type_0: CMD_FIND_WINDOW,
-                                                     flags:
-                                                         0 as libc::c_int,};
-                                  init
-                              },
-                          target:
-                              cmd_entry_flag{flag: 0,
-                                             type_0: CMD_FIND_PANE,
-                                             flags: 0,},
-                          flags: 0 as libc::c_int,
-                          exec:
-                              Some(cmd_move_window_exec as
-                                       unsafe extern "C" fn(_: *mut cmd,
-                                                            _: *mut cmdq_item)
-                                           -> cmd_retval),};
-            init
-        }
-    };
+pub static mut cmd_link_window_entry: cmd_entry = unsafe {
+    {
+        let mut init = cmd_entry {
+            name: b"link-window\x00" as *const u8 as *const libc::c_char,
+            alias: b"linkw\x00" as *const u8 as *const libc::c_char,
+            args: {
+                let mut init = C2RustUnnamed_32 {
+                    template: b"abdks:t:\x00" as *const u8 as *const libc::c_char,
+                    lower: 0 as libc::c_int,
+                    upper: 0 as libc::c_int,
+                };
+                init
+            },
+            usage: b"[-abdk] [-s src-window] [-t dst-window]\x00" as *const u8
+                as *const libc::c_char,
+            source: {
+                let mut init = cmd_entry_flag {
+                    flag: 's' as i32 as libc::c_char,
+                    type_0: CMD_FIND_WINDOW,
+                    flags: 0 as libc::c_int,
+                };
+                init
+            },
+            target: cmd_entry_flag {
+                flag: 0,
+                type_0: CMD_FIND_PANE,
+                flags: 0,
+            },
+            flags: 0 as libc::c_int,
+            exec: Some(
+                cmd_move_window_exec
+                    as unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval,
+            ),
+        };
+        init
+    }
+};
 /* $OpenBSD$ */
 /*
  * Copyright (c) 2008 Nicholas Marriott <nicholas.marriott@gmail.com>
@@ -1177,19 +1155,21 @@ pub static mut cmd_link_window_entry: cmd_entry =
 /*
  * Move a window.
  */
-unsafe extern "C" fn cmd_move_window_exec(mut self_0: *mut cmd,
-                                          mut item: *mut cmdq_item)
- -> cmd_retval {
+unsafe extern "C" fn cmd_move_window_exec(
+    mut self_0: *mut cmd,
+    mut item: *mut cmdq_item,
+) -> cmd_retval {
     let mut args: *mut args = cmd_get_args(self_0);
     let mut source: *mut cmd_find_state = cmdq_get_source(item);
-    let mut target: cmd_find_state =
-        cmd_find_state{flags: 0,
-                       current: 0 as *mut cmd_find_state,
-                       s: 0 as *mut session,
-                       wl: 0 as *mut winlink,
-                       w: 0 as *mut window,
-                       wp: 0 as *mut window_pane,
-                       idx: 0,};
+    let mut target: cmd_find_state = cmd_find_state {
+        flags: 0,
+        current: 0 as *mut cmd_find_state,
+        s: 0 as *mut session,
+        wl: 0 as *mut winlink,
+        w: 0 as *mut window,
+        wp: 0 as *mut window_pane,
+        idx: 0,
+    };
     let mut tflag: *const libc::c_char = args_get(args, 't' as i32 as u_char);
     let mut src: *mut session = (*source).s;
     let mut dst: *mut session = 0 as *mut session;
@@ -1201,18 +1181,30 @@ unsafe extern "C" fn cmd_move_window_exec(mut self_0: *mut cmd,
     let mut sflag: libc::c_int = 0;
     let mut before: libc::c_int = 0;
     if args_has(args, 'r' as i32 as u_char) != 0 {
-        if cmd_find_target(&mut target, item, tflag, CMD_FIND_SESSION,
-                           0x2 as libc::c_int) != 0 as libc::c_int {
-            return CMD_RETURN_ERROR
+        if cmd_find_target(
+            &mut target,
+            item,
+            tflag,
+            CMD_FIND_SESSION,
+            0x2 as libc::c_int,
+        ) != 0 as libc::c_int
+        {
+            return CMD_RETURN_ERROR;
         }
         session_renumber_windows(target.s);
         recalculate_sizes();
         server_status_session(target.s);
-        return CMD_RETURN_NORMAL
+        return CMD_RETURN_NORMAL;
     }
-    if cmd_find_target(&mut target, item, tflag, CMD_FIND_WINDOW,
-                       0x4 as libc::c_int) != 0 as libc::c_int {
-        return CMD_RETURN_ERROR
+    if cmd_find_target(
+        &mut target,
+        item,
+        tflag,
+        CMD_FIND_WINDOW,
+        0x4 as libc::c_int,
+    ) != 0 as libc::c_int
+    {
+        return CMD_RETURN_ERROR;
     }
     dst = target.s;
     idx = target.idx;
@@ -1223,29 +1215,41 @@ unsafe extern "C" fn cmd_move_window_exec(mut self_0: *mut cmd,
     if args_has(args, 'a' as i32 as u_char) != 0 || before != 0 {
         if !target.wl.is_null() {
             idx = winlink_shuffle_up(dst, target.wl, before)
-        } else { idx = winlink_shuffle_up(dst, (*dst).curw, before) }
-        if idx == -(1 as libc::c_int) { return CMD_RETURN_ERROR }
+        } else {
+            idx = winlink_shuffle_up(dst, (*dst).curw, before)
+        }
+        if idx == -(1 as libc::c_int) {
+            return CMD_RETURN_ERROR;
+        }
     }
-    if server_link_window(src, wl, dst, idx, kflag,
-                          (dflag == 0) as libc::c_int, &mut cause) !=
-           0 as libc::c_int {
-        cmdq_error(item, b"%s\x00" as *const u8 as *const libc::c_char,
-                   cause);
+    if server_link_window(
+        src,
+        wl,
+        dst,
+        idx,
+        kflag,
+        (dflag == 0) as libc::c_int,
+        &mut cause,
+    ) != 0 as libc::c_int
+    {
+        cmdq_error(item, b"%s\x00" as *const u8 as *const libc::c_char, cause);
         free(cause as *mut libc::c_void);
-        return CMD_RETURN_ERROR
+        return CMD_RETURN_ERROR;
     }
     if cmd_get_entry(self_0) == &cmd_move_window_entry as *const cmd_entry {
         server_unlink_window(src, wl);
     }
     /*
-	 * Renumber the winlinks in the src session only, the destination
-	 * session already has the correct winlink id to us, either
-	 * automatically or specified by -s.
-	 */
-    if sflag == 0 &&
-           options_get_number((*src).options,
-                              b"renumber-windows\x00" as *const u8 as
-                                  *const libc::c_char) != 0 {
+     * Renumber the winlinks in the src session only, the destination
+     * session already has the correct winlink id to us, either
+     * automatically or specified by -s.
+     */
+    if sflag == 0
+        && options_get_number(
+            (*src).options,
+            b"renumber-windows\x00" as *const u8 as *const libc::c_char,
+        ) != 0
+    {
         session_renumber_windows(src);
     }
     recalculate_sizes();

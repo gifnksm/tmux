@@ -13,8 +13,7 @@ extern "C" {
     #[no_mangle]
     fn cmdq_error(_: *mut cmdq_item, _: *const libc::c_char, _: ...);
     #[no_mangle]
-    fn key_bindings_get_table(_: *const libc::c_char, _: libc::c_int)
-     -> *mut key_table;
+    fn key_bindings_get_table(_: *const libc::c_char, _: libc::c_int) -> *mut key_table;
     #[no_mangle]
     fn key_bindings_remove(_: *const libc::c_char, _: key_code);
     #[no_mangle]
@@ -111,8 +110,7 @@ pub struct cmd_entry {
     pub source: cmd_entry_flag,
     pub target: cmd_entry_flag,
     pub flags: libc::c_int,
-    pub exec: Option<unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item)
-                         -> cmd_retval>,
+    pub exec: Option<unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -122,48 +120,39 @@ pub struct C2RustUnnamed_1 {
     pub upper: libc::c_int,
 }
 #[no_mangle]
-pub static mut cmd_unbind_key_entry: cmd_entry =
-    unsafe {
-        {
-            let mut init =
-                cmd_entry{name:
-                              b"unbind-key\x00" as *const u8 as
-                                  *const libc::c_char,
-                          alias:
-                              b"unbind\x00" as *const u8 as
-                                  *const libc::c_char,
-                          args:
-                              {
-                                  let mut init =
-                                      C2RustUnnamed_1{template:
-                                                          b"anqT:\x00" as
-                                                              *const u8 as
-                                                              *const libc::c_char,
-                                                      lower: 0 as libc::c_int,
-                                                      upper:
-                                                          1 as libc::c_int,};
-                                  init
-                              },
-                          usage:
-                              b"[-anq] [-T key-table] key\x00" as *const u8 as
-                                  *const libc::c_char,
-                          source:
-                              cmd_entry_flag{flag: 0,
-                                             type_0: CMD_FIND_PANE,
-                                             flags: 0,},
-                          target:
-                              cmd_entry_flag{flag: 0,
-                                             type_0: CMD_FIND_PANE,
-                                             flags: 0,},
-                          flags: 0x4 as libc::c_int,
-                          exec:
-                              Some(cmd_unbind_key_exec as
-                                       unsafe extern "C" fn(_: *mut cmd,
-                                                            _: *mut cmdq_item)
-                                           -> cmd_retval),};
-            init
-        }
-    };
+pub static mut cmd_unbind_key_entry: cmd_entry = unsafe {
+    {
+        let mut init = cmd_entry {
+            name: b"unbind-key\x00" as *const u8 as *const libc::c_char,
+            alias: b"unbind\x00" as *const u8 as *const libc::c_char,
+            args: {
+                let mut init = C2RustUnnamed_1 {
+                    template: b"anqT:\x00" as *const u8 as *const libc::c_char,
+                    lower: 0 as libc::c_int,
+                    upper: 1 as libc::c_int,
+                };
+                init
+            },
+            usage: b"[-anq] [-T key-table] key\x00" as *const u8 as *const libc::c_char,
+            source: cmd_entry_flag {
+                flag: 0,
+                type_0: CMD_FIND_PANE,
+                flags: 0,
+            },
+            target: cmd_entry_flag {
+                flag: 0,
+                type_0: CMD_FIND_PANE,
+                flags: 0,
+            },
+            flags: 0x4 as libc::c_int,
+            exec: Some(
+                cmd_unbind_key_exec
+                    as unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval,
+            ),
+        };
+        init
+    }
+};
 /* $OpenBSD$ */
 /*
  * Copyright (c) 2007 Nicholas Marriott <nicholas.marriott@gmail.com>
@@ -183,9 +172,10 @@ pub static mut cmd_unbind_key_entry: cmd_entry =
 /*
  * Unbind key from command.
  */
-unsafe extern "C" fn cmd_unbind_key_exec(mut self_0: *mut cmd,
-                                         mut item: *mut cmdq_item)
- -> cmd_retval {
+unsafe extern "C" fn cmd_unbind_key_exec(
+    mut self_0: *mut cmd,
+    mut item: *mut cmdq_item,
+) -> cmd_retval {
     let mut args: *mut args = cmd_get_args(self_0);
     let mut key: key_code = 0;
     let mut tablename: *const libc::c_char = 0 as *const libc::c_char;
@@ -193,11 +183,12 @@ unsafe extern "C" fn cmd_unbind_key_exec(mut self_0: *mut cmd,
     if args_has(args, 'a' as i32 as u_char) != 0 {
         if (*args).argc != 0 as libc::c_int {
             if quiet == 0 {
-                cmdq_error(item,
-                           b"key given with -a\x00" as *const u8 as
-                               *const libc::c_char);
+                cmdq_error(
+                    item,
+                    b"key given with -a\x00" as *const u8 as *const libc::c_char,
+                );
             }
-            return CMD_RETURN_ERROR
+            return CMD_RETURN_ERROR;
         }
         tablename = args_get(args, 'T' as i32 as u_char);
         if tablename.is_null() {
@@ -209,49 +200,51 @@ unsafe extern "C" fn cmd_unbind_key_exec(mut self_0: *mut cmd,
         }
         if key_bindings_get_table(tablename, 0 as libc::c_int).is_null() {
             if quiet == 0 {
-                cmdq_error(item,
-                           b"table %s doesn\'t exist\x00" as *const u8 as
-                               *const libc::c_char, tablename);
+                cmdq_error(
+                    item,
+                    b"table %s doesn\'t exist\x00" as *const u8 as *const libc::c_char,
+                    tablename,
+                );
             }
-            return CMD_RETURN_ERROR
+            return CMD_RETURN_ERROR;
         }
         key_bindings_remove_table(tablename);
-        return CMD_RETURN_NORMAL
+        return CMD_RETURN_NORMAL;
     }
     if (*args).argc != 1 as libc::c_int {
         if quiet == 0 {
-            cmdq_error(item,
-                       b"missing key\x00" as *const u8 as
-                           *const libc::c_char);
+            cmdq_error(item, b"missing key\x00" as *const u8 as *const libc::c_char);
         }
-        return CMD_RETURN_ERROR
+        return CMD_RETURN_ERROR;
     }
-    key =
-        key_string_lookup_string(*(*args).argv.offset(0 as libc::c_int as
-                                                          isize));
-    if key == 0xff000000000 as libc::c_ulonglong ||
-           key == 0xfe000000000 as libc::c_ulonglong {
+    key = key_string_lookup_string(*(*args).argv.offset(0 as libc::c_int as isize));
+    if key == 0xff000000000 as libc::c_ulonglong || key == 0xfe000000000 as libc::c_ulonglong {
         if quiet == 0 {
-            cmdq_error(item,
-                       b"unknown key: %s\x00" as *const u8 as
-                           *const libc::c_char,
-                       *(*args).argv.offset(0 as libc::c_int as isize));
+            cmdq_error(
+                item,
+                b"unknown key: %s\x00" as *const u8 as *const libc::c_char,
+                *(*args).argv.offset(0 as libc::c_int as isize),
+            );
         }
-        return CMD_RETURN_ERROR
+        return CMD_RETURN_ERROR;
     }
     if args_has(args, 'T' as i32 as u_char) != 0 {
         tablename = args_get(args, 'T' as i32 as u_char);
         if key_bindings_get_table(tablename, 0 as libc::c_int).is_null() {
             if quiet == 0 {
-                cmdq_error(item,
-                           b"table %s doesn\'t exist\x00" as *const u8 as
-                               *const libc::c_char, tablename);
+                cmdq_error(
+                    item,
+                    b"table %s doesn\'t exist\x00" as *const u8 as *const libc::c_char,
+                    tablename,
+                );
             }
-            return CMD_RETURN_ERROR
+            return CMD_RETURN_ERROR;
         }
     } else if args_has(args, 'n' as i32 as u_char) != 0 {
         tablename = b"root\x00" as *const u8 as *const libc::c_char
-    } else { tablename = b"prefix\x00" as *const u8 as *const libc::c_char }
+    } else {
+        tablename = b"prefix\x00" as *const u8 as *const libc::c_char
+    }
     key_bindings_remove(tablename, key);
     return CMD_RETURN_NORMAL;
 }

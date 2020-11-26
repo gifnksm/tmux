@@ -31,53 +31,59 @@ extern "C" {
     #[no_mangle]
     fn free(__ptr: *mut libc::c_void);
     #[no_mangle]
-    fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong)
-     -> *mut libc::c_void;
+    fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
     #[no_mangle]
     fn strerror(_: libc::c_int) -> *mut libc::c_char;
     #[no_mangle]
-    fn xreallocarray(_: *mut libc::c_void, _: size_t, _: size_t)
-     -> *mut libc::c_void;
+    fn xreallocarray(_: *mut libc::c_void, _: size_t, _: size_t) -> *mut libc::c_void;
     #[no_mangle]
     fn xstrdup(_: *const libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
-    fn xvasprintf(_: *mut *mut libc::c_char, _: *const libc::c_char,
-                  _: ::std::ffi::VaList) -> libc::c_int;
+    fn xvasprintf(
+        _: *mut *mut libc::c_char,
+        _: *const libc::c_char,
+        _: ::std::ffi::VaList,
+    ) -> libc::c_int;
     #[no_mangle]
-    fn expand_paths(_: *const libc::c_char, _: *mut *mut *mut libc::c_char,
-                    _: *mut u_int);
+    fn expand_paths(_: *const libc::c_char, _: *mut *mut *mut libc::c_char, _: *mut u_int);
     #[no_mangle]
     fn cmdq_continue(_: *mut cmdq_item);
     #[no_mangle]
-    fn cmdq_get_callback1(_: *const libc::c_char, _: cmdq_cb,
-                          _: *mut libc::c_void) -> *mut cmdq_item;
+    fn cmdq_get_callback1(
+        _: *const libc::c_char,
+        _: cmdq_cb,
+        _: *mut libc::c_void,
+    ) -> *mut cmdq_item;
     #[no_mangle]
     fn cmdq_append(_: *mut client, _: *mut cmdq_item) -> *mut cmdq_item;
     #[no_mangle]
     fn cmd_list_free(_: *mut cmd_list);
     #[no_mangle]
-    fn cmdq_insert_after(_: *mut cmdq_item, _: *mut cmdq_item)
-     -> *mut cmdq_item;
+    fn cmdq_insert_after(_: *mut cmdq_item, _: *mut cmdq_item) -> *mut cmdq_item;
     #[no_mangle]
-    fn cmdq_get_command(_: *mut cmd_list, _: *mut cmdq_state)
-     -> *mut cmdq_item;
+    fn cmdq_get_command(_: *mut cmd_list, _: *mut cmdq_state) -> *mut cmdq_item;
     #[no_mangle]
-    fn cmd_parse_from_file(_: *mut FILE, _: *mut cmd_parse_input)
-     -> *mut cmd_parse_result;
+    fn cmd_parse_from_file(_: *mut FILE, _: *mut cmd_parse_input) -> *mut cmd_parse_result;
     #[no_mangle]
     static mut clients: clients;
     #[no_mangle]
-    fn cmd_parse_from_buffer(_: *const libc::c_void, _: size_t,
-                             _: *mut cmd_parse_input)
-     -> *mut cmd_parse_result;
+    fn cmd_parse_from_buffer(
+        _: *const libc::c_void,
+        _: size_t,
+        _: *mut cmd_parse_input,
+    ) -> *mut cmd_parse_result;
     #[no_mangle]
     fn cmdq_print(_: *mut cmdq_item, _: *const libc::c_char, _: ...);
     #[no_mangle]
     fn status_prompt_load_history();
     #[no_mangle]
-    fn window_pane_set_mode(_: *mut window_pane, _: *mut window_pane,
-                            _: *const window_mode, _: *mut cmd_find_state,
-                            _: *mut args) -> libc::c_int;
+    fn window_pane_set_mode(
+        _: *mut window_pane,
+        _: *mut window_pane,
+        _: *const window_mode,
+        _: *mut cmd_find_state,
+        _: *mut args,
+    ) -> libc::c_int;
     #[no_mangle]
     static mut sessions: sessions;
     #[no_mangle]
@@ -225,18 +231,13 @@ pub struct event_callback {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub union C2RustUnnamed_6 {
-    pub evcb_callback: Option<unsafe extern "C" fn(_: libc::c_int,
-                                                   _: libc::c_short,
-                                                   _: *mut libc::c_void)
-                                  -> ()>,
-    pub evcb_selfcb: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                 _: *mut libc::c_void) -> ()>,
-    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
-    pub evcb_cbfinalize: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
+    pub evcb_callback:
+        Option<unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> ()>,
+    pub evcb_selfcb:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
+    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event, _: *mut libc::c_void) -> ()>,
+    pub evcb_cbfinalize:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -263,14 +264,10 @@ pub struct bufferevent {
     pub timeout_write: timeval,
     pub enabled: libc::c_short,
 }
-pub type bufferevent_event_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short,
-                                _: *mut libc::c_void) -> ()>;
-pub type bufferevent_data_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void)
-               -> ()>;
+pub type bufferevent_event_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short, _: *mut libc::c_void) -> ()>;
+pub type bufferevent_data_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct event_watermark {
@@ -409,17 +406,19 @@ pub struct C2RustUnnamed_9 {
     pub rbe_parent: *mut client_file,
     pub rbe_color: libc::c_int,
 }
-pub type client_file_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *const libc::c_char,
-                                _: libc::c_int, _: libc::c_int,
-                                _: *mut evbuffer, _: *mut libc::c_void)
-               -> ()>;
+pub type client_file_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: *mut evbuffer,
+        _: *mut libc::c_void,
+    ) -> (),
+>;
 pub type overlay_free_cb = Option<unsafe extern "C" fn(_: *mut client) -> ()>;
-pub type overlay_key_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event)
-               -> libc::c_int>;
+pub type overlay_key_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_event {
@@ -449,10 +448,8 @@ pub struct mouse_event {
     pub sgr_b: u_int,
 }
 pub type key_code = libc::c_ulonglong;
-pub type overlay_draw_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx)
-               -> ()>;
+pub type overlay_draw_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen_redraw_ctx {
@@ -466,10 +463,8 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int)
-               -> *mut screen>;
+pub type overlay_mode_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen {
@@ -563,10 +558,8 @@ pub struct C2RustUnnamed_11 {
     pub bg: u_char,
     pub data: u_char,
 }
-pub type overlay_check_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int)
-               -> libc::c_int>;
+pub type overlay_check_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct session {
@@ -813,24 +806,37 @@ pub struct C2RustUnnamed_24 {
 pub struct window_mode {
     pub name: *const libc::c_char,
     pub default_format: *const libc::c_char,
-    pub init: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                          _: *mut cmd_find_state,
-                                          _: *mut args) -> *mut screen>,
+    pub init: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut cmd_find_state,
+            _: *mut args,
+        ) -> *mut screen,
+    >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
-    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                            _: u_int, _: u_int) -> ()>,
-    pub key: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                         _: *mut client, _: *mut session,
-                                         _: *mut winlink, _: key_code,
-                                         _: *mut mouse_event) -> ()>,
-    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry)
-                              -> *const libc::c_char>,
-    pub command: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut client, _: *mut session,
-                                             _: *mut winlink, _: *mut args,
-                                             _: *mut mouse_event) -> ()>,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut format_tree) -> ()>,
+    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
+    pub key: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: key_code,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> *const libc::c_char>,
+    pub command: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: *mut args,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -867,14 +873,15 @@ pub struct winlink_stack {
 pub type C2RustUnnamed_25 = libc::c_uint;
 pub const PROMPT_COMMAND: C2RustUnnamed_25 = 1;
 pub const PROMPT_ENTRY: C2RustUnnamed_25 = 0;
-pub type prompt_free_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
-pub type prompt_input_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut libc::c_void,
-                                _: *const libc::c_char, _: libc::c_int)
-               -> libc::c_int>;
+pub type prompt_free_cb = Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
+pub type prompt_input_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut libc::c_void,
+        _: *const libc::c_char,
+        _: libc::c_int,
+    ) -> libc::c_int,
+>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_table {
@@ -1045,12 +1052,8 @@ pub struct tty {
     pub mouse_last_y: u_int,
     pub mouse_last_b: u_int,
     pub mouse_drag_flag: libc::c_int,
-    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client,
-                                                       _: *mut mouse_event)
-                                      -> ()>,
-    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client,
-                                                        _: *mut mouse_event)
-                                       -> ()>,
+    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
+    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
     pub key_timer: event,
     pub key_tree: *mut tty_key,
 }
@@ -1131,10 +1134,8 @@ pub struct cmd_parse_input {
     pub c: *mut client,
     pub fs: cmd_find_state,
 }
-pub type cmdq_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut cmdq_item, _: *mut libc::c_void)
-               -> cmd_retval>;
+pub type cmdq_cb =
+    Option<unsafe extern "C" fn(_: *mut cmdq_item, _: *mut libc::c_void) -> cmd_retval>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct clients {
@@ -1159,29 +1160,33 @@ pub struct clients {
  */
 #[no_mangle]
 pub static mut cfg_client: *mut client = 0 as *const client as *mut client;
-static mut cfg_file: *mut libc::c_char =
-    0 as *const libc::c_char as *mut libc::c_char;
+static mut cfg_file: *mut libc::c_char = 0 as *const libc::c_char as *mut libc::c_char;
 #[no_mangle]
 pub static mut cfg_finished: libc::c_int = 0;
 static mut cfg_causes: *mut *mut libc::c_char =
     0 as *const *mut libc::c_char as *mut *mut libc::c_char;
 static mut cfg_ncauses: u_int = 0;
 static mut cfg_item: *mut cmdq_item = 0 as *const cmdq_item as *mut cmdq_item;
-unsafe extern "C" fn cfg_client_done(mut item: *mut cmdq_item,
-                                     mut data: *mut libc::c_void)
- -> cmd_retval {
-    if cfg_finished == 0 { return CMD_RETURN_WAIT }
+unsafe extern "C" fn cfg_client_done(
+    mut item: *mut cmdq_item,
+    mut data: *mut libc::c_void,
+) -> cmd_retval {
+    if cfg_finished == 0 {
+        return CMD_RETURN_WAIT;
+    }
     return CMD_RETURN_NORMAL;
 }
-unsafe extern "C" fn cfg_done(mut item: *mut cmdq_item,
-                              mut data: *mut libc::c_void) -> cmd_retval {
-    if cfg_finished != 0 { return CMD_RETURN_NORMAL }
+unsafe extern "C" fn cfg_done(mut item: *mut cmdq_item, mut data: *mut libc::c_void) -> cmd_retval {
+    if cfg_finished != 0 {
+        return CMD_RETURN_NORMAL;
+    }
     cfg_finished = 1 as libc::c_int;
     if !sessions.rbh_root.is_null() {
-        cfg_show_causes(sessions_RB_MINMAX(&mut sessions,
-                                           -(1 as libc::c_int)));
+        cfg_show_causes(sessions_RB_MINMAX(&mut sessions, -(1 as libc::c_int)));
     }
-    if !cfg_item.is_null() { cmdq_continue(cfg_item); }
+    if !cfg_item.is_null() {
+        cmdq_continue(cfg_item);
+    }
     status_prompt_load_history();
     return CMD_RETURN_NORMAL;
 }
@@ -1197,28 +1202,26 @@ pub unsafe extern "C" fn start_cfg() {
     let mut i: u_int = 0;
     let mut n: u_int = 0;
     /*
-	 * Configuration files are loaded without a client, so commands are run
-	 * in the global queue with item->client NULL.
-	 *
-	 * However, we must block the initial client (but just the initial
-	 * client) so that its command runs after the configuration is loaded.
-	 * Because start_cfg() is called so early, we can be sure the client's
-	 * command queue is currently empty and our callback will be at the
-	 * front - we need to get in before MSG_COMMAND.
-	 */
+     * Configuration files are loaded without a client, so commands are run
+     * in the global queue with item->client NULL.
+     *
+     * However, we must block the initial client (but just the initial
+     * client) so that its command runs after the configuration is loaded.
+     * Because start_cfg() is called so early, we can be sure the client's
+     * command queue is currently empty and our callback will be at the
+     * front - we need to get in before MSG_COMMAND.
+     */
     c = clients.tqh_first;
     cfg_client = c;
     if !c.is_null() {
-        cfg_item =
-            cmdq_get_callback1(b"cfg_client_done\x00" as *const u8 as
-                                   *const libc::c_char,
-                               Some(cfg_client_done as
-                                        unsafe extern "C" fn(_:
-                                                                 *mut cmdq_item,
-                                                             _:
-                                                                 *mut libc::c_void)
-                                            -> cmd_retval),
-                               0 as *mut libc::c_void);
+        cfg_item = cmdq_get_callback1(
+            b"cfg_client_done\x00" as *const u8 as *const libc::c_char,
+            Some(
+                cfg_client_done
+                    as unsafe extern "C" fn(_: *mut cmdq_item, _: *mut libc::c_void) -> cmd_retval,
+            ),
+            0 as *mut libc::c_void,
+        );
         cmdq_append(c, cfg_item);
     }
     if cfg_file.is_null() {
@@ -1227,66 +1230,86 @@ pub unsafe extern "C" fn start_cfg() {
                      &mut n);
         i = 0 as libc::c_int as u_int;
         while i < n {
-            load_cfg(*paths.offset(i as isize), c, 0 as *mut cmdq_item,
-                     0x1 as libc::c_int, 0 as *mut *mut cmdq_item);
+            load_cfg(
+                *paths.offset(i as isize),
+                c,
+                0 as *mut cmdq_item,
+                0x1 as libc::c_int,
+                0 as *mut *mut cmdq_item,
+            );
             free(*paths.offset(i as isize) as *mut libc::c_void);
             i = i.wrapping_add(1)
         }
         free(paths as *mut libc::c_void);
     } else {
-        load_cfg(cfg_file, c, 0 as *mut cmdq_item, 0 as libc::c_int,
-                 0 as *mut *mut cmdq_item);
+        load_cfg(
+            cfg_file,
+            c,
+            0 as *mut cmdq_item,
+            0 as libc::c_int,
+            0 as *mut *mut cmdq_item,
+        );
     }
-    cmdq_append(0 as *mut client,
-                cmdq_get_callback1(b"cfg_done\x00" as *const u8 as
-                                       *const libc::c_char,
-                                   Some(cfg_done as
-                                            unsafe extern "C" fn(_:
-                                                                     *mut cmdq_item,
-                                                                 _:
-                                                                     *mut libc::c_void)
-                                                -> cmd_retval),
-                                   0 as *mut libc::c_void));
+    cmdq_append(
+        0 as *mut client,
+        cmdq_get_callback1(
+            b"cfg_done\x00" as *const u8 as *const libc::c_char,
+            Some(
+                cfg_done
+                    as unsafe extern "C" fn(_: *mut cmdq_item, _: *mut libc::c_void) -> cmd_retval,
+            ),
+            0 as *mut libc::c_void,
+        ),
+    );
 }
 #[no_mangle]
-pub unsafe extern "C" fn load_cfg(mut path: *const libc::c_char,
-                                  mut c: *mut client,
-                                  mut item: *mut cmdq_item,
-                                  mut flags: libc::c_int,
-                                  mut new_item: *mut *mut cmdq_item)
- -> libc::c_int {
+pub unsafe extern "C" fn load_cfg(
+    mut path: *const libc::c_char,
+    mut c: *mut client,
+    mut item: *mut cmdq_item,
+    mut flags: libc::c_int,
+    mut new_item: *mut *mut cmdq_item,
+) -> libc::c_int {
     let mut f: *mut FILE = 0 as *mut FILE;
-    let mut pi: cmd_parse_input =
-        cmd_parse_input{flags: 0,
-                        file: 0 as *const libc::c_char,
-                        line: 0,
-                        item: 0 as *mut cmdq_item,
-                        c: 0 as *mut client,
-                        fs:
-                            cmd_find_state{flags: 0,
-                                           current: 0 as *mut cmd_find_state,
-                                           s: 0 as *mut session,
-                                           wl: 0 as *mut winlink,
-                                           w: 0 as *mut window,
-                                           wp: 0 as *mut window_pane,
-                                           idx: 0,},};
+    let mut pi: cmd_parse_input = cmd_parse_input {
+        flags: 0,
+        file: 0 as *const libc::c_char,
+        line: 0,
+        item: 0 as *mut cmdq_item,
+        c: 0 as *mut client,
+        fs: cmd_find_state {
+            flags: 0,
+            current: 0 as *mut cmd_find_state,
+            s: 0 as *mut session,
+            wl: 0 as *mut winlink,
+            w: 0 as *mut window,
+            wp: 0 as *mut window_pane,
+            idx: 0,
+        },
+    };
     let mut pr: *mut cmd_parse_result = 0 as *mut cmd_parse_result;
     let mut new_item0: *mut cmdq_item = 0 as *mut cmdq_item;
-    if !new_item.is_null() { *new_item = 0 as *mut cmdq_item }
+    if !new_item.is_null() {
+        *new_item = 0 as *mut cmdq_item
+    }
     log_debug(b"loading %s\x00" as *const u8 as *const libc::c_char, path);
     f = fopen(path, b"rb\x00" as *const u8 as *const libc::c_char);
     if f.is_null() {
-        if *__errno_location() == 2 as libc::c_int &&
-               flags & 0x1 as libc::c_int != 0 {
-            return 0 as libc::c_int
+        if *__errno_location() == 2 as libc::c_int && flags & 0x1 as libc::c_int != 0 {
+            return 0 as libc::c_int;
         }
-        cfg_add_cause(b"%s: %s\x00" as *const u8 as *const libc::c_char, path,
-                      strerror(*__errno_location()));
-        return -(1 as libc::c_int)
+        cfg_add_cause(
+            b"%s: %s\x00" as *const u8 as *const libc::c_char,
+            path,
+            strerror(*__errno_location()),
+        );
+        return -(1 as libc::c_int);
     }
-    memset(&mut pi as *mut cmd_parse_input as *mut libc::c_void,
-           0 as libc::c_int,
-           ::std::mem::size_of::<cmd_parse_input>() as libc::c_ulong);
+    memset(
+        &mut pi as *mut cmd_parse_input as *mut libc::c_void,
+        0 as libc::c_int,
+        ::std::mem::size_of::<cmd_parse_input>() as libc::c_ulong,
+    );
     pi.flags = flags;
     pi.file = path;
     pi.line = 1 as libc::c_int as u_int;
@@ -1294,105 +1317,111 @@ pub unsafe extern "C" fn load_cfg(mut path: *const libc::c_char,
     pi.c = c;
     pr = cmd_parse_from_file(f, &mut pi);
     fclose(f);
-    if (*pr).status as libc::c_uint ==
-           CMD_PARSE_EMPTY as libc::c_int as libc::c_uint {
-        return 0 as libc::c_int
+    if (*pr).status as libc::c_uint == CMD_PARSE_EMPTY as libc::c_int as libc::c_uint {
+        return 0 as libc::c_int;
     }
-    if (*pr).status as libc::c_uint ==
-           CMD_PARSE_ERROR as libc::c_int as libc::c_uint {
-        cfg_add_cause(b"%s\x00" as *const u8 as *const libc::c_char,
-                      (*pr).error);
+    if (*pr).status as libc::c_uint == CMD_PARSE_ERROR as libc::c_int as libc::c_uint {
+        cfg_add_cause(b"%s\x00" as *const u8 as *const libc::c_char, (*pr).error);
         free((*pr).error as *mut libc::c_void);
-        return -(1 as libc::c_int)
+        return -(1 as libc::c_int);
     }
     if flags & 0x2 as libc::c_int != 0 {
         cmd_list_free((*pr).cmdlist);
-        return 0 as libc::c_int
+        return 0 as libc::c_int;
     }
     new_item0 = cmdq_get_command((*pr).cmdlist, 0 as *mut cmdq_state);
     if !item.is_null() {
         new_item0 = cmdq_insert_after(item, new_item0)
-    } else { new_item0 = cmdq_append(0 as *mut client, new_item0) }
+    } else {
+        new_item0 = cmdq_append(0 as *mut client, new_item0)
+    }
     cmd_list_free((*pr).cmdlist);
-    if !new_item.is_null() { *new_item = new_item0 }
+    if !new_item.is_null() {
+        *new_item = new_item0
+    }
     return 0 as libc::c_int;
 }
 #[no_mangle]
-pub unsafe extern "C" fn load_cfg_from_buffer(mut buf: *const libc::c_void,
-                                              mut len: size_t,
-                                              mut path: *const libc::c_char,
-                                              mut c: *mut client,
-                                              mut item: *mut cmdq_item,
-                                              mut flags: libc::c_int,
-                                              mut new_item:
-                                                  *mut *mut cmdq_item)
- -> libc::c_int {
-    let mut pi: cmd_parse_input =
-        cmd_parse_input{flags: 0,
-                        file: 0 as *const libc::c_char,
-                        line: 0,
-                        item: 0 as *mut cmdq_item,
-                        c: 0 as *mut client,
-                        fs:
-                            cmd_find_state{flags: 0,
-                                           current: 0 as *mut cmd_find_state,
-                                           s: 0 as *mut session,
-                                           wl: 0 as *mut winlink,
-                                           w: 0 as *mut window,
-                                           wp: 0 as *mut window_pane,
-                                           idx: 0,},};
+pub unsafe extern "C" fn load_cfg_from_buffer(
+    mut buf: *const libc::c_void,
+    mut len: size_t,
+    mut path: *const libc::c_char,
+    mut c: *mut client,
+    mut item: *mut cmdq_item,
+    mut flags: libc::c_int,
+    mut new_item: *mut *mut cmdq_item,
+) -> libc::c_int {
+    let mut pi: cmd_parse_input = cmd_parse_input {
+        flags: 0,
+        file: 0 as *const libc::c_char,
+        line: 0,
+        item: 0 as *mut cmdq_item,
+        c: 0 as *mut client,
+        fs: cmd_find_state {
+            flags: 0,
+            current: 0 as *mut cmd_find_state,
+            s: 0 as *mut session,
+            wl: 0 as *mut winlink,
+            w: 0 as *mut window,
+            wp: 0 as *mut window_pane,
+            idx: 0,
+        },
+    };
     let mut pr: *mut cmd_parse_result = 0 as *mut cmd_parse_result;
     let mut new_item0: *mut cmdq_item = 0 as *mut cmdq_item;
-    if !new_item.is_null() { *new_item = 0 as *mut cmdq_item }
+    if !new_item.is_null() {
+        *new_item = 0 as *mut cmdq_item
+    }
     log_debug(b"loading %s\x00" as *const u8 as *const libc::c_char, path);
-    memset(&mut pi as *mut cmd_parse_input as *mut libc::c_void,
-           0 as libc::c_int,
-           ::std::mem::size_of::<cmd_parse_input>() as libc::c_ulong);
+    memset(
+        &mut pi as *mut cmd_parse_input as *mut libc::c_void,
+        0 as libc::c_int,
+        ::std::mem::size_of::<cmd_parse_input>() as libc::c_ulong,
+    );
     pi.flags = flags;
     pi.file = path;
     pi.line = 1 as libc::c_int as u_int;
     pi.item = item;
     pi.c = c;
     pr = cmd_parse_from_buffer(buf, len, &mut pi);
-    if (*pr).status as libc::c_uint ==
-           CMD_PARSE_EMPTY as libc::c_int as libc::c_uint {
-        return 0 as libc::c_int
+    if (*pr).status as libc::c_uint == CMD_PARSE_EMPTY as libc::c_int as libc::c_uint {
+        return 0 as libc::c_int;
     }
-    if (*pr).status as libc::c_uint ==
-           CMD_PARSE_ERROR as libc::c_int as libc::c_uint {
-        cfg_add_cause(b"%s\x00" as *const u8 as *const libc::c_char,
-                      (*pr).error);
+    if (*pr).status as libc::c_uint == CMD_PARSE_ERROR as libc::c_int as libc::c_uint {
+        cfg_add_cause(b"%s\x00" as *const u8 as *const libc::c_char, (*pr).error);
         free((*pr).error as *mut libc::c_void);
-        return -(1 as libc::c_int)
+        return -(1 as libc::c_int);
     }
     if flags & 0x2 as libc::c_int != 0 {
         cmd_list_free((*pr).cmdlist);
-        return 0 as libc::c_int
+        return 0 as libc::c_int;
     }
     new_item0 = cmdq_get_command((*pr).cmdlist, 0 as *mut cmdq_state);
     if !item.is_null() {
         new_item0 = cmdq_insert_after(item, new_item0)
-    } else { new_item0 = cmdq_append(0 as *mut client, new_item0) }
+    } else {
+        new_item0 = cmdq_append(0 as *mut client, new_item0)
+    }
     cmd_list_free((*pr).cmdlist);
-    if !new_item.is_null() { *new_item = new_item0 }
+    if !new_item.is_null() {
+        *new_item = new_item0
+    }
     return 0 as libc::c_int;
 }
 #[no_mangle]
-pub unsafe extern "C" fn cfg_add_cause(mut fmt: *const libc::c_char,
-                                       mut args: ...) {
+pub unsafe extern "C" fn cfg_add_cause(mut fmt: *const libc::c_char, mut args: ...) {
     let mut ap: ::std::ffi::VaListImpl;
     let mut msg: *mut libc::c_char = 0 as *mut libc::c_char;
     ap = args.clone();
     xvasprintf(&mut msg, fmt, ap.as_va_list());
     cfg_ncauses = cfg_ncauses.wrapping_add(1);
-    cfg_causes =
-        xreallocarray(cfg_causes as *mut libc::c_void, cfg_ncauses as size_t,
-                      ::std::mem::size_of::<*mut libc::c_char>() as
-                          libc::c_ulong) as *mut *mut libc::c_char;
+    cfg_causes = xreallocarray(
+        cfg_causes as *mut libc::c_void,
+        cfg_ncauses as size_t,
+        ::std::mem::size_of::<*mut libc::c_char>() as libc::c_ulong,
+    ) as *mut *mut libc::c_char;
     let ref mut fresh0 =
-        *cfg_causes.offset(cfg_ncauses.wrapping_sub(1 as libc::c_int as
-                                                        libc::c_uint) as
-                               isize);
+        *cfg_causes.offset(cfg_ncauses.wrapping_sub(1 as libc::c_int as libc::c_uint) as isize);
     *fresh0 = msg;
 }
 #[no_mangle]
@@ -1400,8 +1429,11 @@ pub unsafe extern "C" fn cfg_print_causes(mut item: *mut cmdq_item) {
     let mut i: u_int = 0;
     i = 0 as libc::c_int as u_int;
     while i < cfg_ncauses {
-        cmdq_print(item, b"%s\x00" as *const u8 as *const libc::c_char,
-                   *cfg_causes.offset(i as isize));
+        cmdq_print(
+            item,
+            b"%s\x00" as *const u8 as *const libc::c_char,
+            *cfg_causes.offset(i as isize),
+        );
         free(*cfg_causes.offset(i as isize) as *mut libc::c_void);
         i = i.wrapping_add(1)
     }
@@ -1415,19 +1447,26 @@ pub unsafe extern "C" fn cfg_show_causes(mut s: *mut session) {
     let mut wme: *mut window_mode_entry = 0 as *mut window_mode_entry;
     let mut i: u_int = 0;
     if s.is_null() || cfg_ncauses == 0 as libc::c_int as libc::c_uint {
-        return
+        return;
     }
     wp = (*(*(*s).curw).window).active;
     wme = (*wp).modes.tqh_first;
-    if wme.is_null() || (*wme).mode != &window_view_mode as *const window_mode
-       {
-        window_pane_set_mode(wp, 0 as *mut window_pane, &window_view_mode,
-                             0 as *mut cmd_find_state, 0 as *mut args);
+    if wme.is_null() || (*wme).mode != &window_view_mode as *const window_mode {
+        window_pane_set_mode(
+            wp,
+            0 as *mut window_pane,
+            &window_view_mode,
+            0 as *mut cmd_find_state,
+            0 as *mut args,
+        );
     }
     i = 0 as libc::c_int as u_int;
     while i < cfg_ncauses {
-        window_copy_add(wp, b"%s\x00" as *const u8 as *const libc::c_char,
-                        *cfg_causes.offset(i as isize));
+        window_copy_add(
+            wp,
+            b"%s\x00" as *const u8 as *const libc::c_char,
+            *cfg_causes.offset(i as isize),
+        );
         free(*cfg_causes.offset(i as isize) as *mut libc::c_void);
         i = i.wrapping_add(1)
     }

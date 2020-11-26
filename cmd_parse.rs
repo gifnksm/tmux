@@ -36,11 +36,9 @@ extern "C" {
     #[no_mangle]
     fn wctomb(__s: *mut libc::c_char, __wchar: wchar_t) -> libc::c_int;
     #[no_mangle]
-    fn memcpy(_: *mut libc::c_void, _: *const libc::c_void, _: libc::c_ulong)
-     -> *mut libc::c_void;
+    fn memcpy(_: *mut libc::c_void, _: *const libc::c_void, _: libc::c_ulong) -> *mut libc::c_void;
     #[no_mangle]
-    fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong)
-     -> *mut libc::c_void;
+    fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
     #[no_mangle]
     fn strcmp(_: *const libc::c_char, _: *const libc::c_char) -> libc::c_int;
     #[no_mangle]
@@ -50,8 +48,7 @@ extern "C" {
     #[no_mangle]
     fn getuid() -> __uid_t;
     #[no_mangle]
-    fn sscanf(_: *const libc::c_char, _: *const libc::c_char, _: ...)
-     -> libc::c_int;
+    fn sscanf(_: *const libc::c_char, _: *const libc::c_char, _: ...) -> libc::c_int;
     #[no_mangle]
     fn getc(__stream: *mut FILE) -> libc::c_int;
     #[no_mangle]
@@ -63,64 +60,70 @@ extern "C" {
     #[no_mangle]
     fn xrealloc(_: *mut libc::c_void, _: size_t) -> *mut libc::c_void;
     #[no_mangle]
-    fn xreallocarray(_: *mut libc::c_void, _: size_t, _: size_t)
-     -> *mut libc::c_void;
+    fn xreallocarray(_: *mut libc::c_void, _: size_t, _: size_t) -> *mut libc::c_void;
     #[no_mangle]
     fn xstrdup(_: *const libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
-    fn xasprintf(_: *mut *mut libc::c_char, _: *const libc::c_char, _: ...)
-     -> libc::c_int;
+    fn xasprintf(_: *mut *mut libc::c_char, _: *const libc::c_char, _: ...) -> libc::c_int;
     #[no_mangle]
-    fn xvasprintf(_: *mut *mut libc::c_char, _: *const libc::c_char,
-                  _: ::std::ffi::VaList) -> libc::c_int;
+    fn xvasprintf(
+        _: *mut *mut libc::c_char,
+        _: *const libc::c_char,
+        _: ::std::ffi::VaList,
+    ) -> libc::c_int;
     #[no_mangle]
     static mut global_environ: *mut environ;
     #[no_mangle]
     fn format_true(_: *const libc::c_char) -> libc::c_int;
     #[no_mangle]
-    fn format_create(_: *mut client, _: *mut cmdq_item, _: libc::c_int,
-                     _: libc::c_int) -> *mut format_tree;
+    fn format_create(
+        _: *mut client,
+        _: *mut cmdq_item,
+        _: libc::c_int,
+        _: libc::c_int,
+    ) -> *mut format_tree;
     #[no_mangle]
     fn format_free(_: *mut format_tree);
     #[no_mangle]
-    fn format_expand(_: *mut format_tree, _: *const libc::c_char)
-     -> *mut libc::c_char;
+    fn format_expand(_: *mut format_tree, _: *const libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
-    fn format_defaults(_: *mut format_tree, _: *mut client, _: *mut session,
-                       _: *mut winlink, _: *mut window_pane);
+    fn format_defaults(
+        _: *mut format_tree,
+        _: *mut client,
+        _: *mut session,
+        _: *mut winlink,
+        _: *mut window_pane,
+    );
     #[no_mangle]
-    fn environ_find(_: *mut environ, _: *const libc::c_char)
-     -> *mut environ_entry;
+    fn environ_find(_: *mut environ, _: *const libc::c_char) -> *mut environ_entry;
     #[no_mangle]
     fn environ_put(_: *mut environ, _: *const libc::c_char, _: libc::c_int);
     #[no_mangle]
     fn cmd_find_valid_state(_: *mut cmd_find_state) -> libc::c_int;
     #[no_mangle]
-    fn cmd_find_from_client(_: *mut cmd_find_state, _: *mut client,
-                            _: libc::c_int) -> libc::c_int;
+    fn cmd_find_from_client(_: *mut cmd_find_state, _: *mut client, _: libc::c_int) -> libc::c_int;
     #[no_mangle]
-    fn cmd_log_argv(_: libc::c_int, _: *mut *mut libc::c_char,
-                    _: *const libc::c_char, _: ...);
+    fn cmd_log_argv(_: libc::c_int, _: *mut *mut libc::c_char, _: *const libc::c_char, _: ...);
     #[no_mangle]
-    fn cmd_prepend_argv(_: *mut libc::c_int, _: *mut *mut *mut libc::c_char,
-                        _: *mut libc::c_char);
+    fn cmd_prepend_argv(_: *mut libc::c_int, _: *mut *mut *mut libc::c_char, _: *mut libc::c_char);
     #[no_mangle]
-    fn cmd_append_argv(_: *mut libc::c_int, _: *mut *mut *mut libc::c_char,
-                       _: *mut libc::c_char);
+    fn cmd_append_argv(_: *mut libc::c_int, _: *mut *mut *mut libc::c_char, _: *mut libc::c_char);
     #[no_mangle]
-    fn cmd_copy_argv(_: libc::c_int, _: *mut *mut libc::c_char)
-     -> *mut *mut libc::c_char;
+    fn cmd_copy_argv(_: libc::c_int, _: *mut *mut libc::c_char) -> *mut *mut libc::c_char;
     #[no_mangle]
     fn cmd_free_argv(_: libc::c_int, _: *mut *mut libc::c_char);
     #[no_mangle]
-    fn cmd_stringify_argv(_: libc::c_int, _: *mut *mut libc::c_char)
-     -> *mut libc::c_char;
+    fn cmd_stringify_argv(_: libc::c_int, _: *mut *mut libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
     fn cmd_get_alias(_: *const libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
-    fn cmd_parse(_: libc::c_int, _: *mut *mut libc::c_char,
-                 _: *const libc::c_char, _: u_int, _: *mut *mut libc::c_char)
-     -> *mut cmd;
+    fn cmd_parse(
+        _: libc::c_int,
+        _: *mut *mut libc::c_char,
+        _: *const libc::c_char,
+        _: u_int,
+        _: *mut *mut libc::c_char,
+    ) -> *mut cmd;
     #[no_mangle]
     fn cmd_list_new() -> *mut cmd_list;
     #[no_mangle]
@@ -134,11 +137,9 @@ extern "C" {
     #[no_mangle]
     fn cmdq_print(_: *mut cmdq_item, _: *const libc::c_char, _: ...);
     #[no_mangle]
-    fn cmdq_insert_after(_: *mut cmdq_item, _: *mut cmdq_item)
-     -> *mut cmdq_item;
+    fn cmdq_insert_after(_: *mut cmdq_item, _: *mut cmdq_item) -> *mut cmdq_item;
     #[no_mangle]
-    fn cmdq_get_command(_: *mut cmd_list, _: *mut cmdq_state)
-     -> *mut cmdq_item;
+    fn cmdq_get_command(_: *mut cmd_list, _: *mut cmdq_state) -> *mut cmdq_item;
     #[no_mangle]
     fn cmdq_append(_: *mut client, _: *mut cmdq_item) -> *mut cmdq_item;
     #[no_mangle]
@@ -309,18 +310,13 @@ pub struct event_callback {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub union C2RustUnnamed_7 {
-    pub evcb_callback: Option<unsafe extern "C" fn(_: libc::c_int,
-                                                   _: libc::c_short,
-                                                   _: *mut libc::c_void)
-                                  -> ()>,
-    pub evcb_selfcb: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                 _: *mut libc::c_void) -> ()>,
-    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
-    pub evcb_cbfinalize: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
+    pub evcb_callback:
+        Option<unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> ()>,
+    pub evcb_selfcb:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
+    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event, _: *mut libc::c_void) -> ()>,
+    pub evcb_cbfinalize:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -347,14 +343,10 @@ pub struct bufferevent {
     pub timeout_write: timeval,
     pub enabled: libc::c_short,
 }
-pub type bufferevent_event_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short,
-                                _: *mut libc::c_void) -> ()>;
-pub type bufferevent_data_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void)
-               -> ()>;
+pub type bufferevent_event_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short, _: *mut libc::c_void) -> ()>;
+pub type bufferevent_data_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct event_watermark {
@@ -493,17 +485,19 @@ pub struct C2RustUnnamed_10 {
     pub rbe_parent: *mut client_file,
     pub rbe_color: libc::c_int,
 }
-pub type client_file_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *const libc::c_char,
-                                _: libc::c_int, _: libc::c_int,
-                                _: *mut evbuffer, _: *mut libc::c_void)
-               -> ()>;
+pub type client_file_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: *mut evbuffer,
+        _: *mut libc::c_void,
+    ) -> (),
+>;
 pub type overlay_free_cb = Option<unsafe extern "C" fn(_: *mut client) -> ()>;
-pub type overlay_key_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event)
-               -> libc::c_int>;
+pub type overlay_key_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_event {
@@ -533,10 +527,8 @@ pub struct mouse_event {
     pub sgr_b: u_int,
 }
 pub type key_code = libc::c_ulonglong;
-pub type overlay_draw_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx)
-               -> ()>;
+pub type overlay_draw_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen_redraw_ctx {
@@ -550,10 +542,8 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int)
-               -> *mut screen>;
+pub type overlay_mode_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen {
@@ -647,10 +637,8 @@ pub struct C2RustUnnamed_12 {
     pub bg: u_char,
     pub data: u_char,
 }
-pub type overlay_check_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int)
-               -> libc::c_int>;
+pub type overlay_check_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct session {
@@ -897,24 +885,37 @@ pub struct C2RustUnnamed_25 {
 pub struct window_mode {
     pub name: *const libc::c_char,
     pub default_format: *const libc::c_char,
-    pub init: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                          _: *mut cmd_find_state,
-                                          _: *mut args) -> *mut screen>,
+    pub init: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut cmd_find_state,
+            _: *mut args,
+        ) -> *mut screen,
+    >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
-    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                            _: u_int, _: u_int) -> ()>,
-    pub key: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                         _: *mut client, _: *mut session,
-                                         _: *mut winlink, _: key_code,
-                                         _: *mut mouse_event) -> ()>,
-    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry)
-                              -> *const libc::c_char>,
-    pub command: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut client, _: *mut session,
-                                             _: *mut winlink, _: *mut args,
-                                             _: *mut mouse_event) -> ()>,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut format_tree) -> ()>,
+    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
+    pub key: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: key_code,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> *const libc::c_char>,
+    pub command: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: *mut args,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -951,14 +952,15 @@ pub struct winlink_stack {
 pub type C2RustUnnamed_26 = libc::c_uint;
 pub const PROMPT_COMMAND: C2RustUnnamed_26 = 1;
 pub const PROMPT_ENTRY: C2RustUnnamed_26 = 0;
-pub type prompt_free_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
-pub type prompt_input_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut libc::c_void,
-                                _: *const libc::c_char, _: libc::c_int)
-               -> libc::c_int>;
+pub type prompt_free_cb = Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
+pub type prompt_input_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut libc::c_void,
+        _: *const libc::c_char,
+        _: libc::c_int,
+    ) -> libc::c_int,
+>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_table {
@@ -1129,12 +1131,8 @@ pub struct tty {
     pub mouse_last_y: u_int,
     pub mouse_last_b: u_int,
     pub mouse_drag_flag: libc::c_int,
-    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client,
-                                                       _: *mut mouse_event)
-                                      -> ()>,
-    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client,
-                                                        _: *mut mouse_event)
-                                       -> ()>,
+    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
+    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
     pub key_timer: event,
     pub key_tree: *mut tty_key,
 }
@@ -1280,12 +1278,12 @@ pub struct C2RustUnnamed_36 {
 /* Stored state numbers (used for stacks). */
 pub type yy_state_t = yytype_int8;
 /* On compilers that do not define __PTRDIFF_MAX__ etc., make sure
-   <limits.h> and (if available) <stdint.h> are included
-   so that the code can choose integer types of a good width.  */
+<limits.h> and (if available) <stdint.h> are included
+so that the code can choose integer types of a good width.  */
 /* Narrow types that promote to a signed type and that can represent a
-   signed or unsigned integer of at least N bits.  In tables they can
-   save space and decrease cache pressure.  Promoting to a signed type
-   helps avoid bugs in integer arithmetic.  */
+signed or unsigned integer of at least N bits.  In tables they can
+save space and decrease cache pressure.  Promoting to a signed type
+helps avoid bugs in integer arithmetic.  */
 pub type yytype_int8 = libc::c_schar;
 /* Value type.  */
 #[derive(Copy, Clone)]
@@ -1432,63 +1430,70 @@ pub const YYUNDEF_0: yytokentype = 257;
 /* "end of file"  */
 pub const YYerror_0: yytokentype = 256;
 pub const YYEOF_0: yytokentype = 0;
-static mut parse_state: cmd_parse_state =
-    cmd_parse_state{f: 0 as *const FILE as *mut FILE,
-                    buf: 0 as *const libc::c_char,
-                    len: 0,
-                    off: 0,
-                    condition: 0,
-                    eol: 0,
-                    eof: 0,
-                    input:
-                        0 as *const cmd_parse_input as *mut cmd_parse_input,
-                    escapes: 0,
-                    error: 0 as *const libc::c_char as *mut libc::c_char,
-                    commands:
-                        0 as *const cmd_parse_commands as
-                            *mut cmd_parse_commands,
-                    scope:
-                        0 as *const cmd_parse_scope as *mut cmd_parse_scope,
-                    stack:
-                        C2RustUnnamed_35{tqh_first:
-                                             0 as *const cmd_parse_scope as
-                                                 *mut cmd_parse_scope,
-                                         tqh_last:
-                                             0 as *const *mut cmd_parse_scope
-                                                 as
-                                                 *mut *mut cmd_parse_scope,},};
+static mut parse_state: cmd_parse_state = cmd_parse_state {
+    f: 0 as *const FILE as *mut FILE,
+    buf: 0 as *const libc::c_char,
+    len: 0,
+    off: 0,
+    condition: 0,
+    eol: 0,
+    eof: 0,
+    input: 0 as *const cmd_parse_input as *mut cmd_parse_input,
+    escapes: 0,
+    error: 0 as *const libc::c_char as *mut libc::c_char,
+    commands: 0 as *const cmd_parse_commands as *mut cmd_parse_commands,
+    scope: 0 as *const cmd_parse_scope as *mut cmd_parse_scope,
+    stack: C2RustUnnamed_35 {
+        tqh_first: 0 as *const cmd_parse_scope as *mut cmd_parse_scope,
+        tqh_last: 0 as *const *mut cmd_parse_scope as *mut *mut cmd_parse_scope,
+    },
+};
 /* The size of an array large to enough to hold all stacks, each with
-   N elements.  */
-unsafe extern "C" fn cmd_parse_get_error(mut file: *const libc::c_char,
-                                         mut line: u_int,
-                                         mut error: *const libc::c_char)
- -> *mut libc::c_char {
+N elements.  */
+unsafe extern "C" fn cmd_parse_get_error(
+    mut file: *const libc::c_char,
+    mut line: u_int,
+    mut error: *const libc::c_char,
+) -> *mut libc::c_char {
     let mut s: *mut libc::c_char = 0 as *mut libc::c_char;
     if file.is_null() {
         s = xstrdup(error)
     } else {
-        xasprintf(&mut s as *mut *mut libc::c_char,
-                  b"%s:%u: %s\x00" as *const u8 as *const libc::c_char, file,
-                  line, error);
+        xasprintf(
+            &mut s as *mut *mut libc::c_char,
+            b"%s:%u: %s\x00" as *const u8 as *const libc::c_char,
+            file,
+            line,
+            error,
+        );
     }
     return s;
 }
-unsafe extern "C" fn cmd_parse_print_commands(mut pi: *mut cmd_parse_input,
-                                              mut line: u_int,
-                                              mut cmdlist: *mut cmd_list) {
+unsafe extern "C" fn cmd_parse_print_commands(
+    mut pi: *mut cmd_parse_input,
+    mut line: u_int,
+    mut cmdlist: *mut cmd_list,
+) {
     let mut s: *mut libc::c_char = 0 as *mut libc::c_char;
     if !(*pi).item.is_null() && (*pi).flags & 0x8 as libc::c_int != 0 {
         /* Copy COUNT objects from SRC to DST.  The source and destination do
-   not overlap.  */
+        not overlap.  */
         s = cmd_list_print(cmdlist, 0 as libc::c_int);
         if !(*pi).file.is_null() {
-            cmdq_print((*pi).item,
-                       b"%s:%u: %s\x00" as *const u8 as *const libc::c_char,
-                       (*pi).file, line, s);
+            cmdq_print(
+                (*pi).item,
+                b"%s:%u: %s\x00" as *const u8 as *const libc::c_char,
+                (*pi).file,
+                line,
+                s,
+            );
         } else {
-            cmdq_print((*pi).item,
-                       b"%u: %s\x00" as *const u8 as *const libc::c_char,
-                       line, s);
+            cmdq_print(
+                (*pi).item,
+                b"%u: %s\x00" as *const u8 as *const libc::c_char,
+                line,
+                s,
+            );
         }
         free(s as *mut libc::c_void);
     };
@@ -1497,31 +1502,32 @@ unsafe extern "C" fn cmd_parse_free_command(mut cmd: *mut cmd_parse_command) {
     cmd_free_argv((*cmd).argc, (*cmd).argv);
     free(cmd as *mut libc::c_void);
 }
-unsafe extern "C" fn cmd_parse_new_commands() -> *mut cmd_parse_commands 
- /* !YYCOPY_NEEDED */
- {
+unsafe extern "C" fn cmd_parse_new_commands() -> *mut cmd_parse_commands
+/* !YYCOPY_NEEDED */ {
     /* YYFINAL -- State number of the termination state.  */
     let mut cmds: *mut cmd_parse_commands = 0 as *mut cmd_parse_commands;
     /* YYLAST -- Last index in YYTABLE.  */
-    cmds =
-        xmalloc(::std::mem::size_of::<cmd_parse_commands>() as libc::c_ulong)
-            as *mut cmd_parse_commands;
+    cmds = xmalloc(::std::mem::size_of::<cmd_parse_commands>() as libc::c_ulong)
+        as *mut cmd_parse_commands;
     (*cmds).tqh_first = 0 as *mut cmd_parse_command;
     (*cmds).tqh_last = &mut (*cmds).tqh_first;
     return cmds;
 }
-unsafe extern "C" fn cmd_parse_free_commands(mut cmds:
-                                                 *mut cmd_parse_commands) {
+unsafe extern "C" fn cmd_parse_free_commands(mut cmds: *mut cmd_parse_commands) {
     /* YYNRULES -- Number of rules.  */
     let mut cmd: *mut cmd_parse_command = 0 as *mut cmd_parse_command;
     let mut cmd1: *mut cmd_parse_command = 0 as *mut cmd_parse_command;
     /* YYNSTATES -- Number of states.  */
     cmd = (*cmds).tqh_first;
-    while !cmd.is_null() &&
-              { cmd1 = (*cmd).entry.tqe_next; (1 as libc::c_int) != 0 } {
+    while !cmd.is_null() && {
+        cmd1 = (*cmd).entry.tqe_next;
+        (1 as libc::c_int) != 0
+    } {
         if !(*cmd).entry.tqe_next.is_null() {
             (*(*cmd).entry.tqe_next).entry.tqe_prev = (*cmd).entry.tqe_prev
-        } else { (*cmds).tqh_last = (*cmd).entry.tqe_prev }
+        } else {
+            (*cmds).tqh_last = (*cmd).entry.tqe_prev
+        }
         *(*cmd).entry.tqe_prev = (*cmd).entry.tqe_next;
         /* YYMAXUTOK -- Last valid token kind.  */
         cmd_parse_free_command(cmd);
@@ -1530,25 +1536,28 @@ unsafe extern "C" fn cmd_parse_free_commands(mut cmds:
     free(cmds as *mut libc::c_void);
 }
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
-   as returned by yylex, with out-of-bounds checking.  */
-unsafe extern "C" fn cmd_parse_commands_to_string(mut cmds:
-                                                      *mut cmd_parse_commands)
- -> *mut libc::c_char {
+as returned by yylex, with out-of-bounds checking.  */
+unsafe extern "C" fn cmd_parse_commands_to_string(
+    mut cmds: *mut cmd_parse_commands,
+) -> *mut libc::c_char {
     let mut cmd: *mut cmd_parse_command = 0 as *mut cmd_parse_command;
     let mut string: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut s: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut line: *mut libc::c_char = 0 as *mut libc::c_char;
     /* YYTRANSLATE[TOKEN-NUM] -- Symbol number corresponding to TOKEN-NUM
-   as returned by yylex.  */
+    as returned by yylex.  */
     cmd = (*cmds).tqh_first;
     while !cmd.is_null() {
         line = cmd_stringify_argv((*cmd).argc, (*cmd).argv);
         if string.is_null() {
             s = line
         } else {
-            xasprintf(&mut s as *mut *mut libc::c_char,
-                      b"%s ; %s\x00" as *const u8 as *const libc::c_char, s,
-                      line);
+            xasprintf(
+                &mut s as *mut *mut libc::c_char,
+                b"%s ; %s\x00" as *const u8 as *const libc::c_char,
+                s,
+                line,
+            );
             free(line as *mut libc::c_void);
         }
         free(string as *mut libc::c_void);
@@ -1558,149 +1567,288 @@ unsafe extern "C" fn cmd_parse_commands_to_string(mut cmds:
     if string.is_null() {
         string = xstrdup(b"\x00" as *const u8 as *const libc::c_char)
     }
-    log_debug(b"%s: %s\x00" as *const u8 as *const libc::c_char,
-              (*::std::mem::transmute::<&[u8; 29],
-                                        &[libc::c_char; 29]>(b"cmd_parse_commands_to_string\x00")).as_ptr(),
-              string);
+    log_debug(
+        b"%s: %s\x00" as *const u8 as *const libc::c_char,
+        (*::std::mem::transmute::<&[u8; 29], &[libc::c_char; 29]>(
+            b"cmd_parse_commands_to_string\x00",
+        ))
+        .as_ptr(),
+        string,
+    );
     return string;
 }
-static mut yytranslate: [yytype_int8; 267] =
-    [0 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     12 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 13 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 14 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 15 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     1 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     3 as libc::c_int as yytype_int8, 4 as libc::c_int as yytype_int8,
-     5 as libc::c_int as yytype_int8, 6 as libc::c_int as yytype_int8,
-     7 as libc::c_int as yytype_int8, 8 as libc::c_int as yytype_int8,
-     9 as libc::c_int as yytype_int8, 10 as libc::c_int as yytype_int8,
-     11 as libc::c_int as yytype_int8];
-unsafe extern "C" fn cmd_parse_run_parser(mut cause: *mut *mut libc::c_char)
- -> *mut cmd_parse_commands {
+static mut yytranslate: [yytype_int8; 267] = [
+    0 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    12 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    13 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    14 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    15 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    1 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    3 as libc::c_int as yytype_int8,
+    4 as libc::c_int as yytype_int8,
+    5 as libc::c_int as yytype_int8,
+    6 as libc::c_int as yytype_int8,
+    7 as libc::c_int as yytype_int8,
+    8 as libc::c_int as yytype_int8,
+    9 as libc::c_int as yytype_int8,
+    10 as libc::c_int as yytype_int8,
+    11 as libc::c_int as yytype_int8,
+];
+unsafe extern "C" fn cmd_parse_run_parser(
+    mut cause: *mut *mut libc::c_char,
+) -> *mut cmd_parse_commands {
     let mut ps: *mut cmd_parse_state = &mut parse_state;
     let mut scope: *mut cmd_parse_scope = 0 as *mut cmd_parse_scope;
     let mut scope1: *mut cmd_parse_scope = 0 as *mut cmd_parse_scope;
@@ -1710,69 +1858,80 @@ unsafe extern "C" fn cmd_parse_run_parser(mut cause: *mut *mut libc::c_char)
     (*ps).stack.tqh_last = &mut (*ps).stack.tqh_first;
     retval = yyparse();
     scope = (*ps).stack.tqh_first;
-    while !scope.is_null() &&
-              { scope1 = (*scope).entry.tqe_next; (1 as libc::c_int) != 0 } {
+    while !scope.is_null() && {
+        scope1 = (*scope).entry.tqe_next;
+        (1 as libc::c_int) != 0
+    } {
         if !(*scope).entry.tqe_next.is_null() {
-            (*(*scope).entry.tqe_next).entry.tqe_prev =
-                (*scope).entry.tqe_prev
-        } else { (*ps).stack.tqh_last = (*scope).entry.tqe_prev }
+            (*(*scope).entry.tqe_next).entry.tqe_prev = (*scope).entry.tqe_prev
+        } else {
+            (*ps).stack.tqh_last = (*scope).entry.tqe_prev
+        }
         *(*scope).entry.tqe_prev = (*scope).entry.tqe_next;
         free(scope as *mut libc::c_void);
         scope = scope1
     }
     if retval != 0 as libc::c_int {
         *cause = (*ps).error;
-        return 0 as *mut cmd_parse_commands
+        return 0 as *mut cmd_parse_commands;
     }
-    if (*ps).commands.is_null() { return cmd_parse_new_commands() }
+    if (*ps).commands.is_null() {
+        return cmd_parse_new_commands();
+    }
     return (*ps).commands;
 }
-unsafe extern "C" fn cmd_parse_do_file(mut f: *mut FILE,
-                                       mut pi: *mut cmd_parse_input,
-                                       mut cause: *mut *mut libc::c_char)
- -> *mut cmd_parse_commands {
+unsafe extern "C" fn cmd_parse_do_file(
+    mut f: *mut FILE,
+    mut pi: *mut cmd_parse_input,
+    mut cause: *mut *mut libc::c_char,
+) -> *mut cmd_parse_commands {
     /* * Accessing symbol of state STATE.  */
     let mut ps: *mut cmd_parse_state = &mut parse_state;
-    memset(ps as *mut libc::c_void, 0 as libc::c_int,
-           ::std::mem::size_of::<cmd_parse_state>() as libc::c_ulong);
+    memset(
+        ps as *mut libc::c_void,
+        0 as libc::c_int,
+        ::std::mem::size_of::<cmd_parse_state>() as libc::c_ulong,
+    );
     (*ps).input = pi;
     (*ps).f = f;
     return cmd_parse_run_parser(cause);
 }
-unsafe extern "C" fn cmd_parse_do_buffer(mut buf: *const libc::c_char,
-                                         mut len: size_t,
-                                         mut pi: *mut cmd_parse_input,
-                                         mut cause: *mut *mut libc::c_char)
- -> *mut cmd_parse_commands {
+unsafe extern "C" fn cmd_parse_do_buffer(
+    mut buf: *const libc::c_char,
+    mut len: size_t,
+    mut pi: *mut cmd_parse_input,
+    mut cause: *mut *mut libc::c_char,
+) -> *mut cmd_parse_commands {
     let mut ps: *mut cmd_parse_state = &mut parse_state;
-    memset(ps as *mut libc::c_void, 0 as libc::c_int,
-           ::std::mem::size_of::<cmd_parse_state>() as libc::c_ulong);
+    memset(
+        ps as *mut libc::c_void,
+        0 as libc::c_int,
+        ::std::mem::size_of::<cmd_parse_state>() as libc::c_ulong,
+    );
     (*ps).input = pi;
     (*ps).buf = buf;
     (*ps).len = len;
     return cmd_parse_run_parser(cause);
 }
-unsafe extern "C" fn cmd_parse_build_commands(mut cmds:
-                                                  *mut cmd_parse_commands,
-                                              mut pi: *mut cmd_parse_input)
- -> *mut cmd_parse_result {
+unsafe extern "C" fn cmd_parse_build_commands(
+    mut cmds: *mut cmd_parse_commands,
+    mut pi: *mut cmd_parse_input,
+) -> *mut cmd_parse_result {
     let mut current_block: u64;
-    static mut pr: cmd_parse_result =
-        cmd_parse_result{status: CMD_PARSE_EMPTY,
-                         cmdlist: 0 as *const cmd_list as *mut cmd_list,
-                         error:
-                             0 as *const libc::c_char as *mut libc::c_char,};
+    static mut pr: cmd_parse_result = cmd_parse_result {
+        status: CMD_PARSE_EMPTY,
+        cmdlist: 0 as *const cmd_list as *mut cmd_list,
+        error: 0 as *const libc::c_char as *mut libc::c_char,
+    };
     let mut cmds2: *mut cmd_parse_commands = 0 as *mut cmd_parse_commands;
     let mut cmd: *mut cmd_parse_command = 0 as *mut cmd_parse_command;
     let mut cmd2: *mut cmd_parse_command = 0 as *mut cmd_parse_command;
     let mut next: *mut cmd_parse_command = 0 as *mut cmd_parse_command;
     let mut next2: *mut cmd_parse_command = 0 as *mut cmd_parse_command;
     let mut after: *mut cmd_parse_command = 0 as *mut cmd_parse_command;
-    let mut line: u_int =
-        (2147483647 as libc::c_int as
-             libc::c_uint).wrapping_mul(2 as
-                                            libc::c_uint).wrapping_add(1 as
-                                                                           libc::c_uint);
+    let mut line: u_int = (2147483647 as libc::c_int as libc::c_uint)
+        .wrapping_mul(2 as libc::c_uint)
+        .wrapping_add(1 as libc::c_uint);
     let mut i: libc::c_int = 0;
     let mut cmdlist: *mut cmd_list = 0 as *mut cmd_list;
     let mut result: *mut cmd_list = 0 as *mut cmd_list;
@@ -1785,76 +1944,84 @@ unsafe extern "C" fn cmd_parse_build_commands(mut cmds:
     if (*cmds).tqh_first.is_null() {
         cmd_parse_free_commands(cmds);
         pr.status = CMD_PARSE_EMPTY;
-        return &mut pr
+        return &mut pr;
     }
     /*
-	 * Walk the commands and expand any aliases. Each alias is parsed
-	 * individually to a new command list, any trailing arguments appended
-	 * to the last command, and all commands inserted into the original
-	 * command list.
-	 */
+     * Walk the commands and expand any aliases. Each alias is parsed
+     * individually to a new command list, any trailing arguments appended
+     * to the last command, and all commands inserted into the original
+     * command list.
+     */
     cmd = (*cmds).tqh_first;
-    loop  {
-        if !(!cmd.is_null() &&
-                 { next = (*cmd).entry.tqe_next; (1 as libc::c_int) != 0 }) {
+    loop {
+        if !(!cmd.is_null() && {
+            next = (*cmd).entry.tqe_next;
+            (1 as libc::c_int) != 0
+        }) {
             current_block = 5807581744382915773;
-            break ;
+            break;
         }
         name = *(*cmd).argv.offset(0 as libc::c_int as isize);
         alias = cmd_get_alias(name);
         if !alias.is_null() {
             line = (*cmd).line;
-            log_debug(b"%s: %u %s = %s\x00" as *const u8 as
-                          *const libc::c_char,
-                      (*::std::mem::transmute::<&[u8; 25],
-                                                &[libc::c_char; 25]>(b"cmd_parse_build_commands\x00")).as_ptr(),
-                      line, name, alias);
+            log_debug(
+                b"%s: %u %s = %s\x00" as *const u8 as *const libc::c_char,
+                (*::std::mem::transmute::<&[u8; 25], &[libc::c_char; 25]>(
+                    b"cmd_parse_build_commands\x00",
+                ))
+                .as_ptr(),
+                line,
+                name,
+                alias,
+            );
             (*pi).line = line;
             cmds2 = cmd_parse_do_buffer(alias, strlen(alias), pi, &mut cause);
             free(alias as *mut libc::c_void);
             if cmds2.is_null() {
                 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
-     Performed when YYTABLE does not specify something else to do.  Zero
-     means the default is an error.  */
+                Performed when YYTABLE does not specify something else to do.  Zero
+                means the default is an error.  */
                 pr.status = CMD_PARSE_ERROR;
                 pr.error = cause;
                 current_block = 14163653266681795021;
-                break ;
+                break;
             } else {
-                cmd2 =
-                    *(*((*cmds2).tqh_last as
-                            *mut cmd_parse_commands)).tqh_last;
+                cmd2 = *(*((*cmds2).tqh_last as *mut cmd_parse_commands)).tqh_last;
                 if cmd2.is_null() {
                     if !(*cmd).entry.tqe_next.is_null() {
-                        (*(*cmd).entry.tqe_next).entry.tqe_prev =
-                            (*cmd).entry.tqe_prev
-                    } else { (*cmds).tqh_last = (*cmd).entry.tqe_prev }
+                        (*(*cmd).entry.tqe_next).entry.tqe_prev = (*cmd).entry.tqe_prev
+                    } else {
+                        (*cmds).tqh_last = (*cmd).entry.tqe_prev
+                    }
                     *(*cmd).entry.tqe_prev = (*cmd).entry.tqe_next;
                     cmd_parse_free_command(cmd);
                 } else {
                     i = 1 as libc::c_int;
                     while i < (*cmd).argc {
-                        cmd_append_argv(&mut (*cmd2).argc, &mut (*cmd2).argv,
-                                        *(*cmd).argv.offset(i as isize));
+                        cmd_append_argv(
+                            &mut (*cmd2).argc,
+                            &mut (*cmd2).argv,
+                            *(*cmd).argv.offset(i as isize),
+                        );
                         i += 1
                     }
                     after = cmd;
                     cmd2 = (*cmds2).tqh_first;
-                    while !cmd2.is_null() &&
-                              {
-                                  next2 = (*cmd2).entry.tqe_next;
-                                  (1 as libc::c_int) != 0
-                              } {
+                    while !cmd2.is_null() && {
+                        next2 = (*cmd2).entry.tqe_next;
+                        (1 as libc::c_int) != 0
+                    } {
                         (*cmd2).line = line;
                         if !(*cmd2).entry.tqe_next.is_null() {
-                            (*(*cmd2).entry.tqe_next).entry.tqe_prev =
-                                (*cmd2).entry.tqe_prev
-                        } else { (*cmds2).tqh_last = (*cmd2).entry.tqe_prev }
+                            (*(*cmd2).entry.tqe_next).entry.tqe_prev = (*cmd2).entry.tqe_prev
+                        } else {
+                            (*cmds2).tqh_last = (*cmd2).entry.tqe_prev
+                        }
                         *(*cmd2).entry.tqe_prev = (*cmd2).entry.tqe_next;
                         (*cmd2).entry.tqe_next = (*after).entry.tqe_next;
                         if !(*cmd2).entry.tqe_next.is_null() {
-                            (*(*cmd2).entry.tqe_next).entry.tqe_prev =
-                                &mut (*cmd2).entry.tqe_next
+                            (*(*cmd2).entry.tqe_next).entry.tqe_prev = &mut (*cmd2).entry.tqe_next
                         } else {
                             (*cmds).tqh_last = &mut (*cmd2).entry.tqe_next
                         }
@@ -1865,9 +2032,10 @@ unsafe extern "C" fn cmd_parse_build_commands(mut cmds:
                     }
                     cmd_parse_free_commands(cmds2);
                     if !(*cmd).entry.tqe_next.is_null() {
-                        (*(*cmd).entry.tqe_next).entry.tqe_prev =
-                            (*cmd).entry.tqe_prev
-                    } else { (*cmds).tqh_last = (*cmd).entry.tqe_prev }
+                        (*(*cmd).entry.tqe_next).entry.tqe_prev = (*cmd).entry.tqe_prev
+                    } else {
+                        (*cmds).tqh_last = (*cmd).entry.tqe_prev
+                    }
                     *(*cmd).entry.tqe_prev = (*cmd).entry.tqe_next;
                     cmd_parse_free_command(cmd);
                 }
@@ -1878,33 +2046,42 @@ unsafe extern "C" fn cmd_parse_build_commands(mut cmds:
     match current_block {
         5807581744382915773 => {
             /*
-	 * Parse each command into a command list. Create a new command list
-	 * for each line (unless the flag is set) so they get a new group (so
-	 * the queue knows which ones to remove if a command fails when
-	 * executed).
-	 */
+             * Parse each command into a command list. Create a new command list
+             * for each line (unless the flag is set) so they get a new group (so
+             * the queue knows which ones to remove if a command fails when
+             * executed).
+             */
             /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
-     positive, shift that token.  If negative, reduce the rule whose
-     number is the opposite.  If YYTABLE_NINF, syntax error.  */
+            positive, shift that token.  If negative, reduce the rule whose
+            number is the opposite.  If YYTABLE_NINF, syntax error.  */
             result = cmd_list_new();
             cmd = (*cmds).tqh_first;
-            loop  {
+            loop {
                 if cmd.is_null() {
                     current_block = 12027283704867122503;
-                    break ;
+                    break;
                 }
                 name = *(*cmd).argv.offset(0 as libc::c_int as isize);
-                log_debug(b"%s: %u %s\x00" as *const u8 as
-                              *const libc::c_char,
-                          (*::std::mem::transmute::<&[u8; 25],
-                                                    &[libc::c_char; 25]>(b"cmd_parse_build_commands\x00")).as_ptr(),
-                          (*cmd).line, name);
-                cmd_log_argv((*cmd).argc, (*cmd).argv,
-                             (*::std::mem::transmute::<&[u8; 25],
-                                                       &[libc::c_char; 25]>(b"cmd_parse_build_commands\x00")).as_ptr());
-                if cmdlist.is_null() ||
-                       !(*pi).flags & 0x10 as libc::c_int != 0 &&
-                           (*cmd).line != line {
+                log_debug(
+                    b"%s: %u %s\x00" as *const u8 as *const libc::c_char,
+                    (*::std::mem::transmute::<&[u8; 25], &[libc::c_char; 25]>(
+                        b"cmd_parse_build_commands\x00",
+                    ))
+                    .as_ptr(),
+                    (*cmd).line,
+                    name,
+                );
+                cmd_log_argv(
+                    (*cmd).argc,
+                    (*cmd).argv,
+                    (*::std::mem::transmute::<&[u8; 25], &[libc::c_char; 25]>(
+                        b"cmd_parse_build_commands\x00",
+                    ))
+                    .as_ptr(),
+                );
+                if cmdlist.is_null()
+                    || !(*pi).flags & 0x10 as libc::c_int != 0 && (*cmd).line != line
+                {
                     if !cmdlist.is_null() {
                         cmd_parse_print_commands(pi, line, cmdlist);
                         cmd_list_move(result, cmdlist);
@@ -1913,9 +2090,7 @@ unsafe extern "C" fn cmd_parse_build_commands(mut cmds:
                     cmdlist = cmd_list_new()
                 }
                 line = (*cmd).line;
-                add =
-                    cmd_parse((*cmd).argc, (*cmd).argv, (*pi).file, line,
-                              &mut cause);
+                add = cmd_parse((*cmd).argc, (*cmd).argv, (*pi).file, line, &mut cause);
                 if add.is_null() {
                     cmd_list_free(result);
                     pr.status = CMD_PARSE_ERROR;
@@ -1923,14 +2098,14 @@ unsafe extern "C" fn cmd_parse_build_commands(mut cmds:
                     free(cause as *mut libc::c_void);
                     cmd_list_free(cmdlist);
                     current_block = 14163653266681795021;
-                    break ;
+                    break;
                 } else {
                     cmd_list_append(cmdlist, add);
                     cmd = (*cmd).entry.tqe_next
                 }
             }
             match current_block {
-                14163653266681795021 => { }
+                14163653266681795021 => {}
                 _ => {
                     if !cmdlist.is_null() {
                         cmd_parse_print_commands(pi, line, cmdlist);
@@ -1938,434 +2113,744 @@ unsafe extern "C" fn cmd_parse_build_commands(mut cmds:
                         cmd_list_free(cmdlist);
                     }
                     s = cmd_list_print(result, 0 as libc::c_int);
-                    log_debug(b"%s: %s\x00" as *const u8 as
-                                  *const libc::c_char,
-                              (*::std::mem::transmute::<&[u8; 25],
-                                                        &[libc::c_char; 25]>(b"cmd_parse_build_commands\x00")).as_ptr(),
-                              s);
+                    log_debug(
+                        b"%s: %s\x00" as *const u8 as *const libc::c_char,
+                        (*::std::mem::transmute::<&[u8; 25], &[libc::c_char; 25]>(
+                            b"cmd_parse_build_commands\x00",
+                        ))
+                        .as_ptr(),
+                        s,
+                    );
                     free(s as *mut libc::c_void);
                     pr.status = CMD_PARSE_SUCCESS;
                     pr.cmdlist = result
                 }
             }
         }
-        _ => { }
+        _ => {}
     }
     cmd_parse_free_commands(cmds);
     return &mut pr;
 }
-static mut yypact: [yytype_int8; 75] =
-    [49 as libc::c_int as yytype_int8, 3 as libc::c_int as yytype_int8,
-     14 as libc::c_int as yytype_int8, -(32 as libc::c_int) as yytype_int8,
-     33 as libc::c_int as yytype_int8, 49 as libc::c_int as yytype_int8,
-     29 as libc::c_int as yytype_int8, 47 as libc::c_int as yytype_int8,
-     60 as libc::c_int as yytype_int8, -(32 as libc::c_int) as yytype_int8,
-     4 as libc::c_int as yytype_int8, -(32 as libc::c_int) as yytype_int8,
-     35 as libc::c_int as yytype_int8, -(32 as libc::c_int) as yytype_int8,
-     -(32 as libc::c_int) as yytype_int8, -(32 as libc::c_int) as yytype_int8,
-     -(32 as libc::c_int) as yytype_int8, -(32 as libc::c_int) as yytype_int8,
-     -(32 as libc::c_int) as yytype_int8, -(32 as libc::c_int) as yytype_int8,
-     -(32 as libc::c_int) as yytype_int8, 68 as libc::c_int as yytype_int8,
-     -(32 as libc::c_int) as yytype_int8, 83 as libc::c_int as yytype_int8,
-     81 as libc::c_int as yytype_int8, 38 as libc::c_int as yytype_int8,
-     5 as libc::c_int as yytype_int8, 17 as libc::c_int as yytype_int8,
-     -(32 as libc::c_int) as yytype_int8, -(32 as libc::c_int) as yytype_int8,
-     -(32 as libc::c_int) as yytype_int8, 81 as libc::c_int as yytype_int8,
-     -(32 as libc::c_int) as yytype_int8, 83 as libc::c_int as yytype_int8,
-     71 as libc::c_int as yytype_int8, -(32 as libc::c_int) as yytype_int8,
-     14 as libc::c_int as yytype_int8, -(32 as libc::c_int) as yytype_int8,
-     38 as libc::c_int as yytype_int8, 38 as libc::c_int as yytype_int8,
-     -(32 as libc::c_int) as yytype_int8, -(1 as libc::c_int) as yytype_int8,
-     -(32 as libc::c_int) as yytype_int8, -(32 as libc::c_int) as yytype_int8,
-     81 as libc::c_int as yytype_int8, 40 as libc::c_int as yytype_int8,
-     -(32 as libc::c_int) as yytype_int8, -(32 as libc::c_int) as yytype_int8,
-     76 as libc::c_int as yytype_int8, 86 as libc::c_int as yytype_int8,
-     -(32 as libc::c_int) as yytype_int8, -(1 as libc::c_int) as yytype_int8,
-     -(32 as libc::c_int) as yytype_int8, 32 as libc::c_int as yytype_int8,
-     58 as libc::c_int as yytype_int8, 38 as libc::c_int as yytype_int8,
-     -(32 as libc::c_int) as yytype_int8, 84 as libc::c_int as yytype_int8,
-     -(32 as libc::c_int) as yytype_int8, 81 as libc::c_int as yytype_int8,
-     81 as libc::c_int as yytype_int8, 88 as libc::c_int as yytype_int8,
-     -(32 as libc::c_int) as yytype_int8, -(32 as libc::c_int) as yytype_int8,
-     -(32 as libc::c_int) as yytype_int8, 32 as libc::c_int as yytype_int8,
-     -(32 as libc::c_int) as yytype_int8, 79 as libc::c_int as yytype_int8,
-     62 as libc::c_int as yytype_int8, 81 as libc::c_int as yytype_int8,
-     -(32 as libc::c_int) as yytype_int8, -(32 as libc::c_int) as yytype_int8,
-     -(32 as libc::c_int) as yytype_int8, 79 as libc::c_int as yytype_int8,
-     -(32 as libc::c_int) as yytype_int8];
-static mut yydefact: [yytype_int8; 75] =
-    [2 as libc::c_int as yytype_int8, 0 as libc::c_int as yytype_int8,
-     0 as libc::c_int as yytype_int8, 15 as libc::c_int as yytype_int8,
-     0 as libc::c_int as yytype_int8, 3 as libc::c_int as yytype_int8,
-     0 as libc::c_int as yytype_int8, 0 as libc::c_int as yytype_int8,
-     32 as libc::c_int as yytype_int8, 7 as libc::c_int as yytype_int8,
-     13 as libc::c_int as yytype_int8, 8 as libc::c_int as yytype_int8,
-     9 as libc::c_int as yytype_int8, 27 as libc::c_int as yytype_int8,
-     31 as libc::c_int as yytype_int8, 16 as libc::c_int as yytype_int8,
-     10 as libc::c_int as yytype_int8, 11 as libc::c_int as yytype_int8,
-     12 as libc::c_int as yytype_int8, 17 as libc::c_int as yytype_int8,
-     1 as libc::c_int as yytype_int8, 0 as libc::c_int as yytype_int8,
-     4 as libc::c_int as yytype_int8, 33 as libc::c_int as yytype_int8,
-     6 as libc::c_int as yytype_int8, 13 as libc::c_int as yytype_int8,
-     0 as libc::c_int as yytype_int8, 28 as libc::c_int as yytype_int8,
-     5 as libc::c_int as yytype_int8, 43 as libc::c_int as yytype_int8,
-     44 as libc::c_int as yytype_int8, 6 as libc::c_int as yytype_int8,
-     34 as libc::c_int as yytype_int8, 41 as libc::c_int as yytype_int8,
-     6 as libc::c_int as yytype_int8, 18 as libc::c_int as yytype_int8,
-     0 as libc::c_int as yytype_int8, 20 as libc::c_int as yytype_int8,
-     13 as libc::c_int as yytype_int8, 13 as libc::c_int as yytype_int8,
-     35 as libc::c_int as yytype_int8, 0 as libc::c_int as yytype_int8,
-     30 as libc::c_int as yytype_int8, 29 as libc::c_int as yytype_int8,
-     6 as libc::c_int as yytype_int8, 0 as libc::c_int as yytype_int8,
-     45 as libc::c_int as yytype_int8, 42 as libc::c_int as yytype_int8,
-     0 as libc::c_int as yytype_int8, 0 as libc::c_int as yytype_int8,
-     21 as libc::c_int as yytype_int8, 0 as libc::c_int as yytype_int8,
-     19 as libc::c_int as yytype_int8, 0 as libc::c_int as yytype_int8,
-     39 as libc::c_int as yytype_int8, 13 as libc::c_int as yytype_int8,
-     37 as libc::c_int as yytype_int8, 0 as libc::c_int as yytype_int8,
-     46 as libc::c_int as yytype_int8, 6 as libc::c_int as yytype_int8,
-     6 as libc::c_int as yytype_int8, 0 as libc::c_int as yytype_int8,
-     23 as libc::c_int as yytype_int8, 36 as libc::c_int as yytype_int8,
-     40 as libc::c_int as yytype_int8, 0 as libc::c_int as yytype_int8,
-     47 as libc::c_int as yytype_int8, 6 as libc::c_int as yytype_int8,
-     25 as libc::c_int as yytype_int8, 6 as libc::c_int as yytype_int8,
-     38 as libc::c_int as yytype_int8, 22 as libc::c_int as yytype_int8,
-     26 as libc::c_int as yytype_int8, 6 as libc::c_int as yytype_int8,
-     24 as libc::c_int as yytype_int8];
-static mut yypgoto: [yytype_int8; 22] =
-    [-(32 as libc::c_int) as yytype_int8, -(32 as libc::c_int) as yytype_int8,
-     -(23 as libc::c_int) as yytype_int8, -(5 as libc::c_int) as yytype_int8,
-     -(32 as libc::c_int) as yytype_int8, 59 as libc::c_int as yytype_int8,
-     -(32 as libc::c_int) as yytype_int8, -(32 as libc::c_int) as yytype_int8,
-     -(32 as libc::c_int) as yytype_int8, -(8 as libc::c_int) as yytype_int8,
-     -(31 as libc::c_int) as yytype_int8, -(30 as libc::c_int) as yytype_int8,
-     -(9 as libc::c_int) as yytype_int8, -(32 as libc::c_int) as yytype_int8,
-     -(18 as libc::c_int) as yytype_int8, -(4 as libc::c_int) as yytype_int8,
-     74 as libc::c_int as yytype_int8, 75 as libc::c_int as yytype_int8,
-     50 as libc::c_int as yytype_int8, 70 as libc::c_int as yytype_int8,
-     -(32 as libc::c_int) as yytype_int8,
-     -(32 as libc::c_int) as yytype_int8];
-static mut yydefgoto: [yytype_int8; 22] =
-    [-(1 as libc::c_int) as yytype_int8, 4 as libc::c_int as yytype_int8,
-     5 as libc::c_int as yytype_int8, 6 as libc::c_int as yytype_int8,
-     18 as libc::c_int as yytype_int8, 19 as libc::c_int as yytype_int8,
-     7 as libc::c_int as yytype_int8, 8 as libc::c_int as yytype_int8,
-     9 as libc::c_int as yytype_int8, 10 as libc::c_int as yytype_int8,
-     38 as libc::c_int as yytype_int8, 39 as libc::c_int as yytype_int8,
-     40 as libc::c_int as yytype_int8, 11 as libc::c_int as yytype_int8,
-     51 as libc::c_int as yytype_int8, 12 as libc::c_int as yytype_int8,
-     13 as libc::c_int as yytype_int8, 14 as libc::c_int as yytype_int8,
-     41 as libc::c_int as yytype_int8, 32 as libc::c_int as yytype_int8,
-     33 as libc::c_int as yytype_int8, 46 as libc::c_int as yytype_int8];
-static mut yytable: [yytype_int8; 105] =
-    [21 as libc::c_int as yytype_int8, 34 as libc::c_int as yytype_int8,
-     25 as libc::c_int as yytype_int8, 48 as libc::c_int as yytype_int8,
-     49 as libc::c_int as yytype_int8, 35 as libc::c_int as yytype_int8,
-     26 as libc::c_int as yytype_int8, 37 as libc::c_int as yytype_int8,
-     44 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     55 as libc::c_int as yytype_int8, 35 as libc::c_int as yytype_int8,
-     36 as libc::c_int as yytype_int8, 37 as libc::c_int as yytype_int8,
-     15 as libc::c_int as yytype_int8, 3 as libc::c_int as yytype_int8,
-     24 as libc::c_int as yytype_int8, 25 as libc::c_int as yytype_int8,
-     27 as libc::c_int as yytype_int8, 25 as libc::c_int as yytype_int8,
-     61 as libc::c_int as yytype_int8, 26 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 16 as libc::c_int as yytype_int8,
-     17 as libc::c_int as yytype_int8, 50 as libc::c_int as yytype_int8,
-     45 as libc::c_int as yytype_int8, -(13 as libc::c_int) as yytype_int8,
-     3 as libc::c_int as yytype_int8, 21 as libc::c_int as yytype_int8,
-     25 as libc::c_int as yytype_int8, 25 as libc::c_int as yytype_int8,
-     56 as libc::c_int as yytype_int8, 20 as libc::c_int as yytype_int8,
-     53 as libc::c_int as yytype_int8, 54 as libc::c_int as yytype_int8,
-     67 as libc::c_int as yytype_int8, 68 as libc::c_int as yytype_int8,
-     49 as libc::c_int as yytype_int8, 57 as libc::c_int as yytype_int8,
-     37 as libc::c_int as yytype_int8, 22 as libc::c_int as yytype_int8,
-     62 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     63 as libc::c_int as yytype_int8, 27 as libc::c_int as yytype_int8,
-     73 as libc::c_int as yytype_int8, 25 as libc::c_int as yytype_int8,
-     27 as libc::c_int as yytype_int8, 3 as libc::c_int as yytype_int8,
-     72 as libc::c_int as yytype_int8, 65 as libc::c_int as yytype_int8,
-     22 as libc::c_int as yytype_int8, 1 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 58 as libc::c_int as yytype_int8,
-     70 as libc::c_int as yytype_int8, 23 as libc::c_int as yytype_int8,
-     71 as libc::c_int as yytype_int8, -(13 as libc::c_int) as yytype_int8,
-     3 as libc::c_int as yytype_int8, -(6 as libc::c_int) as yytype_int8,
-     21 as libc::c_int as yytype_int8, 21 as libc::c_int as yytype_int8,
-     74 as libc::c_int as yytype_int8, 36 as libc::c_int as yytype_int8,
-     1 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     21 as libc::c_int as yytype_int8, 36 as libc::c_int as yytype_int8,
-     -(14 as libc::c_int) as yytype_int8, 27 as libc::c_int as yytype_int8,
-     -(13 as libc::c_int) as yytype_int8, 3 as libc::c_int as yytype_int8,
-     -(6 as libc::c_int) as yytype_int8, 1 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 35 as libc::c_int as yytype_int8,
-     36 as libc::c_int as yytype_int8, 37 as libc::c_int as yytype_int8,
-     28 as libc::c_int as yytype_int8, -(13 as libc::c_int) as yytype_int8,
-     3 as libc::c_int as yytype_int8, 1 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 1 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 37 as libc::c_int as yytype_int8,
-     59 as libc::c_int as yytype_int8, -(13 as libc::c_int) as yytype_int8,
-     3 as libc::c_int as yytype_int8, -(13 as libc::c_int) as yytype_int8,
-     3 as libc::c_int as yytype_int8, 29 as libc::c_int as yytype_int8,
-     30 as libc::c_int as yytype_int8, 52 as libc::c_int as yytype_int8,
-     28 as libc::c_int as yytype_int8, 31 as libc::c_int as yytype_int8,
-     60 as libc::c_int as yytype_int8, 66 as libc::c_int as yytype_int8,
-     69 as libc::c_int as yytype_int8, 42 as libc::c_int as yytype_int8,
-     43 as libc::c_int as yytype_int8, 47 as libc::c_int as yytype_int8,
-     64 as libc::c_int as yytype_int8];
-static mut yycheck: [yytype_int8; 105] =
-    [5 as libc::c_int as yytype_int8, 24 as libc::c_int as yytype_int8,
-     10 as libc::c_int as yytype_int8, 34 as libc::c_int as yytype_int8,
-     34 as libc::c_int as yytype_int8, 6 as libc::c_int as yytype_int8,
-     10 as libc::c_int as yytype_int8, 8 as libc::c_int as yytype_int8,
-     31 as libc::c_int as yytype_int8, 5 as libc::c_int as yytype_int8,
-     41 as libc::c_int as yytype_int8, 6 as libc::c_int as yytype_int8,
-     7 as libc::c_int as yytype_int8, 8 as libc::c_int as yytype_int8,
-     11 as libc::c_int as yytype_int8, 11 as libc::c_int as yytype_int8,
-     12 as libc::c_int as yytype_int8, 25 as libc::c_int as yytype_int8,
-     13 as libc::c_int as yytype_int8, 27 as libc::c_int as yytype_int8,
-     51 as libc::c_int as yytype_int8, 25 as libc::c_int as yytype_int8,
-     5 as libc::c_int as yytype_int8, 9 as libc::c_int as yytype_int8,
-     10 as libc::c_int as yytype_int8, 34 as libc::c_int as yytype_int8,
-     31 as libc::c_int as yytype_int8, 10 as libc::c_int as yytype_int8,
-     11 as libc::c_int as yytype_int8, 34 as libc::c_int as yytype_int8,
-     38 as libc::c_int as yytype_int8, 39 as libc::c_int as yytype_int8,
-     41 as libc::c_int as yytype_int8, 0 as libc::c_int as yytype_int8,
-     38 as libc::c_int as yytype_int8, 39 as libc::c_int as yytype_int8,
-     59 as libc::c_int as yytype_int8, 60 as libc::c_int as yytype_int8,
-     68 as libc::c_int as yytype_int8, 44 as libc::c_int as yytype_int8,
-     8 as libc::c_int as yytype_int8, 12 as libc::c_int as yytype_int8,
-     51 as libc::c_int as yytype_int8, 5 as libc::c_int as yytype_int8,
-     53 as libc::c_int as yytype_int8, 13 as libc::c_int as yytype_int8,
-     69 as libc::c_int as yytype_int8, 55 as libc::c_int as yytype_int8,
-     13 as libc::c_int as yytype_int8, 11 as libc::c_int as yytype_int8,
-     68 as libc::c_int as yytype_int8, 55 as libc::c_int as yytype_int8,
-     12 as libc::c_int as yytype_int8, 4 as libc::c_int as yytype_int8,
-     5 as libc::c_int as yytype_int8, 15 as libc::c_int as yytype_int8,
-     65 as libc::c_int as yytype_int8, 10 as libc::c_int as yytype_int8,
-     67 as libc::c_int as yytype_int8, 10 as libc::c_int as yytype_int8,
-     11 as libc::c_int as yytype_int8, 12 as libc::c_int as yytype_int8,
-     67 as libc::c_int as yytype_int8, 68 as libc::c_int as yytype_int8,
-     73 as libc::c_int as yytype_int8, 7 as libc::c_int as yytype_int8,
-     4 as libc::c_int as yytype_int8, 5 as libc::c_int as yytype_int8,
-     73 as libc::c_int as yytype_int8, 7 as libc::c_int as yytype_int8,
-     10 as libc::c_int as yytype_int8, 13 as libc::c_int as yytype_int8,
-     10 as libc::c_int as yytype_int8, 11 as libc::c_int as yytype_int8,
-     12 as libc::c_int as yytype_int8, 4 as libc::c_int as yytype_int8,
-     5 as libc::c_int as yytype_int8, 6 as libc::c_int as yytype_int8,
-     7 as libc::c_int as yytype_int8, 8 as libc::c_int as yytype_int8,
-     12 as libc::c_int as yytype_int8, 10 as libc::c_int as yytype_int8,
-     11 as libc::c_int as yytype_int8, 4 as libc::c_int as yytype_int8,
-     5 as libc::c_int as yytype_int8, 4 as libc::c_int as yytype_int8,
-     5 as libc::c_int as yytype_int8, 8 as libc::c_int as yytype_int8,
-     12 as libc::c_int as yytype_int8, 10 as libc::c_int as yytype_int8,
-     11 as libc::c_int as yytype_int8, 10 as libc::c_int as yytype_int8,
-     11 as libc::c_int as yytype_int8, 10 as libc::c_int as yytype_int8,
-     11 as libc::c_int as yytype_int8, 36 as libc::c_int as yytype_int8,
-     12 as libc::c_int as yytype_int8, 14 as libc::c_int as yytype_int8,
-     12 as libc::c_int as yytype_int8, 15 as libc::c_int as yytype_int8,
-     12 as libc::c_int as yytype_int8, 27 as libc::c_int as yytype_int8,
-     27 as libc::c_int as yytype_int8, 33 as libc::c_int as yytype_int8,
-     54 as libc::c_int as yytype_int8];
-static mut yystos: [yytype_int8; 75] =
-    [0 as libc::c_int as yytype_int8, 4 as libc::c_int as yytype_int8,
-     5 as libc::c_int as yytype_int8, 11 as libc::c_int as yytype_int8,
-     17 as libc::c_int as yytype_int8, 18 as libc::c_int as yytype_int8,
-     19 as libc::c_int as yytype_int8, 22 as libc::c_int as yytype_int8,
-     23 as libc::c_int as yytype_int8, 24 as libc::c_int as yytype_int8,
-     25 as libc::c_int as yytype_int8, 29 as libc::c_int as yytype_int8,
-     31 as libc::c_int as yytype_int8, 32 as libc::c_int as yytype_int8,
-     33 as libc::c_int as yytype_int8, 11 as libc::c_int as yytype_int8,
-     9 as libc::c_int as yytype_int8, 10 as libc::c_int as yytype_int8,
-     20 as libc::c_int as yytype_int8, 21 as libc::c_int as yytype_int8,
-     0 as libc::c_int as yytype_int8, 19 as libc::c_int as yytype_int8,
-     12 as libc::c_int as yytype_int8, 10 as libc::c_int as yytype_int8,
-     12 as libc::c_int as yytype_int8, 25 as libc::c_int as yytype_int8,
-     31 as libc::c_int as yytype_int8, 13 as libc::c_int as yytype_int8,
-     12 as libc::c_int as yytype_int8, 10 as libc::c_int as yytype_int8,
-     11 as libc::c_int as yytype_int8, 14 as libc::c_int as yytype_int8,
-     35 as libc::c_int as yytype_int8, 36 as libc::c_int as yytype_int8,
-     18 as libc::c_int as yytype_int8, 6 as libc::c_int as yytype_int8,
-     7 as libc::c_int as yytype_int8, 8 as libc::c_int as yytype_int8,
-     26 as libc::c_int as yytype_int8, 27 as libc::c_int as yytype_int8,
-     28 as libc::c_int as yytype_int8, 34 as libc::c_int as yytype_int8,
-     32 as libc::c_int as yytype_int8, 33 as libc::c_int as yytype_int8,
-     18 as libc::c_int as yytype_int8, 19 as libc::c_int as yytype_int8,
-     37 as libc::c_int as yytype_int8, 35 as libc::c_int as yytype_int8,
-     26 as libc::c_int as yytype_int8, 27 as libc::c_int as yytype_int8,
-     28 as libc::c_int as yytype_int8, 30 as libc::c_int as yytype_int8,
-     21 as libc::c_int as yytype_int8, 31 as libc::c_int as yytype_int8,
-     31 as libc::c_int as yytype_int8, 26 as libc::c_int as yytype_int8,
-     28 as libc::c_int as yytype_int8, 19 as libc::c_int as yytype_int8,
-     15 as libc::c_int as yytype_int8, 12 as libc::c_int as yytype_int8,
-     12 as libc::c_int as yytype_int8, 26 as libc::c_int as yytype_int8,
-     28 as libc::c_int as yytype_int8, 28 as libc::c_int as yytype_int8,
-     34 as libc::c_int as yytype_int8, 31 as libc::c_int as yytype_int8,
-     15 as libc::c_int as yytype_int8, 18 as libc::c_int as yytype_int8,
-     18 as libc::c_int as yytype_int8, 12 as libc::c_int as yytype_int8,
-     28 as libc::c_int as yytype_int8, 28 as libc::c_int as yytype_int8,
-     30 as libc::c_int as yytype_int8, 18 as libc::c_int as yytype_int8,
-     28 as libc::c_int as yytype_int8];
+static mut yypact: [yytype_int8; 75] = [
+    49 as libc::c_int as yytype_int8,
+    3 as libc::c_int as yytype_int8,
+    14 as libc::c_int as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    33 as libc::c_int as yytype_int8,
+    49 as libc::c_int as yytype_int8,
+    29 as libc::c_int as yytype_int8,
+    47 as libc::c_int as yytype_int8,
+    60 as libc::c_int as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    4 as libc::c_int as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    35 as libc::c_int as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    68 as libc::c_int as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    83 as libc::c_int as yytype_int8,
+    81 as libc::c_int as yytype_int8,
+    38 as libc::c_int as yytype_int8,
+    5 as libc::c_int as yytype_int8,
+    17 as libc::c_int as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    81 as libc::c_int as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    83 as libc::c_int as yytype_int8,
+    71 as libc::c_int as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    14 as libc::c_int as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    38 as libc::c_int as yytype_int8,
+    38 as libc::c_int as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    -(1 as libc::c_int) as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    81 as libc::c_int as yytype_int8,
+    40 as libc::c_int as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    76 as libc::c_int as yytype_int8,
+    86 as libc::c_int as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    -(1 as libc::c_int) as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    32 as libc::c_int as yytype_int8,
+    58 as libc::c_int as yytype_int8,
+    38 as libc::c_int as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    84 as libc::c_int as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    81 as libc::c_int as yytype_int8,
+    81 as libc::c_int as yytype_int8,
+    88 as libc::c_int as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    32 as libc::c_int as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    79 as libc::c_int as yytype_int8,
+    62 as libc::c_int as yytype_int8,
+    81 as libc::c_int as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    79 as libc::c_int as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+];
+static mut yydefact: [yytype_int8; 75] = [
+    2 as libc::c_int as yytype_int8,
+    0 as libc::c_int as yytype_int8,
+    0 as libc::c_int as yytype_int8,
+    15 as libc::c_int as yytype_int8,
+    0 as libc::c_int as yytype_int8,
+    3 as libc::c_int as yytype_int8,
+    0 as libc::c_int as yytype_int8,
+    0 as libc::c_int as yytype_int8,
+    32 as libc::c_int as yytype_int8,
+    7 as libc::c_int as yytype_int8,
+    13 as libc::c_int as yytype_int8,
+    8 as libc::c_int as yytype_int8,
+    9 as libc::c_int as yytype_int8,
+    27 as libc::c_int as yytype_int8,
+    31 as libc::c_int as yytype_int8,
+    16 as libc::c_int as yytype_int8,
+    10 as libc::c_int as yytype_int8,
+    11 as libc::c_int as yytype_int8,
+    12 as libc::c_int as yytype_int8,
+    17 as libc::c_int as yytype_int8,
+    1 as libc::c_int as yytype_int8,
+    0 as libc::c_int as yytype_int8,
+    4 as libc::c_int as yytype_int8,
+    33 as libc::c_int as yytype_int8,
+    6 as libc::c_int as yytype_int8,
+    13 as libc::c_int as yytype_int8,
+    0 as libc::c_int as yytype_int8,
+    28 as libc::c_int as yytype_int8,
+    5 as libc::c_int as yytype_int8,
+    43 as libc::c_int as yytype_int8,
+    44 as libc::c_int as yytype_int8,
+    6 as libc::c_int as yytype_int8,
+    34 as libc::c_int as yytype_int8,
+    41 as libc::c_int as yytype_int8,
+    6 as libc::c_int as yytype_int8,
+    18 as libc::c_int as yytype_int8,
+    0 as libc::c_int as yytype_int8,
+    20 as libc::c_int as yytype_int8,
+    13 as libc::c_int as yytype_int8,
+    13 as libc::c_int as yytype_int8,
+    35 as libc::c_int as yytype_int8,
+    0 as libc::c_int as yytype_int8,
+    30 as libc::c_int as yytype_int8,
+    29 as libc::c_int as yytype_int8,
+    6 as libc::c_int as yytype_int8,
+    0 as libc::c_int as yytype_int8,
+    45 as libc::c_int as yytype_int8,
+    42 as libc::c_int as yytype_int8,
+    0 as libc::c_int as yytype_int8,
+    0 as libc::c_int as yytype_int8,
+    21 as libc::c_int as yytype_int8,
+    0 as libc::c_int as yytype_int8,
+    19 as libc::c_int as yytype_int8,
+    0 as libc::c_int as yytype_int8,
+    39 as libc::c_int as yytype_int8,
+    13 as libc::c_int as yytype_int8,
+    37 as libc::c_int as yytype_int8,
+    0 as libc::c_int as yytype_int8,
+    46 as libc::c_int as yytype_int8,
+    6 as libc::c_int as yytype_int8,
+    6 as libc::c_int as yytype_int8,
+    0 as libc::c_int as yytype_int8,
+    23 as libc::c_int as yytype_int8,
+    36 as libc::c_int as yytype_int8,
+    40 as libc::c_int as yytype_int8,
+    0 as libc::c_int as yytype_int8,
+    47 as libc::c_int as yytype_int8,
+    6 as libc::c_int as yytype_int8,
+    25 as libc::c_int as yytype_int8,
+    6 as libc::c_int as yytype_int8,
+    38 as libc::c_int as yytype_int8,
+    22 as libc::c_int as yytype_int8,
+    26 as libc::c_int as yytype_int8,
+    6 as libc::c_int as yytype_int8,
+    24 as libc::c_int as yytype_int8,
+];
+static mut yypgoto: [yytype_int8; 22] = [
+    -(32 as libc::c_int) as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    -(23 as libc::c_int) as yytype_int8,
+    -(5 as libc::c_int) as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    59 as libc::c_int as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    -(8 as libc::c_int) as yytype_int8,
+    -(31 as libc::c_int) as yytype_int8,
+    -(30 as libc::c_int) as yytype_int8,
+    -(9 as libc::c_int) as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    -(18 as libc::c_int) as yytype_int8,
+    -(4 as libc::c_int) as yytype_int8,
+    74 as libc::c_int as yytype_int8,
+    75 as libc::c_int as yytype_int8,
+    50 as libc::c_int as yytype_int8,
+    70 as libc::c_int as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+    -(32 as libc::c_int) as yytype_int8,
+];
+static mut yydefgoto: [yytype_int8; 22] = [
+    -(1 as libc::c_int) as yytype_int8,
+    4 as libc::c_int as yytype_int8,
+    5 as libc::c_int as yytype_int8,
+    6 as libc::c_int as yytype_int8,
+    18 as libc::c_int as yytype_int8,
+    19 as libc::c_int as yytype_int8,
+    7 as libc::c_int as yytype_int8,
+    8 as libc::c_int as yytype_int8,
+    9 as libc::c_int as yytype_int8,
+    10 as libc::c_int as yytype_int8,
+    38 as libc::c_int as yytype_int8,
+    39 as libc::c_int as yytype_int8,
+    40 as libc::c_int as yytype_int8,
+    11 as libc::c_int as yytype_int8,
+    51 as libc::c_int as yytype_int8,
+    12 as libc::c_int as yytype_int8,
+    13 as libc::c_int as yytype_int8,
+    14 as libc::c_int as yytype_int8,
+    41 as libc::c_int as yytype_int8,
+    32 as libc::c_int as yytype_int8,
+    33 as libc::c_int as yytype_int8,
+    46 as libc::c_int as yytype_int8,
+];
+static mut yytable: [yytype_int8; 105] = [
+    21 as libc::c_int as yytype_int8,
+    34 as libc::c_int as yytype_int8,
+    25 as libc::c_int as yytype_int8,
+    48 as libc::c_int as yytype_int8,
+    49 as libc::c_int as yytype_int8,
+    35 as libc::c_int as yytype_int8,
+    26 as libc::c_int as yytype_int8,
+    37 as libc::c_int as yytype_int8,
+    44 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    55 as libc::c_int as yytype_int8,
+    35 as libc::c_int as yytype_int8,
+    36 as libc::c_int as yytype_int8,
+    37 as libc::c_int as yytype_int8,
+    15 as libc::c_int as yytype_int8,
+    3 as libc::c_int as yytype_int8,
+    24 as libc::c_int as yytype_int8,
+    25 as libc::c_int as yytype_int8,
+    27 as libc::c_int as yytype_int8,
+    25 as libc::c_int as yytype_int8,
+    61 as libc::c_int as yytype_int8,
+    26 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    16 as libc::c_int as yytype_int8,
+    17 as libc::c_int as yytype_int8,
+    50 as libc::c_int as yytype_int8,
+    45 as libc::c_int as yytype_int8,
+    -(13 as libc::c_int) as yytype_int8,
+    3 as libc::c_int as yytype_int8,
+    21 as libc::c_int as yytype_int8,
+    25 as libc::c_int as yytype_int8,
+    25 as libc::c_int as yytype_int8,
+    56 as libc::c_int as yytype_int8,
+    20 as libc::c_int as yytype_int8,
+    53 as libc::c_int as yytype_int8,
+    54 as libc::c_int as yytype_int8,
+    67 as libc::c_int as yytype_int8,
+    68 as libc::c_int as yytype_int8,
+    49 as libc::c_int as yytype_int8,
+    57 as libc::c_int as yytype_int8,
+    37 as libc::c_int as yytype_int8,
+    22 as libc::c_int as yytype_int8,
+    62 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    63 as libc::c_int as yytype_int8,
+    27 as libc::c_int as yytype_int8,
+    73 as libc::c_int as yytype_int8,
+    25 as libc::c_int as yytype_int8,
+    27 as libc::c_int as yytype_int8,
+    3 as libc::c_int as yytype_int8,
+    72 as libc::c_int as yytype_int8,
+    65 as libc::c_int as yytype_int8,
+    22 as libc::c_int as yytype_int8,
+    1 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    58 as libc::c_int as yytype_int8,
+    70 as libc::c_int as yytype_int8,
+    23 as libc::c_int as yytype_int8,
+    71 as libc::c_int as yytype_int8,
+    -(13 as libc::c_int) as yytype_int8,
+    3 as libc::c_int as yytype_int8,
+    -(6 as libc::c_int) as yytype_int8,
+    21 as libc::c_int as yytype_int8,
+    21 as libc::c_int as yytype_int8,
+    74 as libc::c_int as yytype_int8,
+    36 as libc::c_int as yytype_int8,
+    1 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    21 as libc::c_int as yytype_int8,
+    36 as libc::c_int as yytype_int8,
+    -(14 as libc::c_int) as yytype_int8,
+    27 as libc::c_int as yytype_int8,
+    -(13 as libc::c_int) as yytype_int8,
+    3 as libc::c_int as yytype_int8,
+    -(6 as libc::c_int) as yytype_int8,
+    1 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    35 as libc::c_int as yytype_int8,
+    36 as libc::c_int as yytype_int8,
+    37 as libc::c_int as yytype_int8,
+    28 as libc::c_int as yytype_int8,
+    -(13 as libc::c_int) as yytype_int8,
+    3 as libc::c_int as yytype_int8,
+    1 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    1 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    37 as libc::c_int as yytype_int8,
+    59 as libc::c_int as yytype_int8,
+    -(13 as libc::c_int) as yytype_int8,
+    3 as libc::c_int as yytype_int8,
+    -(13 as libc::c_int) as yytype_int8,
+    3 as libc::c_int as yytype_int8,
+    29 as libc::c_int as yytype_int8,
+    30 as libc::c_int as yytype_int8,
+    52 as libc::c_int as yytype_int8,
+    28 as libc::c_int as yytype_int8,
+    31 as libc::c_int as yytype_int8,
+    60 as libc::c_int as yytype_int8,
+    66 as libc::c_int as yytype_int8,
+    69 as libc::c_int as yytype_int8,
+    42 as libc::c_int as yytype_int8,
+    43 as libc::c_int as yytype_int8,
+    47 as libc::c_int as yytype_int8,
+    64 as libc::c_int as yytype_int8,
+];
+static mut yycheck: [yytype_int8; 105] = [
+    5 as libc::c_int as yytype_int8,
+    24 as libc::c_int as yytype_int8,
+    10 as libc::c_int as yytype_int8,
+    34 as libc::c_int as yytype_int8,
+    34 as libc::c_int as yytype_int8,
+    6 as libc::c_int as yytype_int8,
+    10 as libc::c_int as yytype_int8,
+    8 as libc::c_int as yytype_int8,
+    31 as libc::c_int as yytype_int8,
+    5 as libc::c_int as yytype_int8,
+    41 as libc::c_int as yytype_int8,
+    6 as libc::c_int as yytype_int8,
+    7 as libc::c_int as yytype_int8,
+    8 as libc::c_int as yytype_int8,
+    11 as libc::c_int as yytype_int8,
+    11 as libc::c_int as yytype_int8,
+    12 as libc::c_int as yytype_int8,
+    25 as libc::c_int as yytype_int8,
+    13 as libc::c_int as yytype_int8,
+    27 as libc::c_int as yytype_int8,
+    51 as libc::c_int as yytype_int8,
+    25 as libc::c_int as yytype_int8,
+    5 as libc::c_int as yytype_int8,
+    9 as libc::c_int as yytype_int8,
+    10 as libc::c_int as yytype_int8,
+    34 as libc::c_int as yytype_int8,
+    31 as libc::c_int as yytype_int8,
+    10 as libc::c_int as yytype_int8,
+    11 as libc::c_int as yytype_int8,
+    34 as libc::c_int as yytype_int8,
+    38 as libc::c_int as yytype_int8,
+    39 as libc::c_int as yytype_int8,
+    41 as libc::c_int as yytype_int8,
+    0 as libc::c_int as yytype_int8,
+    38 as libc::c_int as yytype_int8,
+    39 as libc::c_int as yytype_int8,
+    59 as libc::c_int as yytype_int8,
+    60 as libc::c_int as yytype_int8,
+    68 as libc::c_int as yytype_int8,
+    44 as libc::c_int as yytype_int8,
+    8 as libc::c_int as yytype_int8,
+    12 as libc::c_int as yytype_int8,
+    51 as libc::c_int as yytype_int8,
+    5 as libc::c_int as yytype_int8,
+    53 as libc::c_int as yytype_int8,
+    13 as libc::c_int as yytype_int8,
+    69 as libc::c_int as yytype_int8,
+    55 as libc::c_int as yytype_int8,
+    13 as libc::c_int as yytype_int8,
+    11 as libc::c_int as yytype_int8,
+    68 as libc::c_int as yytype_int8,
+    55 as libc::c_int as yytype_int8,
+    12 as libc::c_int as yytype_int8,
+    4 as libc::c_int as yytype_int8,
+    5 as libc::c_int as yytype_int8,
+    15 as libc::c_int as yytype_int8,
+    65 as libc::c_int as yytype_int8,
+    10 as libc::c_int as yytype_int8,
+    67 as libc::c_int as yytype_int8,
+    10 as libc::c_int as yytype_int8,
+    11 as libc::c_int as yytype_int8,
+    12 as libc::c_int as yytype_int8,
+    67 as libc::c_int as yytype_int8,
+    68 as libc::c_int as yytype_int8,
+    73 as libc::c_int as yytype_int8,
+    7 as libc::c_int as yytype_int8,
+    4 as libc::c_int as yytype_int8,
+    5 as libc::c_int as yytype_int8,
+    73 as libc::c_int as yytype_int8,
+    7 as libc::c_int as yytype_int8,
+    10 as libc::c_int as yytype_int8,
+    13 as libc::c_int as yytype_int8,
+    10 as libc::c_int as yytype_int8,
+    11 as libc::c_int as yytype_int8,
+    12 as libc::c_int as yytype_int8,
+    4 as libc::c_int as yytype_int8,
+    5 as libc::c_int as yytype_int8,
+    6 as libc::c_int as yytype_int8,
+    7 as libc::c_int as yytype_int8,
+    8 as libc::c_int as yytype_int8,
+    12 as libc::c_int as yytype_int8,
+    10 as libc::c_int as yytype_int8,
+    11 as libc::c_int as yytype_int8,
+    4 as libc::c_int as yytype_int8,
+    5 as libc::c_int as yytype_int8,
+    4 as libc::c_int as yytype_int8,
+    5 as libc::c_int as yytype_int8,
+    8 as libc::c_int as yytype_int8,
+    12 as libc::c_int as yytype_int8,
+    10 as libc::c_int as yytype_int8,
+    11 as libc::c_int as yytype_int8,
+    10 as libc::c_int as yytype_int8,
+    11 as libc::c_int as yytype_int8,
+    10 as libc::c_int as yytype_int8,
+    11 as libc::c_int as yytype_int8,
+    36 as libc::c_int as yytype_int8,
+    12 as libc::c_int as yytype_int8,
+    14 as libc::c_int as yytype_int8,
+    12 as libc::c_int as yytype_int8,
+    15 as libc::c_int as yytype_int8,
+    12 as libc::c_int as yytype_int8,
+    27 as libc::c_int as yytype_int8,
+    27 as libc::c_int as yytype_int8,
+    33 as libc::c_int as yytype_int8,
+    54 as libc::c_int as yytype_int8,
+];
+static mut yystos: [yytype_int8; 75] = [
+    0 as libc::c_int as yytype_int8,
+    4 as libc::c_int as yytype_int8,
+    5 as libc::c_int as yytype_int8,
+    11 as libc::c_int as yytype_int8,
+    17 as libc::c_int as yytype_int8,
+    18 as libc::c_int as yytype_int8,
+    19 as libc::c_int as yytype_int8,
+    22 as libc::c_int as yytype_int8,
+    23 as libc::c_int as yytype_int8,
+    24 as libc::c_int as yytype_int8,
+    25 as libc::c_int as yytype_int8,
+    29 as libc::c_int as yytype_int8,
+    31 as libc::c_int as yytype_int8,
+    32 as libc::c_int as yytype_int8,
+    33 as libc::c_int as yytype_int8,
+    11 as libc::c_int as yytype_int8,
+    9 as libc::c_int as yytype_int8,
+    10 as libc::c_int as yytype_int8,
+    20 as libc::c_int as yytype_int8,
+    21 as libc::c_int as yytype_int8,
+    0 as libc::c_int as yytype_int8,
+    19 as libc::c_int as yytype_int8,
+    12 as libc::c_int as yytype_int8,
+    10 as libc::c_int as yytype_int8,
+    12 as libc::c_int as yytype_int8,
+    25 as libc::c_int as yytype_int8,
+    31 as libc::c_int as yytype_int8,
+    13 as libc::c_int as yytype_int8,
+    12 as libc::c_int as yytype_int8,
+    10 as libc::c_int as yytype_int8,
+    11 as libc::c_int as yytype_int8,
+    14 as libc::c_int as yytype_int8,
+    35 as libc::c_int as yytype_int8,
+    36 as libc::c_int as yytype_int8,
+    18 as libc::c_int as yytype_int8,
+    6 as libc::c_int as yytype_int8,
+    7 as libc::c_int as yytype_int8,
+    8 as libc::c_int as yytype_int8,
+    26 as libc::c_int as yytype_int8,
+    27 as libc::c_int as yytype_int8,
+    28 as libc::c_int as yytype_int8,
+    34 as libc::c_int as yytype_int8,
+    32 as libc::c_int as yytype_int8,
+    33 as libc::c_int as yytype_int8,
+    18 as libc::c_int as yytype_int8,
+    19 as libc::c_int as yytype_int8,
+    37 as libc::c_int as yytype_int8,
+    35 as libc::c_int as yytype_int8,
+    26 as libc::c_int as yytype_int8,
+    27 as libc::c_int as yytype_int8,
+    28 as libc::c_int as yytype_int8,
+    30 as libc::c_int as yytype_int8,
+    21 as libc::c_int as yytype_int8,
+    31 as libc::c_int as yytype_int8,
+    31 as libc::c_int as yytype_int8,
+    26 as libc::c_int as yytype_int8,
+    28 as libc::c_int as yytype_int8,
+    19 as libc::c_int as yytype_int8,
+    15 as libc::c_int as yytype_int8,
+    12 as libc::c_int as yytype_int8,
+    12 as libc::c_int as yytype_int8,
+    26 as libc::c_int as yytype_int8,
+    28 as libc::c_int as yytype_int8,
+    28 as libc::c_int as yytype_int8,
+    34 as libc::c_int as yytype_int8,
+    31 as libc::c_int as yytype_int8,
+    15 as libc::c_int as yytype_int8,
+    18 as libc::c_int as yytype_int8,
+    18 as libc::c_int as yytype_int8,
+    12 as libc::c_int as yytype_int8,
+    28 as libc::c_int as yytype_int8,
+    28 as libc::c_int as yytype_int8,
+    30 as libc::c_int as yytype_int8,
+    18 as libc::c_int as yytype_int8,
+    28 as libc::c_int as yytype_int8,
+];
 /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
-static mut yyr1: [yytype_int8; 48] =
-    [0 as libc::c_int as yytype_int8, 16 as libc::c_int as yytype_int8,
-     17 as libc::c_int as yytype_int8, 17 as libc::c_int as yytype_int8,
-     18 as libc::c_int as yytype_int8, 18 as libc::c_int as yytype_int8,
-     19 as libc::c_int as yytype_int8, 19 as libc::c_int as yytype_int8,
-     19 as libc::c_int as yytype_int8, 19 as libc::c_int as yytype_int8,
-     20 as libc::c_int as yytype_int8, 20 as libc::c_int as yytype_int8,
-     21 as libc::c_int as yytype_int8, 22 as libc::c_int as yytype_int8,
-     22 as libc::c_int as yytype_int8, 23 as libc::c_int as yytype_int8,
-     24 as libc::c_int as yytype_int8, 25 as libc::c_int as yytype_int8,
-     26 as libc::c_int as yytype_int8, 27 as libc::c_int as yytype_int8,
-     28 as libc::c_int as yytype_int8, 29 as libc::c_int as yytype_int8,
-     29 as libc::c_int as yytype_int8, 29 as libc::c_int as yytype_int8,
-     29 as libc::c_int as yytype_int8, 30 as libc::c_int as yytype_int8,
-     30 as libc::c_int as yytype_int8, 31 as libc::c_int as yytype_int8,
-     31 as libc::c_int as yytype_int8, 31 as libc::c_int as yytype_int8,
-     31 as libc::c_int as yytype_int8, 31 as libc::c_int as yytype_int8,
-     32 as libc::c_int as yytype_int8, 32 as libc::c_int as yytype_int8,
-     32 as libc::c_int as yytype_int8, 33 as libc::c_int as yytype_int8,
-     33 as libc::c_int as yytype_int8, 33 as libc::c_int as yytype_int8,
-     33 as libc::c_int as yytype_int8, 34 as libc::c_int as yytype_int8,
-     34 as libc::c_int as yytype_int8, 35 as libc::c_int as yytype_int8,
-     35 as libc::c_int as yytype_int8, 36 as libc::c_int as yytype_int8,
-     36 as libc::c_int as yytype_int8, 36 as libc::c_int as yytype_int8,
-     37 as libc::c_int as yytype_int8, 37 as libc::c_int as yytype_int8];
+static mut yyr1: [yytype_int8; 48] = [
+    0 as libc::c_int as yytype_int8,
+    16 as libc::c_int as yytype_int8,
+    17 as libc::c_int as yytype_int8,
+    17 as libc::c_int as yytype_int8,
+    18 as libc::c_int as yytype_int8,
+    18 as libc::c_int as yytype_int8,
+    19 as libc::c_int as yytype_int8,
+    19 as libc::c_int as yytype_int8,
+    19 as libc::c_int as yytype_int8,
+    19 as libc::c_int as yytype_int8,
+    20 as libc::c_int as yytype_int8,
+    20 as libc::c_int as yytype_int8,
+    21 as libc::c_int as yytype_int8,
+    22 as libc::c_int as yytype_int8,
+    22 as libc::c_int as yytype_int8,
+    23 as libc::c_int as yytype_int8,
+    24 as libc::c_int as yytype_int8,
+    25 as libc::c_int as yytype_int8,
+    26 as libc::c_int as yytype_int8,
+    27 as libc::c_int as yytype_int8,
+    28 as libc::c_int as yytype_int8,
+    29 as libc::c_int as yytype_int8,
+    29 as libc::c_int as yytype_int8,
+    29 as libc::c_int as yytype_int8,
+    29 as libc::c_int as yytype_int8,
+    30 as libc::c_int as yytype_int8,
+    30 as libc::c_int as yytype_int8,
+    31 as libc::c_int as yytype_int8,
+    31 as libc::c_int as yytype_int8,
+    31 as libc::c_int as yytype_int8,
+    31 as libc::c_int as yytype_int8,
+    31 as libc::c_int as yytype_int8,
+    32 as libc::c_int as yytype_int8,
+    32 as libc::c_int as yytype_int8,
+    32 as libc::c_int as yytype_int8,
+    33 as libc::c_int as yytype_int8,
+    33 as libc::c_int as yytype_int8,
+    33 as libc::c_int as yytype_int8,
+    33 as libc::c_int as yytype_int8,
+    34 as libc::c_int as yytype_int8,
+    34 as libc::c_int as yytype_int8,
+    35 as libc::c_int as yytype_int8,
+    35 as libc::c_int as yytype_int8,
+    36 as libc::c_int as yytype_int8,
+    36 as libc::c_int as yytype_int8,
+    36 as libc::c_int as yytype_int8,
+    37 as libc::c_int as yytype_int8,
+    37 as libc::c_int as yytype_int8,
+];
 #[no_mangle]
-pub unsafe extern "C" fn cmd_parse_from_file(mut f: *mut FILE,
-                                             mut pi: *mut cmd_parse_input)
- -> *mut cmd_parse_result {
-    static mut pr: cmd_parse_result =
-        cmd_parse_result{status: CMD_PARSE_EMPTY,
-                         cmdlist: 0 as *const cmd_list as *mut cmd_list,
-                         error:
-                             0 as *const libc::c_char as *mut libc::c_char,};
-    let mut input: cmd_parse_input =
-        cmd_parse_input{flags: 0,
-                        file: 0 as *const libc::c_char,
-                        line: 0,
-                        item: 0 as *mut cmdq_item,
-                        c: 0 as *mut client,
-                        fs:
-                            cmd_find_state{flags: 0,
-                                           current: 0 as *mut cmd_find_state,
-                                           s: 0 as *mut session,
-                                           wl: 0 as *mut winlink,
-                                           w: 0 as *mut window,
-                                           wp: 0 as *mut window_pane,
-                                           idx: 0,},};
+pub unsafe extern "C" fn cmd_parse_from_file(
+    mut f: *mut FILE,
+    mut pi: *mut cmd_parse_input,
+) -> *mut cmd_parse_result {
+    static mut pr: cmd_parse_result = cmd_parse_result {
+        status: CMD_PARSE_EMPTY,
+        cmdlist: 0 as *const cmd_list as *mut cmd_list,
+        error: 0 as *const libc::c_char as *mut libc::c_char,
+    };
+    let mut input: cmd_parse_input = cmd_parse_input {
+        flags: 0,
+        file: 0 as *const libc::c_char,
+        line: 0,
+        item: 0 as *mut cmdq_item,
+        c: 0 as *mut client,
+        fs: cmd_find_state {
+            flags: 0,
+            current: 0 as *mut cmd_find_state,
+            s: 0 as *mut session,
+            wl: 0 as *mut winlink,
+            w: 0 as *mut window,
+            wp: 0 as *mut window_pane,
+            idx: 0,
+        },
+    };
     let mut cmds: *mut cmd_parse_commands = 0 as *mut cmd_parse_commands;
     let mut cause: *mut libc::c_char = 0 as *mut libc::c_char;
     if pi.is_null() {
-        memset(&mut input as *mut cmd_parse_input as *mut libc::c_void,
-               0 as libc::c_int,
-               ::std::mem::size_of::<cmd_parse_input>() as libc::c_ulong);
+        memset(
+            &mut input as *mut cmd_parse_input as *mut libc::c_void,
+            0 as libc::c_int,
+            ::std::mem::size_of::<cmd_parse_input>() as libc::c_ulong,
+        );
         pi = &mut input
     }
-    memset(&mut pr as *mut cmd_parse_result as *mut libc::c_void,
-           0 as libc::c_int,
-           ::std::mem::size_of::<cmd_parse_result>() as libc::c_ulong);
+    memset(
+        &mut pr as *mut cmd_parse_result as *mut libc::c_void,
+        0 as libc::c_int,
+        ::std::mem::size_of::<cmd_parse_result>() as libc::c_ulong,
+    );
     cmds = cmd_parse_do_file(f, pi, &mut cause);
     if cmds.is_null() {
         pr.status = CMD_PARSE_ERROR;
         pr.error = cause;
-        return &mut pr
+        return &mut pr;
     }
     return cmd_parse_build_commands(cmds, pi);
 }
-static mut yyr2: [yytype_int8; 48] =
-    [0 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     0 as libc::c_int as yytype_int8, 1 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 3 as libc::c_int as yytype_int8,
-     0 as libc::c_int as yytype_int8, 1 as libc::c_int as yytype_int8,
-     1 as libc::c_int as yytype_int8, 1 as libc::c_int as yytype_int8,
-     1 as libc::c_int as yytype_int8, 1 as libc::c_int as yytype_int8,
-     1 as libc::c_int as yytype_int8, 0 as libc::c_int as yytype_int8,
-     1 as libc::c_int as yytype_int8, 1 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     1 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     1 as libc::c_int as yytype_int8, 4 as libc::c_int as yytype_int8,
-     7 as libc::c_int as yytype_int8, 5 as libc::c_int as yytype_int8,
-     8 as libc::c_int as yytype_int8, 3 as libc::c_int as yytype_int8,
-     4 as libc::c_int as yytype_int8, 1 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 3 as libc::c_int as yytype_int8,
-     3 as libc::c_int as yytype_int8, 1 as libc::c_int as yytype_int8,
-     1 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     3 as libc::c_int as yytype_int8, 3 as libc::c_int as yytype_int8,
-     5 as libc::c_int as yytype_int8, 4 as libc::c_int as yytype_int8,
-     6 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     3 as libc::c_int as yytype_int8, 1 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 1 as libc::c_int as yytype_int8,
-     1 as libc::c_int as yytype_int8, 2 as libc::c_int as yytype_int8,
-     2 as libc::c_int as yytype_int8, 3 as libc::c_int as yytype_int8];
+static mut yyr2: [yytype_int8; 48] = [
+    0 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    0 as libc::c_int as yytype_int8,
+    1 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    3 as libc::c_int as yytype_int8,
+    0 as libc::c_int as yytype_int8,
+    1 as libc::c_int as yytype_int8,
+    1 as libc::c_int as yytype_int8,
+    1 as libc::c_int as yytype_int8,
+    1 as libc::c_int as yytype_int8,
+    1 as libc::c_int as yytype_int8,
+    1 as libc::c_int as yytype_int8,
+    0 as libc::c_int as yytype_int8,
+    1 as libc::c_int as yytype_int8,
+    1 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    1 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    1 as libc::c_int as yytype_int8,
+    4 as libc::c_int as yytype_int8,
+    7 as libc::c_int as yytype_int8,
+    5 as libc::c_int as yytype_int8,
+    8 as libc::c_int as yytype_int8,
+    3 as libc::c_int as yytype_int8,
+    4 as libc::c_int as yytype_int8,
+    1 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    3 as libc::c_int as yytype_int8,
+    3 as libc::c_int as yytype_int8,
+    1 as libc::c_int as yytype_int8,
+    1 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    3 as libc::c_int as yytype_int8,
+    3 as libc::c_int as yytype_int8,
+    5 as libc::c_int as yytype_int8,
+    4 as libc::c_int as yytype_int8,
+    6 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    3 as libc::c_int as yytype_int8,
+    1 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    1 as libc::c_int as yytype_int8,
+    1 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    2 as libc::c_int as yytype_int8,
+    3 as libc::c_int as yytype_int8,
+];
 #[no_mangle]
-pub unsafe extern "C" fn cmd_parse_from_string(mut s: *const libc::c_char,
-                                               mut pi: *mut cmd_parse_input)
- -> *mut cmd_parse_result {
-    let mut input: cmd_parse_input =
-        cmd_parse_input{flags: 0,
-                        file: 0 as *const libc::c_char,
-                        line: 0,
-                        item: 0 as *mut cmdq_item,
-                        c: 0 as *mut client,
-                        fs:
-                            cmd_find_state{flags: 0,
-                                           current: 0 as *mut cmd_find_state,
-                                           s: 0 as *mut session,
-                                           wl: 0 as *mut winlink,
-                                           w: 0 as *mut window,
-                                           wp: 0 as *mut window_pane,
-                                           idx: 0,},};
+pub unsafe extern "C" fn cmd_parse_from_string(
+    mut s: *const libc::c_char,
+    mut pi: *mut cmd_parse_input,
+) -> *mut cmd_parse_result {
+    let mut input: cmd_parse_input = cmd_parse_input {
+        flags: 0,
+        file: 0 as *const libc::c_char,
+        line: 0,
+        item: 0 as *mut cmdq_item,
+        c: 0 as *mut client,
+        fs: cmd_find_state {
+            flags: 0,
+            current: 0 as *mut cmd_find_state,
+            s: 0 as *mut session,
+            wl: 0 as *mut winlink,
+            w: 0 as *mut window,
+            wp: 0 as *mut window_pane,
+            idx: 0,
+        },
+    };
     if pi.is_null() {
-        memset(&mut input as *mut cmd_parse_input as *mut libc::c_void,
-               0 as libc::c_int,
-               ::std::mem::size_of::<cmd_parse_input>() as libc::c_ulong);
+        memset(
+            &mut input as *mut cmd_parse_input as *mut libc::c_void,
+            0 as libc::c_int,
+            ::std::mem::size_of::<cmd_parse_input>() as libc::c_ulong,
+        );
         pi = &mut input
     }
     /*
-	 * When parsing a string, put commands in one group even if there are
-	 * multiple lines. This means { a \n b } is identical to "a ; b" when
-	 * given as an argument to another command.
-	 */
+     * When parsing a string, put commands in one group even if there are
+     * multiple lines. This means { a \n b } is identical to "a ; b" when
+     * given as an argument to another command.
+     */
     (*pi).flags |= 0x10 as libc::c_int;
     return cmd_parse_from_buffer(s as *const libc::c_void, strlen(s), pi);
 }
 #[no_mangle]
-pub unsafe extern "C" fn cmd_parse_and_insert(mut s: *const libc::c_char,
-                                              mut pi: *mut cmd_parse_input,
-                                              mut after: *mut cmdq_item,
-                                              mut state: *mut cmdq_state,
-                                              mut error:
-                                                  *mut *mut libc::c_char)
- -> cmd_parse_status {
+pub unsafe extern "C" fn cmd_parse_and_insert(
+    mut s: *const libc::c_char,
+    mut pi: *mut cmd_parse_input,
+    mut after: *mut cmdq_item,
+    mut state: *mut cmdq_state,
+    mut error: *mut *mut libc::c_char,
+) -> cmd_parse_status {
     let mut pr: *mut cmd_parse_result = 0 as *mut cmd_parse_result;
     let mut item: *mut cmdq_item = 0 as *mut cmdq_item;
     /* Backward compatibility with an undocumented macro.
-   Use YYerror or YYUNDEF. */
+    Use YYerror or YYUNDEF. */
     pr = cmd_parse_from_string(s, pi);
     match (*pr).status as libc::c_uint {
         1 => {
             /* Enable debugging if requested.  */
             if !error.is_null() {
                 *error = (*pr).error
-            } else { free((*pr).error as *mut libc::c_void); }
+            } else {
+                free((*pr).error as *mut libc::c_void);
+            }
         }
         2 => {
             item = cmdq_get_command((*pr).cmdlist, state);
             cmdq_insert_after(after, item);
             cmd_list_free((*pr).cmdlist);
         }
-        0 | _ => { }
+        0 | _ => {}
     }
     return (*pr).status;
 }
 #[no_mangle]
-pub unsafe extern "C" fn cmd_parse_and_append(mut s: *const libc::c_char,
-                                              mut pi: *mut cmd_parse_input,
-                                              mut c: *mut client,
-                                              mut state: *mut cmdq_state,
-                                              mut error:
-                                                  *mut *mut libc::c_char)
- -> cmd_parse_status {
+pub unsafe extern "C" fn cmd_parse_and_append(
+    mut s: *const libc::c_char,
+    mut pi: *mut cmd_parse_input,
+    mut c: *mut client,
+    mut state: *mut cmdq_state,
+    mut error: *mut *mut libc::c_char,
+) -> cmd_parse_status {
     let mut pr: *mut cmd_parse_result = 0 as *mut cmd_parse_result;
     let mut item: *mut cmdq_item = 0 as *mut cmdq_item;
     pr = cmd_parse_from_string(s, pi);
@@ -2373,88 +2858,97 @@ pub unsafe extern "C" fn cmd_parse_and_append(mut s: *const libc::c_char,
         1 => {
             if !error.is_null() {
                 *error = (*pr).error
-            } else { free((*pr).error as *mut libc::c_void); }
+            } else {
+                free((*pr).error as *mut libc::c_void);
+            }
         }
         2 => {
             item = cmdq_get_command((*pr).cmdlist, state);
             cmdq_append(c, item);
             cmd_list_free((*pr).cmdlist);
         }
-        0 | _ => { }
+        0 | _ => {}
     }
     return (*pr).status;
 }
 #[no_mangle]
-pub unsafe extern "C" fn cmd_parse_from_buffer(mut buf: *const libc::c_void,
-                                               mut len: size_t,
-                                               mut pi: *mut cmd_parse_input)
- -> *mut cmd_parse_result {
-    static mut pr: cmd_parse_result =
-        cmd_parse_result{status: CMD_PARSE_EMPTY,
-                         cmdlist: 0 as *const cmd_list as *mut cmd_list,
-                         error:
-                             0 as *const libc::c_char as *mut libc::c_char,};
-    let mut input: cmd_parse_input =
-        cmd_parse_input{flags: 0,
-                        file: 0 as *const libc::c_char,
-                        line: 0,
-                        item: 0 as *mut cmdq_item,
-                        c: 0 as *mut client,
-                        fs:
-                            cmd_find_state{flags: 0,
-                                           current: 0 as *mut cmd_find_state,
-                                           s: 0 as *mut session,
-                                           wl: 0 as *mut winlink,
-                                           w: 0 as *mut window,
-                                           wp: 0 as *mut window_pane,
-                                           idx: 0,},};
+pub unsafe extern "C" fn cmd_parse_from_buffer(
+    mut buf: *const libc::c_void,
+    mut len: size_t,
+    mut pi: *mut cmd_parse_input,
+) -> *mut cmd_parse_result {
+    static mut pr: cmd_parse_result = cmd_parse_result {
+        status: CMD_PARSE_EMPTY,
+        cmdlist: 0 as *const cmd_list as *mut cmd_list,
+        error: 0 as *const libc::c_char as *mut libc::c_char,
+    };
+    let mut input: cmd_parse_input = cmd_parse_input {
+        flags: 0,
+        file: 0 as *const libc::c_char,
+        line: 0,
+        item: 0 as *mut cmdq_item,
+        c: 0 as *mut client,
+        fs: cmd_find_state {
+            flags: 0,
+            current: 0 as *mut cmd_find_state,
+            s: 0 as *mut session,
+            wl: 0 as *mut winlink,
+            w: 0 as *mut window,
+            wp: 0 as *mut window_pane,
+            idx: 0,
+        },
+    };
     let mut cmds: *mut cmd_parse_commands = 0 as *mut cmd_parse_commands;
     let mut cause: *mut libc::c_char = 0 as *mut libc::c_char;
     if pi.is_null() {
-        memset(&mut input as *mut cmd_parse_input as *mut libc::c_void,
-               0 as libc::c_int,
-               ::std::mem::size_of::<cmd_parse_input>() as libc::c_ulong);
+        memset(
+            &mut input as *mut cmd_parse_input as *mut libc::c_void,
+            0 as libc::c_int,
+            ::std::mem::size_of::<cmd_parse_input>() as libc::c_ulong,
+        );
         pi = &mut input
     }
-    memset(&mut pr as *mut cmd_parse_result as *mut libc::c_void,
-           0 as libc::c_int,
-           ::std::mem::size_of::<cmd_parse_result>() as libc::c_ulong);
+    memset(
+        &mut pr as *mut cmd_parse_result as *mut libc::c_void,
+        0 as libc::c_int,
+        ::std::mem::size_of::<cmd_parse_result>() as libc::c_ulong,
+    );
     if len == 0 as libc::c_int as libc::c_ulong {
         pr.status = CMD_PARSE_EMPTY;
         pr.cmdlist = 0 as *mut cmd_list;
         pr.error = 0 as *mut libc::c_char;
-        return &mut pr
+        return &mut pr;
     }
-    cmds =
-        cmd_parse_do_buffer(buf as *const libc::c_char, len, pi, &mut cause);
+    cmds = cmd_parse_do_buffer(buf as *const libc::c_char, len, pi, &mut cause);
     if cmds.is_null() {
         pr.status = CMD_PARSE_ERROR;
         pr.error = cause;
-        return &mut pr
+        return &mut pr;
     }
     return cmd_parse_build_commands(cmds, pi);
 }
 #[no_mangle]
-pub unsafe extern "C" fn cmd_parse_from_arguments(mut argc: libc::c_int,
-                                                  mut argv:
-                                                      *mut *mut libc::c_char,
-                                                  mut pi:
-                                                      *mut cmd_parse_input)
- -> *mut cmd_parse_result {
-    let mut input: cmd_parse_input =
-        cmd_parse_input{flags: 0,
-                        file: 0 as *const libc::c_char,
-                        line: 0,
-                        item: 0 as *mut cmdq_item,
-                        c: 0 as *mut client,
-                        fs:
-                            cmd_find_state{flags: 0,
-                                           current: 0 as *mut cmd_find_state,
-                                           s: 0 as *mut session,
-                                           wl: 0 as *mut winlink,
-                                           w: 0 as *mut window,
-                                           wp: 0 as *mut window_pane,
-                                           idx: 0,},};
+pub unsafe extern "C" fn cmd_parse_from_arguments(
+    mut argc: libc::c_int,
+    mut argv: *mut *mut libc::c_char,
+    mut pi: *mut cmd_parse_input,
+) -> *mut cmd_parse_result {
+    let mut input: cmd_parse_input = cmd_parse_input {
+        flags: 0,
+        file: 0 as *const libc::c_char,
+        line: 0,
+        item: 0 as *mut cmdq_item,
+        c: 0 as *mut client,
+        fs: cmd_find_state {
+            flags: 0,
+            current: 0 as *mut cmd_find_state,
+            s: 0 as *mut session,
+            wl: 0 as *mut winlink,
+            w: 0 as *mut window,
+            wp: 0 as *mut window_pane,
+            idx: 0,
+        },
+    };
     let mut cmds: *mut cmd_parse_commands = 0 as *mut cmd_parse_commands;
     let mut cmd: *mut cmd_parse_command = 0 as *mut cmd_parse_command;
     let mut copy: *mut *mut libc::c_char = 0 as *mut *mut libc::c_char;
@@ -2464,65 +2958,68 @@ pub unsafe extern "C" fn cmd_parse_from_arguments(mut argc: libc::c_int,
     let mut last: libc::c_int = 0;
     let mut new_argc: libc::c_int = 0;
     /*
-	 * The commands are already split up into arguments, so just separate
-	 * into a set of commands by ';'.
-	 */
+     * The commands are already split up into arguments, so just separate
+     * into a set of commands by ';'.
+     */
     if pi.is_null() {
-        memset(&mut input as *mut cmd_parse_input as *mut libc::c_void,
-               0 as libc::c_int,
-               ::std::mem::size_of::<cmd_parse_input>() as libc::c_ulong);
+        memset(
+            &mut input as *mut cmd_parse_input as *mut libc::c_void,
+            0 as libc::c_int,
+            ::std::mem::size_of::<cmd_parse_input>() as libc::c_ulong,
+        );
         pi = &mut input
     }
-    cmd_log_argv(argc, argv, b"%s\x00" as *const u8 as *const libc::c_char,
-                 (*::std::mem::transmute::<&[u8; 25],
-                                           &[libc::c_char; 25]>(b"cmd_parse_from_arguments\x00")).as_ptr());
+    cmd_log_argv(
+        argc,
+        argv,
+        b"%s\x00" as *const u8 as *const libc::c_char,
+        (*::std::mem::transmute::<&[u8; 25], &[libc::c_char; 25]>(b"cmd_parse_from_arguments\x00"))
+            .as_ptr(),
+    );
     cmds = cmd_parse_new_commands();
     copy = cmd_copy_argv(argc, argv);
     last = 0 as libc::c_int;
     i = 0 as libc::c_int;
     while i < argc {
         size = strlen(*copy.offset(i as isize));
-        if !(size == 0 as libc::c_int as libc::c_ulong ||
-                 *(*copy.offset(i as
-                                    isize)).offset(size.wrapping_sub(1 as
-                                                                         libc::c_int
-                                                                         as
-                                                                         libc::c_ulong)
-                                                       as isize) as
-                     libc::c_int != ';' as i32) {
+        if !(size == 0 as libc::c_int as libc::c_ulong
+            || *(*copy.offset(i as isize))
+                .offset(size.wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize)
+                as libc::c_int
+                != ';' as i32)
+        {
             size = size.wrapping_sub(1);
-            *(*copy.offset(i as isize)).offset(size as isize) =
-                '\u{0}' as i32 as libc::c_char;
-            if size > 0 as libc::c_int as libc::c_ulong &&
-                   *(*copy.offset(i as
-                                      isize)).offset(size.wrapping_sub(1 as
-                                                                           libc::c_int
-                                                                           as
-                                                                           libc::c_ulong)
-                                                         as isize) as
-                       libc::c_int == '\\' as i32 {
-                *(*copy.offset(i as
-                                   isize)).offset(size.wrapping_sub(1 as
-                                                                        libc::c_int
-                                                                        as
-                                                                        libc::c_ulong)
-                                                      as isize) =
+            *(*copy.offset(i as isize)).offset(size as isize) = '\u{0}' as i32 as libc::c_char;
+            if size > 0 as libc::c_int as libc::c_ulong
+                && *(*copy.offset(i as isize))
+                    .offset(size.wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize)
+                    as libc::c_int
+                    == '\\' as i32
+            {
+                *(*copy.offset(i as isize))
+                    .offset(size.wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize) =
                     ';' as i32 as libc::c_char
             } else {
                 new_argc = i - last;
                 new_argv = copy.offset(last as isize);
-                if size != 0 as libc::c_int as libc::c_ulong { new_argc += 1 }
+                if size != 0 as libc::c_int as libc::c_ulong {
+                    new_argc += 1
+                }
                 if new_argc != 0 as libc::c_int {
-                    cmd_log_argv(new_argc, new_argv,
-                                 b"%s: at %u\x00" as *const u8 as
-                                     *const libc::c_char,
-                                 (*::std::mem::transmute::<&[u8; 25],
-                                                           &[libc::c_char; 25]>(b"cmd_parse_from_arguments\x00")).as_ptr(),
-                                 i);
-                    cmd =
-                        xcalloc(1 as libc::c_int as size_t,
-                                ::std::mem::size_of::<cmd_parse_command>() as
-                                    libc::c_ulong) as *mut cmd_parse_command;
+                    cmd_log_argv(
+                        new_argc,
+                        new_argv,
+                        b"%s: at %u\x00" as *const u8 as *const libc::c_char,
+                        (*::std::mem::transmute::<&[u8; 25], &[libc::c_char; 25]>(
+                            b"cmd_parse_from_arguments\x00",
+                        ))
+                        .as_ptr(),
+                        i,
+                    );
+                    cmd = xcalloc(
+                        1 as libc::c_int as size_t,
+                        ::std::mem::size_of::<cmd_parse_command>() as libc::c_ulong,
+                    ) as *mut cmd_parse_command;
                     (*cmd).line = (*pi).line;
                     (*cmd).argc = new_argc;
                     (*cmd).argv = cmd_copy_argv(new_argc, new_argv);
@@ -2540,25 +3037,30 @@ pub unsafe extern "C" fn cmd_parse_from_arguments(mut argc: libc::c_int,
         new_argv = copy.offset(last as isize);
         new_argc = argc - last;
         if new_argc != 0 as libc::c_int {
-            cmd_log_argv(new_argc, new_argv,
-                         b"%s: at %u\x00" as *const u8 as *const libc::c_char,
-                         (*::std::mem::transmute::<&[u8; 25],
-                                                   &[libc::c_char; 25]>(b"cmd_parse_from_arguments\x00")).as_ptr(),
-                         last);
+            cmd_log_argv(
+                new_argc,
+                new_argv,
+                b"%s: at %u\x00" as *const u8 as *const libc::c_char,
+                (*::std::mem::transmute::<&[u8; 25], &[libc::c_char; 25]>(
+                    b"cmd_parse_from_arguments\x00",
+                ))
+                .as_ptr(),
+                last,
+            );
             /* YYINITDEPTH -- initial size of the parser's stacks.  */
-            cmd =
-                xcalloc(1 as libc::c_int as size_t,
-                        ::std::mem::size_of::<cmd_parse_command>() as
-                            libc::c_ulong) as *mut cmd_parse_command;
+            cmd = xcalloc(
+                1 as libc::c_int as size_t,
+                ::std::mem::size_of::<cmd_parse_command>() as libc::c_ulong,
+            ) as *mut cmd_parse_command;
             (*cmd).line = (*pi).line;
             (*cmd).argc = new_argc;
             (*cmd).argv = cmd_copy_argv(new_argc, new_argv);
             /* YYMAXDEPTH -- maximum size the stacks can grow to (effective only
-   if the built-in stack extension method is used).
+            if the built-in stack extension method is used).
 
-   Do not make this value too large; the results are undefined if
-   YYSTACK_ALLOC_MAXIMUM < YYSTACK_BYTES (YYMAXDEPTH)
-   evaluated with infinite-precision integer arithmetic.  */
+            Do not make this value too large; the results are undefined if
+            YYSTACK_ALLOC_MAXIMUM < YYSTACK_BYTES (YYMAXDEPTH)
+            evaluated with infinite-precision integer arithmetic.  */
             (*cmd).entry.tqe_next = 0 as *mut cmd_parse_command;
             (*cmd).entry.tqe_prev = (*cmds).tqh_last;
             *(*cmds).tqh_last = cmd;
@@ -2568,82 +3070,94 @@ pub unsafe extern "C" fn cmd_parse_from_arguments(mut argc: libc::c_int,
     cmd_free_argv(argc, copy);
     return cmd_parse_build_commands(cmds, pi);
 }
-unsafe extern "C" fn yyerror(mut fmt: *const libc::c_char, mut args: ...)
- -> libc::c_int {
+unsafe extern "C" fn yyerror(mut fmt: *const libc::c_char, mut args: ...) -> libc::c_int {
     let mut ps: *mut cmd_parse_state = &mut parse_state;
     let mut pi: *mut cmd_parse_input = (*ps).input;
     let mut ap: ::std::ffi::VaListImpl;
     let mut error: *mut libc::c_char = 0 as *mut libc::c_char;
     /*-----------------------------------------------.
-| Release the memory associated to this symbol.  |
-`-----------------------------------------------*/
-    if !(*ps).error.is_null() { return 0 as libc::c_int }
+    | Release the memory associated to this symbol.  |
+    `-----------------------------------------------*/
+    if !(*ps).error.is_null() {
+        return 0 as libc::c_int;
+    }
     ap = args.clone();
     xvasprintf(&mut error, fmt, ap.as_va_list());
     (*ps).error = cmd_parse_get_error((*pi).file, (*pi).line, error);
     free(error as *mut libc::c_void);
     return 0 as libc::c_int;
 }
-unsafe extern "C" fn yydestruct(mut yymsg: *const libc::c_char,
-                                mut yykind: yysymbol_kind_t,
-                                mut yyvaluep: *mut YYSTYPE) {
+unsafe extern "C" fn yydestruct(
+    mut yymsg: *const libc::c_char,
+    mut yykind: yysymbol_kind_t,
+    mut yyvaluep: *mut YYSTYPE,
+) {
     if yymsg.is_null() {
         yymsg = b"Deleting\x00" as *const u8 as *const libc::c_char
     };
 }
-unsafe extern "C" fn yylex_is_var(mut ch: libc::c_char,
-                                  mut first: libc::c_int) -> libc::c_int {
-    if ch as libc::c_int == '=' as i32 { return 0 as libc::c_int }
-    if first != 0 &&
-           *(*__ctype_b_loc()).offset(ch as u_char as libc::c_int as isize) as
-               libc::c_int &
-               _ISdigit as libc::c_int as libc::c_ushort as libc::c_int != 0 {
-        /* Lookahead token kind.  */
-        return 0 as libc::c_int
+unsafe extern "C" fn yylex_is_var(mut ch: libc::c_char, mut first: libc::c_int) -> libc::c_int {
+    if ch as libc::c_int == '=' as i32 {
+        return 0 as libc::c_int;
     }
-    return (*(*__ctype_b_loc()).offset(ch as u_char as libc::c_int as isize)
-                as libc::c_int &
-                _ISalnum as libc::c_int as libc::c_ushort as libc::c_int != 0
-                || ch as libc::c_int == '_' as i32) as libc::c_int;
+    if first != 0
+        && *(*__ctype_b_loc()).offset(ch as u_char as libc::c_int as isize) as libc::c_int
+            & _ISdigit as libc::c_int as libc::c_ushort as libc::c_int
+            != 0
+    {
+        /* Lookahead token kind.  */
+        return 0 as libc::c_int;
+    }
+    return (*(*__ctype_b_loc()).offset(ch as u_char as libc::c_int as isize) as libc::c_int
+        & _ISalnum as libc::c_int as libc::c_ushort as libc::c_int
+        != 0
+        || ch as libc::c_int == '_' as i32) as libc::c_int;
 }
 #[no_mangle]
 pub static mut yychar: libc::c_int = 0;
 /* The semantic value of the lookahead symbol.  */
-unsafe extern "C" fn yylex_append(mut buf: *mut *mut libc::c_char,
-                                  mut len: *mut size_t,
-                                  mut add: *const libc::c_char,
-                                  mut addlen: size_t) {
-    if addlen >
-           (18446744073709551615 as
-                libc::c_ulong).wrapping_sub(1 as libc::c_int as libc::c_ulong)
-           ||
-           *len >
-               (18446744073709551615 as
-                    libc::c_ulong).wrapping_sub(1 as libc::c_int as
-                                                    libc::c_ulong).wrapping_sub(addlen)
-       {
+unsafe extern "C" fn yylex_append(
+    mut buf: *mut *mut libc::c_char,
+    mut len: *mut size_t,
+    mut add: *const libc::c_char,
+    mut addlen: size_t,
+) {
+    if addlen
+        > (18446744073709551615 as libc::c_ulong).wrapping_sub(1 as libc::c_int as libc::c_ulong)
+        || *len
+            > (18446744073709551615 as libc::c_ulong)
+                .wrapping_sub(1 as libc::c_int as libc::c_ulong)
+                .wrapping_sub(addlen)
+    {
         fatalx(b"buffer is too big\x00" as *const u8 as *const libc::c_char);
     }
-    *buf =
-        xrealloc(*buf as *mut libc::c_void,
-                 (*len).wrapping_add(1 as libc::c_int as
-                                         libc::c_ulong).wrapping_add(addlen))
-            as *mut libc::c_char;
-    memcpy((*buf).offset(*len as isize) as *mut libc::c_void,
-           add as *const libc::c_void, addlen);
+    *buf = xrealloc(
+        *buf as *mut libc::c_void,
+        (*len)
+            .wrapping_add(1 as libc::c_int as libc::c_ulong)
+            .wrapping_add(addlen),
+    ) as *mut libc::c_char;
+    memcpy(
+        (*buf).offset(*len as isize) as *mut libc::c_void,
+        add as *const libc::c_void,
+        addlen,
+    );
     /*----------.
-| yyparse.  |
-`----------*/
+    | yyparse.  |
+    `----------*/
     *len = (*len as libc::c_ulong).wrapping_add(addlen) as size_t as size_t;
 }
 #[no_mangle]
-pub static mut yylval: YYSTYPE =
-    YYSTYPE{token: 0 as *const libc::c_char as *mut libc::c_char,};
+pub static mut yylval: YYSTYPE = YYSTYPE {
+    token: 0 as *const libc::c_char as *mut libc::c_char,
+};
 #[no_mangle]
 pub static mut yynerrs: libc::c_int = 0;
-unsafe extern "C" fn yylex_append1(mut buf: *mut *mut libc::c_char,
-                                   mut len: *mut size_t,
-                                   mut add: libc::c_char) {
+unsafe extern "C" fn yylex_append1(
+    mut buf: *mut *mut libc::c_char,
+    mut len: *mut size_t,
+    mut add: libc::c_char,
+) {
     yylex_append(buf, len, &mut add, 1 as libc::c_int as size_t);
 }
 unsafe extern "C" fn yyparse() -> libc::c_int {
@@ -2652,7 +3166,7 @@ unsafe extern "C" fn yyparse() -> libc::c_int {
     /* Number of tokens to shift before error messages enabled.  */
     let mut yyerrstatus: libc::c_int = 0 as libc::c_int;
     /* Refer to the stacks through separate pointers, to allow yyoverflow
-       to reallocate them elsewhere.  */
+    to reallocate them elsewhere.  */
     /* Their size.  */
     let mut yystacksize: libc::c_long = 200 as libc::c_int as libc::c_long;
     /* The state stack: array, bottom, top.  */
@@ -2660,8 +3174,9 @@ unsafe extern "C" fn yyparse() -> libc::c_int {
     let mut yyss: *mut yy_state_t = yyssa.as_mut_ptr();
     let mut yyssp: *mut yy_state_t = yyss;
     /* The semantic value stack: array, bottom, top.  */
-    let mut yyvsa: [YYSTYPE; 200] =
-        [YYSTYPE{token: 0 as *const libc::c_char as *mut libc::c_char,}; 200];
+    let mut yyvsa: [YYSTYPE; 200] = [YYSTYPE {
+        token: 0 as *const libc::c_char as *mut libc::c_char,
+    }; 200];
     let mut yyvs: *mut YYSTYPE = yyvsa.as_mut_ptr();
     let mut yyvsp: *mut YYSTYPE = yyvs;
     let mut yyn: libc::c_int = 0;
@@ -2670,1340 +3185,1073 @@ unsafe extern "C" fn yyparse() -> libc::c_int {
     /* Lookahead symbol kind.  */
     let mut yytoken: yysymbol_kind_t = YYSYMBOL_YYEMPTY;
     /* The variables used to return semantic value and location from the
-     action routines.  */
-    let mut yyval: YYSTYPE =
-        YYSTYPE{token: 0 as *const libc::c_char as *mut libc::c_char,};
+    action routines.  */
+    let mut yyval: YYSTYPE = YYSTYPE {
+        token: 0 as *const libc::c_char as *mut libc::c_char,
+    };
     /* The number of symbols on the RHS of the reduced rule.
-     Keep to zero when no symbol should be popped.  */
-    let mut yylen: libc::c_int =
-        0 as libc::c_int; /* Cause a token to be read.  */
+    Keep to zero when no symbol should be popped.  */
+    let mut yylen: libc::c_int = 0 as libc::c_int; /* Cause a token to be read.  */
     yychar = YYEMPTY as libc::c_int;
-    's_64:
-        loop 
-             /*--------------------------------------------------------------------.
-| yysetstate -- set current state (the top of the stack) to yystate.  |
-`--------------------------------------------------------------------*/
-             {
-            (0 as libc::c_int != 0 &&
-                 (0 as libc::c_int <= yystate && yystate < 75 as libc::c_int))
-                as libc::c_int;
-            *yyssp = yystate as yy_state_t;
-            if yyss.offset(yystacksize as
-                               isize).offset(-(1 as libc::c_int as isize)) <=
-                   yyssp {
-                /* Get the current used size of the three stacks, in elements.  */
-                let mut yysize: libc::c_long =
-                    yyssp.wrapping_offset_from(yyss) as libc::c_long +
-                        1 as libc::c_int as libc::c_long;
-                /* defined YYSTACK_RELOCATE */
-                /* Extend the stack our own way.  */
-                if 10000 as libc::c_int as libc::c_long <= yystacksize {
-                    current_block = 14688867023895834084;
-                    break ;
-                }
-                yystacksize *= 2 as libc::c_int as libc::c_long;
-                if (10000 as libc::c_int as libc::c_long) < yystacksize {
-                    yystacksize = 10000 as libc::c_int as libc::c_long
-                }
-                /*
-			 * Ensure every file or string is terminated by a
-			 * newline. This keeps the parser simpler and avoids
-			 * having to add a newline to each string.
-			 */
-                let mut yyss1: *mut yy_state_t = yyss;
-                let mut yyptr: *mut yyalloc =
-                    malloc((yystacksize *
-                                (::std::mem::size_of::<yy_state_t>() as
-                                     libc::c_ulong as libc::c_long +
-                                     ::std::mem::size_of::<YYSTYPE>() as
-                                         libc::c_ulong as libc::c_long) +
-                                (::std::mem::size_of::<yyalloc>() as
-                                     libc::c_ulong as libc::c_long -
-                                     1 as libc::c_int as libc::c_long)) as
-                               libc::c_ulong) as *mut yyalloc;
-                if yyptr.is_null() {
-                    current_block = 14688867023895834084;
-                    break ;
-                }
-                let mut yynewbytes: libc::c_long = 0;
-                libc::memcpy(&mut (*yyptr).yyss_alloc as *mut yy_state_t as
-                                 *mut libc::c_void,
-                             yyss as *const libc::c_void,
-                             (yysize as
-                                  libc::c_ulong).wrapping_mul(::std::mem::size_of::<yy_state_t>()
-                                                                  as
-                                                                  libc::c_ulong)
-                                 as libc::size_t);
-                yyss = &mut (*yyptr).yyss_alloc;
-                yynewbytes =
-                    yystacksize *
-                        ::std::mem::size_of::<yy_state_t>() as libc::c_ulong
-                            as libc::c_long +
-                        (::std::mem::size_of::<yyalloc>() as libc::c_ulong as
-                             libc::c_long - 1 as libc::c_int as libc::c_long);
-                yyptr =
-                    yyptr.offset((yynewbytes /
-                                      ::std::mem::size_of::<yyalloc>() as
-                                          libc::c_ulong as libc::c_long) as
-                                     isize);
-                let mut yynewbytes_0: libc::c_long = 0;
-                libc::memcpy(&mut (*yyptr).yyvs_alloc as *mut YYSTYPE as
-                                 *mut libc::c_void,
-                             yyvs as *const libc::c_void,
-                             (yysize as
-                                  libc::c_ulong).wrapping_mul(::std::mem::size_of::<YYSTYPE>()
-                                                                  as
-                                                                  libc::c_ulong)
-                                 as libc::size_t);
-                yyvs = &mut (*yyptr).yyvs_alloc;
-                yynewbytes_0 =
-                    yystacksize *
-                        ::std::mem::size_of::<YYSTYPE>() as libc::c_ulong as
-                            libc::c_long +
-                        (::std::mem::size_of::<yyalloc>() as libc::c_ulong as
-                             libc::c_long - 1 as libc::c_int as libc::c_long);
-                yyptr =
-                    yyptr.offset((yynewbytes_0 /
-                                      ::std::mem::size_of::<yyalloc>() as
-                                          libc::c_ulong as libc::c_long) as
-                                     isize);
-                if yyss1 != yyssa.as_mut_ptr() {
-                    free(yyss1 as *mut libc::c_void);
-                }
-                yyssp =
-                    yyss.offset(yysize as
-                                    isize).offset(-(1 as libc::c_int as
-                                                        isize));
-                yyvsp =
-                    yyvs.offset(yysize as
-                                    isize).offset(-(1 as libc::c_int as
-                                                        isize));
-                /*
-			 * Ignore whitespace.
-			 */
-                if yyss.offset(yystacksize as
-                                   isize).offset(-(1 as libc::c_int as isize))
-                       <= yyssp
-                   /*
-			 * End of line. Update the line number.
-			 */
-                   {
-                    current_block = 10035012600013456863;
-                    break ;
-                }
+    's_64: loop
+    /*--------------------------------------------------------------------.
+    | yysetstate -- set current state (the top of the stack) to yystate.  |
+    `--------------------------------------------------------------------*/
+    {
+        (0 as libc::c_int != 0 && (0 as libc::c_int <= yystate && yystate < 75 as libc::c_int))
+            as libc::c_int;
+        *yyssp = yystate as yy_state_t;
+        if yyss
+            .offset(yystacksize as isize)
+            .offset(-(1 as libc::c_int as isize))
+            <= yyssp
+        {
+            /* Get the current used size of the three stacks, in elements.  */
+            let mut yysize: libc::c_long =
+                yyssp.wrapping_offset_from(yyss) as libc::c_long + 1 as libc::c_int as libc::c_long;
+            /* defined YYSTACK_RELOCATE */
+            /* Extend the stack our own way.  */
+            if 10000 as libc::c_int as libc::c_long <= yystacksize {
+                current_block = 14688867023895834084;
+                break;
             }
-            /* !defined yyoverflow && !defined YYSTACK_RELOCATE */
+            yystacksize *= 2 as libc::c_int as libc::c_long;
+            if (10000 as libc::c_int as libc::c_long) < yystacksize {
+                yystacksize = 10000 as libc::c_int as libc::c_long
+            }
             /*
-			 * A semicolon or { or } is itself.
-			 */
-            if yystate == 20 as libc::c_int {
-                /*-------------------------------------.
-| yyacceptlab -- YYACCEPT comes here.  |
-`-------------------------------------*/
-                yyresult = 0 as libc::c_int;
-                current_block = 3567665828411497206;
-                break ;
-            } else {
-                /*-----------.
-| yybackup.  |
-`-----------*/
-                /*
-			 * #{ after a condition opens a format; anything else
-			 * is a comment, ignore up to the end of the line.
-			 */
-                /* Do appropriate processing given the current state.  Read a
-     lookahead token if we need one and don't already have one.  */
-                /* First try to decide what to do without reference to lookahead token.  */
-                yyn = yypact[yystate as usize] as libc::c_int;
-                if yyn == -(32 as libc::c_int) {
-                    current_block = 8820106547087071178;
-                } else {
-                    /* Not known => get a lookahead token if don't already have one.  */
-                    /* YYCHAR is either empty, or end-of-input, or a valid lookahead.  */
-                    if yychar == YYEMPTY as libc::c_int { yychar = yylex() }
-                    if yychar <= 0 as libc::c_int {
-                        yychar = 0 as libc::c_int;
-                        yytoken = YYSYMBOL_YYEOF;
-                        current_block = 17728966195399430138;
-                    } else if yychar == 256 as libc::c_int {
-                        /* The scanner already issued an error message, process directly
-         to error recovery.  But do not keep the error token as
-         lookahead, it is too special and may lead us to an endless
-         loop in error recovery. */
-                        yychar = 257 as libc::c_int;
-                        yytoken = YYSYMBOL_YYerror;
-                        current_block = 6983641760769012672;
-                    } else {
-                        yytoken =
-                            if 0 as libc::c_int <= yychar &&
-                                   yychar <= 266 as libc::c_int {
-                                yytranslate[yychar as usize] as
-                                    yysymbol_kind_t as libc::c_int
-                            } else { YYSYMBOL_YYUNDEF as libc::c_int } as
-                                yysymbol_kind_t;
-                        current_block = 17728966195399430138;
-                    }
-                    match current_block {
-                        6983641760769012672 => { }
-                        _ => {
-                            /* If the proper action on seeing token YYTOKEN is to reduce or to
-     detect an error, take that action.  */
-                            yyn += yytoken as libc::c_int;
-                            if yyn < 0 as libc::c_int ||
-                                   (104 as libc::c_int) < yyn ||
-                                   yycheck[yyn as usize] as libc::c_int !=
-                                       yytoken as libc::c_int {
-                                current_block = 8820106547087071178;
-                            } else {
-                                yyn = yytable[yyn as usize] as libc::c_int;
-                                if yyn <= 0 as libc::c_int {
-                                    yyn = -yyn;
-                                    current_block = 16998598652869609653;
-                                } else {
-                                    /*
-		 * Otherwise this is a token.
-		 */
-                                    /* Count tokens shifted since error; after three, turn off error
-     status.  */
-                                    if yyerrstatus != 0 { yyerrstatus -= 1 }
-                                    /* Shift the lookahead token.  */
-                                    yystate = yyn;
-                                    yyvsp = yyvsp.offset(1);
-                                    *yyvsp = yylval;
-                                    /* Discard the shifted token.  */
-                                    yychar = YYEMPTY as libc::c_int;
-                                    current_block = 4382416473683093495;
-                                }
-                            }
-                        }
-                    }
-                }
-                match current_block {
-                    8820106547087071178 =>
-                    /*-----------------------------------------------------------.
-| yydefault -- do the default action for the current state.  |
-`-----------------------------------------------------------*/
-                    {
-                        yyn = yydefact[yystate as usize] as libc::c_int;
-                        if yyn == 0 as libc::c_int {
-                            /*--------------------------------------.
-| yyerrlab -- here on detecting error.  |
-`--------------------------------------*/
-                            /* Make sure we have latest lookahead translation.  See comments at
-     user semantic actions for why this is necessary.  */
-                            yytoken =
-                                if yychar == YYEMPTY as libc::c_int {
-                                    YYSYMBOL_YYEMPTY as libc::c_int
-                                } else if 0 as libc::c_int <= yychar &&
-                                              yychar <= 266 as libc::c_int {
-                                    yytranslate[yychar as usize] as
-                                        yysymbol_kind_t as libc::c_int
-                                } else { YYSYMBOL_YYUNDEF as libc::c_int } as
-                                    yysymbol_kind_t;
-                            /* If not already recovering from an error, report this error.  */
-                            if yyerrstatus == 0 {
-                                yynerrs += 1;
-                                yyerror(b"syntax error\x00" as *const u8 as
-                                            *const libc::c_char);
-                            }
-                            if yyerrstatus == 3 as libc::c_int {
-                                /* If just tried and failed to reuse lookahead token after an
-         error, discard it.  */
-                                if yychar <= 0 as libc::c_int {
-                                    /* Return failure if at end of input.  */
-                                    if yychar == 0 as libc::c_int {
-                                        current_block = 10035012600013456863;
-                                        break ;
-                                    }
-                                } else {
-                                    yydestruct(b"Error: discarding\x00" as
-                                                   *const u8 as
-                                                   *const libc::c_char,
-                                               yytoken, &mut yylval);
-                                    yychar = YYEMPTY as libc::c_int
-                                }
-                            }
-                            /* Else will try to reuse lookahead token after shifting the error
-     token.  */
-                            current_block = 6983641760769012672;
-                        } else { current_block = 16998598652869609653; }
-                    }
-                    _ => { }
-                }
-                match current_block {
-                    6983641760769012672 =>
-                    /*-------------------------------------------------------------.
-| yyerrlab1 -- common code for both syntax error and YYERROR.  |
-`-------------------------------------------------------------*/
-                    {
-                        yyerrstatus =
-                            3 as
-                                libc::c_int; /* Each real token shifted decrements this.  */
-                        loop 
-                             /* Pop stack until we find a state that shifts the error token.  */
-                             {
-                            yyn = yypact[yystate as usize] as libc::c_int;
-                            if !(yyn == -(32 as libc::c_int)) {
-                                yyn += YYSYMBOL_YYerror as libc::c_int;
-                                if 0 as libc::c_int <= yyn &&
-                                       yyn <= 104 as libc::c_int &&
-                                       yycheck[yyn as usize] as libc::c_int ==
-                                           YYSYMBOL_YYerror as libc::c_int {
-                                    yyn =
-                                        yytable[yyn as usize] as libc::c_int;
-                                    if (0 as libc::c_int) < yyn { break ; }
-                                }
-                            }
-                            /* Pop the current state because it cannot handle the error token.  */
-                            if yyssp == yyss {
-                                current_block = 10035012600013456863;
-                                break 's_64 ;
-                            }
-                            yydestruct(b"Error: popping\x00" as *const u8 as
-                                           *const libc::c_char,
-                                       yystos[yystate as usize] as
-                                           yysymbol_kind_t, yyvsp);
-                            yyvsp =
-                                yyvsp.offset(-(1 as libc::c_int as isize));
-                            yyssp =
-                                yyssp.offset(-(1 as libc::c_int as isize));
-                            yystate = *yyssp as yy_state_fast_t
-                        }
-                        yyvsp = yyvsp.offset(1);
-                        *yyvsp = yylval;
-                        /* Shift the error token.  */
-                        yystate = yyn
-                    }
-                    16998598652869609653 =>
-                    /*-----------------------------.
-| yyreduce -- do a reduction.  |
-`-----------------------------*/
-                    /* yyn is the number of a rule to reduce with.  */
-                    {
-                        yylen = yyr2[yyn as usize] as libc::c_int;
-                        /* If YYLEN is nonzero, implement the default value of the action:
-     '$$ = $1'.
-
-     Otherwise, the following line sets YYVAL to garbage.
-     This behavior is undocumented and Bison
-     users should not rely upon it.  Assigning to YYVAL
-     unconditionally makes the parser a bit smaller, and it avoids a
-     GCC warning that YYVAL may be used uninitialized.  */
-                        yyval =
-                            *yyvsp.offset((1 as libc::c_int - yylen) as
-                                              isize);
-                        match yyn {
-                            3 => {
-                                let mut ps: *mut cmd_parse_state =
-                                    &mut parse_state;
-                                (*ps).commands =
-                                    (*yyvsp.offset(0 as libc::c_int as
-                                                       isize)).commands
-                            }
-                            4 => {
-                                yyval.commands =
-                                    (*yyvsp.offset(-(1 as libc::c_int) as
-                                                       isize)).commands
-                            }
-                            5 => {
-                                yyval.commands =
-                                    (*yyvsp.offset(-(2 as libc::c_int) as
-                                                       isize)).commands;
-                                if !(*(*yyvsp.offset(-(1 as libc::c_int) as
-                                                         isize)).commands).tqh_first.is_null()
-                                   {
-                                    *(*yyval.commands).tqh_last =
-                                        (*(*yyvsp.offset(-(1 as libc::c_int)
-                                                             as
-                                                             isize)).commands).tqh_first;
-                                    let ref mut fresh0 =
-                                        (*(*(*yyvsp.offset(-(1 as libc::c_int)
-                                                               as
-                                                               isize)).commands).tqh_first).entry.tqe_prev;
-                                    *fresh0 = (*yyval.commands).tqh_last;
-                                    (*yyval.commands).tqh_last =
-                                        (*(*yyvsp.offset(-(1 as libc::c_int)
-                                                             as
-                                                             isize)).commands).tqh_last;
-                                    let ref mut fresh1 =
-                                        (*(*yyvsp.offset(-(1 as libc::c_int)
-                                                             as
-                                                             isize)).commands).tqh_first;
-                                    *fresh1 = 0 as *mut cmd_parse_command;
-                                    let ref mut fresh2 =
-                                        (*(*yyvsp.offset(-(1 as libc::c_int)
-                                                             as
-                                                             isize)).commands).tqh_last;
-                                    *fresh2 =
-                                        &mut (*(*yyvsp.offset(-(1 as
-                                                                    libc::c_int)
-                                                                  as
-                                                                  isize)).commands).tqh_first
-                                }
-                                free((*yyvsp.offset(-(1 as libc::c_int) as
-                                                        isize)).commands as
-                                         *mut libc::c_void);
-                            }
-                            6 => {
-                                yyval.commands =
-                                    xmalloc(::std::mem::size_of::<cmd_parse_commands>()
-                                                as libc::c_ulong) as
-                                        *mut cmd_parse_commands;
-                                (*yyval.commands).tqh_first =
-                                    0 as *mut cmd_parse_command;
-                                (*yyval.commands).tqh_last =
-                                    &mut (*yyval.commands).tqh_first
-                            }
-                            7 => {
-                                yyval.commands =
-                                    xmalloc(::std::mem::size_of::<cmd_parse_commands>()
-                                                as libc::c_ulong) as
-                                        *mut cmd_parse_commands;
-                                (*yyval.commands).tqh_first =
-                                    0 as *mut cmd_parse_command;
-                                (*yyval.commands).tqh_last =
-                                    &mut (*yyval.commands).tqh_first
-                            }
-                            8 => {
-                                let mut ps_0: *mut cmd_parse_state =
-                                    &mut parse_state;
-                                if (*ps_0).scope.is_null() ||
-                                       (*(*ps_0).scope).flag != 0 {
-                                    yyval.commands =
-                                        (*yyvsp.offset(0 as libc::c_int as
-                                                           isize)).commands
-                                } else {
-                                    yyval.commands = cmd_parse_new_commands();
-                                    cmd_parse_free_commands((*yyvsp.offset(0
-                                                                               as
-                                                                               libc::c_int
-                                                                               as
-                                                                               isize)).commands);
-                                }
-                            }
-                            9 => {
-                                let mut ps_1: *mut cmd_parse_state =
-                                    &mut parse_state;
-                                if (*ps_1).scope.is_null() ||
-                                       (*(*ps_1).scope).flag != 0 {
-                                    yyval.commands =
-                                        (*yyvsp.offset(0 as libc::c_int as
-                                                           isize)).commands
-                                } else {
-                                    yyval.commands = cmd_parse_new_commands();
-                                    cmd_parse_free_commands((*yyvsp.offset(0
-                                                                               as
-                                                                               libc::c_int
-                                                                               as
-                                                                               isize)).commands);
-                                }
-                            }
-                            10 => {
-                                yyval.token =
-                                    (*yyvsp.offset(0 as libc::c_int as
-                                                       isize)).token
-                            }
-                            11 => {
-                                yyval.token =
-                                    (*yyvsp.offset(0 as libc::c_int as
-                                                       isize)).token
-                            }
-                            12 => {
-                                let mut ps_2: *mut cmd_parse_state =
-                                    &mut parse_state;
-                                let mut pi: *mut cmd_parse_input =
-                                    (*ps_2).input;
-                                let mut ft: *mut format_tree =
-                                    0 as *mut format_tree;
-                                let mut c: *mut client = (*pi).c;
-                                let mut fsp: *mut cmd_find_state =
-                                    0 as *mut cmd_find_state;
-                                let mut fs: cmd_find_state =
-                                    cmd_find_state{flags: 0,
-                                                   current:
-                                                       0 as
-                                                           *mut cmd_find_state,
-                                                   s: 0 as *mut session,
-                                                   wl: 0 as *mut winlink,
-                                                   w: 0 as *mut window,
-                                                   wp: 0 as *mut window_pane,
-                                                   idx: 0,};
-                                let mut flags: libc::c_int =
-                                    0x4 as libc::c_int;
-                                if cmd_find_valid_state(&mut (*pi).fs) != 0 {
-                                    fsp = &mut (*pi).fs
-                                } else {
-                                    cmd_find_from_client(&mut fs, c,
-                                                         0 as libc::c_int);
-                                    fsp = &mut fs
-                                }
-                                ft =
-                                    format_create(0 as *mut client,
-                                                  (*pi).item,
-                                                  0 as libc::c_int, flags);
-                                format_defaults(ft, c, (*fsp).s, (*fsp).wl,
-                                                (*fsp).wp);
-                                yyval.token =
-                                    format_expand(ft,
-                                                  (*yyvsp.offset(0 as
-                                                                     libc::c_int
-                                                                     as
-                                                                     isize)).token);
-                                format_free(ft);
-                                free((*yyvsp.offset(0 as libc::c_int as
-                                                        isize)).token as
-                                         *mut libc::c_void);
-                            }
-                            15 => {
-                                let mut ps_3: *mut cmd_parse_state =
-                                    &mut parse_state;
-                                let mut flags_0: libc::c_int =
-                                    (*(*ps_3).input).flags;
-                                if !flags_0 & 0x2 as libc::c_int != 0 &&
-                                       ((*ps_3).scope.is_null() ||
-                                            (*(*ps_3).scope).flag != 0) {
-                                    environ_put(global_environ,
-                                                (*yyvsp.offset(0 as
-                                                                   libc::c_int
-                                                                   as
-                                                                   isize)).token,
-                                                0 as libc::c_int);
-                                }
-                                free((*yyvsp.offset(0 as libc::c_int as
-                                                        isize)).token as
-                                         *mut libc::c_void);
-                            }
-                            16 => {
-                                let mut ps_4: *mut cmd_parse_state =
-                                    &mut parse_state;
-                                let mut flags_1: libc::c_int =
-                                    (*(*ps_4).input).flags;
-                                if !flags_1 & 0x2 as libc::c_int != 0 &&
-                                       ((*ps_4).scope.is_null() ||
-                                            (*(*ps_4).scope).flag != 0) {
-                                    environ_put(global_environ,
-                                                (*yyvsp.offset(0 as
-                                                                   libc::c_int
-                                                                   as
-                                                                   isize)).token,
-                                                0x1 as libc::c_int);
-                                }
-                                free((*yyvsp.offset(0 as libc::c_int as
-                                                        isize)).token as
-                                         *mut libc::c_void);
-                            }
-                            17 => {
-                                let mut ps_5: *mut cmd_parse_state =
-                                    &mut parse_state;
-                                let mut scope: *mut cmd_parse_scope =
-                                    0 as *mut cmd_parse_scope;
-                                scope =
-                                    xmalloc(::std::mem::size_of::<cmd_parse_scope>()
-                                                as libc::c_ulong) as
-                                        *mut cmd_parse_scope;
-                                (*scope).flag =
-                                    format_true((*yyvsp.offset(0 as
-                                                                   libc::c_int
-                                                                   as
-                                                                   isize)).token);
-                                yyval.flag = (*scope).flag;
-                                free((*yyvsp.offset(0 as libc::c_int as
-                                                        isize)).token as
-                                         *mut libc::c_void);
-                                if !(*ps_5).scope.is_null() {
-                                    (*(*ps_5).scope).entry.tqe_next =
-                                        (*ps_5).stack.tqh_first;
-                                    if !(*(*ps_5).scope).entry.tqe_next.is_null()
-                                       {
-                                        (*(*ps_5).stack.tqh_first).entry.tqe_prev
-                                            =
-                                            &mut (*(*ps_5).scope).entry.tqe_next
-                                    } else {
-                                        (*ps_5).stack.tqh_last =
-                                            &mut (*(*ps_5).scope).entry.tqe_next
-                                    }
-                                    (*ps_5).stack.tqh_first = (*ps_5).scope;
-                                    (*(*ps_5).scope).entry.tqe_prev =
-                                        &mut (*ps_5).stack.tqh_first
-                                }
-                                (*ps_5).scope = scope
-                            }
-                            18 => {
-                                let mut ps_6: *mut cmd_parse_state =
-                                    &mut parse_state;
-                                let mut scope_0: *mut cmd_parse_scope =
-                                    0 as *mut cmd_parse_scope;
-                                scope_0 =
-                                    xmalloc(::std::mem::size_of::<cmd_parse_scope>()
-                                                as libc::c_ulong) as
-                                        *mut cmd_parse_scope;
-                                (*scope_0).flag =
-                                    ((*(*ps_6).scope).flag == 0) as
-                                        libc::c_int;
-                                free((*ps_6).scope as *mut libc::c_void);
-                                (*ps_6).scope = scope_0
-                            }
-                            19 => {
-                                let mut ps_7: *mut cmd_parse_state =
-                                    &mut parse_state;
-                                let mut scope_1: *mut cmd_parse_scope =
-                                    0 as *mut cmd_parse_scope;
-                                scope_1 =
-                                    xmalloc(::std::mem::size_of::<cmd_parse_scope>()
-                                                as libc::c_ulong) as
-                                        *mut cmd_parse_scope;
-                                (*scope_1).flag =
-                                    format_true((*yyvsp.offset(0 as
-                                                                   libc::c_int
-                                                                   as
-                                                                   isize)).token);
-                                yyval.flag = (*scope_1).flag;
-                                free((*yyvsp.offset(0 as libc::c_int as
-                                                        isize)).token as
-                                         *mut libc::c_void);
-                                free((*ps_7).scope as *mut libc::c_void);
-                                (*ps_7).scope = scope_1
-                            }
-                            20 => {
-                                let mut ps_8: *mut cmd_parse_state =
-                                    &mut parse_state;
-                                free((*ps_8).scope as *mut libc::c_void);
-                                (*ps_8).scope = (*ps_8).stack.tqh_first;
-                                if !(*ps_8).scope.is_null() {
-                                    if !(*(*ps_8).scope).entry.tqe_next.is_null()
-                                       {
-                                        (*(*(*ps_8).scope).entry.tqe_next).entry.tqe_prev
-                                            = (*(*ps_8).scope).entry.tqe_prev
-                                    } else {
-                                        (*ps_8).stack.tqh_last =
-                                            (*(*ps_8).scope).entry.tqe_prev
-                                    }
-                                    *(*(*ps_8).scope).entry.tqe_prev =
-                                        (*(*ps_8).scope).entry.tqe_next
-                                }
-                            }
-                            21 => {
-                                if (*yyvsp.offset(-(3 as libc::c_int) as
-                                                      isize)).flag != 0 {
-                                    yyval.commands =
-                                        (*yyvsp.offset(-(1 as libc::c_int) as
-                                                           isize)).commands
-                                } else {
-                                    yyval.commands = cmd_parse_new_commands();
-                                    cmd_parse_free_commands((*yyvsp.offset(-(1
-                                                                                 as
-                                                                                 libc::c_int)
-                                                                               as
-                                                                               isize)).commands);
-                                }
-                            }
-                            22 => {
-                                /* EOF or \n are always the end of the token. */
-                                if (*yyvsp.offset(-(6 as libc::c_int) as
-                                                      isize)).flag != 0 {
-                                    yyval.commands =
-                                        (*yyvsp.offset(-(4 as libc::c_int) as
-                                                           isize)).commands;
-                                    cmd_parse_free_commands((*yyvsp.offset(-(1
-                                                                                 as
-                                                                                 libc::c_int)
-                                                                               as
-                                                                               isize)).commands);
-                                } else {
-                                    yyval.commands =
-                                        (*yyvsp.offset(-(1 as libc::c_int) as
-                                                           isize)).commands;
-                                    cmd_parse_free_commands((*yyvsp.offset(-(4
-                                                                                 as
-                                                                                 libc::c_int)
-                                                                               as
-                                                                               isize)).commands);
-                                }
-                            }
-                            23 => {
-                                if (*yyvsp.offset(-(4 as libc::c_int) as
-                                                      isize)).flag != 0 {
-                                    yyval.commands =
-                                        (*yyvsp.offset(-(2 as libc::c_int) as
-                                                           isize)).commands;
-                                    cmd_parse_free_commands((*yyvsp.offset(-(1
-                                                                                 as
-                                                                                 libc::c_int)
-                                                                               as
-                                                                               isize)).elif.commands);
-                                } else if (*yyvsp.offset(-(1 as libc::c_int)
-                                                             as
-                                                             isize)).elif.flag
-                                              != 0 {
-                                    yyval.commands =
-                                        (*yyvsp.offset(-(1 as libc::c_int) as
-                                                           isize)).elif.commands;
-                                    cmd_parse_free_commands((*yyvsp.offset(-(2
-                                                                                 as
-                                                                                 libc::c_int)
-                                                                               as
-                                                                               isize)).commands);
-                                } else {
-                                    yyval.commands = cmd_parse_new_commands();
-                                    cmd_parse_free_commands((*yyvsp.offset(-(2
-                                                                                 as
-                                                                                 libc::c_int)
-                                                                               as
-                                                                               isize)).commands);
-                                    cmd_parse_free_commands((*yyvsp.offset(-(1
-                                                                                 as
-                                                                                 libc::c_int)
-                                                                               as
-                                                                               isize)).elif.commands);
-                                }
-                            }
-                            24 => {
-                                if (*yyvsp.offset(-(7 as libc::c_int) as
-                                                      isize)).flag != 0 {
-                                    yyval.commands =
-                                        (*yyvsp.offset(-(5 as libc::c_int) as
-                                                           isize)).commands;
-                                    cmd_parse_free_commands((*yyvsp.offset(-(4
-                                                                                 as
-                                                                                 libc::c_int)
-                                                                               as
-                                                                               isize)).elif.commands);
-                                    cmd_parse_free_commands((*yyvsp.offset(-(1
-                                                                                 as
-                                                                                 libc::c_int)
-                                                                               as
-                                                                               isize)).commands);
-                                } else if (*yyvsp.offset(-(4 as libc::c_int)
-                                                             as
-                                                             isize)).elif.flag
-                                              != 0 {
-                                    yyval.commands =
-                                        (*yyvsp.offset(-(4 as libc::c_int) as
-                                                           isize)).elif.commands;
-                                    cmd_parse_free_commands((*yyvsp.offset(-(5
-                                                                                 as
-                                                                                 libc::c_int)
-                                                                               as
-                                                                               isize)).commands);
-                                    cmd_parse_free_commands((*yyvsp.offset(-(1
-                                                                                 as
-                                                                                 libc::c_int)
-                                                                               as
-                                                                               isize)).commands);
-                                } else {
-                                    yyval.commands =
-                                        (*yyvsp.offset(-(1 as libc::c_int) as
-                                                           isize)).commands;
-                                    cmd_parse_free_commands((*yyvsp.offset(-(5
-                                                                                 as
-                                                                                 libc::c_int)
-                                                                               as
-                                                                               isize)).commands);
-                                    cmd_parse_free_commands((*yyvsp.offset(-(4
-                                                                                 as
-                                                                                 libc::c_int)
-                                                                               as
-                                                                               isize)).elif.commands);
-                                }
-                            }
-                            25 => {
-                                if (*yyvsp.offset(-(2 as libc::c_int) as
-                                                      isize)).flag != 0 {
-                                    yyval.elif.flag = 1 as libc::c_int;
-                                    yyval.elif.commands =
-                                        (*yyvsp.offset(0 as libc::c_int as
-                                                           isize)).commands
-                                } else {
-                                    yyval.elif.flag = 0 as libc::c_int;
-                                    yyval.elif.commands =
-                                        cmd_parse_new_commands();
-                                    cmd_parse_free_commands((*yyvsp.offset(0
-                                                                               as
-                                                                               libc::c_int
-                                                                               as
-                                                                               isize)).commands);
-                                }
-                            }
-                            26 => {
-                                /* Otherwise add the character to the buffer. */
-                                if (*yyvsp.offset(-(3 as libc::c_int) as
-                                                      isize)).flag != 0 {
-                                    yyval.elif.flag = 1 as libc::c_int;
-                                    yyval.elif.commands =
-                                        (*yyvsp.offset(-(1 as libc::c_int) as
-                                                           isize)).commands;
-                                    cmd_parse_free_commands((*yyvsp.offset(0
-                                                                               as
-                                                                               libc::c_int
-                                                                               as
-                                                                               isize)).elif.commands);
-                                } else if (*yyvsp.offset(0 as libc::c_int as
-                                                             isize)).elif.flag
-                                              != 0 {
-                                    yyval.elif.flag = 1 as libc::c_int;
-                                    yyval.elif.commands =
-                                        (*yyvsp.offset(0 as libc::c_int as
-                                                           isize)).elif.commands;
-                                    cmd_parse_free_commands((*yyvsp.offset(-(1
-                                                                                 as
-                                                                                 libc::c_int)
-                                                                               as
-                                                                               isize)).commands);
-                                } else {
-                                    yyval.elif.flag = 0 as libc::c_int;
-                                    yyval.elif.commands =
-                                        cmd_parse_new_commands();
-                                    cmd_parse_free_commands((*yyvsp.offset(-(1
-                                                                                 as
-                                                                                 libc::c_int)
-                                                                               as
-                                                                               isize)).commands);
-                                    cmd_parse_free_commands((*yyvsp.offset(0
-                                                                               as
-                                                                               libc::c_int
-                                                                               as
-                                                                               isize)).elif.commands);
-                                }
-                            }
-                            27 => {
-                                let mut ps_9: *mut cmd_parse_state =
-                                    &mut parse_state;
-                                yyval.commands = cmd_parse_new_commands();
-                                if (*(*yyvsp.offset(0 as libc::c_int as
-                                                        isize)).command).argc
-                                       != 0 as libc::c_int &&
-                                       ((*ps_9).scope.is_null() ||
-                                            (*(*ps_9).scope).flag != 0) {
-                                    let ref mut fresh3 =
-                                        (*(*yyvsp.offset(0 as libc::c_int as
-                                                             isize)).command).entry.tqe_next;
-                                    *fresh3 = 0 as *mut cmd_parse_command;
-                                    let ref mut fresh4 =
-                                        (*(*yyvsp.offset(0 as libc::c_int as
-                                                             isize)).command).entry.tqe_prev;
-                                    *fresh4 = (*yyval.commands).tqh_last;
-                                    *(*yyval.commands).tqh_last =
-                                        (*yyvsp.offset(0 as libc::c_int as
-                                                           isize)).command;
-                                    (*yyval.commands).tqh_last =
-                                        &mut (*(*yyvsp.offset(0 as libc::c_int
-                                                                  as
-                                                                  isize)).command).entry.tqe_next
-                                } else {
-                                    cmd_parse_free_command((*yyvsp.offset(0 as
-                                                                              libc::c_int
-                                                                              as
-                                                                              isize)).command);
-                                }
-                            }
-                            28 => {
-                                yyval.commands =
-                                    (*yyvsp.offset(-(1 as libc::c_int) as
-                                                       isize)).commands
-                            }
-                            29 => {
-                                yyval.commands =
-                                    (*yyvsp.offset(-(2 as libc::c_int) as
-                                                       isize)).commands;
-                                if !(*(*yyvsp.offset(0 as libc::c_int as
-                                                         isize)).commands).tqh_first.is_null()
-                                   {
-                                    *(*yyval.commands).tqh_last =
-                                        (*(*yyvsp.offset(0 as libc::c_int as
-                                                             isize)).commands).tqh_first;
-                                    let ref mut fresh5 =
-                                        (*(*(*yyvsp.offset(0 as libc::c_int as
-                                                               isize)).commands).tqh_first).entry.tqe_prev;
-                                    *fresh5 = (*yyval.commands).tqh_last;
-                                    (*yyval.commands).tqh_last =
-                                        (*(*yyvsp.offset(0 as libc::c_int as
-                                                             isize)).commands).tqh_last;
-                                    let ref mut fresh6 =
-                                        (*(*yyvsp.offset(0 as libc::c_int as
-                                                             isize)).commands).tqh_first;
-                                    *fresh6 = 0 as *mut cmd_parse_command;
-                                    let ref mut fresh7 =
-                                        (*(*yyvsp.offset(0 as libc::c_int as
-                                                             isize)).commands).tqh_last;
-                                    *fresh7 =
-                                        &mut (*(*yyvsp.offset(0 as libc::c_int
-                                                                  as
-                                                                  isize)).commands).tqh_first
-                                }
-                                free((*yyvsp.offset(0 as libc::c_int as
-                                                        isize)).commands as
-                                         *mut libc::c_void);
-                            }
-                            30 => {
-                                let mut ps_10: *mut cmd_parse_state =
-                                    &mut parse_state;
-                                if (*(*yyvsp.offset(0 as libc::c_int as
-                                                        isize)).command).argc
-                                       != 0 as libc::c_int &&
-                                       ((*ps_10).scope.is_null() ||
-                                            (*(*ps_10).scope).flag != 0) {
-                                    yyval.commands =
-                                        (*yyvsp.offset(-(2 as libc::c_int) as
-                                                           isize)).commands;
-                                    let ref mut fresh8 =
-                                        (*(*yyvsp.offset(0 as libc::c_int as
-                                                             isize)).command).entry.tqe_next;
-                                    *fresh8 = 0 as *mut cmd_parse_command;
-                                    let ref mut fresh9 =
-                                        (*(*yyvsp.offset(0 as libc::c_int as
-                                                             isize)).command).entry.tqe_prev;
-                                    *fresh9 = (*yyval.commands).tqh_last;
-                                    *(*yyval.commands).tqh_last =
-                                        (*yyvsp.offset(0 as libc::c_int as
-                                                           isize)).command;
-                                    (*yyval.commands).tqh_last =
-                                        &mut (*(*yyvsp.offset(0 as libc::c_int
-                                                                  as
-                                                                  isize)).command).entry.tqe_next
-                                } else {
-                                    yyval.commands = cmd_parse_new_commands();
-                                    cmd_parse_free_commands((*yyvsp.offset(-(2
-                                                                                 as
-                                                                                 libc::c_int)
-                                                                               as
-                                                                               isize)).commands);
-                                    cmd_parse_free_command((*yyvsp.offset(0 as
-                                                                              libc::c_int
-                                                                              as
-                                                                              isize)).command);
-                                }
-                            }
-                            31 => {
-                                yyval.commands =
-                                    (*yyvsp.offset(0 as libc::c_int as
-                                                       isize)).commands
-                            }
-                            32 => {
-                                let mut ps_11: *mut cmd_parse_state =
-                                    &mut parse_state;
-                                yyval.command =
-                                    xcalloc(1 as libc::c_int as size_t,
-                                            ::std::mem::size_of::<cmd_parse_command>()
-                                                as libc::c_ulong) as
-                                        *mut cmd_parse_command;
-                                (*yyval.command).line = (*(*ps_11).input).line
-                            }
-                            33 => {
-                                let mut ps_12: *mut cmd_parse_state =
-                                    &mut parse_state;
-                                yyval.command =
-                                    xcalloc(1 as libc::c_int as size_t,
-                                            ::std::mem::size_of::<cmd_parse_command>()
-                                                as libc::c_ulong) as
-                                        *mut cmd_parse_command;
-                                (*yyval.command).line =
-                                    (*(*ps_12).input).line;
-                                cmd_prepend_argv(&mut (*yyval.command).argc,
-                                                 &mut (*yyval.command).argv,
-                                                 (*yyvsp.offset(0 as
-                                                                    libc::c_int
-                                                                    as
-                                                                    isize)).token);
-                            }
-                            34 => {
-                                let mut ps_13: *mut cmd_parse_state =
-                                    &mut parse_state;
-                                yyval.command =
-                                    xcalloc(1 as libc::c_int as size_t,
-                                            ::std::mem::size_of::<cmd_parse_command>()
-                                                as libc::c_ulong) as
-                                        *mut cmd_parse_command;
-                                (*yyval.command).line =
-                                    (*(*ps_13).input).line;
-                                (*yyval.command).argc =
-                                    (*yyvsp.offset(0 as libc::c_int as
-                                                       isize)).arguments.argc;
-                                (*yyval.command).argv =
-                                    (*yyvsp.offset(0 as libc::c_int as
-                                                       isize)).arguments.argv;
-                                cmd_prepend_argv(&mut (*yyval.command).argc,
-                                                 &mut (*yyval.command).argv,
-                                                 (*yyvsp.offset(-(1 as
-                                                                      libc::c_int)
-                                                                    as
-                                                                    isize)).token);
-                            }
-                            35 => {
-                                if (*yyvsp.offset(-(2 as libc::c_int) as
-                                                      isize)).flag != 0 {
-                                    yyval.commands =
-                                        (*yyvsp.offset(-(1 as libc::c_int) as
-                                                           isize)).commands
-                                } else {
-                                    yyval.commands = cmd_parse_new_commands();
-                                    cmd_parse_free_commands((*yyvsp.offset(-(1
-                                                                                 as
-                                                                                 libc::c_int)
-                                                                               as
-                                                                               isize)).commands);
-                                }
-                            }
-                            36 => {
-                                if (*yyvsp.offset(-(4 as libc::c_int) as
-                                                      isize)).flag != 0 {
-                                    yyval.commands =
-                                        (*yyvsp.offset(-(3 as libc::c_int) as
-                                                           isize)).commands;
-                                    cmd_parse_free_commands((*yyvsp.offset(-(1
-                                                                                 as
-                                                                                 libc::c_int)
-                                                                               as
-                                                                               isize)).commands);
-                                } else {
-                                    yyval.commands =
-                                        (*yyvsp.offset(-(1 as libc::c_int) as
-                                                           isize)).commands;
-                                    cmd_parse_free_commands((*yyvsp.offset(-(3
-                                                                                 as
-                                                                                 libc::c_int)
-                                                                               as
-                                                                               isize)).commands);
-                                }
-                            }
-                            37 => {
-                                if (*yyvsp.offset(-(3 as libc::c_int) as
-                                                      isize)).flag != 0 {
-                                    yyval.commands =
-                                        (*yyvsp.offset(-(2 as libc::c_int) as
-                                                           isize)).commands;
-                                    cmd_parse_free_commands((*yyvsp.offset(-(1
-                                                                                 as
-                                                                                 libc::c_int)
-                                                                               as
-                                                                               isize)).elif.commands);
-                                } else if (*yyvsp.offset(-(1 as libc::c_int)
-                                                             as
-                                                             isize)).elif.flag
-                                              != 0 {
-                                    yyval.commands =
-                                        (*yyvsp.offset(-(1 as libc::c_int) as
-                                                           isize)).elif.commands;
-                                    cmd_parse_free_commands((*yyvsp.offset(-(2
-                                                                                 as
-                                                                                 libc::c_int)
-                                                                               as
-                                                                               isize)).commands);
-                                } else {
-                                    yyval.commands = cmd_parse_new_commands();
-                                    cmd_parse_free_commands((*yyvsp.offset(-(2
-                                                                                 as
-                                                                                 libc::c_int)
-                                                                               as
-                                                                               isize)).commands);
-                                    cmd_parse_free_commands((*yyvsp.offset(-(1
-                                                                                 as
-                                                                                 libc::c_int)
-                                                                               as
-                                                                               isize)).elif.commands);
-                                }
-                            }
-                            38 => {
-                                if (*yyvsp.offset(-(5 as libc::c_int) as
-                                                      isize)).flag != 0 {
-                                    yyval.commands =
-                                        (*yyvsp.offset(-(4 as libc::c_int) as
-                                                           isize)).commands;
-                                    cmd_parse_free_commands((*yyvsp.offset(-(3
-                                                                                 as
-                                                                                 libc::c_int)
-                                                                               as
-                                                                               isize)).elif.commands);
-                                    cmd_parse_free_commands((*yyvsp.offset(-(1
-                                                                                 as
-                                                                                 libc::c_int)
-                                                                               as
-                                                                               isize)).commands);
-                                } else if (*yyvsp.offset(-(3 as libc::c_int)
-                                                             as
-                                                             isize)).elif.flag
-                                              != 0 {
-                                    yyval.commands =
-                                        (*yyvsp.offset(-(3 as libc::c_int) as
-                                                           isize)).elif.commands;
-                                    cmd_parse_free_commands((*yyvsp.offset(-(4
-                                                                                 as
-                                                                                 libc::c_int)
-                                                                               as
-                                                                               isize)).commands);
-                                    cmd_parse_free_commands((*yyvsp.offset(-(1
-                                                                                 as
-                                                                                 libc::c_int)
-                                                                               as
-                                                                               isize)).commands);
-                                } else {
-                                    yyval.commands =
-                                        (*yyvsp.offset(-(1 as libc::c_int) as
-                                                           isize)).commands;
-                                    cmd_parse_free_commands((*yyvsp.offset(-(4
-                                                                                 as
-                                                                                 libc::c_int)
-                                                                               as
-                                                                               isize)).commands);
-                                    cmd_parse_free_commands((*yyvsp.offset(-(3
-                                                                                 as
-                                                                                 libc::c_int)
-                                                                               as
-                                                                               isize)).elif.commands);
-                                }
-                            }
-                            39 => {
-                                if (*yyvsp.offset(-(1 as libc::c_int) as
-                                                      isize)).flag != 0 {
-                                    yyval.elif.flag = 1 as libc::c_int;
-                                    yyval.elif.commands =
-                                        (*yyvsp.offset(0 as libc::c_int as
-                                                           isize)).commands
-                                } else {
-                                    yyval.elif.flag = 0 as libc::c_int;
-                                    yyval.elif.commands =
-                                        cmd_parse_new_commands();
-                                    cmd_parse_free_commands((*yyvsp.offset(0
-                                                                               as
-                                                                               libc::c_int
-                                                                               as
-                                                                               isize)).commands);
-                                }
-                            }
-                            40 => {
-                                if (*yyvsp.offset(-(2 as libc::c_int) as
-                                                      isize)).flag != 0 {
-                                    yyval.elif.flag = 1 as libc::c_int;
-                                    yyval.elif.commands =
-                                        (*yyvsp.offset(-(1 as libc::c_int) as
-                                                           isize)).commands;
-                                    cmd_parse_free_commands((*yyvsp.offset(0
-                                                                               as
-                                                                               libc::c_int
-                                                                               as
-                                                                               isize)).elif.commands);
-                                } else if (*yyvsp.offset(0 as libc::c_int as
-                                                             isize)).elif.flag
-                                              != 0 {
-                                    yyval.elif.flag = 1 as libc::c_int;
-                                    yyval.elif.commands =
-                                        (*yyvsp.offset(0 as libc::c_int as
-                                                           isize)).elif.commands;
-                                    cmd_parse_free_commands((*yyvsp.offset(-(1
-                                                                                 as
-                                                                                 libc::c_int)
-                                                                               as
-                                                                               isize)).commands);
-                                } else {
-                                    yyval.elif.flag = 0 as libc::c_int;
-                                    yyval.elif.commands =
-                                        cmd_parse_new_commands();
-                                    cmd_parse_free_commands((*yyvsp.offset(-(1
-                                                                                 as
-                                                                                 libc::c_int)
-                                                                               as
-                                                                               isize)).commands);
-                                    cmd_parse_free_commands((*yyvsp.offset(0
-                                                                               as
-                                                                               libc::c_int
-                                                                               as
-                                                                               isize)).elif.commands);
-                                }
-                            }
-                            41 => {
-                                yyval.arguments.argc = 1 as libc::c_int;
-                                yyval.arguments.argv =
-                                    xreallocarray(0 as *mut libc::c_void,
-                                                  1 as libc::c_int as size_t,
-                                                  ::std::mem::size_of::<*mut libc::c_char>()
-                                                      as libc::c_ulong) as
-                                        *mut *mut libc::c_char;
-                                let ref mut fresh10 =
-                                    *yyval.arguments.argv.offset(0 as
-                                                                     libc::c_int
-                                                                     as
-                                                                     isize);
-                                *fresh10 =
-                                    (*yyvsp.offset(0 as libc::c_int as
-                                                       isize)).token
-                            }
-                            42 => {
-                                cmd_prepend_argv(&mut (*yyvsp.offset(0 as
-                                                                         libc::c_int
-                                                                         as
-                                                                         isize)).arguments.argc,
-                                                 &mut (*yyvsp.offset(0 as
-                                                                         libc::c_int
-                                                                         as
-                                                                         isize)).arguments.argv,
-                                                 (*yyvsp.offset(-(1 as
-                                                                      libc::c_int)
-                                                                    as
-                                                                    isize)).token);
-                                free((*yyvsp.offset(-(1 as libc::c_int) as
-                                                        isize)).token as
-                                         *mut libc::c_void);
-                                yyval.arguments =
-                                    (*yyvsp.offset(0 as libc::c_int as
-                                                       isize)).arguments
-                            }
-                            43 => {
-                                yyval.token =
-                                    (*yyvsp.offset(0 as libc::c_int as
-                                                       isize)).token
-                            }
-                            44 => {
-                                yyval.token =
-                                    (*yyvsp.offset(0 as libc::c_int as
-                                                       isize)).token
-                            }
-                            45 => {
-                                yyval.token =
-                                    cmd_parse_commands_to_string((*yyvsp.offset(0
-                                                                                    as
-                                                                                    libc::c_int
-                                                                                    as
-                                                                                    isize)).commands);
-                                cmd_parse_free_commands((*yyvsp.offset(0 as
-                                                                           libc::c_int
-                                                                           as
-                                                                           isize)).commands);
-                            }
-                            46 => {
-                                yyval.commands =
-                                    (*yyvsp.offset(-(1 as libc::c_int) as
-                                                       isize)).commands
-                            }
-                            47 => {
-                                yyval.commands =
-                                    (*yyvsp.offset(-(2 as libc::c_int) as
-                                                       isize)).commands;
-                                if !(*(*yyvsp.offset(-(1 as libc::c_int) as
-                                                         isize)).commands).tqh_first.is_null()
-                                   {
-                                    *(*yyval.commands).tqh_last =
-                                        (*(*yyvsp.offset(-(1 as libc::c_int)
-                                                             as
-                                                             isize)).commands).tqh_first;
-                                    let ref mut fresh11 =
-                                        (*(*(*yyvsp.offset(-(1 as libc::c_int)
-                                                               as
-                                                               isize)).commands).tqh_first).entry.tqe_prev;
-                                    *fresh11 = (*yyval.commands).tqh_last;
-                                    (*yyval.commands).tqh_last =
-                                        (*(*yyvsp.offset(-(1 as libc::c_int)
-                                                             as
-                                                             isize)).commands).tqh_last;
-                                    let ref mut fresh12 =
-                                        (*(*yyvsp.offset(-(1 as libc::c_int)
-                                                             as
-                                                             isize)).commands).tqh_first;
-                                    *fresh12 = 0 as *mut cmd_parse_command;
-                                    let ref mut fresh13 =
-                                        (*(*yyvsp.offset(-(1 as libc::c_int)
-                                                             as
-                                                             isize)).commands).tqh_last;
-                                    *fresh13 =
-                                        &mut (*(*yyvsp.offset(-(1 as
-                                                                    libc::c_int)
-                                                                  as
-                                                                  isize)).commands).tqh_first
-                                }
-                                free((*yyvsp.offset(-(1 as libc::c_int) as
-                                                        isize)).commands as
-                                         *mut libc::c_void);
-                            }
-                            _ => { }
-                        }
-                        /* User semantic actions sometimes alter yychar, and that requires
-     that yytoken be updated with the new translation.  We take the
-     approach of translating immediately before every use of yytoken.
-     One alternative is translating here after every semantic action,
-     but that translation would be missed if the semantic action invokes
-     YYABORT, YYACCEPT, or YYERROR immediately after altering yychar or
-     if it invokes YYBACKUP.  In the case of YYABORT or YYACCEPT, an
-     incorrect destructor might then be invoked immediately.  In the
-     case of YYERROR or YYBACKUP, subsequent parser actions might lead
-     to an incorrect destructor call or verbose syntax error message
-     before the lookahead is translated.  */
-                        yyvsp = yyvsp.offset(-(yylen as isize));
-                        yyssp = yyssp.offset(-(yylen as isize));
-                        yylen = 0 as libc::c_int;
-                        yyvsp = yyvsp.offset(1);
-                        *yyvsp = yyval;
-                        /* Now 'shift' the result of the reduction.  Determine what state
-     that goes to, based on the state we popped back to and the rule
-     number reduced by.  */
-                        let yylhs: libc::c_int =
-                            yyr1[yyn as usize] as libc::c_int -
-                                16 as libc::c_int;
-                        let yyi: libc::c_int =
-                            yypgoto[yylhs as usize] as libc::c_int +
-                                *yyssp as libc::c_int;
-                        yystate =
-                            if 0 as libc::c_int <= yyi &&
-                                   yyi <= 104 as libc::c_int &&
-                                   yycheck[yyi as usize] as libc::c_int ==
-                                       *yyssp as libc::c_int {
-                                yytable[yyi as usize] as libc::c_int
-                            } else {
-                                yydefgoto[yylhs as usize] as libc::c_int
-                            }
-                    }
-                    _ => { }
-                }
-                /*------------------------------------------------------------.
-| yynewstate -- push a new state, which is found in yystate.  |
-`------------------------------------------------------------*/
-                /* In all cases, when you get here, the value and location stacks
-     have just been pushed.  So pushing a state here evens the stacks.  */
-                yyssp = yyssp.offset(1)
+             * Ensure every file or string is terminated by a
+             * newline. This keeps the parser simpler and avoids
+             * having to add a newline to each string.
+             */
+            let mut yyss1: *mut yy_state_t = yyss;
+            let mut yyptr: *mut yyalloc = malloc(
+                (yystacksize
+                    * (::std::mem::size_of::<yy_state_t>() as libc::c_ulong as libc::c_long
+                        + ::std::mem::size_of::<YYSTYPE>() as libc::c_ulong as libc::c_long)
+                    + (::std::mem::size_of::<yyalloc>() as libc::c_ulong as libc::c_long
+                        - 1 as libc::c_int as libc::c_long)) as libc::c_ulong,
+            ) as *mut yyalloc;
+            if yyptr.is_null() {
+                current_block = 14688867023895834084;
+                break;
+            }
+            let mut yynewbytes: libc::c_long = 0;
+            libc::memcpy(
+                &mut (*yyptr).yyss_alloc as *mut yy_state_t as *mut libc::c_void,
+                yyss as *const libc::c_void,
+                (yysize as libc::c_ulong)
+                    .wrapping_mul(::std::mem::size_of::<yy_state_t>() as libc::c_ulong)
+                    as libc::size_t,
+            );
+            yyss = &mut (*yyptr).yyss_alloc;
+            yynewbytes = yystacksize
+                * ::std::mem::size_of::<yy_state_t>() as libc::c_ulong as libc::c_long
+                + (::std::mem::size_of::<yyalloc>() as libc::c_ulong as libc::c_long
+                    - 1 as libc::c_int as libc::c_long);
+            yyptr = yyptr.offset(
+                (yynewbytes / ::std::mem::size_of::<yyalloc>() as libc::c_ulong as libc::c_long)
+                    as isize,
+            );
+            let mut yynewbytes_0: libc::c_long = 0;
+            libc::memcpy(
+                &mut (*yyptr).yyvs_alloc as *mut YYSTYPE as *mut libc::c_void,
+                yyvs as *const libc::c_void,
+                (yysize as libc::c_ulong)
+                    .wrapping_mul(::std::mem::size_of::<YYSTYPE>() as libc::c_ulong)
+                    as libc::size_t,
+            );
+            yyvs = &mut (*yyptr).yyvs_alloc;
+            yynewbytes_0 = yystacksize
+                * ::std::mem::size_of::<YYSTYPE>() as libc::c_ulong as libc::c_long
+                + (::std::mem::size_of::<yyalloc>() as libc::c_ulong as libc::c_long
+                    - 1 as libc::c_int as libc::c_long);
+            yyptr = yyptr.offset(
+                (yynewbytes_0 / ::std::mem::size_of::<yyalloc>() as libc::c_ulong as libc::c_long)
+                    as isize,
+            );
+            if yyss1 != yyssa.as_mut_ptr() {
+                free(yyss1 as *mut libc::c_void);
+            }
+            yyssp = yyss
+                .offset(yysize as isize)
+                .offset(-(1 as libc::c_int as isize));
+            yyvsp = yyvs
+                .offset(yysize as isize)
+                .offset(-(1 as libc::c_int as isize));
+            /*
+             * Ignore whitespace.
+             */
+            if yyss
+                .offset(yystacksize as isize)
+                .offset(-(1 as libc::c_int as isize))
+                <= yyssp
+            /*
+             * End of line. Update the line number.
+             */
+            {
+                current_block = 10035012600013456863;
+                break;
             }
         }
+        /* !defined yyoverflow && !defined YYSTACK_RELOCATE */
+        /*
+         * A semicolon or { or } is itself.
+         */
+        if yystate == 20 as libc::c_int {
+            /*-------------------------------------.
+            | yyacceptlab -- YYACCEPT comes here.  |
+            `-------------------------------------*/
+            yyresult = 0 as libc::c_int;
+            current_block = 3567665828411497206;
+            break;
+        } else {
+            /*-----------.
+            | yybackup.  |
+            `-----------*/
+            /*
+             * #{ after a condition opens a format; anything else
+             * is a comment, ignore up to the end of the line.
+             */
+            /* Do appropriate processing given the current state.  Read a
+            lookahead token if we need one and don't already have one.  */
+            /* First try to decide what to do without reference to lookahead token.  */
+            yyn = yypact[yystate as usize] as libc::c_int;
+            if yyn == -(32 as libc::c_int) {
+                current_block = 8820106547087071178;
+            } else {
+                /* Not known => get a lookahead token if don't already have one.  */
+                /* YYCHAR is either empty, or end-of-input, or a valid lookahead.  */
+                if yychar == YYEMPTY as libc::c_int {
+                    yychar = yylex()
+                }
+                if yychar <= 0 as libc::c_int {
+                    yychar = 0 as libc::c_int;
+                    yytoken = YYSYMBOL_YYEOF;
+                    current_block = 17728966195399430138;
+                } else if yychar == 256 as libc::c_int {
+                    /* The scanner already issued an error message, process directly
+                    to error recovery.  But do not keep the error token as
+                    lookahead, it is too special and may lead us to an endless
+                    loop in error recovery. */
+                    yychar = 257 as libc::c_int;
+                    yytoken = YYSYMBOL_YYerror;
+                    current_block = 6983641760769012672;
+                } else {
+                    yytoken = if 0 as libc::c_int <= yychar && yychar <= 266 as libc::c_int {
+                        yytranslate[yychar as usize] as yysymbol_kind_t as libc::c_int
+                    } else {
+                        YYSYMBOL_YYUNDEF as libc::c_int
+                    } as yysymbol_kind_t;
+                    current_block = 17728966195399430138;
+                }
+                match current_block {
+                    6983641760769012672 => {}
+                    _ => {
+                        /* If the proper action on seeing token YYTOKEN is to reduce or to
+                        detect an error, take that action.  */
+                        yyn += yytoken as libc::c_int;
+                        if yyn < 0 as libc::c_int
+                            || (104 as libc::c_int) < yyn
+                            || yycheck[yyn as usize] as libc::c_int != yytoken as libc::c_int
+                        {
+                            current_block = 8820106547087071178;
+                        } else {
+                            yyn = yytable[yyn as usize] as libc::c_int;
+                            if yyn <= 0 as libc::c_int {
+                                yyn = -yyn;
+                                current_block = 16998598652869609653;
+                            } else {
+                                /*
+                                 * Otherwise this is a token.
+                                 */
+                                /* Count tokens shifted since error; after three, turn off error
+                                status.  */
+                                if yyerrstatus != 0 {
+                                    yyerrstatus -= 1
+                                }
+                                /* Shift the lookahead token.  */
+                                yystate = yyn;
+                                yyvsp = yyvsp.offset(1);
+                                *yyvsp = yylval;
+                                /* Discard the shifted token.  */
+                                yychar = YYEMPTY as libc::c_int;
+                                current_block = 4382416473683093495;
+                            }
+                        }
+                    }
+                }
+            }
+            match current_block {
+                8820106547087071178 =>
+                /*-----------------------------------------------------------.
+                | yydefault -- do the default action for the current state.  |
+                `-----------------------------------------------------------*/
+                {
+                    yyn = yydefact[yystate as usize] as libc::c_int;
+                    if yyn == 0 as libc::c_int {
+                        /*--------------------------------------.
+                        | yyerrlab -- here on detecting error.  |
+                        `--------------------------------------*/
+                        /* Make sure we have latest lookahead translation.  See comments at
+                        user semantic actions for why this is necessary.  */
+                        yytoken = if yychar == YYEMPTY as libc::c_int {
+                            YYSYMBOL_YYEMPTY as libc::c_int
+                        } else if 0 as libc::c_int <= yychar && yychar <= 266 as libc::c_int {
+                            yytranslate[yychar as usize] as yysymbol_kind_t as libc::c_int
+                        } else {
+                            YYSYMBOL_YYUNDEF as libc::c_int
+                        } as yysymbol_kind_t;
+                        /* If not already recovering from an error, report this error.  */
+                        if yyerrstatus == 0 {
+                            yynerrs += 1;
+                            yyerror(b"syntax error\x00" as *const u8 as *const libc::c_char);
+                        }
+                        if yyerrstatus == 3 as libc::c_int {
+                            /* If just tried and failed to reuse lookahead token after an
+                            error, discard it.  */
+                            if yychar <= 0 as libc::c_int {
+                                /* Return failure if at end of input.  */
+                                if yychar == 0 as libc::c_int {
+                                    current_block = 10035012600013456863;
+                                    break;
+                                }
+                            } else {
+                                yydestruct(
+                                    b"Error: discarding\x00" as *const u8 as *const libc::c_char,
+                                    yytoken,
+                                    &mut yylval,
+                                );
+                                yychar = YYEMPTY as libc::c_int
+                            }
+                        }
+                        /* Else will try to reuse lookahead token after shifting the error
+                        token.  */
+                        current_block = 6983641760769012672;
+                    } else {
+                        current_block = 16998598652869609653;
+                    }
+                }
+                _ => {}
+            }
+            match current_block {
+                6983641760769012672 =>
+                /*-------------------------------------------------------------.
+                | yyerrlab1 -- common code for both syntax error and YYERROR.  |
+                `-------------------------------------------------------------*/
+                {
+                    yyerrstatus = 3 as libc::c_int; /* Each real token shifted decrements this.  */
+                    loop
+                    /* Pop stack until we find a state that shifts the error token.  */
+                    {
+                        yyn = yypact[yystate as usize] as libc::c_int;
+                        if !(yyn == -(32 as libc::c_int)) {
+                            yyn += YYSYMBOL_YYerror as libc::c_int;
+                            if 0 as libc::c_int <= yyn
+                                && yyn <= 104 as libc::c_int
+                                && yycheck[yyn as usize] as libc::c_int
+                                    == YYSYMBOL_YYerror as libc::c_int
+                            {
+                                yyn = yytable[yyn as usize] as libc::c_int;
+                                if (0 as libc::c_int) < yyn {
+                                    break;
+                                }
+                            }
+                        }
+                        /* Pop the current state because it cannot handle the error token.  */
+                        if yyssp == yyss {
+                            current_block = 10035012600013456863;
+                            break 's_64;
+                        }
+                        yydestruct(
+                            b"Error: popping\x00" as *const u8 as *const libc::c_char,
+                            yystos[yystate as usize] as yysymbol_kind_t,
+                            yyvsp,
+                        );
+                        yyvsp = yyvsp.offset(-(1 as libc::c_int as isize));
+                        yyssp = yyssp.offset(-(1 as libc::c_int as isize));
+                        yystate = *yyssp as yy_state_fast_t
+                    }
+                    yyvsp = yyvsp.offset(1);
+                    *yyvsp = yylval;
+                    /* Shift the error token.  */
+                    yystate = yyn
+                }
+                16998598652869609653 =>
+                /*-----------------------------.
+                | yyreduce -- do a reduction.  |
+                `-----------------------------*/
+                                    /* yyn is the number of a rule to reduce with.  */
+                {
+                    yylen = yyr2[yyn as usize] as libc::c_int;
+                    /* If YYLEN is nonzero, implement the default value of the action:
+                    '$$ = $1'.
+
+                    Otherwise, the following line sets YYVAL to garbage.
+                    This behavior is undocumented and Bison
+                    users should not rely upon it.  Assigning to YYVAL
+                    unconditionally makes the parser a bit smaller, and it avoids a
+                    GCC warning that YYVAL may be used uninitialized.  */
+                    yyval = *yyvsp.offset((1 as libc::c_int - yylen) as isize);
+                    match yyn {
+                        3 => {
+                            let mut ps: *mut cmd_parse_state = &mut parse_state;
+                            (*ps).commands = (*yyvsp.offset(0 as libc::c_int as isize)).commands
+                        }
+                        4 => {
+                            yyval.commands = (*yyvsp.offset(-(1 as libc::c_int) as isize)).commands
+                        }
+                        5 => {
+                            yyval.commands = (*yyvsp.offset(-(2 as libc::c_int) as isize)).commands;
+                            if !(*(*yyvsp.offset(-(1 as libc::c_int) as isize)).commands)
+                                .tqh_first
+                                .is_null()
+                            {
+                                *(*yyval.commands).tqh_last =
+                                    (*(*yyvsp.offset(-(1 as libc::c_int) as isize)).commands)
+                                        .tqh_first;
+                                let ref mut fresh0 =
+                                    (*(*(*yyvsp.offset(-(1 as libc::c_int) as isize)).commands)
+                                        .tqh_first)
+                                        .entry
+                                        .tqe_prev;
+                                *fresh0 = (*yyval.commands).tqh_last;
+                                (*yyval.commands).tqh_last =
+                                    (*(*yyvsp.offset(-(1 as libc::c_int) as isize)).commands)
+                                        .tqh_last;
+                                let ref mut fresh1 =
+                                    (*(*yyvsp.offset(-(1 as libc::c_int) as isize)).commands)
+                                        .tqh_first;
+                                *fresh1 = 0 as *mut cmd_parse_command;
+                                let ref mut fresh2 =
+                                    (*(*yyvsp.offset(-(1 as libc::c_int) as isize)).commands)
+                                        .tqh_last;
+                                *fresh2 = &mut (*(*yyvsp.offset(-(1 as libc::c_int) as isize))
+                                    .commands)
+                                    .tqh_first
+                            }
+                            free(
+                                (*yyvsp.offset(-(1 as libc::c_int) as isize)).commands
+                                    as *mut libc::c_void,
+                            );
+                        }
+                        6 => {
+                            yyval.commands = xmalloc(
+                                ::std::mem::size_of::<cmd_parse_commands>() as libc::c_ulong
+                            )
+                                as *mut cmd_parse_commands;
+                            (*yyval.commands).tqh_first = 0 as *mut cmd_parse_command;
+                            (*yyval.commands).tqh_last = &mut (*yyval.commands).tqh_first
+                        }
+                        7 => {
+                            yyval.commands = xmalloc(
+                                ::std::mem::size_of::<cmd_parse_commands>() as libc::c_ulong
+                            )
+                                as *mut cmd_parse_commands;
+                            (*yyval.commands).tqh_first = 0 as *mut cmd_parse_command;
+                            (*yyval.commands).tqh_last = &mut (*yyval.commands).tqh_first
+                        }
+                        8 => {
+                            let mut ps_0: *mut cmd_parse_state = &mut parse_state;
+                            if (*ps_0).scope.is_null() || (*(*ps_0).scope).flag != 0 {
+                                yyval.commands = (*yyvsp.offset(0 as libc::c_int as isize)).commands
+                            } else {
+                                yyval.commands = cmd_parse_new_commands();
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(0 as libc::c_int as isize)).commands,
+                                );
+                            }
+                        }
+                        9 => {
+                            let mut ps_1: *mut cmd_parse_state = &mut parse_state;
+                            if (*ps_1).scope.is_null() || (*(*ps_1).scope).flag != 0 {
+                                yyval.commands = (*yyvsp.offset(0 as libc::c_int as isize)).commands
+                            } else {
+                                yyval.commands = cmd_parse_new_commands();
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(0 as libc::c_int as isize)).commands,
+                                );
+                            }
+                        }
+                        10 => yyval.token = (*yyvsp.offset(0 as libc::c_int as isize)).token,
+                        11 => yyval.token = (*yyvsp.offset(0 as libc::c_int as isize)).token,
+                        12 => {
+                            let mut ps_2: *mut cmd_parse_state = &mut parse_state;
+                            let mut pi: *mut cmd_parse_input = (*ps_2).input;
+                            let mut ft: *mut format_tree = 0 as *mut format_tree;
+                            let mut c: *mut client = (*pi).c;
+                            let mut fsp: *mut cmd_find_state = 0 as *mut cmd_find_state;
+                            let mut fs: cmd_find_state = cmd_find_state {
+                                flags: 0,
+                                current: 0 as *mut cmd_find_state,
+                                s: 0 as *mut session,
+                                wl: 0 as *mut winlink,
+                                w: 0 as *mut window,
+                                wp: 0 as *mut window_pane,
+                                idx: 0,
+                            };
+                            let mut flags: libc::c_int = 0x4 as libc::c_int;
+                            if cmd_find_valid_state(&mut (*pi).fs) != 0 {
+                                fsp = &mut (*pi).fs
+                            } else {
+                                cmd_find_from_client(&mut fs, c, 0 as libc::c_int);
+                                fsp = &mut fs
+                            }
+                            ft = format_create(
+                                0 as *mut client,
+                                (*pi).item,
+                                0 as libc::c_int,
+                                flags,
+                            );
+                            format_defaults(ft, c, (*fsp).s, (*fsp).wl, (*fsp).wp);
+                            yyval.token =
+                                format_expand(ft, (*yyvsp.offset(0 as libc::c_int as isize)).token);
+                            format_free(ft);
+                            free(
+                                (*yyvsp.offset(0 as libc::c_int as isize)).token
+                                    as *mut libc::c_void,
+                            );
+                        }
+                        15 => {
+                            let mut ps_3: *mut cmd_parse_state = &mut parse_state;
+                            let mut flags_0: libc::c_int = (*(*ps_3).input).flags;
+                            if !flags_0 & 0x2 as libc::c_int != 0
+                                && ((*ps_3).scope.is_null() || (*(*ps_3).scope).flag != 0)
+                            {
+                                environ_put(
+                                    global_environ,
+                                    (*yyvsp.offset(0 as libc::c_int as isize)).token,
+                                    0 as libc::c_int,
+                                );
+                            }
+                            free(
+                                (*yyvsp.offset(0 as libc::c_int as isize)).token
+                                    as *mut libc::c_void,
+                            );
+                        }
+                        16 => {
+                            let mut ps_4: *mut cmd_parse_state = &mut parse_state;
+                            let mut flags_1: libc::c_int = (*(*ps_4).input).flags;
+                            if !flags_1 & 0x2 as libc::c_int != 0
+                                && ((*ps_4).scope.is_null() || (*(*ps_4).scope).flag != 0)
+                            {
+                                environ_put(
+                                    global_environ,
+                                    (*yyvsp.offset(0 as libc::c_int as isize)).token,
+                                    0x1 as libc::c_int,
+                                );
+                            }
+                            free(
+                                (*yyvsp.offset(0 as libc::c_int as isize)).token
+                                    as *mut libc::c_void,
+                            );
+                        }
+                        17 => {
+                            let mut ps_5: *mut cmd_parse_state = &mut parse_state;
+                            let mut scope: *mut cmd_parse_scope = 0 as *mut cmd_parse_scope;
+                            scope =
+                                xmalloc(::std::mem::size_of::<cmd_parse_scope>() as libc::c_ulong)
+                                    as *mut cmd_parse_scope;
+                            (*scope).flag =
+                                format_true((*yyvsp.offset(0 as libc::c_int as isize)).token);
+                            yyval.flag = (*scope).flag;
+                            free(
+                                (*yyvsp.offset(0 as libc::c_int as isize)).token
+                                    as *mut libc::c_void,
+                            );
+                            if !(*ps_5).scope.is_null() {
+                                (*(*ps_5).scope).entry.tqe_next = (*ps_5).stack.tqh_first;
+                                if !(*(*ps_5).scope).entry.tqe_next.is_null() {
+                                    (*(*ps_5).stack.tqh_first).entry.tqe_prev =
+                                        &mut (*(*ps_5).scope).entry.tqe_next
+                                } else {
+                                    (*ps_5).stack.tqh_last = &mut (*(*ps_5).scope).entry.tqe_next
+                                }
+                                (*ps_5).stack.tqh_first = (*ps_5).scope;
+                                (*(*ps_5).scope).entry.tqe_prev = &mut (*ps_5).stack.tqh_first
+                            }
+                            (*ps_5).scope = scope
+                        }
+                        18 => {
+                            let mut ps_6: *mut cmd_parse_state = &mut parse_state;
+                            let mut scope_0: *mut cmd_parse_scope = 0 as *mut cmd_parse_scope;
+                            scope_0 =
+                                xmalloc(::std::mem::size_of::<cmd_parse_scope>() as libc::c_ulong)
+                                    as *mut cmd_parse_scope;
+                            (*scope_0).flag = ((*(*ps_6).scope).flag == 0) as libc::c_int;
+                            free((*ps_6).scope as *mut libc::c_void);
+                            (*ps_6).scope = scope_0
+                        }
+                        19 => {
+                            let mut ps_7: *mut cmd_parse_state = &mut parse_state;
+                            let mut scope_1: *mut cmd_parse_scope = 0 as *mut cmd_parse_scope;
+                            scope_1 =
+                                xmalloc(::std::mem::size_of::<cmd_parse_scope>() as libc::c_ulong)
+                                    as *mut cmd_parse_scope;
+                            (*scope_1).flag =
+                                format_true((*yyvsp.offset(0 as libc::c_int as isize)).token);
+                            yyval.flag = (*scope_1).flag;
+                            free(
+                                (*yyvsp.offset(0 as libc::c_int as isize)).token
+                                    as *mut libc::c_void,
+                            );
+                            free((*ps_7).scope as *mut libc::c_void);
+                            (*ps_7).scope = scope_1
+                        }
+                        20 => {
+                            let mut ps_8: *mut cmd_parse_state = &mut parse_state;
+                            free((*ps_8).scope as *mut libc::c_void);
+                            (*ps_8).scope = (*ps_8).stack.tqh_first;
+                            if !(*ps_8).scope.is_null() {
+                                if !(*(*ps_8).scope).entry.tqe_next.is_null() {
+                                    (*(*(*ps_8).scope).entry.tqe_next).entry.tqe_prev =
+                                        (*(*ps_8).scope).entry.tqe_prev
+                                } else {
+                                    (*ps_8).stack.tqh_last = (*(*ps_8).scope).entry.tqe_prev
+                                }
+                                *(*(*ps_8).scope).entry.tqe_prev = (*(*ps_8).scope).entry.tqe_next
+                            }
+                        }
+                        21 => {
+                            if (*yyvsp.offset(-(3 as libc::c_int) as isize)).flag != 0 {
+                                yyval.commands =
+                                    (*yyvsp.offset(-(1 as libc::c_int) as isize)).commands
+                            } else {
+                                yyval.commands = cmd_parse_new_commands();
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(-(1 as libc::c_int) as isize)).commands,
+                                );
+                            }
+                        }
+                        22 => {
+                            /* EOF or \n are always the end of the token. */
+                            if (*yyvsp.offset(-(6 as libc::c_int) as isize)).flag != 0 {
+                                yyval.commands =
+                                    (*yyvsp.offset(-(4 as libc::c_int) as isize)).commands;
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(-(1 as libc::c_int) as isize)).commands,
+                                );
+                            } else {
+                                yyval.commands =
+                                    (*yyvsp.offset(-(1 as libc::c_int) as isize)).commands;
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(-(4 as libc::c_int) as isize)).commands,
+                                );
+                            }
+                        }
+                        23 => {
+                            if (*yyvsp.offset(-(4 as libc::c_int) as isize)).flag != 0 {
+                                yyval.commands =
+                                    (*yyvsp.offset(-(2 as libc::c_int) as isize)).commands;
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(-(1 as libc::c_int) as isize)).elif.commands,
+                                );
+                            } else if (*yyvsp.offset(-(1 as libc::c_int) as isize)).elif.flag != 0 {
+                                yyval.commands =
+                                    (*yyvsp.offset(-(1 as libc::c_int) as isize)).elif.commands;
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(-(2 as libc::c_int) as isize)).commands,
+                                );
+                            } else {
+                                yyval.commands = cmd_parse_new_commands();
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(-(2 as libc::c_int) as isize)).commands,
+                                );
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(-(1 as libc::c_int) as isize)).elif.commands,
+                                );
+                            }
+                        }
+                        24 => {
+                            if (*yyvsp.offset(-(7 as libc::c_int) as isize)).flag != 0 {
+                                yyval.commands =
+                                    (*yyvsp.offset(-(5 as libc::c_int) as isize)).commands;
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(-(4 as libc::c_int) as isize)).elif.commands,
+                                );
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(-(1 as libc::c_int) as isize)).commands,
+                                );
+                            } else if (*yyvsp.offset(-(4 as libc::c_int) as isize)).elif.flag != 0 {
+                                yyval.commands =
+                                    (*yyvsp.offset(-(4 as libc::c_int) as isize)).elif.commands;
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(-(5 as libc::c_int) as isize)).commands,
+                                );
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(-(1 as libc::c_int) as isize)).commands,
+                                );
+                            } else {
+                                yyval.commands =
+                                    (*yyvsp.offset(-(1 as libc::c_int) as isize)).commands;
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(-(5 as libc::c_int) as isize)).commands,
+                                );
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(-(4 as libc::c_int) as isize)).elif.commands,
+                                );
+                            }
+                        }
+                        25 => {
+                            if (*yyvsp.offset(-(2 as libc::c_int) as isize)).flag != 0 {
+                                yyval.elif.flag = 1 as libc::c_int;
+                                yyval.elif.commands =
+                                    (*yyvsp.offset(0 as libc::c_int as isize)).commands
+                            } else {
+                                yyval.elif.flag = 0 as libc::c_int;
+                                yyval.elif.commands = cmd_parse_new_commands();
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(0 as libc::c_int as isize)).commands,
+                                );
+                            }
+                        }
+                        26 => {
+                            /* Otherwise add the character to the buffer. */
+                            if (*yyvsp.offset(-(3 as libc::c_int) as isize)).flag != 0 {
+                                yyval.elif.flag = 1 as libc::c_int;
+                                yyval.elif.commands =
+                                    (*yyvsp.offset(-(1 as libc::c_int) as isize)).commands;
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(0 as libc::c_int as isize)).elif.commands,
+                                );
+                            } else if (*yyvsp.offset(0 as libc::c_int as isize)).elif.flag != 0 {
+                                yyval.elif.flag = 1 as libc::c_int;
+                                yyval.elif.commands =
+                                    (*yyvsp.offset(0 as libc::c_int as isize)).elif.commands;
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(-(1 as libc::c_int) as isize)).commands,
+                                );
+                            } else {
+                                yyval.elif.flag = 0 as libc::c_int;
+                                yyval.elif.commands = cmd_parse_new_commands();
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(-(1 as libc::c_int) as isize)).commands,
+                                );
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(0 as libc::c_int as isize)).elif.commands,
+                                );
+                            }
+                        }
+                        27 => {
+                            let mut ps_9: *mut cmd_parse_state = &mut parse_state;
+                            yyval.commands = cmd_parse_new_commands();
+                            if (*(*yyvsp.offset(0 as libc::c_int as isize)).command).argc
+                                != 0 as libc::c_int
+                                && ((*ps_9).scope.is_null() || (*(*ps_9).scope).flag != 0)
+                            {
+                                let ref mut fresh3 = (*(*yyvsp.offset(0 as libc::c_int as isize))
+                                    .command)
+                                    .entry
+                                    .tqe_next;
+                                *fresh3 = 0 as *mut cmd_parse_command;
+                                let ref mut fresh4 = (*(*yyvsp.offset(0 as libc::c_int as isize))
+                                    .command)
+                                    .entry
+                                    .tqe_prev;
+                                *fresh4 = (*yyval.commands).tqh_last;
+                                *(*yyval.commands).tqh_last =
+                                    (*yyvsp.offset(0 as libc::c_int as isize)).command;
+                                (*yyval.commands).tqh_last =
+                                    &mut (*(*yyvsp.offset(0 as libc::c_int as isize)).command)
+                                        .entry
+                                        .tqe_next
+                            } else {
+                                cmd_parse_free_command(
+                                    (*yyvsp.offset(0 as libc::c_int as isize)).command,
+                                );
+                            }
+                        }
+                        28 => {
+                            yyval.commands = (*yyvsp.offset(-(1 as libc::c_int) as isize)).commands
+                        }
+                        29 => {
+                            yyval.commands = (*yyvsp.offset(-(2 as libc::c_int) as isize)).commands;
+                            if !(*(*yyvsp.offset(0 as libc::c_int as isize)).commands)
+                                .tqh_first
+                                .is_null()
+                            {
+                                *(*yyval.commands).tqh_last =
+                                    (*(*yyvsp.offset(0 as libc::c_int as isize)).commands)
+                                        .tqh_first;
+                                let ref mut fresh5 =
+                                    (*(*(*yyvsp.offset(0 as libc::c_int as isize)).commands)
+                                        .tqh_first)
+                                        .entry
+                                        .tqe_prev;
+                                *fresh5 = (*yyval.commands).tqh_last;
+                                (*yyval.commands).tqh_last =
+                                    (*(*yyvsp.offset(0 as libc::c_int as isize)).commands).tqh_last;
+                                let ref mut fresh6 = (*(*yyvsp.offset(0 as libc::c_int as isize))
+                                    .commands)
+                                    .tqh_first;
+                                *fresh6 = 0 as *mut cmd_parse_command;
+                                let ref mut fresh7 =
+                                    (*(*yyvsp.offset(0 as libc::c_int as isize)).commands).tqh_last;
+                                *fresh7 = &mut (*(*yyvsp.offset(0 as libc::c_int as isize))
+                                    .commands)
+                                    .tqh_first
+                            }
+                            free(
+                                (*yyvsp.offset(0 as libc::c_int as isize)).commands
+                                    as *mut libc::c_void,
+                            );
+                        }
+                        30 => {
+                            let mut ps_10: *mut cmd_parse_state = &mut parse_state;
+                            if (*(*yyvsp.offset(0 as libc::c_int as isize)).command).argc
+                                != 0 as libc::c_int
+                                && ((*ps_10).scope.is_null() || (*(*ps_10).scope).flag != 0)
+                            {
+                                yyval.commands =
+                                    (*yyvsp.offset(-(2 as libc::c_int) as isize)).commands;
+                                let ref mut fresh8 = (*(*yyvsp.offset(0 as libc::c_int as isize))
+                                    .command)
+                                    .entry
+                                    .tqe_next;
+                                *fresh8 = 0 as *mut cmd_parse_command;
+                                let ref mut fresh9 = (*(*yyvsp.offset(0 as libc::c_int as isize))
+                                    .command)
+                                    .entry
+                                    .tqe_prev;
+                                *fresh9 = (*yyval.commands).tqh_last;
+                                *(*yyval.commands).tqh_last =
+                                    (*yyvsp.offset(0 as libc::c_int as isize)).command;
+                                (*yyval.commands).tqh_last =
+                                    &mut (*(*yyvsp.offset(0 as libc::c_int as isize)).command)
+                                        .entry
+                                        .tqe_next
+                            } else {
+                                yyval.commands = cmd_parse_new_commands();
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(-(2 as libc::c_int) as isize)).commands,
+                                );
+                                cmd_parse_free_command(
+                                    (*yyvsp.offset(0 as libc::c_int as isize)).command,
+                                );
+                            }
+                        }
+                        31 => yyval.commands = (*yyvsp.offset(0 as libc::c_int as isize)).commands,
+                        32 => {
+                            let mut ps_11: *mut cmd_parse_state = &mut parse_state;
+                            yyval.command = xcalloc(
+                                1 as libc::c_int as size_t,
+                                ::std::mem::size_of::<cmd_parse_command>() as libc::c_ulong,
+                            ) as *mut cmd_parse_command;
+                            (*yyval.command).line = (*(*ps_11).input).line
+                        }
+                        33 => {
+                            let mut ps_12: *mut cmd_parse_state = &mut parse_state;
+                            yyval.command = xcalloc(
+                                1 as libc::c_int as size_t,
+                                ::std::mem::size_of::<cmd_parse_command>() as libc::c_ulong,
+                            ) as *mut cmd_parse_command;
+                            (*yyval.command).line = (*(*ps_12).input).line;
+                            cmd_prepend_argv(
+                                &mut (*yyval.command).argc,
+                                &mut (*yyval.command).argv,
+                                (*yyvsp.offset(0 as libc::c_int as isize)).token,
+                            );
+                        }
+                        34 => {
+                            let mut ps_13: *mut cmd_parse_state = &mut parse_state;
+                            yyval.command = xcalloc(
+                                1 as libc::c_int as size_t,
+                                ::std::mem::size_of::<cmd_parse_command>() as libc::c_ulong,
+                            ) as *mut cmd_parse_command;
+                            (*yyval.command).line = (*(*ps_13).input).line;
+                            (*yyval.command).argc =
+                                (*yyvsp.offset(0 as libc::c_int as isize)).arguments.argc;
+                            (*yyval.command).argv =
+                                (*yyvsp.offset(0 as libc::c_int as isize)).arguments.argv;
+                            cmd_prepend_argv(
+                                &mut (*yyval.command).argc,
+                                &mut (*yyval.command).argv,
+                                (*yyvsp.offset(-(1 as libc::c_int) as isize)).token,
+                            );
+                        }
+                        35 => {
+                            if (*yyvsp.offset(-(2 as libc::c_int) as isize)).flag != 0 {
+                                yyval.commands =
+                                    (*yyvsp.offset(-(1 as libc::c_int) as isize)).commands
+                            } else {
+                                yyval.commands = cmd_parse_new_commands();
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(-(1 as libc::c_int) as isize)).commands,
+                                );
+                            }
+                        }
+                        36 => {
+                            if (*yyvsp.offset(-(4 as libc::c_int) as isize)).flag != 0 {
+                                yyval.commands =
+                                    (*yyvsp.offset(-(3 as libc::c_int) as isize)).commands;
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(-(1 as libc::c_int) as isize)).commands,
+                                );
+                            } else {
+                                yyval.commands =
+                                    (*yyvsp.offset(-(1 as libc::c_int) as isize)).commands;
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(-(3 as libc::c_int) as isize)).commands,
+                                );
+                            }
+                        }
+                        37 => {
+                            if (*yyvsp.offset(-(3 as libc::c_int) as isize)).flag != 0 {
+                                yyval.commands =
+                                    (*yyvsp.offset(-(2 as libc::c_int) as isize)).commands;
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(-(1 as libc::c_int) as isize)).elif.commands,
+                                );
+                            } else if (*yyvsp.offset(-(1 as libc::c_int) as isize)).elif.flag != 0 {
+                                yyval.commands =
+                                    (*yyvsp.offset(-(1 as libc::c_int) as isize)).elif.commands;
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(-(2 as libc::c_int) as isize)).commands,
+                                );
+                            } else {
+                                yyval.commands = cmd_parse_new_commands();
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(-(2 as libc::c_int) as isize)).commands,
+                                );
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(-(1 as libc::c_int) as isize)).elif.commands,
+                                );
+                            }
+                        }
+                        38 => {
+                            if (*yyvsp.offset(-(5 as libc::c_int) as isize)).flag != 0 {
+                                yyval.commands =
+                                    (*yyvsp.offset(-(4 as libc::c_int) as isize)).commands;
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(-(3 as libc::c_int) as isize)).elif.commands,
+                                );
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(-(1 as libc::c_int) as isize)).commands,
+                                );
+                            } else if (*yyvsp.offset(-(3 as libc::c_int) as isize)).elif.flag != 0 {
+                                yyval.commands =
+                                    (*yyvsp.offset(-(3 as libc::c_int) as isize)).elif.commands;
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(-(4 as libc::c_int) as isize)).commands,
+                                );
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(-(1 as libc::c_int) as isize)).commands,
+                                );
+                            } else {
+                                yyval.commands =
+                                    (*yyvsp.offset(-(1 as libc::c_int) as isize)).commands;
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(-(4 as libc::c_int) as isize)).commands,
+                                );
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(-(3 as libc::c_int) as isize)).elif.commands,
+                                );
+                            }
+                        }
+                        39 => {
+                            if (*yyvsp.offset(-(1 as libc::c_int) as isize)).flag != 0 {
+                                yyval.elif.flag = 1 as libc::c_int;
+                                yyval.elif.commands =
+                                    (*yyvsp.offset(0 as libc::c_int as isize)).commands
+                            } else {
+                                yyval.elif.flag = 0 as libc::c_int;
+                                yyval.elif.commands = cmd_parse_new_commands();
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(0 as libc::c_int as isize)).commands,
+                                );
+                            }
+                        }
+                        40 => {
+                            if (*yyvsp.offset(-(2 as libc::c_int) as isize)).flag != 0 {
+                                yyval.elif.flag = 1 as libc::c_int;
+                                yyval.elif.commands =
+                                    (*yyvsp.offset(-(1 as libc::c_int) as isize)).commands;
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(0 as libc::c_int as isize)).elif.commands,
+                                );
+                            } else if (*yyvsp.offset(0 as libc::c_int as isize)).elif.flag != 0 {
+                                yyval.elif.flag = 1 as libc::c_int;
+                                yyval.elif.commands =
+                                    (*yyvsp.offset(0 as libc::c_int as isize)).elif.commands;
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(-(1 as libc::c_int) as isize)).commands,
+                                );
+                            } else {
+                                yyval.elif.flag = 0 as libc::c_int;
+                                yyval.elif.commands = cmd_parse_new_commands();
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(-(1 as libc::c_int) as isize)).commands,
+                                );
+                                cmd_parse_free_commands(
+                                    (*yyvsp.offset(0 as libc::c_int as isize)).elif.commands,
+                                );
+                            }
+                        }
+                        41 => {
+                            yyval.arguments.argc = 1 as libc::c_int;
+                            yyval.arguments.argv = xreallocarray(
+                                0 as *mut libc::c_void,
+                                1 as libc::c_int as size_t,
+                                ::std::mem::size_of::<*mut libc::c_char>() as libc::c_ulong,
+                            )
+                                as *mut *mut libc::c_char;
+                            let ref mut fresh10 =
+                                *yyval.arguments.argv.offset(0 as libc::c_int as isize);
+                            *fresh10 = (*yyvsp.offset(0 as libc::c_int as isize)).token
+                        }
+                        42 => {
+                            cmd_prepend_argv(
+                                &mut (*yyvsp.offset(0 as libc::c_int as isize)).arguments.argc,
+                                &mut (*yyvsp.offset(0 as libc::c_int as isize)).arguments.argv,
+                                (*yyvsp.offset(-(1 as libc::c_int) as isize)).token,
+                            );
+                            free(
+                                (*yyvsp.offset(-(1 as libc::c_int) as isize)).token
+                                    as *mut libc::c_void,
+                            );
+                            yyval.arguments = (*yyvsp.offset(0 as libc::c_int as isize)).arguments
+                        }
+                        43 => yyval.token = (*yyvsp.offset(0 as libc::c_int as isize)).token,
+                        44 => yyval.token = (*yyvsp.offset(0 as libc::c_int as isize)).token,
+                        45 => {
+                            yyval.token = cmd_parse_commands_to_string(
+                                (*yyvsp.offset(0 as libc::c_int as isize)).commands,
+                            );
+                            cmd_parse_free_commands(
+                                (*yyvsp.offset(0 as libc::c_int as isize)).commands,
+                            );
+                        }
+                        46 => {
+                            yyval.commands = (*yyvsp.offset(-(1 as libc::c_int) as isize)).commands
+                        }
+                        47 => {
+                            yyval.commands = (*yyvsp.offset(-(2 as libc::c_int) as isize)).commands;
+                            if !(*(*yyvsp.offset(-(1 as libc::c_int) as isize)).commands)
+                                .tqh_first
+                                .is_null()
+                            {
+                                *(*yyval.commands).tqh_last =
+                                    (*(*yyvsp.offset(-(1 as libc::c_int) as isize)).commands)
+                                        .tqh_first;
+                                let ref mut fresh11 =
+                                    (*(*(*yyvsp.offset(-(1 as libc::c_int) as isize)).commands)
+                                        .tqh_first)
+                                        .entry
+                                        .tqe_prev;
+                                *fresh11 = (*yyval.commands).tqh_last;
+                                (*yyval.commands).tqh_last =
+                                    (*(*yyvsp.offset(-(1 as libc::c_int) as isize)).commands)
+                                        .tqh_last;
+                                let ref mut fresh12 =
+                                    (*(*yyvsp.offset(-(1 as libc::c_int) as isize)).commands)
+                                        .tqh_first;
+                                *fresh12 = 0 as *mut cmd_parse_command;
+                                let ref mut fresh13 =
+                                    (*(*yyvsp.offset(-(1 as libc::c_int) as isize)).commands)
+                                        .tqh_last;
+                                *fresh13 = &mut (*(*yyvsp.offset(-(1 as libc::c_int) as isize))
+                                    .commands)
+                                    .tqh_first
+                            }
+                            free(
+                                (*yyvsp.offset(-(1 as libc::c_int) as isize)).commands
+                                    as *mut libc::c_void,
+                            );
+                        }
+                        _ => {}
+                    }
+                    /* User semantic actions sometimes alter yychar, and that requires
+                    that yytoken be updated with the new translation.  We take the
+                    approach of translating immediately before every use of yytoken.
+                    One alternative is translating here after every semantic action,
+                    but that translation would be missed if the semantic action invokes
+                    YYABORT, YYACCEPT, or YYERROR immediately after altering yychar or
+                    if it invokes YYBACKUP.  In the case of YYABORT or YYACCEPT, an
+                    incorrect destructor might then be invoked immediately.  In the
+                    case of YYERROR or YYBACKUP, subsequent parser actions might lead
+                    to an incorrect destructor call or verbose syntax error message
+                    before the lookahead is translated.  */
+                    yyvsp = yyvsp.offset(-(yylen as isize));
+                    yyssp = yyssp.offset(-(yylen as isize));
+                    yylen = 0 as libc::c_int;
+                    yyvsp = yyvsp.offset(1);
+                    *yyvsp = yyval;
+                    /* Now 'shift' the result of the reduction.  Determine what state
+                    that goes to, based on the state we popped back to and the rule
+                    number reduced by.  */
+                    let yylhs: libc::c_int = yyr1[yyn as usize] as libc::c_int - 16 as libc::c_int;
+                    let yyi: libc::c_int =
+                        yypgoto[yylhs as usize] as libc::c_int + *yyssp as libc::c_int;
+                    yystate = if 0 as libc::c_int <= yyi
+                        && yyi <= 104 as libc::c_int
+                        && yycheck[yyi as usize] as libc::c_int == *yyssp as libc::c_int
+                    {
+                        yytable[yyi as usize] as libc::c_int
+                    } else {
+                        yydefgoto[yylhs as usize] as libc::c_int
+                    }
+                }
+                _ => {}
+            }
+            /*------------------------------------------------------------.
+            | yynewstate -- push a new state, which is found in yystate.  |
+            `------------------------------------------------------------*/
+            /* In all cases, when you get here, the value and location stacks
+            have just been pushed.  So pushing a state here evens the stacks.  */
+            yyssp = yyssp.offset(1)
+        }
+    }
     match current_block {
         14688867023895834084 =>
         /*-------------------------------------------------.
-| yyexhaustedlab -- memory exhaustion comes here.  |
-`-------------------------------------------------*/
+        | yyexhaustedlab -- memory exhaustion comes here.  |
+        `-------------------------------------------------*/
         {
-            yyerror(b"memory exhausted\x00" as *const u8 as
-                        *const libc::c_char);
+            yyerror(b"memory exhausted\x00" as *const u8 as *const libc::c_char);
             yyresult = 2 as libc::c_int
         }
         10035012600013456863 =>
         /*-----------------------------------.
-| yyabortlab -- YYABORT comes here.  |
-`-----------------------------------*/
+        | yyabortlab -- YYABORT comes here.  |
+        `-----------------------------------*/
         {
             yyresult = 1 as libc::c_int
         }
-        _ => { }
+        _ => {}
     }
     /*-------------------------------------------------------.
-| yyreturn -- parsing is finished, clean up and return.  |
-`-------------------------------------------------------*/
+    | yyreturn -- parsing is finished, clean up and return.  |
+    `-------------------------------------------------------*/
     if yychar != YYEMPTY as libc::c_int {
         /* Make sure we have latest lookahead translation.  See comments at
-         user semantic actions for why this is necessary.  */
-        yytoken =
-            if 0 as libc::c_int <= yychar && yychar <= 266 as libc::c_int {
-                yytranslate[yychar as usize] as yysymbol_kind_t as libc::c_int
-            } else { YYSYMBOL_YYUNDEF as libc::c_int } as yysymbol_kind_t;
-        yydestruct(b"Cleanup: discarding lookahead\x00" as *const u8 as
-                       *const libc::c_char, yytoken, &mut yylval);
+        user semantic actions for why this is necessary.  */
+        yytoken = if 0 as libc::c_int <= yychar && yychar <= 266 as libc::c_int {
+            yytranslate[yychar as usize] as yysymbol_kind_t as libc::c_int
+        } else {
+            YYSYMBOL_YYUNDEF as libc::c_int
+        } as yysymbol_kind_t;
+        yydestruct(
+            b"Cleanup: discarding lookahead\x00" as *const u8 as *const libc::c_char,
+            yytoken,
+            &mut yylval,
+        );
     }
     /* Do not reclaim the symbols of the rule whose action triggered
-     this YYABORT or YYACCEPT.  */
+    this YYABORT or YYACCEPT.  */
     yyvsp = yyvsp.offset(-(yylen as isize));
     yyssp = yyssp.offset(-(yylen as isize));
     while yyssp != yyss {
-        yydestruct(b"Cleanup: popping\x00" as *const u8 as
-                       *const libc::c_char,
-                   yystos[*yyssp as libc::c_int as usize] as yysymbol_kind_t,
-                   yyvsp);
+        yydestruct(
+            b"Cleanup: popping\x00" as *const u8 as *const libc::c_char,
+            yystos[*yyssp as libc::c_int as usize] as yysymbol_kind_t,
+            yyvsp,
+        );
         yyvsp = yyvsp.offset(-(1 as libc::c_int as isize));
         yyssp = yyssp.offset(-(1 as libc::c_int as isize))
     }
-    if yyss != yyssa.as_mut_ptr() { free(yyss as *mut libc::c_void); }
+    if yyss != yyssa.as_mut_ptr() {
+        free(yyss as *mut libc::c_void);
+    }
     return yyresult;
 }
 unsafe extern "C" fn yylex_getc1() -> libc::c_int {
@@ -4024,8 +4272,7 @@ unsafe extern "C" fn yylex_ungetc(mut ch: libc::c_int) {
     let mut ps: *mut cmd_parse_state = &mut parse_state;
     if !(*ps).f.is_null() {
         ungetc(ch, (*ps).f);
-    } else if (*ps).off > 0 as libc::c_int as libc::c_ulong &&
-                  ch != -(1 as libc::c_int) {
+    } else if (*ps).off > 0 as libc::c_int as libc::c_ulong && ch != -(1 as libc::c_int) {
         (*ps).off = (*ps).off.wrapping_sub(1)
     };
 }
@@ -4034,81 +4281,81 @@ unsafe extern "C" fn yylex_getc() -> libc::c_int {
     let mut ch: libc::c_int = 0;
     if (*ps).escapes != 0 as libc::c_int as libc::c_uint {
         (*ps).escapes = (*ps).escapes.wrapping_sub(1);
-        return '\\' as i32
+        return '\\' as i32;
     }
-    loop  {
+    loop {
         ch = yylex_getc1();
         if ch == '\\' as i32 {
             (*ps).escapes = (*ps).escapes.wrapping_add(1)
-        } else if ch == '\n' as i32 &&
-                      (*ps).escapes.wrapping_rem(2 as libc::c_int as
-                                                     libc::c_uint) ==
-                          1 as libc::c_int as libc::c_uint {
+        } else if ch == '\n' as i32
+            && (*ps).escapes.wrapping_rem(2 as libc::c_int as libc::c_uint)
+                == 1 as libc::c_int as libc::c_uint
+        {
             (*(*ps).input).line = (*(*ps).input).line.wrapping_add(1);
             (*ps).escapes = (*ps).escapes.wrapping_sub(1)
         } else {
             if (*ps).escapes != 0 as libc::c_int as libc::c_uint {
                 yylex_ungetc(ch);
                 (*ps).escapes = (*ps).escapes.wrapping_sub(1);
-                return '\\' as i32
+                return '\\' as i32;
             }
-            return ch
+            return ch;
         }
-    };
+    }
 }
-unsafe extern "C" fn yylex_get_word(mut ch: libc::c_int)
- -> *mut libc::c_char {
+unsafe extern "C" fn yylex_get_word(mut ch: libc::c_int) -> *mut libc::c_char {
     let mut buf: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut len: size_t = 0;
     len = 0 as libc::c_int as size_t;
     buf = xmalloc(1 as libc::c_int as size_t) as *mut libc::c_char;
-    loop  {
+    loop {
         yylex_append1(&mut buf, &mut len, ch as libc::c_char);
         ch = yylex_getc();
-        if !(ch != -(1 as libc::c_int) &&
-                 strchr(b" \t\n\x00" as *const u8 as *const libc::c_char,
-                        ch).is_null()) {
-            break ;
+        if !(ch != -(1 as libc::c_int)
+            && strchr(b" \t\n\x00" as *const u8 as *const libc::c_char, ch).is_null())
+        {
+            break;
         }
     }
     yylex_ungetc(ch);
     *buf.offset(len as isize) = '\u{0}' as i32 as libc::c_char;
-    log_debug(b"%s: %s\x00" as *const u8 as *const libc::c_char,
-              (*::std::mem::transmute::<&[u8; 15],
-                                        &[libc::c_char; 15]>(b"yylex_get_word\x00")).as_ptr(),
-              buf);
+    log_debug(
+        b"%s: %s\x00" as *const u8 as *const libc::c_char,
+        (*::std::mem::transmute::<&[u8; 15], &[libc::c_char; 15]>(b"yylex_get_word\x00")).as_ptr(),
+        buf,
+    );
     return buf;
 }
 /* A Bison parser, made by GNU Bison 3.7.2.  */
 /* Bison implementation for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
-   Inc.
+Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
+Inc.
 
-   This program is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-   You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 /* As a special exception, you may create a larger work that contains
-   part or all of the Bison parser skeleton and distribute that work
-   under terms of your choice, so long as that work isn't itself a
-   parser generator using the skeleton or a modified version thereof
-   as a parser skeleton.  Alternatively, if you modify or redistribute
-   the parser skeleton itself, you may (at your option) remove this
-   special exception, which will cause the skeleton and the resulting
-   Bison output files to be licensed under the GNU General Public
-   License without this special exception.
+part or all of the Bison parser skeleton and distribute that work
+under terms of your choice, so long as that work isn't itself a
+parser generator using the skeleton or a modified version thereof
+as a parser skeleton.  Alternatively, if you modify or redistribute
+the parser skeleton itself, you may (at your option) remove this
+special exception, which will cause the skeleton and the resulting
+Bison output files to be licensed under the GNU General Public
+License without this special exception.
 
-   This special exception was added by the Free Software Foundation in
-   version 2.2 of Bison.  */
+This special exception was added by the Free Software Foundation in
+version 2.2 of Bison.  */
 unsafe extern "C" fn yylex() -> libc::c_int {
     let mut ps: *mut cmd_parse_state = &mut parse_state;
     let mut token: *mut libc::c_char = 0 as *mut libc::c_char;
@@ -4122,105 +4369,121 @@ unsafe extern "C" fn yylex() -> libc::c_int {
     (*ps).eol = 0 as libc::c_int;
     condition = (*ps).condition;
     (*ps).condition = 0 as libc::c_int;
-    loop  {
+    loop {
         ch = yylex_getc();
         if ch == -(1 as libc::c_int) {
-            if (*ps).eof != 0 { break ; }
+            if (*ps).eof != 0 {
+                break;
+            }
             (*ps).eof = 1 as libc::c_int;
-            return '\n' as i32
+            return '\n' as i32;
         } else {
-            if ch == ' ' as i32 || ch == '\t' as i32 { continue ; }
+            if ch == ' ' as i32 || ch == '\t' as i32 {
+                continue;
+            }
             if ch == '\n' as i32 {
                 (*ps).eol = 1 as libc::c_int;
-                return '\n' as i32
+                return '\n' as i32;
             }
             if ch == ';' as i32 || ch == '{' as i32 || ch == '}' as i32 {
-                return ch
+                return ch;
             }
             if ch == '#' as i32 {
                 next = yylex_getc();
                 if condition != 0 && next == '{' as i32 {
                     yylval.token = yylex_format();
-                    if yylval.token.is_null() { return 258 as libc::c_int }
-                    return 264 as libc::c_int
+                    if yylval.token.is_null() {
+                        return 258 as libc::c_int;
+                    }
+                    return 264 as libc::c_int;
                 }
                 while next != '\n' as i32 && next != -(1 as libc::c_int) {
                     next = yylex_getc()
                 }
                 if next == '\n' as i32 {
                     (*(*ps).input).line = (*(*ps).input).line.wrapping_add(1);
-                    return '\n' as i32
+                    return '\n' as i32;
                 }
             } else {
                 if ch == '%' as i32 {
                     yylval.token = yylex_get_word('%' as i32);
                     cp = yylval.token;
                     while *cp as libc::c_int != '\u{0}' as i32 {
-                        if *cp as libc::c_int != '%' as i32 &&
-                               *(*__ctype_b_loc()).offset(*cp as u_char as
-                                                              libc::c_int as
-                                                              isize) as
-                                   libc::c_int &
-                                   _ISdigit as libc::c_int as libc::c_ushort
-                                       as libc::c_int == 0 {
-                            break ;
+                        if *cp as libc::c_int != '%' as i32
+                            && *(*__ctype_b_loc()).offset(*cp as u_char as libc::c_int as isize)
+                                as libc::c_int
+                                & _ISdigit as libc::c_int as libc::c_ushort as libc::c_int
+                                == 0
+                        {
+                            break;
                         }
                         cp = cp.offset(1)
                     }
                     if *cp as libc::c_int == '\u{0}' as i32 {
-                        return 265 as libc::c_int
+                        return 265 as libc::c_int;
                     }
                     (*ps).condition = 1 as libc::c_int;
-                    if strcmp(yylval.token,
-                              b"%hidden\x00" as *const u8 as
-                                  *const libc::c_char) == 0 as libc::c_int {
+                    if strcmp(
+                        yylval.token,
+                        b"%hidden\x00" as *const u8 as *const libc::c_char,
+                    ) == 0 as libc::c_int
+                    {
                         free(yylval.token as *mut libc::c_void);
-                        return 259 as libc::c_int
+                        return 259 as libc::c_int;
                     }
-                    if strcmp(yylval.token,
-                              b"%if\x00" as *const u8 as *const libc::c_char)
-                           == 0 as libc::c_int {
+                    if strcmp(yylval.token, b"%if\x00" as *const u8 as *const libc::c_char)
+                        == 0 as libc::c_int
+                    {
                         free(yylval.token as *mut libc::c_void);
-                        return 260 as libc::c_int
+                        return 260 as libc::c_int;
                     }
-                    if strcmp(yylval.token,
-                              b"%else\x00" as *const u8 as
-                                  *const libc::c_char) == 0 as libc::c_int {
+                    if strcmp(
+                        yylval.token,
+                        b"%else\x00" as *const u8 as *const libc::c_char,
+                    ) == 0 as libc::c_int
+                    {
                         free(yylval.token as *mut libc::c_void);
-                        return 261 as libc::c_int
+                        return 261 as libc::c_int;
                     }
-                    if strcmp(yylval.token,
-                              b"%elif\x00" as *const u8 as
-                                  *const libc::c_char) == 0 as libc::c_int {
+                    if strcmp(
+                        yylval.token,
+                        b"%elif\x00" as *const u8 as *const libc::c_char,
+                    ) == 0 as libc::c_int
+                    {
                         free(yylval.token as *mut libc::c_void);
-                        return 262 as libc::c_int
+                        return 262 as libc::c_int;
                     }
-                    if strcmp(yylval.token,
-                              b"%endif\x00" as *const u8 as
-                                  *const libc::c_char) == 0 as libc::c_int {
+                    if strcmp(
+                        yylval.token,
+                        b"%endif\x00" as *const u8 as *const libc::c_char,
+                    ) == 0 as libc::c_int
+                    {
                         free(yylval.token as *mut libc::c_void);
-                        return 263 as libc::c_int
+                        return 263 as libc::c_int;
                     }
                     free(yylval.token as *mut libc::c_void);
-                    return 258 as libc::c_int
+                    return 258 as libc::c_int;
                 }
                 token = yylex_token(ch);
-                if token.is_null() { return 258 as libc::c_int }
+                if token.is_null() {
+                    return 258 as libc::c_int;
+                }
                 yylval.token = token;
-                if !strchr(token, '=' as i32).is_null() &&
-                       yylex_is_var(*token, 1 as libc::c_int) != 0 {
+                if !strchr(token, '=' as i32).is_null()
+                    && yylex_is_var(*token, 1 as libc::c_int) != 0
+                {
                     cp = token.offset(1 as libc::c_int as isize);
                     while *cp as libc::c_int != '=' as i32 {
                         if yylex_is_var(*cp, 0 as libc::c_int) == 0 {
-                            break ;
+                            break;
                         }
                         cp = cp.offset(1)
                     }
                     if *cp as libc::c_int == '=' as i32 {
-                        return 266 as libc::c_int
+                        return 266 as libc::c_int;
                     }
                 }
-                return 265 as libc::c_int
+                return 265 as libc::c_int;
             }
         }
     }
@@ -4234,29 +4497,36 @@ unsafe extern "C" fn yylex_format() -> *mut libc::c_char {
     let mut brackets: libc::c_int = 1 as libc::c_int;
     len = 0 as libc::c_int as size_t;
     buf = xmalloc(1 as libc::c_int as size_t) as *mut libc::c_char;
-    yylex_append(&mut buf, &mut len,
-                 b"#{\x00" as *const u8 as *const libc::c_char,
-                 2 as libc::c_int as size_t);
-    loop  {
+    yylex_append(
+        &mut buf,
+        &mut len,
+        b"#{\x00" as *const u8 as *const libc::c_char,
+        2 as libc::c_int as size_t,
+    );
+    loop {
         ch = yylex_getc();
         if ch == -(1 as libc::c_int) || ch == '\n' as i32 {
             current_block = 10567711132991650300;
-            break ;
+            break;
         }
         if ch == '#' as i32 {
             ch = yylex_getc();
             if ch == -(1 as libc::c_int) || ch == '\n' as i32 {
                 current_block = 10567711132991650300;
-                break ;
+                break;
             }
-            if ch == '{' as i32 { brackets += 1 }
+            if ch == '{' as i32 {
+                brackets += 1
+            }
             yylex_append1(&mut buf, &mut len, '#' as i32 as libc::c_char);
         } else if ch == '}' as i32 {
-            if brackets != 0 as libc::c_int &&
-                   { brackets -= 1; (brackets) == 0 as libc::c_int } {
+            if brackets != 0 as libc::c_int && {
+                brackets -= 1;
+                (brackets) == 0 as libc::c_int
+            } {
                 yylex_append1(&mut buf, &mut len, ch as libc::c_char);
                 current_block = 8457315219000651999;
-                break ;
+                break;
             }
         }
         yylex_append1(&mut buf, &mut len, ch as libc::c_char);
@@ -4265,20 +4535,24 @@ unsafe extern "C" fn yylex_format() -> *mut libc::c_char {
         8457315219000651999 => {
             if !(brackets != 0 as libc::c_int) {
                 *buf.offset(len as isize) = '\u{0}' as i32 as libc::c_char;
-                log_debug(b"%s: %s\x00" as *const u8 as *const libc::c_char,
-                          (*::std::mem::transmute::<&[u8; 13],
-                                                    &[libc::c_char; 13]>(b"yylex_format\x00")).as_ptr(),
-                          buf);
-                return buf
+                log_debug(
+                    b"%s: %s\x00" as *const u8 as *const libc::c_char,
+                    (*::std::mem::transmute::<&[u8; 13], &[libc::c_char; 13]>(b"yylex_format\x00"))
+                        .as_ptr(),
+                    buf,
+                );
+                return buf;
             }
         }
-        _ => { }
+        _ => {}
     }
     free(buf as *mut libc::c_void);
     return 0 as *mut libc::c_char;
 }
-unsafe extern "C" fn yylex_token_escape(mut buf: *mut *mut libc::c_char,
-                                        mut len: *mut size_t) -> libc::c_int {
+unsafe extern "C" fn yylex_token_escape(
+    mut buf: *mut *mut libc::c_char,
+    mut len: *mut size_t,
+) -> libc::c_int {
     let mut current_block: u64;
     let mut ch: libc::c_int = 0;
     let mut type_0: libc::c_int = 0;
@@ -4292,38 +4566,62 @@ unsafe extern "C" fn yylex_token_escape(mut buf: *mut *mut libc::c_char,
     let mut m: [libc::c_char; 16] = [0; 16];
     ch = yylex_getc();
     if ch >= '4' as i32 && ch <= '7' as i32 {
-        yyerror(b"invalid octal escape\x00" as *const u8 as
-                    *const libc::c_char);
-        return 0 as libc::c_int
+        yyerror(b"invalid octal escape\x00" as *const u8 as *const libc::c_char);
+        return 0 as libc::c_int;
     }
     if ch >= '0' as i32 && ch <= '3' as i32 {
         o2 = yylex_getc();
         if o2 >= '0' as i32 && o2 <= '7' as i32 {
             o3 = yylex_getc();
             if o3 >= '0' as i32 && o3 <= '7' as i32 {
-                ch =
-                    64 as libc::c_int * (ch - '0' as i32) +
-                        8 as libc::c_int * (o2 - '0' as i32) +
-                        (o3 - '0' as i32);
+                ch = 64 as libc::c_int * (ch - '0' as i32)
+                    + 8 as libc::c_int * (o2 - '0' as i32)
+                    + (o3 - '0' as i32);
                 yylex_append1(buf, len, ch as libc::c_char);
-                return 1 as libc::c_int
+                return 1 as libc::c_int;
             }
         }
-        yyerror(b"invalid octal escape\x00" as *const u8 as
-                    *const libc::c_char);
-        return 0 as libc::c_int
+        yyerror(b"invalid octal escape\x00" as *const u8 as *const libc::c_char);
+        return 0 as libc::c_int;
     }
     match ch {
-        -1 => { return 0 as libc::c_int }
-        97 => { ch = '\u{7}' as i32; current_block = 14832935472441733737; }
-        98 => { ch = '\u{8}' as i32; current_block = 14832935472441733737; }
-        101 => { ch = '\u{1b}' as i32; current_block = 14832935472441733737; }
-        102 => { ch = '\u{c}' as i32; current_block = 14832935472441733737; }
-        115 => { ch = ' ' as i32; current_block = 14832935472441733737; }
-        118 => { ch = '\u{b}' as i32; current_block = 14832935472441733737; }
-        114 => { ch = '\r' as i32; current_block = 14832935472441733737; }
-        110 => { ch = '\n' as i32; current_block = 14832935472441733737; }
-        116 => { ch = '\t' as i32; current_block = 14832935472441733737; }
+        -1 => return 0 as libc::c_int,
+        97 => {
+            ch = '\u{7}' as i32;
+            current_block = 14832935472441733737;
+        }
+        98 => {
+            ch = '\u{8}' as i32;
+            current_block = 14832935472441733737;
+        }
+        101 => {
+            ch = '\u{1b}' as i32;
+            current_block = 14832935472441733737;
+        }
+        102 => {
+            ch = '\u{c}' as i32;
+            current_block = 14832935472441733737;
+        }
+        115 => {
+            ch = ' ' as i32;
+            current_block = 14832935472441733737;
+        }
+        118 => {
+            ch = '\u{b}' as i32;
+            current_block = 14832935472441733737;
+        }
+        114 => {
+            ch = '\r' as i32;
+            current_block = 14832935472441733737;
+        }
+        110 => {
+            ch = '\n' as i32;
+            current_block = 14832935472441733737;
+        }
+        116 => {
+            ch = '\t' as i32;
+            current_block = 14832935472441733737;
+        }
         117 => {
             type_0 = 'u' as i32;
             size = 4 as libc::c_int as u_int;
@@ -4334,7 +4632,9 @@ unsafe extern "C" fn yylex_token_escape(mut buf: *mut *mut libc::c_char,
             size = 8 as libc::c_int as u_int;
             current_block = 5366602412045410634;
         }
-        _ => { current_block = 14832935472441733737; }
+        _ => {
+            current_block = 14832935472441733737;
+        }
     }
     match current_block {
         5366602412045410634 => {
@@ -4342,53 +4642,65 @@ unsafe extern "C" fn yylex_token_escape(mut buf: *mut *mut libc::c_char,
             while i < size {
                 ch = yylex_getc();
                 if ch == -(1 as libc::c_int) || ch == '\n' as i32 {
-                    return 0 as libc::c_int
+                    return 0 as libc::c_int;
                 }
-                if *(*__ctype_b_loc()).offset(ch as u_char as libc::c_int as
-                                                  isize) as libc::c_int &
-                       _ISxdigit as libc::c_int as libc::c_ushort as
-                           libc::c_int == 0 {
-                    yyerror(b"invalid \\%c argument\x00" as *const u8 as
-                                *const libc::c_char, type_0);
-                    return 0 as libc::c_int
+                if *(*__ctype_b_loc()).offset(ch as u_char as libc::c_int as isize) as libc::c_int
+                    & _ISxdigit as libc::c_int as libc::c_ushort as libc::c_int
+                    == 0
+                {
+                    yyerror(
+                        b"invalid \\%c argument\x00" as *const u8 as *const libc::c_char,
+                        type_0,
+                    );
+                    return 0 as libc::c_int;
                 }
                 s[i as usize] = ch as libc::c_char;
                 i = i.wrapping_add(1)
             }
             s[i as usize] = '\u{0}' as i32 as libc::c_char;
-            if size == 4 as libc::c_int as libc::c_uint &&
-                   sscanf(s.as_mut_ptr(),
-                          b"%4x\x00" as *const u8 as *const libc::c_char,
-                          &mut tmp as *mut u_int) != 1 as libc::c_int ||
-                   size == 8 as libc::c_int as libc::c_uint &&
-                       sscanf(s.as_mut_ptr(),
-                              b"%8x\x00" as *const u8 as *const libc::c_char,
-                              &mut tmp as *mut u_int) != 1 as libc::c_int {
-                yyerror(b"invalid \\%c argument\x00" as *const u8 as
-                            *const libc::c_char, type_0);
-                return 0 as libc::c_int
+            if size == 4 as libc::c_int as libc::c_uint
+                && sscanf(
+                    s.as_mut_ptr(),
+                    b"%4x\x00" as *const u8 as *const libc::c_char,
+                    &mut tmp as *mut u_int,
+                ) != 1 as libc::c_int
+                || size == 8 as libc::c_int as libc::c_uint
+                    && sscanf(
+                        s.as_mut_ptr(),
+                        b"%8x\x00" as *const u8 as *const libc::c_char,
+                        &mut tmp as *mut u_int,
+                    ) != 1 as libc::c_int
+            {
+                yyerror(
+                    b"invalid \\%c argument\x00" as *const u8 as *const libc::c_char,
+                    type_0,
+                );
+                return 0 as libc::c_int;
             }
             mlen = wctomb(m.as_mut_ptr(), tmp as wchar_t);
-            if mlen <= 0 as libc::c_int ||
-                   mlen >
-                       ::std::mem::size_of::<[libc::c_char; 16]>() as
-                           libc::c_ulong as libc::c_int {
-                yyerror(b"invalid \\%c argument\x00" as *const u8 as
-                            *const libc::c_char, type_0);
-                return 0 as libc::c_int
+            if mlen <= 0 as libc::c_int
+                || mlen
+                    > ::std::mem::size_of::<[libc::c_char; 16]>() as libc::c_ulong as libc::c_int
+            {
+                yyerror(
+                    b"invalid \\%c argument\x00" as *const u8 as *const libc::c_char,
+                    type_0,
+                );
+                return 0 as libc::c_int;
             }
             yylex_append(buf, len, m.as_mut_ptr(), mlen as size_t);
-            return 1 as libc::c_int
+            return 1 as libc::c_int;
         }
         _ => {
             yylex_append1(buf, len, ch as libc::c_char);
-            return 1 as libc::c_int
+            return 1 as libc::c_int;
         }
     };
 }
-unsafe extern "C" fn yylex_token_variable(mut buf: *mut *mut libc::c_char,
-                                          mut len: *mut size_t)
- -> libc::c_int {
+unsafe extern "C" fn yylex_token_variable(
+    mut buf: *mut *mut libc::c_char,
+    mut len: *mut size_t,
+) -> libc::c_int {
     let mut envent: *mut environ_entry = 0 as *mut environ_entry;
     let mut ch: libc::c_int = 0;
     let mut brackets: libc::c_int = 0 as libc::c_int;
@@ -4396,40 +4708,43 @@ unsafe extern "C" fn yylex_token_variable(mut buf: *mut *mut libc::c_char,
     let mut namelen: size_t = 0 as libc::c_int as size_t;
     let mut value: *const libc::c_char = 0 as *const libc::c_char;
     ch = yylex_getc();
-    if ch == -(1 as libc::c_int) { return 0 as libc::c_int }
+    if ch == -(1 as libc::c_int) {
+        return 0 as libc::c_int;
+    }
     if ch == '{' as i32 {
         brackets = 1 as libc::c_int
     } else {
         if yylex_is_var(ch as libc::c_char, 1 as libc::c_int) == 0 {
             yylex_append1(buf, len, '$' as i32 as libc::c_char);
             yylex_ungetc(ch);
-            return 1 as libc::c_int
+            return 1 as libc::c_int;
         }
         let fresh15 = namelen;
         namelen = namelen.wrapping_add(1);
         name[fresh15 as usize] = ch as libc::c_char
     }
-    loop  {
+    loop {
         ch = yylex_getc();
-        if brackets != 0 && ch == '}' as i32 { break ; }
-        if ch == -(1 as libc::c_int) ||
-               yylex_is_var(ch as libc::c_char, 0 as libc::c_int) == 0 {
+        if brackets != 0 && ch == '}' as i32 {
+            break;
+        }
+        if ch == -(1 as libc::c_int) || yylex_is_var(ch as libc::c_char, 0 as libc::c_int) == 0 {
             if brackets == 0 {
                 yylex_ungetc(ch);
-                break ;
+                break;
             } else {
-                yyerror(b"invalid environment variable\x00" as *const u8 as
-                            *const libc::c_char);
-                return 0 as libc::c_int
+                yyerror(b"invalid environment variable\x00" as *const u8 as *const libc::c_char);
+                return 0 as libc::c_int;
             }
         } else {
-            if namelen ==
-                   (::std::mem::size_of::<[libc::c_char; 1024]>() as
-                        libc::c_ulong).wrapping_sub(2 as libc::c_int as
-                                                        libc::c_ulong) {
-                yyerror(b"environment variable is too long\x00" as *const u8
-                            as *const libc::c_char);
-                return 0 as libc::c_int
+            if namelen
+                == (::std::mem::size_of::<[libc::c_char; 1024]>() as libc::c_ulong)
+                    .wrapping_sub(2 as libc::c_int as libc::c_ulong)
+            {
+                yyerror(
+                    b"environment variable is too long\x00" as *const u8 as *const libc::c_char,
+                );
+                return 0 as libc::c_int;
             }
             let fresh16 = namelen;
             namelen = namelen.wrapping_add(1);
@@ -4440,37 +4755,41 @@ unsafe extern "C" fn yylex_token_variable(mut buf: *mut *mut libc::c_char,
     envent = environ_find(global_environ, name.as_mut_ptr());
     if !envent.is_null() && !(*envent).value.is_null() {
         value = (*envent).value;
-        log_debug(b"%s: %s -> %s\x00" as *const u8 as *const libc::c_char,
-                  (*::std::mem::transmute::<&[u8; 21],
-                                            &[libc::c_char; 21]>(b"yylex_token_variable\x00")).as_ptr(),
-                  name.as_mut_ptr(), value);
+        log_debug(
+            b"%s: %s -> %s\x00" as *const u8 as *const libc::c_char,
+            (*::std::mem::transmute::<&[u8; 21], &[libc::c_char; 21]>(b"yylex_token_variable\x00"))
+                .as_ptr(),
+            name.as_mut_ptr(),
+            value,
+        );
         yylex_append(buf, len, value, strlen(value));
     }
     return 1 as libc::c_int;
 }
-unsafe extern "C" fn yylex_token_tilde(mut buf: *mut *mut libc::c_char,
-                                       mut len: *mut size_t) -> libc::c_int {
+unsafe extern "C" fn yylex_token_tilde(
+    mut buf: *mut *mut libc::c_char,
+    mut len: *mut size_t,
+) -> libc::c_int {
     let mut envent: *mut environ_entry = 0 as *mut environ_entry;
     let mut ch: libc::c_int = 0;
     let mut name: [libc::c_char; 1024] = [0; 1024];
     let mut namelen: size_t = 0 as libc::c_int as size_t;
     let mut pw: *mut passwd = 0 as *mut passwd;
     let mut home: *const libc::c_char = 0 as *const libc::c_char;
-    loop  {
+    loop {
         ch = yylex_getc();
-        if ch == -(1 as libc::c_int) ||
-               !strchr(b"/ \t\n\"\'\x00" as *const u8 as *const libc::c_char,
-                       ch).is_null() {
+        if ch == -(1 as libc::c_int)
+            || !strchr(b"/ \t\n\"\'\x00" as *const u8 as *const libc::c_char, ch).is_null()
+        {
             yylex_ungetc(ch);
-            break ;
+            break;
         } else {
-            if namelen ==
-                   (::std::mem::size_of::<[libc::c_char; 1024]>() as
-                        libc::c_ulong).wrapping_sub(2 as libc::c_int as
-                                                        libc::c_ulong) {
-                yyerror(b"user name is too long\x00" as *const u8 as
-                            *const libc::c_char);
-                return 0 as libc::c_int
+            if namelen
+                == (::std::mem::size_of::<[libc::c_char; 1024]>() as libc::c_ulong)
+                    .wrapping_sub(2 as libc::c_int as libc::c_ulong)
+            {
+                yyerror(b"user name is too long\x00" as *const u8 as *const libc::c_char);
+                return 0 as libc::c_int;
             }
             let fresh17 = namelen;
             namelen = namelen.wrapping_add(1);
@@ -4479,25 +4798,34 @@ unsafe extern "C" fn yylex_token_tilde(mut buf: *mut *mut libc::c_char,
     }
     name[namelen as usize] = '\u{0}' as i32 as libc::c_char;
     if *name.as_mut_ptr() as libc::c_int == '\u{0}' as i32 {
-        envent =
-            environ_find(global_environ,
-                         b"HOME\x00" as *const u8 as *const libc::c_char);
-        if !envent.is_null() &&
-               *(*envent).value as libc::c_int != '\u{0}' as i32 {
+        envent = environ_find(
+            global_environ,
+            b"HOME\x00" as *const u8 as *const libc::c_char,
+        );
+        if !envent.is_null() && *(*envent).value as libc::c_int != '\u{0}' as i32 {
             home = (*envent).value
         } else {
             pw = getpwuid(getuid());
-            if !pw.is_null() { home = (*pw).pw_dir }
+            if !pw.is_null() {
+                home = (*pw).pw_dir
+            }
         }
     } else {
         pw = getpwnam(name.as_mut_ptr());
-        if !pw.is_null() { home = (*pw).pw_dir }
+        if !pw.is_null() {
+            home = (*pw).pw_dir
+        }
     }
-    if home.is_null() { return 0 as libc::c_int }
-    log_debug(b"%s: ~%s -> %s\x00" as *const u8 as *const libc::c_char,
-              (*::std::mem::transmute::<&[u8; 18],
-                                        &[libc::c_char; 18]>(b"yylex_token_tilde\x00")).as_ptr(),
-              name.as_mut_ptr(), home);
+    if home.is_null() {
+        return 0 as libc::c_int;
+    }
+    log_debug(
+        b"%s: ~%s -> %s\x00" as *const u8 as *const libc::c_char,
+        (*::std::mem::transmute::<&[u8; 18], &[libc::c_char; 18]>(b"yylex_token_tilde\x00"))
+            .as_ptr(),
+        name.as_mut_ptr(),
+        home,
+    );
     yylex_append(buf, len, home, strlen(home));
     return 1 as libc::c_int;
 }
@@ -4509,104 +4837,109 @@ unsafe extern "C" fn yylex_token(mut ch: libc::c_int) -> *mut libc::c_char {
     let mut last: C2RustUnnamed_39 = START;
     len = 0 as libc::c_int as size_t;
     buf = xmalloc(1 as libc::c_int as size_t) as *mut libc::c_char;
-    loop  {
-        if ch == -(1 as libc::c_int) ||
-               state as libc::c_uint == NONE as libc::c_int as libc::c_uint &&
-                   ch == '\n' as i32 {
+    loop {
+        if ch == -(1 as libc::c_int)
+            || state as libc::c_uint == NONE as libc::c_int as libc::c_uint && ch == '\n' as i32
+        {
             current_block = 10399321362245223758;
-            break ;
+            break;
         }
-        if (ch == ' ' as i32 || ch == '\t' as i32 || ch == ';' as i32 ||
-                ch == '}' as i32) &&
-               state as libc::c_uint == NONE as libc::c_int as libc::c_uint {
+        if (ch == ' ' as i32 || ch == '\t' as i32 || ch == ';' as i32 || ch == '}' as i32)
+            && state as libc::c_uint == NONE as libc::c_int as libc::c_uint
+        {
             current_block = 10399321362245223758;
-            break ;
+            break;
         }
-        if ch == '\n' as i32 &&
-               state as libc::c_uint != NONE as libc::c_int as libc::c_uint {
-            loop  {
+        if ch == '\n' as i32 && state as libc::c_uint != NONE as libc::c_int as libc::c_uint {
+            loop {
                 ch = yylex_getc();
-                if !(ch == ' ' as i32 || ch == '\t' as i32) { break ; }
+                if !(ch == ' ' as i32 || ch == '\t' as i32) {
+                    break;
+                }
             }
-            if ch != '#' as i32 { continue ; }
+            if ch != '#' as i32 {
+                continue;
+            }
             ch = yylex_getc();
-            if !strchr(b",#{}:\x00" as *const u8 as *const libc::c_char,
-                       ch).is_null() {
+            if !strchr(b",#{}:\x00" as *const u8 as *const libc::c_char, ch).is_null() {
                 yylex_ungetc(ch);
                 ch = '#' as i32
             } else {
-                loop  {
+                loop {
                     ch = yylex_getc();
                     if !(ch != '\n' as i32 && ch != -(1 as libc::c_int)) {
-                        break ;
+                        break;
                     }
                 }
             }
         } else {
-            if ch == '\\' as i32 &&
-                   state as libc::c_uint !=
-                       SINGLE_QUOTES as libc::c_int as libc::c_uint {
+            if ch == '\\' as i32
+                && state as libc::c_uint != SINGLE_QUOTES as libc::c_int as libc::c_uint
+            {
                 if yylex_token_escape(&mut buf, &mut len) == 0 {
                     current_block = 10067117643406552625;
-                    break ;
+                    break;
                 }
                 current_block = 6304803324601632414;
-            } else if ch == '~' as i32 &&
-                          last as libc::c_uint != state as libc::c_uint &&
-                          state as libc::c_uint !=
-                              SINGLE_QUOTES as libc::c_int as libc::c_uint {
+            } else if ch == '~' as i32
+                && last as libc::c_uint != state as libc::c_uint
+                && state as libc::c_uint != SINGLE_QUOTES as libc::c_int as libc::c_uint
+            {
                 if yylex_token_tilde(&mut buf, &mut len) == 0 {
                     current_block = 10067117643406552625;
-                    break ;
+                    break;
                 }
                 current_block = 6304803324601632414;
-            } else if ch == '$' as i32 &&
-                          state as libc::c_uint !=
-                              SINGLE_QUOTES as libc::c_int as libc::c_uint {
+            } else if ch == '$' as i32
+                && state as libc::c_uint != SINGLE_QUOTES as libc::c_int as libc::c_uint
+            {
                 if yylex_token_variable(&mut buf, &mut len) == 0 {
                     current_block = 10067117643406552625;
-                    break ;
+                    break;
                 }
                 current_block = 6304803324601632414;
             } else {
-                if ch == '}' as i32 &&
-                       state as libc::c_uint ==
-                           NONE as libc::c_int as libc::c_uint {
+                if ch == '}' as i32 && state as libc::c_uint == NONE as libc::c_int as libc::c_uint
+                {
                     current_block = 10067117643406552625;
-                    break ;
+                    break;
                 }
                 if ch == '\'' as i32 {
-                    if state as libc::c_uint ==
-                           NONE as libc::c_int as libc::c_uint {
+                    if state as libc::c_uint == NONE as libc::c_int as libc::c_uint {
                         state = SINGLE_QUOTES;
                         current_block = 7314257418503315463;
-                    } else if state as libc::c_uint ==
-                                  SINGLE_QUOTES as libc::c_int as libc::c_uint
-                     {
+                    } else if state as libc::c_uint == SINGLE_QUOTES as libc::c_int as libc::c_uint
+                    {
                         state = NONE;
                         current_block = 7314257418503315463;
-                    } else { current_block = 1836292691772056875; }
-                } else { current_block = 1836292691772056875; }
+                    } else {
+                        current_block = 1836292691772056875;
+                    }
+                } else {
+                    current_block = 1836292691772056875;
+                }
                 match current_block {
-                    7314257418503315463 => { }
+                    7314257418503315463 => {}
                     _ => {
                         if ch == '\"' as i32 {
-                            if state as libc::c_uint ==
-                                   NONE as libc::c_int as libc::c_uint {
+                            if state as libc::c_uint == NONE as libc::c_int as libc::c_uint {
                                 state = DOUBLE_QUOTES;
                                 current_block = 7314257418503315463;
-                            } else if state as libc::c_uint ==
-                                          DOUBLE_QUOTES as libc::c_int as
-                                              libc::c_uint {
+                            } else if state as libc::c_uint
+                                == DOUBLE_QUOTES as libc::c_int as libc::c_uint
+                            {
                                 state = NONE;
                                 current_block = 7314257418503315463;
-                            } else { current_block = 2543120759711851213; }
-                        } else { current_block = 2543120759711851213; }
+                            } else {
+                                current_block = 2543120759711851213;
+                            }
+                        } else {
+                            current_block = 2543120759711851213;
+                        }
                         match current_block {
-                            7314257418503315463 => { }
+                            7314257418503315463 => {}
                             _ => {
-                                yylex_append1(&mut buf, &mut len,
-                                              ch as libc::c_char);
+                                yylex_append1(&mut buf, &mut len, ch as libc::c_char);
                                 current_block = 6304803324601632414;
                             }
                         }
@@ -4614,8 +4947,8 @@ unsafe extern "C" fn yylex_token(mut ch: libc::c_int) -> *mut libc::c_char {
                 }
             }
             match current_block {
-                6304803324601632414 => { last = state }
-                _ => { }
+                6304803324601632414 => last = state,
+                _ => {}
             }
             ch = yylex_getc()
         }
@@ -4623,16 +4956,18 @@ unsafe extern "C" fn yylex_token(mut ch: libc::c_int) -> *mut libc::c_char {
     match current_block {
         10067117643406552625 => {
             free(buf as *mut libc::c_void);
-            return 0 as *mut libc::c_char
+            return 0 as *mut libc::c_char;
         }
         _ => {
             yylex_ungetc(ch);
             *buf.offset(len as isize) = '\u{0}' as i32 as libc::c_char;
-            log_debug(b"%s: %s\x00" as *const u8 as *const libc::c_char,
-                      (*::std::mem::transmute::<&[u8; 12],
-                                                &[libc::c_char; 12]>(b"yylex_token\x00")).as_ptr(),
-                      buf);
-            return buf
+            log_debug(
+                b"%s: %s\x00" as *const u8 as *const libc::c_char,
+                (*::std::mem::transmute::<&[u8; 12], &[libc::c_char; 12]>(b"yylex_token\x00"))
+                    .as_ptr(),
+                buf,
+            );
+            return buf;
         }
     };
 }

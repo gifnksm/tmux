@@ -19,27 +19,35 @@ extern "C" {
     pub type options_array_item;
     pub type options_entry;
     #[no_mangle]
-    fn fnmatch(__pattern: *const libc::c_char, __name: *const libc::c_char,
-               __flags: libc::c_int) -> libc::c_int;
+    fn fnmatch(
+        __pattern: *const libc::c_char,
+        __name: *const libc::c_char,
+        __flags: libc::c_int,
+    ) -> libc::c_int;
     #[no_mangle]
     fn free(__ptr: *mut libc::c_void);
     #[no_mangle]
-    fn setenv(__name: *const libc::c_char, __value: *const libc::c_char,
-              __replace: libc::c_int) -> libc::c_int;
+    fn setenv(
+        __name: *const libc::c_char,
+        __value: *const libc::c_char,
+        __replace: libc::c_int,
+    ) -> libc::c_int;
     #[no_mangle]
     fn strcmp(_: *const libc::c_char, _: *const libc::c_char) -> libc::c_int;
     #[no_mangle]
     fn strchr(_: *const libc::c_char, _: libc::c_int) -> *mut libc::c_char;
     #[no_mangle]
-    fn strcspn(_: *const libc::c_char, _: *const libc::c_char)
-     -> libc::c_ulong;
+    fn strcspn(_: *const libc::c_char, _: *const libc::c_char) -> libc::c_ulong;
     #[no_mangle]
     static mut environ: *mut *mut libc::c_char;
     #[no_mangle]
     fn getpid() -> __pid_t;
     #[no_mangle]
-    fn vasprintf(__ptr: *mut *mut libc::c_char, __f: *const libc::c_char,
-                 __arg: ::std::ffi::VaList) -> libc::c_int;
+    fn vasprintf(
+        __ptr: *mut *mut libc::c_char,
+        __f: *const libc::c_char,
+        __arg: ::std::ffi::VaList,
+    ) -> libc::c_int;
     #[no_mangle]
     fn xmalloc(_: size_t) -> *mut libc::c_void;
     #[no_mangle]
@@ -47,8 +55,11 @@ extern "C" {
     #[no_mangle]
     fn xstrdup(_: *const libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
-    fn xvasprintf(_: *mut *mut libc::c_char, _: *const libc::c_char,
-                  _: ::std::ffi::VaList) -> libc::c_int;
+    fn xvasprintf(
+        _: *mut *mut libc::c_char,
+        _: *const libc::c_char,
+        _: ::std::ffi::VaList,
+    ) -> libc::c_int;
     #[no_mangle]
     static mut global_options: *mut options;
     #[no_mangle]
@@ -58,19 +69,15 @@ extern "C" {
     #[no_mangle]
     fn getversion() -> *const libc::c_char;
     #[no_mangle]
-    fn options_get(_: *mut options, _: *const libc::c_char)
-     -> *mut options_entry;
+    fn options_get(_: *mut options, _: *const libc::c_char) -> *mut options_entry;
     #[no_mangle]
     fn options_array_first(_: *mut options_entry) -> *mut options_array_item;
     #[no_mangle]
-    fn options_array_next(_: *mut options_array_item)
-     -> *mut options_array_item;
+    fn options_array_next(_: *mut options_array_item) -> *mut options_array_item;
     #[no_mangle]
-    fn options_array_item_value(_: *mut options_array_item)
-     -> *mut options_value;
+    fn options_array_item_value(_: *mut options_array_item) -> *mut options_value;
     #[no_mangle]
-    fn options_get_string(_: *mut options, _: *const libc::c_char)
-     -> *const libc::c_char;
+    fn options_get_string(_: *mut options, _: *const libc::c_char) -> *const libc::c_char;
     #[no_mangle]
     fn log_debug(_: *const libc::c_char, _: ...);
 }
@@ -173,18 +180,13 @@ pub struct event_callback {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub union C2RustUnnamed_6 {
-    pub evcb_callback: Option<unsafe extern "C" fn(_: libc::c_int,
-                                                   _: libc::c_short,
-                                                   _: *mut libc::c_void)
-                                  -> ()>,
-    pub evcb_selfcb: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                 _: *mut libc::c_void) -> ()>,
-    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
-    pub evcb_cbfinalize: Option<unsafe extern "C" fn(_: *mut event_callback,
-                                                     _: *mut libc::c_void)
-                                    -> ()>,
+    pub evcb_callback:
+        Option<unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> ()>,
+    pub evcb_selfcb:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
+    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event, _: *mut libc::c_void) -> ()>,
+    pub evcb_cbfinalize:
+        Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -211,14 +213,10 @@ pub struct bufferevent {
     pub timeout_write: timeval,
     pub enabled: libc::c_short,
 }
-pub type bufferevent_event_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short,
-                                _: *mut libc::c_void) -> ()>;
-pub type bufferevent_data_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void)
-               -> ()>;
+pub type bufferevent_event_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short, _: *mut libc::c_void) -> ()>;
+pub type bufferevent_data_cb =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct event_watermark {
@@ -357,17 +355,19 @@ pub struct C2RustUnnamed_9 {
     pub rbe_parent: *mut client_file,
     pub rbe_color: libc::c_int,
 }
-pub type client_file_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *const libc::c_char,
-                                _: libc::c_int, _: libc::c_int,
-                                _: *mut evbuffer, _: *mut libc::c_void)
-               -> ()>;
+pub type client_file_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *const libc::c_char,
+        _: libc::c_int,
+        _: libc::c_int,
+        _: *mut evbuffer,
+        _: *mut libc::c_void,
+    ) -> (),
+>;
 pub type overlay_free_cb = Option<unsafe extern "C" fn(_: *mut client) -> ()>;
-pub type overlay_key_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event)
-               -> libc::c_int>;
+pub type overlay_key_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_event {
@@ -397,10 +397,8 @@ pub struct mouse_event {
     pub sgr_b: u_int,
 }
 pub type key_code = libc::c_ulonglong;
-pub type overlay_draw_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx)
-               -> ()>;
+pub type overlay_draw_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx) -> ()>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen_redraw_ctx {
@@ -414,10 +412,8 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int)
-               -> *mut screen>;
+pub type overlay_mode_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct screen {
@@ -511,10 +507,8 @@ pub struct C2RustUnnamed_11 {
     pub bg: u_char,
     pub data: u_char,
 }
-pub type overlay_check_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int)
-               -> libc::c_int>;
+pub type overlay_check_cb =
+    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct session {
@@ -801,24 +795,37 @@ pub struct C2RustUnnamed_25 {
 pub struct window_mode {
     pub name: *const libc::c_char,
     pub default_format: *const libc::c_char,
-    pub init: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                          _: *mut cmd_find_state,
-                                          _: *mut args) -> *mut screen>,
+    pub init: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut cmd_find_state,
+            _: *mut args,
+        ) -> *mut screen,
+    >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
-    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                            _: u_int, _: u_int) -> ()>,
-    pub key: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                         _: *mut client, _: *mut session,
-                                         _: *mut winlink, _: key_code,
-                                         _: *mut mouse_event) -> ()>,
-    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry)
-                              -> *const libc::c_char>,
-    pub command: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut client, _: *mut session,
-                                             _: *mut winlink, _: *mut args,
-                                             _: *mut mouse_event) -> ()>,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
-                                             _: *mut format_tree) -> ()>,
+    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
+    pub key: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: key_code,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> *const libc::c_char>,
+    pub command: Option<
+        unsafe extern "C" fn(
+            _: *mut window_mode_entry,
+            _: *mut client,
+            _: *mut session,
+            _: *mut winlink,
+            _: *mut args,
+            _: *mut mouse_event,
+        ) -> (),
+    >,
+    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -855,14 +862,15 @@ pub struct winlink_stack {
 pub type C2RustUnnamed_26 = libc::c_uint;
 pub const PROMPT_COMMAND: C2RustUnnamed_26 = 1;
 pub const PROMPT_ENTRY: C2RustUnnamed_26 = 0;
-pub type prompt_free_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
-pub type prompt_input_cb
-    =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut libc::c_void,
-                                _: *const libc::c_char, _: libc::c_int)
-               -> libc::c_int>;
+pub type prompt_free_cb = Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
+pub type prompt_input_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut libc::c_void,
+        _: *const libc::c_char,
+        _: libc::c_int,
+    ) -> libc::c_int,
+>;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct key_table {
@@ -1033,12 +1041,8 @@ pub struct tty {
     pub mouse_last_y: u_int,
     pub mouse_last_b: u_int,
     pub mouse_drag_flag: libc::c_int,
-    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client,
-                                                       _: *mut mouse_event)
-                                      -> ()>,
-    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client,
-                                                        _: *mut mouse_event)
-                                       -> ()>,
+    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
+    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client, _: *mut mouse_event) -> ()>,
     pub key_timer: event,
     pub key_tree: *mut tty_key,
 }
@@ -1129,9 +1133,10 @@ pub union options_value {
     pub array: options_array,
     pub cmdlist: *mut cmd_list,
 }
-unsafe extern "C" fn environ_RB_FIND(mut head: *mut environ,
-                                     mut elm: *mut environ_entry)
- -> *mut environ_entry {
+unsafe extern "C" fn environ_RB_FIND(
+    mut head: *mut environ,
+    mut elm: *mut environ_entry,
+) -> *mut environ_entry {
     let mut tmp: *mut environ_entry = (*head).rbh_root;
     let mut comp: libc::c_int = 0;
     while !tmp.is_null() {
@@ -1140,46 +1145,54 @@ unsafe extern "C" fn environ_RB_FIND(mut head: *mut environ,
             tmp = (*tmp).entry.rbe_left
         } else if comp > 0 as libc::c_int {
             tmp = (*tmp).entry.rbe_right
-        } else { return tmp }
+        } else {
+            return tmp;
+        }
     }
     return 0 as *mut environ_entry;
 }
-unsafe extern "C" fn environ_RB_MINMAX(mut head: *mut environ,
-                                       mut val: libc::c_int)
- -> *mut environ_entry {
+unsafe extern "C" fn environ_RB_MINMAX(
+    mut head: *mut environ,
+    mut val: libc::c_int,
+) -> *mut environ_entry {
     let mut tmp: *mut environ_entry = (*head).rbh_root;
     let mut parent: *mut environ_entry = 0 as *mut environ_entry;
     while !tmp.is_null() {
         parent = tmp;
         if val < 0 as libc::c_int {
             tmp = (*tmp).entry.rbe_left
-        } else { tmp = (*tmp).entry.rbe_right }
+        } else {
+            tmp = (*tmp).entry.rbe_right
+        }
     }
     return parent;
 }
-unsafe extern "C" fn environ_RB_NEXT(mut elm: *mut environ_entry)
- -> *mut environ_entry {
+unsafe extern "C" fn environ_RB_NEXT(mut elm: *mut environ_entry) -> *mut environ_entry {
     if !(*elm).entry.rbe_right.is_null() {
         elm = (*elm).entry.rbe_right;
-        while !(*elm).entry.rbe_left.is_null() { elm = (*elm).entry.rbe_left }
-    } else if !(*elm).entry.rbe_parent.is_null() &&
-                  elm == (*(*elm).entry.rbe_parent).entry.rbe_left {
+        while !(*elm).entry.rbe_left.is_null() {
+            elm = (*elm).entry.rbe_left
+        }
+    } else if !(*elm).entry.rbe_parent.is_null() && elm == (*(*elm).entry.rbe_parent).entry.rbe_left
+    {
         elm = (*elm).entry.rbe_parent
     } else {
-        while !(*elm).entry.rbe_parent.is_null() &&
-                  elm == (*(*elm).entry.rbe_parent).entry.rbe_right {
+        while !(*elm).entry.rbe_parent.is_null()
+            && elm == (*(*elm).entry.rbe_parent).entry.rbe_right
+        {
             elm = (*elm).entry.rbe_parent
         }
         elm = (*elm).entry.rbe_parent
     }
     return elm;
 }
-unsafe extern "C" fn environ_RB_REMOVE_COLOR(mut head: *mut environ,
-                                             mut parent: *mut environ_entry,
-                                             mut elm: *mut environ_entry) {
+unsafe extern "C" fn environ_RB_REMOVE_COLOR(
+    mut head: *mut environ,
+    mut parent: *mut environ_entry,
+    mut elm: *mut environ_entry,
+) {
     let mut tmp: *mut environ_entry = 0 as *mut environ_entry;
-    while (elm.is_null() || (*elm).entry.rbe_color == 0 as libc::c_int) &&
-              elm != (*head).rbh_root {
+    while (elm.is_null() || (*elm).entry.rbe_color == 0 as libc::c_int) && elm != (*head).rbh_root {
         if (*parent).entry.rbe_left == elm {
             tmp = (*parent).entry.rbe_right;
             if (*tmp).entry.rbe_color == 1 as libc::c_int {
@@ -1192,33 +1205,32 @@ unsafe extern "C" fn environ_RB_REMOVE_COLOR(mut head: *mut environ,
                 }
                 (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
                 if !(*tmp).entry.rbe_parent.is_null() {
-                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left
-                       {
+                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left {
                         (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
                     } else {
                         (*(*parent).entry.rbe_parent).entry.rbe_right = tmp
                     }
-                } else { (*head).rbh_root = tmp }
+                } else {
+                    (*head).rbh_root = tmp
+                }
                 (*tmp).entry.rbe_left = parent;
                 (*parent).entry.rbe_parent = tmp;
                 !(*tmp).entry.rbe_parent.is_null();
                 tmp = (*parent).entry.rbe_right
             }
-            if ((*tmp).entry.rbe_left.is_null() ||
-                    (*(*tmp).entry.rbe_left).entry.rbe_color ==
-                        0 as libc::c_int) &&
-                   ((*tmp).entry.rbe_right.is_null() ||
-                        (*(*tmp).entry.rbe_right).entry.rbe_color ==
-                            0 as libc::c_int) {
+            if ((*tmp).entry.rbe_left.is_null()
+                || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int)
+                && ((*tmp).entry.rbe_right.is_null()
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int)
+            {
                 (*tmp).entry.rbe_color = 1 as libc::c_int;
                 elm = parent;
                 parent = (*elm).entry.rbe_parent
             } else {
-                if (*tmp).entry.rbe_right.is_null() ||
-                       (*(*tmp).entry.rbe_right).entry.rbe_color ==
-                           0 as libc::c_int {
-                    let mut oleft: *mut environ_entry =
-                        0 as *mut environ_entry;
+                if (*tmp).entry.rbe_right.is_null()
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int
+                {
+                    let mut oleft: *mut environ_entry = 0 as *mut environ_entry;
                     oleft = (*tmp).entry.rbe_left;
                     if !oleft.is_null() {
                         (*oleft).entry.rbe_color = 0 as libc::c_int
@@ -1236,7 +1248,9 @@ unsafe extern "C" fn environ_RB_REMOVE_COLOR(mut head: *mut environ,
                         } else {
                             (*(*tmp).entry.rbe_parent).entry.rbe_right = oleft
                         }
-                    } else { (*head).rbh_root = oleft }
+                    } else {
+                        (*head).rbh_root = oleft
+                    }
                     (*oleft).entry.rbe_right = tmp;
                     (*tmp).entry.rbe_parent = oleft;
                     !(*oleft).entry.rbe_parent.is_null();
@@ -1245,8 +1259,7 @@ unsafe extern "C" fn environ_RB_REMOVE_COLOR(mut head: *mut environ,
                 (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
                 (*parent).entry.rbe_color = 0 as libc::c_int;
                 if !(*tmp).entry.rbe_right.is_null() {
-                    (*(*tmp).entry.rbe_right).entry.rbe_color =
-                        0 as libc::c_int
+                    (*(*tmp).entry.rbe_right).entry.rbe_color = 0 as libc::c_int
                 }
                 tmp = (*parent).entry.rbe_right;
                 (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
@@ -1255,18 +1268,19 @@ unsafe extern "C" fn environ_RB_REMOVE_COLOR(mut head: *mut environ,
                 }
                 (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
                 if !(*tmp).entry.rbe_parent.is_null() {
-                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left
-                       {
+                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left {
                         (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
                     } else {
                         (*(*parent).entry.rbe_parent).entry.rbe_right = tmp
                     }
-                } else { (*head).rbh_root = tmp }
+                } else {
+                    (*head).rbh_root = tmp
+                }
                 (*tmp).entry.rbe_left = parent;
                 (*parent).entry.rbe_parent = tmp;
                 !(*tmp).entry.rbe_parent.is_null();
                 elm = (*head).rbh_root;
-                break ;
+                break;
             }
         } else {
             tmp = (*parent).entry.rbe_left;
@@ -1280,33 +1294,32 @@ unsafe extern "C" fn environ_RB_REMOVE_COLOR(mut head: *mut environ,
                 }
                 (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
                 if !(*tmp).entry.rbe_parent.is_null() {
-                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left
-                       {
+                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left {
                         (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
                     } else {
                         (*(*parent).entry.rbe_parent).entry.rbe_right = tmp
                     }
-                } else { (*head).rbh_root = tmp }
+                } else {
+                    (*head).rbh_root = tmp
+                }
                 (*tmp).entry.rbe_right = parent;
                 (*parent).entry.rbe_parent = tmp;
                 !(*tmp).entry.rbe_parent.is_null();
                 tmp = (*parent).entry.rbe_left
             }
-            if ((*tmp).entry.rbe_left.is_null() ||
-                    (*(*tmp).entry.rbe_left).entry.rbe_color ==
-                        0 as libc::c_int) &&
-                   ((*tmp).entry.rbe_right.is_null() ||
-                        (*(*tmp).entry.rbe_right).entry.rbe_color ==
-                            0 as libc::c_int) {
+            if ((*tmp).entry.rbe_left.is_null()
+                || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int)
+                && ((*tmp).entry.rbe_right.is_null()
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int)
+            {
                 (*tmp).entry.rbe_color = 1 as libc::c_int;
                 elm = parent;
                 parent = (*elm).entry.rbe_parent
             } else {
-                if (*tmp).entry.rbe_left.is_null() ||
-                       (*(*tmp).entry.rbe_left).entry.rbe_color ==
-                           0 as libc::c_int {
-                    let mut oright: *mut environ_entry =
-                        0 as *mut environ_entry;
+                if (*tmp).entry.rbe_left.is_null()
+                    || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int
+                {
+                    let mut oright: *mut environ_entry = 0 as *mut environ_entry;
                     oright = (*tmp).entry.rbe_right;
                     if !oright.is_null() {
                         (*oright).entry.rbe_color = 0 as libc::c_int
@@ -1322,10 +1335,11 @@ unsafe extern "C" fn environ_RB_REMOVE_COLOR(mut head: *mut environ,
                         if tmp == (*(*tmp).entry.rbe_parent).entry.rbe_left {
                             (*(*tmp).entry.rbe_parent).entry.rbe_left = oright
                         } else {
-                            (*(*tmp).entry.rbe_parent).entry.rbe_right =
-                                oright
+                            (*(*tmp).entry.rbe_parent).entry.rbe_right = oright
                         }
-                    } else { (*head).rbh_root = oright }
+                    } else {
+                        (*head).rbh_root = oright
+                    }
                     (*oright).entry.rbe_left = tmp;
                     (*tmp).entry.rbe_parent = oright;
                     !(*oright).entry.rbe_parent.is_null();
@@ -1334,8 +1348,7 @@ unsafe extern "C" fn environ_RB_REMOVE_COLOR(mut head: *mut environ,
                 (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
                 (*parent).entry.rbe_color = 0 as libc::c_int;
                 if !(*tmp).entry.rbe_left.is_null() {
-                    (*(*tmp).entry.rbe_left).entry.rbe_color =
-                        0 as libc::c_int
+                    (*(*tmp).entry.rbe_left).entry.rbe_color = 0 as libc::c_int
                 }
                 tmp = (*parent).entry.rbe_left;
                 (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
@@ -1344,26 +1357,30 @@ unsafe extern "C" fn environ_RB_REMOVE_COLOR(mut head: *mut environ,
                 }
                 (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
                 if !(*tmp).entry.rbe_parent.is_null() {
-                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left
-                       {
+                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left {
                         (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
                     } else {
                         (*(*parent).entry.rbe_parent).entry.rbe_right = tmp
                     }
-                } else { (*head).rbh_root = tmp }
+                } else {
+                    (*head).rbh_root = tmp
+                }
                 (*tmp).entry.rbe_right = parent;
                 (*parent).entry.rbe_parent = tmp;
                 !(*tmp).entry.rbe_parent.is_null();
                 elm = (*head).rbh_root;
-                break ;
+                break;
             }
         }
     }
-    if !elm.is_null() { (*elm).entry.rbe_color = 0 as libc::c_int };
+    if !elm.is_null() {
+        (*elm).entry.rbe_color = 0 as libc::c_int
+    };
 }
-unsafe extern "C" fn environ_RB_REMOVE(mut head: *mut environ,
-                                       mut elm: *mut environ_entry)
- -> *mut environ_entry {
+unsafe extern "C" fn environ_RB_REMOVE(
+    mut head: *mut environ,
+    mut elm: *mut environ_entry,
+) -> *mut environ_entry {
     let mut current_block: u64;
     let mut child: *mut environ_entry = 0 as *mut environ_entry;
     let mut parent: *mut environ_entry = 0 as *mut environ_entry;
@@ -1378,36 +1395,52 @@ unsafe extern "C" fn environ_RB_REMOVE(mut head: *mut environ,
     } else {
         let mut left: *mut environ_entry = 0 as *mut environ_entry;
         elm = (*elm).entry.rbe_right;
-        loop  {
+        loop {
             left = (*elm).entry.rbe_left;
-            if left.is_null() { break ; }
+            if left.is_null() {
+                break;
+            }
             elm = left
         }
         child = (*elm).entry.rbe_right;
         parent = (*elm).entry.rbe_parent;
         color = (*elm).entry.rbe_color;
-        if !child.is_null() { (*child).entry.rbe_parent = parent }
+        if !child.is_null() {
+            (*child).entry.rbe_parent = parent
+        }
         if !parent.is_null() {
             if (*parent).entry.rbe_left == elm {
                 (*parent).entry.rbe_left = child
-            } else { (*parent).entry.rbe_right = child }
-        } else { (*head).rbh_root = child }
-        if (*elm).entry.rbe_parent == old { parent = elm }
+            } else {
+                (*parent).entry.rbe_right = child
+            }
+        } else {
+            (*head).rbh_root = child
+        }
+        if (*elm).entry.rbe_parent == old {
+            parent = elm
+        }
         (*elm).entry = (*old).entry;
         if !(*old).entry.rbe_parent.is_null() {
             if (*(*old).entry.rbe_parent).entry.rbe_left == old {
                 (*(*old).entry.rbe_parent).entry.rbe_left = elm
-            } else { (*(*old).entry.rbe_parent).entry.rbe_right = elm }
-        } else { (*head).rbh_root = elm }
+            } else {
+                (*(*old).entry.rbe_parent).entry.rbe_right = elm
+            }
+        } else {
+            (*head).rbh_root = elm
+        }
         (*(*old).entry.rbe_left).entry.rbe_parent = elm;
         if !(*old).entry.rbe_right.is_null() {
             (*(*old).entry.rbe_right).entry.rbe_parent = elm
         }
         if !parent.is_null() {
             left = parent;
-            loop  {
+            loop {
                 left = (*left).entry.rbe_parent;
-                if left.is_null() { break ; }
+                if left.is_null() {
+                    break;
+                }
             }
         }
         current_block = 7381876040995060082;
@@ -1416,30 +1449,34 @@ unsafe extern "C" fn environ_RB_REMOVE(mut head: *mut environ,
         7226443171521532240 => {
             parent = (*elm).entry.rbe_parent;
             color = (*elm).entry.rbe_color;
-            if !child.is_null() { (*child).entry.rbe_parent = parent }
+            if !child.is_null() {
+                (*child).entry.rbe_parent = parent
+            }
             if !parent.is_null() {
                 if (*parent).entry.rbe_left == elm {
                     (*parent).entry.rbe_left = child
-                } else { (*parent).entry.rbe_right = child }
-            } else { (*head).rbh_root = child }
+                } else {
+                    (*parent).entry.rbe_right = child
+                }
+            } else {
+                (*head).rbh_root = child
+            }
         }
-        _ => { }
+        _ => {}
     }
     if color == 0 as libc::c_int {
         environ_RB_REMOVE_COLOR(head, parent, child);
     }
     return old;
 }
-unsafe extern "C" fn environ_RB_INSERT_COLOR(mut head: *mut environ,
-                                             mut elm: *mut environ_entry) {
+unsafe extern "C" fn environ_RB_INSERT_COLOR(mut head: *mut environ, mut elm: *mut environ_entry) {
     let mut parent: *mut environ_entry = 0 as *mut environ_entry;
     let mut gparent: *mut environ_entry = 0 as *mut environ_entry;
     let mut tmp: *mut environ_entry = 0 as *mut environ_entry;
-    loop  {
+    loop {
         parent = (*elm).entry.rbe_parent;
-        if !(!parent.is_null() &&
-                 (*parent).entry.rbe_color == 1 as libc::c_int) {
-            break ;
+        if !(!parent.is_null() && (*parent).entry.rbe_color == 1 as libc::c_int) {
+            break;
         }
         gparent = (*parent).entry.rbe_parent;
         if parent == (*gparent).entry.rbe_left {
@@ -1458,14 +1495,14 @@ unsafe extern "C" fn environ_RB_INSERT_COLOR(mut head: *mut environ,
                     }
                     (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
                     if !(*tmp).entry.rbe_parent.is_null() {
-                        if parent ==
-                               (*(*parent).entry.rbe_parent).entry.rbe_left {
+                        if parent == (*(*parent).entry.rbe_parent).entry.rbe_left {
                             (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
                         } else {
-                            (*(*parent).entry.rbe_parent).entry.rbe_right =
-                                tmp
+                            (*(*parent).entry.rbe_parent).entry.rbe_right = tmp
                         }
-                    } else { (*head).rbh_root = tmp }
+                    } else {
+                        (*head).rbh_root = tmp
+                    }
                     (*tmp).entry.rbe_left = parent;
                     (*parent).entry.rbe_parent = tmp;
                     !(*tmp).entry.rbe_parent.is_null();
@@ -1482,13 +1519,14 @@ unsafe extern "C" fn environ_RB_INSERT_COLOR(mut head: *mut environ,
                 }
                 (*tmp).entry.rbe_parent = (*gparent).entry.rbe_parent;
                 if !(*tmp).entry.rbe_parent.is_null() {
-                    if gparent ==
-                           (*(*gparent).entry.rbe_parent).entry.rbe_left {
+                    if gparent == (*(*gparent).entry.rbe_parent).entry.rbe_left {
                         (*(*gparent).entry.rbe_parent).entry.rbe_left = tmp
                     } else {
                         (*(*gparent).entry.rbe_parent).entry.rbe_right = tmp
                     }
-                } else { (*head).rbh_root = tmp }
+                } else {
+                    (*head).rbh_root = tmp
+                }
                 (*tmp).entry.rbe_right = gparent;
                 (*gparent).entry.rbe_parent = tmp;
                 !(*tmp).entry.rbe_parent.is_null();
@@ -1509,14 +1547,14 @@ unsafe extern "C" fn environ_RB_INSERT_COLOR(mut head: *mut environ,
                     }
                     (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
                     if !(*tmp).entry.rbe_parent.is_null() {
-                        if parent ==
-                               (*(*parent).entry.rbe_parent).entry.rbe_left {
+                        if parent == (*(*parent).entry.rbe_parent).entry.rbe_left {
                             (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
                         } else {
-                            (*(*parent).entry.rbe_parent).entry.rbe_right =
-                                tmp
+                            (*(*parent).entry.rbe_parent).entry.rbe_right = tmp
                         }
-                    } else { (*head).rbh_root = tmp }
+                    } else {
+                        (*head).rbh_root = tmp
+                    }
                     (*tmp).entry.rbe_right = parent;
                     (*parent).entry.rbe_parent = tmp;
                     !(*tmp).entry.rbe_parent.is_null();
@@ -1533,13 +1571,14 @@ unsafe extern "C" fn environ_RB_INSERT_COLOR(mut head: *mut environ,
                 }
                 (*tmp).entry.rbe_parent = (*gparent).entry.rbe_parent;
                 if !(*tmp).entry.rbe_parent.is_null() {
-                    if gparent ==
-                           (*(*gparent).entry.rbe_parent).entry.rbe_left {
+                    if gparent == (*(*gparent).entry.rbe_parent).entry.rbe_left {
                         (*(*gparent).entry.rbe_parent).entry.rbe_left = tmp
                     } else {
                         (*(*gparent).entry.rbe_parent).entry.rbe_right = tmp
                     }
-                } else { (*head).rbh_root = tmp }
+                } else {
+                    (*head).rbh_root = tmp
+                }
                 (*tmp).entry.rbe_left = gparent;
                 (*gparent).entry.rbe_parent = tmp;
                 !(*tmp).entry.rbe_parent.is_null();
@@ -1548,9 +1587,10 @@ unsafe extern "C" fn environ_RB_INSERT_COLOR(mut head: *mut environ,
     }
     (*(*head).rbh_root).entry.rbe_color = 0 as libc::c_int;
 }
-unsafe extern "C" fn environ_RB_INSERT(mut head: *mut environ,
-                                       mut elm: *mut environ_entry)
- -> *mut environ_entry {
+unsafe extern "C" fn environ_RB_INSERT(
+    mut head: *mut environ,
+    mut elm: *mut environ_entry,
+) -> *mut environ_entry {
     let mut tmp: *mut environ_entry = 0 as *mut environ_entry;
     let mut parent: *mut environ_entry = 0 as *mut environ_entry;
     let mut comp: libc::c_int = 0 as libc::c_int;
@@ -1562,7 +1602,9 @@ unsafe extern "C" fn environ_RB_INSERT(mut head: *mut environ,
             tmp = (*tmp).entry.rbe_left
         } else if comp > 0 as libc::c_int {
             tmp = (*tmp).entry.rbe_right
-        } else { return tmp }
+        } else {
+            return tmp;
+        }
     }
     (*elm).entry.rbe_parent = parent;
     (*elm).entry.rbe_right = 0 as *mut environ_entry;
@@ -1571,24 +1613,29 @@ unsafe extern "C" fn environ_RB_INSERT(mut head: *mut environ,
     if !parent.is_null() {
         if comp < 0 as libc::c_int {
             (*parent).entry.rbe_left = elm
-        } else { (*parent).entry.rbe_right = elm }
-    } else { (*head).rbh_root = elm }
+        } else {
+            (*parent).entry.rbe_right = elm
+        }
+    } else {
+        (*head).rbh_root = elm
+    }
     environ_RB_INSERT_COLOR(head, elm);
     return 0 as *mut environ_entry;
 }
-unsafe extern "C" fn environ_cmp(mut envent1: *mut environ_entry,
-                                 mut envent2: *mut environ_entry)
- -> libc::c_int {
+unsafe extern "C" fn environ_cmp(
+    mut envent1: *mut environ_entry,
+    mut envent2: *mut environ_entry,
+) -> libc::c_int {
     return strcmp((*envent1).name, (*envent2).name);
 }
 /* Initialise the environment. */
 #[no_mangle]
 pub unsafe extern "C" fn environ_create() -> *mut environ {
     let mut env: *mut environ = 0 as *mut environ;
-    env =
-        xcalloc(1 as libc::c_int as size_t,
-                ::std::mem::size_of::<environ>() as libc::c_ulong) as
-            *mut environ;
+    env = xcalloc(
+        1 as libc::c_int as size_t,
+        ::std::mem::size_of::<environ>() as libc::c_ulong,
+    ) as *mut environ;
     (*env).rbh_root = 0 as *mut environ_entry;
     return env;
 }
@@ -1598,8 +1645,10 @@ pub unsafe extern "C" fn environ_free(mut env: *mut environ) {
     let mut envent: *mut environ_entry = 0 as *mut environ_entry;
     let mut envent1: *mut environ_entry = 0 as *mut environ_entry;
     envent = environ_RB_MINMAX(env, -(1 as libc::c_int));
-    while !envent.is_null() &&
-              { envent1 = environ_RB_NEXT(envent); (1 as libc::c_int) != 0 } {
+    while !envent.is_null() && {
+        envent1 = environ_RB_NEXT(envent);
+        (1 as libc::c_int) != 0
+    } {
         environ_RB_REMOVE(env, envent);
         free((*envent).name as *mut libc::c_void);
         free((*envent).value as *mut libc::c_void);
@@ -1609,57 +1658,62 @@ pub unsafe extern "C" fn environ_free(mut env: *mut environ) {
     free(env as *mut libc::c_void);
 }
 #[no_mangle]
-pub unsafe extern "C" fn environ_first(mut env: *mut environ)
- -> *mut environ_entry {
+pub unsafe extern "C" fn environ_first(mut env: *mut environ) -> *mut environ_entry {
     return environ_RB_MINMAX(env, -(1 as libc::c_int));
 }
 #[no_mangle]
-pub unsafe extern "C" fn environ_next(mut envent: *mut environ_entry)
- -> *mut environ_entry {
+pub unsafe extern "C" fn environ_next(mut envent: *mut environ_entry) -> *mut environ_entry {
     return environ_RB_NEXT(envent);
 }
 /* Copy one environment into another. */
 #[no_mangle]
-pub unsafe extern "C" fn environ_copy(mut srcenv: *mut environ,
-                                      mut dstenv: *mut environ) {
+pub unsafe extern "C" fn environ_copy(mut srcenv: *mut environ, mut dstenv: *mut environ) {
     let mut envent: *mut environ_entry = 0 as *mut environ_entry;
     envent = environ_RB_MINMAX(srcenv, -(1 as libc::c_int));
     while !envent.is_null() {
         if (*envent).value.is_null() {
             environ_clear(dstenv, (*envent).name);
         } else {
-            environ_set(dstenv, (*envent).name, (*envent).flags,
-                        b"%s\x00" as *const u8 as *const libc::c_char,
-                        (*envent).value);
+            environ_set(
+                dstenv,
+                (*envent).name,
+                (*envent).flags,
+                b"%s\x00" as *const u8 as *const libc::c_char,
+                (*envent).value,
+            );
         }
         envent = environ_RB_NEXT(envent)
-    };
+    }
 }
 /* Find an environment variable. */
 #[no_mangle]
-pub unsafe extern "C" fn environ_find(mut env: *mut environ,
-                                      mut name: *const libc::c_char)
- -> *mut environ_entry {
-    let mut envent: environ_entry =
-        environ_entry{name: 0 as *mut libc::c_char,
-                      value: 0 as *mut libc::c_char,
-                      flags: 0,
-                      entry:
-                          C2RustUnnamed_14{rbe_left: 0 as *mut environ_entry,
-                                           rbe_right: 0 as *mut environ_entry,
-                                           rbe_parent:
-                                               0 as *mut environ_entry,
-                                           rbe_color: 0,},};
+pub unsafe extern "C" fn environ_find(
+    mut env: *mut environ,
+    mut name: *const libc::c_char,
+) -> *mut environ_entry {
+    let mut envent: environ_entry = environ_entry {
+        name: 0 as *mut libc::c_char,
+        value: 0 as *mut libc::c_char,
+        flags: 0,
+        entry: C2RustUnnamed_14 {
+            rbe_left: 0 as *mut environ_entry,
+            rbe_right: 0 as *mut environ_entry,
+            rbe_parent: 0 as *mut environ_entry,
+            rbe_color: 0,
+        },
+    };
     envent.name = name as *mut libc::c_char;
     return environ_RB_FIND(env, &mut envent);
 }
 /* Set an environment variable. */
 #[no_mangle]
-pub unsafe extern "C" fn environ_set(mut env: *mut environ,
-                                     mut name: *const libc::c_char,
-                                     mut flags: libc::c_int,
-                                     mut fmt: *const libc::c_char,
-                                     mut args: ...) {
+pub unsafe extern "C" fn environ_set(
+    mut env: *mut environ,
+    mut name: *const libc::c_char,
+    mut flags: libc::c_int,
+    mut fmt: *const libc::c_char,
+    mut args: ...
+) {
     let mut envent: *mut environ_entry = 0 as *mut environ_entry;
     let mut ap: ::std::ffi::VaListImpl;
     ap = args.clone();
@@ -1670,8 +1724,7 @@ pub unsafe extern "C" fn environ_set(mut env: *mut environ,
         xvasprintf(&mut (*envent).value, fmt, ap.as_va_list());
     } else {
         envent =
-            xmalloc(::std::mem::size_of::<environ_entry>() as libc::c_ulong)
-                as *mut environ_entry;
+            xmalloc(::std::mem::size_of::<environ_entry>() as libc::c_ulong) as *mut environ_entry;
         (*envent).name = xstrdup(name);
         (*envent).flags = flags;
         xvasprintf(&mut (*envent).value, fmt, ap.as_va_list());
@@ -1680,8 +1733,7 @@ pub unsafe extern "C" fn environ_set(mut env: *mut environ,
 }
 /* Clear an environment variable. */
 #[no_mangle]
-pub unsafe extern "C" fn environ_clear(mut env: *mut environ,
-                                       mut name: *const libc::c_char) {
+pub unsafe extern "C" fn environ_clear(mut env: *mut environ, mut name: *const libc::c_char) {
     let mut envent: *mut environ_entry = 0 as *mut environ_entry;
     envent = environ_find(env, name);
     if !envent.is_null() {
@@ -1689,8 +1741,7 @@ pub unsafe extern "C" fn environ_clear(mut env: *mut environ,
         (*envent).value = 0 as *mut libc::c_char
     } else {
         envent =
-            xmalloc(::std::mem::size_of::<environ_entry>() as libc::c_ulong)
-                as *mut environ_entry;
+            xmalloc(::std::mem::size_of::<environ_entry>() as libc::c_ulong) as *mut environ_entry;
         (*envent).name = xstrdup(name);
         (*envent).flags = 0 as libc::c_int;
         (*envent).value = 0 as *mut libc::c_char;
@@ -1699,28 +1750,38 @@ pub unsafe extern "C" fn environ_clear(mut env: *mut environ,
 }
 /* Set an environment variable from a NAME=VALUE string. */
 #[no_mangle]
-pub unsafe extern "C" fn environ_put(mut env: *mut environ,
-                                     mut var: *const libc::c_char,
-                                     mut flags: libc::c_int) {
+pub unsafe extern "C" fn environ_put(
+    mut env: *mut environ,
+    mut var: *const libc::c_char,
+    mut flags: libc::c_int,
+) {
     let mut name: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut value: *mut libc::c_char = 0 as *mut libc::c_char;
     value = strchr(var, '=' as i32);
-    if value.is_null() { return }
+    if value.is_null() {
+        return;
+    }
     value = value.offset(1);
     name = xstrdup(var);
-    *name.offset(strcspn(name, b"=\x00" as *const u8 as *const libc::c_char)
-                     as isize) = '\u{0}' as i32 as libc::c_char;
-    environ_set(env, name, flags,
-                b"%s\x00" as *const u8 as *const libc::c_char, value);
+    *name.offset(strcspn(name, b"=\x00" as *const u8 as *const libc::c_char) as isize) =
+        '\u{0}' as i32 as libc::c_char;
+    environ_set(
+        env,
+        name,
+        flags,
+        b"%s\x00" as *const u8 as *const libc::c_char,
+        value,
+    );
     free(name as *mut libc::c_void);
 }
 /* Unset an environment variable. */
 #[no_mangle]
-pub unsafe extern "C" fn environ_unset(mut env: *mut environ,
-                                       mut name: *const libc::c_char) {
+pub unsafe extern "C" fn environ_unset(mut env: *mut environ, mut name: *const libc::c_char) {
     let mut envent: *mut environ_entry = 0 as *mut environ_entry;
     envent = environ_find(env, name);
-    if envent.is_null() { return }
+    if envent.is_null() {
+        return;
+    }
     environ_RB_REMOVE(env, envent);
     free((*envent).name as *mut libc::c_void);
     free((*envent).value as *mut libc::c_void);
@@ -1728,62 +1789,72 @@ pub unsafe extern "C" fn environ_unset(mut env: *mut environ,
 }
 /* Copy variables from a destination into a source environment. */
 #[no_mangle]
-pub unsafe extern "C" fn environ_update(mut oo: *mut options,
-                                        mut src: *mut environ,
-                                        mut dst: *mut environ) {
+pub unsafe extern "C" fn environ_update(
+    mut oo: *mut options,
+    mut src: *mut environ,
+    mut dst: *mut environ,
+) {
     let mut envent: *mut environ_entry = 0 as *mut environ_entry;
     let mut o: *mut options_entry = 0 as *mut options_entry;
     let mut a: *mut options_array_item = 0 as *mut options_array_item;
     let mut ov: *mut options_value = 0 as *mut options_value;
-    o =
-        options_get(oo,
-                    b"update-environment\x00" as *const u8 as
-                        *const libc::c_char);
-    if o.is_null() { return }
+    o = options_get(
+        oo,
+        b"update-environment\x00" as *const u8 as *const libc::c_char,
+    );
+    if o.is_null() {
+        return;
+    }
     a = options_array_first(o);
     while !a.is_null() {
         ov = options_array_item_value(a);
         envent = environ_RB_MINMAX(src, -(1 as libc::c_int));
         while !envent.is_null() {
-            if fnmatch((*ov).string, (*envent).name, 0 as libc::c_int) ==
-                   0 as libc::c_int {
-                break ;
+            if fnmatch((*ov).string, (*envent).name, 0 as libc::c_int) == 0 as libc::c_int {
+                break;
             }
             envent = environ_RB_NEXT(envent)
         }
         if envent.is_null() {
             environ_clear(dst, (*ov).string);
         } else {
-            environ_set(dst, (*envent).name, 0 as libc::c_int,
-                        b"%s\x00" as *const u8 as *const libc::c_char,
-                        (*envent).value);
+            environ_set(
+                dst,
+                (*envent).name,
+                0 as libc::c_int,
+                b"%s\x00" as *const u8 as *const libc::c_char,
+                (*envent).value,
+            );
         }
         a = options_array_next(a)
-    };
+    }
 }
 /* Push environment into the real environment - use after fork(). */
 #[no_mangle]
 pub unsafe extern "C" fn environ_push(mut env: *mut environ) {
     let mut envent: *mut environ_entry = 0 as *mut environ_entry;
-    environ =
-        xcalloc(1 as libc::c_int as size_t,
-                ::std::mem::size_of::<*mut libc::c_char>() as libc::c_ulong)
-            as *mut *mut libc::c_char;
+    environ = xcalloc(
+        1 as libc::c_int as size_t,
+        ::std::mem::size_of::<*mut libc::c_char>() as libc::c_ulong,
+    ) as *mut *mut libc::c_char;
     envent = environ_RB_MINMAX(env, -(1 as libc::c_int));
     while !envent.is_null() {
-        if !(*envent).value.is_null() &&
-               *(*envent).name as libc::c_int != '\u{0}' as i32 &&
-               !(*envent).flags & 0x1 as libc::c_int != 0 {
+        if !(*envent).value.is_null()
+            && *(*envent).name as libc::c_int != '\u{0}' as i32
+            && !(*envent).flags & 0x1 as libc::c_int != 0
+        {
             setenv((*envent).name, (*envent).value, 1 as libc::c_int);
         }
         envent = environ_RB_NEXT(envent)
-    };
+    }
 }
 /* Log the environment. */
 #[no_mangle]
-pub unsafe extern "C" fn environ_log(mut env: *mut environ,
-                                     mut fmt: *const libc::c_char,
-                                     mut args: ...) {
+pub unsafe extern "C" fn environ_log(
+    mut env: *mut environ,
+    mut fmt: *const libc::c_char,
+    mut args: ...
+) {
     let mut envent: *mut environ_entry = 0 as *mut environ_entry;
     let mut ap: ::std::ffi::VaListImpl;
     let mut prefix: *mut libc::c_char = 0 as *mut libc::c_char;
@@ -1791,10 +1862,13 @@ pub unsafe extern "C" fn environ_log(mut env: *mut environ,
     vasprintf(&mut prefix, fmt, ap.as_va_list());
     envent = environ_RB_MINMAX(env, -(1 as libc::c_int));
     while !envent.is_null() {
-        if !(*envent).value.is_null() &&
-               *(*envent).name as libc::c_int != '\u{0}' as i32 {
-            log_debug(b"%s%s=%s\x00" as *const u8 as *const libc::c_char,
-                      prefix, (*envent).name, (*envent).value);
+        if !(*envent).value.is_null() && *(*envent).name as libc::c_int != '\u{0}' as i32 {
+            log_debug(
+                b"%s%s=%s\x00" as *const u8 as *const libc::c_char,
+                prefix,
+                (*envent).name,
+                (*envent).value,
+            );
         }
         envent = environ_RB_NEXT(envent)
     }
@@ -1802,40 +1876,58 @@ pub unsafe extern "C" fn environ_log(mut env: *mut environ,
 }
 /* Create initial environment for new child. */
 #[no_mangle]
-pub unsafe extern "C" fn environ_for_session(mut s: *mut session,
-                                             mut no_TERM: libc::c_int)
- -> *mut environ {
+pub unsafe extern "C" fn environ_for_session(
+    mut s: *mut session,
+    mut no_TERM: libc::c_int,
+) -> *mut environ {
     let mut env: *mut environ = 0 as *mut environ;
     let mut value: *const libc::c_char = 0 as *const libc::c_char;
     let mut idx: libc::c_int = 0;
     env = environ_create();
     environ_copy(global_environ, env);
-    if !s.is_null() { environ_copy((*s).environ, env); }
+    if !s.is_null() {
+        environ_copy((*s).environ, env);
+    }
     if no_TERM == 0 {
-        value =
-            options_get_string(global_options,
-                               b"default-terminal\x00" as *const u8 as
-                                   *const libc::c_char);
-        environ_set(env, b"TERM\x00" as *const u8 as *const libc::c_char,
-                    0 as libc::c_int,
-                    b"%s\x00" as *const u8 as *const libc::c_char, value);
-        environ_set(env,
-                    b"TERM_PROGRAM\x00" as *const u8 as *const libc::c_char,
-                    0 as libc::c_int,
-                    b"%s\x00" as *const u8 as *const libc::c_char,
-                    b"tmux\x00" as *const u8 as *const libc::c_char);
-        environ_set(env,
-                    b"TERM_PROGRAM_VERSION\x00" as *const u8 as
-                        *const libc::c_char, 0 as libc::c_int,
-                    b"%s\x00" as *const u8 as *const libc::c_char,
-                    getversion());
+        value = options_get_string(
+            global_options,
+            b"default-terminal\x00" as *const u8 as *const libc::c_char,
+        );
+        environ_set(
+            env,
+            b"TERM\x00" as *const u8 as *const libc::c_char,
+            0 as libc::c_int,
+            b"%s\x00" as *const u8 as *const libc::c_char,
+            value,
+        );
+        environ_set(
+            env,
+            b"TERM_PROGRAM\x00" as *const u8 as *const libc::c_char,
+            0 as libc::c_int,
+            b"%s\x00" as *const u8 as *const libc::c_char,
+            b"tmux\x00" as *const u8 as *const libc::c_char,
+        );
+        environ_set(
+            env,
+            b"TERM_PROGRAM_VERSION\x00" as *const u8 as *const libc::c_char,
+            0 as libc::c_int,
+            b"%s\x00" as *const u8 as *const libc::c_char,
+            getversion(),
+        );
     }
     if !s.is_null() {
         idx = (*s).id as libc::c_int
-    } else { idx = -(1 as libc::c_int) }
-    environ_set(env, b"TMUX\x00" as *const u8 as *const libc::c_char,
-                0 as libc::c_int,
-                b"%s,%ld,%d\x00" as *const u8 as *const libc::c_char,
-                socket_path, getpid() as libc::c_long, idx);
+    } else {
+        idx = -(1 as libc::c_int)
+    }
+    environ_set(
+        env,
+        b"TMUX\x00" as *const u8 as *const libc::c_char,
+        0 as libc::c_int,
+        b"%s,%ld,%d\x00" as *const u8 as *const libc::c_char,
+        socket_path,
+        getpid() as libc::c_long,
+        idx,
+    );
     return env;
 }
