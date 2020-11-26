@@ -1142,7 +1142,7 @@ pub struct clients {
     pub tqh_last: *mut *mut client,
 }
 #[no_mangle]
-pub static mut cmd_list_clients_entry: cmd_entry = unsafe {
+pub static mut cmd_list_clients_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"list-clients\x00" as *const u8 as *const libc::c_char,

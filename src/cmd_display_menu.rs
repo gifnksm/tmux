@@ -1223,7 +1223,7 @@ pub struct C2RustUnnamed_32 {
 }
 pub type popup_close_cb = Option<unsafe extern "C" fn(_: libc::c_int, _: *mut libc::c_void) -> ()>;
 #[no_mangle]
-pub static mut cmd_display_menu_entry: cmd_entry = unsafe {
+pub static mut cmd_display_menu_entry: cmd_entry = {
     {
         let mut init =
                 cmd_entry{name:
@@ -1273,7 +1273,7 @@ pub static mut cmd_display_menu_entry: cmd_entry = unsafe {
     }
 };
 #[no_mangle]
-pub static mut cmd_display_popup_entry: cmd_entry = unsafe {
+pub static mut cmd_display_popup_entry: cmd_entry = {
     {
         let mut init =
                 cmd_entry{name:

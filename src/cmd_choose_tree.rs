@@ -1125,7 +1125,7 @@ pub struct C2RustUnnamed_32 {
     pub upper: libc::c_int,
 }
 #[no_mangle]
-pub static mut cmd_choose_tree_entry: cmd_entry = unsafe {
+pub static mut cmd_choose_tree_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"choose-tree\x00" as *const u8 as *const libc::c_char,
@@ -1164,7 +1164,7 @@ pub static mut cmd_choose_tree_entry: cmd_entry = unsafe {
     }
 };
 #[no_mangle]
-pub static mut cmd_choose_client_entry: cmd_entry = unsafe {
+pub static mut cmd_choose_client_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"choose-client\x00" as *const u8 as *const libc::c_char,
@@ -1202,7 +1202,7 @@ pub static mut cmd_choose_client_entry: cmd_entry = unsafe {
     }
 };
 #[no_mangle]
-pub static mut cmd_choose_buffer_entry: cmd_entry = unsafe {
+pub static mut cmd_choose_buffer_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"choose-buffer\x00" as *const u8 as *const libc::c_char,
@@ -1240,7 +1240,7 @@ pub static mut cmd_choose_buffer_entry: cmd_entry = unsafe {
     }
 };
 #[no_mangle]
-pub static mut cmd_customize_mode_entry: cmd_entry = unsafe {
+pub static mut cmd_customize_mode_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"customize-mode\x00" as *const u8 as *const libc::c_char,

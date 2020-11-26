@@ -1382,7 +1382,7 @@ pub struct C2RustUnnamed_33 {
     pub upper: libc::c_int,
 }
 #[no_mangle]
-pub static mut cmd_list_keys_entry: cmd_entry = unsafe {
+pub static mut cmd_list_keys_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"list-keys\x00" as *const u8 as *const libc::c_char,
@@ -1417,7 +1417,7 @@ pub static mut cmd_list_keys_entry: cmd_entry = unsafe {
     }
 };
 #[no_mangle]
-pub static mut cmd_list_commands_entry: cmd_entry = unsafe {
+pub static mut cmd_list_commands_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"list-commands\x00" as *const u8 as *const libc::c_char,

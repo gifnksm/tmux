@@ -1204,7 +1204,7 @@ pub struct cmd_source_file_data {
     pub nfiles: u_int,
 }
 #[no_mangle]
-pub static mut cmd_source_file_entry: cmd_entry = unsafe {
+pub static mut cmd_source_file_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"source-file\x00" as *const u8 as *const libc::c_char,

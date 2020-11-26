@@ -1201,7 +1201,7 @@ pub struct clients {
     pub tqh_last: *mut *mut client,
 }
 #[no_mangle]
-pub static mut cmd_attach_session_entry: cmd_entry = unsafe {
+pub static mut cmd_attach_session_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"attach-session\x00" as *const u8 as *const libc::c_char,

@@ -1207,7 +1207,7 @@ pub struct clients {
     pub tqh_last: *mut *mut client,
 }
 #[no_mangle]
-pub static mut cmd_select_pane_entry: cmd_entry = unsafe {
+pub static mut cmd_select_pane_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"select-pane\x00" as *const u8 as *const libc::c_char,
@@ -1245,7 +1245,7 @@ pub static mut cmd_select_pane_entry: cmd_entry = unsafe {
     }
 };
 #[no_mangle]
-pub static mut cmd_last_pane_entry: cmd_entry = unsafe {
+pub static mut cmd_last_pane_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"last-pane\x00" as *const u8 as *const libc::c_char,

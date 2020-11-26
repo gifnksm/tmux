@@ -1174,7 +1174,7 @@ pub struct wait_channels {
     pub rbh_root: *mut wait_channel,
 }
 #[no_mangle]
-pub static mut cmd_wait_for_entry: cmd_entry = unsafe {
+pub static mut cmd_wait_for_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"wait-for\x00" as *const u8 as *const libc::c_char,

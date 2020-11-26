@@ -1848,7 +1848,7 @@ static mut window_customize_menu_items: [menu_item; 9] = [
     },
 ];
 #[no_mangle]
-pub static mut window_customize_mode: window_mode = unsafe {
+pub static mut window_customize_mode: window_mode = {
     {
         let mut init =
                 window_mode{name:

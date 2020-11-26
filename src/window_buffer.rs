@@ -1471,7 +1471,7 @@ static mut window_buffer_menu_items: [menu_item; 12] = [
     },
 ];
 #[no_mangle]
-pub static mut window_buffer_mode: window_mode = unsafe {
+pub static mut window_buffer_mode: window_mode = {
     {
         let mut init = window_mode {
             name: b"buffer-mode\x00" as *const u8 as *const libc::c_char,

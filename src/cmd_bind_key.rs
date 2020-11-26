@@ -1152,7 +1152,7 @@ pub struct C2RustUnnamed_32 {
     pub upper: libc::c_int,
 }
 #[no_mangle]
-pub static mut cmd_bind_key_entry: cmd_entry = unsafe {
+pub static mut cmd_bind_key_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"bind-key\x00" as *const u8 as *const libc::c_char,

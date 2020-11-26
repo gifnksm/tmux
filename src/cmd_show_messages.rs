@@ -1383,7 +1383,7 @@ pub struct C2RustUnnamed_33 {
     pub upper: libc::c_int,
 }
 #[no_mangle]
-pub static mut cmd_show_messages_entry: cmd_entry = unsafe {
+pub static mut cmd_show_messages_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"show-messages\x00" as *const u8 as *const libc::c_char,

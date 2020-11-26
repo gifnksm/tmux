@@ -1258,7 +1258,7 @@ pub struct options_table_entry {
     pub unit: *const libc::c_char,
 }
 #[no_mangle]
-pub static mut cmd_set_option_entry: cmd_entry = unsafe {
+pub static mut cmd_set_option_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"set-option\x00" as *const u8 as *const libc::c_char,
@@ -1296,7 +1296,7 @@ pub static mut cmd_set_option_entry: cmd_entry = unsafe {
     }
 };
 #[no_mangle]
-pub static mut cmd_set_window_option_entry: cmd_entry = unsafe {
+pub static mut cmd_set_window_option_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"set-window-option\x00" as *const u8 as *const libc::c_char,
@@ -1334,7 +1334,7 @@ pub static mut cmd_set_window_option_entry: cmd_entry = unsafe {
     }
 };
 #[no_mangle]
-pub static mut cmd_set_hook_entry: cmd_entry = unsafe {
+pub static mut cmd_set_hook_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"set-hook\x00" as *const u8 as *const libc::c_char,

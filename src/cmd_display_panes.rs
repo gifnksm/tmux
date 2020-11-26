@@ -1206,7 +1206,7 @@ pub struct cmd_display_panes_data {
     pub command: *mut libc::c_char,
 }
 #[no_mangle]
-pub static mut cmd_display_panes_entry: cmd_entry = unsafe {
+pub static mut cmd_display_panes_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"display-panes\x00" as *const u8 as *const libc::c_char,

@@ -1173,7 +1173,7 @@ unsafe extern "C" fn tolower(mut __c: libc::c_int) -> libc::c_int {
     };
 }
 #[no_mangle]
-pub static mut cmd_confirm_before_entry: cmd_entry = unsafe {
+pub static mut cmd_confirm_before_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"confirm-before\x00" as *const u8 as *const libc::c_char,

@@ -1201,7 +1201,7 @@ pub struct options_table_entry {
     pub unit: *const libc::c_char,
 }
 #[no_mangle]
-pub static mut cmd_show_options_entry: cmd_entry = unsafe {
+pub static mut cmd_show_options_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"show-options\x00" as *const u8 as *const libc::c_char,
@@ -1238,7 +1238,7 @@ pub static mut cmd_show_options_entry: cmd_entry = unsafe {
     }
 };
 #[no_mangle]
-pub static mut cmd_show_window_options_entry: cmd_entry = unsafe {
+pub static mut cmd_show_window_options_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"show-window-options\x00" as *const u8 as *const libc::c_char,
@@ -1275,7 +1275,7 @@ pub static mut cmd_show_window_options_entry: cmd_entry = unsafe {
     }
 };
 #[no_mangle]
-pub static mut cmd_show_hooks_entry: cmd_entry = unsafe {
+pub static mut cmd_show_hooks_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"show-hooks\x00" as *const u8 as *const libc::c_char,

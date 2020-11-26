@@ -1757,7 +1757,7 @@ static mut window_tree_menu_items: [menu_item; 13] = [
     },
 ];
 #[no_mangle]
-pub static mut window_tree_mode: window_mode = unsafe {
+pub static mut window_tree_mode: window_mode = {
     {
         let mut init =
                 window_mode{name:

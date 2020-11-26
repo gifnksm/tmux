@@ -1561,7 +1561,7 @@ unsafe extern "C" fn tolower(mut __c: libc::c_int) -> libc::c_int {
     };
 }
 #[no_mangle]
-pub static mut window_copy_mode: window_mode = unsafe {
+pub static mut window_copy_mode: window_mode = {
     {
         let mut init = window_mode {
             name: b"copy-mode\x00" as *const u8 as *const libc::c_char,
@@ -1604,7 +1604,7 @@ pub static mut window_copy_mode: window_mode = unsafe {
     }
 };
 #[no_mangle]
-pub static mut window_view_mode: window_mode = unsafe {
+pub static mut window_view_mode: window_mode = {
     {
         let mut init = window_mode {
             name: b"view-mode\x00" as *const u8 as *const libc::c_char,
@@ -3932,7 +3932,7 @@ unsafe extern "C" fn window_copy_cmd_refresh_from_pane(
     window_copy_size_changed(wme);
     return WINDOW_COPY_CMD_REDRAW;
 }
-static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = unsafe {
+static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
     [
         {
             let mut init = C2RustUnnamed_35 {

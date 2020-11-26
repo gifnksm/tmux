@@ -1112,7 +1112,7 @@ pub struct C2RustUnnamed_32 {
     pub upper: libc::c_int,
 }
 #[no_mangle]
-pub static mut cmd_lock_server_entry: cmd_entry = unsafe {
+pub static mut cmd_lock_server_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"lock-server\x00" as *const u8 as *const libc::c_char,
@@ -1146,7 +1146,7 @@ pub static mut cmd_lock_server_entry: cmd_entry = unsafe {
     }
 };
 #[no_mangle]
-pub static mut cmd_lock_session_entry: cmd_entry = unsafe {
+pub static mut cmd_lock_session_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"lock-session\x00" as *const u8 as *const libc::c_char,
@@ -1183,7 +1183,7 @@ pub static mut cmd_lock_session_entry: cmd_entry = unsafe {
     }
 };
 #[no_mangle]
-pub static mut cmd_lock_client_entry: cmd_entry = unsafe {
+pub static mut cmd_lock_client_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"lock-client\x00" as *const u8 as *const libc::c_char,

@@ -1126,7 +1126,7 @@ pub struct C2RustUnnamed_32 {
     pub upper: libc::c_int,
 }
 #[no_mangle]
-pub static mut cmd_kill_session_entry: cmd_entry = unsafe {
+pub static mut cmd_kill_session_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"kill-session\x00" as *const u8 as *const libc::c_char,

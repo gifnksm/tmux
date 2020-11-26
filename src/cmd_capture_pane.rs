@@ -1174,7 +1174,7 @@ pub struct C2RustUnnamed_32 {
     pub upper: libc::c_int,
 }
 #[no_mangle]
-pub static mut cmd_capture_pane_entry: cmd_entry = unsafe {
+pub static mut cmd_capture_pane_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"capture-pane\x00" as *const u8 as *const libc::c_char,
@@ -1213,7 +1213,7 @@ pub static mut cmd_capture_pane_entry: cmd_entry = unsafe {
     }
 };
 #[no_mangle]
-pub static mut cmd_clear_history_entry: cmd_entry = unsafe {
+pub static mut cmd_clear_history_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"clear-history\x00" as *const u8 as *const libc::c_char,

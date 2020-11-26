@@ -1174,7 +1174,7 @@ pub struct spawn_context {
     pub flags: libc::c_int,
 }
 #[no_mangle]
-pub static mut cmd_new_window_entry: cmd_entry = unsafe {
+pub static mut cmd_new_window_entry: cmd_entry = {
     {
         let mut init =
                 cmd_entry{name:

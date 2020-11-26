@@ -1207,7 +1207,7 @@ pub struct window_clock_mode_data {
     pub timer: event,
 }
 #[no_mangle]
-pub static mut window_clock_mode: window_mode = unsafe {
+pub static mut window_clock_mode: window_mode = {
     {
         let mut init = window_mode {
             name: b"clock-mode\x00" as *const u8 as *const libc::c_char,

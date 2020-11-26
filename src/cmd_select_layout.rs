@@ -1132,7 +1132,7 @@ pub struct C2RustUnnamed_32 {
     pub upper: libc::c_int,
 }
 #[no_mangle]
-pub static mut cmd_select_layout_entry: cmd_entry = unsafe {
+pub static mut cmd_select_layout_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"select-layout\x00" as *const u8 as *const libc::c_char,
@@ -1170,7 +1170,7 @@ pub static mut cmd_select_layout_entry: cmd_entry = unsafe {
     }
 };
 #[no_mangle]
-pub static mut cmd_next_layout_entry: cmd_entry = unsafe {
+pub static mut cmd_next_layout_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"next-layout\x00" as *const u8 as *const libc::c_char,
@@ -1207,7 +1207,7 @@ pub static mut cmd_next_layout_entry: cmd_entry = unsafe {
     }
 };
 #[no_mangle]
-pub static mut cmd_previous_layout_entry: cmd_entry = unsafe {
+pub static mut cmd_previous_layout_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"previous-layout\x00" as *const u8 as *const libc::c_char,

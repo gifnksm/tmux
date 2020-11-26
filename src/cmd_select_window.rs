@@ -1134,7 +1134,7 @@ pub struct C2RustUnnamed_32 {
     pub upper: libc::c_int,
 }
 #[no_mangle]
-pub static mut cmd_select_window_entry: cmd_entry = unsafe {
+pub static mut cmd_select_window_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"select-window\x00" as *const u8 as *const libc::c_char,
@@ -1171,7 +1171,7 @@ pub static mut cmd_select_window_entry: cmd_entry = unsafe {
     }
 };
 #[no_mangle]
-pub static mut cmd_next_window_entry: cmd_entry = unsafe {
+pub static mut cmd_next_window_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"next-window\x00" as *const u8 as *const libc::c_char,
@@ -1208,7 +1208,7 @@ pub static mut cmd_next_window_entry: cmd_entry = unsafe {
     }
 };
 #[no_mangle]
-pub static mut cmd_previous_window_entry: cmd_entry = unsafe {
+pub static mut cmd_previous_window_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"previous-window\x00" as *const u8 as *const libc::c_char,
@@ -1245,7 +1245,7 @@ pub static mut cmd_previous_window_entry: cmd_entry = unsafe {
     }
 };
 #[no_mangle]
-pub static mut cmd_last_window_entry: cmd_entry = unsafe {
+pub static mut cmd_last_window_entry: cmd_entry = {
     {
         let mut init = cmd_entry {
             name: b"last-window\x00" as *const u8 as *const libc::c_char,

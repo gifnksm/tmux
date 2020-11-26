@@ -1401,7 +1401,7 @@ pub const CONTROL_SUB_ALL_PANES: control_sub_type = 2;
 pub const CONTROL_SUB_PANE: control_sub_type = 1;
 pub const CONTROL_SUB_SESSION: control_sub_type = 0;
 #[no_mangle]
-pub static mut cmd_refresh_client_entry: cmd_entry = unsafe {
+pub static mut cmd_refresh_client_entry: cmd_entry = {
     {
         let mut init =
                 cmd_entry{name:

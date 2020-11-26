@@ -1396,7 +1396,7 @@ static mut window_client_menu_items: [menu_item; 9] = [
     },
 ];
 #[no_mangle]
-pub static mut window_client_mode: window_mode = unsafe {
+pub static mut window_client_mode: window_mode = {
     {
         let mut init = window_mode {
             name: b"client-mode\x00" as *const u8 as *const libc::c_char,

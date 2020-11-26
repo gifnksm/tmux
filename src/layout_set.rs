@@ -1108,7 +1108,7 @@ pub struct C2RustUnnamed_32 {
     pub name: *const libc::c_char,
     pub arrange: Option<unsafe extern "C" fn(_: *mut window) -> ()>,
 }
-static mut layout_sets: [C2RustUnnamed_32; 5] = unsafe {
+static mut layout_sets: [C2RustUnnamed_32; 5] = {
     [
         {
             let mut init = C2RustUnnamed_32 {
