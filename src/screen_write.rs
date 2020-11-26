@@ -1270,8 +1270,8 @@ pub struct menu {
     pub width: u_int,
 }
 unsafe extern "C" fn screen_write_offset_timer(
-    mut fd: libc::c_int,
-    mut events: libc::c_short,
+    mut _fd: libc::c_int,
+    mut _events: libc::c_short,
     mut data: *mut libc::c_void,
 ) {
     let mut w: *mut window = data as *mut window;

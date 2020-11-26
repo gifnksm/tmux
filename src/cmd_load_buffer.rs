@@ -1106,7 +1106,7 @@ pub static mut cmd_load_buffer_entry: cmd_entry = unsafe {
     }
 };
 unsafe extern "C" fn cmd_load_buffer_done(
-    mut c: *mut client,
+    mut _c: *mut client,
     mut path: *const libc::c_char,
     mut error: libc::c_int,
     mut closed: libc::c_int,

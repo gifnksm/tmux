@@ -1568,8 +1568,8 @@ pub unsafe extern "C" fn tty_set_size(
     (*tty).ypixel = ypixel;
 }
 unsafe extern "C" fn tty_read_callback(
-    mut fd: libc::c_int,
-    mut events: libc::c_short,
+    mut _fd: libc::c_int,
+    mut _events: libc::c_short,
     mut data: *mut libc::c_void,
 ) {
     let mut tty: *mut tty = data as *mut tty;
@@ -1604,8 +1604,8 @@ unsafe extern "C" fn tty_read_callback(
     while tty_keys_next(tty) != 0 {}
 }
 unsafe extern "C" fn tty_timer_callback(
-    mut fd: libc::c_int,
-    mut events: libc::c_short,
+    mut _fd: libc::c_int,
+    mut _events: libc::c_short,
     mut data: *mut libc::c_void,
 ) {
     let mut tty: *mut tty = data as *mut tty;
@@ -1681,8 +1681,8 @@ unsafe extern "C" fn tty_block_maybe(mut tty: *mut tty) -> libc::c_int {
     return 1 as libc::c_int;
 }
 unsafe extern "C" fn tty_write_callback(
-    mut fd: libc::c_int,
-    mut events: libc::c_short,
+    mut _fd: libc::c_int,
+    mut _events: libc::c_short,
     mut data: *mut libc::c_void,
 ) {
     let mut tty: *mut tty = data as *mut tty;
@@ -1787,8 +1787,8 @@ pub unsafe extern "C" fn tty_open(
     return 0 as libc::c_int;
 }
 unsafe extern "C" fn tty_start_timer_callback(
-    mut fd: libc::c_int,
-    mut events: libc::c_short,
+    mut _fd: libc::c_int,
+    mut _events: libc::c_short,
     mut data: *mut libc::c_void,
 ) {
     let mut tty: *mut tty = data as *mut tty;
@@ -2585,7 +2585,7 @@ unsafe extern "C" fn tty_get_palette(
  * probably several times now? Currently yes if it is more than 50% of the
  * pane.
  */
-unsafe extern "C" fn tty_large_region(mut tty: *mut tty, mut ctx: *const tty_ctx) -> libc::c_int {
+unsafe extern "C" fn tty_large_region(mut _tty: *mut tty, mut ctx: *const tty_ctx) -> libc::c_int {
     return ((*ctx).orlower.wrapping_sub((*ctx).orupper)
         >= (*ctx).sy.wrapping_div(2 as libc::c_int as libc::c_uint)) as libc::c_int;
 }
@@ -2646,7 +2646,7 @@ unsafe extern "C" fn tty_redraw_region(mut tty: *mut tty, mut ctx: *const tty_ct
 }
 /* Is this position visible in the pane? */
 unsafe extern "C" fn tty_is_visible(
-    mut tty: *mut tty,
+    mut _tty: *mut tty,
     mut ctx: *const tty_ctx,
     mut px: u_int,
     mut py: u_int,
@@ -3938,7 +3938,7 @@ pub unsafe extern "C" fn tty_cmd_rawstring(mut tty: *mut tty, mut ctx: *const tt
     tty_invalidate(tty);
 }
 #[no_mangle]
-pub unsafe extern "C" fn tty_cmd_syncstart(mut tty: *mut tty, mut ctx: *const tty_ctx) {
+pub unsafe extern "C" fn tty_cmd_syncstart(mut tty: *mut tty, mut _ctx: *const tty_ctx) {
     tty_sync_start(tty);
 }
 #[no_mangle]
@@ -4674,7 +4674,7 @@ unsafe extern "C" fn tty_check_bg(
     };
 }
 unsafe extern "C" fn tty_check_us(
-    mut tty: *mut tty,
+    mut _tty: *mut tty,
     mut palette: *mut libc::c_int,
     mut gc: *mut grid_cell,
 ) {

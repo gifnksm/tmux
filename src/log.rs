@@ -122,7 +122,7 @@ pub type event_log_cb = Option<unsafe extern "C" fn(_: libc::c_int, _: *const li
 static mut log_file: *mut FILE = 0 as *const FILE as *mut FILE;
 static mut log_level: libc::c_int = 0;
 /* Log callback for libevent. */
-unsafe extern "C" fn log_event_cb(mut severity: libc::c_int, mut msg: *const libc::c_char) {
+unsafe extern "C" fn log_event_cb(mut _severity: libc::c_int, mut msg: *const libc::c_char) {
     log_debug(b"%s\x00" as *const u8 as *const libc::c_char, msg);
 }
 /* Increment log level. */

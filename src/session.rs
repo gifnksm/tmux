@@ -2444,8 +2444,8 @@ pub unsafe extern "C" fn session_remove_ref(mut s: *mut session, mut from: *cons
 }
 /* Free session. */
 unsafe extern "C" fn session_free(
-    mut fd: libc::c_int,
-    mut events: libc::c_short,
+    mut _fd: libc::c_int,
+    mut _events: libc::c_short,
     mut arg: *mut libc::c_void,
 ) {
     let mut s: *mut session = arg as *mut session;
@@ -2526,8 +2526,8 @@ pub unsafe extern "C" fn session_check_name(mut name: *const libc::c_char) -> *m
 }
 /* Lock session if it has timed out. */
 unsafe extern "C" fn session_lock_timer(
-    mut fd: libc::c_int,
-    mut events: libc::c_short,
+    mut _fd: libc::c_int,
+    mut _events: libc::c_short,
     mut arg: *mut libc::c_void,
 ) {
     let mut s: *mut session = arg as *mut session;

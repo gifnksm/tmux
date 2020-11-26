@@ -54,7 +54,7 @@ pub unsafe extern "C" fn getptmfd() -> libc::c_int {
 }
 #[no_mangle]
 pub unsafe extern "C" fn fdforkpty(
-    mut ptmfd: libc::c_int,
+    mut _ptmfd: libc::c_int,
     mut master: *mut libc::c_int,
     mut name: *mut libc::c_char,
     mut tio: *mut termios,

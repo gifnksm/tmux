@@ -1524,13 +1524,13 @@ pub unsafe extern "C" fn menu_free(mut menu: *mut menu) {
 }
 unsafe extern "C" fn menu_mode_cb(
     mut c: *mut client,
-    mut cx: *mut u_int,
-    mut cy: *mut u_int,
+    mut _cx: *mut u_int,
+    mut _cy: *mut u_int,
 ) -> *mut screen {
     let mut md: *mut menu_data = (*c).overlay_data as *mut menu_data;
     return &mut (*md).s;
 }
-unsafe extern "C" fn menu_draw_cb(mut c: *mut client, mut ctx0: *mut screen_redraw_ctx) {
+unsafe extern "C" fn menu_draw_cb(mut c: *mut client, mut _ctx0: *mut screen_redraw_ctx) {
     let mut md: *mut menu_data = (*c).overlay_data as *mut menu_data;
     let mut tty: *mut tty = &mut (*c).tty;
     let mut s: *mut screen = &mut (*md).s;

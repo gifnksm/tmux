@@ -4556,8 +4556,8 @@ pub unsafe extern "C" fn tty_keys_next(mut tty: *mut tty) -> libc::c_int {
 }
 /* Key timer callback. */
 unsafe extern "C" fn tty_keys_callback(
-    mut fd: libc::c_int,
-    mut events: libc::c_short,
+    mut _fd: libc::c_int,
+    mut _events: libc::c_short,
     mut data: *mut libc::c_void,
 ) {
     let mut tty: *mut tty = data as *mut tty;
@@ -4886,7 +4886,7 @@ unsafe extern "C" fn tty_keys_mouse(
  * partial.
  */
 unsafe extern "C" fn tty_keys_clipboard(
-    mut tty: *mut tty,
+    mut _tty: *mut tty,
     mut buf: *const libc::c_char,
     mut len: size_t,
     mut size: *mut size_t,

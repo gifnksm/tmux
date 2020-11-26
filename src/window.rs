@@ -4625,7 +4625,7 @@ unsafe extern "C" fn window_pane_destroy(mut wp: *mut window_pane) {
     free(wp as *mut libc::c_void);
 }
 unsafe extern "C" fn window_pane_read_callback(
-    mut bufev: *mut bufferevent,
+    mut _bufev: *mut bufferevent,
     mut data: *mut libc::c_void,
 ) {
     let mut wp: *mut window_pane = data as *mut window_pane;
@@ -4658,8 +4658,8 @@ unsafe extern "C" fn window_pane_read_callback(
     bufferevent_disable((*wp).event, 0x2 as libc::c_int as libc::c_short);
 }
 unsafe extern "C" fn window_pane_error_callback(
-    mut bufev: *mut bufferevent,
-    mut what: libc::c_short,
+    mut _bufev: *mut bufferevent,
+    mut _what: libc::c_short,
     mut data: *mut libc::c_void,
 ) {
     let mut wp: *mut window_pane = data as *mut window_pane;
@@ -5436,7 +5436,7 @@ pub unsafe extern "C" fn winlink_shuffle_up(
 }
 unsafe extern "C" fn window_pane_input_callback(
     mut c: *mut client,
-    mut path: *const libc::c_char,
+    mut _path: *const libc::c_char,
     mut error: libc::c_int,
     mut closed: libc::c_int,
     mut buffer: *mut evbuffer,

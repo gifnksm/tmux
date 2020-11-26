@@ -1860,7 +1860,7 @@ pub unsafe extern "C" fn server_update_socket() {
 unsafe extern "C" fn server_accept(
     mut fd: libc::c_int,
     mut events: libc::c_short,
-    mut data: *mut libc::c_void,
+    mut _data: *mut libc::c_void,
 ) {
     let mut sa: sockaddr_storage = sockaddr_storage {
         ss_family: 0,

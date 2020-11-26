@@ -1479,7 +1479,7 @@ unsafe extern "C" fn window_buffer_cmp(
 unsafe extern "C" fn window_buffer_build(
     mut modedata: *mut libc::c_void,
     mut sort_crit: *mut mode_tree_sort_criteria,
-    mut tag: *mut uint64_t,
+    mut _tag: *mut uint64_t,
     mut filter: *const libc::c_char,
 ) {
     let mut data: *mut window_buffer_modedata = modedata as *mut window_buffer_modedata;
@@ -1578,7 +1578,7 @@ unsafe extern "C" fn window_buffer_build(
     }
 }
 unsafe extern "C" fn window_buffer_draw(
-    mut modedata: *mut libc::c_void,
+    mut _modedata: *mut libc::c_void,
     mut itemdata: *mut libc::c_void,
     mut ctx: *mut screen_write_ctx,
     mut sx: u_int,
@@ -1642,7 +1642,7 @@ unsafe extern "C" fn window_buffer_draw(
     free(buf as *mut libc::c_void);
 }
 unsafe extern "C" fn window_buffer_search(
-    mut modedata: *mut libc::c_void,
+    mut _modedata: *mut libc::c_void,
     mut itemdata: *mut libc::c_void,
     mut ss: *const libc::c_char,
 ) -> libc::c_int {
@@ -1805,8 +1805,8 @@ unsafe extern "C" fn window_buffer_resize(
 unsafe extern "C" fn window_buffer_do_delete(
     mut modedata: *mut libc::c_void,
     mut itemdata: *mut libc::c_void,
-    mut c: *mut client,
-    mut key: key_code,
+    mut _c: *mut client,
+    mut _key: key_code,
 ) {
     let mut data: *mut window_buffer_modedata = modedata as *mut window_buffer_modedata;
     let mut item: *mut window_buffer_itemdata = itemdata as *mut window_buffer_itemdata;
@@ -1823,7 +1823,7 @@ unsafe extern "C" fn window_buffer_do_paste(
     mut modedata: *mut libc::c_void,
     mut itemdata: *mut libc::c_void,
     mut c: *mut client,
-    mut key: key_code,
+    mut _key: key_code,
 ) {
     let mut data: *mut window_buffer_modedata = modedata as *mut window_buffer_modedata;
     let mut item: *mut window_buffer_itemdata = itemdata as *mut window_buffer_itemdata;
@@ -1923,8 +1923,8 @@ unsafe extern "C" fn window_buffer_start_edit(
 unsafe extern "C" fn window_buffer_key(
     mut wme: *mut window_mode_entry,
     mut c: *mut client,
-    mut s: *mut session,
-    mut wl: *mut winlink,
+    mut _s: *mut session,
+    mut _wl: *mut winlink,
     mut key: key_code,
     mut m: *mut mouse_event,
 ) {

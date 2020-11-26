@@ -2820,7 +2820,7 @@ unsafe extern "C" fn window_tree_draw(
     };
 }
 unsafe extern "C" fn window_tree_search(
-    mut modedata: *mut libc::c_void,
+    mut _modedata: *mut libc::c_void,
     mut itemdata: *mut libc::c_void,
     mut ss: *const libc::c_char,
 ) -> libc::c_int {
@@ -3077,7 +3077,7 @@ unsafe extern "C" fn window_tree_command_each(
     mut modedata: *mut libc::c_void,
     mut itemdata: *mut libc::c_void,
     mut c: *mut client,
-    mut key: key_code,
+    mut _key: key_code,
 ) {
     let mut data: *mut window_tree_modedata = modedata as *mut window_tree_modedata;
     let mut item: *mut window_tree_itemdata = itemdata as *mut window_tree_itemdata;
@@ -3098,7 +3098,7 @@ unsafe extern "C" fn window_tree_command_each(
     free(name as *mut libc::c_void);
 }
 unsafe extern "C" fn window_tree_command_done(
-    mut item: *mut cmdq_item,
+    mut _item: *mut cmdq_item,
     mut modedata: *mut libc::c_void,
 ) -> cmd_retval {
     let mut data: *mut window_tree_modedata = modedata as *mut window_tree_modedata;
@@ -3114,7 +3114,7 @@ unsafe extern "C" fn window_tree_command_callback(
     mut c: *mut client,
     mut modedata: *mut libc::c_void,
     mut s: *const libc::c_char,
-    mut done: libc::c_int,
+    mut _done: libc::c_int,
 ) -> libc::c_int {
     let mut data: *mut window_tree_modedata = modedata as *mut window_tree_modedata;
     if s.is_null() || *s as libc::c_int == '\u{0}' as i32 || (*data).dead != 0 {
@@ -3156,10 +3156,10 @@ unsafe extern "C" fn window_tree_command_free(mut modedata: *mut libc::c_void) {
     window_tree_destroy(data);
 }
 unsafe extern "C" fn window_tree_kill_each(
-    mut modedata: *mut libc::c_void,
+    mut _modedata: *mut libc::c_void,
     mut itemdata: *mut libc::c_void,
-    mut c: *mut client,
-    mut key: key_code,
+    mut _c: *mut client,
+    mut _key: key_code,
 ) {
     let mut item: *mut window_tree_itemdata = itemdata as *mut window_tree_itemdata;
     let mut s: *mut session = 0 as *mut session;
@@ -3197,7 +3197,7 @@ unsafe extern "C" fn window_tree_kill_current_callback(
     mut c: *mut client,
     mut modedata: *mut libc::c_void,
     mut s: *const libc::c_char,
-    mut done: libc::c_int,
+    mut _done: libc::c_int,
 ) -> libc::c_int {
     let mut data: *mut window_tree_modedata = modedata as *mut window_tree_modedata;
     let mut mtd: *mut mode_tree_data = (*data).data;
@@ -3210,11 +3210,11 @@ unsafe extern "C" fn window_tree_kill_current_callback(
             if 0 != 0 {
                 let mut __c: libc::c_int =
                     *s.offset(0 as libc::c_int as isize) as u_char as libc::c_int;
-                __res = (if __c < -(128 as libc::c_int) || __c > 255 as libc::c_int {
+                __res = if __c < -(128 as libc::c_int) || __c > 255 as libc::c_int {
                     __c
                 } else {
                     *(*__ctype_tolower_loc()).offset(__c as isize)
-                })
+                }
             } else {
                 __res = tolower(*s.offset(0 as libc::c_int as isize) as u_char as libc::c_int)
             }
@@ -3253,7 +3253,7 @@ unsafe extern "C" fn window_tree_kill_tagged_callback(
     mut c: *mut client,
     mut modedata: *mut libc::c_void,
     mut s: *const libc::c_char,
-    mut done: libc::c_int,
+    mut _done: libc::c_int,
 ) -> libc::c_int {
     let mut data: *mut window_tree_modedata = modedata as *mut window_tree_modedata;
     let mut mtd: *mut mode_tree_data = (*data).data;
@@ -3266,11 +3266,11 @@ unsafe extern "C" fn window_tree_kill_tagged_callback(
             if 0 != 0 {
                 let mut __c: libc::c_int =
                     *s.offset(0 as libc::c_int as isize) as u_char as libc::c_int;
-                __res = (if __c < -(128 as libc::c_int) || __c > 255 as libc::c_int {
+                __res = if __c < -(128 as libc::c_int) || __c > 255 as libc::c_int {
                     __c
                 } else {
                     *(*__ctype_tolower_loc()).offset(__c as isize)
-                })
+                }
             } else {
                 __res = tolower(*s.offset(0 as libc::c_int as isize) as u_char as libc::c_int)
             }
@@ -3390,8 +3390,8 @@ unsafe extern "C" fn window_tree_mouse(
 unsafe extern "C" fn window_tree_key(
     mut wme: *mut window_mode_entry,
     mut c: *mut client,
-    mut s: *mut session,
-    mut wl: *mut winlink,
+    mut _s: *mut session,
+    mut _wl: *mut winlink,
     mut key: key_code,
     mut m: *mut mouse_event,
 ) {

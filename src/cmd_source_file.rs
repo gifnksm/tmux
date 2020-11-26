@@ -1156,7 +1156,7 @@ pub static mut cmd_source_file_entry: cmd_entry = unsafe {
 };
 unsafe extern "C" fn cmd_source_file_complete_cb(
     mut item: *mut cmdq_item,
-    mut data: *mut libc::c_void,
+    mut _data: *mut libc::c_void,
 ) -> cmd_retval {
     cfg_print_causes(item);
     return CMD_RETURN_NORMAL;

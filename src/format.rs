@@ -2948,9 +2948,9 @@ pub unsafe extern "C" fn format_lost_client(mut c: *mut client) {
 }
 /* Remove old jobs periodically. */
 unsafe extern "C" fn format_job_timer(
-    mut fd: libc::c_int,
-    mut events: libc::c_short,
-    mut arg: *mut libc::c_void,
+    mut _fd: libc::c_int,
+    mut _events: libc::c_short,
+    mut _arg: *mut libc::c_void,
 ) {
     let mut c: *mut client = 0 as *mut client;
     let mut tv: timeval = {
@@ -2972,7 +2972,7 @@ unsafe extern "C" fn format_job_timer(
     event_add(&mut format_job_event, &mut tv);
 }
 /* Callback for host. */
-unsafe extern "C" fn format_cb_host(mut ft: *mut format_tree) -> *mut libc::c_char {
+unsafe extern "C" fn format_cb_host(mut _ft: *mut format_tree) -> *mut libc::c_char {
     let mut host: [libc::c_char; 65] = [0; 65];
     if gethostname(
         host.as_mut_ptr(),
@@ -2984,7 +2984,7 @@ unsafe extern "C" fn format_cb_host(mut ft: *mut format_tree) -> *mut libc::c_ch
     return xstrdup(host.as_mut_ptr());
 }
 /* Callback for host_short. */
-unsafe extern "C" fn format_cb_host_short(mut ft: *mut format_tree) -> *mut libc::c_char {
+unsafe extern "C" fn format_cb_host_short(mut _ft: *mut format_tree) -> *mut libc::c_char {
     let mut host: [libc::c_char; 65] = [0; 65];
     let mut cp: *mut libc::c_char = 0 as *mut libc::c_char;
     if gethostname(
@@ -3001,7 +3001,7 @@ unsafe extern "C" fn format_cb_host_short(mut ft: *mut format_tree) -> *mut libc
     return xstrdup(host.as_mut_ptr());
 }
 /* Callback for pid. */
-unsafe extern "C" fn format_cb_pid(mut ft: *mut format_tree) -> *mut libc::c_char {
+unsafe extern "C" fn format_cb_pid(mut _ft: *mut format_tree) -> *mut libc::c_char {
     let mut value: *mut libc::c_char = 0 as *mut libc::c_char;
     xasprintf(
         &mut value as *mut *mut libc::c_char,

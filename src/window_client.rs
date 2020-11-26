@@ -1447,7 +1447,7 @@ unsafe extern "C" fn window_client_cmp(
 unsafe extern "C" fn window_client_build(
     mut modedata: *mut libc::c_void,
     mut sort_crit: *mut mode_tree_sort_criteria,
-    mut tag: *mut uint64_t,
+    mut _tag: *mut uint64_t,
     mut filter: *const libc::c_char,
 ) {
     let mut data: *mut window_client_modedata = modedata as *mut window_client_modedata;
@@ -1542,7 +1542,7 @@ unsafe extern "C" fn window_client_build(
     }
 }
 unsafe extern "C" fn window_client_draw(
-    mut modedata: *mut libc::c_void,
+    mut _modedata: *mut libc::c_void,
     mut itemdata: *mut libc::c_void,
     mut ctx: *mut screen_write_ctx,
     mut sx: u_int,
@@ -1662,7 +1662,7 @@ unsafe extern "C" fn window_client_menu(
  */
 unsafe extern "C" fn window_client_init(
     mut wme: *mut window_mode_entry,
-    mut fs: *mut cmd_find_state,
+    mut _fs: *mut cmd_find_state,
     mut args: *mut args,
 ) -> *mut screen {
     let mut wp: *mut window_pane = (*wme).wp;
@@ -1757,7 +1757,7 @@ unsafe extern "C" fn window_client_resize(
 unsafe extern "C" fn window_client_do_detach(
     mut modedata: *mut libc::c_void,
     mut itemdata: *mut libc::c_void,
-    mut c: *mut client,
+    mut _c: *mut client,
     mut key: key_code,
 ) {
     let mut data: *mut window_client_modedata = modedata as *mut window_client_modedata;
@@ -1776,8 +1776,8 @@ unsafe extern "C" fn window_client_do_detach(
 unsafe extern "C" fn window_client_key(
     mut wme: *mut window_mode_entry,
     mut c: *mut client,
-    mut s: *mut session,
-    mut wl: *mut winlink,
+    mut _s: *mut session,
+    mut _wl: *mut winlink,
     mut key: key_code,
     mut m: *mut mouse_event,
 ) {

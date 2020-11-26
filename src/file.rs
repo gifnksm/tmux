@@ -1780,8 +1780,8 @@ pub unsafe extern "C" fn file_free(mut cf: *mut client_file) {
     free(cf as *mut libc::c_void);
 }
 unsafe extern "C" fn file_fire_done_cb(
-    mut fd: libc::c_int,
-    mut events: libc::c_short,
+    mut _fd: libc::c_int,
+    mut _events: libc::c_short,
     mut arg: *mut libc::c_void,
 ) {
     let mut cf: *mut client_file = arg as *mut client_file;
@@ -2234,8 +2234,8 @@ pub unsafe extern "C" fn file_read(
     file_fire_done(cf);
 }
 unsafe extern "C" fn file_push_cb(
-    mut fd: libc::c_int,
-    mut events: libc::c_short,
+    mut _fd: libc::c_int,
+    mut _events: libc::c_short,
     mut arg: *mut libc::c_void,
 ) {
     let mut cf: *mut client_file = arg as *mut client_file;

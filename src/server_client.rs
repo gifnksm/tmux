@@ -2236,8 +2236,8 @@ pub unsafe extern "C" fn server_client_how_many() -> u_int {
 }
 /* Overlay timer callback. */
 unsafe extern "C" fn server_client_overlay_timer(
-    mut fd: libc::c_int,
-    mut events: libc::c_short,
+    mut _fd: libc::c_int,
+    mut _events: libc::c_short,
     mut data: *mut libc::c_void,
 ) {
     server_client_clear_overlay(data as *mut client);
@@ -2618,8 +2618,8 @@ pub unsafe extern "C" fn server_client_unref(mut c: *mut client) {
  */
 /* Free dead client. */
 unsafe extern "C" fn server_client_free(
-    mut fd: libc::c_int,
-    mut events: libc::c_short,
+    mut _fd: libc::c_int,
+    mut _events: libc::c_short,
     mut arg: *mut libc::c_void,
 ) {
     let mut c: *mut client = arg as *mut client;
@@ -4113,8 +4113,8 @@ unsafe extern "C" fn server_client_check_window_resize(mut w: *mut window) {
 }
 /* Resize timer event. */
 unsafe extern "C" fn server_client_resize_timer(
-    mut fd: libc::c_int,
-    mut events: libc::c_short,
+    mut _fd: libc::c_int,
+    mut _events: libc::c_short,
     mut data: *mut libc::c_void,
 ) {
     let mut wp: *mut window_pane = data as *mut window_pane;
@@ -4149,8 +4149,8 @@ unsafe extern "C" fn server_client_start_resize_timer(mut wp: *mut window_pane) 
 }
 /* Force timer event. */
 unsafe extern "C" fn server_client_force_timer(
-    mut fd: libc::c_int,
-    mut events: libc::c_short,
+    mut _fd: libc::c_int,
+    mut _events: libc::c_short,
     mut data: *mut libc::c_void,
 ) {
     let mut wp: *mut window_pane = data as *mut window_pane;
@@ -4611,8 +4611,8 @@ unsafe extern "C" fn server_client_reset_state(mut c: *mut client) {
 }
 /* Repeat time callback. */
 unsafe extern "C" fn server_client_repeat_timer(
-    mut fd: libc::c_int,
-    mut events: libc::c_short,
+    mut _fd: libc::c_int,
+    mut _events: libc::c_short,
     mut data: *mut libc::c_void,
 ) {
     let mut c: *mut client = data as *mut client;
@@ -4624,8 +4624,8 @@ unsafe extern "C" fn server_client_repeat_timer(
 }
 /* Double-click callback. */
 unsafe extern "C" fn server_client_click_timer(
-    mut fd: libc::c_int,
-    mut events: libc::c_short,
+    mut _fd: libc::c_int,
+    mut _events: libc::c_short,
     mut data: *mut libc::c_void,
 ) {
     let mut c: *mut client = data as *mut client;
@@ -4738,9 +4738,9 @@ unsafe extern "C" fn server_client_check_exit(mut c: *mut client) {
 }
 /* Redraw timer callback. */
 unsafe extern "C" fn server_client_redraw_timer(
-    mut fd: libc::c_int,
-    mut events: libc::c_short,
-    mut data: *mut libc::c_void,
+    mut _fd: libc::c_int,
+    mut _events: libc::c_short,
+    mut _data: *mut libc::c_void,
 ) {
     log_debug(b"redraw timer fired\x00" as *const u8 as *const libc::c_char);
 }
@@ -5145,7 +5145,7 @@ unsafe extern "C" fn server_client_dispatch(mut imsg: *mut imsg, mut arg: *mut l
 /* Callback when command is done. */
 unsafe extern "C" fn server_client_command_done(
     mut item: *mut cmdq_item,
-    mut data: *mut libc::c_void,
+    mut _data: *mut libc::c_void,
 ) -> cmd_retval {
     let mut c: *mut client = cmdq_get_client(item);
     if !(*c).flags & 0x80 as libc::c_int as libc::c_ulong != 0 {

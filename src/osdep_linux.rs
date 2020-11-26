@@ -94,7 +94,7 @@ pub type FILE = _IO_FILE;
 #[no_mangle]
 pub unsafe extern "C" fn osdep_get_name(
     mut fd: libc::c_int,
-    mut tty: *mut libc::c_char,
+    mut _tty: *mut libc::c_char,
 ) -> *mut libc::c_char {
     let mut f: *mut FILE = 0 as *mut FILE;
     let mut path: *mut libc::c_char = 0 as *mut libc::c_char;

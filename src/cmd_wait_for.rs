@@ -1715,7 +1715,7 @@ unsafe extern "C" fn cmd_wait_for_exec(
     return cmd_wait_for_wait(item, name, wc);
 }
 unsafe extern "C" fn cmd_wait_for_signal(
-    mut item: *mut cmdq_item,
+    mut _item: *mut cmdq_item,
     mut name: *const libc::c_char,
     mut wc: *mut wait_channel,
 ) -> cmd_retval {

@@ -1202,7 +1202,7 @@ unsafe extern "C" fn cmd_confirm_before_callback(
     mut c: *mut client,
     mut data: *mut libc::c_void,
     mut s: *const libc::c_char,
-    mut done: libc::c_int,
+    mut _done: libc::c_int,
 ) -> libc::c_int {
     let mut cdata: *mut cmd_confirm_before_data = data as *mut cmd_confirm_before_data;
     let mut error: *mut libc::c_char = 0 as *mut libc::c_char;
@@ -1219,11 +1219,11 @@ unsafe extern "C" fn cmd_confirm_before_callback(
             if 0 != 0 {
                 let mut __c: libc::c_int =
                     *s.offset(0 as libc::c_int as isize) as u_char as libc::c_int;
-                __res = (if __c < -(128 as libc::c_int) || __c > 255 as libc::c_int {
+                __res = if __c < -(128 as libc::c_int) || __c > 255 as libc::c_int {
                     __c
                 } else {
                     *(*__ctype_tolower_loc()).offset(__c as isize)
-                })
+                }
             } else {
                 __res = tolower(*s.offset(0 as libc::c_int as isize) as u_char as libc::c_int)
             }

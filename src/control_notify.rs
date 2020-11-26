@@ -1079,7 +1079,7 @@ pub unsafe extern "C" fn control_notify_window_pane_changed(mut w: *mut window) 
     }
 }
 #[no_mangle]
-pub unsafe extern "C" fn control_notify_window_unlinked(mut s: *mut session, mut w: *mut window) {
+pub unsafe extern "C" fn control_notify_window_unlinked(mut _s: *mut session, mut w: *mut window) {
     let mut c: *mut client = 0 as *mut client;
     let mut cs: *mut session = 0 as *mut session;
     c = clients.tqh_first;
@@ -1106,7 +1106,7 @@ pub unsafe extern "C" fn control_notify_window_unlinked(mut s: *mut session, mut
     }
 }
 #[no_mangle]
-pub unsafe extern "C" fn control_notify_window_linked(mut s: *mut session, mut w: *mut window) {
+pub unsafe extern "C" fn control_notify_window_linked(mut _s: *mut session, mut w: *mut window) {
     let mut c: *mut client = 0 as *mut client;
     let mut cs: *mut session = 0 as *mut session;
     c = clients.tqh_first;
@@ -1211,7 +1211,7 @@ pub unsafe extern "C" fn control_notify_session_renamed(mut s: *mut session) {
     }
 }
 #[no_mangle]
-pub unsafe extern "C" fn control_notify_session_created(mut s: *mut session) {
+pub unsafe extern "C" fn control_notify_session_created(mut _s: *mut session) {
     let mut c: *mut client = 0 as *mut client;
     c = clients.tqh_first;
     while !c.is_null() {
@@ -1225,7 +1225,7 @@ pub unsafe extern "C" fn control_notify_session_created(mut s: *mut session) {
     }
 }
 #[no_mangle]
-pub unsafe extern "C" fn control_notify_session_closed(mut s: *mut session) {
+pub unsafe extern "C" fn control_notify_session_closed(mut _s: *mut session) {
     let mut c: *mut client = 0 as *mut client;
     c = clients.tqh_first;
     while !c.is_null() {

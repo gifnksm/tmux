@@ -3855,8 +3855,8 @@ unsafe extern "C" fn control_error(
 }
 /* Control client error callback. */
 unsafe extern "C" fn control_error_callback(
-    mut bufev: *mut bufferevent,
-    mut what: libc::c_short,
+    mut _bufev: *mut bufferevent,
+    mut _what: libc::c_short,
     mut data: *mut libc::c_void,
 ) {
     let mut c: *mut client = data as *mut client;
@@ -3864,7 +3864,7 @@ unsafe extern "C" fn control_error_callback(
 }
 /* Control client input callback. Read lines and fire commands. */
 unsafe extern "C" fn control_read_callback(
-    mut bufev: *mut bufferevent,
+    mut _bufev: *mut bufferevent,
     mut data: *mut libc::c_void,
 ) {
     let mut c: *mut client = data as *mut client;
@@ -4144,7 +4144,7 @@ unsafe extern "C" fn control_write_pending(
 }
 /* Control client write callback. */
 unsafe extern "C" fn control_write_callback(
-    mut bufev: *mut bufferevent,
+    mut _bufev: *mut bufferevent,
     mut data: *mut libc::c_void,
 ) {
     let mut c: *mut client = data as *mut client; /* 3 bytes for \xxx */
@@ -4603,8 +4603,8 @@ unsafe extern "C" fn control_check_subs_all_windows(
 }
 /* Check subscriptions timer. */
 unsafe extern "C" fn control_check_subs_timer(
-    mut fd: libc::c_int,
-    mut events: libc::c_short,
+    mut _fd: libc::c_int,
+    mut _events: libc::c_short,
     mut data: *mut libc::c_void,
 ) {
     let mut c: *mut client = data as *mut client;

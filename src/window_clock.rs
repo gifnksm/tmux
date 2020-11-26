@@ -1683,8 +1683,8 @@ pub static mut window_clock_table: [[[libc::c_char; 5]; 5]; 14] = [
     ],
 ];
 unsafe extern "C" fn window_clock_timer_callback(
-    mut fd: libc::c_int,
-    mut events: libc::c_short,
+    mut _fd: libc::c_int,
+    mut _events: libc::c_short,
     mut arg: *mut libc::c_void,
 ) {
     let mut wme: *mut window_mode_entry = arg as *mut window_mode_entry;
@@ -1757,8 +1757,8 @@ unsafe extern "C" fn window_clock_timer_callback(
  */
 unsafe extern "C" fn window_clock_init(
     mut wme: *mut window_mode_entry,
-    mut fs: *mut cmd_find_state,
-    mut args: *mut args,
+    mut _fs: *mut cmd_find_state,
+    mut _args: *mut args,
 ) -> *mut screen {
     let mut wp: *mut window_pane = (*wme).wp;
     let mut data: *mut window_clock_mode_data = 0 as *mut window_clock_mode_data;
@@ -1818,11 +1818,11 @@ unsafe extern "C" fn window_clock_resize(
 }
 unsafe extern "C" fn window_clock_key(
     mut wme: *mut window_mode_entry,
-    mut c: *mut client,
-    mut s: *mut session,
-    mut wl: *mut winlink,
-    mut key: key_code,
-    mut m: *mut mouse_event,
+    mut _c: *mut client,
+    mut _s: *mut session,
+    mut _wl: *mut winlink,
+    mut _key: key_code,
+    mut _m: *mut mouse_event,
 ) {
     window_pane_reset_mode((*wme).wp);
 }

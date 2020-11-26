@@ -1280,7 +1280,7 @@ unsafe extern "C" fn clients_calculate_size(
 unsafe extern "C" fn default_window_size_skip_client(
     mut loop_0: *mut client,
     mut type_0: libc::c_int,
-    mut current: libc::c_int,
+    mut _current: libc::c_int,
     mut s: *mut session,
     mut w: *mut window,
 ) -> libc::c_int {
@@ -1401,9 +1401,9 @@ pub unsafe extern "C" fn default_window_size(
 }
 unsafe extern "C" fn recalculate_size_skip_client(
     mut loop_0: *mut client,
-    mut type_0: libc::c_int,
+    mut _type_0: libc::c_int,
     mut current: libc::c_int,
-    mut s: *mut session,
+    mut _s: *mut session,
     mut w: *mut window,
 ) -> libc::c_int {
     /*

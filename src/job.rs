@@ -1442,7 +1442,7 @@ pub unsafe extern "C" fn job_resize(mut job: *mut job, mut sx: u_int, mut sy: u_
  * output.
  */
 /* Job buffer read callback. */
-unsafe extern "C" fn job_read_callback(mut bufev: *mut bufferevent, mut data: *mut libc::c_void) {
+unsafe extern "C" fn job_read_callback(mut _bufev: *mut bufferevent, mut data: *mut libc::c_void) {
     let mut job: *mut job = data as *mut job;
     if (*job).updatecb.is_some() {
         (*job).updatecb.expect("non-null function pointer")(job);
@@ -1453,7 +1453,7 @@ unsafe extern "C" fn job_read_callback(mut bufev: *mut bufferevent, mut data: *m
  * (default is empty). If all the data has been written, disable the write
  * event.
  */
-unsafe extern "C" fn job_write_callback(mut bufev: *mut bufferevent, mut data: *mut libc::c_void) {
+unsafe extern "C" fn job_write_callback(mut _bufev: *mut bufferevent, mut data: *mut libc::c_void) {
     let mut job: *mut job = data as *mut job;
     let mut len: size_t = evbuffer_get_length(bufferevent_get_output((*job).event));
     log_debug(
@@ -1470,8 +1470,8 @@ unsafe extern "C" fn job_write_callback(mut bufev: *mut bufferevent, mut data: *
 }
 /* Job buffer error callback. */
 unsafe extern "C" fn job_error_callback(
-    mut bufev: *mut bufferevent,
-    mut events: libc::c_short,
+    mut _bufev: *mut bufferevent,
+    mut _events: libc::c_short,
     mut data: *mut libc::c_void,
 ) {
     let mut job: *mut job = data as *mut job;

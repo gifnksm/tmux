@@ -1560,8 +1560,8 @@ pub static mut window_view_mode: window_mode = unsafe {
     }
 };
 unsafe extern "C" fn window_copy_scroll_timer(
-    mut fd: libc::c_int,
-    mut events: libc::c_short,
+    mut _fd: libc::c_int,
+    mut _events: libc::c_short,
     mut arg: *mut libc::c_void,
 ) {
     let mut wme: *mut window_mode_entry = arg as *mut window_mode_entry;
@@ -1737,7 +1737,7 @@ unsafe extern "C" fn window_copy_common_init(
 }
 unsafe extern "C" fn window_copy_init(
     mut wme: *mut window_mode_entry,
-    mut fs: *mut cmd_find_state,
+    mut _fs: *mut cmd_find_state,
     mut args: *mut args,
 ) -> *mut screen {
     let mut wp: *mut window_pane = (*wme).swp;
@@ -1802,8 +1802,8 @@ unsafe extern "C" fn window_copy_init(
 }
 unsafe extern "C" fn window_copy_view_init(
     mut wme: *mut window_mode_entry,
-    mut fs: *mut cmd_find_state,
-    mut args: *mut args,
+    mut _fs: *mut cmd_find_state,
+    mut _args: *mut args,
 ) -> *mut screen {
     let mut wp: *mut window_pane = (*wme).wp;
     let mut data: *mut window_copy_mode_data = 0 as *mut window_copy_mode_data;
@@ -2467,7 +2467,7 @@ unsafe extern "C" fn window_copy_cmd_bottom_line(
     return WINDOW_COPY_CMD_REDRAW;
 }
 unsafe extern "C" fn window_copy_cmd_cancel(
-    mut cs: *mut window_copy_cmd_state,
+    mut _cs: *mut window_copy_cmd_state,
 ) -> window_copy_cmd_action {
     return WINDOW_COPY_CMD_CANCEL;
 }
@@ -5049,11 +5049,11 @@ unsafe extern "C" fn window_copy_search_compare(
             {
                 if 0 != 0 {
                     let mut __c: libc::c_int = (*ud).data[0 as libc::c_int as usize] as libc::c_int;
-                    __res = (if __c < -(128 as libc::c_int) || __c > 255 as libc::c_int {
+                    __res = if __c < -(128 as libc::c_int) || __c > 255 as libc::c_int {
                         __c
                     } else {
                         *(*__ctype_tolower_loc()).offset(__c as isize)
-                    })
+                    }
                 } else {
                     __res = tolower((*ud).data[0 as libc::c_int as usize] as libc::c_int)
                 }
@@ -5652,11 +5652,11 @@ unsafe extern "C" fn window_copy_is_lowercase(mut ptr: *const libc::c_char) -> l
                 {
                     if 0 != 0 {
                         let mut __c: libc::c_int = *ptr as u_char as libc::c_int;
-                        __res = (if __c < -(128 as libc::c_int) || __c > 255 as libc::c_int {
+                        __res = if __c < -(128 as libc::c_int) || __c > 255 as libc::c_int {
                             __c
                         } else {
                             *(*__ctype_tolower_loc()).offset(__c as isize)
-                        })
+                        }
                     } else {
                         __res = tolower(*ptr as u_char as libc::c_int)
                     }

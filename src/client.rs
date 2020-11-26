@@ -2253,8 +2253,8 @@ unsafe extern "C" fn client_send_identify(
 }
 /* File write error callback. */
 unsafe extern "C" fn client_write_error_callback(
-    mut bev: *mut bufferevent,
-    mut what: libc::c_short,
+    mut _bev: *mut bufferevent,
+    mut _what: libc::c_short,
     mut arg: *mut libc::c_void,
 ) {
     let mut cf: *mut client_file = arg as *mut client_file;
@@ -2271,7 +2271,7 @@ unsafe extern "C" fn client_write_error_callback(
     };
 }
 /* File write callback. */
-unsafe extern "C" fn client_write_callback(mut bev: *mut bufferevent, mut arg: *mut libc::c_void) {
+unsafe extern "C" fn client_write_callback(mut _bev: *mut bufferevent, mut arg: *mut libc::c_void) {
     let mut cf: *mut client_file = arg as *mut client_file;
     if (*cf).closed != 0
         && evbuffer_get_length((*(*cf).event).output) == 0 as libc::c_int as libc::c_ulong
@@ -2487,7 +2487,7 @@ unsafe extern "C" fn client_write_close(mut data: *mut libc::c_void, mut datalen
     };
 }
 /* File read callback. */
-unsafe extern "C" fn client_read_callback(mut bev: *mut bufferevent, mut arg: *mut libc::c_void) {
+unsafe extern "C" fn client_read_callback(mut _bev: *mut bufferevent, mut arg: *mut libc::c_void) {
     let mut cf: *mut client_file = arg as *mut client_file;
     let mut bdata: *mut libc::c_void = 0 as *mut libc::c_void;
     let mut bsize: size_t = 0;
@@ -2536,8 +2536,8 @@ unsafe extern "C" fn client_read_callback(mut bev: *mut bufferevent, mut arg: *m
 }
 /* File read error callback. */
 unsafe extern "C" fn client_read_error_callback(
-    mut bev: *mut bufferevent,
-    mut what: libc::c_short,
+    mut _bev: *mut bufferevent,
+    mut _what: libc::c_short,
     mut arg: *mut libc::c_void,
 ) {
     let mut cf: *mut client_file = arg as *mut client_file;
@@ -2808,7 +2808,7 @@ unsafe extern "C" fn client_signal(mut sig: libc::c_int) {
     };
 }
 /* Callback for client read events. */
-unsafe extern "C" fn client_dispatch(mut imsg: *mut imsg, mut arg: *mut libc::c_void) {
+unsafe extern "C" fn client_dispatch(mut imsg: *mut imsg, mut _arg: *mut libc::c_void) {
     if imsg.is_null() {
         client_exitreason = CLIENT_EXIT_LOST_SERVER;
         client_exitval = 1 as libc::c_int;

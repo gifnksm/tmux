@@ -15,7 +15,9 @@
     ptr_wrapping_offset_from,
     register_tool
 )]
-use ::c2rust_out::*;
+
+extern crate c2rust_out;
+
 extern "C" {
     pub type event_base;
     pub type _IO_wide_data;

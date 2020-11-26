@@ -3089,8 +3089,8 @@ unsafe extern "C" fn yyerror(mut fmt: *const libc::c_char, mut args: ...) -> lib
 }
 unsafe extern "C" fn yydestruct(
     mut yymsg: *const libc::c_char,
-    mut yykind: yysymbol_kind_t,
-    mut yyvaluep: *mut YYSTYPE,
+    mut _yykind: yysymbol_kind_t,
+    mut _yyvaluep: *mut YYSTYPE,
 ) {
     if yymsg.is_null() {
         yymsg = b"Deleting\x00" as *const u8 as *const libc::c_char

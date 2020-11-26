@@ -2211,7 +2211,7 @@ pub unsafe extern "C" fn key_bindings_first(mut table: *mut key_table) -> *mut k
 }
 #[no_mangle]
 pub unsafe extern "C" fn key_bindings_next(
-    mut table: *mut key_table,
+    mut _table: *mut key_table,
     mut bd: *mut key_binding,
 ) -> *mut key_binding {
     return key_bindings_RB_NEXT(bd);
@@ -2346,8 +2346,8 @@ pub unsafe extern "C" fn key_bindings_reset_table(mut name: *const libc::c_char)
     }
 }
 unsafe extern "C" fn key_bindings_init_done(
-    mut item: *mut cmdq_item,
-    mut data: *mut libc::c_void,
+    mut _item: *mut cmdq_item,
+    mut _data: *mut libc::c_void,
 ) -> cmd_retval {
     let mut table: *mut key_table = 0 as *mut key_table;
     let mut bd: *mut key_binding = 0 as *mut key_binding;
@@ -2918,7 +2918,7 @@ pub unsafe extern "C" fn key_bindings_init() {
 }
 unsafe extern "C" fn key_bindings_read_only(
     mut item: *mut cmdq_item,
-    mut data: *mut libc::c_void,
+    mut _data: *mut libc::c_void,
 ) -> cmd_retval {
     cmdq_error(
         item,

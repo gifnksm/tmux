@@ -466,7 +466,7 @@ pub struct tmuxproc {
     pub ev_sigwinch: event,
 }
 unsafe extern "C" fn proc_event_cb(
-    mut fd: libc::c_int,
+    mut _fd: libc::c_int,
     mut events: libc::c_short,
     mut arg: *mut libc::c_void,
 ) {
@@ -535,7 +535,7 @@ unsafe extern "C" fn proc_event_cb(
 }
 unsafe extern "C" fn proc_signal_cb(
     mut signo: libc::c_int,
-    mut events: libc::c_short,
+    mut _events: libc::c_short,
     mut arg: *mut libc::c_void,
 ) {
     let mut tp: *mut tmuxproc = arg as *mut tmuxproc;

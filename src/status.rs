@@ -1802,8 +1802,8 @@ pub unsafe extern "C" fn status_prompt_save_history() {
 }
 /* Status timer callback. */
 unsafe extern "C" fn status_timer_callback(
-    mut fd: libc::c_int,
-    mut events: libc::c_short,
+    mut _fd: libc::c_int,
+    mut _events: libc::c_short,
     mut arg: *mut libc::c_void,
 ) {
     let mut c: *mut client = arg as *mut client;
@@ -2307,8 +2307,8 @@ pub unsafe extern "C" fn status_message_clear(mut c: *mut client) {
  */
 /* Clear status line message after timer expires. */
 unsafe extern "C" fn status_message_callback(
-    mut fd: libc::c_int,
-    mut event: libc::c_short,
+    mut _fd: libc::c_int,
+    mut _event: libc::c_short,
     mut data: *mut libc::c_void,
 ) {
     let mut c: *mut client = data as *mut client;
@@ -11269,7 +11269,7 @@ unsafe extern "C" fn status_prompt_complete_prefix(
 }
 /* Complete word menu callback. */
 unsafe extern "C" fn status_prompt_menu_callback(
-    mut menu: *mut menu,
+    mut _menu: *mut menu,
     mut idx: u_int,
     mut key: key_code,
     mut data: *mut libc::c_void,

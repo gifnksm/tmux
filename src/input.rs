@@ -4083,8 +4083,8 @@ unsafe extern "C" fn input_table_compare(
  * long, so reset to ground.
  */
 unsafe extern "C" fn input_timer_callback(
-    mut fd: libc::c_int,
-    mut events: libc::c_short,
+    mut _fd: libc::c_int,
+    mut _events: libc::c_short,
     mut arg: *mut libc::c_void,
 ) {
     let mut ictx: *mut input_ctx = arg as *mut input_ctx;

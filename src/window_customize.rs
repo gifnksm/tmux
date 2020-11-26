@@ -2414,8 +2414,8 @@ unsafe extern "C" fn window_customize_build_keys(
 }
 unsafe extern "C" fn window_customize_build(
     mut modedata: *mut libc::c_void,
-    mut sort_crit: *mut mode_tree_sort_criteria,
-    mut tag: *mut uint64_t,
+    mut _sort_crit: *mut mode_tree_sort_criteria,
+    mut _tag: *mut uint64_t,
     mut filter: *const libc::c_char,
 ) {
     let mut data: *mut window_customize_modedata = modedata as *mut window_customize_modedata;
@@ -2520,7 +2520,7 @@ unsafe extern "C" fn window_customize_build(
     format_free(ft);
 }
 unsafe extern "C" fn window_customize_draw_key(
-    mut data: *mut window_customize_modedata,
+    mut _data: *mut window_customize_modedata,
     mut item: *mut window_customize_itemdata,
     mut ctx: *mut screen_write_ctx,
     mut sx: u_int,
@@ -3340,8 +3340,8 @@ unsafe extern "C" fn window_customize_menu(
     );
 }
 unsafe extern "C" fn window_customize_height(
-    mut modedata: *mut libc::c_void,
-    mut height: u_int,
+    mut _modedata: *mut libc::c_void,
+    mut _height: u_int,
 ) -> u_int {
     return 12 as libc::c_int as u_int;
 }
@@ -3475,7 +3475,7 @@ unsafe extern "C" fn window_customize_set_option_callback(
     mut c: *mut client,
     mut itemdata: *mut libc::c_void,
     mut s: *const libc::c_char,
-    mut done: libc::c_int,
+    mut _done: libc::c_int,
 ) -> libc::c_int {
     let mut current_block: u64;
     let mut item: *mut window_customize_itemdata = itemdata as *mut window_customize_itemdata;
@@ -3773,7 +3773,7 @@ unsafe extern "C" fn window_customize_set_command_callback(
     mut c: *mut client,
     mut itemdata: *mut libc::c_void,
     mut s: *const libc::c_char,
-    mut done: libc::c_int,
+    mut _done: libc::c_int,
 ) -> libc::c_int {
     let mut item: *mut window_customize_itemdata = itemdata as *mut window_customize_itemdata;
     let mut data: *mut window_customize_modedata = (*item).data;
@@ -3828,10 +3828,10 @@ unsafe extern "C" fn window_customize_set_command_callback(
     return 0 as libc::c_int;
 }
 unsafe extern "C" fn window_customize_set_note_callback(
-    mut c: *mut client,
+    mut _c: *mut client,
     mut itemdata: *mut libc::c_void,
     mut s: *const libc::c_char,
-    mut done: libc::c_int,
+    mut _done: libc::c_int,
 ) -> libc::c_int {
     let mut item: *mut window_customize_itemdata = itemdata as *mut window_customize_itemdata;
     let mut data: *mut window_customize_modedata = (*item).data;
@@ -3987,8 +3987,8 @@ unsafe extern "C" fn window_customize_reset_key(
 unsafe extern "C" fn window_customize_change_each(
     mut modedata: *mut libc::c_void,
     mut itemdata: *mut libc::c_void,
-    mut c: *mut client,
-    mut key: key_code,
+    mut _c: *mut client,
+    mut _key: key_code,
 ) {
     let mut data: *mut window_customize_modedata = modedata as *mut window_customize_modedata;
     let mut item: *mut window_customize_itemdata = itemdata as *mut window_customize_itemdata;
@@ -4016,10 +4016,10 @@ unsafe extern "C" fn window_customize_change_each(
     };
 }
 unsafe extern "C" fn window_customize_change_current_callback(
-    mut c: *mut client,
+    mut _c: *mut client,
     mut modedata: *mut libc::c_void,
     mut s: *const libc::c_char,
-    mut done: libc::c_int,
+    mut _done: libc::c_int,
 ) -> libc::c_int {
     let mut data: *mut window_customize_modedata = modedata as *mut window_customize_modedata;
     let mut item: *mut window_customize_itemdata = 0 as *mut window_customize_itemdata;
@@ -4032,11 +4032,11 @@ unsafe extern "C" fn window_customize_change_current_callback(
             if 0 != 0 {
                 let mut __c: libc::c_int =
                     *s.offset(0 as libc::c_int as isize) as u_char as libc::c_int;
-                __res = (if __c < -(128 as libc::c_int) || __c > 255 as libc::c_int {
+                __res = if __c < -(128 as libc::c_int) || __c > 255 as libc::c_int {
                     __c
                 } else {
                     *(*__ctype_tolower_loc()).offset(__c as isize)
-                })
+                }
             } else {
                 __res = tolower(*s.offset(0 as libc::c_int as isize) as u_char as libc::c_int)
             }
@@ -4082,7 +4082,7 @@ unsafe extern "C" fn window_customize_change_tagged_callback(
     mut c: *mut client,
     mut modedata: *mut libc::c_void,
     mut s: *const libc::c_char,
-    mut done: libc::c_int,
+    mut _done: libc::c_int,
 ) -> libc::c_int {
     let mut data: *mut window_customize_modedata = modedata as *mut window_customize_modedata;
     if s.is_null() || *s as libc::c_int == '\u{0}' as i32 || (*data).dead != 0 {
@@ -4094,11 +4094,11 @@ unsafe extern "C" fn window_customize_change_tagged_callback(
             if 0 != 0 {
                 let mut __c: libc::c_int =
                     *s.offset(0 as libc::c_int as isize) as u_char as libc::c_int;
-                __res = (if __c < -(128 as libc::c_int) || __c > 255 as libc::c_int {
+                __res = if __c < -(128 as libc::c_int) || __c > 255 as libc::c_int {
                     __c
                 } else {
                     *(*__ctype_tolower_loc()).offset(__c as isize)
-                })
+                }
             } else {
                 __res = tolower(*s.offset(0 as libc::c_int as isize) as u_char as libc::c_int)
             }
@@ -4135,8 +4135,8 @@ unsafe extern "C" fn window_customize_change_tagged_callback(
 unsafe extern "C" fn window_customize_key(
     mut wme: *mut window_mode_entry,
     mut c: *mut client,
-    mut s: *mut session,
-    mut wl: *mut winlink,
+    mut _s: *mut session,
+    mut _wl: *mut winlink,
     mut key: key_code,
     mut m: *mut mouse_event,
 ) {

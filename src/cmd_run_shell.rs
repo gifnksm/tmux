@@ -1318,8 +1318,8 @@ unsafe extern "C" fn cmd_run_shell_exec(
     return CMD_RETURN_WAIT;
 }
 unsafe extern "C" fn cmd_run_shell_timer(
-    mut fd: libc::c_int,
-    mut events: libc::c_short,
+    mut _fd: libc::c_int,
+    mut _events: libc::c_short,
     mut arg: *mut libc::c_void,
 ) {
     let mut cdata: *mut cmd_run_shell_data = arg as *mut cmd_run_shell_data;

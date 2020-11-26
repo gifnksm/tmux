@@ -1843,7 +1843,7 @@ pub unsafe extern "C" fn tty_acs_get(mut tty: *mut tty, mut ch: u_char) -> *cons
 /* Reverse UTF-8 into ACS. */
 #[no_mangle]
 pub unsafe extern "C" fn tty_acs_reverse_get(
-    mut tty: *mut tty,
+    mut _tty: *mut tty,
     mut s: *const libc::c_char,
     mut slen: size_t,
 ) -> libc::c_int {

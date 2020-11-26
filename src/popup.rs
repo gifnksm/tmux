@@ -1732,7 +1732,7 @@ unsafe extern "C" fn popup_check_cb(
     }
     return 0 as libc::c_int;
 }
-unsafe extern "C" fn popup_draw_cb(mut c: *mut client, mut ctx0: *mut screen_redraw_ctx) {
+unsafe extern "C" fn popup_draw_cb(mut c: *mut client, mut _ctx0: *mut screen_redraw_ctx) {
     let mut pd: *mut popup_data = (*c).overlay_data as *mut popup_data;
     let mut tty: *mut tty = &mut (*c).tty;
     let mut s: screen = screen {

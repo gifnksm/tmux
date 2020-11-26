@@ -1168,15 +1168,18 @@ static mut cfg_causes: *mut *mut libc::c_char =
 static mut cfg_ncauses: u_int = 0;
 static mut cfg_item: *mut cmdq_item = 0 as *const cmdq_item as *mut cmdq_item;
 unsafe extern "C" fn cfg_client_done(
-    mut item: *mut cmdq_item,
-    mut data: *mut libc::c_void,
+    mut _item: *mut cmdq_item,
+    mut _data: *mut libc::c_void,
 ) -> cmd_retval {
     if cfg_finished == 0 {
         return CMD_RETURN_WAIT;
     }
     return CMD_RETURN_NORMAL;
 }
-unsafe extern "C" fn cfg_done(mut item: *mut cmdq_item, mut data: *mut libc::c_void) -> cmd_retval {
+unsafe extern "C" fn cfg_done(
+    mut _item: *mut cmdq_item,
+    mut _data: *mut libc::c_void,
+) -> cmd_retval {
     if cfg_finished != 0 {
         return CMD_RETURN_NORMAL;
     }

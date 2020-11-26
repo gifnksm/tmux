@@ -1079,8 +1079,8 @@ pub struct C2RustUnnamed_32 {
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 unsafe extern "C" fn name_time_callback(
-    mut fd: libc::c_int,
-    mut events: libc::c_short,
+    mut _fd: libc::c_int,
+    mut _events: libc::c_short,
     mut arg: *mut libc::c_void,
 ) {
     let mut w: *mut window = arg as *mut window;

@@ -2606,10 +2606,10 @@ unsafe extern "C" fn mode_tree_search_set(mut mtd: *mut mode_tree_data) {
     (*(*mtd).wp).flags |= 0x1 as libc::c_int;
 }
 unsafe extern "C" fn mode_tree_search_callback(
-    mut c: *mut client,
+    mut _c: *mut client,
     mut data: *mut libc::c_void,
     mut s: *const libc::c_char,
-    mut done: libc::c_int,
+    mut _done: libc::c_int,
 ) -> libc::c_int {
     let mut mtd: *mut mode_tree_data = data as *mut mode_tree_data;
     if (*mtd).dead != 0 {
@@ -2628,10 +2628,10 @@ unsafe extern "C" fn mode_tree_search_free(mut data: *mut libc::c_void) {
     mode_tree_remove_ref(data as *mut mode_tree_data);
 }
 unsafe extern "C" fn mode_tree_filter_callback(
-    mut c: *mut client,
+    mut _c: *mut client,
     mut data: *mut libc::c_void,
     mut s: *const libc::c_char,
-    mut done: libc::c_int,
+    mut _done: libc::c_int,
 ) -> libc::c_int {
     let mut mtd: *mut mode_tree_data = data as *mut mode_tree_data;
     if (*mtd).dead != 0 {
@@ -2654,8 +2654,8 @@ unsafe extern "C" fn mode_tree_filter_free(mut data: *mut libc::c_void) {
     mode_tree_remove_ref(data as *mut mode_tree_data);
 }
 unsafe extern "C" fn mode_tree_menu_callback(
-    mut menu: *mut menu,
-    mut idx: u_int,
+    mut _menu: *mut menu,
+    mut _idx: u_int,
     mut key: key_code,
     mut data: *mut libc::c_void,
 ) {

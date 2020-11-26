@@ -1305,8 +1305,8 @@ static mut alerts_list: C2RustUnnamed_32 = C2RustUnnamed_32 {
     tqh_last: 0 as *const *mut window as *mut *mut window,
 };
 unsafe extern "C" fn alerts_timer(
-    mut fd: libc::c_int,
-    mut events: libc::c_short,
+    mut _fd: libc::c_int,
+    mut _events: libc::c_short,
     mut arg: *mut libc::c_void,
 ) {
     let mut w: *mut window = arg as *mut window;
@@ -1317,9 +1317,9 @@ unsafe extern "C" fn alerts_timer(
     alerts_queue(w, 0x4 as libc::c_int);
 }
 unsafe extern "C" fn alerts_callback(
-    mut fd: libc::c_int,
-    mut events: libc::c_short,
-    mut arg: *mut libc::c_void,
+    mut _fd: libc::c_int,
+    mut _events: libc::c_short,
+    mut _arg: *mut libc::c_void,
 ) {
     let mut w: *mut window = 0 as *mut window;
     let mut w1: *mut window = 0 as *mut window;
