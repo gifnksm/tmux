@@ -40,8 +40,9 @@ pub type __ssize_t = libc::c_long;
 pub type pid_t = __pid_t;
 pub type ssize_t = __ssize_t;
 pub type size_t = libc::c_ulong;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct _IO_FILE {
     pub _flags: libc::c_int,
     pub _IO_read_ptr: *mut libc::c_char,

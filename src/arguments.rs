@@ -55,8 +55,9 @@ extern "C" {
     ) -> libc::c_int;
 }
 pub type __builtin_va_list = [__va_list_tag; 1];
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct __va_list_tag {
     pub gp_offset: libc::c_uint,
     pub fp_offset: libc::c_uint,
@@ -69,36 +70,41 @@ pub type u_char = __u_char;
 pub type u_int = __u_int;
 pub type size_t = libc::c_ulong;
 pub type va_list = __builtin_va_list;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct args {
     pub tree: args_tree,
     pub argc: libc::c_int,
     pub argv: *mut *mut libc::c_char,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct args_tree {
     pub rbh_root: *mut args_entry,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct args_entry {
     pub flag: u_char,
     pub values: args_values,
     pub count: u_int,
     pub entry: C2RustUnnamed,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed {
     pub rbe_left: *mut args_entry,
     pub rbe_right: *mut args_entry,
     pub rbe_parent: *mut args_entry,
     pub rbe_color: libc::c_int,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct args_values {
     pub tqh_first: *mut args_value,
     pub tqh_last: *mut *mut args_value,
@@ -122,14 +128,16 @@ pub struct args_values {
 /*
  * Manipulate command arguments.
  */
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct args_value {
     pub value: *mut libc::c_char,
     pub entry: C2RustUnnamed_0,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_0 {
     pub tqe_next: *mut args_value,
     pub tqe_prev: *mut *mut args_value,

@@ -10,8 +10,9 @@ extern "C" {
 }
 pub type __pid_t = libc::c_int;
 pub type pid_t = __pid_t;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct winsize {
     pub ws_row: libc::c_ushort,
     pub ws_col: libc::c_ushort,
@@ -21,8 +22,9 @@ pub struct winsize {
 pub type cc_t = libc::c_uchar;
 pub type speed_t = libc::c_uint;
 pub type tcflag_t = libc::c_uint;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct termios {
     pub c_iflag: tcflag_t,
     pub c_oflag: tcflag_t,

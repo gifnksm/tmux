@@ -31,8 +31,9 @@ pub type __pid_t = libc::c_int;
 pub type size_t = libc::c_ulong;
 pub const _SC_OPEN_MAX: C2RustUnnamed = 4;
 pub type DIR = __dirstream;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct dirent {
     pub d_ino: __ino_t,
     pub d_off: __off_t,

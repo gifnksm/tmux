@@ -19,15 +19,17 @@ pub const CMD_RETURN_STOP: cmd_retval = 2;
 pub const CMD_RETURN_WAIT: cmd_retval = 1;
 pub const CMD_RETURN_NORMAL: cmd_retval = 0;
 pub const CMD_RETURN_ERROR: cmd_retval = -1;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct cmd_entry_flag {
     pub flag: libc::c_char,
     pub type_0: cmd_find_type,
     pub flags: libc::c_int,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct cmd_entry {
     pub name: *const libc::c_char,
     pub alias: *const libc::c_char,
@@ -38,8 +40,9 @@ pub struct cmd_entry {
     pub flags: libc::c_int,
     pub exec: Option<unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval>,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed {
     pub template: *const libc::c_char,
     pub lower: libc::c_int,

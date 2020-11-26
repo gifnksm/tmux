@@ -43,8 +43,9 @@ pub type u_int = __u_int;
 pub type size_t = libc::c_ulong;
 pub type wchar_t = libc::c_int;
 pub type key_code = libc::c_ulonglong;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct utf8_data {
     pub data: [u_char; 21],
     pub have: u_char,
@@ -249,8 +250,9 @@ pub type utf8_state = libc::c_uint;
 pub const UTF8_ERROR: utf8_state = 2;
 pub const UTF8_DONE: utf8_state = 1;
 pub const UTF8_MORE: utf8_state = 0;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_0 {
     pub string: *const libc::c_char,
     pub key: key_code,

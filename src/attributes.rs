@@ -19,8 +19,9 @@ extern "C" {
 pub type __u_int = libc::c_uint;
 pub type u_int = __u_int;
 pub type size_t = libc::c_ulong;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed {
     pub name: *const libc::c_char,
     pub attr: libc::c_int,

@@ -54,8 +54,9 @@ pub type size_t = libc::c_ulong;
  * Set of paste buffers. Note that paste buffer data is not necessarily a C
  * string!
  */
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct paste_buffer {
     pub data: *mut libc::c_char,
     pub size: size_t,
@@ -66,29 +67,33 @@ pub struct paste_buffer {
     pub name_entry: C2RustUnnamed_0,
     pub time_entry: C2RustUnnamed,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed {
     pub rbe_left: *mut paste_buffer,
     pub rbe_right: *mut paste_buffer,
     pub rbe_parent: *mut paste_buffer,
     pub rbe_color: libc::c_int,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_0 {
     pub rbe_left: *mut paste_buffer,
     pub rbe_right: *mut paste_buffer,
     pub rbe_parent: *mut paste_buffer,
     pub rbe_color: libc::c_int,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct paste_time_tree {
     pub rbh_root: *mut paste_buffer,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct paste_name_tree {
     pub rbh_root: *mut paste_buffer,
 }

@@ -9,8 +9,9 @@ extern "C" {
         _: libc::c_int,
     ) -> libc::c_longlong;
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct errval {
     pub errstr: *const libc::c_char,
     pub err: libc::c_int,

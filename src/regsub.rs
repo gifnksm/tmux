@@ -34,8 +34,9 @@ pub type ssize_t = __ssize_t;
 pub type size_t = libc::c_ulong;
 pub type __re_long_size_t = libc::c_ulong;
 pub type reg_syntax_t = libc::c_ulong;
-#[derive(Copy, Clone, BitfieldStruct)]
+
 #[repr(C)]
+#[derive(Copy, Clone, BitfieldStruct)]
 pub struct re_pattern_buffer {
     pub buffer: *mut re_dfa_t,
     pub allocated: __re_long_size_t,
@@ -57,8 +58,9 @@ pub struct re_pattern_buffer {
 }
 pub type regex_t = re_pattern_buffer;
 pub type regoff_t = libc::c_int;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct regmatch_t {
     pub rm_so: regoff_t,
     pub rm_eo: regoff_t,

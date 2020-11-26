@@ -42,8 +42,9 @@ extern "C" {
 }
 pub type __pid_t = libc::c_int;
 pub type __size_t = libc::c_ulong;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct glob_t {
     pub gl_pathc: __size_t,
     pub gl_pathv: *mut *mut libc::c_char,

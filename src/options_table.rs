@@ -9,8 +9,9 @@ pub const OPTIONS_TABLE_COLOUR: options_table_type = 3;
 pub const OPTIONS_TABLE_KEY: options_table_type = 2;
 pub const OPTIONS_TABLE_NUMBER: options_table_type = 1;
 pub const OPTIONS_TABLE_STRING: options_table_type = 0;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct options_table_entry {
     pub name: *const libc::c_char,
     pub alternative_name: *const libc::c_char,
@@ -28,8 +29,9 @@ pub struct options_table_entry {
     pub text: *const libc::c_char,
     pub unit: *const libc::c_char,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct options_name_map {
     pub from: *const libc::c_char,
     pub to: *const libc::c_char,

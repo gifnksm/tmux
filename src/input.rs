@@ -272,8 +272,9 @@ extern "C" {
     fn log_debug(_: *const libc::c_char, _: ...);
 }
 pub type __builtin_va_list = [__va_list_tag; 1];
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct __va_list_tag {
     pub gp_offset: libc::c_uint,
     pub fp_offset: libc::c_uint,
@@ -293,8 +294,9 @@ pub type u_short = __u_short;
 pub type u_int = __u_int;
 pub type pid_t = __pid_t;
 pub type size_t = libc::c_ulong;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct timeval {
     pub tv_sec: __time_t,
     pub tv_usec: __suseconds_t,
@@ -304,8 +306,9 @@ pub type uint64_t = __uint64_t;
 pub type va_list = __builtin_va_list;
 pub type __compar_fn_t =
     Option<unsafe extern "C" fn(_: *const libc::c_void, _: *const libc::c_void) -> libc::c_int>;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct event {
     pub ev_evcallback: event_callback,
     pub ev_timeout_pos: C2RustUnnamed_4,
@@ -316,51 +319,59 @@ pub struct event {
     pub ev_res: libc::c_short,
     pub ev_timeout: timeval,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub union C2RustUnnamed {
     pub ev_io: C2RustUnnamed_2,
     pub ev_signal: C2RustUnnamed_0,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_0 {
     pub ev_signal_next: C2RustUnnamed_1,
     pub ev_ncalls: libc::c_short,
     pub ev_pncalls: *mut libc::c_short,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_1 {
     pub le_next: *mut event,
     pub le_prev: *mut *mut event,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_2 {
     pub ev_io_next: C2RustUnnamed_3,
     pub ev_timeout: timeval,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_3 {
     pub le_next: *mut event,
     pub le_prev: *mut *mut event,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub union C2RustUnnamed_4 {
     pub ev_next_with_common_timeout: C2RustUnnamed_5,
     pub min_heap_idx: libc::c_int,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_5 {
     pub tqe_next: *mut event,
     pub tqe_prev: *mut *mut event,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct event_callback {
     pub evcb_active_next: C2RustUnnamed_7,
     pub evcb_flags: libc::c_short,
@@ -369,8 +380,9 @@ pub struct event_callback {
     pub evcb_cb_union: C2RustUnnamed_6,
     pub evcb_arg: *mut libc::c_void,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub union C2RustUnnamed_6 {
     pub evcb_callback:
         Option<unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> ()>,
@@ -380,14 +392,16 @@ pub union C2RustUnnamed_6 {
     pub evcb_cbfinalize:
         Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_7 {
     pub tqe_next: *mut event_callback,
     pub tqe_prev: *mut *mut event_callback,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct bufferevent {
     pub ev_base: *mut event_base,
     pub be_ops: *const bufferevent_ops,
@@ -409,8 +423,9 @@ pub type bufferevent_event_cb =
     Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short, _: *mut libc::c_void) -> ()>;
 pub type bufferevent_data_cb =
     Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void) -> ()>;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct event_watermark {
     pub low: size_t,
     pub high: size_t,
@@ -418,8 +433,9 @@ pub struct event_watermark {
 pub type cc_t = libc::c_uchar;
 pub type speed_t = libc::c_uint;
 pub type tcflag_t = libc::c_uint;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct termios {
     pub c_iflag: tcflag_t,
     pub c_oflag: tcflag_t,
@@ -431,20 +447,23 @@ pub struct termios {
     pub c_ospeed: speed_t,
 }
 pub type bitstr_t = libc::c_uchar;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct args {
     pub tree: args_tree,
     pub argc: libc::c_int,
     pub argv: *mut *mut libc::c_char,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct args_tree {
     pub rbh_root: *mut args_entry,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct client {
     pub name: *const libc::c_char,
     pub peer: *mut tmuxpeer,
@@ -512,19 +531,22 @@ pub struct client {
     pub files: client_files,
     pub entry: C2RustUnnamed_8,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_8 {
     pub tqe_next: *mut client,
     pub tqe_prev: *mut *mut client,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct client_files {
     pub rbh_root: *mut client_file,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct client_file {
     pub c: *mut client,
     pub references: libc::c_int,
@@ -539,8 +561,9 @@ pub struct client_file {
     pub data: *mut libc::c_void,
     pub entry: C2RustUnnamed_9,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_9 {
     pub rbe_left: *mut client_file,
     pub rbe_right: *mut client_file,
@@ -560,14 +583,16 @@ pub type client_file_cb = Option<
 pub type overlay_free_cb = Option<unsafe extern "C" fn(_: *mut client) -> ()>;
 pub type overlay_key_cb =
     Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event) -> libc::c_int>;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct key_event {
     pub key: key_code,
     pub m: mouse_event,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct mouse_event {
     pub valid: libc::c_int,
     pub ignore: libc::c_int,
@@ -591,8 +616,9 @@ pub struct mouse_event {
 pub type key_code = libc::c_ulonglong;
 pub type overlay_draw_cb =
     Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx) -> ()>;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct screen_redraw_ctx {
     pub c: *mut client,
     pub statuslines: u_int,
@@ -606,8 +632,9 @@ pub struct screen_redraw_ctx {
 }
 pub type overlay_mode_cb =
     Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct screen {
     pub title: *mut libc::c_char,
     pub path: *mut libc::c_char,
@@ -629,8 +656,9 @@ pub struct screen {
     pub sel: *mut screen_sel,
     pub write_list: *mut screen_write_collect_line,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct grid_cell {
     pub data: utf8_data,
     pub attr: u_short,
@@ -639,16 +667,18 @@ pub struct grid_cell {
     pub bg: libc::c_int,
     pub us: libc::c_int,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct utf8_data {
     pub data: [u_char; 21],
     pub have: u_char,
     pub size: u_char,
     pub width: u_char,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct grid {
     pub flags: libc::c_int,
     pub sx: u_int,
@@ -658,8 +688,9 @@ pub struct grid {
     pub hlimit: u_int,
     pub linedata: *mut grid_line,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C, packed)]
+#[derive(Copy, Clone)]
 pub struct grid_line {
     pub cellused: u_int,
     pub cellsize: u_int,
@@ -668,8 +699,9 @@ pub struct grid_line {
     pub extddata: *mut grid_extd_entry,
     pub flags: libc::c_int,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C, packed)]
+#[derive(Copy, Clone)]
 pub struct grid_extd_entry {
     pub data: utf8_char,
     pub attr: u_short,
@@ -679,20 +711,23 @@ pub struct grid_extd_entry {
     pub us: libc::c_int,
 }
 pub type utf8_char = u_int;
-#[derive(Copy, Clone)]
+
 #[repr(C, packed)]
+#[derive(Copy, Clone)]
 pub struct grid_cell_entry {
     pub flags: u_char,
     pub c2rust_unnamed: C2RustUnnamed_10,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub union C2RustUnnamed_10 {
     pub offset: u_int,
     pub data: C2RustUnnamed_11,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_11 {
     pub attr: u_char,
     pub fg: u_char,
@@ -701,8 +736,9 @@ pub struct C2RustUnnamed_11 {
 }
 pub type overlay_check_cb =
     Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct session {
     pub id: u_int,
     pub name: *mut libc::c_char,
@@ -726,27 +762,31 @@ pub struct session {
     pub gentry: C2RustUnnamed_13,
     pub entry: C2RustUnnamed_12,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_12 {
     pub rbe_left: *mut session,
     pub rbe_right: *mut session,
     pub rbe_parent: *mut session,
     pub rbe_color: libc::c_int,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_13 {
     pub tqe_next: *mut session,
     pub tqe_prev: *mut *mut session,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct winlinks {
     pub rbh_root: *mut winlink,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct winlink {
     pub idx: libc::c_int,
     pub session: *mut session,
@@ -756,28 +796,32 @@ pub struct winlink {
     pub wentry: C2RustUnnamed_15,
     pub sentry: C2RustUnnamed_14,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_14 {
     pub tqe_next: *mut winlink,
     pub tqe_prev: *mut *mut winlink,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_15 {
     pub tqe_next: *mut winlink,
     pub tqe_prev: *mut *mut winlink,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_16 {
     pub rbe_left: *mut winlink,
     pub rbe_right: *mut winlink,
     pub rbe_parent: *mut winlink,
     pub rbe_color: libc::c_int,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct window {
     pub id: u_int,
     pub latest: *mut libc::c_void,
@@ -810,28 +854,32 @@ pub struct window {
     pub winlinks: C2RustUnnamed_18,
     pub entry: C2RustUnnamed_17,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_17 {
     pub rbe_left: *mut window,
     pub rbe_right: *mut window,
     pub rbe_parent: *mut window,
     pub rbe_color: libc::c_int,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_18 {
     pub tqh_first: *mut winlink,
     pub tqh_last: *mut *mut winlink,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_19 {
     pub tqe_next: *mut window,
     pub tqe_prev: *mut *mut window,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct layout_cell {
     pub type_0: layout_type,
     pub parent: *mut layout_cell,
@@ -843,20 +891,23 @@ pub struct layout_cell {
     pub cells: layout_cells,
     pub entry: C2RustUnnamed_20,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_20 {
     pub tqe_next: *mut layout_cell,
     pub tqe_prev: *mut *mut layout_cell,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct layout_cells {
     pub tqh_first: *mut layout_cell,
     pub tqh_last: *mut *mut layout_cell,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct window_pane {
     pub id: u_int,
     pub active_point: u_int,
@@ -905,28 +956,32 @@ pub struct window_pane {
     pub entry: C2RustUnnamed_22,
     pub tree_entry: C2RustUnnamed_21,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_21 {
     pub rbe_left: *mut window_pane,
     pub rbe_right: *mut window_pane,
     pub rbe_parent: *mut window_pane,
     pub rbe_color: libc::c_int,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_22 {
     pub tqe_next: *mut window_pane,
     pub tqe_prev: *mut *mut window_pane,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_23 {
     pub tqh_first: *mut window_mode_entry,
     pub tqh_last: *mut *mut window_mode_entry,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct window_mode_entry {
     pub wp: *mut window_pane,
     pub swp: *mut window_pane,
@@ -936,14 +991,16 @@ pub struct window_mode_entry {
     pub prefix: u_int,
     pub entry: C2RustUnnamed_24,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_24 {
     pub tqe_next: *mut window_mode_entry,
     pub tqe_prev: *mut *mut window_mode_entry,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct window_mode {
     pub name: *const libc::c_char,
     pub default_format: *const libc::c_char,
@@ -979,8 +1036,9 @@ pub struct window_mode {
     >,
     pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct cmd_find_state {
     pub flags: libc::c_int,
     pub current: *mut cmd_find_state,
@@ -990,14 +1048,16 @@ pub struct cmd_find_state {
     pub wp: *mut window_pane,
     pub idx: libc::c_int,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct window_pane_offset {
     pub used: size_t,
 }
 /* Input parser context. */
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct input_ctx {
     pub wp: *mut window_pane,
     pub event: *mut bufferevent,
@@ -1027,8 +1087,9 @@ pub struct input_ctx {
     pub since_ground: *mut evbuffer,
 }
 /* Input state. */
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct input_state {
     pub name: *const libc::c_char,
     pub enter: Option<unsafe extern "C" fn(_: *mut input_ctx) -> ()>,
@@ -1036,8 +1097,9 @@ pub struct input_state {
     pub transitions: *const input_transition,
 }
 /* Input transition. */
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct input_transition {
     pub first: libc::c_int,
     pub last: libc::c_int,
@@ -1046,14 +1108,16 @@ pub struct input_transition {
 }
 /* 1 if ACS */
 /* Input parser argument. */
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct input_param {
     pub type_0: C2RustUnnamed_26,
     pub c2rust_unnamed: C2RustUnnamed_25,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub union C2RustUnnamed_25 {
     pub num: libc::c_int,
     pub str_0: *mut libc::c_char,
@@ -1104,16 +1168,18 @@ pub const INPUT_END_ST: C2RustUnnamed_27 = 0;
  *   be passed to the underlying terminals.
  */
 /* Input parser cell. */
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct input_cell {
     pub cell: grid_cell,
     pub set: libc::c_int,
     pub g0set: libc::c_int,
     pub g1set: libc::c_int,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct screen_write_ctx {
     pub wp: *mut window_pane,
     pub s: *mut screen,
@@ -1129,8 +1195,9 @@ pub struct screen_write_ctx {
 }
 pub type screen_write_init_ctx_cb =
     Option<unsafe extern "C" fn(_: *mut screen_write_ctx, _: *mut tty_ctx) -> ()>;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct tty_ctx {
     pub s: *mut screen,
     pub redraw_cb: tty_ctx_redraw_cb,
@@ -1166,14 +1233,16 @@ pub type layout_type = libc::c_uint;
 pub const LAYOUT_WINDOWPANE: layout_type = 2;
 pub const LAYOUT_TOPBOTTOM: layout_type = 1;
 pub const LAYOUT_LEFTRIGHT: layout_type = 0;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct window_panes {
     pub tqh_first: *mut window_pane,
     pub tqh_last: *mut *mut window_pane,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct winlink_stack {
     pub tqh_first: *mut winlink,
     pub tqh_last: *mut *mut winlink,
@@ -1190,8 +1259,9 @@ pub type prompt_input_cb = Option<
         _: libc::c_int,
     ) -> libc::c_int,
 >;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct key_table {
     pub name: *const libc::c_char,
     pub key_bindings: key_bindings,
@@ -1199,21 +1269,24 @@ pub struct key_table {
     pub references: u_int,
     pub entry: C2RustUnnamed_29,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_29 {
     pub rbe_left: *mut key_table,
     pub rbe_right: *mut key_table,
     pub rbe_parent: *mut key_table,
     pub rbe_color: libc::c_int,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct key_bindings {
     pub rbh_root: *mut key_binding,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct key_binding {
     pub key: key_code,
     pub cmdlist: *mut cmd_list,
@@ -1221,16 +1294,18 @@ pub struct key_binding {
     pub flags: libc::c_int,
     pub entry: C2RustUnnamed_30,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_30 {
     pub rbe_left: *mut key_binding,
     pub rbe_right: *mut key_binding,
     pub rbe_parent: *mut key_binding,
     pub rbe_color: libc::c_int,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct cmd_list {
     pub references: libc::c_int,
     pub group: u_int,
@@ -1280,8 +1355,9 @@ pub type C2RustUnnamed_31 = libc::c_uint;
 pub const CLIENT_EXIT_DETACH: C2RustUnnamed_31 = 2;
 pub const CLIENT_EXIT_SHUTDOWN: C2RustUnnamed_31 = 1;
 pub const CLIENT_EXIT_RETURN: C2RustUnnamed_31 = 0;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct status_line {
     pub timer: event,
     pub screen: screen,
@@ -1290,20 +1366,23 @@ pub struct status_line {
     pub style: grid_cell,
     pub entries: [status_line_entry; 5],
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct status_line_entry {
     pub expanded: *mut libc::c_char,
     pub ranges: style_ranges,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct style_ranges {
     pub tqh_first: *mut style_range,
     pub tqh_last: *mut *mut style_range,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct style_range {
     pub type_0: style_range_type,
     pub argument: u_int,
@@ -1311,8 +1390,9 @@ pub struct style_range {
     pub end: u_int,
     pub entry: C2RustUnnamed_32,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_32 {
     pub tqe_next: *mut style_range,
     pub tqe_prev: *mut *mut style_range,
@@ -1322,8 +1402,9 @@ pub const STYLE_RANGE_WINDOW: style_range_type = 3;
 pub const STYLE_RANGE_RIGHT: style_range_type = 2;
 pub const STYLE_RANGE_LEFT: style_range_type = 1;
 pub const STYLE_RANGE_NONE: style_range_type = 0;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct tty {
     pub client: *mut client,
     pub start_timer: event,
@@ -1365,8 +1446,9 @@ pub struct tty {
     pub key_timer: event,
     pub key_tree: *mut tty_key,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct tty_key {
     pub ch: libc::c_char,
     pub key: key_code,
@@ -1374,8 +1456,9 @@ pub struct tty_key {
     pub right: *mut tty_key,
     pub next: *mut tty_key,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct tty_term {
     pub name: *mut libc::c_char,
     pub tty: *mut tty,
@@ -1385,26 +1468,30 @@ pub struct tty_term {
     pub flags: libc::c_int,
     pub entry: C2RustUnnamed_33,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_33 {
     pub le_next: *mut tty_term,
     pub le_prev: *mut *mut tty_term,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct client_windows {
     pub rbh_root: *mut client_window,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct client_window {
     pub window: u_int,
     pub pane: *mut window_pane,
     pub entry: C2RustUnnamed_34,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_34 {
     pub rbe_left: *mut client_window,
     pub rbe_right: *mut client_window,
@@ -1431,8 +1518,9 @@ pub const INPUT_ESC_NEL: input_esc_type = 7;
 pub const INPUT_ESC_IND: input_esc_type = 6;
 pub const INPUT_ESC_RIS: input_esc_type = 9;
 /* Command table entry. */
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct input_table_entry {
     pub ch: libc::c_int,
     pub interm: *const libc::c_char,

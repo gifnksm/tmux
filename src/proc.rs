@@ -92,20 +92,23 @@ pub type __ssize_t = libc::c_long;
 pub type pid_t = __pid_t;
 pub type ssize_t = __ssize_t;
 pub type size_t = libc::c_ulong;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct __sigset_t {
     pub __val: [libc::c_ulong; 16],
 }
 pub type sigset_t = __sigset_t;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct timeval {
     pub tv_sec: __time_t,
     pub tv_usec: __suseconds_t,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct utsname {
     pub sysname: [libc::c_char; 65],
     pub nodename: [libc::c_char; 65],
@@ -117,15 +120,17 @@ pub struct utsname {
 pub type uint8_t = __uint8_t;
 pub type uint16_t = __uint16_t;
 pub type uint32_t = __uint32_t;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub union sigval {
     pub sival_int: libc::c_int,
     pub sival_ptr: *mut libc::c_void,
 }
 pub type __sigval_t = sigval;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct event {
     pub ev_evcallback: event_callback,
     pub ev_timeout_pos: C2RustUnnamed_4,
@@ -136,51 +141,59 @@ pub struct event {
     pub ev_res: libc::c_short,
     pub ev_timeout: timeval,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub union C2RustUnnamed {
     pub ev_io: C2RustUnnamed_2,
     pub ev_signal: C2RustUnnamed_0,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_0 {
     pub ev_signal_next: C2RustUnnamed_1,
     pub ev_ncalls: libc::c_short,
     pub ev_pncalls: *mut libc::c_short,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_1 {
     pub le_next: *mut event,
     pub le_prev: *mut *mut event,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_2 {
     pub ev_io_next: C2RustUnnamed_3,
     pub ev_timeout: timeval,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_3 {
     pub le_next: *mut event,
     pub le_prev: *mut *mut event,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub union C2RustUnnamed_4 {
     pub ev_next_with_common_timeout: C2RustUnnamed_5,
     pub min_heap_idx: libc::c_int,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_5 {
     pub tqe_next: *mut event,
     pub tqe_prev: *mut *mut event,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct event_callback {
     pub evcb_active_next: C2RustUnnamed_7,
     pub evcb_flags: libc::c_short,
@@ -189,8 +202,9 @@ pub struct event_callback {
     pub evcb_cb_union: C2RustUnnamed_6,
     pub evcb_arg: *mut libc::c_void,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub union C2RustUnnamed_6 {
     pub evcb_callback:
         Option<unsafe extern "C" fn(_: libc::c_int, _: libc::c_short, _: *mut libc::c_void) -> ()>,
@@ -200,14 +214,16 @@ pub union C2RustUnnamed_6 {
     pub evcb_cbfinalize:
         Option<unsafe extern "C" fn(_: *mut event_callback, _: *mut libc::c_void) -> ()>,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_7 {
     pub tqe_next: *mut event_callback,
     pub tqe_prev: *mut *mut event_callback,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct siginfo_t {
     pub si_signo: libc::c_int,
     pub si_errno: libc::c_int,
@@ -215,8 +231,9 @@ pub struct siginfo_t {
     pub __pad0: libc::c_int,
     pub _sifields: C2RustUnnamed_8,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub union C2RustUnnamed_8 {
     pub _pad: [libc::c_int; 28],
     pub _kill: C2RustUnnamed_17,
@@ -227,40 +244,46 @@ pub union C2RustUnnamed_8 {
     pub _sigpoll: C2RustUnnamed_10,
     pub _sigsys: C2RustUnnamed_9,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_9 {
     pub _call_addr: *mut libc::c_void,
     pub _syscall: libc::c_int,
     pub _arch: libc::c_uint,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_10 {
     pub si_band: libc::c_long,
     pub si_fd: libc::c_int,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_11 {
     pub si_addr: *mut libc::c_void,
     pub si_addr_lsb: libc::c_short,
     pub _bounds: C2RustUnnamed_12,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub union C2RustUnnamed_12 {
     pub _addr_bnd: C2RustUnnamed_13,
     pub _pkey: __uint32_t,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_13 {
     pub _lower: *mut libc::c_void,
     pub _upper: *mut libc::c_void,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_14 {
     pub si_pid: __pid_t,
     pub si_uid: __uid_t,
@@ -268,44 +291,50 @@ pub struct C2RustUnnamed_14 {
     pub si_utime: __clock_t,
     pub si_stime: __clock_t,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_15 {
     pub si_pid: __pid_t,
     pub si_uid: __uid_t,
     pub si_sigval: __sigval_t,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_16 {
     pub si_tid: libc::c_int,
     pub si_overrun: libc::c_int,
     pub si_sigval: __sigval_t,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_17 {
     pub si_pid: __pid_t,
     pub si_uid: __uid_t,
 }
 pub type __sighandler_t = Option<unsafe extern "C" fn(_: libc::c_int) -> ()>;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct sigaction {
     pub __sigaction_handler: C2RustUnnamed_18,
     pub sa_mask: __sigset_t,
     pub sa_flags: libc::c_int,
     pub sa_restorer: Option<unsafe extern "C" fn() -> ()>,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub union C2RustUnnamed_18 {
     pub sa_handler: __sighandler_t,
     pub sa_sigaction:
         Option<unsafe extern "C" fn(_: libc::c_int, _: *mut siginfo_t, _: *mut libc::c_void) -> ()>,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct ibuf {
     pub entry: C2RustUnnamed_19,
     pub buf: *mut libc::c_uchar,
@@ -315,46 +344,53 @@ pub struct ibuf {
     pub rpos: size_t,
     pub fd: libc::c_int,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_19 {
     pub tqe_next: *mut ibuf,
     pub tqe_prev: *mut *mut ibuf,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct msgbuf {
     pub bufs: C2RustUnnamed_20,
     pub queued: uint32_t,
     pub fd: libc::c_int,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_20 {
     pub tqh_first: *mut ibuf,
     pub tqh_last: *mut *mut ibuf,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct ibuf_read {
     pub buf: [libc::c_uchar; 65535],
     pub rptr: *mut libc::c_uchar,
     pub wpos: size_t,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct imsg_fd {
     pub entry: C2RustUnnamed_21,
     pub fd: libc::c_int,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_21 {
     pub tqe_next: *mut imsg_fd,
     pub tqe_prev: *mut *mut imsg_fd,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct imsgbuf {
     pub fds: C2RustUnnamed_22,
     pub r: ibuf_read,
@@ -362,14 +398,16 @@ pub struct imsgbuf {
     pub fd: libc::c_int,
     pub pid: pid_t,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_22 {
     pub tqh_first: *mut imsg_fd,
     pub tqh_last: *mut *mut imsg_fd,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct imsg_hdr {
     pub type_0: uint32_t,
     pub len: uint16_t,
@@ -377,8 +415,9 @@ pub struct imsg_hdr {
     pub peerid: uint32_t,
     pub pid: uint32_t,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct imsg {
     pub hdr: imsg_hdr,
     pub fd: libc::c_int,
@@ -424,8 +463,9 @@ pub const MSG_IDENTIFY_TTYNAME: msgtype = 102;
 pub const MSG_IDENTIFY_TERM: msgtype = 101;
 pub const MSG_IDENTIFY_FLAGS: msgtype = 100;
 pub const MSG_VERSION: msgtype = 12;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct tmuxpeer {
     pub parent: *mut tmuxproc,
     pub ibuf: imsgbuf,
@@ -450,8 +490,9 @@ pub struct tmuxpeer {
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct tmuxproc {
     pub name: *const libc::c_char,
     pub exit: libc::c_int,

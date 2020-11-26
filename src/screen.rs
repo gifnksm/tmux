@@ -64,8 +64,9 @@ pub type u_short = __u_short;
 pub type u_int = __u_int;
 pub type size_t = libc::c_ulong;
 pub type bitstr_t = libc::c_uchar;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct screen {
     pub title: *mut libc::c_char,
     pub path: *mut libc::c_char,
@@ -104,8 +105,9 @@ pub struct screen {
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 /* Selected area in screen. */
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct screen_sel {
     pub hidden: libc::c_int,
     pub rectangle: libc::c_int,
@@ -116,8 +118,9 @@ pub struct screen_sel {
     pub ey: u_int,
     pub cell: grid_cell,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct grid_cell {
     pub data: utf8_data,
     pub attr: u_short,
@@ -126,16 +129,18 @@ pub struct grid_cell {
     pub bg: libc::c_int,
     pub us: libc::c_int,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct utf8_data {
     pub data: [u_char; 21],
     pub have: u_char,
     pub size: u_char,
     pub width: u_char,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct grid {
     pub flags: libc::c_int,
     pub sx: u_int,
@@ -145,8 +150,9 @@ pub struct grid {
     pub hlimit: u_int,
     pub linedata: *mut grid_line,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C, packed)]
+#[derive(Copy, Clone)]
 pub struct grid_line {
     pub cellused: u_int,
     pub cellsize: u_int,
@@ -155,8 +161,9 @@ pub struct grid_line {
     pub extddata: *mut grid_extd_entry,
     pub flags: libc::c_int,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C, packed)]
+#[derive(Copy, Clone)]
 pub struct grid_extd_entry {
     pub data: utf8_char,
     pub attr: u_short,
@@ -166,41 +173,47 @@ pub struct grid_extd_entry {
     pub us: libc::c_int,
 }
 pub type utf8_char = u_int;
-#[derive(Copy, Clone)]
+
 #[repr(C, packed)]
+#[derive(Copy, Clone)]
 pub struct grid_cell_entry {
     pub flags: u_char,
     pub c2rust_unnamed: C2RustUnnamed,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub union C2RustUnnamed {
     pub offset: u_int,
     pub data: C2RustUnnamed_0,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_0 {
     pub attr: u_char,
     pub fg: u_char,
     pub bg: u_char,
     pub data: u_char,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct screen_titles {
     pub tqh_first: *mut screen_title_entry,
     pub tqh_last: *mut *mut screen_title_entry,
 }
 /* Entry on title stack. */
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct screen_title_entry {
     pub text: *mut libc::c_char,
     pub entry: C2RustUnnamed_1,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_1 {
     pub tqe_next: *mut screen_title_entry,
     pub tqe_prev: *mut *mut screen_title_entry,

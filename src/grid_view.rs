@@ -48,8 +48,9 @@ pub type u_char = __u_char;
 pub type u_short = __u_short;
 pub type u_int = __u_int;
 pub type size_t = libc::c_ulong;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct grid_cell {
     pub data: utf8_data,
     pub attr: u_short,
@@ -58,16 +59,18 @@ pub struct grid_cell {
     pub bg: libc::c_int,
     pub us: libc::c_int,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct utf8_data {
     pub data: [u_char; 21],
     pub have: u_char,
     pub size: u_char,
     pub width: u_char,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct grid {
     pub flags: libc::c_int,
     pub sx: u_int,
@@ -77,8 +80,9 @@ pub struct grid {
     pub hlimit: u_int,
     pub linedata: *mut grid_line,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C, packed)]
+#[derive(Copy, Clone)]
 pub struct grid_line {
     pub cellused: u_int,
     pub cellsize: u_int,
@@ -87,8 +91,9 @@ pub struct grid_line {
     pub extddata: *mut grid_extd_entry,
     pub flags: libc::c_int,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C, packed)]
+#[derive(Copy, Clone)]
 pub struct grid_extd_entry {
     pub data: utf8_char,
     pub attr: u_short,
@@ -98,20 +103,23 @@ pub struct grid_extd_entry {
     pub us: libc::c_int,
 }
 pub type utf8_char = u_int;
-#[derive(Copy, Clone)]
+
 #[repr(C, packed)]
+#[derive(Copy, Clone)]
 pub struct grid_cell_entry {
     pub flags: u_char,
     pub c2rust_unnamed: C2RustUnnamed,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub union C2RustUnnamed {
     pub offset: u_int,
     pub data: C2RustUnnamed_0,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_0 {
     pub attr: u_char,
     pub fg: u_char,

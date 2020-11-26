@@ -195,20 +195,23 @@ pub type u_int = __u_int;
 pub type uid_t = __uid_t;
 pub type clockid_t = __clockid_t;
 pub type size_t = libc::c_ulong;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct timeval {
     pub tv_sec: __time_t,
     pub tv_usec: __suseconds_t,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct timespec {
     pub tv_sec: __time_t,
     pub tv_nsec: __syscall_slong_t,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct stat {
     pub st_dev: __dev_t,
     pub st_ino: __ino_t,
@@ -227,8 +230,9 @@ pub struct stat {
     pub __glibc_reserved: [__syscall_slong_t; 3],
 }
 pub type uint64_t = __uint64_t;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct _IO_FILE {
     pub _flags: libc::c_int,
     pub _IO_read_ptr: *mut libc::c_char,
@@ -647,8 +651,9 @@ pub const ABDAY_4: C2RustUnnamed = 131075;
 pub const ABDAY_3: C2RustUnnamed = 131074;
 pub const ABDAY_2: C2RustUnnamed = 131073;
 pub const ABDAY_1: C2RustUnnamed = 131072;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct passwd {
     pub pw_name: *mut libc::c_char,
     pub pw_passwd: *mut libc::c_char,
@@ -658,16 +663,18 @@ pub struct passwd {
     pub pw_dir: *mut libc::c_char,
     pub pw_shell: *mut libc::c_char,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct environ_entry {
     pub name: *mut libc::c_char,
     pub value: *mut libc::c_char,
     pub flags: libc::c_int,
     pub entry: C2RustUnnamed_0,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_0 {
     pub rbe_left: *mut environ_entry,
     pub rbe_right: *mut environ_entry,
@@ -682,8 +689,9 @@ pub const OPTIONS_TABLE_COLOUR: options_table_type = 3;
 pub const OPTIONS_TABLE_KEY: options_table_type = 2;
 pub const OPTIONS_TABLE_NUMBER: options_table_type = 1;
 pub const OPTIONS_TABLE_STRING: options_table_type = 0;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct options_table_entry {
     pub name: *const libc::c_char,
     pub alternative_name: *const libc::c_char,

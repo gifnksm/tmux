@@ -25,21 +25,24 @@ pub type __u_char = libc::c_uchar;
 pub type __u_int = libc::c_uint;
 pub type u_char = __u_char;
 pub type u_int = __u_int;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct args {
     pub tree: args_tree,
     pub argc: libc::c_int,
     pub argv: *mut *mut libc::c_char,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct args_tree {
     pub rbh_root: *mut args_entry,
 }
 pub type key_code = libc::c_ulonglong;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct key_table {
     pub name: *const libc::c_char,
     pub key_bindings: key_bindings,
@@ -47,21 +50,24 @@ pub struct key_table {
     pub references: u_int,
     pub entry: C2RustUnnamed,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed {
     pub rbe_left: *mut key_table,
     pub rbe_right: *mut key_table,
     pub rbe_parent: *mut key_table,
     pub rbe_color: libc::c_int,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct key_bindings {
     pub rbh_root: *mut key_binding,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct key_binding {
     pub key: key_code,
     pub cmdlist: *mut cmd_list,
@@ -69,16 +75,18 @@ pub struct key_binding {
     pub flags: libc::c_int,
     pub entry: C2RustUnnamed_0,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_0 {
     pub rbe_left: *mut key_binding,
     pub rbe_right: *mut key_binding,
     pub rbe_parent: *mut key_binding,
     pub rbe_color: libc::c_int,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct cmd_list {
     pub references: libc::c_int,
     pub group: u_int,
@@ -93,15 +101,17 @@ pub const CMD_RETURN_STOP: cmd_retval = 2;
 pub const CMD_RETURN_WAIT: cmd_retval = 1;
 pub const CMD_RETURN_NORMAL: cmd_retval = 0;
 pub const CMD_RETURN_ERROR: cmd_retval = -1;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct cmd_entry_flag {
     pub flag: libc::c_char,
     pub type_0: cmd_find_type,
     pub flags: libc::c_int,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct cmd_entry {
     pub name: *const libc::c_char,
     pub alias: *const libc::c_char,
@@ -112,8 +122,9 @@ pub struct cmd_entry {
     pub flags: libc::c_int,
     pub exec: Option<unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval>,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_1 {
     pub template: *const libc::c_char,
     pub lower: libc::c_int,

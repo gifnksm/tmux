@@ -50,15 +50,17 @@ pub type __socklen_t = libc::c_uint;
 pub type pid_t = __pid_t;
 pub type ssize_t = __ssize_t;
 pub type size_t = libc::c_ulong;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct iovec {
     pub iov_base: *mut libc::c_void,
     pub iov_len: size_t,
 }
 pub type socklen_t = __socklen_t;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct msghdr {
     pub msg_name: *mut libc::c_void,
     pub msg_namelen: socklen_t,
@@ -68,8 +70,9 @@ pub struct msghdr {
     pub msg_controllen: size_t,
     pub msg_flags: libc::c_int,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct cmsghdr {
     pub cmsg_len: size_t,
     pub cmsg_level: libc::c_int,
@@ -81,8 +84,9 @@ pub const SCM_CREDENTIALS: C2RustUnnamed = 2;
 pub const SCM_RIGHTS: C2RustUnnamed = 1;
 pub type uint16_t = __uint16_t;
 pub type uint32_t = __uint32_t;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct ibuf {
     pub entry: C2RustUnnamed_0,
     pub buf: *mut libc::c_uchar,
@@ -92,46 +96,53 @@ pub struct ibuf {
     pub rpos: size_t,
     pub fd: libc::c_int,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_0 {
     pub tqe_next: *mut ibuf,
     pub tqe_prev: *mut *mut ibuf,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct msgbuf {
     pub bufs: C2RustUnnamed_1,
     pub queued: uint32_t,
     pub fd: libc::c_int,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_1 {
     pub tqh_first: *mut ibuf,
     pub tqh_last: *mut *mut ibuf,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct ibuf_read {
     pub buf: [libc::c_uchar; 65535],
     pub rptr: *mut libc::c_uchar,
     pub wpos: size_t,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct imsg_fd {
     pub entry: C2RustUnnamed_2,
     pub fd: libc::c_int,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_2 {
     pub tqe_next: *mut imsg_fd,
     pub tqe_prev: *mut *mut imsg_fd,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct imsgbuf {
     pub fds: C2RustUnnamed_3,
     pub r: ibuf_read,
@@ -139,14 +150,16 @@ pub struct imsgbuf {
     pub fd: libc::c_int,
     pub pid: pid_t,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_3 {
     pub tqh_first: *mut imsg_fd,
     pub tqh_last: *mut *mut imsg_fd,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct imsg_hdr {
     pub type_0: uint32_t,
     pub len: uint16_t,
@@ -154,15 +167,17 @@ pub struct imsg_hdr {
     pub peerid: uint32_t,
     pub pid: uint32_t,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct imsg {
     pub hdr: imsg_hdr,
     pub fd: libc::c_int,
     pub data: *mut libc::c_void,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub union C2RustUnnamed_4 {
     pub hdr: cmsghdr,
     pub buf: [libc::c_char; 24],

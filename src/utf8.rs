@@ -63,8 +63,9 @@ pub const _ISalpha: C2RustUnnamed = 1024;
 pub const _ISlower: C2RustUnnamed = 512;
 pub const _ISupper: C2RustUnnamed = 256;
 pub type wchar_t = libc::c_int;
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct utf8_data {
     pub data: [u_char; 21],
     pub have: u_char,
@@ -92,8 +93,9 @@ pub const UTF8_MORE: utf8_state = 0;
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct utf8_item {
     pub index_entry: C2RustUnnamed_1,
     pub index: u_int,
@@ -101,29 +103,33 @@ pub struct utf8_item {
     pub data: [libc::c_char; 21],
     pub size: u_char,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_0 {
     pub rbe_left: *mut utf8_item,
     pub rbe_right: *mut utf8_item,
     pub rbe_parent: *mut utf8_item,
     pub rbe_color: libc::c_int,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_1 {
     pub rbe_left: *mut utf8_item,
     pub rbe_right: *mut utf8_item,
     pub rbe_parent: *mut utf8_item,
     pub rbe_color: libc::c_int,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct utf8_data_tree {
     pub rbh_root: *mut utf8_item,
 }
-#[derive(Copy, Clone)]
+
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct utf8_index_tree {
     pub rbh_root: *mut utf8_item,
 }
