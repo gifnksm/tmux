@@ -1,0 +1,5201 @@
+use ::libc;
+use ::c2rust_bitfields;
+extern "C" {
+    pub type re_dfa_t;
+    pub type event_base;
+    pub type evbuffer;
+    pub type bufferevent_ops;
+    pub type args_entry;
+    pub type screen_write_collect_line;
+    pub type screen_sel;
+    pub type screen_titles;
+    pub type environ;
+    pub type options;
+    pub type format_tree;
+    pub type input_ctx;
+    pub type cmds;
+    pub type tty_code;
+    pub type format_job_tree;
+    pub type control_state;
+    pub type cmdq_list;
+    pub type tmuxpeer;
+    pub type cmdq_item;
+    #[no_mangle]
+    fn ioctl(__fd: libc::c_int, __request: libc::c_ulong, _: ...)
+     -> libc::c_int;
+    #[no_mangle]
+    fn __ctype_b_loc() -> *mut *const libc::c_ushort;
+    #[no_mangle]
+    fn fnmatch(__pattern: *const libc::c_char, __name: *const libc::c_char,
+               __flags: libc::c_int) -> libc::c_int;
+    #[no_mangle]
+    fn regcomp(__preg: *mut regex_t, __pattern: *const libc::c_char,
+               __cflags: libc::c_int) -> libc::c_int;
+    #[no_mangle]
+    fn regexec(__preg: *const regex_t, __String: *const libc::c_char,
+               __nmatch: size_t, __pmatch: *mut regmatch_t,
+               __eflags: libc::c_int) -> libc::c_int;
+    #[no_mangle]
+    fn regfree(__preg: *mut regex_t);
+    #[no_mangle]
+    fn free(__ptr: *mut libc::c_void);
+    #[no_mangle]
+    fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong)
+     -> *mut libc::c_void;
+    #[no_mangle]
+    fn strlen(_: *const libc::c_char) -> libc::c_ulong;
+    #[no_mangle]
+    fn strcasecmp(_: *const libc::c_char, _: *const libc::c_char)
+     -> libc::c_int;
+    #[no_mangle]
+    fn close(__fd: libc::c_int) -> libc::c_int;
+    #[no_mangle]
+    fn gethostname(__name: *mut libc::c_char, __len: size_t) -> libc::c_int;
+    #[no_mangle]
+    fn bufferevent_free(bufev: *mut bufferevent);
+    #[no_mangle]
+    fn bufferevent_write(bufev: *mut bufferevent, data: *const libc::c_void,
+                         size: size_t) -> libc::c_int;
+    #[no_mangle]
+    fn bufferevent_enable(bufev: *mut bufferevent, event: libc::c_short)
+     -> libc::c_int;
+    #[no_mangle]
+    fn bufferevent_disable(bufev: *mut bufferevent, event: libc::c_short)
+     -> libc::c_int;
+    #[no_mangle]
+    fn event_del(_: *mut event) -> libc::c_int;
+    #[no_mangle]
+    fn event_initialized(ev: *const event) -> libc::c_int;
+    #[no_mangle]
+    fn evbuffer_get_length(buf: *const evbuffer) -> size_t;
+    #[no_mangle]
+    fn evbuffer_drain(buf: *mut evbuffer, len: size_t) -> libc::c_int;
+    #[no_mangle]
+    fn evbuffer_pullup(buf: *mut evbuffer, size: ssize_t)
+     -> *mut libc::c_uchar;
+    #[no_mangle]
+    fn bufferevent_new(fd: libc::c_int, readcb: bufferevent_data_cb,
+                       writecb: bufferevent_data_cb,
+                       errorcb: bufferevent_event_cb,
+                       cbarg: *mut libc::c_void) -> *mut bufferevent;
+    #[no_mangle]
+    fn strtonum(_: *const libc::c_char, _: libc::c_longlong,
+                _: libc::c_longlong, _: *mut *const libc::c_char)
+     -> libc::c_longlong;
+    #[no_mangle]
+    fn xmalloc(_: size_t) -> *mut libc::c_void;
+    #[no_mangle]
+    fn xcalloc(_: size_t, _: size_t) -> *mut libc::c_void;
+    #[no_mangle]
+    fn xreallocarray(_: *mut libc::c_void, _: size_t, _: size_t)
+     -> *mut libc::c_void;
+    #[no_mangle]
+    fn xstrdup(_: *const libc::c_char) -> *mut libc::c_char;
+    #[no_mangle]
+    fn xasprintf(_: *mut *mut libc::c_char, _: *const libc::c_char, _: ...)
+     -> libc::c_int;
+    #[no_mangle]
+    static mut global_w_options: *mut options;
+    #[no_mangle]
+    fn setblocking(_: libc::c_int, _: libc::c_int);
+    #[no_mangle]
+    fn gettimeofday(__tv: *mut timeval, __tz: *mut libc::c_void)
+     -> libc::c_int;
+    #[no_mangle]
+    fn options_free(_: *mut options);
+    #[no_mangle]
+    fn options_get_number(_: *mut options, _: *const libc::c_char)
+     -> libc::c_longlong;
+    #[no_mangle]
+    fn tty_update_window_offset(_: *mut window);
+    #[no_mangle]
+    fn cmd_free_argv(_: libc::c_int, _: *mut *mut libc::c_char);
+    #[no_mangle]
+    fn cmdq_get_client(_: *mut cmdq_item) -> *mut client;
+    #[no_mangle]
+    fn cmdq_continue(_: *mut cmdq_item);
+    #[no_mangle]
+    fn alerts_queue(_: *mut window, _: libc::c_int);
+    #[no_mangle]
+    fn file_read(_: *mut client, _: *const libc::c_char, _: client_file_cb,
+                 _: *mut libc::c_void);
+    #[no_mangle]
+    static mut clients: clients;
+    #[no_mangle]
+    static mut marked_pane: cmd_find_state;
+    #[no_mangle]
+    fn server_clear_marked();
+    #[no_mangle]
+    fn server_check_marked() -> libc::c_int;
+    #[no_mangle]
+    fn server_client_unref(_: *mut client);
+    #[no_mangle]
+    fn server_status_session(_: *mut session);
+    #[no_mangle]
+    fn server_redraw_window_borders(_: *mut window);
+    #[no_mangle]
+    fn server_status_window(_: *mut window);
+    #[no_mangle]
+    fn server_destroy_pane(_: *mut window_pane, _: libc::c_int);
+    #[no_mangle]
+    fn input_init(_: *mut window_pane, _: *mut bufferevent) -> *mut input_ctx;
+    #[no_mangle]
+    fn input_free(_: *mut input_ctx);
+    #[no_mangle]
+    fn input_parse_pane(_: *mut window_pane);
+    #[no_mangle]
+    fn input_parse_buffer(_: *mut window_pane, _: *mut u_char, _: size_t);
+    #[no_mangle]
+    fn input_key_pane(_: *mut window_pane, _: key_code, _: *mut mouse_event)
+     -> libc::c_int;
+    #[no_mangle]
+    fn grid_cells_look_equal(_: *const grid_cell, _: *const grid_cell)
+     -> libc::c_int;
+    #[no_mangle]
+    fn grid_view_string_cells(_: *mut grid, _: u_int, _: u_int, _: u_int)
+     -> *mut libc::c_char;
+    #[no_mangle]
+    fn options_create(_: *mut options) -> *mut options;
+    #[no_mangle]
+    fn notify_pane(_: *const libc::c_char, _: *mut window_pane);
+    #[no_mangle]
+    fn notify_window(_: *const libc::c_char, _: *mut window);
+    #[no_mangle]
+    fn fatalx(_: *const libc::c_char, _: ...) -> !;
+    #[no_mangle]
+    fn log_debug(_: *const libc::c_char, _: ...);
+    #[no_mangle]
+    fn layout_free_cell(_: *mut layout_cell);
+    #[no_mangle]
+    fn control_write_output(_: *mut client, _: *mut window_pane);
+    #[no_mangle]
+    static window_buffer_mode: window_mode;
+    #[no_mangle]
+    static window_client_mode: window_mode;
+    #[no_mangle]
+    static window_clock_mode: window_mode;
+    #[no_mangle]
+    static window_copy_mode: window_mode;
+    #[no_mangle]
+    static window_tree_mode: window_mode;
+    #[no_mangle]
+    static window_view_mode: window_mode;
+    #[no_mangle]
+    fn fatal(_: *const libc::c_char, _: ...) -> !;
+    #[no_mangle]
+    fn layout_init(_: *mut window, _: *mut window_pane);
+    #[no_mangle]
+    fn layout_fix_panes(_: *mut window);
+    #[no_mangle]
+    fn layout_free(_: *mut window);
+    #[no_mangle]
+    fn screen_resize(_: *mut screen, _: u_int, _: u_int, _: libc::c_int);
+    #[no_mangle]
+    fn screen_set_title(_: *mut screen, _: *const libc::c_char)
+     -> libc::c_int;
+    #[no_mangle]
+    fn screen_free(_: *mut screen);
+    #[no_mangle]
+    fn screen_init(_: *mut screen, _: u_int, _: u_int, _: u_int);
+    #[no_mangle]
+    fn utf8_stravis(_: *mut *mut libc::c_char, _: *const libc::c_char,
+                    _: libc::c_int) -> libc::c_int;
+}
+pub type __u_char = libc::c_uchar;
+pub type __u_short = libc::c_ushort;
+pub type __u_int = libc::c_uint;
+pub type __uint8_t = libc::c_uchar;
+pub type __uint64_t = libc::c_ulong;
+pub type __pid_t = libc::c_int;
+pub type __time_t = libc::c_long;
+pub type __suseconds_t = libc::c_long;
+pub type __ssize_t = libc::c_long;
+pub type u_char = __u_char;
+pub type u_short = __u_short;
+pub type u_int = __u_int;
+pub type pid_t = __pid_t;
+pub type ssize_t = __ssize_t;
+pub type size_t = libc::c_ulong;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct timeval {
+    pub tv_sec: __time_t,
+    pub tv_usec: __suseconds_t,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct winsize {
+    pub ws_row: libc::c_ushort,
+    pub ws_col: libc::c_ushort,
+    pub ws_xpixel: libc::c_ushort,
+    pub ws_ypixel: libc::c_ushort,
+}
+pub type C2RustUnnamed = libc::c_uint;
+pub const _ISalnum: C2RustUnnamed = 8;
+pub const _ISpunct: C2RustUnnamed = 4;
+pub const _IScntrl: C2RustUnnamed = 2;
+pub const _ISblank: C2RustUnnamed = 1;
+pub const _ISgraph: C2RustUnnamed = 32768;
+pub const _ISprint: C2RustUnnamed = 16384;
+pub const _ISspace: C2RustUnnamed = 8192;
+pub const _ISxdigit: C2RustUnnamed = 4096;
+pub const _ISdigit: C2RustUnnamed = 2048;
+pub const _ISalpha: C2RustUnnamed = 1024;
+pub const _ISlower: C2RustUnnamed = 512;
+pub const _ISupper: C2RustUnnamed = 256;
+pub type __re_long_size_t = libc::c_ulong;
+pub type reg_syntax_t = libc::c_ulong;
+#[derive(Copy, Clone, BitfieldStruct)]
+#[repr(C)]
+pub struct re_pattern_buffer {
+    pub buffer: *mut re_dfa_t,
+    pub allocated: __re_long_size_t,
+    pub used: __re_long_size_t,
+    pub syntax: reg_syntax_t,
+    pub fastmap: *mut libc::c_char,
+    pub translate: *mut libc::c_uchar,
+    pub re_nsub: size_t,
+    #[bitfield(name = "can_be_null", ty = "libc::c_uint", bits = "0..=0")]
+    #[bitfield(name = "regs_allocated", ty = "libc::c_uint", bits = "1..=2")]
+    #[bitfield(name = "fastmap_accurate", ty = "libc::c_uint", bits =
+               "3..=3")]
+    #[bitfield(name = "no_sub", ty = "libc::c_uint", bits = "4..=4")]
+    #[bitfield(name = "not_bol", ty = "libc::c_uint", bits = "5..=5")]
+    #[bitfield(name = "not_eol", ty = "libc::c_uint", bits = "6..=6")]
+    #[bitfield(name = "newline_anchor", ty = "libc::c_uint", bits = "7..=7")]
+    pub can_be_null_regs_allocated_fastmap_accurate_no_sub_not_bol_not_eol_newline_anchor: [u8; 1],
+    #[bitfield(padding)]
+    pub c2rust_padding: [u8; 7],
+}
+pub type regex_t = re_pattern_buffer;
+pub type regoff_t = libc::c_int;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct regmatch_t {
+    pub rm_so: regoff_t,
+    pub rm_eo: regoff_t,
+}
+pub type uint8_t = __uint8_t;
+pub type uint64_t = __uint64_t;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct event {
+    pub ev_evcallback: event_callback,
+    pub ev_timeout_pos: C2RustUnnamed_5,
+    pub ev_fd: libc::c_int,
+    pub ev_base: *mut event_base,
+    pub ev_: C2RustUnnamed_0,
+    pub ev_events: libc::c_short,
+    pub ev_res: libc::c_short,
+    pub ev_timeout: timeval,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub union C2RustUnnamed_0 {
+    pub ev_io: C2RustUnnamed_3,
+    pub ev_signal: C2RustUnnamed_1,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct C2RustUnnamed_1 {
+    pub ev_signal_next: C2RustUnnamed_2,
+    pub ev_ncalls: libc::c_short,
+    pub ev_pncalls: *mut libc::c_short,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct C2RustUnnamed_2 {
+    pub le_next: *mut event,
+    pub le_prev: *mut *mut event,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct C2RustUnnamed_3 {
+    pub ev_io_next: C2RustUnnamed_4,
+    pub ev_timeout: timeval,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct C2RustUnnamed_4 {
+    pub le_next: *mut event,
+    pub le_prev: *mut *mut event,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub union C2RustUnnamed_5 {
+    pub ev_next_with_common_timeout: C2RustUnnamed_6,
+    pub min_heap_idx: libc::c_int,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct C2RustUnnamed_6 {
+    pub tqe_next: *mut event,
+    pub tqe_prev: *mut *mut event,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct event_callback {
+    pub evcb_active_next: C2RustUnnamed_8,
+    pub evcb_flags: libc::c_short,
+    pub evcb_pri: uint8_t,
+    pub evcb_closure: uint8_t,
+    pub evcb_cb_union: C2RustUnnamed_7,
+    pub evcb_arg: *mut libc::c_void,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub union C2RustUnnamed_7 {
+    pub evcb_callback: Option<unsafe extern "C" fn(_: libc::c_int,
+                                                   _: libc::c_short,
+                                                   _: *mut libc::c_void)
+                                  -> ()>,
+    pub evcb_selfcb: Option<unsafe extern "C" fn(_: *mut event_callback,
+                                                 _: *mut libc::c_void) -> ()>,
+    pub evcb_evfinalize: Option<unsafe extern "C" fn(_: *mut event,
+                                                     _: *mut libc::c_void)
+                                    -> ()>,
+    pub evcb_cbfinalize: Option<unsafe extern "C" fn(_: *mut event_callback,
+                                                     _: *mut libc::c_void)
+                                    -> ()>,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct C2RustUnnamed_8 {
+    pub tqe_next: *mut event_callback,
+    pub tqe_prev: *mut *mut event_callback,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct bufferevent {
+    pub ev_base: *mut event_base,
+    pub be_ops: *const bufferevent_ops,
+    pub ev_read: event,
+    pub ev_write: event,
+    pub input: *mut evbuffer,
+    pub output: *mut evbuffer,
+    pub wm_read: event_watermark,
+    pub wm_write: event_watermark,
+    pub readcb: bufferevent_data_cb,
+    pub writecb: bufferevent_data_cb,
+    pub errorcb: bufferevent_event_cb,
+    pub cbarg: *mut libc::c_void,
+    pub timeout_read: timeval,
+    pub timeout_write: timeval,
+    pub enabled: libc::c_short,
+}
+pub type bufferevent_event_cb
+    =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: libc::c_short,
+                                _: *mut libc::c_void) -> ()>;
+pub type bufferevent_data_cb
+    =
+    Option<unsafe extern "C" fn(_: *mut bufferevent, _: *mut libc::c_void)
+               -> ()>;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct event_watermark {
+    pub low: size_t,
+    pub high: size_t,
+}
+pub type cc_t = libc::c_uchar;
+pub type speed_t = libc::c_uint;
+pub type tcflag_t = libc::c_uint;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct termios {
+    pub c_iflag: tcflag_t,
+    pub c_oflag: tcflag_t,
+    pub c_cflag: tcflag_t,
+    pub c_lflag: tcflag_t,
+    pub c_line: cc_t,
+    pub c_cc: [cc_t; 32],
+    pub c_ispeed: speed_t,
+    pub c_ospeed: speed_t,
+}
+pub type bitstr_t = libc::c_uchar;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct args {
+    pub tree: args_tree,
+    pub argc: libc::c_int,
+    pub argv: *mut *mut libc::c_char,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct args_tree {
+    pub rbh_root: *mut args_entry,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct client {
+    pub name: *const libc::c_char,
+    pub peer: *mut tmuxpeer,
+    pub queue: *mut cmdq_list,
+    pub windows: client_windows,
+    pub control_state: *mut control_state,
+    pub pause_age: u_int,
+    pub pid: pid_t,
+    pub fd: libc::c_int,
+    pub out_fd: libc::c_int,
+    pub event: event,
+    pub retval: libc::c_int,
+    pub creation_time: timeval,
+    pub activity_time: timeval,
+    pub environ: *mut environ,
+    pub jobs: *mut format_job_tree,
+    pub title: *mut libc::c_char,
+    pub cwd: *const libc::c_char,
+    pub term_name: *mut libc::c_char,
+    pub term_features: libc::c_int,
+    pub term_type: *mut libc::c_char,
+    pub ttyname: *mut libc::c_char,
+    pub tty: tty,
+    pub written: size_t,
+    pub discarded: size_t,
+    pub redraw: size_t,
+    pub repeat_timer: event,
+    pub click_timer: event,
+    pub click_button: u_int,
+    pub click_event: mouse_event,
+    pub status: status_line,
+    pub flags: uint64_t,
+    pub exit_type: C2RustUnnamed_29,
+    pub exit_msgtype: msgtype,
+    pub exit_session: *mut libc::c_char,
+    pub exit_message: *mut libc::c_char,
+    pub keytable: *mut key_table,
+    pub redraw_panes: uint64_t,
+    pub message_ignore_styles: libc::c_int,
+    pub message_string: *mut libc::c_char,
+    pub message_timer: event,
+    pub prompt_string: *mut libc::c_char,
+    pub prompt_buffer: *mut utf8_data,
+    pub prompt_index: size_t,
+    pub prompt_inputcb: prompt_input_cb,
+    pub prompt_freecb: prompt_free_cb,
+    pub prompt_data: *mut libc::c_void,
+    pub prompt_hindex: u_int,
+    pub prompt_mode: C2RustUnnamed_26,
+    pub prompt_saved: *mut utf8_data,
+    pub prompt_flags: libc::c_int,
+    pub session: *mut session,
+    pub last_session: *mut session,
+    pub references: libc::c_int,
+    pub pan_window: *mut libc::c_void,
+    pub pan_ox: u_int,
+    pub pan_oy: u_int,
+    pub overlay_check: overlay_check_cb,
+    pub overlay_mode: overlay_mode_cb,
+    pub overlay_draw: overlay_draw_cb,
+    pub overlay_key: overlay_key_cb,
+    pub overlay_free: overlay_free_cb,
+    pub overlay_data: *mut libc::c_void,
+    pub overlay_timer: event,
+    pub files: client_files,
+    pub entry: C2RustUnnamed_9,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct C2RustUnnamed_9 {
+    pub tqe_next: *mut client,
+    pub tqe_prev: *mut *mut client,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct client_files {
+    pub rbh_root: *mut client_file,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct client_file {
+    pub c: *mut client,
+    pub references: libc::c_int,
+    pub stream: libc::c_int,
+    pub path: *mut libc::c_char,
+    pub buffer: *mut evbuffer,
+    pub event: *mut bufferevent,
+    pub fd: libc::c_int,
+    pub error: libc::c_int,
+    pub closed: libc::c_int,
+    pub cb: client_file_cb,
+    pub data: *mut libc::c_void,
+    pub entry: C2RustUnnamed_10,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct C2RustUnnamed_10 {
+    pub rbe_left: *mut client_file,
+    pub rbe_right: *mut client_file,
+    pub rbe_parent: *mut client_file,
+    pub rbe_color: libc::c_int,
+}
+pub type client_file_cb
+    =
+    Option<unsafe extern "C" fn(_: *mut client, _: *const libc::c_char,
+                                _: libc::c_int, _: libc::c_int,
+                                _: *mut evbuffer, _: *mut libc::c_void)
+               -> ()>;
+pub type overlay_free_cb = Option<unsafe extern "C" fn(_: *mut client) -> ()>;
+pub type overlay_key_cb
+    =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut key_event)
+               -> libc::c_int>;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct key_event {
+    pub key: key_code,
+    pub m: mouse_event,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct mouse_event {
+    pub valid: libc::c_int,
+    pub ignore: libc::c_int,
+    pub key: key_code,
+    pub statusat: libc::c_int,
+    pub statuslines: u_int,
+    pub x: u_int,
+    pub y: u_int,
+    pub b: u_int,
+    pub lx: u_int,
+    pub ly: u_int,
+    pub lb: u_int,
+    pub ox: u_int,
+    pub oy: u_int,
+    pub s: libc::c_int,
+    pub w: libc::c_int,
+    pub wp: libc::c_int,
+    pub sgr_type: u_int,
+    pub sgr_b: u_int,
+}
+pub type key_code = libc::c_ulonglong;
+pub type overlay_draw_cb
+    =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx)
+               -> ()>;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct screen_redraw_ctx {
+    pub c: *mut client,
+    pub statuslines: u_int,
+    pub statustop: libc::c_int,
+    pub pane_status: libc::c_int,
+    pub pane_lines: libc::c_int,
+    pub sx: u_int,
+    pub sy: u_int,
+    pub ox: u_int,
+    pub oy: u_int,
+}
+pub type overlay_mode_cb
+    =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int)
+               -> *mut screen>;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct screen {
+    pub title: *mut libc::c_char,
+    pub path: *mut libc::c_char,
+    pub titles: *mut screen_titles,
+    pub grid: *mut grid,
+    pub cx: u_int,
+    pub cy: u_int,
+    pub cstyle: u_int,
+    pub ccolour: *mut libc::c_char,
+    pub rupper: u_int,
+    pub rlower: u_int,
+    pub mode: libc::c_int,
+    pub saved_cx: u_int,
+    pub saved_cy: u_int,
+    pub saved_grid: *mut grid,
+    pub saved_cell: grid_cell,
+    pub saved_flags: libc::c_int,
+    pub tabs: *mut bitstr_t,
+    pub sel: *mut screen_sel,
+    pub write_list: *mut screen_write_collect_line,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct grid_cell {
+    pub data: utf8_data,
+    pub attr: u_short,
+    pub flags: u_char,
+    pub fg: libc::c_int,
+    pub bg: libc::c_int,
+    pub us: libc::c_int,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct utf8_data {
+    pub data: [u_char; 21],
+    pub have: u_char,
+    pub size: u_char,
+    pub width: u_char,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct grid {
+    pub flags: libc::c_int,
+    pub sx: u_int,
+    pub sy: u_int,
+    pub hscrolled: u_int,
+    pub hsize: u_int,
+    pub hlimit: u_int,
+    pub linedata: *mut grid_line,
+}
+#[derive(Copy, Clone)]
+#[repr(C, packed)]
+pub struct grid_line {
+    pub cellused: u_int,
+    pub cellsize: u_int,
+    pub celldata: *mut grid_cell_entry,
+    pub extdsize: u_int,
+    pub extddata: *mut grid_extd_entry,
+    pub flags: libc::c_int,
+}
+#[derive(Copy, Clone)]
+#[repr(C, packed)]
+pub struct grid_extd_entry {
+    pub data: utf8_char,
+    pub attr: u_short,
+    pub flags: u_char,
+    pub fg: libc::c_int,
+    pub bg: libc::c_int,
+    pub us: libc::c_int,
+}
+pub type utf8_char = u_int;
+#[derive(Copy, Clone)]
+#[repr(C, packed)]
+pub struct grid_cell_entry {
+    pub flags: u_char,
+    pub c2rust_unnamed: C2RustUnnamed_11,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub union C2RustUnnamed_11 {
+    pub offset: u_int,
+    pub data: C2RustUnnamed_12,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct C2RustUnnamed_12 {
+    pub attr: u_char,
+    pub fg: u_char,
+    pub bg: u_char,
+    pub data: u_char,
+}
+pub type overlay_check_cb
+    =
+    Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int)
+               -> libc::c_int>;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct session {
+    pub id: u_int,
+    pub name: *mut libc::c_char,
+    pub cwd: *const libc::c_char,
+    pub creation_time: timeval,
+    pub last_attached_time: timeval,
+    pub activity_time: timeval,
+    pub last_activity_time: timeval,
+    pub lock_timer: event,
+    pub curw: *mut winlink,
+    pub lastw: winlink_stack,
+    pub windows: winlinks,
+    pub statusat: libc::c_int,
+    pub statuslines: u_int,
+    pub options: *mut options,
+    pub flags: libc::c_int,
+    pub attached: u_int,
+    pub tio: *mut termios,
+    pub environ: *mut environ,
+    pub references: libc::c_int,
+    pub gentry: C2RustUnnamed_14,
+    pub entry: C2RustUnnamed_13,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct C2RustUnnamed_13 {
+    pub rbe_left: *mut session,
+    pub rbe_right: *mut session,
+    pub rbe_parent: *mut session,
+    pub rbe_color: libc::c_int,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct C2RustUnnamed_14 {
+    pub tqe_next: *mut session,
+    pub tqe_prev: *mut *mut session,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct winlinks {
+    pub rbh_root: *mut winlink,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct winlink {
+    pub idx: libc::c_int,
+    pub session: *mut session,
+    pub window: *mut window,
+    pub flags: libc::c_int,
+    pub entry: C2RustUnnamed_17,
+    pub wentry: C2RustUnnamed_16,
+    pub sentry: C2RustUnnamed_15,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct C2RustUnnamed_15 {
+    pub tqe_next: *mut winlink,
+    pub tqe_prev: *mut *mut winlink,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct C2RustUnnamed_16 {
+    pub tqe_next: *mut winlink,
+    pub tqe_prev: *mut *mut winlink,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct C2RustUnnamed_17 {
+    pub rbe_left: *mut winlink,
+    pub rbe_right: *mut winlink,
+    pub rbe_parent: *mut winlink,
+    pub rbe_color: libc::c_int,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct window {
+    pub id: u_int,
+    pub latest: *mut libc::c_void,
+    pub name: *mut libc::c_char,
+    pub name_event: event,
+    pub name_time: timeval,
+    pub alerts_timer: event,
+    pub offset_timer: event,
+    pub activity_time: timeval,
+    pub active: *mut window_pane,
+    pub last: *mut window_pane,
+    pub panes: window_panes,
+    pub lastlayout: libc::c_int,
+    pub layout_root: *mut layout_cell,
+    pub saved_layout_root: *mut layout_cell,
+    pub old_layout: *mut libc::c_char,
+    pub sx: u_int,
+    pub sy: u_int,
+    pub xpixel: u_int,
+    pub ypixel: u_int,
+    pub new_sx: u_int,
+    pub new_sy: u_int,
+    pub new_xpixel: u_int,
+    pub new_ypixel: u_int,
+    pub flags: libc::c_int,
+    pub alerts_queued: libc::c_int,
+    pub alerts_entry: C2RustUnnamed_20,
+    pub options: *mut options,
+    pub references: u_int,
+    pub winlinks: C2RustUnnamed_19,
+    pub entry: C2RustUnnamed_18,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct C2RustUnnamed_18 {
+    pub rbe_left: *mut window,
+    pub rbe_right: *mut window,
+    pub rbe_parent: *mut window,
+    pub rbe_color: libc::c_int,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct C2RustUnnamed_19 {
+    pub tqh_first: *mut winlink,
+    pub tqh_last: *mut *mut winlink,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct C2RustUnnamed_20 {
+    pub tqe_next: *mut window,
+    pub tqe_prev: *mut *mut window,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct layout_cell {
+    pub type_0: layout_type,
+    pub parent: *mut layout_cell,
+    pub sx: u_int,
+    pub sy: u_int,
+    pub xoff: u_int,
+    pub yoff: u_int,
+    pub wp: *mut window_pane,
+    pub cells: layout_cells,
+    pub entry: C2RustUnnamed_21,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct C2RustUnnamed_21 {
+    pub tqe_next: *mut layout_cell,
+    pub tqe_prev: *mut *mut layout_cell,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct layout_cells {
+    pub tqh_first: *mut layout_cell,
+    pub tqh_last: *mut *mut layout_cell,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct window_pane {
+    pub id: u_int,
+    pub active_point: u_int,
+    pub window: *mut window,
+    pub options: *mut options,
+    pub layout_cell: *mut layout_cell,
+    pub saved_layout_cell: *mut layout_cell,
+    pub sx: u_int,
+    pub sy: u_int,
+    pub xoff: u_int,
+    pub yoff: u_int,
+    pub fg: libc::c_int,
+    pub bg: libc::c_int,
+    pub flags: libc::c_int,
+    pub argc: libc::c_int,
+    pub argv: *mut *mut libc::c_char,
+    pub shell: *mut libc::c_char,
+    pub cwd: *mut libc::c_char,
+    pub pid: pid_t,
+    pub tty: [libc::c_char; 32],
+    pub status: libc::c_int,
+    pub fd: libc::c_int,
+    pub event: *mut bufferevent,
+    pub offset: window_pane_offset,
+    pub base_offset: size_t,
+    pub resize_timer: event,
+    pub force_timer: event,
+    pub ictx: *mut input_ctx,
+    pub cached_gc: grid_cell,
+    pub cached_active_gc: grid_cell,
+    pub palette: *mut libc::c_int,
+    pub pipe_fd: libc::c_int,
+    pub pipe_event: *mut bufferevent,
+    pub pipe_offset: window_pane_offset,
+    pub screen: *mut screen,
+    pub base: screen,
+    pub status_screen: screen,
+    pub status_size: size_t,
+    pub modes: C2RustUnnamed_24,
+    pub searchstr: *mut libc::c_char,
+    pub searchregex: libc::c_int,
+    pub written: size_t,
+    pub skipped: size_t,
+    pub border_gc_set: libc::c_int,
+    pub border_gc: grid_cell,
+    pub entry: C2RustUnnamed_23,
+    pub tree_entry: C2RustUnnamed_22,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct C2RustUnnamed_22 {
+    pub rbe_left: *mut window_pane,
+    pub rbe_right: *mut window_pane,
+    pub rbe_parent: *mut window_pane,
+    pub rbe_color: libc::c_int,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct C2RustUnnamed_23 {
+    pub tqe_next: *mut window_pane,
+    pub tqe_prev: *mut *mut window_pane,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct C2RustUnnamed_24 {
+    pub tqh_first: *mut window_mode_entry,
+    pub tqh_last: *mut *mut window_mode_entry,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct window_mode_entry {
+    pub wp: *mut window_pane,
+    pub swp: *mut window_pane,
+    pub mode: *const window_mode,
+    pub data: *mut libc::c_void,
+    pub screen: *mut screen,
+    pub prefix: u_int,
+    pub entry: C2RustUnnamed_25,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct C2RustUnnamed_25 {
+    pub tqe_next: *mut window_mode_entry,
+    pub tqe_prev: *mut *mut window_mode_entry,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct window_mode {
+    pub name: *const libc::c_char,
+    pub default_format: *const libc::c_char,
+    pub init: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
+                                          _: *mut cmd_find_state,
+                                          _: *mut args) -> *mut screen>,
+    pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
+    pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
+                                            _: u_int, _: u_int) -> ()>,
+    pub key: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
+                                         _: *mut client, _: *mut session,
+                                         _: *mut winlink, _: key_code,
+                                         _: *mut mouse_event) -> ()>,
+    pub key_table: Option<unsafe extern "C" fn(_: *mut window_mode_entry)
+                              -> *const libc::c_char>,
+    pub command: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
+                                             _: *mut client, _: *mut session,
+                                             _: *mut winlink, _: *mut args,
+                                             _: *mut mouse_event) -> ()>,
+    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry,
+                                             _: *mut format_tree) -> ()>,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct cmd_find_state {
+    pub flags: libc::c_int,
+    pub current: *mut cmd_find_state,
+    pub s: *mut session,
+    pub wl: *mut winlink,
+    pub w: *mut window,
+    pub wp: *mut window_pane,
+    pub idx: libc::c_int,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct window_pane_offset {
+    pub used: size_t,
+}
+pub type layout_type = libc::c_uint;
+pub const LAYOUT_WINDOWPANE: layout_type = 2;
+pub const LAYOUT_TOPBOTTOM: layout_type = 1;
+pub const LAYOUT_LEFTRIGHT: layout_type = 0;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct window_panes {
+    pub tqh_first: *mut window_pane,
+    pub tqh_last: *mut *mut window_pane,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct winlink_stack {
+    pub tqh_first: *mut winlink,
+    pub tqh_last: *mut *mut winlink,
+}
+pub type C2RustUnnamed_26 = libc::c_uint;
+pub const PROMPT_COMMAND: C2RustUnnamed_26 = 1;
+pub const PROMPT_ENTRY: C2RustUnnamed_26 = 0;
+pub type prompt_free_cb
+    =
+    Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
+pub type prompt_input_cb
+    =
+    Option<unsafe extern "C" fn(_: *mut client, _: *mut libc::c_void,
+                                _: *const libc::c_char, _: libc::c_int)
+               -> libc::c_int>;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct key_table {
+    pub name: *const libc::c_char,
+    pub key_bindings: key_bindings,
+    pub default_key_bindings: key_bindings,
+    pub references: u_int,
+    pub entry: C2RustUnnamed_27,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct C2RustUnnamed_27 {
+    pub rbe_left: *mut key_table,
+    pub rbe_right: *mut key_table,
+    pub rbe_parent: *mut key_table,
+    pub rbe_color: libc::c_int,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct key_bindings {
+    pub rbh_root: *mut key_binding,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct key_binding {
+    pub key: key_code,
+    pub cmdlist: *mut cmd_list,
+    pub note: *const libc::c_char,
+    pub flags: libc::c_int,
+    pub entry: C2RustUnnamed_28,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct C2RustUnnamed_28 {
+    pub rbe_left: *mut key_binding,
+    pub rbe_right: *mut key_binding,
+    pub rbe_parent: *mut key_binding,
+    pub rbe_color: libc::c_int,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct cmd_list {
+    pub references: libc::c_int,
+    pub group: u_int,
+    pub list: *mut cmds,
+}
+pub type msgtype = libc::c_uint;
+pub const MSG_WRITE_CLOSE: msgtype = 306;
+pub const MSG_WRITE_READY: msgtype = 305;
+pub const MSG_WRITE: msgtype = 304;
+pub const MSG_WRITE_OPEN: msgtype = 303;
+pub const MSG_READ_DONE: msgtype = 302;
+pub const MSG_READ: msgtype = 301;
+pub const MSG_READ_OPEN: msgtype = 300;
+pub const MSG_FLAGS: msgtype = 218;
+pub const MSG_EXEC: msgtype = 217;
+pub const MSG_WAKEUP: msgtype = 216;
+pub const MSG_UNLOCK: msgtype = 215;
+pub const MSG_SUSPEND: msgtype = 214;
+pub const MSG_OLDSTDOUT: msgtype = 213;
+pub const MSG_OLDSTDIN: msgtype = 212;
+pub const MSG_OLDSTDERR: msgtype = 211;
+pub const MSG_SHUTDOWN: msgtype = 210;
+pub const MSG_SHELL: msgtype = 209;
+pub const MSG_RESIZE: msgtype = 208;
+pub const MSG_READY: msgtype = 207;
+pub const MSG_LOCK: msgtype = 206;
+pub const MSG_EXITING: msgtype = 205;
+pub const MSG_EXITED: msgtype = 204;
+pub const MSG_EXIT: msgtype = 203;
+pub const MSG_DETACHKILL: msgtype = 202;
+pub const MSG_DETACH: msgtype = 201;
+pub const MSG_COMMAND: msgtype = 200;
+pub const MSG_IDENTIFY_LONGFLAGS: msgtype = 111;
+pub const MSG_IDENTIFY_STDOUT: msgtype = 110;
+pub const MSG_IDENTIFY_FEATURES: msgtype = 109;
+pub const MSG_IDENTIFY_CWD: msgtype = 108;
+pub const MSG_IDENTIFY_CLIENTPID: msgtype = 107;
+pub const MSG_IDENTIFY_DONE: msgtype = 106;
+pub const MSG_IDENTIFY_ENVIRON: msgtype = 105;
+pub const MSG_IDENTIFY_STDIN: msgtype = 104;
+pub const MSG_IDENTIFY_OLDCWD: msgtype = 103;
+pub const MSG_IDENTIFY_TTYNAME: msgtype = 102;
+pub const MSG_IDENTIFY_TERM: msgtype = 101;
+pub const MSG_IDENTIFY_FLAGS: msgtype = 100;
+pub const MSG_VERSION: msgtype = 12;
+pub type C2RustUnnamed_29 = libc::c_uint;
+pub const CLIENT_EXIT_DETACH: C2RustUnnamed_29 = 2;
+pub const CLIENT_EXIT_SHUTDOWN: C2RustUnnamed_29 = 1;
+pub const CLIENT_EXIT_RETURN: C2RustUnnamed_29 = 0;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct status_line {
+    pub timer: event,
+    pub screen: screen,
+    pub active: *mut screen,
+    pub references: libc::c_int,
+    pub style: grid_cell,
+    pub entries: [status_line_entry; 5],
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct status_line_entry {
+    pub expanded: *mut libc::c_char,
+    pub ranges: style_ranges,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct style_ranges {
+    pub tqh_first: *mut style_range,
+    pub tqh_last: *mut *mut style_range,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct style_range {
+    pub type_0: style_range_type,
+    pub argument: u_int,
+    pub start: u_int,
+    pub end: u_int,
+    pub entry: C2RustUnnamed_30,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct C2RustUnnamed_30 {
+    pub tqe_next: *mut style_range,
+    pub tqe_prev: *mut *mut style_range,
+}
+pub type style_range_type = libc::c_uint;
+pub const STYLE_RANGE_WINDOW: style_range_type = 3;
+pub const STYLE_RANGE_RIGHT: style_range_type = 2;
+pub const STYLE_RANGE_LEFT: style_range_type = 1;
+pub const STYLE_RANGE_NONE: style_range_type = 0;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct tty {
+    pub client: *mut client,
+    pub start_timer: event,
+    pub sx: u_int,
+    pub sy: u_int,
+    pub xpixel: u_int,
+    pub ypixel: u_int,
+    pub cx: u_int,
+    pub cy: u_int,
+    pub cstyle: u_int,
+    pub ccolour: *mut libc::c_char,
+    pub oflag: libc::c_int,
+    pub oox: u_int,
+    pub ooy: u_int,
+    pub osx: u_int,
+    pub osy: u_int,
+    pub mode: libc::c_int,
+    pub rlower: u_int,
+    pub rupper: u_int,
+    pub rleft: u_int,
+    pub rright: u_int,
+    pub event_in: event,
+    pub in_0: *mut evbuffer,
+    pub event_out: event,
+    pub out: *mut evbuffer,
+    pub timer: event,
+    pub discarded: size_t,
+    pub tio: termios,
+    pub cell: grid_cell,
+    pub last_cell: grid_cell,
+    pub flags: libc::c_int,
+    pub term: *mut tty_term,
+    pub mouse_last_x: u_int,
+    pub mouse_last_y: u_int,
+    pub mouse_last_b: u_int,
+    pub mouse_drag_flag: libc::c_int,
+    pub mouse_drag_update: Option<unsafe extern "C" fn(_: *mut client,
+                                                       _: *mut mouse_event)
+                                      -> ()>,
+    pub mouse_drag_release: Option<unsafe extern "C" fn(_: *mut client,
+                                                        _: *mut mouse_event)
+                                       -> ()>,
+    pub key_timer: event,
+    pub key_tree: *mut tty_key,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct tty_key {
+    pub ch: libc::c_char,
+    pub key: key_code,
+    pub left: *mut tty_key,
+    pub right: *mut tty_key,
+    pub next: *mut tty_key,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct tty_term {
+    pub name: *mut libc::c_char,
+    pub tty: *mut tty,
+    pub features: libc::c_int,
+    pub acs: [[libc::c_char; 2]; 256],
+    pub codes: *mut tty_code,
+    pub flags: libc::c_int,
+    pub entry: C2RustUnnamed_31,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct C2RustUnnamed_31 {
+    pub le_next: *mut tty_term,
+    pub le_prev: *mut *mut tty_term,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct client_windows {
+    pub rbh_root: *mut client_window,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct client_window {
+    pub window: u_int,
+    pub pane: *mut window_pane,
+    pub entry: C2RustUnnamed_32,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct C2RustUnnamed_32 {
+    pub rbe_left: *mut client_window,
+    pub rbe_right: *mut client_window,
+    pub rbe_parent: *mut client_window,
+    pub rbe_color: libc::c_int,
+}
+pub type C2RustUnnamed_33 = libc::c_ulong;
+pub const KEYC_KP_PERIOD: C2RustUnnamed_33 = 68719476927;
+pub const KEYC_KP_ZERO: C2RustUnnamed_33 = 68719476926;
+pub const KEYC_KP_ENTER: C2RustUnnamed_33 = 68719476925;
+pub const KEYC_KP_THREE: C2RustUnnamed_33 = 68719476924;
+pub const KEYC_KP_TWO: C2RustUnnamed_33 = 68719476923;
+pub const KEYC_KP_ONE: C2RustUnnamed_33 = 68719476922;
+pub const KEYC_KP_SIX: C2RustUnnamed_33 = 68719476921;
+pub const KEYC_KP_FIVE: C2RustUnnamed_33 = 68719476920;
+pub const KEYC_KP_FOUR: C2RustUnnamed_33 = 68719476919;
+pub const KEYC_KP_PLUS: C2RustUnnamed_33 = 68719476918;
+pub const KEYC_KP_NINE: C2RustUnnamed_33 = 68719476917;
+pub const KEYC_KP_EIGHT: C2RustUnnamed_33 = 68719476916;
+pub const KEYC_KP_SEVEN: C2RustUnnamed_33 = 68719476915;
+pub const KEYC_KP_MINUS: C2RustUnnamed_33 = 68719476914;
+pub const KEYC_KP_STAR: C2RustUnnamed_33 = 68719476913;
+pub const KEYC_KP_SLASH: C2RustUnnamed_33 = 68719476912;
+pub const KEYC_RIGHT: C2RustUnnamed_33 = 68719476911;
+pub const KEYC_LEFT: C2RustUnnamed_33 = 68719476910;
+pub const KEYC_DOWN: C2RustUnnamed_33 = 68719476909;
+pub const KEYC_UP: C2RustUnnamed_33 = 68719476908;
+pub const KEYC_BTAB: C2RustUnnamed_33 = 68719476907;
+pub const KEYC_PPAGE: C2RustUnnamed_33 = 68719476906;
+pub const KEYC_NPAGE: C2RustUnnamed_33 = 68719476905;
+pub const KEYC_END: C2RustUnnamed_33 = 68719476904;
+pub const KEYC_HOME: C2RustUnnamed_33 = 68719476903;
+pub const KEYC_DC: C2RustUnnamed_33 = 68719476902;
+pub const KEYC_IC: C2RustUnnamed_33 = 68719476901;
+pub const KEYC_F12: C2RustUnnamed_33 = 68719476900;
+pub const KEYC_F11: C2RustUnnamed_33 = 68719476899;
+pub const KEYC_F10: C2RustUnnamed_33 = 68719476898;
+pub const KEYC_F9: C2RustUnnamed_33 = 68719476897;
+pub const KEYC_F8: C2RustUnnamed_33 = 68719476896;
+pub const KEYC_F7: C2RustUnnamed_33 = 68719476895;
+pub const KEYC_F6: C2RustUnnamed_33 = 68719476894;
+pub const KEYC_F5: C2RustUnnamed_33 = 68719476893;
+pub const KEYC_F4: C2RustUnnamed_33 = 68719476892;
+pub const KEYC_F3: C2RustUnnamed_33 = 68719476891;
+pub const KEYC_F2: C2RustUnnamed_33 = 68719476890;
+pub const KEYC_F1: C2RustUnnamed_33 = 68719476889;
+pub const KEYC_BSPACE: C2RustUnnamed_33 = 68719476888;
+pub const KEYC_TRIPLECLICK3_BORDER: C2RustUnnamed_33 = 68719476887;
+pub const KEYC_TRIPLECLICK3_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476886;
+pub const KEYC_TRIPLECLICK3_STATUS_RIGHT: C2RustUnnamed_33 = 68719476885;
+pub const KEYC_TRIPLECLICK3_STATUS_LEFT: C2RustUnnamed_33 = 68719476884;
+pub const KEYC_TRIPLECLICK3_STATUS: C2RustUnnamed_33 = 68719476883;
+pub const KEYC_TRIPLECLICK3_PANE: C2RustUnnamed_33 = 68719476882;
+pub const KEYC_TRIPLECLICK2_BORDER: C2RustUnnamed_33 = 68719476881;
+pub const KEYC_TRIPLECLICK2_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476880;
+pub const KEYC_TRIPLECLICK2_STATUS_RIGHT: C2RustUnnamed_33 = 68719476879;
+pub const KEYC_TRIPLECLICK2_STATUS_LEFT: C2RustUnnamed_33 = 68719476878;
+pub const KEYC_TRIPLECLICK2_STATUS: C2RustUnnamed_33 = 68719476877;
+pub const KEYC_TRIPLECLICK2_PANE: C2RustUnnamed_33 = 68719476876;
+pub const KEYC_TRIPLECLICK1_BORDER: C2RustUnnamed_33 = 68719476875;
+pub const KEYC_TRIPLECLICK1_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476874;
+pub const KEYC_TRIPLECLICK1_STATUS_RIGHT: C2RustUnnamed_33 = 68719476873;
+pub const KEYC_TRIPLECLICK1_STATUS_LEFT: C2RustUnnamed_33 = 68719476872;
+pub const KEYC_TRIPLECLICK1_STATUS: C2RustUnnamed_33 = 68719476871;
+pub const KEYC_TRIPLECLICK1_PANE: C2RustUnnamed_33 = 68719476870;
+pub const KEYC_DOUBLECLICK3_BORDER: C2RustUnnamed_33 = 68719476869;
+pub const KEYC_DOUBLECLICK3_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476868;
+pub const KEYC_DOUBLECLICK3_STATUS_RIGHT: C2RustUnnamed_33 = 68719476867;
+pub const KEYC_DOUBLECLICK3_STATUS_LEFT: C2RustUnnamed_33 = 68719476866;
+pub const KEYC_DOUBLECLICK3_STATUS: C2RustUnnamed_33 = 68719476865;
+pub const KEYC_DOUBLECLICK3_PANE: C2RustUnnamed_33 = 68719476864;
+pub const KEYC_DOUBLECLICK2_BORDER: C2RustUnnamed_33 = 68719476863;
+pub const KEYC_DOUBLECLICK2_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476862;
+pub const KEYC_DOUBLECLICK2_STATUS_RIGHT: C2RustUnnamed_33 = 68719476861;
+pub const KEYC_DOUBLECLICK2_STATUS_LEFT: C2RustUnnamed_33 = 68719476860;
+pub const KEYC_DOUBLECLICK2_STATUS: C2RustUnnamed_33 = 68719476859;
+pub const KEYC_DOUBLECLICK2_PANE: C2RustUnnamed_33 = 68719476858;
+pub const KEYC_DOUBLECLICK1_BORDER: C2RustUnnamed_33 = 68719476857;
+pub const KEYC_DOUBLECLICK1_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476856;
+pub const KEYC_DOUBLECLICK1_STATUS_RIGHT: C2RustUnnamed_33 = 68719476855;
+pub const KEYC_DOUBLECLICK1_STATUS_LEFT: C2RustUnnamed_33 = 68719476854;
+pub const KEYC_DOUBLECLICK1_STATUS: C2RustUnnamed_33 = 68719476853;
+pub const KEYC_DOUBLECLICK1_PANE: C2RustUnnamed_33 = 68719476852;
+pub const KEYC_SECONDCLICK3_BORDER: C2RustUnnamed_33 = 68719476851;
+pub const KEYC_SECONDCLICK3_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476850;
+pub const KEYC_SECONDCLICK3_STATUS_RIGHT: C2RustUnnamed_33 = 68719476849;
+pub const KEYC_SECONDCLICK3_STATUS_LEFT: C2RustUnnamed_33 = 68719476848;
+pub const KEYC_SECONDCLICK3_STATUS: C2RustUnnamed_33 = 68719476847;
+pub const KEYC_SECONDCLICK3_PANE: C2RustUnnamed_33 = 68719476846;
+pub const KEYC_SECONDCLICK2_BORDER: C2RustUnnamed_33 = 68719476845;
+pub const KEYC_SECONDCLICK2_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476844;
+pub const KEYC_SECONDCLICK2_STATUS_RIGHT: C2RustUnnamed_33 = 68719476843;
+pub const KEYC_SECONDCLICK2_STATUS_LEFT: C2RustUnnamed_33 = 68719476842;
+pub const KEYC_SECONDCLICK2_STATUS: C2RustUnnamed_33 = 68719476841;
+pub const KEYC_SECONDCLICK2_PANE: C2RustUnnamed_33 = 68719476840;
+pub const KEYC_SECONDCLICK1_BORDER: C2RustUnnamed_33 = 68719476839;
+pub const KEYC_SECONDCLICK1_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476838;
+pub const KEYC_SECONDCLICK1_STATUS_RIGHT: C2RustUnnamed_33 = 68719476837;
+pub const KEYC_SECONDCLICK1_STATUS_LEFT: C2RustUnnamed_33 = 68719476836;
+pub const KEYC_SECONDCLICK1_STATUS: C2RustUnnamed_33 = 68719476835;
+pub const KEYC_SECONDCLICK1_PANE: C2RustUnnamed_33 = 68719476834;
+pub const KEYC_WHEELDOWN_BORDER: C2RustUnnamed_33 = 68719476833;
+pub const KEYC_WHEELDOWN_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476832;
+pub const KEYC_WHEELDOWN_STATUS_RIGHT: C2RustUnnamed_33 = 68719476831;
+pub const KEYC_WHEELDOWN_STATUS_LEFT: C2RustUnnamed_33 = 68719476830;
+pub const KEYC_WHEELDOWN_STATUS: C2RustUnnamed_33 = 68719476829;
+pub const KEYC_WHEELDOWN_PANE: C2RustUnnamed_33 = 68719476828;
+pub const KEYC_WHEELUP_BORDER: C2RustUnnamed_33 = 68719476827;
+pub const KEYC_WHEELUP_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476826;
+pub const KEYC_WHEELUP_STATUS_RIGHT: C2RustUnnamed_33 = 68719476825;
+pub const KEYC_WHEELUP_STATUS_LEFT: C2RustUnnamed_33 = 68719476824;
+pub const KEYC_WHEELUP_STATUS: C2RustUnnamed_33 = 68719476823;
+pub const KEYC_WHEELUP_PANE: C2RustUnnamed_33 = 68719476822;
+pub const KEYC_MOUSEDRAGEND3_BORDER: C2RustUnnamed_33 = 68719476821;
+pub const KEYC_MOUSEDRAGEND3_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476820;
+pub const KEYC_MOUSEDRAGEND3_STATUS_RIGHT: C2RustUnnamed_33 = 68719476819;
+pub const KEYC_MOUSEDRAGEND3_STATUS_LEFT: C2RustUnnamed_33 = 68719476818;
+pub const KEYC_MOUSEDRAGEND3_STATUS: C2RustUnnamed_33 = 68719476817;
+pub const KEYC_MOUSEDRAGEND3_PANE: C2RustUnnamed_33 = 68719476816;
+pub const KEYC_MOUSEDRAGEND2_BORDER: C2RustUnnamed_33 = 68719476815;
+pub const KEYC_MOUSEDRAGEND2_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476814;
+pub const KEYC_MOUSEDRAGEND2_STATUS_RIGHT: C2RustUnnamed_33 = 68719476813;
+pub const KEYC_MOUSEDRAGEND2_STATUS_LEFT: C2RustUnnamed_33 = 68719476812;
+pub const KEYC_MOUSEDRAGEND2_STATUS: C2RustUnnamed_33 = 68719476811;
+pub const KEYC_MOUSEDRAGEND2_PANE: C2RustUnnamed_33 = 68719476810;
+pub const KEYC_MOUSEDRAGEND1_BORDER: C2RustUnnamed_33 = 68719476809;
+pub const KEYC_MOUSEDRAGEND1_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476808;
+pub const KEYC_MOUSEDRAGEND1_STATUS_RIGHT: C2RustUnnamed_33 = 68719476807;
+pub const KEYC_MOUSEDRAGEND1_STATUS_LEFT: C2RustUnnamed_33 = 68719476806;
+pub const KEYC_MOUSEDRAGEND1_STATUS: C2RustUnnamed_33 = 68719476805;
+pub const KEYC_MOUSEDRAGEND1_PANE: C2RustUnnamed_33 = 68719476804;
+pub const KEYC_MOUSEDRAG3_BORDER: C2RustUnnamed_33 = 68719476803;
+pub const KEYC_MOUSEDRAG3_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476802;
+pub const KEYC_MOUSEDRAG3_STATUS_RIGHT: C2RustUnnamed_33 = 68719476801;
+pub const KEYC_MOUSEDRAG3_STATUS_LEFT: C2RustUnnamed_33 = 68719476800;
+pub const KEYC_MOUSEDRAG3_STATUS: C2RustUnnamed_33 = 68719476799;
+pub const KEYC_MOUSEDRAG3_PANE: C2RustUnnamed_33 = 68719476798;
+pub const KEYC_MOUSEDRAG2_BORDER: C2RustUnnamed_33 = 68719476797;
+pub const KEYC_MOUSEDRAG2_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476796;
+pub const KEYC_MOUSEDRAG2_STATUS_RIGHT: C2RustUnnamed_33 = 68719476795;
+pub const KEYC_MOUSEDRAG2_STATUS_LEFT: C2RustUnnamed_33 = 68719476794;
+pub const KEYC_MOUSEDRAG2_STATUS: C2RustUnnamed_33 = 68719476793;
+pub const KEYC_MOUSEDRAG2_PANE: C2RustUnnamed_33 = 68719476792;
+pub const KEYC_MOUSEDRAG1_BORDER: C2RustUnnamed_33 = 68719476791;
+pub const KEYC_MOUSEDRAG1_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476790;
+pub const KEYC_MOUSEDRAG1_STATUS_RIGHT: C2RustUnnamed_33 = 68719476789;
+pub const KEYC_MOUSEDRAG1_STATUS_LEFT: C2RustUnnamed_33 = 68719476788;
+pub const KEYC_MOUSEDRAG1_STATUS: C2RustUnnamed_33 = 68719476787;
+pub const KEYC_MOUSEDRAG1_PANE: C2RustUnnamed_33 = 68719476786;
+pub const KEYC_MOUSEUP3_BORDER: C2RustUnnamed_33 = 68719476785;
+pub const KEYC_MOUSEUP3_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476784;
+pub const KEYC_MOUSEUP3_STATUS_RIGHT: C2RustUnnamed_33 = 68719476783;
+pub const KEYC_MOUSEUP3_STATUS_LEFT: C2RustUnnamed_33 = 68719476782;
+pub const KEYC_MOUSEUP3_STATUS: C2RustUnnamed_33 = 68719476781;
+pub const KEYC_MOUSEUP3_PANE: C2RustUnnamed_33 = 68719476780;
+pub const KEYC_MOUSEUP2_BORDER: C2RustUnnamed_33 = 68719476779;
+pub const KEYC_MOUSEUP2_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476778;
+pub const KEYC_MOUSEUP2_STATUS_RIGHT: C2RustUnnamed_33 = 68719476777;
+pub const KEYC_MOUSEUP2_STATUS_LEFT: C2RustUnnamed_33 = 68719476776;
+pub const KEYC_MOUSEUP2_STATUS: C2RustUnnamed_33 = 68719476775;
+pub const KEYC_MOUSEUP2_PANE: C2RustUnnamed_33 = 68719476774;
+pub const KEYC_MOUSEUP1_BORDER: C2RustUnnamed_33 = 68719476773;
+pub const KEYC_MOUSEUP1_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476772;
+pub const KEYC_MOUSEUP1_STATUS_RIGHT: C2RustUnnamed_33 = 68719476771;
+pub const KEYC_MOUSEUP1_STATUS_LEFT: C2RustUnnamed_33 = 68719476770;
+pub const KEYC_MOUSEUP1_STATUS: C2RustUnnamed_33 = 68719476769;
+pub const KEYC_MOUSEUP1_PANE: C2RustUnnamed_33 = 68719476768;
+pub const KEYC_MOUSEDOWN3_BORDER: C2RustUnnamed_33 = 68719476767;
+pub const KEYC_MOUSEDOWN3_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476766;
+pub const KEYC_MOUSEDOWN3_STATUS_RIGHT: C2RustUnnamed_33 = 68719476765;
+pub const KEYC_MOUSEDOWN3_STATUS_LEFT: C2RustUnnamed_33 = 68719476764;
+pub const KEYC_MOUSEDOWN3_STATUS: C2RustUnnamed_33 = 68719476763;
+pub const KEYC_MOUSEDOWN3_PANE: C2RustUnnamed_33 = 68719476762;
+pub const KEYC_MOUSEDOWN2_BORDER: C2RustUnnamed_33 = 68719476761;
+pub const KEYC_MOUSEDOWN2_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476760;
+pub const KEYC_MOUSEDOWN2_STATUS_RIGHT: C2RustUnnamed_33 = 68719476759;
+pub const KEYC_MOUSEDOWN2_STATUS_LEFT: C2RustUnnamed_33 = 68719476758;
+pub const KEYC_MOUSEDOWN2_STATUS: C2RustUnnamed_33 = 68719476757;
+pub const KEYC_MOUSEDOWN2_PANE: C2RustUnnamed_33 = 68719476756;
+pub const KEYC_MOUSEDOWN1_BORDER: C2RustUnnamed_33 = 68719476755;
+pub const KEYC_MOUSEDOWN1_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476754;
+pub const KEYC_MOUSEDOWN1_STATUS_RIGHT: C2RustUnnamed_33 = 68719476753;
+pub const KEYC_MOUSEDOWN1_STATUS_LEFT: C2RustUnnamed_33 = 68719476752;
+pub const KEYC_MOUSEDOWN1_STATUS: C2RustUnnamed_33 = 68719476751;
+pub const KEYC_MOUSEDOWN1_PANE: C2RustUnnamed_33 = 68719476750;
+pub const KEYC_MOUSEMOVE_BORDER: C2RustUnnamed_33 = 68719476749;
+pub const KEYC_MOUSEMOVE_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476748;
+pub const KEYC_MOUSEMOVE_STATUS_RIGHT: C2RustUnnamed_33 = 68719476747;
+pub const KEYC_MOUSEMOVE_STATUS_LEFT: C2RustUnnamed_33 = 68719476746;
+pub const KEYC_MOUSEMOVE_STATUS: C2RustUnnamed_33 = 68719476745;
+pub const KEYC_MOUSEMOVE_PANE: C2RustUnnamed_33 = 68719476744;
+pub const KEYC_DOUBLECLICK: C2RustUnnamed_33 = 68719476743;
+pub const KEYC_DRAGGING: C2RustUnnamed_33 = 68719476742;
+pub const KEYC_MOUSE: C2RustUnnamed_33 = 68719476741;
+pub const KEYC_PASTE_END: C2RustUnnamed_33 = 68719476740;
+pub const KEYC_PASTE_START: C2RustUnnamed_33 = 68719476739;
+pub const KEYC_ANY: C2RustUnnamed_33 = 68719476738;
+pub const KEYC_FOCUS_OUT: C2RustUnnamed_33 = 68719476737;
+pub const KEYC_FOCUS_IN: C2RustUnnamed_33 = 68719476736;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct window_pane_tree {
+    pub rbh_root: *mut window_pane,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct windows {
+    pub rbh_root: *mut window,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct clients {
+    pub tqh_first: *mut client,
+    pub tqh_last: *mut *mut client,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct window_pane_input_data {
+    pub item: *mut cmdq_item,
+    pub wp: u_int,
+}
+/* $OpenBSD$ */
+/*
+ * Copyright (c) 2007 Nicholas Marriott <nicholas.marriott@gmail.com>
+ *
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
+ * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
+ * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
+/*
+ * Each window is attached to a number of panes, each of which is a pty. This
+ * file contains code to handle them.
+ *
+ * A pane has two buffers attached, these are filled and emptied by the main
+ * server poll loop. Output data is received from pty's in screen format,
+ * translated and returned as a series of escape sequences and strings via
+ * input_parse (in input.c). Input data is received as key codes and written
+ * directly via input_key.
+ *
+ * Each pane also has a "virtual" screen (screen.c) which contains the current
+ * state and is redisplayed when the window is reattached to a client.
+ *
+ * Windows are stored directly on a global array and wrapped in any number of
+ * winlink structs to be linked onto local session RB trees. A reference count
+ * is maintained and a window removed from the global list and destroyed when
+ * it reaches zero.
+ */
+/* Global window list. */
+#[no_mangle]
+pub static mut windows: windows =
+    windows{rbh_root: 0 as *const window as *mut window,};
+/* Global panes tree. */
+#[no_mangle]
+pub static mut all_window_panes: window_pane_tree =
+    window_pane_tree{rbh_root: 0 as *const window_pane as *mut window_pane,};
+static mut next_window_pane_id: u_int = 0;
+static mut next_window_id: u_int = 0;
+static mut next_active_point: u_int = 0;
+/* List of window modes. */
+#[no_mangle]
+pub static mut all_window_modes: [*const window_mode; 7] =
+    unsafe {
+        [&window_buffer_mode as *const window_mode,
+         &window_client_mode as *const window_mode,
+         &window_clock_mode as *const window_mode,
+         &window_copy_mode as *const window_mode,
+         &window_tree_mode as *const window_mode,
+         &window_view_mode as *const window_mode, 0 as *const window_mode]
+    };
+#[no_mangle]
+pub unsafe extern "C" fn windows_RB_PREV(mut elm: *mut window)
+ -> *mut window {
+    if !(*elm).entry.rbe_left.is_null() {
+        elm = (*elm).entry.rbe_left;
+        while !(*elm).entry.rbe_right.is_null() {
+            elm = (*elm).entry.rbe_right
+        }
+    } else if !(*elm).entry.rbe_parent.is_null() &&
+                  elm == (*(*elm).entry.rbe_parent).entry.rbe_right {
+        elm = (*elm).entry.rbe_parent
+    } else {
+        while !(*elm).entry.rbe_parent.is_null() &&
+                  elm == (*(*elm).entry.rbe_parent).entry.rbe_left {
+            elm = (*elm).entry.rbe_parent
+        }
+        elm = (*elm).entry.rbe_parent
+    }
+    return elm;
+}
+#[no_mangle]
+pub unsafe extern "C" fn windows_RB_INSERT(mut head: *mut windows,
+                                           mut elm: *mut window)
+ -> *mut window {
+    let mut tmp: *mut window = 0 as *mut window;
+    let mut parent: *mut window = 0 as *mut window;
+    let mut comp: libc::c_int = 0 as libc::c_int;
+    tmp = (*head).rbh_root;
+    while !tmp.is_null() {
+        parent = tmp;
+        comp = window_cmp(elm, parent);
+        if comp < 0 as libc::c_int {
+            tmp = (*tmp).entry.rbe_left
+        } else if comp > 0 as libc::c_int {
+            tmp = (*tmp).entry.rbe_right
+        } else { return tmp }
+    }
+    (*elm).entry.rbe_parent = parent;
+    (*elm).entry.rbe_right = 0 as *mut window;
+    (*elm).entry.rbe_left = (*elm).entry.rbe_right;
+    (*elm).entry.rbe_color = 1 as libc::c_int;
+    if !parent.is_null() {
+        if comp < 0 as libc::c_int {
+            (*parent).entry.rbe_left = elm
+        } else { (*parent).entry.rbe_right = elm }
+    } else { (*head).rbh_root = elm }
+    windows_RB_INSERT_COLOR(head, elm);
+    return 0 as *mut window;
+}
+#[no_mangle]
+pub unsafe extern "C" fn windows_RB_FIND(mut head: *mut windows,
+                                         mut elm: *mut window)
+ -> *mut window {
+    let mut tmp: *mut window = (*head).rbh_root;
+    let mut comp: libc::c_int = 0;
+    while !tmp.is_null() {
+        comp = window_cmp(elm, tmp);
+        if comp < 0 as libc::c_int {
+            tmp = (*tmp).entry.rbe_left
+        } else if comp > 0 as libc::c_int {
+            tmp = (*tmp).entry.rbe_right
+        } else { return tmp }
+    }
+    return 0 as *mut window;
+}
+#[no_mangle]
+pub unsafe extern "C" fn windows_RB_NFIND(mut head: *mut windows,
+                                          mut elm: *mut window)
+ -> *mut window {
+    let mut tmp: *mut window = (*head).rbh_root;
+    let mut res: *mut window = 0 as *mut window;
+    let mut comp: libc::c_int = 0;
+    while !tmp.is_null() {
+        comp = window_cmp(elm, tmp);
+        if comp < 0 as libc::c_int {
+            res = tmp;
+            tmp = (*tmp).entry.rbe_left
+        } else if comp > 0 as libc::c_int {
+            tmp = (*tmp).entry.rbe_right
+        } else { return tmp }
+    }
+    return res;
+}
+#[no_mangle]
+pub unsafe extern "C" fn windows_RB_NEXT(mut elm: *mut window)
+ -> *mut window {
+    if !(*elm).entry.rbe_right.is_null() {
+        elm = (*elm).entry.rbe_right;
+        while !(*elm).entry.rbe_left.is_null() { elm = (*elm).entry.rbe_left }
+    } else if !(*elm).entry.rbe_parent.is_null() &&
+                  elm == (*(*elm).entry.rbe_parent).entry.rbe_left {
+        elm = (*elm).entry.rbe_parent
+    } else {
+        while !(*elm).entry.rbe_parent.is_null() &&
+                  elm == (*(*elm).entry.rbe_parent).entry.rbe_right {
+            elm = (*elm).entry.rbe_parent
+        }
+        elm = (*elm).entry.rbe_parent
+    }
+    return elm;
+}
+#[no_mangle]
+pub unsafe extern "C" fn windows_RB_REMOVE_COLOR(mut head: *mut windows,
+                                                 mut parent: *mut window,
+                                                 mut elm: *mut window) {
+    let mut tmp: *mut window = 0 as *mut window;
+    while (elm.is_null() || (*elm).entry.rbe_color == 0 as libc::c_int) &&
+              elm != (*head).rbh_root {
+        if (*parent).entry.rbe_left == elm {
+            tmp = (*parent).entry.rbe_right;
+            if (*tmp).entry.rbe_color == 1 as libc::c_int {
+                (*tmp).entry.rbe_color = 0 as libc::c_int;
+                (*parent).entry.rbe_color = 1 as libc::c_int;
+                tmp = (*parent).entry.rbe_right;
+                (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
+                if !(*parent).entry.rbe_right.is_null() {
+                    (*(*tmp).entry.rbe_left).entry.rbe_parent = parent
+                }
+                (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
+                if !(*tmp).entry.rbe_parent.is_null() {
+                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left
+                       {
+                        (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
+                    } else {
+                        (*(*parent).entry.rbe_parent).entry.rbe_right = tmp
+                    }
+                } else { (*head).rbh_root = tmp }
+                (*tmp).entry.rbe_left = parent;
+                (*parent).entry.rbe_parent = tmp;
+                !(*tmp).entry.rbe_parent.is_null();
+                tmp = (*parent).entry.rbe_right
+            }
+            if ((*tmp).entry.rbe_left.is_null() ||
+                    (*(*tmp).entry.rbe_left).entry.rbe_color ==
+                        0 as libc::c_int) &&
+                   ((*tmp).entry.rbe_right.is_null() ||
+                        (*(*tmp).entry.rbe_right).entry.rbe_color ==
+                            0 as libc::c_int) {
+                (*tmp).entry.rbe_color = 1 as libc::c_int;
+                elm = parent;
+                parent = (*elm).entry.rbe_parent
+            } else {
+                if (*tmp).entry.rbe_right.is_null() ||
+                       (*(*tmp).entry.rbe_right).entry.rbe_color ==
+                           0 as libc::c_int {
+                    let mut oleft: *mut window = 0 as *mut window;
+                    oleft = (*tmp).entry.rbe_left;
+                    if !oleft.is_null() {
+                        (*oleft).entry.rbe_color = 0 as libc::c_int
+                    }
+                    (*tmp).entry.rbe_color = 1 as libc::c_int;
+                    oleft = (*tmp).entry.rbe_left;
+                    (*tmp).entry.rbe_left = (*oleft).entry.rbe_right;
+                    if !(*tmp).entry.rbe_left.is_null() {
+                        (*(*oleft).entry.rbe_right).entry.rbe_parent = tmp
+                    }
+                    (*oleft).entry.rbe_parent = (*tmp).entry.rbe_parent;
+                    if !(*oleft).entry.rbe_parent.is_null() {
+                        if tmp == (*(*tmp).entry.rbe_parent).entry.rbe_left {
+                            (*(*tmp).entry.rbe_parent).entry.rbe_left = oleft
+                        } else {
+                            (*(*tmp).entry.rbe_parent).entry.rbe_right = oleft
+                        }
+                    } else { (*head).rbh_root = oleft }
+                    (*oleft).entry.rbe_right = tmp;
+                    (*tmp).entry.rbe_parent = oleft;
+                    !(*oleft).entry.rbe_parent.is_null();
+                    tmp = (*parent).entry.rbe_right
+                }
+                (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
+                (*parent).entry.rbe_color = 0 as libc::c_int;
+                if !(*tmp).entry.rbe_right.is_null() {
+                    (*(*tmp).entry.rbe_right).entry.rbe_color =
+                        0 as libc::c_int
+                }
+                tmp = (*parent).entry.rbe_right;
+                (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
+                if !(*parent).entry.rbe_right.is_null() {
+                    (*(*tmp).entry.rbe_left).entry.rbe_parent = parent
+                }
+                (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
+                if !(*tmp).entry.rbe_parent.is_null() {
+                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left
+                       {
+                        (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
+                    } else {
+                        (*(*parent).entry.rbe_parent).entry.rbe_right = tmp
+                    }
+                } else { (*head).rbh_root = tmp }
+                (*tmp).entry.rbe_left = parent;
+                (*parent).entry.rbe_parent = tmp;
+                !(*tmp).entry.rbe_parent.is_null();
+                elm = (*head).rbh_root;
+                break ;
+            }
+        } else {
+            tmp = (*parent).entry.rbe_left;
+            if (*tmp).entry.rbe_color == 1 as libc::c_int {
+                (*tmp).entry.rbe_color = 0 as libc::c_int;
+                (*parent).entry.rbe_color = 1 as libc::c_int;
+                tmp = (*parent).entry.rbe_left;
+                (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
+                if !(*parent).entry.rbe_left.is_null() {
+                    (*(*tmp).entry.rbe_right).entry.rbe_parent = parent
+                }
+                (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
+                if !(*tmp).entry.rbe_parent.is_null() {
+                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left
+                       {
+                        (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
+                    } else {
+                        (*(*parent).entry.rbe_parent).entry.rbe_right = tmp
+                    }
+                } else { (*head).rbh_root = tmp }
+                (*tmp).entry.rbe_right = parent;
+                (*parent).entry.rbe_parent = tmp;
+                !(*tmp).entry.rbe_parent.is_null();
+                tmp = (*parent).entry.rbe_left
+            }
+            if ((*tmp).entry.rbe_left.is_null() ||
+                    (*(*tmp).entry.rbe_left).entry.rbe_color ==
+                        0 as libc::c_int) &&
+                   ((*tmp).entry.rbe_right.is_null() ||
+                        (*(*tmp).entry.rbe_right).entry.rbe_color ==
+                            0 as libc::c_int) {
+                (*tmp).entry.rbe_color = 1 as libc::c_int;
+                elm = parent;
+                parent = (*elm).entry.rbe_parent
+            } else {
+                if (*tmp).entry.rbe_left.is_null() ||
+                       (*(*tmp).entry.rbe_left).entry.rbe_color ==
+                           0 as libc::c_int {
+                    let mut oright: *mut window = 0 as *mut window;
+                    oright = (*tmp).entry.rbe_right;
+                    if !oright.is_null() {
+                        (*oright).entry.rbe_color = 0 as libc::c_int
+                    }
+                    (*tmp).entry.rbe_color = 1 as libc::c_int;
+                    oright = (*tmp).entry.rbe_right;
+                    (*tmp).entry.rbe_right = (*oright).entry.rbe_left;
+                    if !(*tmp).entry.rbe_right.is_null() {
+                        (*(*oright).entry.rbe_left).entry.rbe_parent = tmp
+                    }
+                    (*oright).entry.rbe_parent = (*tmp).entry.rbe_parent;
+                    if !(*oright).entry.rbe_parent.is_null() {
+                        if tmp == (*(*tmp).entry.rbe_parent).entry.rbe_left {
+                            (*(*tmp).entry.rbe_parent).entry.rbe_left = oright
+                        } else {
+                            (*(*tmp).entry.rbe_parent).entry.rbe_right =
+                                oright
+                        }
+                    } else { (*head).rbh_root = oright }
+                    (*oright).entry.rbe_left = tmp;
+                    (*tmp).entry.rbe_parent = oright;
+                    !(*oright).entry.rbe_parent.is_null();
+                    tmp = (*parent).entry.rbe_left
+                }
+                (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
+                (*parent).entry.rbe_color = 0 as libc::c_int;
+                if !(*tmp).entry.rbe_left.is_null() {
+                    (*(*tmp).entry.rbe_left).entry.rbe_color =
+                        0 as libc::c_int
+                }
+                tmp = (*parent).entry.rbe_left;
+                (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
+                if !(*parent).entry.rbe_left.is_null() {
+                    (*(*tmp).entry.rbe_right).entry.rbe_parent = parent
+                }
+                (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
+                if !(*tmp).entry.rbe_parent.is_null() {
+                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left
+                       {
+                        (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
+                    } else {
+                        (*(*parent).entry.rbe_parent).entry.rbe_right = tmp
+                    }
+                } else { (*head).rbh_root = tmp }
+                (*tmp).entry.rbe_right = parent;
+                (*parent).entry.rbe_parent = tmp;
+                !(*tmp).entry.rbe_parent.is_null();
+                elm = (*head).rbh_root;
+                break ;
+            }
+        }
+    }
+    if !elm.is_null() { (*elm).entry.rbe_color = 0 as libc::c_int };
+}
+#[no_mangle]
+pub unsafe extern "C" fn windows_RB_REMOVE(mut head: *mut windows,
+                                           mut elm: *mut window)
+ -> *mut window {
+    let mut current_block: u64;
+    let mut child: *mut window = 0 as *mut window;
+    let mut parent: *mut window = 0 as *mut window;
+    let mut old: *mut window = elm;
+    let mut color: libc::c_int = 0;
+    if (*elm).entry.rbe_left.is_null() {
+        child = (*elm).entry.rbe_right;
+        current_block = 7226443171521532240;
+    } else if (*elm).entry.rbe_right.is_null() {
+        child = (*elm).entry.rbe_left;
+        current_block = 7226443171521532240;
+    } else {
+        let mut left: *mut window = 0 as *mut window;
+        elm = (*elm).entry.rbe_right;
+        loop  {
+            left = (*elm).entry.rbe_left;
+            if left.is_null() { break ; }
+            elm = left
+        }
+        child = (*elm).entry.rbe_right;
+        parent = (*elm).entry.rbe_parent;
+        color = (*elm).entry.rbe_color;
+        if !child.is_null() { (*child).entry.rbe_parent = parent }
+        if !parent.is_null() {
+            if (*parent).entry.rbe_left == elm {
+                (*parent).entry.rbe_left = child
+            } else { (*parent).entry.rbe_right = child }
+        } else { (*head).rbh_root = child }
+        if (*elm).entry.rbe_parent == old { parent = elm }
+        (*elm).entry = (*old).entry;
+        if !(*old).entry.rbe_parent.is_null() {
+            if (*(*old).entry.rbe_parent).entry.rbe_left == old {
+                (*(*old).entry.rbe_parent).entry.rbe_left = elm
+            } else { (*(*old).entry.rbe_parent).entry.rbe_right = elm }
+        } else { (*head).rbh_root = elm }
+        (*(*old).entry.rbe_left).entry.rbe_parent = elm;
+        if !(*old).entry.rbe_right.is_null() {
+            (*(*old).entry.rbe_right).entry.rbe_parent = elm
+        }
+        if !parent.is_null() {
+            left = parent;
+            loop  {
+                left = (*left).entry.rbe_parent;
+                if left.is_null() { break ; }
+            }
+        }
+        current_block = 4254310618125552165;
+    }
+    match current_block {
+        7226443171521532240 => {
+            parent = (*elm).entry.rbe_parent;
+            color = (*elm).entry.rbe_color;
+            if !child.is_null() { (*child).entry.rbe_parent = parent }
+            if !parent.is_null() {
+                if (*parent).entry.rbe_left == elm {
+                    (*parent).entry.rbe_left = child
+                } else { (*parent).entry.rbe_right = child }
+            } else { (*head).rbh_root = child }
+        }
+        _ => { }
+    }
+    if color == 0 as libc::c_int {
+        windows_RB_REMOVE_COLOR(head, parent, child);
+    }
+    return old;
+}
+#[no_mangle]
+pub unsafe extern "C" fn windows_RB_MINMAX(mut head: *mut windows,
+                                           mut val: libc::c_int)
+ -> *mut window {
+    let mut tmp: *mut window = (*head).rbh_root;
+    let mut parent: *mut window = 0 as *mut window;
+    while !tmp.is_null() {
+        parent = tmp;
+        if val < 0 as libc::c_int {
+            tmp = (*tmp).entry.rbe_left
+        } else { tmp = (*tmp).entry.rbe_right }
+    }
+    return parent;
+}
+#[no_mangle]
+pub unsafe extern "C" fn windows_RB_INSERT_COLOR(mut head: *mut windows,
+                                                 mut elm: *mut window) {
+    let mut parent: *mut window = 0 as *mut window;
+    let mut gparent: *mut window = 0 as *mut window;
+    let mut tmp: *mut window = 0 as *mut window;
+    loop  {
+        parent = (*elm).entry.rbe_parent;
+        if !(!parent.is_null() &&
+                 (*parent).entry.rbe_color == 1 as libc::c_int) {
+            break ;
+        }
+        gparent = (*parent).entry.rbe_parent;
+        if parent == (*gparent).entry.rbe_left {
+            tmp = (*gparent).entry.rbe_right;
+            if !tmp.is_null() && (*tmp).entry.rbe_color == 1 as libc::c_int {
+                (*tmp).entry.rbe_color = 0 as libc::c_int;
+                (*parent).entry.rbe_color = 0 as libc::c_int;
+                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                elm = gparent
+            } else {
+                if (*parent).entry.rbe_right == elm {
+                    tmp = (*parent).entry.rbe_right;
+                    (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
+                    if !(*parent).entry.rbe_right.is_null() {
+                        (*(*tmp).entry.rbe_left).entry.rbe_parent = parent
+                    }
+                    (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
+                    if !(*tmp).entry.rbe_parent.is_null() {
+                        if parent ==
+                               (*(*parent).entry.rbe_parent).entry.rbe_left {
+                            (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
+                        } else {
+                            (*(*parent).entry.rbe_parent).entry.rbe_right =
+                                tmp
+                        }
+                    } else { (*head).rbh_root = tmp }
+                    (*tmp).entry.rbe_left = parent;
+                    (*parent).entry.rbe_parent = tmp;
+                    !(*tmp).entry.rbe_parent.is_null();
+                    tmp = parent;
+                    parent = elm;
+                    elm = tmp
+                }
+                (*parent).entry.rbe_color = 0 as libc::c_int;
+                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                tmp = (*gparent).entry.rbe_left;
+                (*gparent).entry.rbe_left = (*tmp).entry.rbe_right;
+                if !(*gparent).entry.rbe_left.is_null() {
+                    (*(*tmp).entry.rbe_right).entry.rbe_parent = gparent
+                }
+                (*tmp).entry.rbe_parent = (*gparent).entry.rbe_parent;
+                if !(*tmp).entry.rbe_parent.is_null() {
+                    if gparent ==
+                           (*(*gparent).entry.rbe_parent).entry.rbe_left {
+                        (*(*gparent).entry.rbe_parent).entry.rbe_left = tmp
+                    } else {
+                        (*(*gparent).entry.rbe_parent).entry.rbe_right = tmp
+                    }
+                } else { (*head).rbh_root = tmp }
+                (*tmp).entry.rbe_right = gparent;
+                (*gparent).entry.rbe_parent = tmp;
+                !(*tmp).entry.rbe_parent.is_null();
+            }
+        } else {
+            tmp = (*gparent).entry.rbe_left;
+            if !tmp.is_null() && (*tmp).entry.rbe_color == 1 as libc::c_int {
+                (*tmp).entry.rbe_color = 0 as libc::c_int;
+                (*parent).entry.rbe_color = 0 as libc::c_int;
+                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                elm = gparent
+            } else {
+                if (*parent).entry.rbe_left == elm {
+                    tmp = (*parent).entry.rbe_left;
+                    (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
+                    if !(*parent).entry.rbe_left.is_null() {
+                        (*(*tmp).entry.rbe_right).entry.rbe_parent = parent
+                    }
+                    (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
+                    if !(*tmp).entry.rbe_parent.is_null() {
+                        if parent ==
+                               (*(*parent).entry.rbe_parent).entry.rbe_left {
+                            (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
+                        } else {
+                            (*(*parent).entry.rbe_parent).entry.rbe_right =
+                                tmp
+                        }
+                    } else { (*head).rbh_root = tmp }
+                    (*tmp).entry.rbe_right = parent;
+                    (*parent).entry.rbe_parent = tmp;
+                    !(*tmp).entry.rbe_parent.is_null();
+                    tmp = parent;
+                    parent = elm;
+                    elm = tmp
+                }
+                (*parent).entry.rbe_color = 0 as libc::c_int;
+                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                tmp = (*gparent).entry.rbe_right;
+                (*gparent).entry.rbe_right = (*tmp).entry.rbe_left;
+                if !(*gparent).entry.rbe_right.is_null() {
+                    (*(*tmp).entry.rbe_left).entry.rbe_parent = gparent
+                }
+                (*tmp).entry.rbe_parent = (*gparent).entry.rbe_parent;
+                if !(*tmp).entry.rbe_parent.is_null() {
+                    if gparent ==
+                           (*(*gparent).entry.rbe_parent).entry.rbe_left {
+                        (*(*gparent).entry.rbe_parent).entry.rbe_left = tmp
+                    } else {
+                        (*(*gparent).entry.rbe_parent).entry.rbe_right = tmp
+                    }
+                } else { (*head).rbh_root = tmp }
+                (*tmp).entry.rbe_left = gparent;
+                (*gparent).entry.rbe_parent = tmp;
+                !(*tmp).entry.rbe_parent.is_null();
+            }
+        }
+    }
+    (*(*head).rbh_root).entry.rbe_color = 0 as libc::c_int;
+}
+#[no_mangle]
+pub unsafe extern "C" fn winlinks_RB_PREV(mut elm: *mut winlink)
+ -> *mut winlink {
+    if !(*elm).entry.rbe_left.is_null() {
+        elm = (*elm).entry.rbe_left;
+        while !(*elm).entry.rbe_right.is_null() {
+            elm = (*elm).entry.rbe_right
+        }
+    } else if !(*elm).entry.rbe_parent.is_null() &&
+                  elm == (*(*elm).entry.rbe_parent).entry.rbe_right {
+        elm = (*elm).entry.rbe_parent
+    } else {
+        while !(*elm).entry.rbe_parent.is_null() &&
+                  elm == (*(*elm).entry.rbe_parent).entry.rbe_left {
+            elm = (*elm).entry.rbe_parent
+        }
+        elm = (*elm).entry.rbe_parent
+    }
+    return elm;
+}
+#[no_mangle]
+pub unsafe extern "C" fn winlinks_RB_MINMAX(mut head: *mut winlinks,
+                                            mut val: libc::c_int)
+ -> *mut winlink {
+    let mut tmp: *mut winlink = (*head).rbh_root;
+    let mut parent: *mut winlink = 0 as *mut winlink;
+    while !tmp.is_null() {
+        parent = tmp;
+        if val < 0 as libc::c_int {
+            tmp = (*tmp).entry.rbe_left
+        } else { tmp = (*tmp).entry.rbe_right }
+    }
+    return parent;
+}
+#[no_mangle]
+pub unsafe extern "C" fn winlinks_RB_NEXT(mut elm: *mut winlink)
+ -> *mut winlink {
+    if !(*elm).entry.rbe_right.is_null() {
+        elm = (*elm).entry.rbe_right;
+        while !(*elm).entry.rbe_left.is_null() { elm = (*elm).entry.rbe_left }
+    } else if !(*elm).entry.rbe_parent.is_null() &&
+                  elm == (*(*elm).entry.rbe_parent).entry.rbe_left {
+        elm = (*elm).entry.rbe_parent
+    } else {
+        while !(*elm).entry.rbe_parent.is_null() &&
+                  elm == (*(*elm).entry.rbe_parent).entry.rbe_right {
+            elm = (*elm).entry.rbe_parent
+        }
+        elm = (*elm).entry.rbe_parent
+    }
+    return elm;
+}
+#[no_mangle]
+pub unsafe extern "C" fn winlinks_RB_NFIND(mut head: *mut winlinks,
+                                           mut elm: *mut winlink)
+ -> *mut winlink {
+    let mut tmp: *mut winlink = (*head).rbh_root;
+    let mut res: *mut winlink = 0 as *mut winlink;
+    let mut comp: libc::c_int = 0;
+    while !tmp.is_null() {
+        comp = winlink_cmp(elm, tmp);
+        if comp < 0 as libc::c_int {
+            res = tmp;
+            tmp = (*tmp).entry.rbe_left
+        } else if comp > 0 as libc::c_int {
+            tmp = (*tmp).entry.rbe_right
+        } else { return tmp }
+    }
+    return res;
+}
+#[no_mangle]
+pub unsafe extern "C" fn winlinks_RB_FIND(mut head: *mut winlinks,
+                                          mut elm: *mut winlink)
+ -> *mut winlink {
+    let mut tmp: *mut winlink = (*head).rbh_root;
+    let mut comp: libc::c_int = 0;
+    while !tmp.is_null() {
+        comp = winlink_cmp(elm, tmp);
+        if comp < 0 as libc::c_int {
+            tmp = (*tmp).entry.rbe_left
+        } else if comp > 0 as libc::c_int {
+            tmp = (*tmp).entry.rbe_right
+        } else { return tmp }
+    }
+    return 0 as *mut winlink;
+}
+#[no_mangle]
+pub unsafe extern "C" fn winlinks_RB_INSERT(mut head: *mut winlinks,
+                                            mut elm: *mut winlink)
+ -> *mut winlink {
+    let mut tmp: *mut winlink = 0 as *mut winlink;
+    let mut parent: *mut winlink = 0 as *mut winlink;
+    let mut comp: libc::c_int = 0 as libc::c_int;
+    tmp = (*head).rbh_root;
+    while !tmp.is_null() {
+        parent = tmp;
+        comp = winlink_cmp(elm, parent);
+        if comp < 0 as libc::c_int {
+            tmp = (*tmp).entry.rbe_left
+        } else if comp > 0 as libc::c_int {
+            tmp = (*tmp).entry.rbe_right
+        } else { return tmp }
+    }
+    (*elm).entry.rbe_parent = parent;
+    (*elm).entry.rbe_right = 0 as *mut winlink;
+    (*elm).entry.rbe_left = (*elm).entry.rbe_right;
+    (*elm).entry.rbe_color = 1 as libc::c_int;
+    if !parent.is_null() {
+        if comp < 0 as libc::c_int {
+            (*parent).entry.rbe_left = elm
+        } else { (*parent).entry.rbe_right = elm }
+    } else { (*head).rbh_root = elm }
+    winlinks_RB_INSERT_COLOR(head, elm);
+    return 0 as *mut winlink;
+}
+#[no_mangle]
+pub unsafe extern "C" fn winlinks_RB_REMOVE(mut head: *mut winlinks,
+                                            mut elm: *mut winlink)
+ -> *mut winlink {
+    let mut current_block: u64;
+    let mut child: *mut winlink = 0 as *mut winlink;
+    let mut parent: *mut winlink = 0 as *mut winlink;
+    let mut old: *mut winlink = elm;
+    let mut color: libc::c_int = 0;
+    if (*elm).entry.rbe_left.is_null() {
+        child = (*elm).entry.rbe_right;
+        current_block = 7226443171521532240;
+    } else if (*elm).entry.rbe_right.is_null() {
+        child = (*elm).entry.rbe_left;
+        current_block = 7226443171521532240;
+    } else {
+        let mut left: *mut winlink = 0 as *mut winlink;
+        elm = (*elm).entry.rbe_right;
+        loop  {
+            left = (*elm).entry.rbe_left;
+            if left.is_null() { break ; }
+            elm = left
+        }
+        child = (*elm).entry.rbe_right;
+        parent = (*elm).entry.rbe_parent;
+        color = (*elm).entry.rbe_color;
+        if !child.is_null() { (*child).entry.rbe_parent = parent }
+        if !parent.is_null() {
+            if (*parent).entry.rbe_left == elm {
+                (*parent).entry.rbe_left = child
+            } else { (*parent).entry.rbe_right = child }
+        } else { (*head).rbh_root = child }
+        if (*elm).entry.rbe_parent == old { parent = elm }
+        (*elm).entry = (*old).entry;
+        if !(*old).entry.rbe_parent.is_null() {
+            if (*(*old).entry.rbe_parent).entry.rbe_left == old {
+                (*(*old).entry.rbe_parent).entry.rbe_left = elm
+            } else { (*(*old).entry.rbe_parent).entry.rbe_right = elm }
+        } else { (*head).rbh_root = elm }
+        (*(*old).entry.rbe_left).entry.rbe_parent = elm;
+        if !(*old).entry.rbe_right.is_null() {
+            (*(*old).entry.rbe_right).entry.rbe_parent = elm
+        }
+        if !parent.is_null() {
+            left = parent;
+            loop  {
+                left = (*left).entry.rbe_parent;
+                if left.is_null() { break ; }
+            }
+        }
+        current_block = 14005405705760971010;
+    }
+    match current_block {
+        7226443171521532240 => {
+            parent = (*elm).entry.rbe_parent;
+            color = (*elm).entry.rbe_color;
+            if !child.is_null() { (*child).entry.rbe_parent = parent }
+            if !parent.is_null() {
+                if (*parent).entry.rbe_left == elm {
+                    (*parent).entry.rbe_left = child
+                } else { (*parent).entry.rbe_right = child }
+            } else { (*head).rbh_root = child }
+        }
+        _ => { }
+    }
+    if color == 0 as libc::c_int {
+        winlinks_RB_REMOVE_COLOR(head, parent, child);
+    }
+    return old;
+}
+#[no_mangle]
+pub unsafe extern "C" fn winlinks_RB_INSERT_COLOR(mut head: *mut winlinks,
+                                                  mut elm: *mut winlink) {
+    let mut parent: *mut winlink = 0 as *mut winlink;
+    let mut gparent: *mut winlink = 0 as *mut winlink;
+    let mut tmp: *mut winlink = 0 as *mut winlink;
+    loop  {
+        parent = (*elm).entry.rbe_parent;
+        if !(!parent.is_null() &&
+                 (*parent).entry.rbe_color == 1 as libc::c_int) {
+            break ;
+        }
+        gparent = (*parent).entry.rbe_parent;
+        if parent == (*gparent).entry.rbe_left {
+            tmp = (*gparent).entry.rbe_right;
+            if !tmp.is_null() && (*tmp).entry.rbe_color == 1 as libc::c_int {
+                (*tmp).entry.rbe_color = 0 as libc::c_int;
+                (*parent).entry.rbe_color = 0 as libc::c_int;
+                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                elm = gparent
+            } else {
+                if (*parent).entry.rbe_right == elm {
+                    tmp = (*parent).entry.rbe_right;
+                    (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
+                    if !(*parent).entry.rbe_right.is_null() {
+                        (*(*tmp).entry.rbe_left).entry.rbe_parent = parent
+                    }
+                    (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
+                    if !(*tmp).entry.rbe_parent.is_null() {
+                        if parent ==
+                               (*(*parent).entry.rbe_parent).entry.rbe_left {
+                            (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
+                        } else {
+                            (*(*parent).entry.rbe_parent).entry.rbe_right =
+                                tmp
+                        }
+                    } else { (*head).rbh_root = tmp }
+                    (*tmp).entry.rbe_left = parent;
+                    (*parent).entry.rbe_parent = tmp;
+                    !(*tmp).entry.rbe_parent.is_null();
+                    tmp = parent;
+                    parent = elm;
+                    elm = tmp
+                }
+                (*parent).entry.rbe_color = 0 as libc::c_int;
+                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                tmp = (*gparent).entry.rbe_left;
+                (*gparent).entry.rbe_left = (*tmp).entry.rbe_right;
+                if !(*gparent).entry.rbe_left.is_null() {
+                    (*(*tmp).entry.rbe_right).entry.rbe_parent = gparent
+                }
+                (*tmp).entry.rbe_parent = (*gparent).entry.rbe_parent;
+                if !(*tmp).entry.rbe_parent.is_null() {
+                    if gparent ==
+                           (*(*gparent).entry.rbe_parent).entry.rbe_left {
+                        (*(*gparent).entry.rbe_parent).entry.rbe_left = tmp
+                    } else {
+                        (*(*gparent).entry.rbe_parent).entry.rbe_right = tmp
+                    }
+                } else { (*head).rbh_root = tmp }
+                (*tmp).entry.rbe_right = gparent;
+                (*gparent).entry.rbe_parent = tmp;
+                !(*tmp).entry.rbe_parent.is_null();
+            }
+        } else {
+            tmp = (*gparent).entry.rbe_left;
+            if !tmp.is_null() && (*tmp).entry.rbe_color == 1 as libc::c_int {
+                (*tmp).entry.rbe_color = 0 as libc::c_int;
+                (*parent).entry.rbe_color = 0 as libc::c_int;
+                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                elm = gparent
+            } else {
+                if (*parent).entry.rbe_left == elm {
+                    tmp = (*parent).entry.rbe_left;
+                    (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
+                    if !(*parent).entry.rbe_left.is_null() {
+                        (*(*tmp).entry.rbe_right).entry.rbe_parent = parent
+                    }
+                    (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
+                    if !(*tmp).entry.rbe_parent.is_null() {
+                        if parent ==
+                               (*(*parent).entry.rbe_parent).entry.rbe_left {
+                            (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
+                        } else {
+                            (*(*parent).entry.rbe_parent).entry.rbe_right =
+                                tmp
+                        }
+                    } else { (*head).rbh_root = tmp }
+                    (*tmp).entry.rbe_right = parent;
+                    (*parent).entry.rbe_parent = tmp;
+                    !(*tmp).entry.rbe_parent.is_null();
+                    tmp = parent;
+                    parent = elm;
+                    elm = tmp
+                }
+                (*parent).entry.rbe_color = 0 as libc::c_int;
+                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                tmp = (*gparent).entry.rbe_right;
+                (*gparent).entry.rbe_right = (*tmp).entry.rbe_left;
+                if !(*gparent).entry.rbe_right.is_null() {
+                    (*(*tmp).entry.rbe_left).entry.rbe_parent = gparent
+                }
+                (*tmp).entry.rbe_parent = (*gparent).entry.rbe_parent;
+                if !(*tmp).entry.rbe_parent.is_null() {
+                    if gparent ==
+                           (*(*gparent).entry.rbe_parent).entry.rbe_left {
+                        (*(*gparent).entry.rbe_parent).entry.rbe_left = tmp
+                    } else {
+                        (*(*gparent).entry.rbe_parent).entry.rbe_right = tmp
+                    }
+                } else { (*head).rbh_root = tmp }
+                (*tmp).entry.rbe_left = gparent;
+                (*gparent).entry.rbe_parent = tmp;
+                !(*tmp).entry.rbe_parent.is_null();
+            }
+        }
+    }
+    (*(*head).rbh_root).entry.rbe_color = 0 as libc::c_int;
+}
+#[no_mangle]
+pub unsafe extern "C" fn winlinks_RB_REMOVE_COLOR(mut head: *mut winlinks,
+                                                  mut parent: *mut winlink,
+                                                  mut elm: *mut winlink) {
+    let mut tmp: *mut winlink = 0 as *mut winlink;
+    while (elm.is_null() || (*elm).entry.rbe_color == 0 as libc::c_int) &&
+              elm != (*head).rbh_root {
+        if (*parent).entry.rbe_left == elm {
+            tmp = (*parent).entry.rbe_right;
+            if (*tmp).entry.rbe_color == 1 as libc::c_int {
+                (*tmp).entry.rbe_color = 0 as libc::c_int;
+                (*parent).entry.rbe_color = 1 as libc::c_int;
+                tmp = (*parent).entry.rbe_right;
+                (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
+                if !(*parent).entry.rbe_right.is_null() {
+                    (*(*tmp).entry.rbe_left).entry.rbe_parent = parent
+                }
+                (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
+                if !(*tmp).entry.rbe_parent.is_null() {
+                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left
+                       {
+                        (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
+                    } else {
+                        (*(*parent).entry.rbe_parent).entry.rbe_right = tmp
+                    }
+                } else { (*head).rbh_root = tmp }
+                (*tmp).entry.rbe_left = parent;
+                (*parent).entry.rbe_parent = tmp;
+                !(*tmp).entry.rbe_parent.is_null();
+                tmp = (*parent).entry.rbe_right
+            }
+            if ((*tmp).entry.rbe_left.is_null() ||
+                    (*(*tmp).entry.rbe_left).entry.rbe_color ==
+                        0 as libc::c_int) &&
+                   ((*tmp).entry.rbe_right.is_null() ||
+                        (*(*tmp).entry.rbe_right).entry.rbe_color ==
+                            0 as libc::c_int) {
+                (*tmp).entry.rbe_color = 1 as libc::c_int;
+                elm = parent;
+                parent = (*elm).entry.rbe_parent
+            } else {
+                if (*tmp).entry.rbe_right.is_null() ||
+                       (*(*tmp).entry.rbe_right).entry.rbe_color ==
+                           0 as libc::c_int {
+                    let mut oleft: *mut winlink = 0 as *mut winlink;
+                    oleft = (*tmp).entry.rbe_left;
+                    if !oleft.is_null() {
+                        (*oleft).entry.rbe_color = 0 as libc::c_int
+                    }
+                    (*tmp).entry.rbe_color = 1 as libc::c_int;
+                    oleft = (*tmp).entry.rbe_left;
+                    (*tmp).entry.rbe_left = (*oleft).entry.rbe_right;
+                    if !(*tmp).entry.rbe_left.is_null() {
+                        (*(*oleft).entry.rbe_right).entry.rbe_parent = tmp
+                    }
+                    (*oleft).entry.rbe_parent = (*tmp).entry.rbe_parent;
+                    if !(*oleft).entry.rbe_parent.is_null() {
+                        if tmp == (*(*tmp).entry.rbe_parent).entry.rbe_left {
+                            (*(*tmp).entry.rbe_parent).entry.rbe_left = oleft
+                        } else {
+                            (*(*tmp).entry.rbe_parent).entry.rbe_right = oleft
+                        }
+                    } else { (*head).rbh_root = oleft }
+                    (*oleft).entry.rbe_right = tmp;
+                    (*tmp).entry.rbe_parent = oleft;
+                    !(*oleft).entry.rbe_parent.is_null();
+                    tmp = (*parent).entry.rbe_right
+                }
+                (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
+                (*parent).entry.rbe_color = 0 as libc::c_int;
+                if !(*tmp).entry.rbe_right.is_null() {
+                    (*(*tmp).entry.rbe_right).entry.rbe_color =
+                        0 as libc::c_int
+                }
+                tmp = (*parent).entry.rbe_right;
+                (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
+                if !(*parent).entry.rbe_right.is_null() {
+                    (*(*tmp).entry.rbe_left).entry.rbe_parent = parent
+                }
+                (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
+                if !(*tmp).entry.rbe_parent.is_null() {
+                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left
+                       {
+                        (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
+                    } else {
+                        (*(*parent).entry.rbe_parent).entry.rbe_right = tmp
+                    }
+                } else { (*head).rbh_root = tmp }
+                (*tmp).entry.rbe_left = parent;
+                (*parent).entry.rbe_parent = tmp;
+                !(*tmp).entry.rbe_parent.is_null();
+                elm = (*head).rbh_root;
+                break ;
+            }
+        } else {
+            tmp = (*parent).entry.rbe_left;
+            if (*tmp).entry.rbe_color == 1 as libc::c_int {
+                (*tmp).entry.rbe_color = 0 as libc::c_int;
+                (*parent).entry.rbe_color = 1 as libc::c_int;
+                tmp = (*parent).entry.rbe_left;
+                (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
+                if !(*parent).entry.rbe_left.is_null() {
+                    (*(*tmp).entry.rbe_right).entry.rbe_parent = parent
+                }
+                (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
+                if !(*tmp).entry.rbe_parent.is_null() {
+                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left
+                       {
+                        (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
+                    } else {
+                        (*(*parent).entry.rbe_parent).entry.rbe_right = tmp
+                    }
+                } else { (*head).rbh_root = tmp }
+                (*tmp).entry.rbe_right = parent;
+                (*parent).entry.rbe_parent = tmp;
+                !(*tmp).entry.rbe_parent.is_null();
+                tmp = (*parent).entry.rbe_left
+            }
+            if ((*tmp).entry.rbe_left.is_null() ||
+                    (*(*tmp).entry.rbe_left).entry.rbe_color ==
+                        0 as libc::c_int) &&
+                   ((*tmp).entry.rbe_right.is_null() ||
+                        (*(*tmp).entry.rbe_right).entry.rbe_color ==
+                            0 as libc::c_int) {
+                (*tmp).entry.rbe_color = 1 as libc::c_int;
+                elm = parent;
+                parent = (*elm).entry.rbe_parent
+            } else {
+                if (*tmp).entry.rbe_left.is_null() ||
+                       (*(*tmp).entry.rbe_left).entry.rbe_color ==
+                           0 as libc::c_int {
+                    let mut oright: *mut winlink = 0 as *mut winlink;
+                    oright = (*tmp).entry.rbe_right;
+                    if !oright.is_null() {
+                        (*oright).entry.rbe_color = 0 as libc::c_int
+                    }
+                    (*tmp).entry.rbe_color = 1 as libc::c_int;
+                    oright = (*tmp).entry.rbe_right;
+                    (*tmp).entry.rbe_right = (*oright).entry.rbe_left;
+                    if !(*tmp).entry.rbe_right.is_null() {
+                        (*(*oright).entry.rbe_left).entry.rbe_parent = tmp
+                    }
+                    (*oright).entry.rbe_parent = (*tmp).entry.rbe_parent;
+                    if !(*oright).entry.rbe_parent.is_null() {
+                        if tmp == (*(*tmp).entry.rbe_parent).entry.rbe_left {
+                            (*(*tmp).entry.rbe_parent).entry.rbe_left = oright
+                        } else {
+                            (*(*tmp).entry.rbe_parent).entry.rbe_right =
+                                oright
+                        }
+                    } else { (*head).rbh_root = oright }
+                    (*oright).entry.rbe_left = tmp;
+                    (*tmp).entry.rbe_parent = oright;
+                    !(*oright).entry.rbe_parent.is_null();
+                    tmp = (*parent).entry.rbe_left
+                }
+                (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
+                (*parent).entry.rbe_color = 0 as libc::c_int;
+                if !(*tmp).entry.rbe_left.is_null() {
+                    (*(*tmp).entry.rbe_left).entry.rbe_color =
+                        0 as libc::c_int
+                }
+                tmp = (*parent).entry.rbe_left;
+                (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
+                if !(*parent).entry.rbe_left.is_null() {
+                    (*(*tmp).entry.rbe_right).entry.rbe_parent = parent
+                }
+                (*tmp).entry.rbe_parent = (*parent).entry.rbe_parent;
+                if !(*tmp).entry.rbe_parent.is_null() {
+                    if parent == (*(*parent).entry.rbe_parent).entry.rbe_left
+                       {
+                        (*(*parent).entry.rbe_parent).entry.rbe_left = tmp
+                    } else {
+                        (*(*parent).entry.rbe_parent).entry.rbe_right = tmp
+                    }
+                } else { (*head).rbh_root = tmp }
+                (*tmp).entry.rbe_right = parent;
+                (*parent).entry.rbe_parent = tmp;
+                !(*tmp).entry.rbe_parent.is_null();
+                elm = (*head).rbh_root;
+                break ;
+            }
+        }
+    }
+    if !elm.is_null() { (*elm).entry.rbe_color = 0 as libc::c_int };
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_tree_RB_INSERT_COLOR(mut head:
+                                                              *mut window_pane_tree,
+                                                          mut elm:
+                                                              *mut window_pane) {
+    let mut parent: *mut window_pane = 0 as *mut window_pane;
+    let mut gparent: *mut window_pane = 0 as *mut window_pane;
+    let mut tmp: *mut window_pane = 0 as *mut window_pane;
+    loop  {
+        parent = (*elm).tree_entry.rbe_parent;
+        if !(!parent.is_null() &&
+                 (*parent).tree_entry.rbe_color == 1 as libc::c_int) {
+            break ;
+        }
+        gparent = (*parent).tree_entry.rbe_parent;
+        if parent == (*gparent).tree_entry.rbe_left {
+            tmp = (*gparent).tree_entry.rbe_right;
+            if !tmp.is_null() &&
+                   (*tmp).tree_entry.rbe_color == 1 as libc::c_int {
+                (*tmp).tree_entry.rbe_color = 0 as libc::c_int;
+                (*parent).tree_entry.rbe_color = 0 as libc::c_int;
+                (*gparent).tree_entry.rbe_color = 1 as libc::c_int;
+                elm = gparent
+            } else {
+                if (*parent).tree_entry.rbe_right == elm {
+                    tmp = (*parent).tree_entry.rbe_right;
+                    (*parent).tree_entry.rbe_right =
+                        (*tmp).tree_entry.rbe_left;
+                    if !(*parent).tree_entry.rbe_right.is_null() {
+                        (*(*tmp).tree_entry.rbe_left).tree_entry.rbe_parent =
+                            parent
+                    }
+                    (*tmp).tree_entry.rbe_parent =
+                        (*parent).tree_entry.rbe_parent;
+                    if !(*tmp).tree_entry.rbe_parent.is_null() {
+                        if parent ==
+                               (*(*parent).tree_entry.rbe_parent).tree_entry.rbe_left
+                           {
+                            (*(*parent).tree_entry.rbe_parent).tree_entry.rbe_left
+                                = tmp
+                        } else {
+                            (*(*parent).tree_entry.rbe_parent).tree_entry.rbe_right
+                                = tmp
+                        }
+                    } else { (*head).rbh_root = tmp }
+                    (*tmp).tree_entry.rbe_left = parent;
+                    (*parent).tree_entry.rbe_parent = tmp;
+                    !(*tmp).tree_entry.rbe_parent.is_null();
+                    tmp = parent;
+                    parent = elm;
+                    elm = tmp
+                }
+                (*parent).tree_entry.rbe_color = 0 as libc::c_int;
+                (*gparent).tree_entry.rbe_color = 1 as libc::c_int;
+                tmp = (*gparent).tree_entry.rbe_left;
+                (*gparent).tree_entry.rbe_left = (*tmp).tree_entry.rbe_right;
+                if !(*gparent).tree_entry.rbe_left.is_null() {
+                    (*(*tmp).tree_entry.rbe_right).tree_entry.rbe_parent =
+                        gparent
+                }
+                (*tmp).tree_entry.rbe_parent =
+                    (*gparent).tree_entry.rbe_parent;
+                if !(*tmp).tree_entry.rbe_parent.is_null() {
+                    if gparent ==
+                           (*(*gparent).tree_entry.rbe_parent).tree_entry.rbe_left
+                       {
+                        (*(*gparent).tree_entry.rbe_parent).tree_entry.rbe_left
+                            = tmp
+                    } else {
+                        (*(*gparent).tree_entry.rbe_parent).tree_entry.rbe_right
+                            = tmp
+                    }
+                } else { (*head).rbh_root = tmp }
+                (*tmp).tree_entry.rbe_right = gparent;
+                (*gparent).tree_entry.rbe_parent = tmp;
+                !(*tmp).tree_entry.rbe_parent.is_null();
+            }
+        } else {
+            tmp = (*gparent).tree_entry.rbe_left;
+            if !tmp.is_null() &&
+                   (*tmp).tree_entry.rbe_color == 1 as libc::c_int {
+                (*tmp).tree_entry.rbe_color = 0 as libc::c_int;
+                (*parent).tree_entry.rbe_color = 0 as libc::c_int;
+                (*gparent).tree_entry.rbe_color = 1 as libc::c_int;
+                elm = gparent
+            } else {
+                if (*parent).tree_entry.rbe_left == elm {
+                    tmp = (*parent).tree_entry.rbe_left;
+                    (*parent).tree_entry.rbe_left =
+                        (*tmp).tree_entry.rbe_right;
+                    if !(*parent).tree_entry.rbe_left.is_null() {
+                        (*(*tmp).tree_entry.rbe_right).tree_entry.rbe_parent =
+                            parent
+                    }
+                    (*tmp).tree_entry.rbe_parent =
+                        (*parent).tree_entry.rbe_parent;
+                    if !(*tmp).tree_entry.rbe_parent.is_null() {
+                        if parent ==
+                               (*(*parent).tree_entry.rbe_parent).tree_entry.rbe_left
+                           {
+                            (*(*parent).tree_entry.rbe_parent).tree_entry.rbe_left
+                                = tmp
+                        } else {
+                            (*(*parent).tree_entry.rbe_parent).tree_entry.rbe_right
+                                = tmp
+                        }
+                    } else { (*head).rbh_root = tmp }
+                    (*tmp).tree_entry.rbe_right = parent;
+                    (*parent).tree_entry.rbe_parent = tmp;
+                    !(*tmp).tree_entry.rbe_parent.is_null();
+                    tmp = parent;
+                    parent = elm;
+                    elm = tmp
+                }
+                (*parent).tree_entry.rbe_color = 0 as libc::c_int;
+                (*gparent).tree_entry.rbe_color = 1 as libc::c_int;
+                tmp = (*gparent).tree_entry.rbe_right;
+                (*gparent).tree_entry.rbe_right = (*tmp).tree_entry.rbe_left;
+                if !(*gparent).tree_entry.rbe_right.is_null() {
+                    (*(*tmp).tree_entry.rbe_left).tree_entry.rbe_parent =
+                        gparent
+                }
+                (*tmp).tree_entry.rbe_parent =
+                    (*gparent).tree_entry.rbe_parent;
+                if !(*tmp).tree_entry.rbe_parent.is_null() {
+                    if gparent ==
+                           (*(*gparent).tree_entry.rbe_parent).tree_entry.rbe_left
+                       {
+                        (*(*gparent).tree_entry.rbe_parent).tree_entry.rbe_left
+                            = tmp
+                    } else {
+                        (*(*gparent).tree_entry.rbe_parent).tree_entry.rbe_right
+                            = tmp
+                    }
+                } else { (*head).rbh_root = tmp }
+                (*tmp).tree_entry.rbe_left = gparent;
+                (*gparent).tree_entry.rbe_parent = tmp;
+                !(*tmp).tree_entry.rbe_parent.is_null();
+            }
+        }
+    }
+    (*(*head).rbh_root).tree_entry.rbe_color = 0 as libc::c_int;
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_tree_RB_REMOVE_COLOR(mut head:
+                                                              *mut window_pane_tree,
+                                                          mut parent:
+                                                              *mut window_pane,
+                                                          mut elm:
+                                                              *mut window_pane) {
+    let mut tmp: *mut window_pane = 0 as *mut window_pane;
+    while (elm.is_null() || (*elm).tree_entry.rbe_color == 0 as libc::c_int)
+              && elm != (*head).rbh_root {
+        if (*parent).tree_entry.rbe_left == elm {
+            tmp = (*parent).tree_entry.rbe_right;
+            if (*tmp).tree_entry.rbe_color == 1 as libc::c_int {
+                (*tmp).tree_entry.rbe_color = 0 as libc::c_int;
+                (*parent).tree_entry.rbe_color = 1 as libc::c_int;
+                tmp = (*parent).tree_entry.rbe_right;
+                (*parent).tree_entry.rbe_right = (*tmp).tree_entry.rbe_left;
+                if !(*parent).tree_entry.rbe_right.is_null() {
+                    (*(*tmp).tree_entry.rbe_left).tree_entry.rbe_parent =
+                        parent
+                }
+                (*tmp).tree_entry.rbe_parent =
+                    (*parent).tree_entry.rbe_parent;
+                if !(*tmp).tree_entry.rbe_parent.is_null() {
+                    if parent ==
+                           (*(*parent).tree_entry.rbe_parent).tree_entry.rbe_left
+                       {
+                        (*(*parent).tree_entry.rbe_parent).tree_entry.rbe_left
+                            = tmp
+                    } else {
+                        (*(*parent).tree_entry.rbe_parent).tree_entry.rbe_right
+                            = tmp
+                    }
+                } else { (*head).rbh_root = tmp }
+                (*tmp).tree_entry.rbe_left = parent;
+                (*parent).tree_entry.rbe_parent = tmp;
+                !(*tmp).tree_entry.rbe_parent.is_null();
+                tmp = (*parent).tree_entry.rbe_right
+            }
+            if ((*tmp).tree_entry.rbe_left.is_null() ||
+                    (*(*tmp).tree_entry.rbe_left).tree_entry.rbe_color ==
+                        0 as libc::c_int) &&
+                   ((*tmp).tree_entry.rbe_right.is_null() ||
+                        (*(*tmp).tree_entry.rbe_right).tree_entry.rbe_color ==
+                            0 as libc::c_int) {
+                (*tmp).tree_entry.rbe_color = 1 as libc::c_int;
+                elm = parent;
+                parent = (*elm).tree_entry.rbe_parent
+            } else {
+                if (*tmp).tree_entry.rbe_right.is_null() ||
+                       (*(*tmp).tree_entry.rbe_right).tree_entry.rbe_color ==
+                           0 as libc::c_int {
+                    let mut oleft: *mut window_pane = 0 as *mut window_pane;
+                    oleft = (*tmp).tree_entry.rbe_left;
+                    if !oleft.is_null() {
+                        (*oleft).tree_entry.rbe_color = 0 as libc::c_int
+                    }
+                    (*tmp).tree_entry.rbe_color = 1 as libc::c_int;
+                    oleft = (*tmp).tree_entry.rbe_left;
+                    (*tmp).tree_entry.rbe_left =
+                        (*oleft).tree_entry.rbe_right;
+                    if !(*tmp).tree_entry.rbe_left.is_null() {
+                        (*(*oleft).tree_entry.rbe_right).tree_entry.rbe_parent
+                            = tmp
+                    }
+                    (*oleft).tree_entry.rbe_parent =
+                        (*tmp).tree_entry.rbe_parent;
+                    if !(*oleft).tree_entry.rbe_parent.is_null() {
+                        if tmp ==
+                               (*(*tmp).tree_entry.rbe_parent).tree_entry.rbe_left
+                           {
+                            (*(*tmp).tree_entry.rbe_parent).tree_entry.rbe_left
+                                = oleft
+                        } else {
+                            (*(*tmp).tree_entry.rbe_parent).tree_entry.rbe_right
+                                = oleft
+                        }
+                    } else { (*head).rbh_root = oleft }
+                    (*oleft).tree_entry.rbe_right = tmp;
+                    (*tmp).tree_entry.rbe_parent = oleft;
+                    !(*oleft).tree_entry.rbe_parent.is_null();
+                    tmp = (*parent).tree_entry.rbe_right
+                }
+                (*tmp).tree_entry.rbe_color = (*parent).tree_entry.rbe_color;
+                (*parent).tree_entry.rbe_color = 0 as libc::c_int;
+                if !(*tmp).tree_entry.rbe_right.is_null() {
+                    (*(*tmp).tree_entry.rbe_right).tree_entry.rbe_color =
+                        0 as libc::c_int
+                }
+                tmp = (*parent).tree_entry.rbe_right;
+                (*parent).tree_entry.rbe_right = (*tmp).tree_entry.rbe_left;
+                if !(*parent).tree_entry.rbe_right.is_null() {
+                    (*(*tmp).tree_entry.rbe_left).tree_entry.rbe_parent =
+                        parent
+                }
+                (*tmp).tree_entry.rbe_parent =
+                    (*parent).tree_entry.rbe_parent;
+                if !(*tmp).tree_entry.rbe_parent.is_null() {
+                    if parent ==
+                           (*(*parent).tree_entry.rbe_parent).tree_entry.rbe_left
+                       {
+                        (*(*parent).tree_entry.rbe_parent).tree_entry.rbe_left
+                            = tmp
+                    } else {
+                        (*(*parent).tree_entry.rbe_parent).tree_entry.rbe_right
+                            = tmp
+                    }
+                } else { (*head).rbh_root = tmp }
+                (*tmp).tree_entry.rbe_left = parent;
+                (*parent).tree_entry.rbe_parent = tmp;
+                !(*tmp).tree_entry.rbe_parent.is_null();
+                elm = (*head).rbh_root;
+                break ;
+            }
+        } else {
+            tmp = (*parent).tree_entry.rbe_left;
+            if (*tmp).tree_entry.rbe_color == 1 as libc::c_int {
+                (*tmp).tree_entry.rbe_color = 0 as libc::c_int;
+                (*parent).tree_entry.rbe_color = 1 as libc::c_int;
+                tmp = (*parent).tree_entry.rbe_left;
+                (*parent).tree_entry.rbe_left = (*tmp).tree_entry.rbe_right;
+                if !(*parent).tree_entry.rbe_left.is_null() {
+                    (*(*tmp).tree_entry.rbe_right).tree_entry.rbe_parent =
+                        parent
+                }
+                (*tmp).tree_entry.rbe_parent =
+                    (*parent).tree_entry.rbe_parent;
+                if !(*tmp).tree_entry.rbe_parent.is_null() {
+                    if parent ==
+                           (*(*parent).tree_entry.rbe_parent).tree_entry.rbe_left
+                       {
+                        (*(*parent).tree_entry.rbe_parent).tree_entry.rbe_left
+                            = tmp
+                    } else {
+                        (*(*parent).tree_entry.rbe_parent).tree_entry.rbe_right
+                            = tmp
+                    }
+                } else { (*head).rbh_root = tmp }
+                (*tmp).tree_entry.rbe_right = parent;
+                (*parent).tree_entry.rbe_parent = tmp;
+                !(*tmp).tree_entry.rbe_parent.is_null();
+                tmp = (*parent).tree_entry.rbe_left
+            }
+            if ((*tmp).tree_entry.rbe_left.is_null() ||
+                    (*(*tmp).tree_entry.rbe_left).tree_entry.rbe_color ==
+                        0 as libc::c_int) &&
+                   ((*tmp).tree_entry.rbe_right.is_null() ||
+                        (*(*tmp).tree_entry.rbe_right).tree_entry.rbe_color ==
+                            0 as libc::c_int) {
+                (*tmp).tree_entry.rbe_color = 1 as libc::c_int;
+                elm = parent;
+                parent = (*elm).tree_entry.rbe_parent
+            } else {
+                if (*tmp).tree_entry.rbe_left.is_null() ||
+                       (*(*tmp).tree_entry.rbe_left).tree_entry.rbe_color ==
+                           0 as libc::c_int {
+                    let mut oright: *mut window_pane = 0 as *mut window_pane;
+                    oright = (*tmp).tree_entry.rbe_right;
+                    if !oright.is_null() {
+                        (*oright).tree_entry.rbe_color = 0 as libc::c_int
+                    }
+                    (*tmp).tree_entry.rbe_color = 1 as libc::c_int;
+                    oright = (*tmp).tree_entry.rbe_right;
+                    (*tmp).tree_entry.rbe_right =
+                        (*oright).tree_entry.rbe_left;
+                    if !(*tmp).tree_entry.rbe_right.is_null() {
+                        (*(*oright).tree_entry.rbe_left).tree_entry.rbe_parent
+                            = tmp
+                    }
+                    (*oright).tree_entry.rbe_parent =
+                        (*tmp).tree_entry.rbe_parent;
+                    if !(*oright).tree_entry.rbe_parent.is_null() {
+                        if tmp ==
+                               (*(*tmp).tree_entry.rbe_parent).tree_entry.rbe_left
+                           {
+                            (*(*tmp).tree_entry.rbe_parent).tree_entry.rbe_left
+                                = oright
+                        } else {
+                            (*(*tmp).tree_entry.rbe_parent).tree_entry.rbe_right
+                                = oright
+                        }
+                    } else { (*head).rbh_root = oright }
+                    (*oright).tree_entry.rbe_left = tmp;
+                    (*tmp).tree_entry.rbe_parent = oright;
+                    !(*oright).tree_entry.rbe_parent.is_null();
+                    tmp = (*parent).tree_entry.rbe_left
+                }
+                (*tmp).tree_entry.rbe_color = (*parent).tree_entry.rbe_color;
+                (*parent).tree_entry.rbe_color = 0 as libc::c_int;
+                if !(*tmp).tree_entry.rbe_left.is_null() {
+                    (*(*tmp).tree_entry.rbe_left).tree_entry.rbe_color =
+                        0 as libc::c_int
+                }
+                tmp = (*parent).tree_entry.rbe_left;
+                (*parent).tree_entry.rbe_left = (*tmp).tree_entry.rbe_right;
+                if !(*parent).tree_entry.rbe_left.is_null() {
+                    (*(*tmp).tree_entry.rbe_right).tree_entry.rbe_parent =
+                        parent
+                }
+                (*tmp).tree_entry.rbe_parent =
+                    (*parent).tree_entry.rbe_parent;
+                if !(*tmp).tree_entry.rbe_parent.is_null() {
+                    if parent ==
+                           (*(*parent).tree_entry.rbe_parent).tree_entry.rbe_left
+                       {
+                        (*(*parent).tree_entry.rbe_parent).tree_entry.rbe_left
+                            = tmp
+                    } else {
+                        (*(*parent).tree_entry.rbe_parent).tree_entry.rbe_right
+                            = tmp
+                    }
+                } else { (*head).rbh_root = tmp }
+                (*tmp).tree_entry.rbe_right = parent;
+                (*parent).tree_entry.rbe_parent = tmp;
+                !(*tmp).tree_entry.rbe_parent.is_null();
+                elm = (*head).rbh_root;
+                break ;
+            }
+        }
+    }
+    if !elm.is_null() { (*elm).tree_entry.rbe_color = 0 as libc::c_int };
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_tree_RB_NEXT(mut elm: *mut window_pane)
+ -> *mut window_pane {
+    if !(*elm).tree_entry.rbe_right.is_null() {
+        elm = (*elm).tree_entry.rbe_right;
+        while !(*elm).tree_entry.rbe_left.is_null() {
+            elm = (*elm).tree_entry.rbe_left
+        }
+    } else if !(*elm).tree_entry.rbe_parent.is_null() &&
+                  elm == (*(*elm).tree_entry.rbe_parent).tree_entry.rbe_left {
+        elm = (*elm).tree_entry.rbe_parent
+    } else {
+        while !(*elm).tree_entry.rbe_parent.is_null() &&
+                  elm == (*(*elm).tree_entry.rbe_parent).tree_entry.rbe_right
+              {
+            elm = (*elm).tree_entry.rbe_parent
+        }
+        elm = (*elm).tree_entry.rbe_parent
+    }
+    return elm;
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_tree_RB_PREV(mut elm: *mut window_pane)
+ -> *mut window_pane {
+    if !(*elm).tree_entry.rbe_left.is_null() {
+        elm = (*elm).tree_entry.rbe_left;
+        while !(*elm).tree_entry.rbe_right.is_null() {
+            elm = (*elm).tree_entry.rbe_right
+        }
+    } else if !(*elm).tree_entry.rbe_parent.is_null() &&
+                  elm == (*(*elm).tree_entry.rbe_parent).tree_entry.rbe_right
+     {
+        elm = (*elm).tree_entry.rbe_parent
+    } else {
+        while !(*elm).tree_entry.rbe_parent.is_null() &&
+                  elm == (*(*elm).tree_entry.rbe_parent).tree_entry.rbe_left {
+            elm = (*elm).tree_entry.rbe_parent
+        }
+        elm = (*elm).tree_entry.rbe_parent
+    }
+    return elm;
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_tree_RB_NFIND(mut head:
+                                                       *mut window_pane_tree,
+                                                   mut elm: *mut window_pane)
+ -> *mut window_pane {
+    let mut tmp: *mut window_pane = (*head).rbh_root;
+    let mut res: *mut window_pane = 0 as *mut window_pane;
+    let mut comp: libc::c_int = 0;
+    while !tmp.is_null() {
+        comp = window_pane_cmp(elm, tmp);
+        if comp < 0 as libc::c_int {
+            res = tmp;
+            tmp = (*tmp).tree_entry.rbe_left
+        } else if comp > 0 as libc::c_int {
+            tmp = (*tmp).tree_entry.rbe_right
+        } else { return tmp }
+    }
+    return res;
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_tree_RB_MINMAX(mut head:
+                                                        *mut window_pane_tree,
+                                                    mut val: libc::c_int)
+ -> *mut window_pane {
+    let mut tmp: *mut window_pane = (*head).rbh_root;
+    let mut parent: *mut window_pane = 0 as *mut window_pane;
+    while !tmp.is_null() {
+        parent = tmp;
+        if val < 0 as libc::c_int {
+            tmp = (*tmp).tree_entry.rbe_left
+        } else { tmp = (*tmp).tree_entry.rbe_right }
+    }
+    return parent;
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_tree_RB_INSERT(mut head:
+                                                        *mut window_pane_tree,
+                                                    mut elm: *mut window_pane)
+ -> *mut window_pane {
+    let mut tmp: *mut window_pane = 0 as *mut window_pane;
+    let mut parent: *mut window_pane = 0 as *mut window_pane;
+    let mut comp: libc::c_int = 0 as libc::c_int;
+    tmp = (*head).rbh_root;
+    while !tmp.is_null() {
+        parent = tmp;
+        comp = window_pane_cmp(elm, parent);
+        if comp < 0 as libc::c_int {
+            tmp = (*tmp).tree_entry.rbe_left
+        } else if comp > 0 as libc::c_int {
+            tmp = (*tmp).tree_entry.rbe_right
+        } else { return tmp }
+    }
+    (*elm).tree_entry.rbe_parent = parent;
+    (*elm).tree_entry.rbe_right = 0 as *mut window_pane;
+    (*elm).tree_entry.rbe_left = (*elm).tree_entry.rbe_right;
+    (*elm).tree_entry.rbe_color = 1 as libc::c_int;
+    if !parent.is_null() {
+        if comp < 0 as libc::c_int {
+            (*parent).tree_entry.rbe_left = elm
+        } else { (*parent).tree_entry.rbe_right = elm }
+    } else { (*head).rbh_root = elm }
+    window_pane_tree_RB_INSERT_COLOR(head, elm);
+    return 0 as *mut window_pane;
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_tree_RB_FIND(mut head:
+                                                      *mut window_pane_tree,
+                                                  mut elm: *mut window_pane)
+ -> *mut window_pane {
+    let mut tmp: *mut window_pane = (*head).rbh_root;
+    let mut comp: libc::c_int = 0;
+    while !tmp.is_null() {
+        comp = window_pane_cmp(elm, tmp);
+        if comp < 0 as libc::c_int {
+            tmp = (*tmp).tree_entry.rbe_left
+        } else if comp > 0 as libc::c_int {
+            tmp = (*tmp).tree_entry.rbe_right
+        } else { return tmp }
+    }
+    return 0 as *mut window_pane;
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_tree_RB_REMOVE(mut head:
+                                                        *mut window_pane_tree,
+                                                    mut elm: *mut window_pane)
+ -> *mut window_pane {
+    let mut current_block: u64;
+    let mut child: *mut window_pane = 0 as *mut window_pane;
+    let mut parent: *mut window_pane = 0 as *mut window_pane;
+    let mut old: *mut window_pane = elm;
+    let mut color: libc::c_int = 0;
+    if (*elm).tree_entry.rbe_left.is_null() {
+        child = (*elm).tree_entry.rbe_right;
+        current_block = 7226443171521532240;
+    } else if (*elm).tree_entry.rbe_right.is_null() {
+        child = (*elm).tree_entry.rbe_left;
+        current_block = 7226443171521532240;
+    } else {
+        let mut left: *mut window_pane = 0 as *mut window_pane;
+        elm = (*elm).tree_entry.rbe_right;
+        loop  {
+            left = (*elm).tree_entry.rbe_left;
+            if left.is_null() { break ; }
+            elm = left
+        }
+        child = (*elm).tree_entry.rbe_right;
+        parent = (*elm).tree_entry.rbe_parent;
+        color = (*elm).tree_entry.rbe_color;
+        if !child.is_null() { (*child).tree_entry.rbe_parent = parent }
+        if !parent.is_null() {
+            if (*parent).tree_entry.rbe_left == elm {
+                (*parent).tree_entry.rbe_left = child
+            } else { (*parent).tree_entry.rbe_right = child }
+        } else { (*head).rbh_root = child }
+        if (*elm).tree_entry.rbe_parent == old { parent = elm }
+        (*elm).tree_entry = (*old).tree_entry;
+        if !(*old).tree_entry.rbe_parent.is_null() {
+            if (*(*old).tree_entry.rbe_parent).tree_entry.rbe_left == old {
+                (*(*old).tree_entry.rbe_parent).tree_entry.rbe_left = elm
+            } else {
+                (*(*old).tree_entry.rbe_parent).tree_entry.rbe_right = elm
+            }
+        } else { (*head).rbh_root = elm }
+        (*(*old).tree_entry.rbe_left).tree_entry.rbe_parent = elm;
+        if !(*old).tree_entry.rbe_right.is_null() {
+            (*(*old).tree_entry.rbe_right).tree_entry.rbe_parent = elm
+        }
+        if !parent.is_null() {
+            left = parent;
+            loop  {
+                left = (*left).tree_entry.rbe_parent;
+                if left.is_null() { break ; }
+            }
+        }
+        current_block = 17407180261566896428;
+    }
+    match current_block {
+        7226443171521532240 => {
+            parent = (*elm).tree_entry.rbe_parent;
+            color = (*elm).tree_entry.rbe_color;
+            if !child.is_null() { (*child).tree_entry.rbe_parent = parent }
+            if !parent.is_null() {
+                if (*parent).tree_entry.rbe_left == elm {
+                    (*parent).tree_entry.rbe_left = child
+                } else { (*parent).tree_entry.rbe_right = child }
+            } else { (*head).rbh_root = child }
+        }
+        _ => { }
+    }
+    if color == 0 as libc::c_int {
+        window_pane_tree_RB_REMOVE_COLOR(head, parent, child);
+    }
+    return old;
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_cmp(mut w1: *mut window, mut w2: *mut window)
+ -> libc::c_int {
+    return (*w1).id.wrapping_sub((*w2).id) as libc::c_int;
+}
+#[no_mangle]
+pub unsafe extern "C" fn winlink_cmp(mut wl1: *mut winlink,
+                                     mut wl2: *mut winlink) -> libc::c_int {
+    return (*wl1).idx - (*wl2).idx;
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_cmp(mut wp1: *mut window_pane,
+                                         mut wp2: *mut window_pane)
+ -> libc::c_int {
+    return (*wp1).id.wrapping_sub((*wp2).id) as libc::c_int;
+}
+#[no_mangle]
+pub unsafe extern "C" fn winlink_find_by_window(mut wwl: *mut winlinks,
+                                                mut w: *mut window)
+ -> *mut winlink {
+    let mut wl: *mut winlink = 0 as *mut winlink;
+    wl = winlinks_RB_MINMAX(wwl, -(1 as libc::c_int));
+    while !wl.is_null() {
+        if (*wl).window == w { return wl }
+        wl = winlinks_RB_NEXT(wl)
+    }
+    return 0 as *mut winlink;
+}
+#[no_mangle]
+pub unsafe extern "C" fn winlink_find_by_index(mut wwl: *mut winlinks,
+                                               mut idx: libc::c_int)
+ -> *mut winlink {
+    let mut wl: winlink =
+        winlink{idx: 0,
+                session: 0 as *mut session,
+                window: 0 as *mut window,
+                flags: 0,
+                entry:
+                    C2RustUnnamed_17{rbe_left: 0 as *mut winlink,
+                                     rbe_right: 0 as *mut winlink,
+                                     rbe_parent: 0 as *mut winlink,
+                                     rbe_color: 0,},
+                wentry:
+                    C2RustUnnamed_16{tqe_next: 0 as *mut winlink,
+                                     tqe_prev: 0 as *mut *mut winlink,},
+                sentry:
+                    C2RustUnnamed_15{tqe_next: 0 as *mut winlink,
+                                     tqe_prev: 0 as *mut *mut winlink,},};
+    if idx < 0 as libc::c_int {
+        fatalx(b"bad index\x00" as *const u8 as *const libc::c_char);
+    }
+    wl.idx = idx;
+    return winlinks_RB_FIND(wwl, &mut wl);
+}
+#[no_mangle]
+pub unsafe extern "C" fn winlink_find_by_window_id(mut wwl: *mut winlinks,
+                                                   mut id: u_int)
+ -> *mut winlink {
+    let mut wl: *mut winlink = 0 as *mut winlink;
+    wl = winlinks_RB_MINMAX(wwl, -(1 as libc::c_int));
+    while !wl.is_null() {
+        if (*(*wl).window).id == id { return wl }
+        wl = winlinks_RB_NEXT(wl)
+    }
+    return 0 as *mut winlink;
+}
+unsafe extern "C" fn winlink_next_index(mut wwl: *mut winlinks,
+                                        mut idx: libc::c_int) -> libc::c_int {
+    let mut i: libc::c_int = 0;
+    i = idx;
+    loop  {
+        if winlink_find_by_index(wwl, i).is_null() { return i }
+        if i == 2147483647 as libc::c_int {
+            i = 0 as libc::c_int
+        } else { i += 1 }
+        if !(i != idx) { break ; }
+    }
+    return -(1 as libc::c_int);
+}
+#[no_mangle]
+pub unsafe extern "C" fn winlink_count(mut wwl: *mut winlinks) -> u_int {
+    let mut wl: *mut winlink = 0 as *mut winlink;
+    let mut n: u_int = 0;
+    n = 0 as libc::c_int as u_int;
+    wl = winlinks_RB_MINMAX(wwl, -(1 as libc::c_int));
+    while !wl.is_null() { n = n.wrapping_add(1); wl = winlinks_RB_NEXT(wl) }
+    return n;
+}
+#[no_mangle]
+pub unsafe extern "C" fn winlink_add(mut wwl: *mut winlinks,
+                                     mut idx: libc::c_int) -> *mut winlink {
+    let mut wl: *mut winlink = 0 as *mut winlink;
+    if idx < 0 as libc::c_int {
+        idx = winlink_next_index(wwl, -idx - 1 as libc::c_int);
+        if idx == -(1 as libc::c_int) { return 0 as *mut winlink }
+    } else if !winlink_find_by_index(wwl, idx).is_null() {
+        return 0 as *mut winlink
+    }
+    wl =
+        xcalloc(1 as libc::c_int as size_t,
+                ::std::mem::size_of::<winlink>() as libc::c_ulong) as
+            *mut winlink;
+    (*wl).idx = idx;
+    winlinks_RB_INSERT(wwl, wl);
+    return wl;
+}
+#[no_mangle]
+pub unsafe extern "C" fn winlink_set_window(mut wl: *mut winlink,
+                                            mut w: *mut window) {
+    if !(*wl).window.is_null() {
+        if !(*wl).wentry.tqe_next.is_null() {
+            (*(*wl).wentry.tqe_next).wentry.tqe_prev = (*wl).wentry.tqe_prev
+        } else { (*(*wl).window).winlinks.tqh_last = (*wl).wentry.tqe_prev }
+        *(*wl).wentry.tqe_prev = (*wl).wentry.tqe_next;
+        window_remove_ref((*wl).window,
+                          (*::std::mem::transmute::<&[u8; 19],
+                                                    &[libc::c_char; 19]>(b"winlink_set_window\x00")).as_ptr());
+    }
+    (*wl).wentry.tqe_next = 0 as *mut winlink;
+    (*wl).wentry.tqe_prev = (*w).winlinks.tqh_last;
+    *(*w).winlinks.tqh_last = wl;
+    (*w).winlinks.tqh_last = &mut (*wl).wentry.tqe_next;
+    (*wl).window = w;
+    window_add_ref(w,
+                   (*::std::mem::transmute::<&[u8; 19],
+                                             &[libc::c_char; 19]>(b"winlink_set_window\x00")).as_ptr());
+}
+#[no_mangle]
+pub unsafe extern "C" fn winlink_remove(mut wwl: *mut winlinks,
+                                        mut wl: *mut winlink) {
+    let mut w: *mut window = (*wl).window;
+    if !w.is_null() {
+        if !(*wl).wentry.tqe_next.is_null() {
+            (*(*wl).wentry.tqe_next).wentry.tqe_prev = (*wl).wentry.tqe_prev
+        } else { (*w).winlinks.tqh_last = (*wl).wentry.tqe_prev }
+        *(*wl).wentry.tqe_prev = (*wl).wentry.tqe_next;
+        window_remove_ref(w,
+                          (*::std::mem::transmute::<&[u8; 15],
+                                                    &[libc::c_char; 15]>(b"winlink_remove\x00")).as_ptr());
+    }
+    winlinks_RB_REMOVE(wwl, wl);
+    free(wl as *mut libc::c_void);
+}
+#[no_mangle]
+pub unsafe extern "C" fn winlink_next(mut wl: *mut winlink) -> *mut winlink {
+    return winlinks_RB_NEXT(wl);
+}
+#[no_mangle]
+pub unsafe extern "C" fn winlink_previous(mut wl: *mut winlink)
+ -> *mut winlink {
+    return winlinks_RB_PREV(wl);
+}
+#[no_mangle]
+pub unsafe extern "C" fn winlink_next_by_number(mut wl: *mut winlink,
+                                                mut s: *mut session,
+                                                mut n: libc::c_int)
+ -> *mut winlink {
+    while n > 0 as libc::c_int {
+        wl = winlinks_RB_NEXT(wl);
+        if wl.is_null() {
+            wl = winlinks_RB_MINMAX(&mut (*s).windows, -(1 as libc::c_int))
+        }
+        n -= 1
+    }
+    return wl;
+}
+#[no_mangle]
+pub unsafe extern "C" fn winlink_previous_by_number(mut wl: *mut winlink,
+                                                    mut s: *mut session,
+                                                    mut n: libc::c_int)
+ -> *mut winlink {
+    while n > 0 as libc::c_int {
+        wl = winlinks_RB_PREV(wl);
+        if wl.is_null() {
+            wl = winlinks_RB_MINMAX(&mut (*s).windows, 1 as libc::c_int)
+        }
+        n -= 1
+    }
+    return wl;
+}
+#[no_mangle]
+pub unsafe extern "C" fn winlink_stack_push(mut stack: *mut winlink_stack,
+                                            mut wl: *mut winlink) {
+    if wl.is_null() { return }
+    winlink_stack_remove(stack, wl);
+    (*wl).sentry.tqe_next = (*stack).tqh_first;
+    if !(*wl).sentry.tqe_next.is_null() {
+        (*(*stack).tqh_first).sentry.tqe_prev = &mut (*wl).sentry.tqe_next
+    } else { (*stack).tqh_last = &mut (*wl).sentry.tqe_next }
+    (*stack).tqh_first = wl;
+    (*wl).sentry.tqe_prev = &mut (*stack).tqh_first;
+}
+#[no_mangle]
+pub unsafe extern "C" fn winlink_stack_remove(mut stack: *mut winlink_stack,
+                                              mut wl: *mut winlink) {
+    let mut wl2: *mut winlink = 0 as *mut winlink;
+    if wl.is_null() { return }
+    wl2 = (*stack).tqh_first;
+    while !wl2.is_null() {
+        if wl2 == wl {
+            if !(*wl).sentry.tqe_next.is_null() {
+                (*(*wl).sentry.tqe_next).sentry.tqe_prev =
+                    (*wl).sentry.tqe_prev
+            } else { (*stack).tqh_last = (*wl).sentry.tqe_prev }
+            *(*wl).sentry.tqe_prev = (*wl).sentry.tqe_next;
+            return
+        }
+        wl2 = (*wl2).sentry.tqe_next
+    };
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_find_by_id_str(mut s: *const libc::c_char)
+ -> *mut window {
+    let mut errstr: *const libc::c_char = 0 as *const libc::c_char;
+    let mut id: u_int = 0;
+    if *s as libc::c_int != '@' as i32 { return 0 as *mut window }
+    id =
+        strtonum(s.offset(1 as libc::c_int as isize),
+                 0 as libc::c_int as libc::c_longlong,
+                 (2147483647 as libc::c_int as
+                      libc::c_uint).wrapping_mul(2 as
+                                                     libc::c_uint).wrapping_add(1
+                                                                                    as
+                                                                                    libc::c_uint)
+                     as libc::c_longlong, &mut errstr) as u_int;
+    if !errstr.is_null() { return 0 as *mut window }
+    return window_find_by_id(id);
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_find_by_id(mut id: u_int) -> *mut window {
+    let mut w: window =
+        window{id: 0,
+               latest: 0 as *mut libc::c_void,
+               name: 0 as *mut libc::c_char,
+               name_event:
+                   event{ev_evcallback:
+                             event_callback{evcb_active_next:
+                                                C2RustUnnamed_8{tqe_next:
+                                                                    0 as
+                                                                        *mut event_callback,
+                                                                tqe_prev:
+                                                                    0 as
+                                                                        *mut *mut event_callback,},
+                                            evcb_flags: 0,
+                                            evcb_pri: 0,
+                                            evcb_closure: 0,
+                                            evcb_cb_union:
+                                                C2RustUnnamed_7{evcb_callback:
+                                                                    None,},
+                                            evcb_arg:
+                                                0 as *mut libc::c_void,},
+                         ev_timeout_pos:
+                             C2RustUnnamed_5{ev_next_with_common_timeout:
+                                                 C2RustUnnamed_6{tqe_next:
+                                                                     0 as
+                                                                         *mut event,
+                                                                 tqe_prev:
+                                                                     0 as
+                                                                         *mut *mut event,},},
+                         ev_fd: 0,
+                         ev_base: 0 as *mut event_base,
+                         ev_:
+                             C2RustUnnamed_0{ev_io:
+                                                 C2RustUnnamed_3{ev_io_next:
+                                                                     C2RustUnnamed_4{le_next:
+                                                                                         0
+                                                                                             as
+                                                                                             *mut event,
+                                                                                     le_prev:
+                                                                                         0
+                                                                                             as
+                                                                                             *mut *mut event,},
+                                                                 ev_timeout:
+                                                                     timeval{tv_sec:
+                                                                                 0,
+                                                                             tv_usec:
+                                                                                 0,},},},
+                         ev_events: 0,
+                         ev_res: 0,
+                         ev_timeout: timeval{tv_sec: 0, tv_usec: 0,},},
+               name_time: timeval{tv_sec: 0, tv_usec: 0,},
+               alerts_timer:
+                   event{ev_evcallback:
+                             event_callback{evcb_active_next:
+                                                C2RustUnnamed_8{tqe_next:
+                                                                    0 as
+                                                                        *mut event_callback,
+                                                                tqe_prev:
+                                                                    0 as
+                                                                        *mut *mut event_callback,},
+                                            evcb_flags: 0,
+                                            evcb_pri: 0,
+                                            evcb_closure: 0,
+                                            evcb_cb_union:
+                                                C2RustUnnamed_7{evcb_callback:
+                                                                    None,},
+                                            evcb_arg:
+                                                0 as *mut libc::c_void,},
+                         ev_timeout_pos:
+                             C2RustUnnamed_5{ev_next_with_common_timeout:
+                                                 C2RustUnnamed_6{tqe_next:
+                                                                     0 as
+                                                                         *mut event,
+                                                                 tqe_prev:
+                                                                     0 as
+                                                                         *mut *mut event,},},
+                         ev_fd: 0,
+                         ev_base: 0 as *mut event_base,
+                         ev_:
+                             C2RustUnnamed_0{ev_io:
+                                                 C2RustUnnamed_3{ev_io_next:
+                                                                     C2RustUnnamed_4{le_next:
+                                                                                         0
+                                                                                             as
+                                                                                             *mut event,
+                                                                                     le_prev:
+                                                                                         0
+                                                                                             as
+                                                                                             *mut *mut event,},
+                                                                 ev_timeout:
+                                                                     timeval{tv_sec:
+                                                                                 0,
+                                                                             tv_usec:
+                                                                                 0,},},},
+                         ev_events: 0,
+                         ev_res: 0,
+                         ev_timeout: timeval{tv_sec: 0, tv_usec: 0,},},
+               offset_timer:
+                   event{ev_evcallback:
+                             event_callback{evcb_active_next:
+                                                C2RustUnnamed_8{tqe_next:
+                                                                    0 as
+                                                                        *mut event_callback,
+                                                                tqe_prev:
+                                                                    0 as
+                                                                        *mut *mut event_callback,},
+                                            evcb_flags: 0,
+                                            evcb_pri: 0,
+                                            evcb_closure: 0,
+                                            evcb_cb_union:
+                                                C2RustUnnamed_7{evcb_callback:
+                                                                    None,},
+                                            evcb_arg:
+                                                0 as *mut libc::c_void,},
+                         ev_timeout_pos:
+                             C2RustUnnamed_5{ev_next_with_common_timeout:
+                                                 C2RustUnnamed_6{tqe_next:
+                                                                     0 as
+                                                                         *mut event,
+                                                                 tqe_prev:
+                                                                     0 as
+                                                                         *mut *mut event,},},
+                         ev_fd: 0,
+                         ev_base: 0 as *mut event_base,
+                         ev_:
+                             C2RustUnnamed_0{ev_io:
+                                                 C2RustUnnamed_3{ev_io_next:
+                                                                     C2RustUnnamed_4{le_next:
+                                                                                         0
+                                                                                             as
+                                                                                             *mut event,
+                                                                                     le_prev:
+                                                                                         0
+                                                                                             as
+                                                                                             *mut *mut event,},
+                                                                 ev_timeout:
+                                                                     timeval{tv_sec:
+                                                                                 0,
+                                                                             tv_usec:
+                                                                                 0,},},},
+                         ev_events: 0,
+                         ev_res: 0,
+                         ev_timeout: timeval{tv_sec: 0, tv_usec: 0,},},
+               activity_time: timeval{tv_sec: 0, tv_usec: 0,},
+               active: 0 as *mut window_pane,
+               last: 0 as *mut window_pane,
+               panes:
+                   window_panes{tqh_first: 0 as *mut window_pane,
+                                tqh_last: 0 as *mut *mut window_pane,},
+               lastlayout: 0,
+               layout_root: 0 as *mut layout_cell,
+               saved_layout_root: 0 as *mut layout_cell,
+               old_layout: 0 as *mut libc::c_char,
+               sx: 0,
+               sy: 0,
+               xpixel: 0,
+               ypixel: 0,
+               new_sx: 0,
+               new_sy: 0,
+               new_xpixel: 0,
+               new_ypixel: 0,
+               flags: 0,
+               alerts_queued: 0,
+               alerts_entry:
+                   C2RustUnnamed_20{tqe_next: 0 as *mut window,
+                                    tqe_prev: 0 as *mut *mut window,},
+               options: 0 as *mut options,
+               references: 0,
+               winlinks:
+                   C2RustUnnamed_19{tqh_first: 0 as *mut winlink,
+                                    tqh_last: 0 as *mut *mut winlink,},
+               entry:
+                   C2RustUnnamed_18{rbe_left: 0 as *mut window,
+                                    rbe_right: 0 as *mut window,
+                                    rbe_parent: 0 as *mut window,
+                                    rbe_color: 0,},};
+    w.id = id;
+    return windows_RB_FIND(&mut windows, &mut w);
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_update_activity(mut w: *mut window) {
+    gettimeofday(&mut (*w).activity_time, 0 as *mut libc::c_void);
+    alerts_queue(w, 0x2 as libc::c_int);
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_create(mut sx: u_int, mut sy: u_int,
+                                       mut xpixel: u_int, mut ypixel: u_int)
+ -> *mut window {
+    let mut w: *mut window = 0 as *mut window;
+    if xpixel == 0 as libc::c_int as libc::c_uint {
+        xpixel = 16 as libc::c_int as u_int
+    }
+    if ypixel == 0 as libc::c_int as libc::c_uint {
+        ypixel = 32 as libc::c_int as u_int
+    }
+    w =
+        xcalloc(1 as libc::c_int as size_t,
+                ::std::mem::size_of::<window>() as libc::c_ulong) as
+            *mut window;
+    (*w).name = xstrdup(b"\x00" as *const u8 as *const libc::c_char);
+    (*w).flags = 0 as libc::c_int;
+    (*w).panes.tqh_first = 0 as *mut window_pane;
+    (*w).panes.tqh_last = &mut (*w).panes.tqh_first;
+    (*w).active = 0 as *mut window_pane;
+    (*w).lastlayout = -(1 as libc::c_int);
+    (*w).layout_root = 0 as *mut layout_cell;
+    (*w).sx = sx;
+    (*w).sy = sy;
+    (*w).xpixel = xpixel;
+    (*w).ypixel = ypixel;
+    (*w).options = options_create(global_w_options);
+    (*w).references = 0 as libc::c_int as u_int;
+    (*w).winlinks.tqh_first = 0 as *mut winlink;
+    (*w).winlinks.tqh_last = &mut (*w).winlinks.tqh_first;
+    let fresh0 = next_window_id;
+    next_window_id = next_window_id.wrapping_add(1);
+    (*w).id = fresh0;
+    windows_RB_INSERT(&mut windows, w);
+    window_update_activity(w);
+    return w;
+}
+unsafe extern "C" fn window_destroy(mut w: *mut window) {
+    log_debug(b"window @%u destroyed (%d references)\x00" as *const u8 as
+                  *const libc::c_char, (*w).id, (*w).references);
+    windows_RB_REMOVE(&mut windows, w);
+    if !(*w).layout_root.is_null() { layout_free_cell((*w).layout_root); }
+    if !(*w).saved_layout_root.is_null() {
+        layout_free_cell((*w).saved_layout_root);
+    }
+    free((*w).old_layout as *mut libc::c_void);
+    window_destroy_panes(w);
+    if event_initialized(&mut (*w).name_event) != 0 {
+        event_del(&mut (*w).name_event);
+    }
+    if event_initialized(&mut (*w).alerts_timer) != 0 {
+        event_del(&mut (*w).alerts_timer);
+    }
+    if event_initialized(&mut (*w).offset_timer) != 0 {
+        event_del(&mut (*w).offset_timer);
+    }
+    options_free((*w).options);
+    free((*w).name as *mut libc::c_void);
+    free(w as *mut libc::c_void);
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_destroy_ready(mut wp: *mut window_pane)
+ -> libc::c_int {
+    let mut n: libc::c_int = 0;
+    if (*wp).pipe_fd != -(1 as libc::c_int) {
+        if evbuffer_get_length((*(*wp).pipe_event).output) !=
+               0 as libc::c_int as libc::c_ulong {
+            return 0 as libc::c_int
+        }
+        if ioctl((*wp).fd, 0x541b as libc::c_int as libc::c_ulong,
+                 &mut n as *mut libc::c_int) != -(1 as libc::c_int) &&
+               n > 0 as libc::c_int {
+            return 0 as libc::c_int
+        }
+    }
+    if !(*wp).flags & 0x100 as libc::c_int != 0 { return 0 as libc::c_int }
+    return 1 as libc::c_int;
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_add_ref(mut w: *mut window,
+                                        mut from: *const libc::c_char) {
+    (*w).references = (*w).references.wrapping_add(1);
+    log_debug(b"%s: @%u %s, now %d\x00" as *const u8 as *const libc::c_char,
+              (*::std::mem::transmute::<&[u8; 15],
+                                        &[libc::c_char; 15]>(b"window_add_ref\x00")).as_ptr(),
+              (*w).id, from, (*w).references);
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_remove_ref(mut w: *mut window,
+                                           mut from: *const libc::c_char) {
+    (*w).references = (*w).references.wrapping_sub(1);
+    log_debug(b"%s: @%u %s, now %d\x00" as *const u8 as *const libc::c_char,
+              (*::std::mem::transmute::<&[u8; 18],
+                                        &[libc::c_char; 18]>(b"window_remove_ref\x00")).as_ptr(),
+              (*w).id, from, (*w).references);
+    if (*w).references == 0 as libc::c_int as libc::c_uint {
+        window_destroy(w);
+    };
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_set_name(mut w: *mut window,
+                                         mut new_name: *const libc::c_char) {
+    free((*w).name as *mut libc::c_void);
+    utf8_stravis(&mut (*w).name, new_name,
+                 0x1 as libc::c_int | 0x2 as libc::c_int | 0x8 as libc::c_int
+                     | 0x10 as libc::c_int);
+    notify_window(b"window-renamed\x00" as *const u8 as *const libc::c_char,
+                  w);
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_resize(mut w: *mut window, mut sx: u_int,
+                                       mut sy: u_int, mut xpixel: libc::c_int,
+                                       mut ypixel: libc::c_int) {
+    if xpixel == 0 as libc::c_int { xpixel = 16 as libc::c_int }
+    if ypixel == 0 as libc::c_int { ypixel = 32 as libc::c_int }
+    log_debug(b"%s: @%u resize %ux%u (%ux%u)\x00" as *const u8 as
+                  *const libc::c_char,
+              (*::std::mem::transmute::<&[u8; 14],
+                                        &[libc::c_char; 14]>(b"window_resize\x00")).as_ptr(),
+              (*w).id, sx, sy,
+              if xpixel == -(1 as libc::c_int) {
+                  (*w).xpixel
+              } else { xpixel as u_int },
+              if ypixel == -(1 as libc::c_int) {
+                  (*w).ypixel
+              } else { ypixel as u_int });
+    (*w).sx = sx;
+    (*w).sy = sy;
+    if xpixel != -(1 as libc::c_int) { (*w).xpixel = xpixel as u_int }
+    if ypixel != -(1 as libc::c_int) { (*w).ypixel = ypixel as u_int };
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_send_resize(mut wp: *mut window_pane,
+                                                 mut force: libc::c_int) {
+    let mut w: *mut window = (*wp).window;
+    let mut ws: winsize =
+        winsize{ws_row: 0, ws_col: 0, ws_xpixel: 0, ws_ypixel: 0,};
+    let mut sy: u_int = 0;
+    if (*wp).fd == -(1 as libc::c_int) { return }
+    if force == 0 {
+        sy = (*wp).sy
+    } else if (*wp).sy <= 1 as libc::c_int as libc::c_uint {
+        sy = (*wp).sy.wrapping_add(1 as libc::c_int as libc::c_uint)
+    } else { sy = (*wp).sy.wrapping_sub(1 as libc::c_int as libc::c_uint) }
+    log_debug(b"%s: %%%u resize to %u,%u\x00" as *const u8 as
+                  *const libc::c_char,
+              (*::std::mem::transmute::<&[u8; 24],
+                                        &[libc::c_char; 24]>(b"window_pane_send_resize\x00")).as_ptr(),
+              (*wp).id, (*wp).sx, sy);
+    memset(&mut ws as *mut winsize as *mut libc::c_void, 0 as libc::c_int,
+           ::std::mem::size_of::<winsize>() as libc::c_ulong);
+    ws.ws_col = (*wp).sx as libc::c_ushort;
+    ws.ws_row = sy as libc::c_ushort;
+    ws.ws_xpixel =
+        (*w).xpixel.wrapping_mul(ws.ws_col as libc::c_uint) as libc::c_ushort;
+    ws.ws_ypixel =
+        (*w).ypixel.wrapping_mul(ws.ws_row as libc::c_uint) as libc::c_ushort;
+    if ioctl((*wp).fd, 0x5414 as libc::c_int as libc::c_ulong,
+             &mut ws as *mut winsize) == -(1 as libc::c_int) {
+        fatal(b"ioctl failed\x00" as *const u8 as *const libc::c_char);
+    };
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_has_pane(mut w: *mut window,
+                                         mut wp: *mut window_pane)
+ -> libc::c_int {
+    let mut wp1: *mut window_pane = 0 as *mut window_pane;
+    wp1 = (*w).panes.tqh_first;
+    while !wp1.is_null() {
+        if wp1 == wp { return 1 as libc::c_int }
+        wp1 = (*wp1).entry.tqe_next
+    }
+    return 0 as libc::c_int;
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_set_active_pane(mut w: *mut window,
+                                                mut wp: *mut window_pane,
+                                                mut notify: libc::c_int)
+ -> libc::c_int {
+    log_debug(b"%s: pane %%%u\x00" as *const u8 as *const libc::c_char,
+              (*::std::mem::transmute::<&[u8; 23],
+                                        &[libc::c_char; 23]>(b"window_set_active_pane\x00")).as_ptr(),
+              (*wp).id);
+    if wp == (*w).active { return 0 as libc::c_int }
+    (*w).last = (*w).active;
+    (*w).active = wp;
+    let fresh1 = next_active_point;
+    next_active_point = next_active_point.wrapping_add(1);
+    (*(*w).active).active_point = fresh1;
+    (*(*w).active).flags |= 0x80 as libc::c_int;
+    tty_update_window_offset(w);
+    if notify != 0 {
+        notify_window(b"window-pane-changed\x00" as *const u8 as
+                          *const libc::c_char, w);
+    }
+    return 1 as libc::c_int;
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_redraw_active_switch(mut w: *mut window,
+                                                     mut wp:
+                                                         *mut window_pane) {
+    let mut gc1: *mut grid_cell = 0 as *mut grid_cell;
+    let mut gc2: *mut grid_cell = 0 as *mut grid_cell;
+    let mut c1: libc::c_int = 0;
+    let mut c2: libc::c_int = 0;
+    if wp == (*w).active { return }
+    loop  {
+        /*
+		 * If the active and inactive styles or palettes are different,
+		 * need to redraw the panes.
+		 */
+        gc1 = &mut (*wp).cached_gc;
+        gc2 = &mut (*wp).cached_active_gc;
+        if grid_cells_look_equal(gc1, gc2) == 0 {
+            (*wp).flags |= 0x1 as libc::c_int
+        } else {
+            c1 = window_pane_get_palette(wp, (*gc1).fg);
+            c2 = window_pane_get_palette(wp, (*gc2).fg);
+            if c1 != c2 {
+                (*wp).flags |= 0x1 as libc::c_int
+            } else {
+                c1 = window_pane_get_palette(wp, (*gc1).bg);
+                c2 = window_pane_get_palette(wp, (*gc2).bg);
+                if c1 != c2 { (*wp).flags |= 0x1 as libc::c_int }
+            }
+        }
+        if wp == (*w).active { break ; }
+        wp = (*w).active
+    };
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_get_active_at(mut w: *mut window,
+                                              mut x: u_int, mut y: u_int)
+ -> *mut window_pane {
+    let mut wp: *mut window_pane = 0 as *mut window_pane;
+    wp = (*w).panes.tqh_first;
+    while !wp.is_null() {
+        if !(window_pane_visible(wp) == 0) {
+            if !(x < (*wp).xoff || x > (*wp).xoff.wrapping_add((*wp).sx)) {
+                if !(y < (*wp).yoff || y > (*wp).yoff.wrapping_add((*wp).sy))
+                   {
+                    return wp
+                }
+            }
+        }
+        wp = (*wp).entry.tqe_next
+    }
+    return 0 as *mut window_pane;
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_find_string(mut w: *mut window,
+                                            mut s: *const libc::c_char)
+ -> *mut window_pane {
+    let mut x: u_int = 0;
+    let mut y: u_int = 0;
+    let mut top: u_int = 0 as libc::c_int as u_int;
+    let mut bottom: u_int =
+        (*w).sy.wrapping_sub(1 as libc::c_int as libc::c_uint);
+    let mut status: libc::c_int = 0;
+    x = (*w).sx.wrapping_div(2 as libc::c_int as libc::c_uint);
+    y = (*w).sy.wrapping_div(2 as libc::c_int as libc::c_uint);
+    status =
+        options_get_number((*w).options,
+                           b"pane-border-status\x00" as *const u8 as
+                               *const libc::c_char) as libc::c_int;
+    if status == 1 as libc::c_int {
+        top = top.wrapping_add(1)
+    } else if status == 2 as libc::c_int { bottom = bottom.wrapping_sub(1) }
+    if strcasecmp(s, b"top\x00" as *const u8 as *const libc::c_char) ==
+           0 as libc::c_int {
+        y = top
+    } else if strcasecmp(s, b"bottom\x00" as *const u8 as *const libc::c_char)
+                  == 0 as libc::c_int {
+        y = bottom
+    } else if strcasecmp(s, b"left\x00" as *const u8 as *const libc::c_char)
+                  == 0 as libc::c_int {
+        x = 0 as libc::c_int as u_int
+    } else if strcasecmp(s, b"right\x00" as *const u8 as *const libc::c_char)
+                  == 0 as libc::c_int {
+        x = (*w).sx.wrapping_sub(1 as libc::c_int as libc::c_uint)
+    } else if strcasecmp(s,
+                         b"top-left\x00" as *const u8 as *const libc::c_char)
+                  == 0 as libc::c_int {
+        x = 0 as libc::c_int as u_int;
+        y = top
+    } else if strcasecmp(s,
+                         b"top-right\x00" as *const u8 as *const libc::c_char)
+                  == 0 as libc::c_int {
+        x = (*w).sx.wrapping_sub(1 as libc::c_int as libc::c_uint);
+        y = top
+    } else if strcasecmp(s,
+                         b"bottom-left\x00" as *const u8 as
+                             *const libc::c_char) == 0 as libc::c_int {
+        x = 0 as libc::c_int as u_int;
+        y = bottom
+    } else if strcasecmp(s,
+                         b"bottom-right\x00" as *const u8 as
+                             *const libc::c_char) == 0 as libc::c_int {
+        x = (*w).sx.wrapping_sub(1 as libc::c_int as libc::c_uint);
+        y = bottom
+    } else { return 0 as *mut window_pane }
+    return window_get_active_at(w, x, y);
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_zoom(mut wp: *mut window_pane)
+ -> libc::c_int {
+    let mut w: *mut window = (*wp).window;
+    let mut wp1: *mut window_pane = 0 as *mut window_pane;
+    if (*w).flags & 0x8 as libc::c_int != 0 { return -(1 as libc::c_int) }
+    if window_count_panes(w) == 1 as libc::c_int as libc::c_uint {
+        return -(1 as libc::c_int)
+    }
+    if (*w).active != wp { window_set_active_pane(w, wp, 1 as libc::c_int); }
+    wp1 = (*w).panes.tqh_first;
+    while !wp1.is_null() {
+        (*wp1).saved_layout_cell = (*wp1).layout_cell;
+        (*wp1).layout_cell = 0 as *mut layout_cell;
+        wp1 = (*wp1).entry.tqe_next
+    }
+    (*w).saved_layout_root = (*w).layout_root;
+    layout_init(w, wp);
+    (*w).flags |= 0x8 as libc::c_int;
+    notify_window(b"window-layout-changed\x00" as *const u8 as
+                      *const libc::c_char, w);
+    return 0 as libc::c_int;
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_unzoom(mut w: *mut window) -> libc::c_int {
+    let mut wp: *mut window_pane = 0 as *mut window_pane;
+    if (*w).flags & 0x8 as libc::c_int == 0 { return -(1 as libc::c_int) }
+    (*w).flags &= !(0x8 as libc::c_int);
+    layout_free(w);
+    (*w).layout_root = (*w).saved_layout_root;
+    (*w).saved_layout_root = 0 as *mut layout_cell;
+    wp = (*w).panes.tqh_first;
+    while !wp.is_null() {
+        (*wp).layout_cell = (*wp).saved_layout_cell;
+        (*wp).saved_layout_cell = 0 as *mut layout_cell;
+        wp = (*wp).entry.tqe_next
+    }
+    layout_fix_panes(w);
+    notify_window(b"window-layout-changed\x00" as *const u8 as
+                      *const libc::c_char, w);
+    return 0 as libc::c_int;
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_push_zoom(mut w: *mut window,
+                                          mut flag: libc::c_int)
+ -> libc::c_int {
+    log_debug(b"%s: @%u %d\x00" as *const u8 as *const libc::c_char,
+              (*::std::mem::transmute::<&[u8; 17],
+                                        &[libc::c_char; 17]>(b"window_push_zoom\x00")).as_ptr(),
+              (*w).id,
+              (flag != 0 && (*w).flags & 0x8 as libc::c_int != 0) as
+                  libc::c_int);
+    if flag != 0 && (*w).flags & 0x8 as libc::c_int != 0 {
+        (*w).flags |= 0x10 as libc::c_int
+    } else { (*w).flags &= !(0x10 as libc::c_int) }
+    return (window_unzoom(w) == 0 as libc::c_int) as libc::c_int;
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pop_zoom(mut w: *mut window) -> libc::c_int {
+    log_debug(b"%s: @%u %d\x00" as *const u8 as *const libc::c_char,
+              (*::std::mem::transmute::<&[u8; 16],
+                                        &[libc::c_char; 16]>(b"window_pop_zoom\x00")).as_ptr(),
+              (*w).id,
+              ((*w).flags & 0x10 as libc::c_int != 0) as libc::c_int);
+    if (*w).flags & 0x10 as libc::c_int != 0 {
+        return (window_zoom((*w).active) == 0 as libc::c_int) as libc::c_int
+    }
+    return 0 as libc::c_int;
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_add_pane(mut w: *mut window,
+                                         mut other: *mut window_pane,
+                                         mut hlimit: u_int,
+                                         mut flags: libc::c_int)
+ -> *mut window_pane {
+    let mut wp: *mut window_pane = 0 as *mut window_pane;
+    if other.is_null() { other = (*w).active }
+    wp = window_pane_create(w, (*w).sx, (*w).sy, hlimit);
+    if (*w).panes.tqh_first.is_null() {
+        log_debug(b"%s: @%u at start\x00" as *const u8 as *const libc::c_char,
+                  (*::std::mem::transmute::<&[u8; 16],
+                                            &[libc::c_char; 16]>(b"window_add_pane\x00")).as_ptr(),
+                  (*w).id);
+        (*wp).entry.tqe_next = (*w).panes.tqh_first;
+        if !(*wp).entry.tqe_next.is_null() {
+            (*(*w).panes.tqh_first).entry.tqe_prev = &mut (*wp).entry.tqe_next
+        } else { (*w).panes.tqh_last = &mut (*wp).entry.tqe_next }
+        (*w).panes.tqh_first = wp;
+        (*wp).entry.tqe_prev = &mut (*w).panes.tqh_first
+    } else if flags & 0x8 as libc::c_int != 0 {
+        log_debug(b"%s: @%u before %%%u\x00" as *const u8 as
+                      *const libc::c_char,
+                  (*::std::mem::transmute::<&[u8; 16],
+                                            &[libc::c_char; 16]>(b"window_add_pane\x00")).as_ptr(),
+                  (*w).id, (*wp).id);
+        if flags & 0x20 as libc::c_int != 0 {
+            (*wp).entry.tqe_next = (*w).panes.tqh_first;
+            if !(*wp).entry.tqe_next.is_null() {
+                (*(*w).panes.tqh_first).entry.tqe_prev =
+                    &mut (*wp).entry.tqe_next
+            } else { (*w).panes.tqh_last = &mut (*wp).entry.tqe_next }
+            (*w).panes.tqh_first = wp;
+            (*wp).entry.tqe_prev = &mut (*w).panes.tqh_first
+        } else {
+            (*wp).entry.tqe_prev = (*other).entry.tqe_prev;
+            (*wp).entry.tqe_next = other;
+            *(*other).entry.tqe_prev = wp;
+            (*other).entry.tqe_prev = &mut (*wp).entry.tqe_next
+        }
+    } else {
+        log_debug(b"%s: @%u after %%%u\x00" as *const u8 as
+                      *const libc::c_char,
+                  (*::std::mem::transmute::<&[u8; 16],
+                                            &[libc::c_char; 16]>(b"window_add_pane\x00")).as_ptr(),
+                  (*w).id, (*wp).id);
+        if flags & 0x20 as libc::c_int != 0 {
+            (*wp).entry.tqe_next = 0 as *mut window_pane;
+            (*wp).entry.tqe_prev = (*w).panes.tqh_last;
+            *(*w).panes.tqh_last = wp;
+            (*w).panes.tqh_last = &mut (*wp).entry.tqe_next
+        } else {
+            (*wp).entry.tqe_next = (*other).entry.tqe_next;
+            if !(*wp).entry.tqe_next.is_null() {
+                (*(*wp).entry.tqe_next).entry.tqe_prev =
+                    &mut (*wp).entry.tqe_next
+            } else { (*w).panes.tqh_last = &mut (*wp).entry.tqe_next }
+            (*other).entry.tqe_next = wp;
+            (*wp).entry.tqe_prev = &mut (*other).entry.tqe_next
+        }
+    }
+    return wp;
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_lost_pane(mut w: *mut window,
+                                          mut wp: *mut window_pane) {
+    log_debug(b"%s: @%u pane %%%u\x00" as *const u8 as *const libc::c_char,
+              (*::std::mem::transmute::<&[u8; 17],
+                                        &[libc::c_char; 17]>(b"window_lost_pane\x00")).as_ptr(),
+              (*w).id, (*wp).id);
+    if wp == marked_pane.wp { server_clear_marked(); }
+    if wp == (*w).active {
+        (*w).active = (*w).last;
+        (*w).last = 0 as *mut window_pane;
+        if (*w).active.is_null() {
+            (*w).active =
+                *(*((*wp).entry.tqe_prev as *mut window_panes)).tqh_last;
+            if (*w).active.is_null() { (*w).active = (*wp).entry.tqe_next }
+        }
+        if !(*w).active.is_null() {
+            (*(*w).active).flags |= 0x80 as libc::c_int;
+            notify_window(b"window-pane-changed\x00" as *const u8 as
+                              *const libc::c_char, w);
+        }
+    } else if wp == (*w).last { (*w).last = 0 as *mut window_pane };
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_remove_pane(mut w: *mut window,
+                                            mut wp: *mut window_pane) {
+    window_lost_pane(w, wp);
+    if !(*wp).entry.tqe_next.is_null() {
+        (*(*wp).entry.tqe_next).entry.tqe_prev = (*wp).entry.tqe_prev
+    } else { (*w).panes.tqh_last = (*wp).entry.tqe_prev }
+    *(*wp).entry.tqe_prev = (*wp).entry.tqe_next;
+    window_pane_destroy(wp);
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_at_index(mut w: *mut window,
+                                              mut idx: u_int)
+ -> *mut window_pane {
+    let mut wp: *mut window_pane = 0 as *mut window_pane;
+    let mut n: u_int = 0;
+    n =
+        options_get_number((*w).options,
+                           b"pane-base-index\x00" as *const u8 as
+                               *const libc::c_char) as u_int;
+    wp = (*w).panes.tqh_first;
+    while !wp.is_null() {
+        if n == idx { return wp }
+        n = n.wrapping_add(1);
+        wp = (*wp).entry.tqe_next
+    }
+    return 0 as *mut window_pane;
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_next_by_number(mut w: *mut window,
+                                                    mut wp: *mut window_pane,
+                                                    mut n: u_int)
+ -> *mut window_pane {
+    while n > 0 as libc::c_int as libc::c_uint {
+        wp = (*wp).entry.tqe_next;
+        if wp.is_null() { wp = (*w).panes.tqh_first }
+        n = n.wrapping_sub(1)
+    }
+    return wp;
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_previous_by_number(mut w: *mut window,
+                                                        mut wp:
+                                                            *mut window_pane,
+                                                        mut n: u_int)
+ -> *mut window_pane {
+    while n > 0 as libc::c_int as libc::c_uint {
+        wp = *(*((*wp).entry.tqe_prev as *mut window_panes)).tqh_last;
+        if wp.is_null() {
+            wp = *(*((*w).panes.tqh_last as *mut window_panes)).tqh_last
+        }
+        n = n.wrapping_sub(1)
+    }
+    return wp;
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_index(mut wp: *mut window_pane,
+                                           mut i: *mut u_int) -> libc::c_int {
+    let mut wq: *mut window_pane = 0 as *mut window_pane;
+    let mut w: *mut window = (*wp).window;
+    *i =
+        options_get_number((*w).options,
+                           b"pane-base-index\x00" as *const u8 as
+                               *const libc::c_char) as u_int;
+    wq = (*w).panes.tqh_first;
+    while !wq.is_null() {
+        if wp == wq { return 0 as libc::c_int }
+        *i = (*i).wrapping_add(1);
+        wq = (*wq).entry.tqe_next
+    }
+    return -(1 as libc::c_int);
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_count_panes(mut w: *mut window) -> u_int {
+    let mut wp: *mut window_pane = 0 as *mut window_pane;
+    let mut n: u_int = 0;
+    n = 0 as libc::c_int as u_int;
+    wp = (*w).panes.tqh_first;
+    while !wp.is_null() { n = n.wrapping_add(1); wp = (*wp).entry.tqe_next }
+    return n;
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_destroy_panes(mut w: *mut window) {
+    let mut wp: *mut window_pane = 0 as *mut window_pane;
+    while !(*w).panes.tqh_first.is_null() {
+        wp = (*w).panes.tqh_first;
+        if !(*wp).entry.tqe_next.is_null() {
+            (*(*wp).entry.tqe_next).entry.tqe_prev = (*wp).entry.tqe_prev
+        } else { (*w).panes.tqh_last = (*wp).entry.tqe_prev }
+        *(*wp).entry.tqe_prev = (*wp).entry.tqe_next;
+        window_pane_destroy(wp);
+    };
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_printable_flags(mut wl: *mut winlink)
+ -> *const libc::c_char {
+    let mut s: *mut session = (*wl).session;
+    static mut flags: [libc::c_char; 32] = [0; 32];
+    let mut pos: libc::c_int = 0;
+    pos = 0 as libc::c_int;
+    if (*wl).flags & 0x2 as libc::c_int != 0 {
+        let fresh2 = pos;
+        pos = pos + 1;
+        flags[fresh2 as usize] = '#' as i32 as libc::c_char
+    }
+    if (*wl).flags & 0x1 as libc::c_int != 0 {
+        let fresh3 = pos;
+        pos = pos + 1;
+        flags[fresh3 as usize] = '!' as i32 as libc::c_char
+    }
+    if (*wl).flags & 0x4 as libc::c_int != 0 {
+        let fresh4 = pos;
+        pos = pos + 1;
+        flags[fresh4 as usize] = '~' as i32 as libc::c_char
+    }
+    if wl == (*s).curw {
+        let fresh5 = pos;
+        pos = pos + 1;
+        flags[fresh5 as usize] = '*' as i32 as libc::c_char
+    }
+    if wl == (*s).lastw.tqh_first {
+        let fresh6 = pos;
+        pos = pos + 1;
+        flags[fresh6 as usize] = '-' as i32 as libc::c_char
+    }
+    if server_check_marked() != 0 && wl == marked_pane.wl {
+        let fresh7 = pos;
+        pos = pos + 1;
+        flags[fresh7 as usize] = 'M' as i32 as libc::c_char
+    }
+    if (*(*wl).window).flags & 0x8 as libc::c_int != 0 {
+        let fresh8 = pos;
+        pos = pos + 1;
+        flags[fresh8 as usize] = 'Z' as i32 as libc::c_char
+    }
+    flags[pos as usize] = '\u{0}' as i32 as libc::c_char;
+    return flags.as_mut_ptr();
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_find_by_id_str(mut s:
+                                                        *const libc::c_char)
+ -> *mut window_pane {
+    let mut errstr: *const libc::c_char = 0 as *const libc::c_char;
+    let mut id: u_int = 0;
+    if *s as libc::c_int != '%' as i32 { return 0 as *mut window_pane }
+    id =
+        strtonum(s.offset(1 as libc::c_int as isize),
+                 0 as libc::c_int as libc::c_longlong,
+                 (2147483647 as libc::c_int as
+                      libc::c_uint).wrapping_mul(2 as
+                                                     libc::c_uint).wrapping_add(1
+                                                                                    as
+                                                                                    libc::c_uint)
+                     as libc::c_longlong, &mut errstr) as u_int;
+    if !errstr.is_null() { return 0 as *mut window_pane }
+    return window_pane_find_by_id(id);
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_find_by_id(mut id: u_int)
+ -> *mut window_pane {
+    let mut wp: window_pane =
+        window_pane{id: 0,
+                    active_point: 0,
+                    window: 0 as *mut window,
+                    options: 0 as *mut options,
+                    layout_cell: 0 as *mut layout_cell,
+                    saved_layout_cell: 0 as *mut layout_cell,
+                    sx: 0,
+                    sy: 0,
+                    xoff: 0,
+                    yoff: 0,
+                    fg: 0,
+                    bg: 0,
+                    flags: 0,
+                    argc: 0,
+                    argv: 0 as *mut *mut libc::c_char,
+                    shell: 0 as *mut libc::c_char,
+                    cwd: 0 as *mut libc::c_char,
+                    pid: 0,
+                    tty: [0; 32],
+                    status: 0,
+                    fd: 0,
+                    event: 0 as *mut bufferevent,
+                    offset: window_pane_offset{used: 0,},
+                    base_offset: 0,
+                    resize_timer:
+                        event{ev_evcallback:
+                                  event_callback{evcb_active_next:
+                                                     C2RustUnnamed_8{tqe_next:
+                                                                         0 as
+                                                                             *mut event_callback,
+                                                                     tqe_prev:
+                                                                         0 as
+                                                                             *mut *mut event_callback,},
+                                                 evcb_flags: 0,
+                                                 evcb_pri: 0,
+                                                 evcb_closure: 0,
+                                                 evcb_cb_union:
+                                                     C2RustUnnamed_7{evcb_callback:
+                                                                         None,},
+                                                 evcb_arg:
+                                                     0 as *mut libc::c_void,},
+                              ev_timeout_pos:
+                                  C2RustUnnamed_5{ev_next_with_common_timeout:
+                                                      C2RustUnnamed_6{tqe_next:
+                                                                          0 as
+                                                                              *mut event,
+                                                                      tqe_prev:
+                                                                          0 as
+                                                                              *mut *mut event,},},
+                              ev_fd: 0,
+                              ev_base: 0 as *mut event_base,
+                              ev_:
+                                  C2RustUnnamed_0{ev_io:
+                                                      C2RustUnnamed_3{ev_io_next:
+                                                                          C2RustUnnamed_4{le_next:
+                                                                                              0
+                                                                                                  as
+                                                                                                  *mut event,
+                                                                                          le_prev:
+                                                                                              0
+                                                                                                  as
+                                                                                                  *mut *mut event,},
+                                                                      ev_timeout:
+                                                                          timeval{tv_sec:
+                                                                                      0,
+                                                                                  tv_usec:
+                                                                                      0,},},},
+                              ev_events: 0,
+                              ev_res: 0,
+                              ev_timeout: timeval{tv_sec: 0, tv_usec: 0,},},
+                    force_timer:
+                        event{ev_evcallback:
+                                  event_callback{evcb_active_next:
+                                                     C2RustUnnamed_8{tqe_next:
+                                                                         0 as
+                                                                             *mut event_callback,
+                                                                     tqe_prev:
+                                                                         0 as
+                                                                             *mut *mut event_callback,},
+                                                 evcb_flags: 0,
+                                                 evcb_pri: 0,
+                                                 evcb_closure: 0,
+                                                 evcb_cb_union:
+                                                     C2RustUnnamed_7{evcb_callback:
+                                                                         None,},
+                                                 evcb_arg:
+                                                     0 as *mut libc::c_void,},
+                              ev_timeout_pos:
+                                  C2RustUnnamed_5{ev_next_with_common_timeout:
+                                                      C2RustUnnamed_6{tqe_next:
+                                                                          0 as
+                                                                              *mut event,
+                                                                      tqe_prev:
+                                                                          0 as
+                                                                              *mut *mut event,},},
+                              ev_fd: 0,
+                              ev_base: 0 as *mut event_base,
+                              ev_:
+                                  C2RustUnnamed_0{ev_io:
+                                                      C2RustUnnamed_3{ev_io_next:
+                                                                          C2RustUnnamed_4{le_next:
+                                                                                              0
+                                                                                                  as
+                                                                                                  *mut event,
+                                                                                          le_prev:
+                                                                                              0
+                                                                                                  as
+                                                                                                  *mut *mut event,},
+                                                                      ev_timeout:
+                                                                          timeval{tv_sec:
+                                                                                      0,
+                                                                                  tv_usec:
+                                                                                      0,},},},
+                              ev_events: 0,
+                              ev_res: 0,
+                              ev_timeout: timeval{tv_sec: 0, tv_usec: 0,},},
+                    ictx: 0 as *mut input_ctx,
+                    cached_gc:
+                        grid_cell{data:
+                                      utf8_data{data: [0; 21],
+                                                have: 0,
+                                                size: 0,
+                                                width: 0,},
+                                  attr: 0,
+                                  flags: 0,
+                                  fg: 0,
+                                  bg: 0,
+                                  us: 0,},
+                    cached_active_gc:
+                        grid_cell{data:
+                                      utf8_data{data: [0; 21],
+                                                have: 0,
+                                                size: 0,
+                                                width: 0,},
+                                  attr: 0,
+                                  flags: 0,
+                                  fg: 0,
+                                  bg: 0,
+                                  us: 0,},
+                    palette: 0 as *mut libc::c_int,
+                    pipe_fd: 0,
+                    pipe_event: 0 as *mut bufferevent,
+                    pipe_offset: window_pane_offset{used: 0,},
+                    screen: 0 as *mut screen,
+                    base:
+                        screen{title: 0 as *mut libc::c_char,
+                               path: 0 as *mut libc::c_char,
+                               titles: 0 as *mut screen_titles,
+                               grid: 0 as *mut grid,
+                               cx: 0,
+                               cy: 0,
+                               cstyle: 0,
+                               ccolour: 0 as *mut libc::c_char,
+                               rupper: 0,
+                               rlower: 0,
+                               mode: 0,
+                               saved_cx: 0,
+                               saved_cy: 0,
+                               saved_grid: 0 as *mut grid,
+                               saved_cell:
+                                   grid_cell{data:
+                                                 utf8_data{data: [0; 21],
+                                                           have: 0,
+                                                           size: 0,
+                                                           width: 0,},
+                                             attr: 0,
+                                             flags: 0,
+                                             fg: 0,
+                                             bg: 0,
+                                             us: 0,},
+                               saved_flags: 0,
+                               tabs: 0 as *mut bitstr_t,
+                               sel: 0 as *mut screen_sel,
+                               write_list:
+                                   0 as *mut screen_write_collect_line,},
+                    status_screen:
+                        screen{title: 0 as *mut libc::c_char,
+                               path: 0 as *mut libc::c_char,
+                               titles: 0 as *mut screen_titles,
+                               grid: 0 as *mut grid,
+                               cx: 0,
+                               cy: 0,
+                               cstyle: 0,
+                               ccolour: 0 as *mut libc::c_char,
+                               rupper: 0,
+                               rlower: 0,
+                               mode: 0,
+                               saved_cx: 0,
+                               saved_cy: 0,
+                               saved_grid: 0 as *mut grid,
+                               saved_cell:
+                                   grid_cell{data:
+                                                 utf8_data{data: [0; 21],
+                                                           have: 0,
+                                                           size: 0,
+                                                           width: 0,},
+                                             attr: 0,
+                                             flags: 0,
+                                             fg: 0,
+                                             bg: 0,
+                                             us: 0,},
+                               saved_flags: 0,
+                               tabs: 0 as *mut bitstr_t,
+                               sel: 0 as *mut screen_sel,
+                               write_list:
+                                   0 as *mut screen_write_collect_line,},
+                    status_size: 0,
+                    modes:
+                        C2RustUnnamed_24{tqh_first:
+                                             0 as *mut window_mode_entry,
+                                         tqh_last:
+                                             0 as
+                                                 *mut *mut window_mode_entry,},
+                    searchstr: 0 as *mut libc::c_char,
+                    searchregex: 0,
+                    written: 0,
+                    skipped: 0,
+                    border_gc_set: 0,
+                    border_gc:
+                        grid_cell{data:
+                                      utf8_data{data: [0; 21],
+                                                have: 0,
+                                                size: 0,
+                                                width: 0,},
+                                  attr: 0,
+                                  flags: 0,
+                                  fg: 0,
+                                  bg: 0,
+                                  us: 0,},
+                    entry:
+                        C2RustUnnamed_23{tqe_next: 0 as *mut window_pane,
+                                         tqe_prev:
+                                             0 as *mut *mut window_pane,},
+                    tree_entry:
+                        C2RustUnnamed_22{rbe_left: 0 as *mut window_pane,
+                                         rbe_right: 0 as *mut window_pane,
+                                         rbe_parent: 0 as *mut window_pane,
+                                         rbe_color: 0,},};
+    wp.id = id;
+    return window_pane_tree_RB_FIND(&mut all_window_panes, &mut wp);
+}
+unsafe extern "C" fn window_pane_create(mut w: *mut window, mut sx: u_int,
+                                        mut sy: u_int, mut hlimit: u_int)
+ -> *mut window_pane {
+    let mut wp: *mut window_pane = 0 as *mut window_pane;
+    let mut host: [libc::c_char; 65] = [0; 65];
+    wp =
+        xcalloc(1 as libc::c_int as size_t,
+                ::std::mem::size_of::<window_pane>() as libc::c_ulong) as
+            *mut window_pane;
+    (*wp).window = w;
+    (*wp).options = options_create((*w).options);
+    (*wp).flags = 0x1000 as libc::c_int;
+    let fresh9 = next_window_pane_id;
+    next_window_pane_id = next_window_pane_id.wrapping_add(1);
+    (*wp).id = fresh9;
+    window_pane_tree_RB_INSERT(&mut all_window_panes, wp);
+    (*wp).argc = 0 as libc::c_int;
+    (*wp).argv = 0 as *mut *mut libc::c_char;
+    (*wp).shell = 0 as *mut libc::c_char;
+    (*wp).cwd = 0 as *mut libc::c_char;
+    (*wp).fd = -(1 as libc::c_int);
+    (*wp).event = 0 as *mut bufferevent;
+    (*wp).fg = 8 as libc::c_int;
+    (*wp).bg = 8 as libc::c_int;
+    (*wp).modes.tqh_first = 0 as *mut window_mode_entry;
+    (*wp).modes.tqh_last = &mut (*wp).modes.tqh_first;
+    (*wp).layout_cell = 0 as *mut layout_cell;
+    (*wp).xoff = 0 as libc::c_int as u_int;
+    (*wp).yoff = 0 as libc::c_int as u_int;
+    (*wp).sx = sx;
+    (*wp).sy = sy;
+    (*wp).pipe_fd = -(1 as libc::c_int);
+    (*wp).pipe_event = 0 as *mut bufferevent;
+    screen_init(&mut (*wp).base, sx, sy, hlimit);
+    (*wp).screen = &mut (*wp).base;
+    screen_init(&mut (*wp).status_screen, 1 as libc::c_int as u_int,
+                1 as libc::c_int as u_int, 0 as libc::c_int as u_int);
+    if gethostname(host.as_mut_ptr(),
+                   ::std::mem::size_of::<[libc::c_char; 65]>() as
+                       libc::c_ulong) == 0 as libc::c_int {
+        screen_set_title(&mut (*wp).base, host.as_mut_ptr());
+    }
+    return wp;
+}
+unsafe extern "C" fn window_pane_destroy(mut wp: *mut window_pane) {
+    window_pane_reset_mode_all(wp);
+    free((*wp).searchstr as *mut libc::c_void);
+    if (*wp).fd != -(1 as libc::c_int) {
+        bufferevent_free((*wp).event);
+        close((*wp).fd);
+    }
+    if !(*wp).ictx.is_null() { input_free((*wp).ictx); }
+    screen_free(&mut (*wp).status_screen);
+    screen_free(&mut (*wp).base);
+    if (*wp).pipe_fd != -(1 as libc::c_int) {
+        bufferevent_free((*wp).pipe_event);
+        close((*wp).pipe_fd);
+    }
+    if event_initialized(&mut (*wp).resize_timer) != 0 {
+        event_del(&mut (*wp).resize_timer);
+    }
+    if event_initialized(&mut (*wp).force_timer) != 0 {
+        event_del(&mut (*wp).force_timer);
+    }
+    window_pane_tree_RB_REMOVE(&mut all_window_panes, wp);
+    options_free((*wp).options);
+    free((*wp).cwd as *mut libc::c_void);
+    free((*wp).shell as *mut libc::c_void);
+    cmd_free_argv((*wp).argc, (*wp).argv);
+    free((*wp).palette as *mut libc::c_void);
+    free(wp as *mut libc::c_void);
+}
+unsafe extern "C" fn window_pane_read_callback(mut bufev: *mut bufferevent,
+                                               mut data: *mut libc::c_void) {
+    let mut wp: *mut window_pane = data as *mut window_pane;
+    let mut evb: *mut evbuffer = (*(*wp).event).input;
+    let mut wpo: *mut window_pane_offset = &mut (*wp).pipe_offset;
+    let mut size: size_t = evbuffer_get_length(evb);
+    let mut new_data: *mut libc::c_char = 0 as *mut libc::c_char;
+    let mut new_size: size_t = 0;
+    let mut c: *mut client = 0 as *mut client;
+    if (*wp).pipe_fd != -(1 as libc::c_int) {
+        new_data =
+            window_pane_get_new_data(wp, wpo, &mut new_size) as
+                *mut libc::c_char;
+        if new_size > 0 as libc::c_int as libc::c_ulong {
+            bufferevent_write((*wp).pipe_event,
+                              new_data as *const libc::c_void, new_size);
+            window_pane_update_used_data(wp, wpo, new_size);
+        }
+    }
+    log_debug(b"%%%u has %zu bytes\x00" as *const u8 as *const libc::c_char,
+              (*wp).id, size);
+    c = clients.tqh_first;
+    while !c.is_null() {
+        if !(*c).session.is_null() &&
+               (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
+            control_write_output(c, wp);
+        }
+        c = (*c).entry.tqe_next
+    }
+    input_parse_pane(wp);
+    bufferevent_disable((*wp).event, 0x2 as libc::c_int as libc::c_short);
+}
+unsafe extern "C" fn window_pane_error_callback(mut bufev: *mut bufferevent,
+                                                mut what: libc::c_short,
+                                                mut data: *mut libc::c_void) {
+    let mut wp: *mut window_pane = data as *mut window_pane;
+    log_debug(b"%%%u error\x00" as *const u8 as *const libc::c_char,
+              (*wp).id);
+    (*wp).flags |= 0x100 as libc::c_int;
+    if window_pane_destroy_ready(wp) != 0 {
+        server_destroy_pane(wp, 1 as libc::c_int);
+    };
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_set_event(mut wp: *mut window_pane) {
+    setblocking((*wp).fd, 0 as libc::c_int);
+    (*wp).event =
+        bufferevent_new((*wp).fd,
+                        Some(window_pane_read_callback as
+                                 unsafe extern "C" fn(_: *mut bufferevent,
+                                                      _: *mut libc::c_void)
+                                     -> ()), None,
+                        Some(window_pane_error_callback as
+                                 unsafe extern "C" fn(_: *mut bufferevent,
+                                                      _: libc::c_short,
+                                                      _: *mut libc::c_void)
+                                     -> ()), wp as *mut libc::c_void);
+    (*wp).ictx = input_init(wp, (*wp).event);
+    bufferevent_enable((*wp).event,
+                       (0x2 as libc::c_int | 0x4 as libc::c_int) as
+                           libc::c_short);
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_resize(mut wp: *mut window_pane,
+                                            mut sx: u_int, mut sy: u_int) {
+    let mut wme: *mut window_mode_entry = 0 as *mut window_mode_entry;
+    if sx == (*wp).sx && sy == (*wp).sy { return }
+    (*wp).sx = sx;
+    (*wp).sy = sy;
+    log_debug(b"%s: %%%u resize %ux%u\x00" as *const u8 as
+                  *const libc::c_char,
+              (*::std::mem::transmute::<&[u8; 19],
+                                        &[libc::c_char; 19]>(b"window_pane_resize\x00")).as_ptr(),
+              (*wp).id, sx, sy);
+    screen_resize(&mut (*wp).base, sx, sy,
+                  ((*wp).base.saved_grid ==
+                       0 as *mut libc::c_void as *mut grid) as libc::c_int);
+    wme = (*wp).modes.tqh_first;
+    if !wme.is_null() && (*(*wme).mode).resize.is_some() {
+        (*(*wme).mode).resize.expect("non-null function pointer")(wme, sx,
+                                                                  sy);
+    }
+    /*
+	 * If the pane has already been resized, set the force flag and make
+	 * the application resize twice to force it to redraw.
+	 */
+    if (*wp).flags & 0x8 as libc::c_int != 0 {
+        (*wp).flags |= 0x10 as libc::c_int
+    }
+    (*wp).flags |= 0x8 as libc::c_int;
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_set_palette(mut wp: *mut window_pane,
+                                                 mut n: u_int,
+                                                 mut colour: libc::c_int) {
+    if n > 0xff as libc::c_int as libc::c_uint { return }
+    if (*wp).palette.is_null() {
+        (*wp).palette =
+            xcalloc(0x100 as libc::c_int as size_t,
+                    ::std::mem::size_of::<libc::c_int>() as libc::c_ulong) as
+                *mut libc::c_int
+    }
+    *(*wp).palette.offset(n as isize) = colour;
+    (*wp).flags |= 0x1 as libc::c_int;
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_unset_palette(mut wp: *mut window_pane,
+                                                   mut n: u_int) {
+    if n > 0xff as libc::c_int as libc::c_uint || (*wp).palette.is_null() {
+        return
+    }
+    *(*wp).palette.offset(n as isize) = 0 as libc::c_int;
+    (*wp).flags |= 0x1 as libc::c_int;
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_reset_palette(mut wp: *mut window_pane) {
+    if (*wp).palette.is_null() { return }
+    free((*wp).palette as *mut libc::c_void);
+    (*wp).palette = 0 as *mut libc::c_int;
+    (*wp).flags |= 0x1 as libc::c_int;
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_get_palette(mut wp: *mut window_pane,
+                                                 mut c: libc::c_int)
+ -> libc::c_int {
+    let mut new: libc::c_int = 0;
+    if wp.is_null() || (*wp).palette.is_null() { return -(1 as libc::c_int) }
+    new = -(1 as libc::c_int);
+    if c < 8 as libc::c_int {
+        new = *(*wp).palette.offset(c as isize)
+    } else if c >= 90 as libc::c_int && c <= 97 as libc::c_int {
+        new =
+            *(*wp).palette.offset((8 as libc::c_int + c - 90 as libc::c_int)
+                                      as isize)
+    } else if c & 0x1000000 as libc::c_int != 0 {
+        new =
+            *(*wp).palette.offset((c & !(0x1000000 as libc::c_int)) as isize)
+    }
+    if new == 0 as libc::c_int { return -(1 as libc::c_int) }
+    return new;
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_set_mode(mut wp: *mut window_pane,
+                                              mut swp: *mut window_pane,
+                                              mut mode: *const window_mode,
+                                              mut fs: *mut cmd_find_state,
+                                              mut args: *mut args)
+ -> libc::c_int {
+    let mut wme: *mut window_mode_entry = 0 as *mut window_mode_entry;
+    if !(*wp).modes.tqh_first.is_null() &&
+           (*(*wp).modes.tqh_first).mode == mode {
+        return 1 as libc::c_int
+    }
+    wme = (*wp).modes.tqh_first;
+    while !wme.is_null() {
+        if (*wme).mode == mode { break ; }
+        wme = (*wme).entry.tqe_next
+    }
+    if !wme.is_null() {
+        if !(*wme).entry.tqe_next.is_null() {
+            (*(*wme).entry.tqe_next).entry.tqe_prev = (*wme).entry.tqe_prev
+        } else { (*wp).modes.tqh_last = (*wme).entry.tqe_prev }
+        *(*wme).entry.tqe_prev = (*wme).entry.tqe_next;
+        (*wme).entry.tqe_next = (*wp).modes.tqh_first;
+        if !(*wme).entry.tqe_next.is_null() {
+            (*(*wp).modes.tqh_first).entry.tqe_prev =
+                &mut (*wme).entry.tqe_next
+        } else { (*wp).modes.tqh_last = &mut (*wme).entry.tqe_next }
+        (*wp).modes.tqh_first = wme;
+        (*wme).entry.tqe_prev = &mut (*wp).modes.tqh_first
+    } else {
+        wme =
+            xcalloc(1 as libc::c_int as size_t,
+                    ::std::mem::size_of::<window_mode_entry>() as
+                        libc::c_ulong) as *mut window_mode_entry;
+        (*wme).wp = wp;
+        (*wme).swp = swp;
+        (*wme).mode = mode;
+        (*wme).prefix = 1 as libc::c_int as u_int;
+        (*wme).entry.tqe_next = (*wp).modes.tqh_first;
+        if !(*wme).entry.tqe_next.is_null() {
+            (*(*wp).modes.tqh_first).entry.tqe_prev =
+                &mut (*wme).entry.tqe_next
+        } else { (*wp).modes.tqh_last = &mut (*wme).entry.tqe_next }
+        (*wp).modes.tqh_first = wme;
+        (*wme).entry.tqe_prev = &mut (*wp).modes.tqh_first;
+        (*wme).screen =
+            (*(*wme).mode).init.expect("non-null function pointer")(wme, fs,
+                                                                    args)
+    }
+    (*wp).screen = (*wme).screen;
+    (*wp).flags |= 0x1 as libc::c_int | 0x80 as libc::c_int;
+    server_redraw_window_borders((*wp).window);
+    server_status_window((*wp).window);
+    notify_pane(b"pane-mode-changed\x00" as *const u8 as *const libc::c_char,
+                wp);
+    return 0 as libc::c_int;
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_reset_mode(mut wp: *mut window_pane) {
+    let mut wme: *mut window_mode_entry = 0 as *mut window_mode_entry;
+    let mut next: *mut window_mode_entry = 0 as *mut window_mode_entry;
+    if (*wp).modes.tqh_first.is_null() { return }
+    wme = (*wp).modes.tqh_first;
+    if !(*wme).entry.tqe_next.is_null() {
+        (*(*wme).entry.tqe_next).entry.tqe_prev = (*wme).entry.tqe_prev
+    } else { (*wp).modes.tqh_last = (*wme).entry.tqe_prev }
+    *(*wme).entry.tqe_prev = (*wme).entry.tqe_next;
+    (*(*wme).mode).free.expect("non-null function pointer")(wme);
+    free(wme as *mut libc::c_void);
+    next = (*wp).modes.tqh_first;
+    if next.is_null() {
+        log_debug(b"%s: no next mode\x00" as *const u8 as *const libc::c_char,
+                  (*::std::mem::transmute::<&[u8; 23],
+                                            &[libc::c_char; 23]>(b"window_pane_reset_mode\x00")).as_ptr());
+        (*wp).screen = &mut (*wp).base
+    } else {
+        log_debug(b"%s: next mode is %s\x00" as *const u8 as
+                      *const libc::c_char,
+                  (*::std::mem::transmute::<&[u8; 23],
+                                            &[libc::c_char; 23]>(b"window_pane_reset_mode\x00")).as_ptr(),
+                  (*(*next).mode).name);
+        (*wp).screen = (*next).screen;
+        if (*(*next).mode).resize.is_some() {
+            (*(*next).mode).resize.expect("non-null function pointer")(next,
+                                                                       (*wp).sx,
+                                                                       (*wp).sy);
+        }
+    }
+    (*wp).flags |= 0x1 as libc::c_int | 0x80 as libc::c_int;
+    server_redraw_window_borders((*wp).window);
+    server_status_window((*wp).window);
+    notify_pane(b"pane-mode-changed\x00" as *const u8 as *const libc::c_char,
+                wp);
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_reset_mode_all(mut wp:
+                                                        *mut window_pane) {
+    while !(*wp).modes.tqh_first.is_null() { window_pane_reset_mode(wp); };
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_key(mut wp: *mut window_pane,
+                                         mut c: *mut client,
+                                         mut s: *mut session,
+                                         mut wl: *mut winlink,
+                                         mut key: key_code,
+                                         mut m: *mut mouse_event)
+ -> libc::c_int {
+    let mut wme: *mut window_mode_entry = 0 as *mut window_mode_entry;
+    let mut wp2: *mut window_pane = 0 as *mut window_pane;
+    if key & 0xfffffffffff as libc::c_ulonglong >=
+           KEYC_MOUSE as libc::c_ulong as libc::c_ulonglong &&
+           (key & 0xfffffffffff as libc::c_ulonglong) <
+               KEYC_BSPACE as libc::c_ulong as libc::c_ulonglong &&
+           m.is_null() {
+        return -(1 as libc::c_int)
+    }
+    wme = (*wp).modes.tqh_first;
+    if !wme.is_null() {
+        if (*(*wme).mode).key.is_some() && !c.is_null() {
+            key &= !(0xff000000000000 as libc::c_ulonglong);
+            (*(*wme).mode).key.expect("non-null function pointer")(wme, c, s,
+                                                                   wl, key,
+                                                                   m);
+        }
+        return 0 as libc::c_int
+    }
+    if (*wp).fd == -(1 as libc::c_int) ||
+           (*wp).flags & 0x40 as libc::c_int != 0 {
+        return 0 as libc::c_int
+    }
+    if input_key_pane(wp, key, m) != 0 as libc::c_int {
+        return -(1 as libc::c_int)
+    }
+    if key & 0xfffffffffff as libc::c_ulonglong >=
+           KEYC_MOUSE as libc::c_ulong as libc::c_ulonglong &&
+           (key & 0xfffffffffff as libc::c_ulonglong) <
+               KEYC_BSPACE as libc::c_ulong as libc::c_ulonglong {
+        return 0 as libc::c_int
+    }
+    if options_get_number((*(*wp).window).options,
+                          b"synchronize-panes\x00" as *const u8 as
+                              *const libc::c_char) != 0 {
+        wp2 = (*(*wp).window).panes.tqh_first;
+        while !wp2.is_null() {
+            if wp2 != wp && (*wp2).modes.tqh_first.is_null() &&
+                   (*wp2).fd != -(1 as libc::c_int) &&
+                   !(*wp2).flags & 0x40 as libc::c_int != 0 &&
+                   window_pane_visible(wp2) != 0 {
+                input_key_pane(wp2, key, 0 as *mut mouse_event);
+            }
+            wp2 = (*wp2).entry.tqe_next
+        }
+    }
+    return 0 as libc::c_int;
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_visible(mut wp: *mut window_pane)
+ -> libc::c_int {
+    if !(*(*wp).window).flags & 0x8 as libc::c_int != 0 {
+        return 1 as libc::c_int
+    }
+    return (wp == (*(*wp).window).active) as libc::c_int;
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_search(mut wp: *mut window_pane,
+                                            mut term: *const libc::c_char,
+                                            mut regex: libc::c_int,
+                                            mut ignore: libc::c_int)
+ -> u_int {
+    let mut s: *mut screen = &mut (*wp).base;
+    let mut r: regex_t =
+        regex_t{buffer: 0 as *mut re_dfa_t,
+                allocated: 0,
+                used: 0,
+                syntax: 0,
+                fastmap: 0 as *mut libc::c_char,
+                translate: 0 as *mut libc::c_uchar,
+                re_nsub: 0,
+                can_be_null_regs_allocated_fastmap_accurate_no_sub_not_bol_not_eol_newline_anchor:
+                    [0; 1],
+                c2rust_padding: [0; 7],};
+    let mut new: *mut libc::c_char = 0 as *mut libc::c_char;
+    let mut line: *mut libc::c_char = 0 as *mut libc::c_char;
+    let mut i: u_int = 0;
+    let mut flags: libc::c_int = 0 as libc::c_int;
+    let mut found: libc::c_int = 0;
+    let mut n: size_t = 0;
+    if regex == 0 {
+        if ignore != 0 { flags |= (1 as libc::c_int) << 4 as libc::c_int }
+        xasprintf(&mut new as *mut *mut libc::c_char,
+                  b"*%s*\x00" as *const u8 as *const libc::c_char, term);
+    } else {
+        if ignore != 0 { flags |= (1 as libc::c_int) << 1 as libc::c_int }
+        if regcomp(&mut r, term, flags | 1 as libc::c_int) != 0 as libc::c_int
+           {
+            return 0 as libc::c_int as u_int
+        }
+    }
+    i = 0 as libc::c_int as u_int;
+    while i < (*(*s).grid).sy {
+        line =
+            grid_view_string_cells((*s).grid, 0 as libc::c_int as u_int, i,
+                                   (*(*s).grid).sx);
+        n = strlen(line);
+        while n > 0 as libc::c_int as libc::c_ulong {
+            if *(*__ctype_b_loc()).offset(*line.offset(n.wrapping_sub(1 as
+                                                                          libc::c_int
+                                                                          as
+                                                                          libc::c_ulong)
+                                                           as isize) as u_char
+                                              as libc::c_int as isize) as
+                   libc::c_int &
+                   _ISspace as libc::c_int as libc::c_ushort as libc::c_int ==
+                   0 {
+                break ;
+            }
+            *line.offset(n.wrapping_sub(1 as libc::c_int as libc::c_ulong) as
+                             isize) = '\u{0}' as i32 as libc::c_char;
+            n = n.wrapping_sub(1)
+        }
+        log_debug(b"%s: %s\x00" as *const u8 as *const libc::c_char,
+                  (*::std::mem::transmute::<&[u8; 19],
+                                            &[libc::c_char; 19]>(b"window_pane_search\x00")).as_ptr(),
+                  line);
+        if regex == 0 {
+            found =
+                (fnmatch(new, line, flags) == 0 as libc::c_int) as libc::c_int
+        } else {
+            found =
+                (regexec(&mut r, line, 0 as libc::c_int as size_t,
+                         0 as *mut regmatch_t, 0 as libc::c_int) ==
+                     0 as libc::c_int) as libc::c_int
+        }
+        free(line as *mut libc::c_void);
+        if found != 0 { break ; }
+        i = i.wrapping_add(1)
+    }
+    if regex == 0 {
+        free(new as *mut libc::c_void);
+    } else { regfree(&mut r); }
+    if i == (*(*s).grid).sy { return 0 as libc::c_int as u_int }
+    return i.wrapping_add(1 as libc::c_int as libc::c_uint);
+}
+/* Get MRU pane from a list. */
+unsafe extern "C" fn window_pane_choose_best(mut list: *mut *mut window_pane,
+                                             mut size: u_int)
+ -> *mut window_pane {
+    let mut next: *mut window_pane = 0 as *mut window_pane;
+    let mut best: *mut window_pane = 0 as *mut window_pane;
+    let mut i: u_int = 0;
+    if size == 0 as libc::c_int as libc::c_uint {
+        return 0 as *mut window_pane
+    }
+    best = *list.offset(0 as libc::c_int as isize);
+    i = 1 as libc::c_int as u_int;
+    while i < size {
+        next = *list.offset(i as isize);
+        if (*next).active_point > (*best).active_point { best = next }
+        i = i.wrapping_add(1)
+    }
+    return best;
+}
+/*
+ * Find the pane directly above another. We build a list of those adjacent to
+ * top edge and then choose the best.
+ */
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_find_up(mut wp: *mut window_pane)
+ -> *mut window_pane {
+    let mut w: *mut window = 0 as *mut window;
+    let mut next: *mut window_pane = 0 as *mut window_pane;
+    let mut best: *mut window_pane = 0 as *mut window_pane;
+    let mut list: *mut *mut window_pane = 0 as *mut *mut window_pane;
+    let mut edge: u_int = 0;
+    let mut left: u_int = 0;
+    let mut right: u_int = 0;
+    let mut end: u_int = 0;
+    let mut size: u_int = 0;
+    let mut status: libc::c_int = 0;
+    let mut found: libc::c_int = 0;
+    if wp.is_null() { return 0 as *mut window_pane }
+    w = (*wp).window;
+    status =
+        options_get_number((*w).options,
+                           b"pane-border-status\x00" as *const u8 as
+                               *const libc::c_char) as libc::c_int;
+    list = 0 as *mut *mut window_pane;
+    size = 0 as libc::c_int as u_int;
+    edge = (*wp).yoff;
+    if status == 1 as libc::c_int {
+        if edge == 1 as libc::c_int as libc::c_uint {
+            edge = (*w).sy.wrapping_add(1 as libc::c_int as libc::c_uint)
+        }
+    } else if status == 2 as libc::c_int {
+        if edge == 0 as libc::c_int as libc::c_uint { edge = (*w).sy }
+    } else if edge == 0 as libc::c_int as libc::c_uint {
+        edge = (*w).sy.wrapping_add(1 as libc::c_int as libc::c_uint)
+    }
+    left = (*wp).xoff;
+    right = (*wp).xoff.wrapping_add((*wp).sx);
+    next = (*w).panes.tqh_first;
+    while !next.is_null() {
+        if !(next == wp) {
+            if !((*next).yoff.wrapping_add((*next).sy).wrapping_add(1 as
+                                                                        libc::c_int
+                                                                        as
+                                                                        libc::c_uint)
+                     != edge) {
+                end =
+                    (*next).xoff.wrapping_add((*next).sx).wrapping_sub(1 as
+                                                                           libc::c_int
+                                                                           as
+                                                                           libc::c_uint);
+                found = 0 as libc::c_int;
+                if (*next).xoff < left && end > right {
+                    found = 1 as libc::c_int
+                } else if (*next).xoff >= left && (*next).xoff <= right {
+                    found = 1 as libc::c_int
+                } else if end >= left && end <= right {
+                    found = 1 as libc::c_int
+                }
+                if !(found == 0) {
+                    list =
+                        xreallocarray(list as *mut libc::c_void,
+                                      size.wrapping_add(1 as libc::c_int as
+                                                            libc::c_uint) as
+                                          size_t,
+                                      ::std::mem::size_of::<*mut window_pane>()
+                                          as libc::c_ulong) as
+                            *mut *mut window_pane;
+                    let fresh10 = size;
+                    size = size.wrapping_add(1);
+                    let ref mut fresh11 = *list.offset(fresh10 as isize);
+                    *fresh11 = next
+                }
+            }
+        }
+        next = (*next).entry.tqe_next
+    }
+    best = window_pane_choose_best(list, size);
+    free(list as *mut libc::c_void);
+    return best;
+}
+/* Find the pane directly below another. */
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_find_down(mut wp: *mut window_pane)
+ -> *mut window_pane {
+    let mut w: *mut window = 0 as *mut window;
+    let mut next: *mut window_pane = 0 as *mut window_pane;
+    let mut best: *mut window_pane = 0 as *mut window_pane;
+    let mut list: *mut *mut window_pane = 0 as *mut *mut window_pane;
+    let mut edge: u_int = 0;
+    let mut left: u_int = 0;
+    let mut right: u_int = 0;
+    let mut end: u_int = 0;
+    let mut size: u_int = 0;
+    let mut status: libc::c_int = 0;
+    let mut found: libc::c_int = 0;
+    if wp.is_null() { return 0 as *mut window_pane }
+    w = (*wp).window;
+    status =
+        options_get_number((*w).options,
+                           b"pane-border-status\x00" as *const u8 as
+                               *const libc::c_char) as libc::c_int;
+    list = 0 as *mut *mut window_pane;
+    size = 0 as libc::c_int as u_int;
+    edge =
+        (*wp).yoff.wrapping_add((*wp).sy).wrapping_add(1 as libc::c_int as
+                                                           libc::c_uint);
+    if status == 1 as libc::c_int {
+        if edge >= (*w).sy { edge = 1 as libc::c_int as u_int }
+    } else if status == 2 as libc::c_int {
+        if edge >= (*w).sy.wrapping_sub(1 as libc::c_int as libc::c_uint) {
+            edge = 0 as libc::c_int as u_int
+        }
+    } else if edge >= (*w).sy { edge = 0 as libc::c_int as u_int }
+    left = (*wp).xoff;
+    right = (*wp).xoff.wrapping_add((*wp).sx);
+    next = (*w).panes.tqh_first;
+    while !next.is_null() {
+        if !(next == wp) {
+            if !((*next).yoff != edge) {
+                end =
+                    (*next).xoff.wrapping_add((*next).sx).wrapping_sub(1 as
+                                                                           libc::c_int
+                                                                           as
+                                                                           libc::c_uint);
+                found = 0 as libc::c_int;
+                if (*next).xoff < left && end > right {
+                    found = 1 as libc::c_int
+                } else if (*next).xoff >= left && (*next).xoff <= right {
+                    found = 1 as libc::c_int
+                } else if end >= left && end <= right {
+                    found = 1 as libc::c_int
+                }
+                if !(found == 0) {
+                    list =
+                        xreallocarray(list as *mut libc::c_void,
+                                      size.wrapping_add(1 as libc::c_int as
+                                                            libc::c_uint) as
+                                          size_t,
+                                      ::std::mem::size_of::<*mut window_pane>()
+                                          as libc::c_ulong) as
+                            *mut *mut window_pane;
+                    let fresh12 = size;
+                    size = size.wrapping_add(1);
+                    let ref mut fresh13 = *list.offset(fresh12 as isize);
+                    *fresh13 = next
+                }
+            }
+        }
+        next = (*next).entry.tqe_next
+    }
+    best = window_pane_choose_best(list, size);
+    free(list as *mut libc::c_void);
+    return best;
+}
+/* Find the pane directly to the left of another. */
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_find_left(mut wp: *mut window_pane)
+ -> *mut window_pane {
+    let mut w: *mut window = 0 as *mut window;
+    let mut next: *mut window_pane = 0 as *mut window_pane;
+    let mut best: *mut window_pane = 0 as *mut window_pane;
+    let mut list: *mut *mut window_pane = 0 as *mut *mut window_pane;
+    let mut edge: u_int = 0;
+    let mut top: u_int = 0;
+    let mut bottom: u_int = 0;
+    let mut end: u_int = 0;
+    let mut size: u_int = 0;
+    let mut found: libc::c_int = 0;
+    if wp.is_null() { return 0 as *mut window_pane }
+    w = (*wp).window;
+    list = 0 as *mut *mut window_pane;
+    size = 0 as libc::c_int as u_int;
+    edge = (*wp).xoff;
+    if edge == 0 as libc::c_int as libc::c_uint {
+        edge = (*w).sx.wrapping_add(1 as libc::c_int as libc::c_uint)
+    }
+    top = (*wp).yoff;
+    bottom = (*wp).yoff.wrapping_add((*wp).sy);
+    next = (*w).panes.tqh_first;
+    while !next.is_null() {
+        if !(next == wp) {
+            if !((*next).xoff.wrapping_add((*next).sx).wrapping_add(1 as
+                                                                        libc::c_int
+                                                                        as
+                                                                        libc::c_uint)
+                     != edge) {
+                end =
+                    (*next).yoff.wrapping_add((*next).sy).wrapping_sub(1 as
+                                                                           libc::c_int
+                                                                           as
+                                                                           libc::c_uint);
+                found = 0 as libc::c_int;
+                if (*next).yoff < top && end > bottom {
+                    found = 1 as libc::c_int
+                } else if (*next).yoff >= top && (*next).yoff <= bottom {
+                    found = 1 as libc::c_int
+                } else if end >= top && end <= bottom {
+                    found = 1 as libc::c_int
+                }
+                if !(found == 0) {
+                    list =
+                        xreallocarray(list as *mut libc::c_void,
+                                      size.wrapping_add(1 as libc::c_int as
+                                                            libc::c_uint) as
+                                          size_t,
+                                      ::std::mem::size_of::<*mut window_pane>()
+                                          as libc::c_ulong) as
+                            *mut *mut window_pane;
+                    let fresh14 = size;
+                    size = size.wrapping_add(1);
+                    let ref mut fresh15 = *list.offset(fresh14 as isize);
+                    *fresh15 = next
+                }
+            }
+        }
+        next = (*next).entry.tqe_next
+    }
+    best = window_pane_choose_best(list, size);
+    free(list as *mut libc::c_void);
+    return best;
+}
+/* Find the pane directly to the right of another. */
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_find_right(mut wp: *mut window_pane)
+ -> *mut window_pane {
+    let mut w: *mut window = 0 as *mut window;
+    let mut next: *mut window_pane = 0 as *mut window_pane;
+    let mut best: *mut window_pane = 0 as *mut window_pane;
+    let mut list: *mut *mut window_pane = 0 as *mut *mut window_pane;
+    let mut edge: u_int = 0;
+    let mut top: u_int = 0;
+    let mut bottom: u_int = 0;
+    let mut end: u_int = 0;
+    let mut size: u_int = 0;
+    let mut found: libc::c_int = 0;
+    if wp.is_null() { return 0 as *mut window_pane }
+    w = (*wp).window;
+    list = 0 as *mut *mut window_pane;
+    size = 0 as libc::c_int as u_int;
+    edge =
+        (*wp).xoff.wrapping_add((*wp).sx).wrapping_add(1 as libc::c_int as
+                                                           libc::c_uint);
+    if edge >= (*w).sx { edge = 0 as libc::c_int as u_int }
+    top = (*wp).yoff;
+    bottom = (*wp).yoff.wrapping_add((*wp).sy);
+    next = (*w).panes.tqh_first;
+    while !next.is_null() {
+        if !(next == wp) {
+            if !((*next).xoff != edge) {
+                end =
+                    (*next).yoff.wrapping_add((*next).sy).wrapping_sub(1 as
+                                                                           libc::c_int
+                                                                           as
+                                                                           libc::c_uint);
+                found = 0 as libc::c_int;
+                if (*next).yoff < top && end > bottom {
+                    found = 1 as libc::c_int
+                } else if (*next).yoff >= top && (*next).yoff <= bottom {
+                    found = 1 as libc::c_int
+                } else if end >= top && end <= bottom {
+                    found = 1 as libc::c_int
+                }
+                if !(found == 0) {
+                    list =
+                        xreallocarray(list as *mut libc::c_void,
+                                      size.wrapping_add(1 as libc::c_int as
+                                                            libc::c_uint) as
+                                          size_t,
+                                      ::std::mem::size_of::<*mut window_pane>()
+                                          as libc::c_ulong) as
+                            *mut *mut window_pane;
+                    let fresh16 = size;
+                    size = size.wrapping_add(1);
+                    let ref mut fresh17 = *list.offset(fresh16 as isize);
+                    *fresh17 = next
+                }
+            }
+        }
+        next = (*next).entry.tqe_next
+    }
+    best = window_pane_choose_best(list, size);
+    free(list as *mut libc::c_void);
+    return best;
+}
+/* Clear alert flags for a winlink */
+#[no_mangle]
+pub unsafe extern "C" fn winlink_clear_flags(mut wl: *mut winlink) {
+    let mut loop_0: *mut winlink = 0 as *mut winlink;
+    (*(*wl).window).flags &=
+        !(0x1 as libc::c_int | 0x2 as libc::c_int | 0x4 as libc::c_int);
+    loop_0 = (*(*wl).window).winlinks.tqh_first;
+    while !loop_0.is_null() {
+        if (*loop_0).flags &
+               (0x1 as libc::c_int | 0x2 as libc::c_int | 0x4 as libc::c_int)
+               != 0 as libc::c_int {
+            (*loop_0).flags &=
+                !(0x1 as libc::c_int | 0x2 as libc::c_int |
+                      0x4 as libc::c_int);
+            server_status_session((*loop_0).session);
+        }
+        loop_0 = (*loop_0).wentry.tqe_next
+    };
+}
+/* Shuffle window indexes up. */
+#[no_mangle]
+pub unsafe extern "C" fn winlink_shuffle_up(mut s: *mut session,
+                                            mut wl: *mut winlink,
+                                            mut before: libc::c_int)
+ -> libc::c_int {
+    let mut idx: libc::c_int = 0;
+    let mut last: libc::c_int = 0;
+    if wl.is_null() { return -(1 as libc::c_int) }
+    if before != 0 {
+        idx = (*wl).idx
+    } else { idx = (*wl).idx + 1 as libc::c_int }
+    /* Find the next free index. */
+    last = idx;
+    while last < 2147483647 as libc::c_int {
+        if winlink_find_by_index(&mut (*s).windows, last).is_null() {
+            break ;
+        }
+        last += 1
+    }
+    if last == 2147483647 as libc::c_int { return -(1 as libc::c_int) }
+    /* Move everything from last - 1 to idx up a bit. */
+    while last > idx {
+        wl =
+            winlink_find_by_index(&mut (*s).windows, last - 1 as libc::c_int);
+        winlinks_RB_REMOVE(&mut (*s).windows, wl);
+        (*wl).idx += 1;
+        winlinks_RB_INSERT(&mut (*s).windows, wl);
+        last -= 1
+    }
+    return idx;
+}
+unsafe extern "C" fn window_pane_input_callback(mut c: *mut client,
+                                                mut path: *const libc::c_char,
+                                                mut error: libc::c_int,
+                                                mut closed: libc::c_int,
+                                                mut buffer: *mut evbuffer,
+                                                mut data: *mut libc::c_void) {
+    let mut cdata: *mut window_pane_input_data =
+        data as *mut window_pane_input_data;
+    let mut wp: *mut window_pane = 0 as *mut window_pane;
+    let mut buf: *mut u_char =
+        evbuffer_pullup(buffer, -(1 as libc::c_int) as ssize_t);
+    let mut len: size_t = evbuffer_get_length(buffer);
+    wp = window_pane_find_by_id((*cdata).wp);
+    if wp.is_null() || closed != 0 || error != 0 as libc::c_int ||
+           (*c).flags & 0x200 as libc::c_int as libc::c_ulong != 0 {
+        if wp.is_null() { (*c).flags |= 0x4 as libc::c_int as libc::c_ulong }
+        evbuffer_drain(buffer, len);
+        cmdq_continue((*cdata).item);
+        server_client_unref(c);
+        free(cdata as *mut libc::c_void);
+        return
+    }
+    input_parse_buffer(wp, buf, len);
+    evbuffer_drain(buffer, len);
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_start_input(mut wp: *mut window_pane,
+                                                 mut item: *mut cmdq_item,
+                                                 mut cause:
+                                                     *mut *mut libc::c_char)
+ -> libc::c_int {
+    let mut c: *mut client = cmdq_get_client(item);
+    let mut cdata: *mut window_pane_input_data =
+        0 as *mut window_pane_input_data;
+    if !(*wp).flags & 0x800 as libc::c_int != 0 {
+        *cause =
+            xstrdup(b"pane is not empty\x00" as *const u8 as
+                        *const libc::c_char);
+        return -(1 as libc::c_int)
+    }
+    cdata =
+        xmalloc(::std::mem::size_of::<window_pane_input_data>() as
+                    libc::c_ulong) as *mut window_pane_input_data;
+    (*cdata).item = item;
+    (*cdata).wp = (*wp).id;
+    (*c).references += 1;
+    file_read(c, b"-\x00" as *const u8 as *const libc::c_char,
+              Some(window_pane_input_callback as
+                       unsafe extern "C" fn(_: *mut client,
+                                            _: *const libc::c_char,
+                                            _: libc::c_int, _: libc::c_int,
+                                            _: *mut evbuffer,
+                                            _: *mut libc::c_void) -> ()),
+              cdata as *mut libc::c_void);
+    return 0 as libc::c_int;
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_get_new_data(mut wp: *mut window_pane,
+                                                  mut wpo:
+                                                      *mut window_pane_offset,
+                                                  mut size: *mut size_t)
+ -> *mut libc::c_void {
+    let mut used: size_t = (*wpo).used.wrapping_sub((*wp).base_offset);
+    *size = evbuffer_get_length((*(*wp).event).input).wrapping_sub(used);
+    return evbuffer_pullup((*(*wp).event).input,
+                           -(1 as libc::c_int) as
+                               ssize_t).offset(used as isize) as
+               *mut libc::c_void;
+}
+#[no_mangle]
+pub unsafe extern "C" fn window_pane_update_used_data(mut wp:
+                                                          *mut window_pane,
+                                                      mut wpo:
+                                                          *mut window_pane_offset,
+                                                      mut size: size_t) {
+    let mut used: size_t = (*wpo).used.wrapping_sub((*wp).base_offset);
+    if size > evbuffer_get_length((*(*wp).event).input).wrapping_sub(used) {
+        size = evbuffer_get_length((*(*wp).event).input).wrapping_sub(used)
+    }
+    (*wpo).used =
+        ((*wpo).used as libc::c_ulong).wrapping_add(size) as size_t as size_t;
+}
