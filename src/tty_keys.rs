@@ -1,4 +1,7 @@
-use crate::tty_code::{code as tty_code_code, Code as TtyCode};
+use crate::{
+    key_code::code as key_code_code,
+    tty_code::{code as tty_code_code, Code as TtyCode},
+};
 use ::libc;
 
 extern "C" {
@@ -1163,199 +1166,6 @@ pub struct C2RustUnnamed_32 {
     pub rbe_parent: *mut client_window,
     pub rbe_color: libc::c_int,
 }
-pub type C2RustUnnamed_33 = libc::c_ulong;
-pub const KEYC_KP_PERIOD: C2RustUnnamed_33 = 68719476927;
-pub const KEYC_KP_ZERO: C2RustUnnamed_33 = 68719476926;
-pub const KEYC_KP_ENTER: C2RustUnnamed_33 = 68719476925;
-pub const KEYC_KP_THREE: C2RustUnnamed_33 = 68719476924;
-pub const KEYC_KP_TWO: C2RustUnnamed_33 = 68719476923;
-pub const KEYC_KP_ONE: C2RustUnnamed_33 = 68719476922;
-pub const KEYC_KP_SIX: C2RustUnnamed_33 = 68719476921;
-pub const KEYC_KP_FIVE: C2RustUnnamed_33 = 68719476920;
-pub const KEYC_KP_FOUR: C2RustUnnamed_33 = 68719476919;
-pub const KEYC_KP_PLUS: C2RustUnnamed_33 = 68719476918;
-pub const KEYC_KP_NINE: C2RustUnnamed_33 = 68719476917;
-pub const KEYC_KP_EIGHT: C2RustUnnamed_33 = 68719476916;
-pub const KEYC_KP_SEVEN: C2RustUnnamed_33 = 68719476915;
-pub const KEYC_KP_MINUS: C2RustUnnamed_33 = 68719476914;
-pub const KEYC_KP_STAR: C2RustUnnamed_33 = 68719476913;
-pub const KEYC_KP_SLASH: C2RustUnnamed_33 = 68719476912;
-pub const KEYC_RIGHT: C2RustUnnamed_33 = 68719476911;
-pub const KEYC_LEFT: C2RustUnnamed_33 = 68719476910;
-pub const KEYC_DOWN: C2RustUnnamed_33 = 68719476909;
-pub const KEYC_UP: C2RustUnnamed_33 = 68719476908;
-pub const KEYC_BTAB: C2RustUnnamed_33 = 68719476907;
-pub const KEYC_PPAGE: C2RustUnnamed_33 = 68719476906;
-pub const KEYC_NPAGE: C2RustUnnamed_33 = 68719476905;
-pub const KEYC_END: C2RustUnnamed_33 = 68719476904;
-pub const KEYC_HOME: C2RustUnnamed_33 = 68719476903;
-pub const KEYC_DC: C2RustUnnamed_33 = 68719476902;
-pub const KEYC_IC: C2RustUnnamed_33 = 68719476901;
-pub const KEYC_F12: C2RustUnnamed_33 = 68719476900;
-pub const KEYC_F11: C2RustUnnamed_33 = 68719476899;
-pub const KEYC_F10: C2RustUnnamed_33 = 68719476898;
-pub const KEYC_F9: C2RustUnnamed_33 = 68719476897;
-pub const KEYC_F8: C2RustUnnamed_33 = 68719476896;
-pub const KEYC_F7: C2RustUnnamed_33 = 68719476895;
-pub const KEYC_F6: C2RustUnnamed_33 = 68719476894;
-pub const KEYC_F5: C2RustUnnamed_33 = 68719476893;
-pub const KEYC_F4: C2RustUnnamed_33 = 68719476892;
-pub const KEYC_F3: C2RustUnnamed_33 = 68719476891;
-pub const KEYC_F2: C2RustUnnamed_33 = 68719476890;
-pub const KEYC_F1: C2RustUnnamed_33 = 68719476889;
-pub const KEYC_BSPACE: C2RustUnnamed_33 = 68719476888;
-pub const KEYC_TRIPLECLICK3_BORDER: C2RustUnnamed_33 = 68719476887;
-pub const KEYC_TRIPLECLICK3_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476886;
-pub const KEYC_TRIPLECLICK3_STATUS_RIGHT: C2RustUnnamed_33 = 68719476885;
-pub const KEYC_TRIPLECLICK3_STATUS_LEFT: C2RustUnnamed_33 = 68719476884;
-pub const KEYC_TRIPLECLICK3_STATUS: C2RustUnnamed_33 = 68719476883;
-pub const KEYC_TRIPLECLICK3_PANE: C2RustUnnamed_33 = 68719476882;
-pub const KEYC_TRIPLECLICK2_BORDER: C2RustUnnamed_33 = 68719476881;
-pub const KEYC_TRIPLECLICK2_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476880;
-pub const KEYC_TRIPLECLICK2_STATUS_RIGHT: C2RustUnnamed_33 = 68719476879;
-pub const KEYC_TRIPLECLICK2_STATUS_LEFT: C2RustUnnamed_33 = 68719476878;
-pub const KEYC_TRIPLECLICK2_STATUS: C2RustUnnamed_33 = 68719476877;
-pub const KEYC_TRIPLECLICK2_PANE: C2RustUnnamed_33 = 68719476876;
-pub const KEYC_TRIPLECLICK1_BORDER: C2RustUnnamed_33 = 68719476875;
-pub const KEYC_TRIPLECLICK1_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476874;
-pub const KEYC_TRIPLECLICK1_STATUS_RIGHT: C2RustUnnamed_33 = 68719476873;
-pub const KEYC_TRIPLECLICK1_STATUS_LEFT: C2RustUnnamed_33 = 68719476872;
-pub const KEYC_TRIPLECLICK1_STATUS: C2RustUnnamed_33 = 68719476871;
-pub const KEYC_TRIPLECLICK1_PANE: C2RustUnnamed_33 = 68719476870;
-pub const KEYC_DOUBLECLICK3_BORDER: C2RustUnnamed_33 = 68719476869;
-pub const KEYC_DOUBLECLICK3_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476868;
-pub const KEYC_DOUBLECLICK3_STATUS_RIGHT: C2RustUnnamed_33 = 68719476867;
-pub const KEYC_DOUBLECLICK3_STATUS_LEFT: C2RustUnnamed_33 = 68719476866;
-pub const KEYC_DOUBLECLICK3_STATUS: C2RustUnnamed_33 = 68719476865;
-pub const KEYC_DOUBLECLICK3_PANE: C2RustUnnamed_33 = 68719476864;
-pub const KEYC_DOUBLECLICK2_BORDER: C2RustUnnamed_33 = 68719476863;
-pub const KEYC_DOUBLECLICK2_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476862;
-pub const KEYC_DOUBLECLICK2_STATUS_RIGHT: C2RustUnnamed_33 = 68719476861;
-pub const KEYC_DOUBLECLICK2_STATUS_LEFT: C2RustUnnamed_33 = 68719476860;
-pub const KEYC_DOUBLECLICK2_STATUS: C2RustUnnamed_33 = 68719476859;
-pub const KEYC_DOUBLECLICK2_PANE: C2RustUnnamed_33 = 68719476858;
-pub const KEYC_DOUBLECLICK1_BORDER: C2RustUnnamed_33 = 68719476857;
-pub const KEYC_DOUBLECLICK1_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476856;
-pub const KEYC_DOUBLECLICK1_STATUS_RIGHT: C2RustUnnamed_33 = 68719476855;
-pub const KEYC_DOUBLECLICK1_STATUS_LEFT: C2RustUnnamed_33 = 68719476854;
-pub const KEYC_DOUBLECLICK1_STATUS: C2RustUnnamed_33 = 68719476853;
-pub const KEYC_DOUBLECLICK1_PANE: C2RustUnnamed_33 = 68719476852;
-pub const KEYC_SECONDCLICK3_BORDER: C2RustUnnamed_33 = 68719476851;
-pub const KEYC_SECONDCLICK3_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476850;
-pub const KEYC_SECONDCLICK3_STATUS_RIGHT: C2RustUnnamed_33 = 68719476849;
-pub const KEYC_SECONDCLICK3_STATUS_LEFT: C2RustUnnamed_33 = 68719476848;
-pub const KEYC_SECONDCLICK3_STATUS: C2RustUnnamed_33 = 68719476847;
-pub const KEYC_SECONDCLICK3_PANE: C2RustUnnamed_33 = 68719476846;
-pub const KEYC_SECONDCLICK2_BORDER: C2RustUnnamed_33 = 68719476845;
-pub const KEYC_SECONDCLICK2_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476844;
-pub const KEYC_SECONDCLICK2_STATUS_RIGHT: C2RustUnnamed_33 = 68719476843;
-pub const KEYC_SECONDCLICK2_STATUS_LEFT: C2RustUnnamed_33 = 68719476842;
-pub const KEYC_SECONDCLICK2_STATUS: C2RustUnnamed_33 = 68719476841;
-pub const KEYC_SECONDCLICK2_PANE: C2RustUnnamed_33 = 68719476840;
-pub const KEYC_SECONDCLICK1_BORDER: C2RustUnnamed_33 = 68719476839;
-pub const KEYC_SECONDCLICK1_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476838;
-pub const KEYC_SECONDCLICK1_STATUS_RIGHT: C2RustUnnamed_33 = 68719476837;
-pub const KEYC_SECONDCLICK1_STATUS_LEFT: C2RustUnnamed_33 = 68719476836;
-pub const KEYC_SECONDCLICK1_STATUS: C2RustUnnamed_33 = 68719476835;
-pub const KEYC_SECONDCLICK1_PANE: C2RustUnnamed_33 = 68719476834;
-pub const KEYC_WHEELDOWN_BORDER: C2RustUnnamed_33 = 68719476833;
-pub const KEYC_WHEELDOWN_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476832;
-pub const KEYC_WHEELDOWN_STATUS_RIGHT: C2RustUnnamed_33 = 68719476831;
-pub const KEYC_WHEELDOWN_STATUS_LEFT: C2RustUnnamed_33 = 68719476830;
-pub const KEYC_WHEELDOWN_STATUS: C2RustUnnamed_33 = 68719476829;
-pub const KEYC_WHEELDOWN_PANE: C2RustUnnamed_33 = 68719476828;
-pub const KEYC_WHEELUP_BORDER: C2RustUnnamed_33 = 68719476827;
-pub const KEYC_WHEELUP_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476826;
-pub const KEYC_WHEELUP_STATUS_RIGHT: C2RustUnnamed_33 = 68719476825;
-pub const KEYC_WHEELUP_STATUS_LEFT: C2RustUnnamed_33 = 68719476824;
-pub const KEYC_WHEELUP_STATUS: C2RustUnnamed_33 = 68719476823;
-pub const KEYC_WHEELUP_PANE: C2RustUnnamed_33 = 68719476822;
-pub const KEYC_MOUSEDRAGEND3_BORDER: C2RustUnnamed_33 = 68719476821;
-pub const KEYC_MOUSEDRAGEND3_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476820;
-pub const KEYC_MOUSEDRAGEND3_STATUS_RIGHT: C2RustUnnamed_33 = 68719476819;
-pub const KEYC_MOUSEDRAGEND3_STATUS_LEFT: C2RustUnnamed_33 = 68719476818;
-pub const KEYC_MOUSEDRAGEND3_STATUS: C2RustUnnamed_33 = 68719476817;
-pub const KEYC_MOUSEDRAGEND3_PANE: C2RustUnnamed_33 = 68719476816;
-pub const KEYC_MOUSEDRAGEND2_BORDER: C2RustUnnamed_33 = 68719476815;
-pub const KEYC_MOUSEDRAGEND2_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476814;
-pub const KEYC_MOUSEDRAGEND2_STATUS_RIGHT: C2RustUnnamed_33 = 68719476813;
-pub const KEYC_MOUSEDRAGEND2_STATUS_LEFT: C2RustUnnamed_33 = 68719476812;
-pub const KEYC_MOUSEDRAGEND2_STATUS: C2RustUnnamed_33 = 68719476811;
-pub const KEYC_MOUSEDRAGEND2_PANE: C2RustUnnamed_33 = 68719476810;
-pub const KEYC_MOUSEDRAGEND1_BORDER: C2RustUnnamed_33 = 68719476809;
-pub const KEYC_MOUSEDRAGEND1_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476808;
-pub const KEYC_MOUSEDRAGEND1_STATUS_RIGHT: C2RustUnnamed_33 = 68719476807;
-pub const KEYC_MOUSEDRAGEND1_STATUS_LEFT: C2RustUnnamed_33 = 68719476806;
-pub const KEYC_MOUSEDRAGEND1_STATUS: C2RustUnnamed_33 = 68719476805;
-pub const KEYC_MOUSEDRAGEND1_PANE: C2RustUnnamed_33 = 68719476804;
-pub const KEYC_MOUSEDRAG3_BORDER: C2RustUnnamed_33 = 68719476803;
-pub const KEYC_MOUSEDRAG3_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476802;
-pub const KEYC_MOUSEDRAG3_STATUS_RIGHT: C2RustUnnamed_33 = 68719476801;
-pub const KEYC_MOUSEDRAG3_STATUS_LEFT: C2RustUnnamed_33 = 68719476800;
-pub const KEYC_MOUSEDRAG3_STATUS: C2RustUnnamed_33 = 68719476799;
-pub const KEYC_MOUSEDRAG3_PANE: C2RustUnnamed_33 = 68719476798;
-pub const KEYC_MOUSEDRAG2_BORDER: C2RustUnnamed_33 = 68719476797;
-pub const KEYC_MOUSEDRAG2_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476796;
-pub const KEYC_MOUSEDRAG2_STATUS_RIGHT: C2RustUnnamed_33 = 68719476795;
-pub const KEYC_MOUSEDRAG2_STATUS_LEFT: C2RustUnnamed_33 = 68719476794;
-pub const KEYC_MOUSEDRAG2_STATUS: C2RustUnnamed_33 = 68719476793;
-pub const KEYC_MOUSEDRAG2_PANE: C2RustUnnamed_33 = 68719476792;
-pub const KEYC_MOUSEDRAG1_BORDER: C2RustUnnamed_33 = 68719476791;
-pub const KEYC_MOUSEDRAG1_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476790;
-pub const KEYC_MOUSEDRAG1_STATUS_RIGHT: C2RustUnnamed_33 = 68719476789;
-pub const KEYC_MOUSEDRAG1_STATUS_LEFT: C2RustUnnamed_33 = 68719476788;
-pub const KEYC_MOUSEDRAG1_STATUS: C2RustUnnamed_33 = 68719476787;
-pub const KEYC_MOUSEDRAG1_PANE: C2RustUnnamed_33 = 68719476786;
-pub const KEYC_MOUSEUP3_BORDER: C2RustUnnamed_33 = 68719476785;
-pub const KEYC_MOUSEUP3_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476784;
-pub const KEYC_MOUSEUP3_STATUS_RIGHT: C2RustUnnamed_33 = 68719476783;
-pub const KEYC_MOUSEUP3_STATUS_LEFT: C2RustUnnamed_33 = 68719476782;
-pub const KEYC_MOUSEUP3_STATUS: C2RustUnnamed_33 = 68719476781;
-pub const KEYC_MOUSEUP3_PANE: C2RustUnnamed_33 = 68719476780;
-pub const KEYC_MOUSEUP2_BORDER: C2RustUnnamed_33 = 68719476779;
-pub const KEYC_MOUSEUP2_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476778;
-pub const KEYC_MOUSEUP2_STATUS_RIGHT: C2RustUnnamed_33 = 68719476777;
-pub const KEYC_MOUSEUP2_STATUS_LEFT: C2RustUnnamed_33 = 68719476776;
-pub const KEYC_MOUSEUP2_STATUS: C2RustUnnamed_33 = 68719476775;
-pub const KEYC_MOUSEUP2_PANE: C2RustUnnamed_33 = 68719476774;
-pub const KEYC_MOUSEUP1_BORDER: C2RustUnnamed_33 = 68719476773;
-pub const KEYC_MOUSEUP1_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476772;
-pub const KEYC_MOUSEUP1_STATUS_RIGHT: C2RustUnnamed_33 = 68719476771;
-pub const KEYC_MOUSEUP1_STATUS_LEFT: C2RustUnnamed_33 = 68719476770;
-pub const KEYC_MOUSEUP1_STATUS: C2RustUnnamed_33 = 68719476769;
-pub const KEYC_MOUSEUP1_PANE: C2RustUnnamed_33 = 68719476768;
-pub const KEYC_MOUSEDOWN3_BORDER: C2RustUnnamed_33 = 68719476767;
-pub const KEYC_MOUSEDOWN3_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476766;
-pub const KEYC_MOUSEDOWN3_STATUS_RIGHT: C2RustUnnamed_33 = 68719476765;
-pub const KEYC_MOUSEDOWN3_STATUS_LEFT: C2RustUnnamed_33 = 68719476764;
-pub const KEYC_MOUSEDOWN3_STATUS: C2RustUnnamed_33 = 68719476763;
-pub const KEYC_MOUSEDOWN3_PANE: C2RustUnnamed_33 = 68719476762;
-pub const KEYC_MOUSEDOWN2_BORDER: C2RustUnnamed_33 = 68719476761;
-pub const KEYC_MOUSEDOWN2_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476760;
-pub const KEYC_MOUSEDOWN2_STATUS_RIGHT: C2RustUnnamed_33 = 68719476759;
-pub const KEYC_MOUSEDOWN2_STATUS_LEFT: C2RustUnnamed_33 = 68719476758;
-pub const KEYC_MOUSEDOWN2_STATUS: C2RustUnnamed_33 = 68719476757;
-pub const KEYC_MOUSEDOWN2_PANE: C2RustUnnamed_33 = 68719476756;
-pub const KEYC_MOUSEDOWN1_BORDER: C2RustUnnamed_33 = 68719476755;
-pub const KEYC_MOUSEDOWN1_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476754;
-pub const KEYC_MOUSEDOWN1_STATUS_RIGHT: C2RustUnnamed_33 = 68719476753;
-pub const KEYC_MOUSEDOWN1_STATUS_LEFT: C2RustUnnamed_33 = 68719476752;
-pub const KEYC_MOUSEDOWN1_STATUS: C2RustUnnamed_33 = 68719476751;
-pub const KEYC_MOUSEDOWN1_PANE: C2RustUnnamed_33 = 68719476750;
-pub const KEYC_MOUSEMOVE_BORDER: C2RustUnnamed_33 = 68719476749;
-pub const KEYC_MOUSEMOVE_STATUS_DEFAULT: C2RustUnnamed_33 = 68719476748;
-pub const KEYC_MOUSEMOVE_STATUS_RIGHT: C2RustUnnamed_33 = 68719476747;
-pub const KEYC_MOUSEMOVE_STATUS_LEFT: C2RustUnnamed_33 = 68719476746;
-pub const KEYC_MOUSEMOVE_STATUS: C2RustUnnamed_33 = 68719476745;
-pub const KEYC_MOUSEMOVE_PANE: C2RustUnnamed_33 = 68719476744;
-pub const KEYC_DOUBLECLICK: C2RustUnnamed_33 = 68719476743;
-pub const KEYC_DRAGGING: C2RustUnnamed_33 = 68719476742;
-pub const KEYC_MOUSE: C2RustUnnamed_33 = 68719476741;
-pub const KEYC_PASTE_END: C2RustUnnamed_33 = 68719476740;
-pub const KEYC_PASTE_START: C2RustUnnamed_33 = 68719476739;
-pub const KEYC_ANY: C2RustUnnamed_33 = 68719476738;
-pub const KEYC_FOCUS_OUT: C2RustUnnamed_33 = 68719476737;
-pub const KEYC_FOCUS_IN: C2RustUnnamed_33 = 68719476736;
 pub type utf8_state = libc::c_uint;
 pub const UTF8_ERROR: utf8_state = 2;
 pub const UTF8_DONE: utf8_state = 1;
@@ -1406,7 +1216,7 @@ pub union options_value {
 }
 /*
  * Default terminfo(5) keys. Any keys that have builtin modifiers (that is,
- * where the key itself contains the modifiers) has the KEYC_XTERM flag set so
+ * where the key itself contains the modifiers) has the key_code_code::XTERM flag set so
  * a leading escape is not treated as meta (and probably removed).
  */
 
@@ -1443,7 +1253,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1bOo\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_KP_SLASH as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::KP_SLASH as libc::c_ulong as libc::c_ulonglong
                 | 0x2000000000000 as libc::c_ulonglong,
         };
         init
@@ -1451,7 +1261,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1bOj\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_KP_STAR as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::KP_STAR as libc::c_ulong as libc::c_ulonglong
                 | 0x2000000000000 as libc::c_ulonglong,
         };
         init
@@ -1459,7 +1269,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1bOm\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_KP_MINUS as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::KP_MINUS as libc::c_ulong as libc::c_ulonglong
                 | 0x2000000000000 as libc::c_ulonglong,
         };
         init
@@ -1467,7 +1277,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1bOw\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_KP_SEVEN as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::KP_SEVEN as libc::c_ulong as libc::c_ulonglong
                 | 0x2000000000000 as libc::c_ulonglong,
         };
         init
@@ -1475,7 +1285,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1bOx\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_KP_EIGHT as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::KP_EIGHT as libc::c_ulong as libc::c_ulonglong
                 | 0x2000000000000 as libc::c_ulonglong,
         };
         init
@@ -1483,7 +1293,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1bOy\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_KP_NINE as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::KP_NINE as libc::c_ulong as libc::c_ulonglong
                 | 0x2000000000000 as libc::c_ulonglong,
         };
         init
@@ -1491,7 +1301,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1bOk\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_KP_PLUS as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::KP_PLUS as libc::c_ulong as libc::c_ulonglong
                 | 0x2000000000000 as libc::c_ulonglong,
         };
         init
@@ -1499,7 +1309,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1bOt\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_KP_FOUR as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::KP_FOUR as libc::c_ulong as libc::c_ulonglong
                 | 0x2000000000000 as libc::c_ulonglong,
         };
         init
@@ -1507,7 +1317,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1bOu\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_KP_FIVE as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::KP_FIVE as libc::c_ulong as libc::c_ulonglong
                 | 0x2000000000000 as libc::c_ulonglong,
         };
         init
@@ -1515,7 +1325,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1bOv\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_KP_SIX as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::KP_SIX as libc::c_ulong as libc::c_ulonglong
                 | 0x2000000000000 as libc::c_ulonglong,
         };
         init
@@ -1523,7 +1333,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1bOq\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_KP_ONE as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::KP_ONE as libc::c_ulong as libc::c_ulonglong
                 | 0x2000000000000 as libc::c_ulonglong,
         };
         init
@@ -1531,7 +1341,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1bOr\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_KP_TWO as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::KP_TWO as libc::c_ulong as libc::c_ulonglong
                 | 0x2000000000000 as libc::c_ulonglong,
         };
         init
@@ -1539,7 +1349,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1bOs\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_KP_THREE as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::KP_THREE as libc::c_ulong as libc::c_ulonglong
                 | 0x2000000000000 as libc::c_ulonglong,
         };
         init
@@ -1547,7 +1357,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1bOM\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_KP_ENTER as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::KP_ENTER as libc::c_ulong as libc::c_ulonglong
                 | 0x2000000000000 as libc::c_ulonglong,
         };
         init
@@ -1555,7 +1365,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1bOp\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_KP_ZERO as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::KP_ZERO as libc::c_ulong as libc::c_ulonglong
                 | 0x2000000000000 as libc::c_ulonglong,
         };
         init
@@ -1563,7 +1373,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1bOn\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_KP_PERIOD as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::KP_PERIOD as libc::c_ulong as libc::c_ulonglong
                 | 0x2000000000000 as libc::c_ulonglong,
         };
         init
@@ -1571,7 +1381,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1bOA\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_UP as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::UP as libc::c_ulong as libc::c_ulonglong
                 | 0x4000000000000 as libc::c_ulonglong,
         };
         init
@@ -1579,7 +1389,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1bOB\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_DOWN as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::DOWN as libc::c_ulong as libc::c_ulonglong
                 | 0x4000000000000 as libc::c_ulonglong,
         };
         init
@@ -1587,7 +1397,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1bOC\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_RIGHT as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::RIGHT as libc::c_ulong as libc::c_ulonglong
                 | 0x4000000000000 as libc::c_ulonglong,
         };
         init
@@ -1595,7 +1405,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1bOD\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_LEFT as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::LEFT as libc::c_ulong as libc::c_ulonglong
                 | 0x4000000000000 as libc::c_ulonglong,
         };
         init
@@ -1603,7 +1413,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[A\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_UP as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::UP as libc::c_ulong as libc::c_ulonglong
                 | 0x4000000000000 as libc::c_ulonglong,
         };
         init
@@ -1611,7 +1421,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[B\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_DOWN as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::DOWN as libc::c_ulong as libc::c_ulonglong
                 | 0x4000000000000 as libc::c_ulonglong,
         };
         init
@@ -1619,7 +1429,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[C\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_RIGHT as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::RIGHT as libc::c_ulong as libc::c_ulonglong
                 | 0x4000000000000 as libc::c_ulonglong,
         };
         init
@@ -1627,7 +1437,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[D\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_LEFT as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::LEFT as libc::c_ulong as libc::c_ulonglong
                 | 0x4000000000000 as libc::c_ulonglong,
         };
         init
@@ -1635,7 +1445,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b\x1bOA\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_UP as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::UP as libc::c_ulong as libc::c_ulonglong
                 | 0x4000000000000 as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong,
         };
@@ -1644,7 +1454,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b\x1bOB\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_DOWN as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::DOWN as libc::c_ulong as libc::c_ulonglong
                 | 0x4000000000000 as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong,
         };
@@ -1653,7 +1463,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b\x1bOC\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_RIGHT as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::RIGHT as libc::c_ulong as libc::c_ulonglong
                 | 0x4000000000000 as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong,
         };
@@ -1662,7 +1472,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b\x1bOD\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_LEFT as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::LEFT as libc::c_ulong as libc::c_ulonglong
                 | 0x4000000000000 as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong,
         };
@@ -1671,7 +1481,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b\x1b[A\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_UP as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::UP as libc::c_ulong as libc::c_ulonglong
                 | 0x4000000000000 as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong,
         };
@@ -1680,7 +1490,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b\x1b[B\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_DOWN as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::DOWN as libc::c_ulong as libc::c_ulonglong
                 | 0x4000000000000 as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong,
         };
@@ -1689,7 +1499,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b\x1b[C\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_RIGHT as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::RIGHT as libc::c_ulong as libc::c_ulonglong
                 | 0x4000000000000 as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong,
         };
@@ -1698,7 +1508,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b\x1b[D\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_LEFT as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::LEFT as libc::c_ulong as libc::c_ulonglong
                 | 0x4000000000000 as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong,
         };
@@ -1707,21 +1517,21 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1bOH\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_HOME as libc::c_ulong as key_code,
+            key: key_code_code::HOME as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_raw {
             string: b"\x1bOF\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_END as libc::c_ulong as key_code,
+            key: key_code_code::END as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b\x1bOH\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_HOME as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::HOME as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
         };
@@ -1730,7 +1540,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b\x1bOF\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_END as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::END as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
         };
@@ -1739,21 +1549,21 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[H\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_HOME as libc::c_ulong as key_code,
+            key: key_code_code::HOME as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[F\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_END as libc::c_ulong as key_code,
+            key: key_code_code::END as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b\x1b[H\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_HOME as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::HOME as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
         };
@@ -1762,7 +1572,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b\x1b[F\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_END as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::END as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
         };
@@ -1771,7 +1581,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1bOa\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_UP as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::UP as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -1779,7 +1589,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1bOb\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_DOWN as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::DOWN as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -1787,7 +1597,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1bOc\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_RIGHT as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::RIGHT as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -1795,7 +1605,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1bOd\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_LEFT as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::LEFT as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -1803,7 +1613,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[a\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_UP as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::UP as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -1811,7 +1621,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[b\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_DOWN as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::DOWN as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -1819,7 +1629,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[c\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_RIGHT as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::RIGHT as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -1827,7 +1637,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[d\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_LEFT as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::LEFT as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -1835,7 +1645,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[11^\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F1 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F1 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -1843,7 +1653,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[12^\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F2 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F2 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -1851,7 +1661,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[13^\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F3 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F3 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -1859,7 +1669,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[14^\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F4 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F4 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -1867,7 +1677,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[15^\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F5 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F5 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -1875,7 +1685,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[17^\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F6 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F6 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -1883,7 +1693,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[18^\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F7 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F7 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -1891,7 +1701,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[19^\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F8 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F8 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -1899,7 +1709,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[20^\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F9 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F9 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -1907,7 +1717,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[21^\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F10 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F10 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -1915,7 +1725,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[23^\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F11 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F11 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -1923,7 +1733,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[24^\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F12 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F12 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -1931,7 +1741,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[2^\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_IC as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::IC as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -1939,7 +1749,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[3^\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_DC as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::DC as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -1947,7 +1757,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[7^\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_HOME as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::HOME as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -1955,7 +1765,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[8^\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_END as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::END as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -1963,7 +1773,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[6^\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_NPAGE as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::NPAGE as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -1971,7 +1781,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[5^\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_PPAGE as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::PPAGE as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -1979,7 +1789,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[11$\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F1 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F1 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -1987,7 +1797,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[12$\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F2 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F2 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -1995,7 +1805,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[13$\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F3 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F3 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -2003,7 +1813,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[14$\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F4 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F4 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -2011,7 +1821,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[15$\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F5 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F5 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -2019,7 +1829,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[17$\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F6 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F6 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -2027,7 +1837,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[18$\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F7 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F7 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -2035,7 +1845,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[19$\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F8 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F8 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -2043,7 +1853,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[20$\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F9 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F9 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -2051,7 +1861,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[21$\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F10 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F10 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -2059,7 +1869,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[23$\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F11 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F11 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -2067,7 +1877,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[24$\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F12 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F12 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -2075,7 +1885,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[2$\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_IC as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::IC as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -2083,7 +1893,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[3$\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_DC as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::DC as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -2091,7 +1901,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[7$\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_HOME as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::HOME as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -2099,7 +1909,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[8$\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_END as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::END as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -2107,7 +1917,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[6$\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_NPAGE as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::NPAGE as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -2115,7 +1925,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[5$\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_PPAGE as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::PPAGE as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -2123,7 +1933,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[11@\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F1 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F1 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
@@ -2132,7 +1942,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[12@\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F2 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F2 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
@@ -2141,7 +1951,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[13@\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F3 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F3 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
@@ -2150,7 +1960,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[14@\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F4 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F4 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
@@ -2159,7 +1969,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[15@\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F5 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F5 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
@@ -2168,7 +1978,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[17@\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F6 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F6 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
@@ -2177,7 +1987,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[18@\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F7 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F7 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
@@ -2186,7 +1996,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[19@\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F8 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F8 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
@@ -2195,7 +2005,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[20@\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F9 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F9 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
@@ -2204,7 +2014,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[21@\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F10 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F10 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
@@ -2213,7 +2023,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[23@\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F11 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F11 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
@@ -2222,7 +2032,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[24@\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F12 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F12 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
@@ -2231,7 +2041,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[2@\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_IC as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::IC as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
@@ -2240,7 +2050,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[3@\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_DC as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::DC as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
@@ -2249,7 +2059,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[7@\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_HOME as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::HOME as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
@@ -2258,7 +2068,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[8@\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_END as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::END as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
@@ -2267,7 +2077,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[6@\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_NPAGE as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::NPAGE as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
@@ -2276,7 +2086,7 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[5@\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_PPAGE as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::PPAGE as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
@@ -2285,28 +2095,28 @@ static mut tty_default_raw_keys: [tty_default_key_raw; 107] = [
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[I\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_FOCUS_IN as libc::c_ulong as key_code,
+            key: key_code_code::FOCUS_IN as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[O\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_FOCUS_OUT as libc::c_ulong as key_code,
+            key: key_code_code::FOCUS_OUT as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[200~\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_PASTE_START as libc::c_ulong as key_code,
+            key: key_code_code::PASTE_START as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_raw {
             string: b"\x1b[201~\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_PASTE_END as libc::c_ulong as key_code,
+            key: key_code_code::PASTE_END as libc::c_ulong as key_code,
         };
         init
     },
@@ -2315,210 +2125,210 @@ static mut tty_default_xterm_keys: [tty_default_key_xterm; 30] = [
     {
         let mut init = tty_default_key_xterm {
             template: b"\x1b[1;_P\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F1 as libc::c_ulong as key_code,
+            key: key_code_code::F1 as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_xterm {
             template: b"\x1bO1;_P\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F1 as libc::c_ulong as key_code,
+            key: key_code_code::F1 as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_xterm {
             template: b"\x1bO_P\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F1 as libc::c_ulong as key_code,
+            key: key_code_code::F1 as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_xterm {
             template: b"\x1b[1;_Q\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F2 as libc::c_ulong as key_code,
+            key: key_code_code::F2 as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_xterm {
             template: b"\x1bO1;_Q\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F2 as libc::c_ulong as key_code,
+            key: key_code_code::F2 as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_xterm {
             template: b"\x1bO_Q\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F2 as libc::c_ulong as key_code,
+            key: key_code_code::F2 as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_xterm {
             template: b"\x1b[1;_R\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F3 as libc::c_ulong as key_code,
+            key: key_code_code::F3 as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_xterm {
             template: b"\x1bO1;_R\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F3 as libc::c_ulong as key_code,
+            key: key_code_code::F3 as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_xterm {
             template: b"\x1bO_R\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F3 as libc::c_ulong as key_code,
+            key: key_code_code::F3 as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_xterm {
             template: b"\x1b[1;_S\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F4 as libc::c_ulong as key_code,
+            key: key_code_code::F4 as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_xterm {
             template: b"\x1bO1;_S\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F4 as libc::c_ulong as key_code,
+            key: key_code_code::F4 as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_xterm {
             template: b"\x1bO_S\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F4 as libc::c_ulong as key_code,
+            key: key_code_code::F4 as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_xterm {
             template: b"\x1b[15;_~\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F5 as libc::c_ulong as key_code,
+            key: key_code_code::F5 as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_xterm {
             template: b"\x1b[17;_~\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F6 as libc::c_ulong as key_code,
+            key: key_code_code::F6 as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_xterm {
             template: b"\x1b[18;_~\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F7 as libc::c_ulong as key_code,
+            key: key_code_code::F7 as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_xterm {
             template: b"\x1b[19;_~\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F8 as libc::c_ulong as key_code,
+            key: key_code_code::F8 as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_xterm {
             template: b"\x1b[20;_~\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F9 as libc::c_ulong as key_code,
+            key: key_code_code::F9 as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_xterm {
             template: b"\x1b[21;_~\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F10 as libc::c_ulong as key_code,
+            key: key_code_code::F10 as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_xterm {
             template: b"\x1b[23;_~\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F11 as libc::c_ulong as key_code,
+            key: key_code_code::F11 as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_xterm {
             template: b"\x1b[24;_~\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_F12 as libc::c_ulong as key_code,
+            key: key_code_code::F12 as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_xterm {
             template: b"\x1b[1;_A\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_UP as libc::c_ulong as key_code,
+            key: key_code_code::UP as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_xterm {
             template: b"\x1b[1;_B\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_DOWN as libc::c_ulong as key_code,
+            key: key_code_code::DOWN as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_xterm {
             template: b"\x1b[1;_C\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_RIGHT as libc::c_ulong as key_code,
+            key: key_code_code::RIGHT as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_xterm {
             template: b"\x1b[1;_D\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_LEFT as libc::c_ulong as key_code,
+            key: key_code_code::LEFT as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_xterm {
             template: b"\x1b[1;_H\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_HOME as libc::c_ulong as key_code,
+            key: key_code_code::HOME as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_xterm {
             template: b"\x1b[1;_F\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_END as libc::c_ulong as key_code,
+            key: key_code_code::END as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_xterm {
             template: b"\x1b[5;_~\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_PPAGE as libc::c_ulong as key_code,
+            key: key_code_code::PPAGE as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_xterm {
             template: b"\x1b[6;_~\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_NPAGE as libc::c_ulong as key_code,
+            key: key_code_code::NPAGE as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_xterm {
             template: b"\x1b[2;_~\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_IC as libc::c_ulong as key_code,
+            key: key_code_code::IC as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_xterm {
             template: b"\x1b[3;_~\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_DC as libc::c_ulong as key_code,
+            key: key_code_code::DC as libc::c_ulong as key_code,
         };
         init
     },
@@ -2545,91 +2355,91 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF1,
-            key: KEYC_F1 as libc::c_ulong as key_code,
+            key: key_code_code::F1 as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF2,
-            key: KEYC_F2 as libc::c_ulong as key_code,
+            key: key_code_code::F2 as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF3,
-            key: KEYC_F3 as libc::c_ulong as key_code,
+            key: key_code_code::F3 as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF4,
-            key: KEYC_F4 as libc::c_ulong as key_code,
+            key: key_code_code::F4 as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF5,
-            key: KEYC_F5 as libc::c_ulong as key_code,
+            key: key_code_code::F5 as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF6,
-            key: KEYC_F6 as libc::c_ulong as key_code,
+            key: key_code_code::F6 as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF7,
-            key: KEYC_F7 as libc::c_ulong as key_code,
+            key: key_code_code::F7 as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF8,
-            key: KEYC_F8 as libc::c_ulong as key_code,
+            key: key_code_code::F8 as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF9,
-            key: KEYC_F9 as libc::c_ulong as key_code,
+            key: key_code_code::F9 as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF10,
-            key: KEYC_F10 as libc::c_ulong as key_code,
+            key: key_code_code::F10 as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF11,
-            key: KEYC_F11 as libc::c_ulong as key_code,
+            key: key_code_code::F11 as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF12,
-            key: KEYC_F12 as libc::c_ulong as key_code,
+            key: key_code_code::F12 as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF13,
-            key: KEYC_F1 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F1 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -2637,7 +2447,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF14,
-            key: KEYC_F2 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F2 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -2645,7 +2455,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF15,
-            key: KEYC_F3 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F3 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -2653,7 +2463,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF16,
-            key: KEYC_F4 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F4 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -2661,7 +2471,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF17,
-            key: KEYC_F5 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F5 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -2669,7 +2479,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF18,
-            key: KEYC_F6 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F6 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -2677,7 +2487,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF19,
-            key: KEYC_F7 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F7 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -2685,7 +2495,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF20,
-            key: KEYC_F8 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F8 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -2693,7 +2503,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF21,
-            key: KEYC_F9 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F9 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -2701,7 +2511,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF22,
-            key: KEYC_F10 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F10 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -2709,7 +2519,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF23,
-            key: KEYC_F11 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F11 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -2717,7 +2527,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF24,
-            key: KEYC_F12 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F12 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -2725,7 +2535,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF25,
-            key: KEYC_F1 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F1 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -2733,7 +2543,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF26,
-            key: KEYC_F2 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F2 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -2741,7 +2551,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF27,
-            key: KEYC_F3 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F3 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -2749,7 +2559,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF28,
-            key: KEYC_F4 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F4 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -2757,7 +2567,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF29,
-            key: KEYC_F5 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F5 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -2765,7 +2575,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF30,
-            key: KEYC_F6 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F6 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -2773,7 +2583,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF31,
-            key: KEYC_F7 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F7 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -2781,7 +2591,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF32,
-            key: KEYC_F8 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F8 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -2789,7 +2599,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF33,
-            key: KEYC_F9 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F9 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -2797,7 +2607,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF34,
-            key: KEYC_F10 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F10 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -2805,7 +2615,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF35,
-            key: KEYC_F11 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F11 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -2813,7 +2623,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF36,
-            key: KEYC_F12 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F12 as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -2821,7 +2631,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF37,
-            key: KEYC_F1 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F1 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
@@ -2830,7 +2640,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF38,
-            key: KEYC_F2 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F2 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
@@ -2839,7 +2649,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF39,
-            key: KEYC_F3 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F3 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
@@ -2848,7 +2658,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF40,
-            key: KEYC_F4 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F4 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
@@ -2857,7 +2667,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF41,
-            key: KEYC_F5 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F5 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
@@ -2866,7 +2676,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF42,
-            key: KEYC_F6 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F6 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
@@ -2875,7 +2685,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF43,
-            key: KEYC_F7 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F7 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
@@ -2884,7 +2694,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF44,
-            key: KEYC_F8 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F8 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
@@ -2893,7 +2703,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF45,
-            key: KEYC_F9 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F9 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
@@ -2902,7 +2712,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF46,
-            key: KEYC_F10 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F10 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
@@ -2911,7 +2721,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF47,
-            key: KEYC_F11 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F11 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
@@ -2920,7 +2730,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF48,
-            key: KEYC_F12 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F12 as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
@@ -2929,7 +2739,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF49,
-            key: KEYC_F1 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F1 as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
         };
@@ -2938,7 +2748,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF50,
-            key: KEYC_F2 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F2 as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
         };
@@ -2947,7 +2757,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF51,
-            key: KEYC_F3 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F3 as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
         };
@@ -2956,7 +2766,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF52,
-            key: KEYC_F4 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F4 as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
         };
@@ -2965,7 +2775,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF53,
-            key: KEYC_F5 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F5 as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
         };
@@ -2974,7 +2784,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF54,
-            key: KEYC_F6 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F6 as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
         };
@@ -2983,7 +2793,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF55,
-            key: KEYC_F7 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F7 as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
         };
@@ -2992,7 +2802,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF56,
-            key: KEYC_F8 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F8 as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
         };
@@ -3001,7 +2811,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF57,
-            key: KEYC_F9 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F9 as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
         };
@@ -3010,7 +2820,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF58,
-            key: KEYC_F10 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F10 as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
         };
@@ -3019,7 +2829,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF59,
-            key: KEYC_F11 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F11 as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
         };
@@ -3028,7 +2838,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF60,
-            key: KEYC_F12 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F12 as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
         };
@@ -3037,7 +2847,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF61,
-            key: KEYC_F1 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F1 as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
@@ -3047,7 +2857,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF62,
-            key: KEYC_F2 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F2 as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
@@ -3057,7 +2867,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KF63,
-            key: KEYC_F3 as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::F3 as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
@@ -3067,56 +2877,56 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KICH1,
-            key: KEYC_IC as libc::c_ulong as key_code,
+            key: key_code_code::IC as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KDCH1,
-            key: KEYC_DC as libc::c_ulong as key_code,
+            key: key_code_code::DC as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KHOME,
-            key: KEYC_HOME as libc::c_ulong as key_code,
+            key: key_code_code::HOME as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KEND,
-            key: KEYC_END as libc::c_ulong as key_code,
+            key: key_code_code::END as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KNP,
-            key: KEYC_NPAGE as libc::c_ulong as key_code,
+            key: key_code_code::NPAGE as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KPP,
-            key: KEYC_PPAGE as libc::c_ulong as key_code,
+            key: key_code_code::PPAGE as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KCBT,
-            key: KEYC_BTAB as libc::c_ulong as key_code,
+            key: key_code_code::BTAB as libc::c_ulong as key_code,
         };
         init
     },
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KCUU1,
-            key: KEYC_UP as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::UP as libc::c_ulong as libc::c_ulonglong
                 | 0x4000000000000 as libc::c_ulonglong,
         };
         init
@@ -3124,7 +2934,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KCUD1,
-            key: KEYC_DOWN as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::DOWN as libc::c_ulong as libc::c_ulonglong
                 | 0x4000000000000 as libc::c_ulonglong,
         };
         init
@@ -3132,7 +2942,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KCUB1,
-            key: KEYC_LEFT as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::LEFT as libc::c_ulong as libc::c_ulonglong
                 | 0x4000000000000 as libc::c_ulonglong,
         };
         init
@@ -3140,7 +2950,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KCUF1,
-            key: KEYC_RIGHT as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::RIGHT as libc::c_ulong as libc::c_ulonglong
                 | 0x4000000000000 as libc::c_ulonglong,
         };
         init
@@ -3148,7 +2958,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KDC2,
-            key: KEYC_DC as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::DC as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -3156,7 +2966,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KDC3,
-            key: KEYC_DC as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::DC as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
         };
@@ -3165,7 +2975,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KDC4,
-            key: KEYC_DC as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::DC as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
@@ -3175,7 +2985,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KDC5,
-            key: KEYC_DC as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::DC as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -3183,7 +2993,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KDC6,
-            key: KEYC_DC as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::DC as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
@@ -3192,7 +3002,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KDC7,
-            key: KEYC_DC as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::DC as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
@@ -3202,7 +3012,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KIND,
-            key: KEYC_DOWN as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::DOWN as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -3210,7 +3020,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KDN2,
-            key: KEYC_DOWN as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::DOWN as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -3218,7 +3028,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KDN3,
-            key: KEYC_DOWN as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::DOWN as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
         };
@@ -3227,7 +3037,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KDN4,
-            key: KEYC_DOWN as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::DOWN as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
@@ -3237,7 +3047,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KDN5,
-            key: KEYC_DOWN as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::DOWN as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -3245,7 +3055,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KDN6,
-            key: KEYC_DOWN as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::DOWN as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
@@ -3254,7 +3064,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KDN7,
-            key: KEYC_DOWN as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::DOWN as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
@@ -3264,7 +3074,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KEND2,
-            key: KEYC_END as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::END as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -3272,7 +3082,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KEND3,
-            key: KEYC_END as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::END as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
         };
@@ -3281,7 +3091,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KEND4,
-            key: KEYC_END as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::END as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
@@ -3291,7 +3101,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KEND5,
-            key: KEYC_END as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::END as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -3299,7 +3109,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KEND6,
-            key: KEYC_END as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::END as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
@@ -3308,7 +3118,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KEND7,
-            key: KEYC_END as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::END as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
@@ -3318,7 +3128,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KHOM2,
-            key: KEYC_HOME as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::HOME as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -3326,7 +3136,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KHOM3,
-            key: KEYC_HOME as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::HOME as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
         };
@@ -3335,7 +3145,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KHOM4,
-            key: KEYC_HOME as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::HOME as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
@@ -3345,7 +3155,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KHOM5,
-            key: KEYC_HOME as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::HOME as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -3353,7 +3163,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KHOM6,
-            key: KEYC_HOME as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::HOME as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
@@ -3362,7 +3172,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KHOM7,
-            key: KEYC_HOME as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::HOME as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
@@ -3372,7 +3182,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KIC2,
-            key: KEYC_IC as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::IC as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -3380,7 +3190,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KIC3,
-            key: KEYC_IC as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::IC as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
         };
@@ -3389,7 +3199,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KIC4,
-            key: KEYC_IC as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::IC as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
@@ -3399,7 +3209,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KIC5,
-            key: KEYC_IC as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::IC as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -3407,7 +3217,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KIC6,
-            key: KEYC_IC as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::IC as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
@@ -3416,7 +3226,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KIC7,
-            key: KEYC_IC as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::IC as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
@@ -3426,7 +3236,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KLFT2,
-            key: KEYC_LEFT as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::LEFT as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -3434,7 +3244,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KLFT3,
-            key: KEYC_LEFT as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::LEFT as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
         };
@@ -3443,7 +3253,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KLFT4,
-            key: KEYC_LEFT as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::LEFT as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
@@ -3453,7 +3263,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KLFT5,
-            key: KEYC_LEFT as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::LEFT as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -3461,7 +3271,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KLFT6,
-            key: KEYC_LEFT as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::LEFT as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
@@ -3470,7 +3280,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KLFT7,
-            key: KEYC_LEFT as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::LEFT as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
@@ -3480,7 +3290,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KNXT2,
-            key: KEYC_NPAGE as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::NPAGE as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -3488,7 +3298,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KNXT3,
-            key: KEYC_NPAGE as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::NPAGE as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
         };
@@ -3497,7 +3307,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KNXT4,
-            key: KEYC_NPAGE as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::NPAGE as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
@@ -3507,7 +3317,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KNXT5,
-            key: KEYC_NPAGE as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::NPAGE as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -3515,7 +3325,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KNXT6,
-            key: KEYC_NPAGE as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::NPAGE as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
@@ -3524,7 +3334,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KNXT7,
-            key: KEYC_NPAGE as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::NPAGE as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
@@ -3534,7 +3344,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KPRV2,
-            key: KEYC_PPAGE as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::PPAGE as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -3542,7 +3352,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KPRV3,
-            key: KEYC_PPAGE as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::PPAGE as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
         };
@@ -3551,7 +3361,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KPRV4,
-            key: KEYC_PPAGE as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::PPAGE as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
@@ -3561,7 +3371,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KPRV5,
-            key: KEYC_PPAGE as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::PPAGE as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -3569,7 +3379,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KPRV6,
-            key: KEYC_PPAGE as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::PPAGE as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
@@ -3578,7 +3388,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KPRV7,
-            key: KEYC_PPAGE as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::PPAGE as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
@@ -3588,7 +3398,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KRIT2,
-            key: KEYC_RIGHT as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::RIGHT as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -3596,7 +3406,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KRIT3,
-            key: KEYC_RIGHT as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::RIGHT as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
         };
@@ -3605,7 +3415,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KRIT4,
-            key: KEYC_RIGHT as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::RIGHT as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
@@ -3615,7 +3425,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KRIT5,
-            key: KEYC_RIGHT as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::RIGHT as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -3623,7 +3433,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KRIT6,
-            key: KEYC_RIGHT as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::RIGHT as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
@@ -3632,7 +3442,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KRIT7,
-            key: KEYC_RIGHT as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::RIGHT as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
@@ -3642,7 +3452,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KRI,
-            key: KEYC_UP as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::UP as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -3650,7 +3460,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KUP2,
-            key: KEYC_UP as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::UP as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong,
         };
         init
@@ -3658,7 +3468,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KUP3,
-            key: KEYC_UP as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::UP as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
         };
@@ -3667,7 +3477,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KUP4,
-            key: KEYC_UP as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::UP as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong,
@@ -3677,7 +3487,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KUP5,
-            key: KEYC_UP as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::UP as libc::c_ulong as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
         init
@@ -3685,7 +3495,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KUP6,
-            key: KEYC_UP as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::UP as libc::c_ulong as libc::c_ulonglong
                 | 0x400000000000 as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
         };
@@ -3694,7 +3504,7 @@ static mut tty_default_code_keys: [tty_default_key_code; 136] = [
     {
         let mut init = tty_default_key_code {
             code: tty_code_code::KUP7,
-            key: KEYC_UP as libc::c_ulong as libc::c_ulonglong
+            key: key_code_code::UP as libc::c_ulong as libc::c_ulonglong
                 | 0x100000000000 as libc::c_ulonglong
                 | 0x8000000000000 as libc::c_ulonglong
                 | 0x200000000000 as libc::c_ulonglong,
@@ -4154,7 +3964,7 @@ pub unsafe extern "C" fn tty_keys_next(mut tty: *mut tty) -> libc::c_int {
                             match tty_keys_mouse(tty, buf, len, &mut size, &mut m) {
                                 0 => {
                                     /* yes */
-                                    key = KEYC_MOUSE as libc::c_ulong as key_code;
+                                    key = key_code_code::MOUSE as libc::c_ulong as key_code;
                                     current_block = 18117557595413158975;
                                 }
                                 -1 => {
@@ -4163,7 +3973,7 @@ pub unsafe extern "C" fn tty_keys_next(mut tty: *mut tty) -> libc::c_int {
                                 }
                                 -2 => {
                                     /* yes, but we don't care. */
-                                    key = KEYC_MOUSE as libc::c_ulong as key_code;
+                                    key = key_code_code::MOUSE as libc::c_ulong as key_code;
                                     log_debug(
                                         b"%s: discard key %.*s %#llx\x00" as *const u8
                                             as *const libc::c_char,
@@ -4322,7 +4132,7 @@ pub unsafe extern "C" fn tty_keys_next(mut tty: *mut tty) -> libc::c_int {
                     && key & 0xfffffffffff as libc::c_ulonglong == bspace as libc::c_ulonglong
                 {
                     key = key & 0xf00000000000 as libc::c_ulonglong
-                        | KEYC_BSPACE as libc::c_ulong as libc::c_ulonglong
+                        | key_code_code::BSPACE as libc::c_ulong as libc::c_ulonglong
                 }
                 /* Remove data from buffer. */
                 evbuffer_drain((*tty).in_0, size);
@@ -4332,9 +4142,9 @@ pub unsafe extern "C" fn tty_keys_next(mut tty: *mut tty) -> libc::c_int {
                 }
                 (*tty).flags &= !(0x4 as libc::c_int);
                 /* Check for focus events. */
-                if key == KEYC_FOCUS_OUT as libc::c_ulong as libc::c_ulonglong {
+                if key == key_code_code::FOCUS_OUT as libc::c_ulong as libc::c_ulonglong {
                     (*(*tty).client).flags &= !(0x8000 as libc::c_int) as libc::c_ulong
-                } else if key == KEYC_FOCUS_IN as libc::c_ulong as libc::c_ulonglong {
+                } else if key == key_code_code::FOCUS_IN as libc::c_ulong as libc::c_ulonglong {
                     (*(*tty).client).flags |= 0x8000 as libc::c_int as libc::c_ulong
                 }
                 /* Fire the key. */

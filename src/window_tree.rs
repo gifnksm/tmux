@@ -1,3 +1,4 @@
+use crate::key_code::code as key_code_code;
 use ::libc;
 extern "C" {
     pub type event_base;
@@ -1313,199 +1314,6 @@ pub struct tty_ctx {
 pub type tty_ctx_set_client_cb =
     Option<unsafe extern "C" fn(_: *mut tty_ctx, _: *mut client) -> libc::c_int>;
 pub type tty_ctx_redraw_cb = Option<unsafe extern "C" fn(_: *const tty_ctx) -> ()>;
-pub type C2RustUnnamed_32 = libc::c_ulong;
-pub const KEYC_KP_PERIOD: C2RustUnnamed_32 = 68719476927;
-pub const KEYC_KP_ZERO: C2RustUnnamed_32 = 68719476926;
-pub const KEYC_KP_ENTER: C2RustUnnamed_32 = 68719476925;
-pub const KEYC_KP_THREE: C2RustUnnamed_32 = 68719476924;
-pub const KEYC_KP_TWO: C2RustUnnamed_32 = 68719476923;
-pub const KEYC_KP_ONE: C2RustUnnamed_32 = 68719476922;
-pub const KEYC_KP_SIX: C2RustUnnamed_32 = 68719476921;
-pub const KEYC_KP_FIVE: C2RustUnnamed_32 = 68719476920;
-pub const KEYC_KP_FOUR: C2RustUnnamed_32 = 68719476919;
-pub const KEYC_KP_PLUS: C2RustUnnamed_32 = 68719476918;
-pub const KEYC_KP_NINE: C2RustUnnamed_32 = 68719476917;
-pub const KEYC_KP_EIGHT: C2RustUnnamed_32 = 68719476916;
-pub const KEYC_KP_SEVEN: C2RustUnnamed_32 = 68719476915;
-pub const KEYC_KP_MINUS: C2RustUnnamed_32 = 68719476914;
-pub const KEYC_KP_STAR: C2RustUnnamed_32 = 68719476913;
-pub const KEYC_KP_SLASH: C2RustUnnamed_32 = 68719476912;
-pub const KEYC_RIGHT: C2RustUnnamed_32 = 68719476911;
-pub const KEYC_LEFT: C2RustUnnamed_32 = 68719476910;
-pub const KEYC_DOWN: C2RustUnnamed_32 = 68719476909;
-pub const KEYC_UP: C2RustUnnamed_32 = 68719476908;
-pub const KEYC_BTAB: C2RustUnnamed_32 = 68719476907;
-pub const KEYC_PPAGE: C2RustUnnamed_32 = 68719476906;
-pub const KEYC_NPAGE: C2RustUnnamed_32 = 68719476905;
-pub const KEYC_END: C2RustUnnamed_32 = 68719476904;
-pub const KEYC_HOME: C2RustUnnamed_32 = 68719476903;
-pub const KEYC_DC: C2RustUnnamed_32 = 68719476902;
-pub const KEYC_IC: C2RustUnnamed_32 = 68719476901;
-pub const KEYC_F12: C2RustUnnamed_32 = 68719476900;
-pub const KEYC_F11: C2RustUnnamed_32 = 68719476899;
-pub const KEYC_F10: C2RustUnnamed_32 = 68719476898;
-pub const KEYC_F9: C2RustUnnamed_32 = 68719476897;
-pub const KEYC_F8: C2RustUnnamed_32 = 68719476896;
-pub const KEYC_F7: C2RustUnnamed_32 = 68719476895;
-pub const KEYC_F6: C2RustUnnamed_32 = 68719476894;
-pub const KEYC_F5: C2RustUnnamed_32 = 68719476893;
-pub const KEYC_F4: C2RustUnnamed_32 = 68719476892;
-pub const KEYC_F3: C2RustUnnamed_32 = 68719476891;
-pub const KEYC_F2: C2RustUnnamed_32 = 68719476890;
-pub const KEYC_F1: C2RustUnnamed_32 = 68719476889;
-pub const KEYC_BSPACE: C2RustUnnamed_32 = 68719476888;
-pub const KEYC_TRIPLECLICK3_BORDER: C2RustUnnamed_32 = 68719476887;
-pub const KEYC_TRIPLECLICK3_STATUS_DEFAULT: C2RustUnnamed_32 = 68719476886;
-pub const KEYC_TRIPLECLICK3_STATUS_RIGHT: C2RustUnnamed_32 = 68719476885;
-pub const KEYC_TRIPLECLICK3_STATUS_LEFT: C2RustUnnamed_32 = 68719476884;
-pub const KEYC_TRIPLECLICK3_STATUS: C2RustUnnamed_32 = 68719476883;
-pub const KEYC_TRIPLECLICK3_PANE: C2RustUnnamed_32 = 68719476882;
-pub const KEYC_TRIPLECLICK2_BORDER: C2RustUnnamed_32 = 68719476881;
-pub const KEYC_TRIPLECLICK2_STATUS_DEFAULT: C2RustUnnamed_32 = 68719476880;
-pub const KEYC_TRIPLECLICK2_STATUS_RIGHT: C2RustUnnamed_32 = 68719476879;
-pub const KEYC_TRIPLECLICK2_STATUS_LEFT: C2RustUnnamed_32 = 68719476878;
-pub const KEYC_TRIPLECLICK2_STATUS: C2RustUnnamed_32 = 68719476877;
-pub const KEYC_TRIPLECLICK2_PANE: C2RustUnnamed_32 = 68719476876;
-pub const KEYC_TRIPLECLICK1_BORDER: C2RustUnnamed_32 = 68719476875;
-pub const KEYC_TRIPLECLICK1_STATUS_DEFAULT: C2RustUnnamed_32 = 68719476874;
-pub const KEYC_TRIPLECLICK1_STATUS_RIGHT: C2RustUnnamed_32 = 68719476873;
-pub const KEYC_TRIPLECLICK1_STATUS_LEFT: C2RustUnnamed_32 = 68719476872;
-pub const KEYC_TRIPLECLICK1_STATUS: C2RustUnnamed_32 = 68719476871;
-pub const KEYC_TRIPLECLICK1_PANE: C2RustUnnamed_32 = 68719476870;
-pub const KEYC_DOUBLECLICK3_BORDER: C2RustUnnamed_32 = 68719476869;
-pub const KEYC_DOUBLECLICK3_STATUS_DEFAULT: C2RustUnnamed_32 = 68719476868;
-pub const KEYC_DOUBLECLICK3_STATUS_RIGHT: C2RustUnnamed_32 = 68719476867;
-pub const KEYC_DOUBLECLICK3_STATUS_LEFT: C2RustUnnamed_32 = 68719476866;
-pub const KEYC_DOUBLECLICK3_STATUS: C2RustUnnamed_32 = 68719476865;
-pub const KEYC_DOUBLECLICK3_PANE: C2RustUnnamed_32 = 68719476864;
-pub const KEYC_DOUBLECLICK2_BORDER: C2RustUnnamed_32 = 68719476863;
-pub const KEYC_DOUBLECLICK2_STATUS_DEFAULT: C2RustUnnamed_32 = 68719476862;
-pub const KEYC_DOUBLECLICK2_STATUS_RIGHT: C2RustUnnamed_32 = 68719476861;
-pub const KEYC_DOUBLECLICK2_STATUS_LEFT: C2RustUnnamed_32 = 68719476860;
-pub const KEYC_DOUBLECLICK2_STATUS: C2RustUnnamed_32 = 68719476859;
-pub const KEYC_DOUBLECLICK2_PANE: C2RustUnnamed_32 = 68719476858;
-pub const KEYC_DOUBLECLICK1_BORDER: C2RustUnnamed_32 = 68719476857;
-pub const KEYC_DOUBLECLICK1_STATUS_DEFAULT: C2RustUnnamed_32 = 68719476856;
-pub const KEYC_DOUBLECLICK1_STATUS_RIGHT: C2RustUnnamed_32 = 68719476855;
-pub const KEYC_DOUBLECLICK1_STATUS_LEFT: C2RustUnnamed_32 = 68719476854;
-pub const KEYC_DOUBLECLICK1_STATUS: C2RustUnnamed_32 = 68719476853;
-pub const KEYC_DOUBLECLICK1_PANE: C2RustUnnamed_32 = 68719476852;
-pub const KEYC_SECONDCLICK3_BORDER: C2RustUnnamed_32 = 68719476851;
-pub const KEYC_SECONDCLICK3_STATUS_DEFAULT: C2RustUnnamed_32 = 68719476850;
-pub const KEYC_SECONDCLICK3_STATUS_RIGHT: C2RustUnnamed_32 = 68719476849;
-pub const KEYC_SECONDCLICK3_STATUS_LEFT: C2RustUnnamed_32 = 68719476848;
-pub const KEYC_SECONDCLICK3_STATUS: C2RustUnnamed_32 = 68719476847;
-pub const KEYC_SECONDCLICK3_PANE: C2RustUnnamed_32 = 68719476846;
-pub const KEYC_SECONDCLICK2_BORDER: C2RustUnnamed_32 = 68719476845;
-pub const KEYC_SECONDCLICK2_STATUS_DEFAULT: C2RustUnnamed_32 = 68719476844;
-pub const KEYC_SECONDCLICK2_STATUS_RIGHT: C2RustUnnamed_32 = 68719476843;
-pub const KEYC_SECONDCLICK2_STATUS_LEFT: C2RustUnnamed_32 = 68719476842;
-pub const KEYC_SECONDCLICK2_STATUS: C2RustUnnamed_32 = 68719476841;
-pub const KEYC_SECONDCLICK2_PANE: C2RustUnnamed_32 = 68719476840;
-pub const KEYC_SECONDCLICK1_BORDER: C2RustUnnamed_32 = 68719476839;
-pub const KEYC_SECONDCLICK1_STATUS_DEFAULT: C2RustUnnamed_32 = 68719476838;
-pub const KEYC_SECONDCLICK1_STATUS_RIGHT: C2RustUnnamed_32 = 68719476837;
-pub const KEYC_SECONDCLICK1_STATUS_LEFT: C2RustUnnamed_32 = 68719476836;
-pub const KEYC_SECONDCLICK1_STATUS: C2RustUnnamed_32 = 68719476835;
-pub const KEYC_SECONDCLICK1_PANE: C2RustUnnamed_32 = 68719476834;
-pub const KEYC_WHEELDOWN_BORDER: C2RustUnnamed_32 = 68719476833;
-pub const KEYC_WHEELDOWN_STATUS_DEFAULT: C2RustUnnamed_32 = 68719476832;
-pub const KEYC_WHEELDOWN_STATUS_RIGHT: C2RustUnnamed_32 = 68719476831;
-pub const KEYC_WHEELDOWN_STATUS_LEFT: C2RustUnnamed_32 = 68719476830;
-pub const KEYC_WHEELDOWN_STATUS: C2RustUnnamed_32 = 68719476829;
-pub const KEYC_WHEELDOWN_PANE: C2RustUnnamed_32 = 68719476828;
-pub const KEYC_WHEELUP_BORDER: C2RustUnnamed_32 = 68719476827;
-pub const KEYC_WHEELUP_STATUS_DEFAULT: C2RustUnnamed_32 = 68719476826;
-pub const KEYC_WHEELUP_STATUS_RIGHT: C2RustUnnamed_32 = 68719476825;
-pub const KEYC_WHEELUP_STATUS_LEFT: C2RustUnnamed_32 = 68719476824;
-pub const KEYC_WHEELUP_STATUS: C2RustUnnamed_32 = 68719476823;
-pub const KEYC_WHEELUP_PANE: C2RustUnnamed_32 = 68719476822;
-pub const KEYC_MOUSEDRAGEND3_BORDER: C2RustUnnamed_32 = 68719476821;
-pub const KEYC_MOUSEDRAGEND3_STATUS_DEFAULT: C2RustUnnamed_32 = 68719476820;
-pub const KEYC_MOUSEDRAGEND3_STATUS_RIGHT: C2RustUnnamed_32 = 68719476819;
-pub const KEYC_MOUSEDRAGEND3_STATUS_LEFT: C2RustUnnamed_32 = 68719476818;
-pub const KEYC_MOUSEDRAGEND3_STATUS: C2RustUnnamed_32 = 68719476817;
-pub const KEYC_MOUSEDRAGEND3_PANE: C2RustUnnamed_32 = 68719476816;
-pub const KEYC_MOUSEDRAGEND2_BORDER: C2RustUnnamed_32 = 68719476815;
-pub const KEYC_MOUSEDRAGEND2_STATUS_DEFAULT: C2RustUnnamed_32 = 68719476814;
-pub const KEYC_MOUSEDRAGEND2_STATUS_RIGHT: C2RustUnnamed_32 = 68719476813;
-pub const KEYC_MOUSEDRAGEND2_STATUS_LEFT: C2RustUnnamed_32 = 68719476812;
-pub const KEYC_MOUSEDRAGEND2_STATUS: C2RustUnnamed_32 = 68719476811;
-pub const KEYC_MOUSEDRAGEND2_PANE: C2RustUnnamed_32 = 68719476810;
-pub const KEYC_MOUSEDRAGEND1_BORDER: C2RustUnnamed_32 = 68719476809;
-pub const KEYC_MOUSEDRAGEND1_STATUS_DEFAULT: C2RustUnnamed_32 = 68719476808;
-pub const KEYC_MOUSEDRAGEND1_STATUS_RIGHT: C2RustUnnamed_32 = 68719476807;
-pub const KEYC_MOUSEDRAGEND1_STATUS_LEFT: C2RustUnnamed_32 = 68719476806;
-pub const KEYC_MOUSEDRAGEND1_STATUS: C2RustUnnamed_32 = 68719476805;
-pub const KEYC_MOUSEDRAGEND1_PANE: C2RustUnnamed_32 = 68719476804;
-pub const KEYC_MOUSEDRAG3_BORDER: C2RustUnnamed_32 = 68719476803;
-pub const KEYC_MOUSEDRAG3_STATUS_DEFAULT: C2RustUnnamed_32 = 68719476802;
-pub const KEYC_MOUSEDRAG3_STATUS_RIGHT: C2RustUnnamed_32 = 68719476801;
-pub const KEYC_MOUSEDRAG3_STATUS_LEFT: C2RustUnnamed_32 = 68719476800;
-pub const KEYC_MOUSEDRAG3_STATUS: C2RustUnnamed_32 = 68719476799;
-pub const KEYC_MOUSEDRAG3_PANE: C2RustUnnamed_32 = 68719476798;
-pub const KEYC_MOUSEDRAG2_BORDER: C2RustUnnamed_32 = 68719476797;
-pub const KEYC_MOUSEDRAG2_STATUS_DEFAULT: C2RustUnnamed_32 = 68719476796;
-pub const KEYC_MOUSEDRAG2_STATUS_RIGHT: C2RustUnnamed_32 = 68719476795;
-pub const KEYC_MOUSEDRAG2_STATUS_LEFT: C2RustUnnamed_32 = 68719476794;
-pub const KEYC_MOUSEDRAG2_STATUS: C2RustUnnamed_32 = 68719476793;
-pub const KEYC_MOUSEDRAG2_PANE: C2RustUnnamed_32 = 68719476792;
-pub const KEYC_MOUSEDRAG1_BORDER: C2RustUnnamed_32 = 68719476791;
-pub const KEYC_MOUSEDRAG1_STATUS_DEFAULT: C2RustUnnamed_32 = 68719476790;
-pub const KEYC_MOUSEDRAG1_STATUS_RIGHT: C2RustUnnamed_32 = 68719476789;
-pub const KEYC_MOUSEDRAG1_STATUS_LEFT: C2RustUnnamed_32 = 68719476788;
-pub const KEYC_MOUSEDRAG1_STATUS: C2RustUnnamed_32 = 68719476787;
-pub const KEYC_MOUSEDRAG1_PANE: C2RustUnnamed_32 = 68719476786;
-pub const KEYC_MOUSEUP3_BORDER: C2RustUnnamed_32 = 68719476785;
-pub const KEYC_MOUSEUP3_STATUS_DEFAULT: C2RustUnnamed_32 = 68719476784;
-pub const KEYC_MOUSEUP3_STATUS_RIGHT: C2RustUnnamed_32 = 68719476783;
-pub const KEYC_MOUSEUP3_STATUS_LEFT: C2RustUnnamed_32 = 68719476782;
-pub const KEYC_MOUSEUP3_STATUS: C2RustUnnamed_32 = 68719476781;
-pub const KEYC_MOUSEUP3_PANE: C2RustUnnamed_32 = 68719476780;
-pub const KEYC_MOUSEUP2_BORDER: C2RustUnnamed_32 = 68719476779;
-pub const KEYC_MOUSEUP2_STATUS_DEFAULT: C2RustUnnamed_32 = 68719476778;
-pub const KEYC_MOUSEUP2_STATUS_RIGHT: C2RustUnnamed_32 = 68719476777;
-pub const KEYC_MOUSEUP2_STATUS_LEFT: C2RustUnnamed_32 = 68719476776;
-pub const KEYC_MOUSEUP2_STATUS: C2RustUnnamed_32 = 68719476775;
-pub const KEYC_MOUSEUP2_PANE: C2RustUnnamed_32 = 68719476774;
-pub const KEYC_MOUSEUP1_BORDER: C2RustUnnamed_32 = 68719476773;
-pub const KEYC_MOUSEUP1_STATUS_DEFAULT: C2RustUnnamed_32 = 68719476772;
-pub const KEYC_MOUSEUP1_STATUS_RIGHT: C2RustUnnamed_32 = 68719476771;
-pub const KEYC_MOUSEUP1_STATUS_LEFT: C2RustUnnamed_32 = 68719476770;
-pub const KEYC_MOUSEUP1_STATUS: C2RustUnnamed_32 = 68719476769;
-pub const KEYC_MOUSEUP1_PANE: C2RustUnnamed_32 = 68719476768;
-pub const KEYC_MOUSEDOWN3_BORDER: C2RustUnnamed_32 = 68719476767;
-pub const KEYC_MOUSEDOWN3_STATUS_DEFAULT: C2RustUnnamed_32 = 68719476766;
-pub const KEYC_MOUSEDOWN3_STATUS_RIGHT: C2RustUnnamed_32 = 68719476765;
-pub const KEYC_MOUSEDOWN3_STATUS_LEFT: C2RustUnnamed_32 = 68719476764;
-pub const KEYC_MOUSEDOWN3_STATUS: C2RustUnnamed_32 = 68719476763;
-pub const KEYC_MOUSEDOWN3_PANE: C2RustUnnamed_32 = 68719476762;
-pub const KEYC_MOUSEDOWN2_BORDER: C2RustUnnamed_32 = 68719476761;
-pub const KEYC_MOUSEDOWN2_STATUS_DEFAULT: C2RustUnnamed_32 = 68719476760;
-pub const KEYC_MOUSEDOWN2_STATUS_RIGHT: C2RustUnnamed_32 = 68719476759;
-pub const KEYC_MOUSEDOWN2_STATUS_LEFT: C2RustUnnamed_32 = 68719476758;
-pub const KEYC_MOUSEDOWN2_STATUS: C2RustUnnamed_32 = 68719476757;
-pub const KEYC_MOUSEDOWN2_PANE: C2RustUnnamed_32 = 68719476756;
-pub const KEYC_MOUSEDOWN1_BORDER: C2RustUnnamed_32 = 68719476755;
-pub const KEYC_MOUSEDOWN1_STATUS_DEFAULT: C2RustUnnamed_32 = 68719476754;
-pub const KEYC_MOUSEDOWN1_STATUS_RIGHT: C2RustUnnamed_32 = 68719476753;
-pub const KEYC_MOUSEDOWN1_STATUS_LEFT: C2RustUnnamed_32 = 68719476752;
-pub const KEYC_MOUSEDOWN1_STATUS: C2RustUnnamed_32 = 68719476751;
-pub const KEYC_MOUSEDOWN1_PANE: C2RustUnnamed_32 = 68719476750;
-pub const KEYC_MOUSEMOVE_BORDER: C2RustUnnamed_32 = 68719476749;
-pub const KEYC_MOUSEMOVE_STATUS_DEFAULT: C2RustUnnamed_32 = 68719476748;
-pub const KEYC_MOUSEMOVE_STATUS_RIGHT: C2RustUnnamed_32 = 68719476747;
-pub const KEYC_MOUSEMOVE_STATUS_LEFT: C2RustUnnamed_32 = 68719476746;
-pub const KEYC_MOUSEMOVE_STATUS: C2RustUnnamed_32 = 68719476745;
-pub const KEYC_MOUSEMOVE_PANE: C2RustUnnamed_32 = 68719476744;
-pub const KEYC_DOUBLECLICK: C2RustUnnamed_32 = 68719476743;
-pub const KEYC_DRAGGING: C2RustUnnamed_32 = 68719476742;
-pub const KEYC_MOUSE: C2RustUnnamed_32 = 68719476741;
-pub const KEYC_PASTE_END: C2RustUnnamed_32 = 68719476740;
-pub const KEYC_PASTE_START: C2RustUnnamed_32 = 68719476739;
-pub const KEYC_ANY: C2RustUnnamed_32 = 68719476738;
-pub const KEYC_FOCUS_OUT: C2RustUnnamed_32 = 68719476737;
-pub const KEYC_FOCUS_IN: C2RustUnnamed_32 = 68719476736;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -1656,7 +1464,7 @@ static mut window_tree_menu_items: [menu_item; 13] = [
     {
         let mut init = menu_item {
             name: b"Expand\x00" as *const u8 as *const libc::c_char,
-            key: KEYC_RIGHT as libc::c_ulong as key_code,
+            key: key_code_code::RIGHT as libc::c_ulong as key_code,
             command: 0 as *const libc::c_char,
         };
         init
@@ -3422,7 +3230,7 @@ unsafe extern "C" fn window_tree_mouse(
     let mut wl: *mut winlink = 0 as *mut winlink;
     let mut wp: *mut window_pane = 0 as *mut window_pane;
     let mut loop_0: u_int = 0;
-    if key != KEYC_MOUSEDOWN1_PANE as libc::c_ulong as libc::c_ulonglong {
+    if key != key_code_code::MOUSEDOWN1_PANE as libc::c_ulong as libc::c_ulonglong {
         return 0xff000000000 as libc::c_ulonglong;
     }
     if (*data).left != -(1 as libc::c_int) && x <= (*data).left as u_int {
@@ -3524,9 +3332,10 @@ unsafe extern "C" fn window_tree_key(
         item = new_item;
         (*data).offset = 0 as libc::c_int
     }
-    if key & 0xfffffffffff as libc::c_ulonglong >= KEYC_MOUSE as libc::c_ulong as libc::c_ulonglong
+    if key & 0xfffffffffff as libc::c_ulonglong
+        >= key_code_code::MOUSE as libc::c_ulong as libc::c_ulonglong
         && (key & 0xfffffffffff as libc::c_ulonglong)
-            < KEYC_BSPACE as libc::c_ulong as libc::c_ulonglong
+            < key_code_code::BSPACE as libc::c_ulong as libc::c_ulonglong
         && !m.is_null()
     {
         key = window_tree_mouse(data, key, x, item)

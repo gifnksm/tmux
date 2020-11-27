@@ -122,6 +122,7 @@ pub mod input;
 pub mod input_keys;
 pub mod job;
 pub mod key_bindings;
+pub mod key_code;
 pub mod key_string;
 pub mod layout;
 pub mod layout_custom;
