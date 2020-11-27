@@ -151,6 +151,7 @@ pub mod status;
 pub mod style;
 pub mod tty;
 pub mod tty_acs;
+pub mod tty_code;
 pub mod tty_features;
 pub mod tty_keys;
 pub mod tty_term;
