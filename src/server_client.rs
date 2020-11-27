@@ -1,4 +1,7 @@
-use crate::key_code::code as key_code_code;
+use crate::{
+    key_code::code as key_code_code,
+    msg::{code as msgtype_code, Msgtype},
+};
 use ::libc;
 
 extern "C" {
@@ -99,7 +102,7 @@ extern "C" {
     #[no_mangle]
     fn proc_send(
         _: *mut crate::proc::tmuxpeer,
-        _: msgtype,
+        _: Msgtype,
         _: libc::c_int,
         _: *const libc::c_void,
         _: size_t,
@@ -623,7 +626,7 @@ pub struct client {
     pub status: status_line,
     pub flags: uint64_t,
     pub exit_type: C2RustUnnamed_28,
-    pub exit_msgtype: msgtype,
+    pub exit_msgtype: crate::msg::Msgtype,
     pub exit_session: *mut libc::c_char,
     pub exit_message: *mut libc::c_char,
     pub keytable: *mut key_table,
@@ -1264,46 +1267,6 @@ pub struct cmd_list {
     pub group: u_int,
     pub list: *mut crate::cmd::cmds,
 }
-pub type msgtype = libc::c_uint;
-pub const MSG_WRITE_CLOSE: msgtype = 306;
-pub const MSG_WRITE_READY: msgtype = 305;
-pub const MSG_WRITE: msgtype = 304;
-pub const MSG_WRITE_OPEN: msgtype = 303;
-pub const MSG_READ_DONE: msgtype = 302;
-pub const MSG_READ: msgtype = 301;
-pub const MSG_READ_OPEN: msgtype = 300;
-pub const MSG_FLAGS: msgtype = 218;
-pub const MSG_EXEC: msgtype = 217;
-pub const MSG_WAKEUP: msgtype = 216;
-pub const MSG_UNLOCK: msgtype = 215;
-pub const MSG_SUSPEND: msgtype = 214;
-pub const MSG_OLDSTDOUT: msgtype = 213;
-pub const MSG_OLDSTDIN: msgtype = 212;
-pub const MSG_OLDSTDERR: msgtype = 211;
-pub const MSG_SHUTDOWN: msgtype = 210;
-pub const MSG_SHELL: msgtype = 209;
-pub const MSG_RESIZE: msgtype = 208;
-pub const MSG_READY: msgtype = 207;
-pub const MSG_LOCK: msgtype = 206;
-pub const MSG_EXITING: msgtype = 205;
-pub const MSG_EXITED: msgtype = 204;
-pub const MSG_EXIT: msgtype = 203;
-pub const MSG_DETACHKILL: msgtype = 202;
-pub const MSG_DETACH: msgtype = 201;
-pub const MSG_COMMAND: msgtype = 200;
-pub const MSG_IDENTIFY_LONGFLAGS: msgtype = 111;
-pub const MSG_IDENTIFY_STDOUT: msgtype = 110;
-pub const MSG_IDENTIFY_FEATURES: msgtype = 109;
-pub const MSG_IDENTIFY_CWD: msgtype = 108;
-pub const MSG_IDENTIFY_CLIENTPID: msgtype = 107;
-pub const MSG_IDENTIFY_DONE: msgtype = 106;
-pub const MSG_IDENTIFY_ENVIRON: msgtype = 105;
-pub const MSG_IDENTIFY_STDIN: msgtype = 104;
-pub const MSG_IDENTIFY_OLDCWD: msgtype = 103;
-pub const MSG_IDENTIFY_TTYNAME: msgtype = 102;
-pub const MSG_IDENTIFY_TERM: msgtype = 101;
-pub const MSG_IDENTIFY_FLAGS: msgtype = 100;
-pub const MSG_VERSION: msgtype = 12;
 pub type C2RustUnnamed_28 = libc::c_uint;
 pub const CLIENT_EXIT_DETACH: C2RustUnnamed_28 = 2;
 pub const CLIENT_EXIT_SHUTDOWN: C2RustUnnamed_28 = 1;
@@ -2550,7 +2513,7 @@ pub unsafe extern "C" fn server_client_suspend(mut c: *mut client) {
     (*c).flags |= 0x40 as libc::c_int as libc::c_ulong;
     proc_send(
         (*c).peer,
-        MSG_SUSPEND,
+        msgtype_code::SUSPEND,
         -(1 as libc::c_int),
         0 as *const libc::c_void,
         0 as libc::c_int as size_t,
@@ -2558,7 +2521,7 @@ pub unsafe extern "C" fn server_client_suspend(mut c: *mut client) {
 }
 /* Detach a client. */
 #[no_mangle]
-pub unsafe extern "C" fn server_client_detach(mut c: *mut client, mut msgtype: msgtype) {
+pub unsafe extern "C" fn server_client_detach(mut c: *mut client, mut msgtype: Msgtype) {
     let mut s: *mut session = (*c).session;
     if s.is_null()
         || (*c).flags
@@ -2612,7 +2575,7 @@ pub unsafe extern "C" fn server_client_exec(mut c: *mut client, mut cmd: *const 
     );
     proc_send(
         (*c).peer,
-        MSG_EXEC,
+        msgtype_code::EXEC,
         -(1 as libc::c_int),
         msg as *const libc::c_void,
         cmdsize.wrapping_add(shellsize),
@@ -4630,7 +4593,7 @@ unsafe extern "C" fn server_client_check_exit(mut c: *mut client) {
             }
             proc_send(
                 (*c).peer,
-                MSG_EXIT,
+                msgtype_code::EXIT,
                 -(1 as libc::c_int),
                 data as *const libc::c_void,
                 size,
@@ -4640,7 +4603,7 @@ unsafe extern "C" fn server_client_check_exit(mut c: *mut client) {
         1 => {
             proc_send(
                 (*c).peer,
-                MSG_SHUTDOWN,
+                msgtype_code::SHUTDOWN,
                 -(1 as libc::c_int),
                 0 as *const libc::c_void,
                 0 as libc::c_int as size_t,
@@ -5004,7 +4967,7 @@ unsafe extern "C" fn server_client_dispatch(mut imsg: *mut imsg, mut arg: *mut l
         }
         208 => {
             if datalen != 0 as libc::c_int as libc::c_long {
-                fatalx(b"bad MSG_RESIZE size\x00" as *const u8 as *const libc::c_char);
+                fatalx(b"bad msgtype_code::RESIZE size\x00" as *const u8 as *const libc::c_char);
             }
             if !((*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0) {
                 server_client_update_latest(c);
@@ -5019,13 +4982,13 @@ unsafe extern "C" fn server_client_dispatch(mut imsg: *mut imsg, mut arg: *mut l
         }
         205 => {
             if datalen != 0 as libc::c_int as libc::c_long {
-                fatalx(b"bad MSG_EXITING size\x00" as *const u8 as *const libc::c_char);
+                fatalx(b"bad msgtype_code::EXITING size\x00" as *const u8 as *const libc::c_char);
             }
             (*c).session = 0 as *mut session;
             tty_close(&mut (*c).tty);
             proc_send(
                 (*c).peer,
-                MSG_EXITED,
+                msgtype_code::EXITED,
                 -(1 as libc::c_int),
                 0 as *const libc::c_void,
                 0 as libc::c_int as size_t,
@@ -5033,7 +4996,7 @@ unsafe extern "C" fn server_client_dispatch(mut imsg: *mut imsg, mut arg: *mut l
         }
         216 | 215 => {
             if datalen != 0 as libc::c_int as libc::c_long {
-                fatalx(b"bad MSG_WAKEUP size\x00" as *const u8 as *const libc::c_char);
+                fatalx(b"bad msgtype_code::WAKEUP size\x00" as *const u8 as *const libc::c_char);
             }
             if !((*c).flags & 0x40 as libc::c_int as libc::c_ulong == 0) {
                 (*c).flags &= !(0x40 as libc::c_int) as libc::c_ulong;
@@ -5055,7 +5018,7 @@ unsafe extern "C" fn server_client_dispatch(mut imsg: *mut imsg, mut arg: *mut l
         }
         209 => {
             if datalen != 0 as libc::c_int as libc::c_long {
-                fatalx(b"bad MSG_SHELL size\x00" as *const u8 as *const libc::c_char);
+                fatalx(b"bad msgtype_code::SHELL size\x00" as *const u8 as *const libc::c_char);
             }
             server_client_dispatch_shell(c);
         }
@@ -5100,7 +5063,7 @@ unsafe extern "C" fn server_client_dispatch_command(mut c: *mut client, mut imsg
         .wrapping_sub(::std::mem::size_of::<imsg_hdr>() as libc::c_ulong)
         < ::std::mem::size_of::<msg_command>() as libc::c_ulong
     {
-        fatalx(b"bad MSG_COMMAND size\x00" as *const u8 as *const libc::c_char);
+        fatalx(b"bad msgtype_code::COMMAND size\x00" as *const u8 as *const libc::c_char);
     }
     memcpy(
         &mut data as *mut msg_command as *mut libc::c_void,
@@ -5116,7 +5079,7 @@ unsafe extern "C" fn server_client_dispatch_command(mut c: *mut client, mut imsg
         && *buf.offset(len.wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize) as libc::c_int
             != '\u{0}' as i32
     {
-        fatalx(b"bad MSG_COMMAND string\x00" as *const u8 as *const libc::c_char);
+        fatalx(b"bad msgtype_code::COMMAND string\x00" as *const u8 as *const libc::c_char);
     }
     argc = data.argc;
     if cmd_unpack_argv(buf, len, argc, &mut argv) != 0 as libc::c_int {
@@ -5183,7 +5146,10 @@ unsafe extern "C" fn server_client_dispatch_identify(mut c: *mut client, mut ims
     match (*imsg).hdr.type_0 {
         109 => {
             if datalen != ::std::mem::size_of::<libc::c_int>() as libc::c_ulong {
-                fatalx(b"bad MSG_IDENTIFY_FEATURES size\x00" as *const u8 as *const libc::c_char);
+                fatalx(
+                    b"bad msgtype_code::IDENTIFY_FEATURES size\x00" as *const u8
+                        as *const libc::c_char,
+                );
             }
             memcpy(
                 &mut feat as *mut libc::c_int as *mut libc::c_void,
@@ -5199,7 +5165,10 @@ unsafe extern "C" fn server_client_dispatch_identify(mut c: *mut client, mut ims
         }
         100 => {
             if datalen != ::std::mem::size_of::<libc::c_int>() as libc::c_ulong {
-                fatalx(b"bad MSG_IDENTIFY_FLAGS size\x00" as *const u8 as *const libc::c_char);
+                fatalx(
+                    b"bad msgtype_code::IDENTIFY_FLAGS size\x00" as *const u8
+                        as *const libc::c_char,
+                );
             }
             memcpy(
                 &mut flags as *mut libc::c_int as *mut libc::c_void,
@@ -5215,7 +5184,10 @@ unsafe extern "C" fn server_client_dispatch_identify(mut c: *mut client, mut ims
         }
         111 => {
             if datalen != ::std::mem::size_of::<uint64_t>() as libc::c_ulong {
-                fatalx(b"bad MSG_IDENTIFY_LONGFLAGS size\x00" as *const u8 as *const libc::c_char);
+                fatalx(
+                    b"bad msgtype_code::IDENTIFY_LONGFLAGS size\x00" as *const u8
+                        as *const libc::c_char,
+                );
             }
             memcpy(
                 &mut longflags as *mut uint64_t as *mut libc::c_void,
@@ -5235,7 +5207,10 @@ unsafe extern "C" fn server_client_dispatch_identify(mut c: *mut client, mut ims
                     as libc::c_int
                     != '\u{0}' as i32
             {
-                fatalx(b"bad MSG_IDENTIFY_TERM string\x00" as *const u8 as *const libc::c_char);
+                fatalx(
+                    b"bad msgtype_code::IDENTIFY_TERM string\x00" as *const u8
+                        as *const libc::c_char,
+                );
             }
             if *data as libc::c_int == '\u{0}' as i32 {
                 (*c).term_name = xstrdup(b"unknown\x00" as *const u8 as *const libc::c_char)
@@ -5254,7 +5229,10 @@ unsafe extern "C" fn server_client_dispatch_identify(mut c: *mut client, mut ims
                     as libc::c_int
                     != '\u{0}' as i32
             {
-                fatalx(b"bad MSG_IDENTIFY_TTYNAME string\x00" as *const u8 as *const libc::c_char);
+                fatalx(
+                    b"bad msgtype_code::IDENTIFY_TTYNAME string\x00" as *const u8
+                        as *const libc::c_char,
+                );
             }
             (*c).ttyname = xstrdup(data);
             log_debug(
@@ -5269,7 +5247,10 @@ unsafe extern "C" fn server_client_dispatch_identify(mut c: *mut client, mut ims
                     as libc::c_int
                     != '\u{0}' as i32
             {
-                fatalx(b"bad MSG_IDENTIFY_CWD string\x00" as *const u8 as *const libc::c_char);
+                fatalx(
+                    b"bad msgtype_code::IDENTIFY_CWD string\x00" as *const u8
+                        as *const libc::c_char,
+                );
             }
             if access(data, 1 as libc::c_int) == 0 as libc::c_int {
                 (*c).cwd = xstrdup(data)
@@ -5289,7 +5270,10 @@ unsafe extern "C" fn server_client_dispatch_identify(mut c: *mut client, mut ims
         }
         104 => {
             if datalen != 0 as libc::c_int as libc::c_ulong {
-                fatalx(b"bad MSG_IDENTIFY_STDIN size\x00" as *const u8 as *const libc::c_char);
+                fatalx(
+                    b"bad msgtype_code::IDENTIFY_STDIN size\x00" as *const u8
+                        as *const libc::c_char,
+                );
             }
             (*c).fd = (*imsg).fd;
             log_debug(
@@ -5300,7 +5284,10 @@ unsafe extern "C" fn server_client_dispatch_identify(mut c: *mut client, mut ims
         }
         110 => {
             if datalen != 0 as libc::c_int as libc::c_ulong {
-                fatalx(b"bad MSG_IDENTIFY_STDOUT size\x00" as *const u8 as *const libc::c_char);
+                fatalx(
+                    b"bad msgtype_code::IDENTIFY_STDOUT size\x00" as *const u8
+                        as *const libc::c_char,
+                );
             }
             (*c).out_fd = (*imsg).fd;
             log_debug(
@@ -5315,7 +5302,10 @@ unsafe extern "C" fn server_client_dispatch_identify(mut c: *mut client, mut ims
                     as libc::c_int
                     != '\u{0}' as i32
             {
-                fatalx(b"bad MSG_IDENTIFY_ENVIRON string\x00" as *const u8 as *const libc::c_char);
+                fatalx(
+                    b"bad msgtype_code::IDENTIFY_ENVIRON string\x00" as *const u8
+                        as *const libc::c_char,
+                );
             }
             if !strchr(data, '=' as i32).is_null() {
                 environ_put((*c).environ, data, 0 as libc::c_int);
@@ -5328,7 +5318,10 @@ unsafe extern "C" fn server_client_dispatch_identify(mut c: *mut client, mut ims
         }
         107 => {
             if datalen != ::std::mem::size_of::<pid_t>() as libc::c_ulong {
-                fatalx(b"bad MSG_IDENTIFY_CLIENTPID size\x00" as *const u8 as *const libc::c_char);
+                fatalx(
+                    b"bad msgtype_code::IDENTIFY_CLIENTPID size\x00" as *const u8
+                        as *const libc::c_char,
+                );
             }
             memcpy(
                 &mut (*c).pid as *mut pid_t as *mut libc::c_void,
@@ -5343,7 +5336,7 @@ unsafe extern "C" fn server_client_dispatch_identify(mut c: *mut client, mut ims
         }
         _ => {}
     }
-    if (*imsg).hdr.type_0 != MSG_IDENTIFY_DONE as libc::c_int as libc::c_uint {
+    if (*imsg).hdr.type_0 != msgtype_code::IDENTIFY_DONE as libc::c_int as libc::c_uint {
         return;
     }
     (*c).flags |= 0x40000 as libc::c_int as libc::c_ulong;
@@ -5399,7 +5392,7 @@ unsafe extern "C" fn server_client_dispatch_shell(mut c: *mut client) {
     }
     proc_send(
         (*c).peer,
-        MSG_SHELL,
+        msgtype_code::SHELL,
         -(1 as libc::c_int),
         shell as *const libc::c_void,
         strlen(shell).wrapping_add(1 as libc::c_int as libc::c_ulong),
@@ -5432,7 +5425,7 @@ unsafe extern "C" fn server_client_dispatch_write_ready(mut c: *mut client, mut 
     };
     let mut cf: *mut client_file = 0 as *mut client_file;
     if msglen != ::std::mem::size_of::<msg_write_ready>() as libc::c_ulong {
-        fatalx(b"bad MSG_WRITE_READY size\x00" as *const u8 as *const libc::c_char);
+        fatalx(b"bad msgtype_code::WRITE_READY size\x00" as *const u8 as *const libc::c_char);
     }
     find.stream = (*msg).stream;
     cf = client_files_RB_FIND(&mut (*c).files, &mut find);
@@ -5475,7 +5468,7 @@ unsafe extern "C" fn server_client_dispatch_read_data(mut c: *mut client, mut im
     let mut bsize: size_t =
         msglen.wrapping_sub(::std::mem::size_of::<msg_read_data>() as libc::c_ulong);
     if msglen < ::std::mem::size_of::<msg_read_data>() as libc::c_ulong {
-        fatalx(b"bad MSG_READ_DATA size\x00" as *const u8 as *const libc::c_char);
+        fatalx(b"bad msgtype_code::READ_DATA size\x00" as *const u8 as *const libc::c_char);
     }
     find.stream = (*msg).stream;
     cf = client_files_RB_FIND(&mut (*c).files, &mut find);
@@ -5523,7 +5516,7 @@ unsafe extern "C" fn server_client_dispatch_read_done(mut c: *mut client, mut im
     };
     let mut cf: *mut client_file = 0 as *mut client_file;
     if msglen != ::std::mem::size_of::<msg_read_done>() as libc::c_ulong {
-        fatalx(b"bad MSG_READ_DONE size\x00" as *const u8 as *const libc::c_char);
+        fatalx(b"bad msgtype_code::READ_DONE size\x00" as *const u8 as *const libc::c_char);
     }
     find.stream = (*msg).stream;
     cf = client_files_RB_FIND(&mut (*c).files, &mut find);
@@ -5655,7 +5648,7 @@ pub unsafe extern "C" fn server_client_set_flags(
     free(copy as *mut libc::c_void);
     proc_send(
         (*c).peer,
-        MSG_FLAGS,
+        msgtype_code::FLAGS,
         -(1 as libc::c_int),
         &mut (*c).flags as *mut uint64_t as *const libc::c_void,
         ::std::mem::size_of::<uint64_t>() as libc::c_ulong,

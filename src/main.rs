@@ -130,6 +130,7 @@ pub mod layout_set;
 pub mod log;
 pub mod menu;
 pub mod mode_tree;
+pub mod msg;
 pub mod names;
 pub mod notify;
 pub mod options;

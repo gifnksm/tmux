@@ -1,4 +1,6 @@
+use crate::msg::code as msgtype_code;
 use ::libc;
+
 extern "C" {
     pub type _IO_wide_data;
     pub type _IO_codecvt;
@@ -77,7 +79,7 @@ extern "C" {
     #[no_mangle]
     fn proc_send(
         _: *mut crate::proc::tmuxpeer,
-        _: msgtype,
+        _: crate::msg::Msgtype,
         _: libc::c_int,
         _: *const libc::c_void,
         _: size_t,
@@ -369,7 +371,7 @@ pub struct client {
     pub status: status_line,
     pub flags: uint64_t,
     pub exit_type: C2RustUnnamed_28,
-    pub exit_msgtype: msgtype,
+    pub exit_msgtype: crate::msg::Msgtype,
     pub exit_session: *mut libc::c_char,
     pub exit_message: *mut libc::c_char,
     pub keytable: *mut key_table,
@@ -1010,46 +1012,6 @@ pub struct cmd_list {
     pub group: u_int,
     pub list: *mut crate::cmd::cmds,
 }
-pub type msgtype = libc::c_uint;
-pub const MSG_WRITE_CLOSE: msgtype = 306;
-pub const MSG_WRITE_READY: msgtype = 305;
-pub const MSG_WRITE: msgtype = 304;
-pub const MSG_WRITE_OPEN: msgtype = 303;
-pub const MSG_READ_DONE: msgtype = 302;
-pub const MSG_READ: msgtype = 301;
-pub const MSG_READ_OPEN: msgtype = 300;
-pub const MSG_FLAGS: msgtype = 218;
-pub const MSG_EXEC: msgtype = 217;
-pub const MSG_WAKEUP: msgtype = 216;
-pub const MSG_UNLOCK: msgtype = 215;
-pub const MSG_SUSPEND: msgtype = 214;
-pub const MSG_OLDSTDOUT: msgtype = 213;
-pub const MSG_OLDSTDIN: msgtype = 212;
-pub const MSG_OLDSTDERR: msgtype = 211;
-pub const MSG_SHUTDOWN: msgtype = 210;
-pub const MSG_SHELL: msgtype = 209;
-pub const MSG_RESIZE: msgtype = 208;
-pub const MSG_READY: msgtype = 207;
-pub const MSG_LOCK: msgtype = 206;
-pub const MSG_EXITING: msgtype = 205;
-pub const MSG_EXITED: msgtype = 204;
-pub const MSG_EXIT: msgtype = 203;
-pub const MSG_DETACHKILL: msgtype = 202;
-pub const MSG_DETACH: msgtype = 201;
-pub const MSG_COMMAND: msgtype = 200;
-pub const MSG_IDENTIFY_LONGFLAGS: msgtype = 111;
-pub const MSG_IDENTIFY_STDOUT: msgtype = 110;
-pub const MSG_IDENTIFY_FEATURES: msgtype = 109;
-pub const MSG_IDENTIFY_CWD: msgtype = 108;
-pub const MSG_IDENTIFY_CLIENTPID: msgtype = 107;
-pub const MSG_IDENTIFY_DONE: msgtype = 106;
-pub const MSG_IDENTIFY_ENVIRON: msgtype = 105;
-pub const MSG_IDENTIFY_STDIN: msgtype = 104;
-pub const MSG_IDENTIFY_OLDCWD: msgtype = 103;
-pub const MSG_IDENTIFY_TTYNAME: msgtype = 102;
-pub const MSG_IDENTIFY_TERM: msgtype = 101;
-pub const MSG_IDENTIFY_FLAGS: msgtype = 100;
-pub const MSG_VERSION: msgtype = 12;
 pub type C2RustUnnamed_28 = libc::c_uint;
 pub const CLIENT_EXIT_DETACH: C2RustUnnamed_28 = 2;
 pub const CLIENT_EXIT_SHUTDOWN: C2RustUnnamed_28 = 1;
@@ -1969,7 +1931,7 @@ pub unsafe extern "C" fn file_vprint(
         msg.flags = 0 as libc::c_int;
         proc_send(
             (*c).peer,
-            MSG_WRITE_OPEN,
+            msgtype_code::WRITE_OPEN,
             -(1 as libc::c_int),
             &mut msg as *mut msg_write_open as *const libc::c_void,
             ::std::mem::size_of::<msg_write_open>() as libc::c_ulong,
@@ -2024,7 +1986,7 @@ pub unsafe extern "C" fn file_print_buffer(
         msg.flags = 0 as libc::c_int;
         proc_send(
             (*c).peer,
-            MSG_WRITE_OPEN,
+            msgtype_code::WRITE_OPEN,
             -(1 as libc::c_int),
             &mut msg as *mut msg_write_open as *const libc::c_void,
             ::std::mem::size_of::<msg_write_open>() as libc::c_ulong,
@@ -2081,7 +2043,7 @@ pub unsafe extern "C" fn file_error(
         msg.flags = 0 as libc::c_int;
         proc_send(
             (*c).peer,
-            MSG_WRITE_OPEN,
+            msgtype_code::WRITE_OPEN,
             -(1 as libc::c_int),
             &mut msg as *mut msg_write_open as *const libc::c_void,
             ::std::mem::size_of::<msg_write_open>() as libc::c_ulong,
@@ -2171,7 +2133,7 @@ pub unsafe extern "C" fn file_write(
                 );
                 if proc_send(
                     (*c).peer,
-                    MSG_WRITE_OPEN,
+                    msgtype_code::WRITE_OPEN,
                     -(1 as libc::c_int),
                     msg as *const libc::c_void,
                     msglen,
@@ -2288,7 +2250,7 @@ pub unsafe extern "C" fn file_read(
                 );
                 if proc_send(
                     (*c).peer,
-                    MSG_READ_OPEN,
+                    msgtype_code::READ_OPEN,
                     -(1 as libc::c_int),
                     msg as *const libc::c_void,
                     msglen,
@@ -2349,7 +2311,7 @@ pub unsafe extern "C" fn file_push(mut cf: *mut client_file) {
         );
         if proc_send(
             (*c).peer,
-            MSG_WRITE,
+            msgtype_code::WRITE,
             -(1 as libc::c_int),
             msg as *const libc::c_void,
             msglen,
@@ -2387,7 +2349,7 @@ pub unsafe extern "C" fn file_push(mut cf: *mut client_file) {
         close.stream = (*cf).stream;
         proc_send(
             (*c).peer,
-            MSG_WRITE_CLOSE,
+            msgtype_code::WRITE_CLOSE,
             -(1 as libc::c_int),
             &mut close as *mut msg_write_close as *const libc::c_void,
             ::std::mem::size_of::<msg_write_close>() as libc::c_ulong,
