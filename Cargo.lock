@@ -21,14 +21,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "c2rust_out"
-version = "0.0.0"
-dependencies = [
- "c2rust-bitfields",
- "libc",
-]
-
-[[package]]
 name = "libc"
 version = "0.2.80"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -61,6 +53,14 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-xid",
+]
+
+[[package]]
+name = "tmux"
+version = "0.0.0"
+dependencies = [
+ "c2rust-bitfields",
+ "libc",
 ]
 
 [[package]]

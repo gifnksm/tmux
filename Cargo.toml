@@ -1,18 +1,13 @@
 [workspace]
-members = [
-]
+members = []
 
 [package]
-name = "c2rust_out"
-authors = ["C2Rust"]
+name = "tmux"
+authors = ["NAKASHIMA, Makoto <makoto.nksm+github@gmail.com>"]
 version = "0.0.0"
 publish = false
 edition = "2018"
 autobins = false
-
-[lib]
-name = "c2rust_out"
-crate-type = ["staticlib", "rlib"]
 
 [[bin]]
 name = "tmux"
