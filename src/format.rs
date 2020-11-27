@@ -5,22 +5,6 @@ extern "C" {
     pub type event_base;
     pub type evbuffer;
     pub type bufferevent_ops;
-    pub type args_entry;
-    pub type screen_write_collect_line;
-    pub type screen_sel;
-    pub type screen_titles;
-    pub type environ;
-    pub type options;
-    pub type cmdq_item;
-    pub type input_ctx;
-    pub type cmds;
-    pub type tty_code;
-    pub type job;
-    pub type control_state;
-    pub type cmdq_list;
-    pub type tmuxpeer;
-    pub type options_entry;
-    pub type paste_buffer;
     #[no_mangle]
     fn __ctype_b_loc() -> *mut *const libc::c_ushort;
     #[no_mangle]

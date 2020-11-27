@@ -1,6 +1,5 @@
 use ::libc;
 extern "C" {
-    pub type options;
     #[no_mangle]
     fn free(__ptr: *mut libc::c_void);
     #[no_mangle]

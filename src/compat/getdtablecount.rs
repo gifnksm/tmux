@@ -1,7 +1,5 @@
 use ::libc;
 extern "C" {
-    pub type stat;
-    pub type dirent;
     #[no_mangle]
     fn glob(
         __pattern: *const libc::c_char,

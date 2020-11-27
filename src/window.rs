@@ -5,21 +5,6 @@ extern "C" {
     pub type event_base;
     pub type evbuffer;
     pub type bufferevent_ops;
-    pub type args_entry;
-    pub type screen_write_collect_line;
-    pub type screen_sel;
-    pub type screen_titles;
-    pub type environ;
-    pub type options;
-    pub type format_tree;
-    pub type input_ctx;
-    pub type cmds;
-    pub type tty_code;
-    pub type format_job_tree;
-    pub type control_state;
-    pub type cmdq_list;
-    pub type tmuxpeer;
-    pub type cmdq_item;
     #[no_mangle]
     fn ioctl(__fd: libc::c_int, __request: libc::c_ulong, _: ...) -> libc::c_int;
     #[no_mangle]

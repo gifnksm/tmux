@@ -1,6 +1,5 @@
 use ::libc;
 extern "C" {
-    pub type screen_write_collect_line;
     #[no_mangle]
     fn calloc(_: libc::c_ulong, _: libc::c_ulong) -> *mut libc::c_void;
     #[no_mangle]

@@ -1,7 +1,5 @@
 use ::libc;
 extern "C" {
-    pub type cmd;
-    pub type cmdq_item;
     #[no_mangle]
     fn kill(__pid: __pid_t, __sig: libc::c_int) -> libc::c_int;
     #[no_mangle]

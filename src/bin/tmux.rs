@@ -16,16 +16,16 @@
     register_tool
 )]
 
-extern crate c2rust_out;
+use c2rust_out::{
+    environ::environ,
+    options::{options, options_entry},
+};
 
 extern "C" {
     pub type event_base;
     pub type _IO_wide_data;
     pub type _IO_codecvt;
     pub type _IO_marker;
-    pub type environ;
-    pub type options;
-    pub type options_entry;
     #[no_mangle]
     fn mkdir(__path: *const libc::c_char, __mode: __mode_t) -> libc::c_int;
     #[no_mangle]

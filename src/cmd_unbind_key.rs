@@ -1,9 +1,5 @@
 use ::libc;
 extern "C" {
-    pub type args_entry;
-    pub type cmds;
-    pub type cmd;
-    pub type cmdq_item;
     #[no_mangle]
     fn args_has(_: *mut args, _: u_char) -> libc::c_int;
     #[no_mangle]
