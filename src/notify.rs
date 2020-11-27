@@ -32,26 +32,47 @@ extern "C" {
     #[no_mangle]
     fn xstrdup(_: *const libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
-    static mut global_s_options: *mut options;
+    static mut global_s_options: *mut crate::options::options;
     #[no_mangle]
-    fn cmdq_free_state(_: *mut cmdq_state);
+    fn cmdq_free_state(_: *mut crate::cmd_queue::cmdq_state);
     #[no_mangle]
-    fn options_array_next(_: *mut options_array_item) -> *mut options_array_item;
+    fn options_array_next(
+        _: *mut crate::options::options_array_item,
+    ) -> *mut crate::options::options_array_item;
     #[no_mangle]
-    fn cmdq_insert_after(_: *mut cmdq_item, _: *mut cmdq_item) -> *mut cmdq_item;
+    fn cmdq_insert_after(
+        _: *mut crate::cmd_queue::cmdq_item,
+        _: *mut crate::cmd_queue::cmdq_item,
+    ) -> *mut crate::cmd_queue::cmdq_item;
     #[no_mangle]
-    fn cmdq_get_command(_: *mut cmd_list, _: *mut cmdq_state) -> *mut cmdq_item;
+    fn cmdq_get_command(
+        _: *mut cmd_list,
+        _: *mut crate::cmd_queue::cmdq_state,
+    ) -> *mut crate::cmd_queue::cmdq_item;
     #[no_mangle]
-    fn options_array_item_value(_: *mut options_array_item) -> *mut options_value;
+    fn options_array_item_value(_: *mut crate::options::options_array_item) -> *mut options_value;
     #[no_mangle]
-    fn options_array_first(_: *mut options_entry) -> *mut options_array_item;
+    fn options_array_first(
+        _: *mut crate::options::options_entry,
+    ) -> *mut crate::options::options_array_item;
     #[no_mangle]
-    fn cmdq_add_format(_: *mut cmdq_state, _: *const libc::c_char, _: *const libc::c_char, _: ...);
+    fn cmdq_add_format(
+        _: *mut crate::cmd_queue::cmdq_state,
+        _: *const libc::c_char,
+        _: *const libc::c_char,
+        _: ...
+    );
     #[no_mangle]
-    fn cmdq_new_state(_: *mut cmd_find_state, _: *mut key_event, _: libc::c_int)
-        -> *mut cmdq_state;
+    fn cmdq_new_state(
+        _: *mut cmd_find_state,
+        _: *mut key_event,
+        _: libc::c_int,
+    ) -> *mut crate::cmd_queue::cmdq_state;
     #[no_mangle]
-    fn options_get(_: *mut options, _: *const libc::c_char) -> *mut options_entry;
+    fn options_get(
+        _: *mut crate::options::options,
+        _: *const libc::c_char,
+    ) -> *mut crate::options::options_entry;
     #[no_mangle]
     fn cmd_find_copy_state(_: *mut cmd_find_state, _: *mut cmd_find_state);
     #[no_mangle]
@@ -63,21 +84,24 @@ extern "C" {
     #[no_mangle]
     fn cmd_find_clear_state(_: *mut cmd_find_state, _: libc::c_int);
     #[no_mangle]
-    fn cmdq_get_target(_: *mut cmdq_item) -> *mut cmd_find_state;
+    fn cmdq_get_target(_: *mut crate::cmd_queue::cmdq_item) -> *mut cmd_find_state;
     #[no_mangle]
-    fn cmdq_get_client(_: *mut cmdq_item) -> *mut client;
+    fn cmdq_get_client(_: *mut crate::cmd_queue::cmdq_item) -> *mut client;
     #[no_mangle]
     fn cmdq_get_callback1(
         _: *const libc::c_char,
         _: cmdq_cb,
         _: *mut libc::c_void,
-    ) -> *mut cmdq_item;
+    ) -> *mut crate::cmd_queue::cmdq_item;
     #[no_mangle]
-    fn cmdq_append(_: *mut client, _: *mut cmdq_item) -> *mut cmdq_item;
+    fn cmdq_append(
+        _: *mut client,
+        _: *mut crate::cmd_queue::cmdq_item,
+    ) -> *mut crate::cmd_queue::cmdq_item;
     #[no_mangle]
-    fn cmdq_get_flags(_: *mut cmdq_item) -> libc::c_int;
+    fn cmdq_get_flags(_: *mut crate::cmd_queue::cmdq_item) -> libc::c_int;
     #[no_mangle]
-    fn cmdq_running(_: *mut client) -> *mut cmdq_item;
+    fn cmdq_running(_: *mut client) -> *mut crate::cmd_queue::cmdq_item;
     #[no_mangle]
     fn cmd_find_from_client(_: *mut cmd_find_state, _: *mut client, _: libc::c_int) -> libc::c_int;
     #[no_mangle]
@@ -311,17 +335,17 @@ pub struct args {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct args_tree {
-    pub rbh_root: *mut args_entry,
+    pub rbh_root: *mut crate::arguments::args_entry,
 }
 
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct client {
     pub name: *const libc::c_char,
-    pub peer: *mut tmuxpeer,
-    pub queue: *mut cmdq_list,
+    pub peer: *mut crate::proc::tmuxpeer,
+    pub queue: *mut crate::cmd_queue::cmdq_list,
     pub windows: client_windows,
-    pub control_state: *mut control_state,
+    pub control_state: *mut crate::control::control_state,
     pub pause_age: u_int,
     pub pid: pid_t,
     pub fd: libc::c_int,
@@ -330,8 +354,8 @@ pub struct client {
     pub retval: libc::c_int,
     pub creation_time: timeval,
     pub activity_time: timeval,
-    pub environ: *mut environ,
-    pub jobs: *mut format_job_tree,
+    pub environ: *mut crate::environ::environ,
+    pub jobs: *mut crate::format::format_job_tree,
     pub title: *mut libc::c_char,
     pub cwd: *const libc::c_char,
     pub term_name: *mut libc::c_char,
@@ -490,7 +514,7 @@ pub type overlay_mode_cb =
 pub struct screen {
     pub title: *mut libc::c_char,
     pub path: *mut libc::c_char,
-    pub titles: *mut screen_titles,
+    pub titles: *mut crate::screen::screen_titles,
     pub grid: *mut grid,
     pub cx: u_int,
     pub cy: u_int,
@@ -505,8 +529,8 @@ pub struct screen {
     pub saved_cell: grid_cell,
     pub saved_flags: libc::c_int,
     pub tabs: *mut bitstr_t,
-    pub sel: *mut screen_sel,
-    pub write_list: *mut screen_write_collect_line,
+    pub sel: *mut crate::screen::screen_sel,
+    pub write_list: *mut crate::screen_write::screen_write_collect_line,
 }
 
 #[repr(C)]
@@ -605,11 +629,11 @@ pub struct session {
     pub windows: winlinks,
     pub statusat: libc::c_int,
     pub statuslines: u_int,
-    pub options: *mut options,
+    pub options: *mut crate::options::options,
     pub flags: libc::c_int,
     pub attached: u_int,
     pub tio: *mut termios,
-    pub environ: *mut environ,
+    pub environ: *mut crate::environ::environ,
     pub references: libc::c_int,
     pub gentry: C2RustUnnamed_13,
     pub entry: C2RustUnnamed_12,
@@ -701,7 +725,7 @@ pub struct window {
     pub flags: libc::c_int,
     pub alerts_queued: libc::c_int,
     pub alerts_entry: C2RustUnnamed_19,
-    pub options: *mut options,
+    pub options: *mut crate::options::options,
     pub references: u_int,
     pub winlinks: C2RustUnnamed_18,
     pub entry: C2RustUnnamed_17,
@@ -764,7 +788,7 @@ pub struct window_pane {
     pub id: u_int,
     pub active_point: u_int,
     pub window: *mut window,
-    pub options: *mut options,
+    pub options: *mut crate::options::options,
     pub layout_cell: *mut layout_cell,
     pub saved_layout_cell: *mut layout_cell,
     pub sx: u_int,
@@ -787,7 +811,7 @@ pub struct window_pane {
     pub base_offset: size_t,
     pub resize_timer: event,
     pub force_timer: event,
-    pub ictx: *mut input_ctx,
+    pub ictx: *mut crate::input::input_ctx,
     pub cached_gc: grid_cell,
     pub cached_active_gc: grid_cell,
     pub palette: *mut libc::c_int,
@@ -886,7 +910,9 @@ pub struct window_mode {
             _: *mut mouse_event,
         ) -> (),
     >,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
+    pub formats: Option<
+        unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut crate::format::format_tree) -> (),
+    >,
 }
 
 #[repr(C)]
@@ -986,7 +1012,7 @@ pub struct C2RustUnnamed_27 {
 pub struct cmd_list {
     pub references: libc::c_int,
     pub group: u_int,
-    pub list: *mut cmds,
+    pub list: *mut crate::cmd::cmds,
 }
 pub type msgtype = libc::c_uint;
 pub const MSG_WRITE_CLOSE: msgtype = 306;
@@ -1141,7 +1167,7 @@ pub struct tty_term {
     pub tty: *mut tty,
     pub features: libc::c_int,
     pub acs: [[libc::c_char; 2]; 256],
-    pub codes: *mut tty_code,
+    pub codes: *mut crate::tty_term::tty_code,
     pub flags: libc::c_int,
     pub entry: C2RustUnnamed_30,
 }
@@ -1208,13 +1234,14 @@ pub const CMD_RETURN_STOP: cmd_retval = 2;
 pub const CMD_RETURN_WAIT: cmd_retval = 1;
 pub const CMD_RETURN_NORMAL: cmd_retval = 0;
 pub const CMD_RETURN_ERROR: cmd_retval = -1;
-pub type cmdq_cb =
-    Option<unsafe extern "C" fn(_: *mut cmdq_item, _: *mut libc::c_void) -> cmd_retval>;
+pub type cmdq_cb = Option<
+    unsafe extern "C" fn(_: *mut crate::cmd_queue::cmdq_item, _: *mut libc::c_void) -> cmd_retval,
+>;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct options_array {
-    pub rbh_root: *mut options_array_item,
+    pub rbh_root: *mut crate::options::options_array_item,
 }
 
 #[repr(C)]
@@ -1254,7 +1281,7 @@ pub struct notify_entry {
     pub fs: cmd_find_state,
 }
 unsafe extern "C" fn notify_hook_formats(
-    mut state: *mut cmdq_state,
+    mut state: *mut crate::cmd_queue::cmdq_state,
     mut s: *mut session,
     mut w: *mut window,
     mut pane: libc::c_int,
@@ -1296,7 +1323,10 @@ unsafe extern "C" fn notify_hook_formats(
         );
     };
 }
-unsafe extern "C" fn notify_insert_hook(mut item: *mut cmdq_item, mut ne: *mut notify_entry) {
+unsafe extern "C" fn notify_insert_hook(
+    mut item: *mut crate::cmd_queue::cmdq_item,
+    mut ne: *mut notify_entry,
+) {
     let mut fs: cmd_find_state = cmd_find_state {
         flags: 0,
         current: 0 as *mut cmd_find_state,
@@ -1306,13 +1336,14 @@ unsafe extern "C" fn notify_insert_hook(mut item: *mut cmdq_item, mut ne: *mut n
         wp: 0 as *mut window_pane,
         idx: 0,
     };
-    let mut oo: *mut options = 0 as *mut options;
-    let mut new_item: *mut cmdq_item = 0 as *mut cmdq_item;
-    let mut new_state: *mut cmdq_state = 0 as *mut cmdq_state;
+    let mut oo: *mut crate::options::options = 0 as *mut crate::options::options;
+    let mut new_item: *mut crate::cmd_queue::cmdq_item = 0 as *mut crate::cmd_queue::cmdq_item;
+    let mut new_state: *mut crate::cmd_queue::cmdq_state = 0 as *mut crate::cmd_queue::cmdq_state;
     let mut s: *mut session = (*ne).session;
     let mut w: *mut window = (*ne).window;
-    let mut o: *mut options_entry = 0 as *mut options_entry;
-    let mut a: *mut options_array_item = 0 as *mut options_array_item;
+    let mut o: *mut crate::options::options_entry = 0 as *mut crate::options::options_entry;
+    let mut a: *mut crate::options::options_array_item =
+        0 as *mut crate::options::options_array_item;
     let mut cmdlist: *mut cmd_list = 0 as *mut cmd_list;
     log_debug(
         b"%s: %s\x00" as *const u8 as *const libc::c_char,
@@ -1363,7 +1394,7 @@ unsafe extern "C" fn notify_insert_hook(mut item: *mut cmdq_item, mut ne: *mut n
     cmdq_free_state(new_state);
 }
 unsafe extern "C" fn notify_callback(
-    mut item: *mut cmdq_item,
+    mut item: *mut crate::cmd_queue::cmdq_item,
     mut data: *mut libc::c_void,
 ) -> cmd_retval {
     let mut ne: *mut notify_entry = data as *mut notify_entry;
@@ -1487,7 +1518,7 @@ unsafe extern "C" fn notify_add(
     mut wp: *mut window_pane,
 ) {
     let mut ne: *mut notify_entry = 0 as *mut notify_entry;
-    let mut item: *mut cmdq_item = 0 as *mut cmdq_item;
+    let mut item: *mut crate::cmd_queue::cmdq_item = 0 as *mut crate::cmd_queue::cmdq_item;
     item = cmdq_running(0 as *mut client);
     if !item.is_null() && cmdq_get_flags(item) & 0x4 as libc::c_int != 0 {
         return;
@@ -1534,14 +1565,20 @@ unsafe extern "C" fn notify_add(
             b"notify_callback\x00" as *const u8 as *const libc::c_char,
             Some(
                 notify_callback
-                    as unsafe extern "C" fn(_: *mut cmdq_item, _: *mut libc::c_void) -> cmd_retval,
+                    as unsafe extern "C" fn(
+                        _: *mut crate::cmd_queue::cmdq_item,
+                        _: *mut libc::c_void,
+                    ) -> cmd_retval,
             ),
             ne as *mut libc::c_void,
         ),
     );
 }
 #[no_mangle]
-pub unsafe extern "C" fn notify_hook(mut item: *mut cmdq_item, mut name: *const libc::c_char) {
+pub unsafe extern "C" fn notify_hook(
+    mut item: *mut crate::cmd_queue::cmdq_item,
+    mut name: *const libc::c_char,
+) {
     let mut target: *mut cmd_find_state = cmdq_get_target(item);
     let mut ne: notify_entry = notify_entry {
         name: 0 as *const libc::c_char,

@@ -146,13 +146,13 @@ extern "C" {
     #[no_mangle]
     fn unlink(__name: *const libc::c_char) -> libc::c_int;
     #[no_mangle]
-    static mut global_options: *mut options;
+    static mut global_options: *mut crate::options::options;
     #[no_mangle]
-    static mut global_s_options: *mut options;
+    static mut global_s_options: *mut crate::options::options;
     #[no_mangle]
-    static mut global_w_options: *mut options;
+    static mut global_w_options: *mut crate::options::options;
     #[no_mangle]
-    static mut global_environ: *mut environ;
+    static mut global_environ: *mut crate::environ::environ;
     #[no_mangle]
     static mut socket_path: *const libc::c_char;
     #[no_mangle]
@@ -167,33 +167,36 @@ extern "C" {
     fn find_home() -> *const libc::c_char;
     #[no_mangle]
     fn proc_send(
-        _: *mut tmuxpeer,
+        _: *mut crate::proc::tmuxpeer,
         _: msgtype,
         _: libc::c_int,
         _: *const libc::c_void,
         _: size_t,
     ) -> libc::c_int;
     #[no_mangle]
-    fn proc_start(_: *const libc::c_char) -> *mut tmuxproc;
+    fn proc_start(_: *const libc::c_char) -> *mut crate::proc::tmuxproc;
     #[no_mangle]
-    fn proc_loop(_: *mut tmuxproc, _: Option<unsafe extern "C" fn() -> libc::c_int>);
+    fn proc_loop(_: *mut crate::proc::tmuxproc, _: Option<unsafe extern "C" fn() -> libc::c_int>);
     #[no_mangle]
-    fn proc_exit(_: *mut tmuxproc);
+    fn proc_exit(_: *mut crate::proc::tmuxproc);
     #[no_mangle]
-    fn proc_set_signals(_: *mut tmuxproc, _: Option<unsafe extern "C" fn(_: libc::c_int) -> ()>);
+    fn proc_set_signals(
+        _: *mut crate::proc::tmuxproc,
+        _: Option<unsafe extern "C" fn(_: libc::c_int) -> ()>,
+    );
     #[no_mangle]
-    fn proc_clear_signals(_: *mut tmuxproc, _: libc::c_int);
+    fn proc_clear_signals(_: *mut crate::proc::tmuxproc, _: libc::c_int);
     #[no_mangle]
     fn proc_add_peer(
-        _: *mut tmuxproc,
+        _: *mut crate::proc::tmuxproc,
         _: libc::c_int,
         _: Option<unsafe extern "C" fn(_: *mut imsg, _: *mut libc::c_void) -> ()>,
         _: *mut libc::c_void,
-    ) -> *mut tmuxpeer;
+    ) -> *mut crate::proc::tmuxpeer;
     #[no_mangle]
-    fn options_free(_: *mut options);
+    fn options_free(_: *mut crate::options::options);
     #[no_mangle]
-    fn environ_free(_: *mut environ);
+    fn environ_free(_: *mut crate::environ::environ);
     #[no_mangle]
     fn cmd_pack_argv(
         _: libc::c_int,
@@ -232,7 +235,7 @@ extern "C" {
     fn file_free(_: *mut client_file);
     #[no_mangle]
     fn server_start(
-        _: *mut tmuxproc,
+        _: *mut crate::proc::tmuxproc,
         _: libc::c_int,
         _: *mut event_base,
         _: libc::c_int,
@@ -728,17 +731,17 @@ pub struct args {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct args_tree {
-    pub rbh_root: *mut args_entry,
+    pub rbh_root: *mut crate::arguments::args_entry,
 }
 
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct client {
     pub name: *const libc::c_char,
-    pub peer: *mut tmuxpeer,
-    pub queue: *mut cmdq_list,
+    pub peer: *mut crate::proc::tmuxpeer,
+    pub queue: *mut crate::cmd_queue::cmdq_list,
     pub windows: client_windows,
-    pub control_state: *mut control_state,
+    pub control_state: *mut crate::control::control_state,
     pub pause_age: u_int,
     pub pid: pid_t,
     pub fd: libc::c_int,
@@ -747,8 +750,8 @@ pub struct client {
     pub retval: libc::c_int,
     pub creation_time: timeval,
     pub activity_time: timeval,
-    pub environ: *mut environ,
-    pub jobs: *mut format_job_tree,
+    pub environ: *mut crate::environ::environ,
+    pub jobs: *mut crate::format::format_job_tree,
     pub title: *mut libc::c_char,
     pub cwd: *const libc::c_char,
     pub term_name: *mut libc::c_char,
@@ -907,7 +910,7 @@ pub type overlay_mode_cb =
 pub struct screen {
     pub title: *mut libc::c_char,
     pub path: *mut libc::c_char,
-    pub titles: *mut screen_titles,
+    pub titles: *mut crate::screen::screen_titles,
     pub grid: *mut grid,
     pub cx: u_int,
     pub cy: u_int,
@@ -922,8 +925,8 @@ pub struct screen {
     pub saved_cell: grid_cell,
     pub saved_flags: libc::c_int,
     pub tabs: *mut bitstr_t,
-    pub sel: *mut screen_sel,
-    pub write_list: *mut screen_write_collect_line,
+    pub sel: *mut crate::screen::screen_sel,
+    pub write_list: *mut crate::screen_write::screen_write_collect_line,
 }
 
 #[repr(C)]
@@ -1022,11 +1025,11 @@ pub struct session {
     pub windows: winlinks,
     pub statusat: libc::c_int,
     pub statuslines: u_int,
-    pub options: *mut options,
+    pub options: *mut crate::options::options,
     pub flags: libc::c_int,
     pub attached: u_int,
     pub tio: *mut termios,
-    pub environ: *mut environ,
+    pub environ: *mut crate::environ::environ,
     pub references: libc::c_int,
     pub gentry: C2RustUnnamed_25,
     pub entry: C2RustUnnamed_24,
@@ -1118,7 +1121,7 @@ pub struct window {
     pub flags: libc::c_int,
     pub alerts_queued: libc::c_int,
     pub alerts_entry: C2RustUnnamed_31,
-    pub options: *mut options,
+    pub options: *mut crate::options::options,
     pub references: u_int,
     pub winlinks: C2RustUnnamed_30,
     pub entry: C2RustUnnamed_29,
@@ -1181,7 +1184,7 @@ pub struct window_pane {
     pub id: u_int,
     pub active_point: u_int,
     pub window: *mut window,
-    pub options: *mut options,
+    pub options: *mut crate::options::options,
     pub layout_cell: *mut layout_cell,
     pub saved_layout_cell: *mut layout_cell,
     pub sx: u_int,
@@ -1204,7 +1207,7 @@ pub struct window_pane {
     pub base_offset: size_t,
     pub resize_timer: event,
     pub force_timer: event,
-    pub ictx: *mut input_ctx,
+    pub ictx: *mut crate::input::input_ctx,
     pub cached_gc: grid_cell,
     pub cached_active_gc: grid_cell,
     pub palette: *mut libc::c_int,
@@ -1303,7 +1306,9 @@ pub struct window_mode {
             _: *mut mouse_event,
         ) -> (),
     >,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
+    pub formats: Option<
+        unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut crate::format::format_tree) -> (),
+    >,
 }
 
 #[repr(C)]
@@ -1403,7 +1408,7 @@ pub struct C2RustUnnamed_39 {
 pub struct cmd_list {
     pub references: libc::c_int,
     pub group: u_int,
-    pub list: *mut cmds,
+    pub list: *mut crate::cmd::cmds,
 }
 pub type msgtype = libc::c_uint;
 pub const MSG_WRITE_CLOSE: msgtype = 306;
@@ -1558,7 +1563,7 @@ pub struct tty_term {
     pub tty: *mut tty,
     pub features: libc::c_int,
     pub acs: [[libc::c_char; 2]; 256],
-    pub codes: *mut tty_code,
+    pub codes: *mut crate::tty_term::tty_code,
     pub flags: libc::c_int,
     pub entry: C2RustUnnamed_42,
 }
@@ -1664,7 +1669,7 @@ pub struct cmd_parse_input {
     pub flags: libc::c_int,
     pub file: *const libc::c_char,
     pub line: u_int,
-    pub item: *mut cmdq_item,
+    pub item: *mut crate::cmd_queue::cmdq_item,
     pub c: *mut client,
     pub fs: cmd_find_state,
 }
@@ -1702,8 +1707,10 @@ unsafe extern "C" fn getline(
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-static mut client_proc: *mut tmuxproc = 0 as *const tmuxproc as *mut tmuxproc;
-static mut client_peer: *mut tmuxpeer = 0 as *const tmuxpeer as *mut tmuxpeer;
+static mut client_proc: *mut crate::proc::tmuxproc =
+    0 as *const crate::proc::tmuxproc as *mut crate::proc::tmuxproc;
+static mut client_peer: *mut crate::proc::tmuxpeer =
+    0 as *const crate::proc::tmuxpeer as *mut crate::proc::tmuxpeer;
 static mut client_flags: uint64_t = 0;
 static mut client_suspended: libc::c_int = 0;
 static mut client_exitreason: C2RustUnnamed_44 = CLIENT_EXIT_NONE;

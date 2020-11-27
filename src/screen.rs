@@ -86,7 +86,7 @@ pub struct screen {
     pub saved_flags: libc::c_int,
     pub tabs: *mut bitstr_t,
     pub sel: *mut screen_sel,
-    pub write_list: *mut screen_write_collect_line,
+    pub write_list: *mut crate::screen_write::screen_write_collect_line,
 }
 /* $OpenBSD$ */
 /*
@@ -258,7 +258,7 @@ pub unsafe extern "C" fn screen_init(
     (*s).ccolour = xstrdup(b"\x00" as *const u8 as *const libc::c_char);
     (*s).tabs = 0 as *mut bitstr_t;
     (*s).sel = 0 as *mut screen_sel;
-    (*s).write_list = 0 as *mut screen_write_collect_line;
+    (*s).write_list = 0 as *mut crate::screen_write::screen_write_collect_line;
     screen_reinit(s);
 }
 /* Reinitialise screen. */

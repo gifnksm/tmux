@@ -77,10 +77,10 @@ extern "C" {
     #[no_mangle]
     fn xsnprintf(_: *mut libc::c_char, _: size_t, _: *const libc::c_char, _: ...) -> libc::c_int;
     #[no_mangle]
-    fn proc_clear_signals(_: *mut tmuxproc, _: libc::c_int);
+    fn proc_clear_signals(_: *mut crate::proc::tmuxproc, _: libc::c_int);
     #[no_mangle]
     fn format_single(
-        _: *mut cmdq_item,
+        _: *mut crate::cmd_queue::cmdq_item,
         _: *const libc::c_char,
         _: *mut client,
         _: *mut session,
@@ -92,35 +92,41 @@ extern "C" {
     #[no_mangle]
     fn notify_window(_: *const libc::c_char, _: *mut window);
     #[no_mangle]
-    fn options_get_string(_: *mut options, _: *const libc::c_char) -> *const libc::c_char;
+    fn options_get_string(
+        _: *mut crate::options::options,
+        _: *const libc::c_char,
+    ) -> *const libc::c_char;
     #[no_mangle]
-    fn options_get_number(_: *mut options, _: *const libc::c_char) -> libc::c_longlong;
+    fn options_get_number(
+        _: *mut crate::options::options,
+        _: *const libc::c_char,
+    ) -> libc::c_longlong;
     #[no_mangle]
     fn options_set_number(
-        _: *mut options,
+        _: *mut crate::options::options,
         _: *const libc::c_char,
         _: libc::c_longlong,
-    ) -> *mut options_entry;
+    ) -> *mut crate::options::options_entry;
     #[no_mangle]
-    fn environ_free(_: *mut environ);
+    fn environ_free(_: *mut crate::environ::environ);
     #[no_mangle]
-    fn environ_copy(_: *mut environ, _: *mut environ);
+    fn environ_copy(_: *mut crate::environ::environ, _: *mut crate::environ::environ);
     #[no_mangle]
-    fn environ_find(_: *mut environ, _: *const libc::c_char) -> *mut environ_entry;
+    fn environ_find(_: *mut crate::environ::environ, _: *const libc::c_char) -> *mut environ_entry;
     #[no_mangle]
     fn environ_set(
-        _: *mut environ,
+        _: *mut crate::environ::environ,
         _: *const libc::c_char,
         _: libc::c_int,
         _: *const libc::c_char,
         _: ...
     );
     #[no_mangle]
-    fn environ_push(_: *mut environ);
+    fn environ_push(_: *mut crate::environ::environ);
     #[no_mangle]
-    fn environ_log(_: *mut environ, _: *const libc::c_char, _: ...);
+    fn environ_log(_: *mut crate::environ::environ, _: *const libc::c_char, _: ...);
     #[no_mangle]
-    fn environ_for_session(_: *mut session, _: libc::c_int) -> *mut environ;
+    fn environ_for_session(_: *mut session, _: libc::c_int) -> *mut crate::environ::environ;
     #[no_mangle]
     fn cmd_log_argv(_: libc::c_int, _: *mut *mut libc::c_char, _: *const libc::c_char, _: ...);
     #[no_mangle]
@@ -130,13 +136,13 @@ extern "C" {
     #[no_mangle]
     fn cmd_stringify_argv(_: libc::c_int, _: *mut *mut libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
-    fn cmdq_get_name(_: *mut cmdq_item) -> *const libc::c_char;
+    fn cmdq_get_name(_: *mut crate::cmd_queue::cmdq_item) -> *const libc::c_char;
     #[no_mangle]
-    fn cmdq_get_client(_: *mut cmdq_item) -> *mut client;
+    fn cmdq_get_client(_: *mut crate::cmd_queue::cmdq_item) -> *mut client;
     #[no_mangle]
-    fn cmdq_get_target(_: *mut cmdq_item) -> *mut cmd_find_state;
+    fn cmdq_get_target(_: *mut crate::cmd_queue::cmdq_item) -> *mut cmd_find_state;
     #[no_mangle]
-    static mut server_proc: *mut tmuxproc;
+    static mut server_proc: *mut crate::proc::tmuxproc;
     #[no_mangle]
     fn server_client_get_cwd(_: *mut client, _: *mut session) -> *const libc::c_char;
     #[no_mangle]
@@ -153,7 +159,7 @@ extern "C" {
         _: libc::c_int,
     );
     #[no_mangle]
-    static mut global_options: *mut options;
+    static mut global_options: *mut crate::options::options;
     #[no_mangle]
     static mut ptm_fd: libc::c_int;
     #[no_mangle]
@@ -196,7 +202,7 @@ extern "C" {
     #[no_mangle]
     fn window_pane_reset_mode_all(_: *mut window_pane);
     #[no_mangle]
-    fn input_free(_: *mut input_ctx);
+    fn input_free(_: *mut crate::input::input_ctx);
     #[no_mangle]
     fn default_window_name(_: *mut window) -> *mut libc::c_char;
     #[no_mangle]
@@ -407,17 +413,17 @@ pub struct args {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct args_tree {
-    pub rbh_root: *mut args_entry,
+    pub rbh_root: *mut crate::arguments::args_entry,
 }
 
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct client {
     pub name: *const libc::c_char,
-    pub peer: *mut tmuxpeer,
-    pub queue: *mut cmdq_list,
+    pub peer: *mut crate::proc::tmuxpeer,
+    pub queue: *mut crate::cmd_queue::cmdq_list,
     pub windows: client_windows,
-    pub control_state: *mut control_state,
+    pub control_state: *mut crate::control::control_state,
     pub pause_age: u_int,
     pub pid: pid_t,
     pub fd: libc::c_int,
@@ -426,8 +432,8 @@ pub struct client {
     pub retval: libc::c_int,
     pub creation_time: timeval,
     pub activity_time: timeval,
-    pub environ: *mut environ,
-    pub jobs: *mut format_job_tree,
+    pub environ: *mut crate::environ::environ,
+    pub jobs: *mut crate::format::format_job_tree,
     pub title: *mut libc::c_char,
     pub cwd: *const libc::c_char,
     pub term_name: *mut libc::c_char,
@@ -586,7 +592,7 @@ pub type overlay_mode_cb =
 pub struct screen {
     pub title: *mut libc::c_char,
     pub path: *mut libc::c_char,
-    pub titles: *mut screen_titles,
+    pub titles: *mut crate::screen::screen_titles,
     pub grid: *mut grid,
     pub cx: u_int,
     pub cy: u_int,
@@ -601,8 +607,8 @@ pub struct screen {
     pub saved_cell: grid_cell,
     pub saved_flags: libc::c_int,
     pub tabs: *mut bitstr_t,
-    pub sel: *mut screen_sel,
-    pub write_list: *mut screen_write_collect_line,
+    pub sel: *mut crate::screen::screen_sel,
+    pub write_list: *mut crate::screen_write::screen_write_collect_line,
 }
 
 #[repr(C)]
@@ -701,11 +707,11 @@ pub struct session {
     pub windows: winlinks,
     pub statusat: libc::c_int,
     pub statuslines: u_int,
-    pub options: *mut options,
+    pub options: *mut crate::options::options,
     pub flags: libc::c_int,
     pub attached: u_int,
     pub tio: *mut termios,
-    pub environ: *mut environ,
+    pub environ: *mut crate::environ::environ,
     pub references: libc::c_int,
     pub gentry: C2RustUnnamed_13,
     pub entry: C2RustUnnamed_12,
@@ -797,7 +803,7 @@ pub struct window {
     pub flags: libc::c_int,
     pub alerts_queued: libc::c_int,
     pub alerts_entry: C2RustUnnamed_19,
-    pub options: *mut options,
+    pub options: *mut crate::options::options,
     pub references: u_int,
     pub winlinks: C2RustUnnamed_18,
     pub entry: C2RustUnnamed_17,
@@ -860,7 +866,7 @@ pub struct window_pane {
     pub id: u_int,
     pub active_point: u_int,
     pub window: *mut window,
-    pub options: *mut options,
+    pub options: *mut crate::options::options,
     pub layout_cell: *mut layout_cell,
     pub saved_layout_cell: *mut layout_cell,
     pub sx: u_int,
@@ -883,7 +889,7 @@ pub struct window_pane {
     pub base_offset: size_t,
     pub resize_timer: event,
     pub force_timer: event,
-    pub ictx: *mut input_ctx,
+    pub ictx: *mut crate::input::input_ctx,
     pub cached_gc: grid_cell,
     pub cached_active_gc: grid_cell,
     pub palette: *mut libc::c_int,
@@ -982,7 +988,9 @@ pub struct window_mode {
             _: *mut mouse_event,
         ) -> (),
     >,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
+    pub formats: Option<
+        unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut crate::format::format_tree) -> (),
+    >,
 }
 
 #[repr(C)]
@@ -1082,7 +1090,7 @@ pub struct C2RustUnnamed_27 {
 pub struct cmd_list {
     pub references: libc::c_int,
     pub group: u_int,
-    pub list: *mut cmds,
+    pub list: *mut crate::cmd::cmds,
 }
 pub type msgtype = libc::c_uint;
 pub const MSG_WRITE_CLOSE: msgtype = 306;
@@ -1237,7 +1245,7 @@ pub struct tty_term {
     pub tty: *mut tty,
     pub features: libc::c_int,
     pub acs: [[libc::c_char; 2]; 256],
-    pub codes: *mut tty_code,
+    pub codes: *mut crate::tty_term::tty_code,
     pub flags: libc::c_int,
     pub entry: C2RustUnnamed_30,
 }
@@ -1293,7 +1301,7 @@ pub struct C2RustUnnamed_32 {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct spawn_context {
-    pub item: *mut cmdq_item,
+    pub item: *mut crate::cmd_queue::cmdq_item,
     pub s: *mut session,
     pub wl: *mut winlink,
     pub tc: *mut client,
@@ -1302,7 +1310,7 @@ pub struct spawn_context {
     pub name: *const libc::c_char,
     pub argv: *mut *mut libc::c_char,
     pub argc: libc::c_int,
-    pub environ: *mut environ,
+    pub environ: *mut crate::environ::environ,
     pub idx: libc::c_int,
     pub cwd: *const libc::c_char,
     pub flags: libc::c_int,
@@ -1407,7 +1415,7 @@ pub unsafe extern "C" fn spawn_window(
     mut sc: *mut spawn_context,
     mut cause: *mut *mut libc::c_char,
 ) -> *mut winlink {
-    let mut item: *mut cmdq_item = (*sc).item;
+    let mut item: *mut crate::cmd_queue::cmdq_item = (*sc).item;
     let mut c: *mut client = cmdq_get_client(item);
     let mut s: *mut session = (*sc).s;
     let mut w: *mut window = 0 as *mut window;
@@ -1596,13 +1604,13 @@ pub unsafe extern "C" fn spawn_pane(
     mut sc: *mut spawn_context,
     mut cause: *mut *mut libc::c_char,
 ) -> *mut window_pane {
-    let mut item: *mut cmdq_item = (*sc).item;
+    let mut item: *mut crate::cmd_queue::cmdq_item = (*sc).item;
     let mut target: *mut cmd_find_state = cmdq_get_target(item);
     let mut c: *mut client = cmdq_get_client(item);
     let mut s: *mut session = (*sc).s;
     let mut w: *mut window = (*(*sc).wl).window;
     let mut new_wp: *mut window_pane = 0 as *mut window_pane;
-    let mut child: *mut environ = 0 as *mut environ;
+    let mut child: *mut crate::environ::environ = 0 as *mut crate::environ::environ;
     let mut ee: *mut environ_entry = 0 as *mut environ_entry;
     let mut argv: *mut *mut libc::c_char = 0 as *mut *mut libc::c_char;
     let mut cp: *mut libc::c_char = 0 as *mut libc::c_char;
@@ -1683,7 +1691,7 @@ pub unsafe extern "C" fn spawn_pane(
         window_pane_reset_mode_all((*sc).wp0);
         screen_reinit(&mut (*(*sc).wp0).base);
         input_free((*(*sc).wp0).ictx);
-        (*(*sc).wp0).ictx = 0 as *mut input_ctx;
+        (*(*sc).wp0).ictx = 0 as *mut crate::input::input_ctx;
         new_wp = (*sc).wp0;
         (*new_wp).flags &= !(0x200 as libc::c_int | 0x400 as libc::c_int)
     } else if (*sc).lc.is_null() {

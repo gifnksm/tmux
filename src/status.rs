@@ -96,41 +96,45 @@ extern "C" {
     #[no_mangle]
     fn xsnprintf(_: *mut libc::c_char, _: size_t, _: *const libc::c_char, _: ...) -> libc::c_int;
     #[no_mangle]
-    static mut global_options: *mut options;
+    static mut global_options: *mut crate::options::options;
     #[no_mangle]
     fn find_home() -> *const libc::c_char;
     #[no_mangle]
-    fn paste_buffer_data(_: *mut paste_buffer, _: *mut size_t) -> *const libc::c_char;
+    fn paste_buffer_data(_: *mut crate::paste::paste_buffer, _: *mut size_t)
+        -> *const libc::c_char;
     #[no_mangle]
-    fn paste_get_top(_: *mut *const libc::c_char) -> *mut paste_buffer;
+    fn paste_get_top(_: *mut *const libc::c_char) -> *mut crate::paste::paste_buffer;
     #[no_mangle]
     fn format_create(
         _: *mut client,
-        _: *mut cmdq_item,
+        _: *mut crate::cmd_queue::cmdq_item,
         _: libc::c_int,
         _: libc::c_int,
-    ) -> *mut format_tree;
+    ) -> *mut crate::format::format_tree;
     #[no_mangle]
-    fn format_free(_: *mut format_tree);
+    fn format_free(_: *mut crate::format::format_tree);
     #[no_mangle]
-    fn format_expand_time(_: *mut format_tree, _: *const libc::c_char) -> *mut libc::c_char;
+    fn format_expand_time(
+        _: *mut crate::format::format_tree,
+        _: *const libc::c_char,
+    ) -> *mut libc::c_char;
     #[no_mangle]
     fn format_create_defaults(
-        _: *mut cmdq_item,
+        _: *mut crate::cmd_queue::cmdq_item,
         _: *mut client,
         _: *mut session,
         _: *mut winlink,
         _: *mut window_pane,
-    ) -> *mut format_tree;
+    ) -> *mut crate::format::format_tree;
     #[no_mangle]
     fn format_create_from_state(
-        _: *mut cmdq_item,
+        _: *mut crate::cmd_queue::cmdq_item,
         _: *mut client,
         _: *mut cmd_find_state,
-    ) -> *mut format_tree;
+    ) -> *mut crate::format::format_tree;
     #[no_mangle]
     fn format_defaults(
-        _: *mut format_tree,
+        _: *mut crate::format::format_tree,
         _: *mut client,
         _: *mut session,
         _: *mut winlink,
@@ -145,21 +149,37 @@ extern "C" {
         _: *mut style_ranges,
     );
     #[no_mangle]
-    fn options_get_only(_: *mut options, _: *const libc::c_char) -> *mut options_entry;
+    fn options_get_only(
+        _: *mut crate::options::options,
+        _: *const libc::c_char,
+    ) -> *mut crate::options::options_entry;
     #[no_mangle]
-    fn options_get(_: *mut options, _: *const libc::c_char) -> *mut options_entry;
+    fn options_get(
+        _: *mut crate::options::options,
+        _: *const libc::c_char,
+    ) -> *mut crate::options::options_entry;
     #[no_mangle]
-    fn options_array_get(_: *mut options_entry, _: u_int) -> *mut options_value;
+    fn options_array_get(_: *mut crate::options::options_entry, _: u_int) -> *mut options_value;
     #[no_mangle]
-    fn options_array_first(_: *mut options_entry) -> *mut options_array_item;
+    fn options_array_first(
+        _: *mut crate::options::options_entry,
+    ) -> *mut crate::options::options_array_item;
     #[no_mangle]
-    fn options_array_next(_: *mut options_array_item) -> *mut options_array_item;
+    fn options_array_next(
+        _: *mut crate::options::options_array_item,
+    ) -> *mut crate::options::options_array_item;
     #[no_mangle]
-    fn options_array_item_value(_: *mut options_array_item) -> *mut options_value;
+    fn options_array_item_value(_: *mut crate::options::options_array_item) -> *mut options_value;
     #[no_mangle]
-    fn options_get_string(_: *mut options, _: *const libc::c_char) -> *const libc::c_char;
+    fn options_get_string(
+        _: *mut crate::options::options,
+        _: *const libc::c_char,
+    ) -> *const libc::c_char;
     #[no_mangle]
-    fn options_get_number(_: *mut options, _: *const libc::c_char) -> libc::c_longlong;
+    fn options_get_number(
+        _: *mut crate::options::options,
+        _: *const libc::c_char,
+    ) -> libc::c_longlong;
     #[no_mangle]
     static options_table: [options_table_entry; 0];
     #[no_mangle]
@@ -256,7 +276,7 @@ extern "C" {
     fn menu_add_item(
         _: *mut menu,
         _: *const menu_item,
-        _: *mut cmdq_item,
+        _: *mut crate::cmd_queue::cmdq_item,
         _: *mut client,
         _: *mut cmd_find_state,
     );
@@ -266,7 +286,7 @@ extern "C" {
     fn menu_display(
         _: *mut menu,
         _: libc::c_int,
-        _: *mut cmdq_item,
+        _: *mut crate::cmd_queue::cmdq_item,
         _: u_int,
         _: u_int,
         _: *mut client,
@@ -275,7 +295,12 @@ extern "C" {
         _: *mut libc::c_void,
     ) -> libc::c_int;
     #[no_mangle]
-    fn style_apply(_: *mut grid_cell, _: *mut options, _: *const libc::c_char, _: *mut format_tree);
+    fn style_apply(
+        _: *mut grid_cell,
+        _: *mut crate::options::options,
+        _: *const libc::c_char,
+        _: *mut crate::format::format_tree,
+    );
 }
 pub type __builtin_va_list = [__va_list_tag; 1];
 
@@ -505,17 +530,17 @@ pub struct args {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct args_tree {
-    pub rbh_root: *mut args_entry,
+    pub rbh_root: *mut crate::arguments::args_entry,
 }
 
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct client {
     pub name: *const libc::c_char,
-    pub peer: *mut tmuxpeer,
-    pub queue: *mut cmdq_list,
+    pub peer: *mut crate::proc::tmuxpeer,
+    pub queue: *mut crate::cmd_queue::cmdq_list,
     pub windows: client_windows,
-    pub control_state: *mut control_state,
+    pub control_state: *mut crate::control::control_state,
     pub pause_age: u_int,
     pub pid: pid_t,
     pub fd: libc::c_int,
@@ -524,8 +549,8 @@ pub struct client {
     pub retval: libc::c_int,
     pub creation_time: timeval,
     pub activity_time: timeval,
-    pub environ: *mut environ,
-    pub jobs: *mut format_job_tree,
+    pub environ: *mut crate::environ::environ,
+    pub jobs: *mut crate::format::format_job_tree,
     pub title: *mut libc::c_char,
     pub cwd: *const libc::c_char,
     pub term_name: *mut libc::c_char,
@@ -684,7 +709,7 @@ pub type overlay_mode_cb =
 pub struct screen {
     pub title: *mut libc::c_char,
     pub path: *mut libc::c_char,
-    pub titles: *mut screen_titles,
+    pub titles: *mut crate::screen::screen_titles,
     pub grid: *mut grid,
     pub cx: u_int,
     pub cy: u_int,
@@ -699,8 +724,8 @@ pub struct screen {
     pub saved_cell: grid_cell,
     pub saved_flags: libc::c_int,
     pub tabs: *mut bitstr_t,
-    pub sel: *mut screen_sel,
-    pub write_list: *mut screen_write_collect_line,
+    pub sel: *mut crate::screen::screen_sel,
+    pub write_list: *mut crate::screen_write::screen_write_collect_line,
 }
 
 #[repr(C)]
@@ -799,11 +824,11 @@ pub struct session {
     pub windows: winlinks,
     pub statusat: libc::c_int,
     pub statuslines: u_int,
-    pub options: *mut options,
+    pub options: *mut crate::options::options,
     pub flags: libc::c_int,
     pub attached: u_int,
     pub tio: *mut termios,
-    pub environ: *mut environ,
+    pub environ: *mut crate::environ::environ,
     pub references: libc::c_int,
     pub gentry: C2RustUnnamed_13,
     pub entry: C2RustUnnamed_12,
@@ -895,7 +920,7 @@ pub struct window {
     pub flags: libc::c_int,
     pub alerts_queued: libc::c_int,
     pub alerts_entry: C2RustUnnamed_19,
-    pub options: *mut options,
+    pub options: *mut crate::options::options,
     pub references: u_int,
     pub winlinks: C2RustUnnamed_18,
     pub entry: C2RustUnnamed_17,
@@ -958,7 +983,7 @@ pub struct window_pane {
     pub id: u_int,
     pub active_point: u_int,
     pub window: *mut window,
-    pub options: *mut options,
+    pub options: *mut crate::options::options,
     pub layout_cell: *mut layout_cell,
     pub saved_layout_cell: *mut layout_cell,
     pub sx: u_int,
@@ -981,7 +1006,7 @@ pub struct window_pane {
     pub base_offset: size_t,
     pub resize_timer: event,
     pub force_timer: event,
-    pub ictx: *mut input_ctx,
+    pub ictx: *mut crate::input::input_ctx,
     pub cached_gc: grid_cell,
     pub cached_active_gc: grid_cell,
     pub palette: *mut libc::c_int,
@@ -1080,7 +1105,9 @@ pub struct window_mode {
             _: *mut mouse_event,
         ) -> (),
     >,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
+    pub formats: Option<
+        unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut crate::format::format_tree) -> (),
+    >,
 }
 
 #[repr(C)]
@@ -1180,7 +1207,7 @@ pub struct C2RustUnnamed_27 {
 pub struct cmd_list {
     pub references: libc::c_int,
     pub group: u_int,
-    pub list: *mut cmds,
+    pub list: *mut crate::cmd::cmds,
 }
 pub type msgtype = libc::c_uint;
 pub const MSG_WRITE_CLOSE: msgtype = 306;
@@ -1335,7 +1362,7 @@ pub struct tty_term {
     pub tty: *mut tty,
     pub features: libc::c_int,
     pub acs: [[libc::c_char; 2]; 256],
-    pub codes: *mut tty_code,
+    pub codes: *mut crate::tty_term::tty_code,
     pub flags: libc::c_int,
     pub entry: C2RustUnnamed_30,
 }
@@ -1378,7 +1405,7 @@ pub struct screen_write_ctx {
     pub flags: libc::c_int,
     pub init_ctx_cb: screen_write_init_ctx_cb,
     pub arg: *mut libc::c_void,
-    pub item: *mut screen_write_collect_item,
+    pub item: *mut crate::screen_write::screen_write_collect_item,
     pub scrolled: u_int,
     pub bg: u_int,
     pub cells: u_int,
@@ -1699,7 +1726,12 @@ pub struct cmd_entry {
     pub source: cmd_entry_flag,
     pub target: cmd_entry_flag,
     pub flags: libc::c_int,
-    pub exec: Option<unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval>,
+    pub exec: Option<
+        unsafe extern "C" fn(
+            _: *mut crate::cmd::cmd,
+            _: *mut crate::cmd_queue::cmdq_item,
+        ) -> cmd_retval,
+    >,
 }
 
 #[repr(C)]
@@ -1720,7 +1752,7 @@ pub struct clients {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct options_array {
-    pub rbh_root: *mut options_array_item,
+    pub rbh_root: *mut crate::options::options_array_item,
 }
 
 #[repr(C)]
@@ -2140,7 +2172,7 @@ pub unsafe extern "C" fn status_redraw(mut c: *mut client) -> libc::c_int {
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
-        item: 0 as *mut screen_write_collect_item,
+        item: 0 as *mut crate::screen_write::screen_write_collect_item,
         scrolled: 0,
         bg: 0,
         cells: 0,
@@ -2169,9 +2201,9 @@ pub unsafe extern "C" fn status_redraw(mut c: *mut client) -> libc::c_int {
     let mut changed: libc::c_int = 0 as libc::c_int;
     let mut fg: libc::c_int = 0;
     let mut bg: libc::c_int = 0;
-    let mut o: *mut options_entry = 0 as *mut options_entry;
+    let mut o: *mut crate::options::options_entry = 0 as *mut crate::options::options_entry;
     let mut ov: *mut options_value = 0 as *mut options_value;
-    let mut ft: *mut format_tree = 0 as *mut format_tree;
+    let mut ft: *mut crate::format::format_tree = 0 as *mut crate::format::format_tree;
     let mut expanded: *mut libc::c_char = 0 as *mut libc::c_char;
     log_debug(
         b"%s enter\x00" as *const u8 as *const libc::c_char,
@@ -2192,7 +2224,12 @@ pub unsafe extern "C" fn status_redraw(mut c: *mut client) -> libc::c_int {
     if (*c).flags & 0x80000 as libc::c_int as libc::c_ulong != 0 {
         flags |= 0x2 as libc::c_int
     }
-    ft = format_create(c, 0 as *mut cmdq_item, 0 as libc::c_int, flags);
+    ft = format_create(
+        c,
+        0 as *mut crate::cmd_queue::cmdq_item,
+        0 as libc::c_int,
+        flags,
+    );
     format_defaults(
         ft,
         c,
@@ -2418,7 +2455,7 @@ pub unsafe extern "C" fn status_message_redraw(mut c: *mut client) -> libc::c_in
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
-        item: 0 as *mut screen_write_collect_item,
+        item: 0 as *mut crate::screen_write::screen_write_collect_item,
         scrolled: 0,
         bg: 0,
         cells: 0,
@@ -2429,7 +2466,7 @@ pub unsafe extern "C" fn status_message_redraw(mut c: *mut client) -> libc::c_in
     let mut old_screen: screen = screen {
         title: 0 as *mut libc::c_char,
         path: 0 as *mut libc::c_char,
-        titles: 0 as *mut screen_titles,
+        titles: 0 as *mut crate::screen::screen_titles,
         grid: 0 as *mut grid,
         cx: 0,
         cy: 0,
@@ -2456,8 +2493,8 @@ pub unsafe extern "C" fn status_message_redraw(mut c: *mut client) -> libc::c_in
         },
         saved_flags: 0,
         tabs: 0 as *mut bitstr_t,
-        sel: 0 as *mut screen_sel,
-        write_list: 0 as *mut screen_write_collect_line,
+        sel: 0 as *mut crate::screen::screen_sel,
+        write_list: 0 as *mut crate::screen_write::screen_write_collect_line,
     };
     let mut len: size_t = 0;
     let mut lines: u_int = 0;
@@ -2475,7 +2512,7 @@ pub unsafe extern "C" fn status_message_redraw(mut c: *mut client) -> libc::c_in
         bg: 0,
         us: 0,
     };
-    let mut ft: *mut format_tree = 0 as *mut format_tree;
+    let mut ft: *mut crate::format::format_tree = 0 as *mut crate::format::format_tree;
     if (*c).tty.sx == 0 as libc::c_int as libc::c_uint
         || (*c).tty.sy == 0 as libc::c_int as libc::c_uint
     {
@@ -2499,7 +2536,7 @@ pub unsafe extern "C" fn status_message_redraw(mut c: *mut client) -> libc::c_in
         len = (*c).tty.sx as size_t
     }
     ft = format_create_defaults(
-        0 as *mut cmdq_item,
+        0 as *mut crate::cmd_queue::cmdq_item,
         c,
         0 as *mut session,
         0 as *mut winlink,
@@ -2575,14 +2612,14 @@ pub unsafe extern "C" fn status_prompt_set(
     mut data: *mut libc::c_void,
     mut flags: libc::c_int,
 ) {
-    let mut ft: *mut format_tree = 0 as *mut format_tree;
+    let mut ft: *mut crate::format::format_tree = 0 as *mut crate::format::format_tree;
     let mut tmp: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut cp: *mut libc::c_char = 0 as *mut libc::c_char;
     if !fs.is_null() {
-        ft = format_create_from_state(0 as *mut cmdq_item, c, fs)
+        ft = format_create_from_state(0 as *mut crate::cmd_queue::cmdq_item, c, fs)
     } else {
         ft = format_create_defaults(
-            0 as *mut cmdq_item,
+            0 as *mut crate::cmd_queue::cmdq_item,
             c,
             0 as *mut session,
             0 as *mut winlink,
@@ -2661,9 +2698,14 @@ pub unsafe extern "C" fn status_prompt_update(
     mut msg: *const libc::c_char,
     mut input: *const libc::c_char,
 ) {
-    let mut ft: *mut format_tree = 0 as *mut format_tree;
+    let mut ft: *mut crate::format::format_tree = 0 as *mut crate::format::format_tree;
     let mut tmp: *mut libc::c_char = 0 as *mut libc::c_char;
-    ft = format_create(c, 0 as *mut cmdq_item, 0 as libc::c_int, 0 as libc::c_int);
+    ft = format_create(
+        c,
+        0 as *mut crate::cmd_queue::cmdq_item,
+        0 as libc::c_int,
+        0 as libc::c_int,
+    );
     format_defaults(
         ft,
         c,
@@ -2692,7 +2734,7 @@ pub unsafe extern "C" fn status_prompt_redraw(mut c: *mut client) -> libc::c_int
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
-        item: 0 as *mut screen_write_collect_item,
+        item: 0 as *mut crate::screen_write::screen_write_collect_item,
         scrolled: 0,
         bg: 0,
         cells: 0,
@@ -2703,7 +2745,7 @@ pub unsafe extern "C" fn status_prompt_redraw(mut c: *mut client) -> libc::c_int
     let mut old_screen: screen = screen {
         title: 0 as *mut libc::c_char,
         path: 0 as *mut libc::c_char,
-        titles: 0 as *mut screen_titles,
+        titles: 0 as *mut crate::screen::screen_titles,
         grid: 0 as *mut grid,
         cx: 0,
         cy: 0,
@@ -2730,8 +2772,8 @@ pub unsafe extern "C" fn status_prompt_redraw(mut c: *mut client) -> libc::c_int
         },
         saved_flags: 0,
         tabs: 0 as *mut bitstr_t,
-        sel: 0 as *mut screen_sel,
-        write_list: 0 as *mut screen_write_collect_line,
+        sel: 0 as *mut crate::screen::screen_sel,
+        write_list: 0 as *mut crate::screen_write::screen_write_collect_line,
     };
     let mut i: u_int = 0;
     let mut lines: u_int = 0;
@@ -2767,7 +2809,7 @@ pub unsafe extern "C" fn status_prompt_redraw(mut c: *mut client) -> libc::c_int
         bg: 0,
         us: 0,
     };
-    let mut ft: *mut format_tree = 0 as *mut format_tree;
+    let mut ft: *mut crate::format::format_tree = 0 as *mut crate::format::format_tree;
     if (*c).tty.sx == 0 as libc::c_int as libc::c_uint
         || (*c).tty.sy == 0 as libc::c_int as libc::c_uint
     {
@@ -2784,7 +2826,7 @@ pub unsafe extern "C" fn status_prompt_redraw(mut c: *mut client) -> libc::c_int
     }
     screen_init((*sl).active, (*c).tty.sx, lines, 0 as libc::c_int as u_int);
     ft = format_create_defaults(
-        0 as *mut cmdq_item,
+        0 as *mut crate::cmd_queue::cmdq_item,
         c,
         0 as *mut session,
         0 as *mut winlink,
@@ -3113,7 +3155,7 @@ unsafe extern "C" fn status_prompt_translate_key(
 }
 /* Paste into prompt. */
 unsafe extern "C" fn status_prompt_paste(mut c: *mut client) -> libc::c_int {
-    let mut pb: *mut paste_buffer = 0 as *mut paste_buffer;
+    let mut pb: *mut crate::paste::paste_buffer = 0 as *mut crate::paste::paste_buffer;
     let mut bufdata: *const libc::c_char = 0 as *const libc::c_char;
     let mut size: size_t = 0;
     let mut n: size_t = 0;
@@ -3335,7 +3377,7 @@ unsafe extern "C" fn status_prompt_replace_complete(
 #[no_mangle]
 pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code) -> libc::c_int {
     let mut current_block: u64;
-    let mut oo: *mut options = (*(*c).session).options;
+    let mut oo: *mut crate::options::options = (*(*c).session).options;
     let mut s: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut cp: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut prefix: libc::c_char = '=' as i32 as libc::c_char;
@@ -11229,8 +11271,9 @@ unsafe extern "C" fn status_prompt_complete_list(
     let mut oe: *const options_table_entry = 0 as *const options_table_entry;
     let mut slen: size_t = strlen(s);
     let mut valuelen: size_t = 0;
-    let mut o: *mut options_entry = 0 as *mut options_entry;
-    let mut a: *mut options_array_item = 0 as *mut options_array_item;
+    let mut o: *mut crate::options::options_entry = 0 as *mut crate::options::options_entry;
+    let mut a: *mut crate::options::options_array_item =
+        0 as *mut crate::options::options_array_item;
     let mut layouts: [*const libc::c_char; 6] = [
         b"even-horizontal\x00" as *const u8 as *const libc::c_char,
         b"even-vertical\x00" as *const u8 as *const libc::c_char,
@@ -11454,7 +11497,7 @@ unsafe extern "C" fn status_prompt_complete_list_menu(
         menu_add_item(
             menu,
             &mut item,
-            0 as *mut cmdq_item,
+            0 as *mut crate::cmd_queue::cmdq_item,
             0 as *mut client,
             0 as *mut cmd_find_state,
         );
@@ -11484,7 +11527,7 @@ unsafe extern "C" fn status_prompt_complete_list_menu(
     if menu_display(
         menu,
         0x1 as libc::c_int | 0x2 as libc::c_int,
-        0 as *mut cmdq_item,
+        0 as *mut crate::cmd_queue::cmdq_item,
         offset,
         py,
         c,
@@ -11612,7 +11655,7 @@ unsafe extern "C" fn status_prompt_complete_window_menu(
                 menu_add_item(
                     menu,
                     &mut item,
-                    0 as *mut cmdq_item,
+                    0 as *mut crate::cmd_queue::cmdq_item,
                     0 as *mut client,
                     0 as *mut cmd_find_state,
                 );
@@ -11674,7 +11717,7 @@ unsafe extern "C" fn status_prompt_complete_window_menu(
     if menu_display(
         menu,
         0x1 as libc::c_int | 0x2 as libc::c_int,
-        0 as *mut cmdq_item,
+        0 as *mut crate::cmd_queue::cmdq_item,
         offset,
         py,
         c,

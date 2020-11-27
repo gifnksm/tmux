@@ -46,76 +46,97 @@ extern "C" {
     #[no_mangle]
     fn xasprintf(_: *mut *mut libc::c_char, _: *const libc::c_char, _: ...) -> libc::c_int;
     #[no_mangle]
-    static mut global_options: *mut options;
+    static mut global_options: *mut crate::options::options;
     #[no_mangle]
-    static mut global_s_options: *mut options;
+    static mut global_s_options: *mut crate::options::options;
     #[no_mangle]
-    static mut global_w_options: *mut options;
+    static mut global_w_options: *mut crate::options::options;
     #[no_mangle]
     fn format_true(_: *const libc::c_char) -> libc::c_int;
     #[no_mangle]
-    fn format_free(_: *mut format_tree);
+    fn format_free(_: *mut crate::format::format_tree);
     #[no_mangle]
-    fn format_add(_: *mut format_tree, _: *const libc::c_char, _: *const libc::c_char, _: ...);
+    fn format_add(
+        _: *mut crate::format::format_tree,
+        _: *const libc::c_char,
+        _: *const libc::c_char,
+        _: ...
+    );
     #[no_mangle]
-    fn format_expand(_: *mut format_tree, _: *const libc::c_char) -> *mut libc::c_char;
+    fn format_expand(
+        _: *mut crate::format::format_tree,
+        _: *const libc::c_char,
+    ) -> *mut libc::c_char;
     #[no_mangle]
     fn format_create_from_state(
-        _: *mut cmdq_item,
+        _: *mut crate::cmd_queue::cmdq_item,
         _: *mut client,
         _: *mut cmd_find_state,
-    ) -> *mut format_tree;
+    ) -> *mut crate::format::format_tree;
     #[no_mangle]
-    fn options_get_parent(_: *mut options) -> *mut options;
+    fn options_get_parent(_: *mut crate::options::options) -> *mut crate::options::options;
     #[no_mangle]
-    fn options_first(_: *mut options) -> *mut options_entry;
+    fn options_first(_: *mut crate::options::options) -> *mut crate::options::options_entry;
     #[no_mangle]
-    fn options_next(_: *mut options_entry) -> *mut options_entry;
+    fn options_next(_: *mut crate::options::options_entry) -> *mut crate::options::options_entry;
     #[no_mangle]
     fn options_default_to_string(_: *const options_table_entry) -> *mut libc::c_char;
     #[no_mangle]
-    fn options_name(_: *mut options_entry) -> *const libc::c_char;
+    fn options_name(_: *mut crate::options::options_entry) -> *const libc::c_char;
     #[no_mangle]
-    fn options_owner(_: *mut options_entry) -> *mut options;
+    fn options_owner(_: *mut crate::options::options_entry) -> *mut crate::options::options;
     #[no_mangle]
-    fn options_table_entry(_: *mut options_entry) -> *const options_table_entry;
+    fn options_table_entry(_: *mut crate::options::options_entry) -> *const options_table_entry;
     #[no_mangle]
-    fn options_get_only(_: *mut options, _: *const libc::c_char) -> *mut options_entry;
+    fn options_get_only(
+        _: *mut crate::options::options,
+        _: *const libc::c_char,
+    ) -> *mut crate::options::options_entry;
     #[no_mangle]
-    fn options_get(_: *mut options, _: *const libc::c_char) -> *mut options_entry;
+    fn options_get(
+        _: *mut crate::options::options,
+        _: *const libc::c_char,
+    ) -> *mut crate::options::options_entry;
     #[no_mangle]
-    fn options_array_get(_: *mut options_entry, _: u_int) -> *mut options_value;
+    fn options_array_get(_: *mut crate::options::options_entry, _: u_int) -> *mut options_value;
     #[no_mangle]
     fn options_array_set(
-        _: *mut options_entry,
+        _: *mut crate::options::options_entry,
         _: u_int,
         _: *const libc::c_char,
         _: libc::c_int,
         _: *mut *mut libc::c_char,
     ) -> libc::c_int;
     #[no_mangle]
-    fn options_array_first(_: *mut options_entry) -> *mut options_array_item;
+    fn options_array_first(
+        _: *mut crate::options::options_entry,
+    ) -> *mut crate::options::options_array_item;
     #[no_mangle]
-    fn options_array_next(_: *mut options_array_item) -> *mut options_array_item;
+    fn options_array_next(
+        _: *mut crate::options::options_array_item,
+    ) -> *mut crate::options::options_array_item;
     #[no_mangle]
-    fn options_array_item_index(_: *mut options_array_item) -> u_int;
+    fn options_array_item_index(_: *mut crate::options::options_array_item) -> u_int;
     #[no_mangle]
     fn options_to_string(
-        _: *mut options_entry,
+        _: *mut crate::options::options_entry,
         _: libc::c_int,
         _: libc::c_int,
     ) -> *mut libc::c_char;
     #[no_mangle]
-    fn options_get_number(_: *mut options, _: *const libc::c_char) -> libc::c_longlong;
+    fn options_get_number(
+        _: *mut crate::options::options,
+        _: *const libc::c_char,
+    ) -> libc::c_longlong;
     #[no_mangle]
     fn options_set_number(
-        _: *mut options,
+        _: *mut crate::options::options,
         _: *const libc::c_char,
         _: libc::c_longlong,
-    ) -> *mut options_entry;
+    ) -> *mut crate::options::options_entry;
     #[no_mangle]
     fn options_from_string(
-        _: *mut options,
+        _: *mut crate::options::options,
         _: *const options_table_entry,
         _: *const libc::c_char,
         _: *const libc::c_char,
@@ -126,7 +147,7 @@ extern "C" {
     fn options_push_changes(_: *const libc::c_char);
     #[no_mangle]
     fn options_remove_or_default(
-        _: *mut options_entry,
+        _: *mut crate::options::options_entry,
         _: libc::c_int,
         _: *mut *mut libc::c_char,
     ) -> libc::c_int;
@@ -220,14 +241,14 @@ extern "C" {
     fn window_pane_reset_mode(_: *mut window_pane);
     #[no_mangle]
     fn mode_tree_each_tagged(
-        _: *mut mode_tree_data,
+        _: *mut crate::mode_tree::mode_tree_data,
         _: mode_tree_each_cb,
         _: *mut client,
         _: key_code,
         _: libc::c_int,
     );
     #[no_mangle]
-    fn mode_tree_up(_: *mut mode_tree_data, _: libc::c_int);
+    fn mode_tree_up(_: *mut crate::mode_tree::mode_tree_data, _: libc::c_int);
     #[no_mangle]
     fn mode_tree_start(
         _: *mut window_pane,
@@ -242,34 +263,34 @@ extern "C" {
         _: *mut *const libc::c_char,
         _: u_int,
         _: *mut *mut screen,
-    ) -> *mut mode_tree_data;
+    ) -> *mut crate::mode_tree::mode_tree_data;
     #[no_mangle]
-    fn mode_tree_zoom(_: *mut mode_tree_data, _: *mut args);
+    fn mode_tree_zoom(_: *mut crate::mode_tree::mode_tree_data, _: *mut args);
     #[no_mangle]
-    fn mode_tree_build(_: *mut mode_tree_data);
+    fn mode_tree_build(_: *mut crate::mode_tree::mode_tree_data);
     #[no_mangle]
-    fn mode_tree_free(_: *mut mode_tree_data);
+    fn mode_tree_free(_: *mut crate::mode_tree::mode_tree_data);
     #[no_mangle]
-    fn mode_tree_resize(_: *mut mode_tree_data, _: u_int, _: u_int);
+    fn mode_tree_resize(_: *mut crate::mode_tree::mode_tree_data, _: u_int, _: u_int);
     #[no_mangle]
     fn mode_tree_add(
-        _: *mut mode_tree_data,
-        _: *mut mode_tree_item,
+        _: *mut crate::mode_tree::mode_tree_data,
+        _: *mut crate::mode_tree::mode_tree_item,
         _: *mut libc::c_void,
         _: uint64_t,
         _: *const libc::c_char,
         _: *const libc::c_char,
         _: libc::c_int,
-    ) -> *mut mode_tree_item;
+    ) -> *mut crate::mode_tree::mode_tree_item;
     #[no_mangle]
-    fn mode_tree_draw_as_parent(_: *mut mode_tree_item);
+    fn mode_tree_draw_as_parent(_: *mut crate::mode_tree::mode_tree_item);
     #[no_mangle]
-    fn mode_tree_no_tag(_: *mut mode_tree_item);
+    fn mode_tree_no_tag(_: *mut crate::mode_tree::mode_tree_item);
     #[no_mangle]
-    fn mode_tree_draw(_: *mut mode_tree_data);
+    fn mode_tree_draw(_: *mut crate::mode_tree::mode_tree_data);
     #[no_mangle]
     fn mode_tree_key(
-        _: *mut mode_tree_data,
+        _: *mut crate::mode_tree::mode_tree_data,
         _: *mut client,
         _: *mut key_code,
         _: *mut mouse_event,
@@ -277,15 +298,20 @@ extern "C" {
         _: *mut u_int,
     ) -> libc::c_int;
     #[no_mangle]
-    fn mode_tree_collapse_current(_: *mut mode_tree_data);
+    fn mode_tree_collapse_current(_: *mut crate::mode_tree::mode_tree_data);
     #[no_mangle]
-    fn mode_tree_get_current_name(_: *mut mode_tree_data) -> *const libc::c_char;
+    fn mode_tree_get_current_name(_: *mut crate::mode_tree::mode_tree_data) -> *const libc::c_char;
     #[no_mangle]
-    fn mode_tree_get_current(_: *mut mode_tree_data) -> *mut libc::c_void;
+    fn mode_tree_get_current(_: *mut crate::mode_tree::mode_tree_data) -> *mut libc::c_void;
     #[no_mangle]
-    fn mode_tree_count_tagged(_: *mut mode_tree_data) -> u_int;
+    fn mode_tree_count_tagged(_: *mut crate::mode_tree::mode_tree_data) -> u_int;
     #[no_mangle]
-    fn style_apply(_: *mut grid_cell, _: *mut options, _: *const libc::c_char, _: *mut format_tree);
+    fn style_apply(
+        _: *mut grid_cell,
+        _: *mut crate::options::options,
+        _: *const libc::c_char,
+        _: *mut crate::format::format_tree,
+    );
 }
 pub type __u_char = libc::c_uchar;
 pub type __u_short = libc::c_ushort;
@@ -463,17 +489,17 @@ pub struct args {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct args_tree {
-    pub rbh_root: *mut args_entry,
+    pub rbh_root: *mut crate::arguments::args_entry,
 }
 
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct client {
     pub name: *const libc::c_char,
-    pub peer: *mut tmuxpeer,
-    pub queue: *mut cmdq_list,
+    pub peer: *mut crate::proc::tmuxpeer,
+    pub queue: *mut crate::cmd_queue::cmdq_list,
     pub windows: client_windows,
-    pub control_state: *mut control_state,
+    pub control_state: *mut crate::control::control_state,
     pub pause_age: u_int,
     pub pid: pid_t,
     pub fd: libc::c_int,
@@ -482,8 +508,8 @@ pub struct client {
     pub retval: libc::c_int,
     pub creation_time: timeval,
     pub activity_time: timeval,
-    pub environ: *mut environ,
-    pub jobs: *mut format_job_tree,
+    pub environ: *mut crate::environ::environ,
+    pub jobs: *mut crate::format::format_job_tree,
     pub title: *mut libc::c_char,
     pub cwd: *const libc::c_char,
     pub term_name: *mut libc::c_char,
@@ -642,7 +668,7 @@ pub type overlay_mode_cb =
 pub struct screen {
     pub title: *mut libc::c_char,
     pub path: *mut libc::c_char,
-    pub titles: *mut screen_titles,
+    pub titles: *mut crate::screen::screen_titles,
     pub grid: *mut grid,
     pub cx: u_int,
     pub cy: u_int,
@@ -657,8 +683,8 @@ pub struct screen {
     pub saved_cell: grid_cell,
     pub saved_flags: libc::c_int,
     pub tabs: *mut bitstr_t,
-    pub sel: *mut screen_sel,
-    pub write_list: *mut screen_write_collect_line,
+    pub sel: *mut crate::screen::screen_sel,
+    pub write_list: *mut crate::screen_write::screen_write_collect_line,
 }
 
 #[repr(C)]
@@ -757,11 +783,11 @@ pub struct session {
     pub windows: winlinks,
     pub statusat: libc::c_int,
     pub statuslines: u_int,
-    pub options: *mut options,
+    pub options: *mut crate::options::options,
     pub flags: libc::c_int,
     pub attached: u_int,
     pub tio: *mut termios,
-    pub environ: *mut environ,
+    pub environ: *mut crate::environ::environ,
     pub references: libc::c_int,
     pub gentry: C2RustUnnamed_13,
     pub entry: C2RustUnnamed_12,
@@ -853,7 +879,7 @@ pub struct window {
     pub flags: libc::c_int,
     pub alerts_queued: libc::c_int,
     pub alerts_entry: C2RustUnnamed_19,
-    pub options: *mut options,
+    pub options: *mut crate::options::options,
     pub references: u_int,
     pub winlinks: C2RustUnnamed_18,
     pub entry: C2RustUnnamed_17,
@@ -916,7 +942,7 @@ pub struct window_pane {
     pub id: u_int,
     pub active_point: u_int,
     pub window: *mut window,
-    pub options: *mut options,
+    pub options: *mut crate::options::options,
     pub layout_cell: *mut layout_cell,
     pub saved_layout_cell: *mut layout_cell,
     pub sx: u_int,
@@ -939,7 +965,7 @@ pub struct window_pane {
     pub base_offset: size_t,
     pub resize_timer: event,
     pub force_timer: event,
-    pub ictx: *mut input_ctx,
+    pub ictx: *mut crate::input::input_ctx,
     pub cached_gc: grid_cell,
     pub cached_active_gc: grid_cell,
     pub palette: *mut libc::c_int,
@@ -1038,7 +1064,9 @@ pub struct window_mode {
             _: *mut mouse_event,
         ) -> (),
     >,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
+    pub formats: Option<
+        unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut crate::format::format_tree) -> (),
+    >,
 }
 
 #[repr(C)]
@@ -1138,7 +1166,7 @@ pub struct C2RustUnnamed_27 {
 pub struct cmd_list {
     pub references: libc::c_int,
     pub group: u_int,
-    pub list: *mut cmds,
+    pub list: *mut crate::cmd::cmds,
 }
 pub type msgtype = libc::c_uint;
 pub const MSG_WRITE_CLOSE: msgtype = 306;
@@ -1293,7 +1321,7 @@ pub struct tty_term {
     pub tty: *mut tty,
     pub features: libc::c_int,
     pub acs: [[libc::c_char; 2]; 256],
-    pub codes: *mut tty_code,
+    pub codes: *mut crate::tty_term::tty_code,
     pub flags: libc::c_int,
     pub entry: C2RustUnnamed_30,
 }
@@ -1336,7 +1364,7 @@ pub struct screen_write_ctx {
     pub flags: libc::c_int,
     pub init_ctx_cb: screen_write_init_ctx_cb,
     pub arg: *mut libc::c_void,
-    pub item: *mut screen_write_collect_item,
+    pub item: *mut crate::screen_write::screen_write_collect_item,
     pub scrolled: u_int,
     pub bg: u_int,
     pub cells: u_int,
@@ -1627,7 +1655,7 @@ pub struct cmd_parse_input {
     pub flags: libc::c_int,
     pub file: *const libc::c_char,
     pub line: u_int,
-    pub item: *mut cmdq_item,
+    pub item: *mut crate::cmd_queue::cmdq_item,
     pub c: *mut client,
     pub fs: cmd_find_state,
 }
@@ -1635,7 +1663,7 @@ pub struct cmd_parse_input {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct options_array {
-    pub rbh_root: *mut options_array_item,
+    pub rbh_root: *mut crate::options::options_array_item,
 }
 
 #[repr(C)]
@@ -1725,7 +1753,7 @@ pub struct window_customize_modedata {
     pub wp: *mut window_pane,
     pub dead: libc::c_int,
     pub references: libc::c_int,
-    pub data: *mut mode_tree_data,
+    pub data: *mut crate::mode_tree::mode_tree_data,
     pub format: *mut libc::c_char,
     pub hide_global: libc::c_int,
     pub item_list: *mut *mut window_customize_itemdata,
@@ -1744,7 +1772,7 @@ pub struct window_customize_itemdata {
     pub scope: window_customize_scope,
     pub table: *mut libc::c_char,
     pub key: key_code,
-    pub oo: *mut options,
+    pub oo: *mut crate::options::options,
     pub name: *mut libc::c_char,
     pub idx: libc::c_int,
 }
@@ -1895,7 +1923,7 @@ pub static mut window_customize_mode: window_mode = {
     }
 };
 unsafe extern "C" fn window_customize_get_tag(
-    mut o: *mut options_entry,
+    mut o: *mut crate::options::options_entry,
     mut idx: libc::c_int,
     mut oe: *const options_table_entry,
 ) -> uint64_t {
@@ -1915,9 +1943,9 @@ unsafe extern "C" fn window_customize_get_tag(
 unsafe extern "C" fn window_customize_get_tree(
     mut scope: window_customize_scope,
     mut fs: *mut cmd_find_state,
-) -> *mut options {
+) -> *mut crate::options::options {
     match scope as libc::c_uint {
-        0 | 1 => return 0 as *mut options,
+        0 | 1 => return 0 as *mut crate::options::options,
         2 => return global_options,
         3 => return global_s_options,
         4 => return (*(*fs).s).options,
@@ -1926,7 +1954,7 @@ unsafe extern "C" fn window_customize_get_tree(
         7 => return (*(*fs).wp).options,
         _ => {}
     }
-    return 0 as *mut options;
+    return 0 as *mut crate::options::options;
 }
 unsafe extern "C" fn window_customize_check_item(
     mut data: *mut window_customize_modedata,
@@ -2037,15 +2065,16 @@ unsafe extern "C" fn window_customize_free_item(mut item: *mut window_customize_
 }
 unsafe extern "C" fn window_customize_build_array(
     mut data: *mut window_customize_modedata,
-    mut top: *mut mode_tree_item,
+    mut top: *mut crate::mode_tree::mode_tree_item,
     mut scope: window_customize_scope,
-    mut o: *mut options_entry,
-    mut ft: *mut format_tree,
+    mut o: *mut crate::options::options_entry,
+    mut ft: *mut crate::format::format_tree,
 ) {
     let mut oe: *const options_table_entry = options_table_entry(o);
-    let mut oo: *mut options = options_owner(o);
+    let mut oo: *mut crate::options::options = options_owner(o);
     let mut item: *mut window_customize_itemdata = 0 as *mut window_customize_itemdata;
-    let mut ai: *mut options_array_item = 0 as *mut options_array_item;
+    let mut ai: *mut crate::options::options_array_item =
+        0 as *mut crate::options::options_array_item;
     let mut name: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut value: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut text: *mut libc::c_char = 0 as *mut libc::c_char;
@@ -2097,15 +2126,15 @@ unsafe extern "C" fn window_customize_build_array(
 }
 unsafe extern "C" fn window_customize_build_option(
     mut data: *mut window_customize_modedata,
-    mut top: *mut mode_tree_item,
+    mut top: *mut crate::mode_tree::mode_tree_item,
     mut scope: window_customize_scope,
-    mut o: *mut options_entry,
-    mut ft: *mut format_tree,
+    mut o: *mut crate::options::options_entry,
+    mut ft: *mut crate::format::format_tree,
     mut filter: *const libc::c_char,
     mut fs: *mut cmd_find_state,
 ) {
     let mut oe: *const options_table_entry = options_table_entry(o);
-    let mut oo: *mut options = options_owner(o);
+    let mut oo: *mut crate::options::options = options_owner(o);
     let mut name: *const libc::c_char = options_name(o);
     let mut item: *mut window_customize_itemdata = 0 as *mut window_customize_itemdata;
     let mut text: *mut libc::c_char = 0 as *mut libc::c_char;
@@ -2214,11 +2243,11 @@ unsafe extern "C" fn window_customize_build_option(
     };
 }
 unsafe extern "C" fn window_customize_find_user_options(
-    mut oo: *mut options,
+    mut oo: *mut crate::options::options,
     mut list: *mut *mut *const libc::c_char,
     mut size: *mut u_int,
 ) {
-    let mut o: *mut options_entry = 0 as *mut options_entry;
+    let mut o: *mut crate::options::options_entry = 0 as *mut crate::options::options_entry;
     let mut name: *const libc::c_char = 0 as *const libc::c_char;
     let mut i: u_int = 0;
     o = options_first(oo);
@@ -2256,18 +2285,18 @@ unsafe extern "C" fn window_customize_build_options(
     mut title: *const libc::c_char,
     mut tag: uint64_t,
     mut scope0: window_customize_scope,
-    mut oo0: *mut options,
+    mut oo0: *mut crate::options::options,
     mut scope1: window_customize_scope,
-    mut oo1: *mut options,
+    mut oo1: *mut crate::options::options,
     mut scope2: window_customize_scope,
-    mut oo2: *mut options,
-    mut ft: *mut format_tree,
+    mut oo2: *mut crate::options::options,
+    mut ft: *mut crate::format::format_tree,
     mut filter: *const libc::c_char,
     mut fs: *mut cmd_find_state,
 ) {
-    let mut top: *mut mode_tree_item = 0 as *mut mode_tree_item;
-    let mut o: *mut options_entry = 0 as *mut options_entry;
-    let mut loop_0: *mut options_entry = 0 as *mut options_entry;
+    let mut top: *mut crate::mode_tree::mode_tree_item = 0 as *mut crate::mode_tree::mode_tree_item;
+    let mut o: *mut crate::options::options_entry = 0 as *mut crate::options::options_entry;
+    let mut loop_0: *mut crate::options::options_entry = 0 as *mut crate::options::options_entry;
     let mut list: *mut *const libc::c_char = 0 as *mut *const libc::c_char;
     let mut name: *const libc::c_char = 0 as *const libc::c_char;
     let mut size: u_int = 0 as libc::c_int as u_int;
@@ -2275,7 +2304,7 @@ unsafe extern "C" fn window_customize_build_options(
     let mut scope: window_customize_scope = WINDOW_CUSTOMIZE_NONE;
     top = mode_tree_add(
         (*data).data,
-        0 as *mut mode_tree_item,
+        0 as *mut crate::mode_tree::mode_tree_item,
         0 as *mut libc::c_void,
         tag,
         title,
@@ -2345,14 +2374,15 @@ unsafe extern "C" fn window_customize_build_options(
 unsafe extern "C" fn window_customize_build_keys(
     mut data: *mut window_customize_modedata,
     mut kt: *mut key_table,
-    mut ft: *mut format_tree,
+    mut ft: *mut crate::format::format_tree,
     mut filter: *const libc::c_char,
     mut fs: *mut cmd_find_state,
     mut number: u_int,
 ) {
-    let mut top: *mut mode_tree_item = 0 as *mut mode_tree_item;
-    let mut child: *mut mode_tree_item = 0 as *mut mode_tree_item;
-    let mut mti: *mut mode_tree_item = 0 as *mut mode_tree_item;
+    let mut top: *mut crate::mode_tree::mode_tree_item = 0 as *mut crate::mode_tree::mode_tree_item;
+    let mut child: *mut crate::mode_tree::mode_tree_item =
+        0 as *mut crate::mode_tree::mode_tree_item;
+    let mut mti: *mut crate::mode_tree::mode_tree_item = 0 as *mut crate::mode_tree::mode_tree_item;
     let mut item: *mut window_customize_itemdata = 0 as *mut window_customize_itemdata;
     let mut bd: *mut key_binding = 0 as *mut key_binding;
     let mut title: *mut libc::c_char = 0 as *mut libc::c_char;
@@ -2371,7 +2401,7 @@ unsafe extern "C" fn window_customize_build_keys(
     );
     top = mode_tree_add(
         (*data).data,
-        0 as *mut mode_tree_item,
+        0 as *mut crate::mode_tree::mode_tree_item,
         0 as *mut libc::c_void,
         tag,
         title,
@@ -2380,7 +2410,7 @@ unsafe extern "C" fn window_customize_build_keys(
     );
     mode_tree_no_tag(top);
     free(title as *mut libc::c_void);
-    ft = format_create_from_state(0 as *mut cmdq_item, 0 as *mut client, fs);
+    ft = format_create_from_state(0 as *mut crate::cmd_queue::cmdq_item, 0 as *mut client, fs);
     format_add(
         ft,
         b"is_option\x00" as *const u8 as *const libc::c_char,
@@ -2518,7 +2548,7 @@ unsafe extern "C" fn window_customize_build(
         wp: 0 as *mut window_pane,
         idx: 0,
     };
-    let mut ft: *mut format_tree = 0 as *mut format_tree;
+    let mut ft: *mut crate::format::format_tree = 0 as *mut crate::format::format_tree;
     let mut i: u_int = 0;
     let mut kt: *mut key_table = 0 as *mut key_table;
     i = 0 as libc::c_int as u_int;
@@ -2534,7 +2564,11 @@ unsafe extern "C" fn window_customize_build(
     } else {
         cmd_find_from_pane(&mut fs, (*data).wp, 0 as libc::c_int);
     }
-    ft = format_create_from_state(0 as *mut cmdq_item, 0 as *mut client, &mut fs);
+    ft = format_create_from_state(
+        0 as *mut crate::cmd_queue::cmdq_item,
+        0 as *mut client,
+        &mut fs,
+    );
     format_add(
         ft,
         b"is_option\x00" as *const u8 as *const libc::c_char,
@@ -2554,9 +2588,9 @@ unsafe extern "C" fn window_customize_build(
         WINDOW_CUSTOMIZE_SERVER,
         global_options,
         WINDOW_CUSTOMIZE_NONE,
-        0 as *mut options,
+        0 as *mut crate::options::options,
         WINDOW_CUSTOMIZE_NONE,
-        0 as *mut options,
+        0 as *mut crate::options::options,
         ft,
         filter,
         &mut fs,
@@ -2572,7 +2606,7 @@ unsafe extern "C" fn window_customize_build(
         WINDOW_CUSTOMIZE_SESSION,
         (*fs.s).options,
         WINDOW_CUSTOMIZE_NONE,
-        0 as *mut options,
+        0 as *mut crate::options::options,
         ft,
         filter,
         &mut fs,
@@ -2594,7 +2628,11 @@ unsafe extern "C" fn window_customize_build(
         &mut fs,
     );
     format_free(ft);
-    ft = format_create_from_state(0 as *mut cmdq_item, 0 as *mut client, &mut fs);
+    ft = format_create_from_state(
+        0 as *mut crate::cmd_queue::cmdq_item,
+        0 as *mut client,
+        &mut fs,
+    );
     i = 0 as libc::c_int as u_int;
     kt = key_bindings_first_table();
     while !kt.is_null() {
@@ -2760,10 +2798,10 @@ unsafe extern "C" fn window_customize_draw_option(
     let mut cx: u_int = (*s).cx;
     let mut cy: u_int = (*s).cy;
     let mut idx: libc::c_int = 0;
-    let mut o: *mut options_entry = 0 as *mut options_entry;
-    let mut parent: *mut options_entry = 0 as *mut options_entry;
-    let mut go: *mut options = 0 as *mut options;
-    let mut wo: *mut options = 0 as *mut options;
+    let mut o: *mut crate::options::options_entry = 0 as *mut crate::options::options_entry;
+    let mut parent: *mut crate::options::options_entry = 0 as *mut crate::options::options_entry;
+    let mut go: *mut crate::options::options = 0 as *mut crate::options::options;
+    let mut wo: *mut crate::options::options = 0 as *mut crate::options::options;
     let mut oe: *const options_table_entry = 0 as *const options_table_entry;
     let mut gc: grid_cell = grid_cell {
         data: utf8_data {
@@ -2798,7 +2836,7 @@ unsafe extern "C" fn window_customize_draw_option(
         wp: 0 as *mut window_pane,
         idx: 0,
     };
-    let mut ft: *mut format_tree = 0 as *mut format_tree;
+    let mut ft: *mut crate::format::format_tree = 0 as *mut crate::format::format_tree;
     if window_customize_check_item(data, item, &mut fs) == 0 {
         return;
     }
@@ -2813,7 +2851,11 @@ unsafe extern "C" fn window_customize_draw_option(
         space = b" \x00" as *const u8 as *const libc::c_char;
         unit = (*oe).unit
     }
-    ft = format_create_from_state(0 as *mut cmdq_item, 0 as *mut client, &mut fs);
+    ft = format_create_from_state(
+        0 as *mut crate::cmd_queue::cmdq_item,
+        0 as *mut client,
+        &mut fs,
+    );
     if oe.is_null() {
         text = b"This is a user option.\x00" as *const u8 as *const libc::c_char
     } else if (*oe).text.is_null() {
@@ -3204,12 +3246,12 @@ unsafe extern "C" fn window_customize_draw_option(
                                                                                     =
                                                                                     0
                                                                                         as
-                                                                                        *mut options;
+                                                                                        *mut crate::options::options;
                                                                                 go
                                                                                     =
                                                                                     0
                                                                                         as
-                                                                                        *mut options
+                                                                                        *mut crate::options::options
                                                                             } else {
                                                                                 match (*item).scope
                                                                                           as
@@ -3234,7 +3276,7 @@ unsafe extern "C" fn window_customize_draw_option(
                                                                                             =
                                                                                             0
                                                                                                 as
-                                                                                                *mut options;
+                                                                                                *mut crate::options::options;
                                                                                         go
                                                                                             =
                                                                                             options_get_parent((*item).oo)
@@ -3246,12 +3288,12 @@ unsafe extern "C" fn window_customize_draw_option(
                                                                                             =
                                                                                             0
                                                                                                 as
-                                                                                                *mut options;
+                                                                                                *mut crate::options::options;
                                                                                         go
                                                                                             =
                                                                                             0
                                                                                                 as
-                                                                                                *mut options
+                                                                                                *mut crate::options::options
                                                                                     }
                                                                                 }
                                                                             }
@@ -3570,9 +3612,9 @@ unsafe extern "C" fn window_customize_set_option_callback(
     let mut current_block: u64;
     let mut item: *mut window_customize_itemdata = itemdata as *mut window_customize_itemdata;
     let mut data: *mut window_customize_modedata = (*item).data;
-    let mut o: *mut options_entry = 0 as *mut options_entry;
+    let mut o: *mut crate::options::options_entry = 0 as *mut crate::options::options_entry;
     let mut oe: *const options_table_entry = 0 as *const options_table_entry;
-    let mut oo: *mut options = (*item).oo;
+    let mut oo: *mut crate::options::options = (*item).oo;
     let mut name: *const libc::c_char = (*item).name;
     let mut cause: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut idx: libc::c_int = (*item).idx;
@@ -3657,9 +3699,9 @@ unsafe extern "C" fn window_customize_set_option(
     mut global: libc::c_int,
     mut pane: libc::c_int,
 ) {
-    let mut o: *mut options_entry = 0 as *mut options_entry;
+    let mut o: *mut crate::options::options_entry = 0 as *mut crate::options::options_entry;
     let mut oe: *const options_table_entry = 0 as *const options_table_entry;
-    let mut oo: *mut options = 0 as *mut options;
+    let mut oo: *mut crate::options::options = 0 as *mut crate::options::options;
     let mut new_item: *mut window_customize_itemdata = 0 as *mut window_customize_itemdata;
     let mut flag: libc::c_int = 0;
     let mut idx: libc::c_int = (*item).idx;
@@ -3823,7 +3865,7 @@ unsafe extern "C" fn window_customize_unset_option(
     mut data: *mut window_customize_modedata,
     mut item: *mut window_customize_itemdata,
 ) {
-    let mut o: *mut options_entry = 0 as *mut options_entry;
+    let mut o: *mut crate::options::options_entry = 0 as *mut crate::options::options_entry;
     if item.is_null() || window_customize_check_item(data, item, 0 as *mut cmd_find_state) == 0 {
         return;
     }
@@ -3842,8 +3884,8 @@ unsafe extern "C" fn window_customize_reset_option(
     mut data: *mut window_customize_modedata,
     mut item: *mut window_customize_itemdata,
 ) {
-    let mut oo: *mut options = 0 as *mut options;
-    let mut o: *mut options_entry = 0 as *mut options_entry;
+    let mut oo: *mut crate::options::options = 0 as *mut crate::options::options;
+    let mut o: *mut crate::options::options_entry = 0 as *mut crate::options::options_entry;
     if item.is_null() || window_customize_check_item(data, item, 0 as *mut cmd_find_state) == 0 {
         return;
     }

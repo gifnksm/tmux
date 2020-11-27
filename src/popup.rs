@@ -80,23 +80,31 @@ extern "C" {
     #[no_mangle]
     fn xasprintf(_: *mut *mut libc::c_char, _: *const libc::c_char, _: ...) -> libc::c_int;
     #[no_mangle]
-    static mut global_options: *mut options;
+    static mut global_options: *mut crate::options::options;
     #[no_mangle]
     fn format_create(
         _: *mut client,
-        _: *mut cmdq_item,
+        _: *mut crate::cmd_queue::cmdq_item,
         _: libc::c_int,
         _: libc::c_int,
-    ) -> *mut format_tree;
+    ) -> *mut crate::format::format_tree;
     #[no_mangle]
-    fn format_free(_: *mut format_tree);
+    fn format_free(_: *mut crate::format::format_tree);
     #[no_mangle]
-    fn format_add(_: *mut format_tree, _: *const libc::c_char, _: *const libc::c_char, _: ...);
+    fn format_add(
+        _: *mut crate::format::format_tree,
+        _: *const libc::c_char,
+        _: *const libc::c_char,
+        _: ...
+    );
     #[no_mangle]
-    fn format_expand(_: *mut format_tree, _: *const libc::c_char) -> *mut libc::c_char;
+    fn format_expand(
+        _: *mut crate::format::format_tree,
+        _: *const libc::c_char,
+    ) -> *mut libc::c_char;
     #[no_mangle]
     fn format_defaults(
-        _: *mut format_tree,
+        _: *mut crate::format::format_tree,
         _: *mut client,
         _: *mut session,
         _: *mut winlink,
@@ -113,7 +121,10 @@ extern "C" {
     #[no_mangle]
     fn format_width(_: *const libc::c_char) -> u_int;
     #[no_mangle]
-    fn options_get_string(_: *mut options, _: *const libc::c_char) -> *const libc::c_char;
+    fn options_get_string(
+        _: *mut crate::options::options,
+        _: *const libc::c_char,
+    ) -> *const libc::c_char;
     #[no_mangle]
     fn job_run(
         _: *const libc::c_char,
@@ -126,17 +137,17 @@ extern "C" {
         _: libc::c_int,
         _: libc::c_int,
         _: libc::c_int,
-    ) -> *mut job;
+    ) -> *mut crate::job::job;
     #[no_mangle]
-    fn job_free(_: *mut job);
+    fn job_free(_: *mut crate::job::job);
     #[no_mangle]
-    fn job_resize(_: *mut job, _: u_int, _: u_int);
+    fn job_resize(_: *mut crate::job::job, _: u_int, _: u_int);
     #[no_mangle]
-    fn job_get_status(_: *mut job) -> libc::c_int;
+    fn job_get_status(_: *mut crate::job::job) -> libc::c_int;
     #[no_mangle]
-    fn job_get_data(_: *mut job) -> *mut libc::c_void;
+    fn job_get_data(_: *mut crate::job::job) -> *mut libc::c_void;
     #[no_mangle]
-    fn job_get_event(_: *mut job) -> *mut bufferevent;
+    fn job_get_event(_: *mut crate::job::job) -> *mut bufferevent;
     #[no_mangle]
     fn tty_draw_line(
         _: *mut tty,
@@ -158,24 +169,30 @@ extern "C" {
         _: *const libc::c_char,
         _: *mut cmd_parse_input,
         _: *mut client,
-        _: *mut cmdq_state,
+        _: *mut crate::cmd_queue::cmdq_state,
         _: *mut *mut libc::c_char,
     ) -> cmd_parse_status;
     #[no_mangle]
-    fn cmdq_new_state(_: *mut cmd_find_state, _: *mut key_event, _: libc::c_int)
-        -> *mut cmdq_state;
+    fn cmdq_new_state(
+        _: *mut cmd_find_state,
+        _: *mut key_event,
+        _: libc::c_int,
+    ) -> *mut crate::cmd_queue::cmdq_state;
     #[no_mangle]
-    fn cmdq_free_state(_: *mut cmdq_state);
+    fn cmdq_free_state(_: *mut crate::cmd_queue::cmdq_state);
     #[no_mangle]
-    fn cmdq_get_client(_: *mut cmdq_item) -> *mut client;
+    fn cmdq_get_client(_: *mut crate::cmd_queue::cmdq_item) -> *mut client;
     #[no_mangle]
-    fn cmdq_get_event(_: *mut cmdq_item) -> *mut key_event;
+    fn cmdq_get_event(_: *mut crate::cmd_queue::cmdq_item) -> *mut key_event;
     #[no_mangle]
-    fn cmdq_get_error(_: *const libc::c_char) -> *mut cmdq_item;
+    fn cmdq_get_error(_: *const libc::c_char) -> *mut crate::cmd_queue::cmdq_item;
     #[no_mangle]
-    fn cmdq_append(_: *mut client, _: *mut cmdq_item) -> *mut cmdq_item;
+    fn cmdq_append(
+        _: *mut client,
+        _: *mut crate::cmd_queue::cmdq_item,
+    ) -> *mut crate::cmd_queue::cmdq_item;
     #[no_mangle]
-    fn cmdq_continue(_: *mut cmdq_item);
+    fn cmdq_continue(_: *mut crate::cmd_queue::cmdq_item);
     #[no_mangle]
     fn key_string_lookup_key(_: key_code, _: libc::c_int) -> *const libc::c_char;
     #[no_mangle]
@@ -228,12 +245,12 @@ extern "C" {
     #[no_mangle]
     fn screen_resize(_: *mut screen, _: u_int, _: u_int, _: libc::c_int);
     #[no_mangle]
-    fn input_init(_: *mut window_pane, _: *mut bufferevent) -> *mut input_ctx;
+    fn input_init(_: *mut window_pane, _: *mut bufferevent) -> *mut crate::input::input_ctx;
     #[no_mangle]
-    fn input_free(_: *mut input_ctx);
+    fn input_free(_: *mut crate::input::input_ctx);
     #[no_mangle]
     fn input_parse_screen(
-        _: *mut input_ctx,
+        _: *mut crate::input::input_ctx,
         _: *mut screen,
         _: screen_write_init_ctx_cb,
         _: *mut libc::c_void,
@@ -470,17 +487,17 @@ pub struct args {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct args_tree {
-    pub rbh_root: *mut args_entry,
+    pub rbh_root: *mut crate::arguments::args_entry,
 }
 
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct client {
     pub name: *const libc::c_char,
-    pub peer: *mut tmuxpeer,
-    pub queue: *mut cmdq_list,
+    pub peer: *mut crate::proc::tmuxpeer,
+    pub queue: *mut crate::cmd_queue::cmdq_list,
     pub windows: client_windows,
-    pub control_state: *mut control_state,
+    pub control_state: *mut crate::control::control_state,
     pub pause_age: u_int,
     pub pid: pid_t,
     pub fd: libc::c_int,
@@ -489,8 +506,8 @@ pub struct client {
     pub retval: libc::c_int,
     pub creation_time: timeval,
     pub activity_time: timeval,
-    pub environ: *mut environ,
-    pub jobs: *mut format_job_tree,
+    pub environ: *mut crate::environ::environ,
+    pub jobs: *mut crate::format::format_job_tree,
     pub title: *mut libc::c_char,
     pub cwd: *const libc::c_char,
     pub term_name: *mut libc::c_char,
@@ -649,7 +666,7 @@ pub type overlay_mode_cb =
 pub struct screen {
     pub title: *mut libc::c_char,
     pub path: *mut libc::c_char,
-    pub titles: *mut screen_titles,
+    pub titles: *mut crate::screen::screen_titles,
     pub grid: *mut grid,
     pub cx: u_int,
     pub cy: u_int,
@@ -664,8 +681,8 @@ pub struct screen {
     pub saved_cell: grid_cell,
     pub saved_flags: libc::c_int,
     pub tabs: *mut bitstr_t,
-    pub sel: *mut screen_sel,
-    pub write_list: *mut screen_write_collect_line,
+    pub sel: *mut crate::screen::screen_sel,
+    pub write_list: *mut crate::screen_write::screen_write_collect_line,
 }
 
 #[repr(C)]
@@ -764,11 +781,11 @@ pub struct session {
     pub windows: winlinks,
     pub statusat: libc::c_int,
     pub statuslines: u_int,
-    pub options: *mut options,
+    pub options: *mut crate::options::options,
     pub flags: libc::c_int,
     pub attached: u_int,
     pub tio: *mut termios,
-    pub environ: *mut environ,
+    pub environ: *mut crate::environ::environ,
     pub references: libc::c_int,
     pub gentry: C2RustUnnamed_13,
     pub entry: C2RustUnnamed_12,
@@ -860,7 +877,7 @@ pub struct window {
     pub flags: libc::c_int,
     pub alerts_queued: libc::c_int,
     pub alerts_entry: C2RustUnnamed_19,
-    pub options: *mut options,
+    pub options: *mut crate::options::options,
     pub references: u_int,
     pub winlinks: C2RustUnnamed_18,
     pub entry: C2RustUnnamed_17,
@@ -923,7 +940,7 @@ pub struct window_pane {
     pub id: u_int,
     pub active_point: u_int,
     pub window: *mut window,
-    pub options: *mut options,
+    pub options: *mut crate::options::options,
     pub layout_cell: *mut layout_cell,
     pub saved_layout_cell: *mut layout_cell,
     pub sx: u_int,
@@ -946,7 +963,7 @@ pub struct window_pane {
     pub base_offset: size_t,
     pub resize_timer: event,
     pub force_timer: event,
-    pub ictx: *mut input_ctx,
+    pub ictx: *mut crate::input::input_ctx,
     pub cached_gc: grid_cell,
     pub cached_active_gc: grid_cell,
     pub palette: *mut libc::c_int,
@@ -1045,7 +1062,9 @@ pub struct window_mode {
             _: *mut mouse_event,
         ) -> (),
     >,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
+    pub formats: Option<
+        unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut crate::format::format_tree) -> (),
+    >,
 }
 
 #[repr(C)]
@@ -1145,7 +1164,7 @@ pub struct C2RustUnnamed_27 {
 pub struct cmd_list {
     pub references: libc::c_int,
     pub group: u_int,
-    pub list: *mut cmds,
+    pub list: *mut crate::cmd::cmds,
 }
 pub type msgtype = libc::c_uint;
 pub const MSG_WRITE_CLOSE: msgtype = 306;
@@ -1300,7 +1319,7 @@ pub struct tty_term {
     pub tty: *mut tty,
     pub features: libc::c_int,
     pub acs: [[libc::c_char; 2]; 256],
-    pub codes: *mut tty_code,
+    pub codes: *mut crate::tty_term::tty_code,
     pub flags: libc::c_int,
     pub entry: C2RustUnnamed_30,
 }
@@ -1343,7 +1362,7 @@ pub struct screen_write_ctx {
     pub flags: libc::c_int,
     pub init_ctx_cb: screen_write_init_ctx_cb,
     pub arg: *mut libc::c_void,
-    pub item: *mut screen_write_collect_item,
+    pub item: *mut crate::screen_write::screen_write_collect_item,
     pub scrolled: u_int,
     pub bg: u_int,
     pub cells: u_int,
@@ -1590,12 +1609,12 @@ pub struct cmd_parse_input {
     pub flags: libc::c_int,
     pub file: *const libc::c_char,
     pub line: u_int,
-    pub item: *mut cmdq_item,
+    pub item: *mut crate::cmd_queue::cmdq_item,
     pub c: *mut client,
     pub fs: cmd_find_state,
 }
-pub type job_update_cb = Option<unsafe extern "C" fn(_: *mut job) -> ()>;
-pub type job_complete_cb = Option<unsafe extern "C" fn(_: *mut job) -> ()>;
+pub type job_update_cb = Option<unsafe extern "C" fn(_: *mut crate::job::job) -> ()>;
+pub type job_complete_cb = Option<unsafe extern "C" fn(_: *mut crate::job::job) -> ()>;
 pub type job_free_cb = Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
 pub type popup_close_cb = Option<unsafe extern "C" fn(_: libc::c_int, _: *mut libc::c_void) -> ()>;
 pub type popup_finish_edit_cb =
@@ -1621,15 +1640,15 @@ pub type popup_finish_edit_cb =
 #[derive(Copy, Clone)]
 pub struct popup_data {
     pub c: *mut client,
-    pub item: *mut cmdq_item,
+    pub item: *mut crate::cmd_queue::cmdq_item,
     pub flags: libc::c_int,
     pub lines: *mut *mut libc::c_char,
     pub nlines: u_int,
     pub cmd: *mut libc::c_char,
     pub fs: cmd_find_state,
     pub s: screen,
-    pub job: *mut job,
-    pub ictx: *mut input_ctx,
+    pub job: *mut crate::job::job,
+    pub ictx: *mut crate::input::input_ctx,
     pub status: libc::c_int,
     pub cb: popup_close_cb,
     pub arg: *mut libc::c_void,
@@ -1691,14 +1710,14 @@ unsafe extern "C" fn popup_init_ctx_cb(mut ctx: *mut screen_write_ctx, mut ttyct
     (*ttyctx).arg = pd as *mut libc::c_void;
 }
 unsafe extern "C" fn popup_write_screen(mut c: *mut client, mut pd: *mut popup_data) {
-    let mut item: *mut cmdq_item = (*pd).item;
+    let mut item: *mut crate::cmd_queue::cmdq_item = (*pd).item;
     let mut ctx: screen_write_ctx = screen_write_ctx {
         wp: 0 as *mut window_pane,
         s: 0 as *mut screen,
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
-        item: 0 as *mut screen_write_collect_item,
+        item: 0 as *mut crate::screen_write::screen_write_collect_item,
         scrolled: 0,
         bg: 0,
         cells: 0,
@@ -1709,7 +1728,7 @@ unsafe extern "C" fn popup_write_screen(mut c: *mut client, mut pd: *mut popup_d
     let mut next: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut loop_0: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut tmp: *mut libc::c_char = 0 as *mut libc::c_char;
-    let mut ft: *mut format_tree = 0 as *mut format_tree;
+    let mut ft: *mut crate::format::format_tree = 0 as *mut crate::format::format_tree;
     let mut i: u_int = 0;
     let mut y: u_int = 0;
     ft = format_create(c, item, 0 as libc::c_int, 0 as libc::c_int);
@@ -1822,7 +1841,7 @@ unsafe extern "C" fn popup_draw_cb(mut c: *mut client, mut _ctx0: *mut screen_re
     let mut s: screen = screen {
         title: 0 as *mut libc::c_char,
         path: 0 as *mut libc::c_char,
-        titles: 0 as *mut screen_titles,
+        titles: 0 as *mut crate::screen::screen_titles,
         grid: 0 as *mut grid,
         cx: 0,
         cy: 0,
@@ -1849,8 +1868,8 @@ unsafe extern "C" fn popup_draw_cb(mut c: *mut client, mut _ctx0: *mut screen_re
         },
         saved_flags: 0,
         tabs: 0 as *mut bitstr_t,
-        sel: 0 as *mut screen_sel,
-        write_list: 0 as *mut screen_write_collect_line,
+        sel: 0 as *mut crate::screen::screen_sel,
+        write_list: 0 as *mut crate::screen_write::screen_write_collect_line,
     };
     let mut ctx: screen_write_ctx = screen_write_ctx {
         wp: 0 as *mut window_pane,
@@ -1858,7 +1877,7 @@ unsafe extern "C" fn popup_draw_cb(mut c: *mut client, mut _ctx0: *mut screen_re
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
-        item: 0 as *mut screen_write_collect_item,
+        item: 0 as *mut crate::screen_write::screen_write_collect_item,
         scrolled: 0,
         bg: 0,
         cells: 0,
@@ -1909,7 +1928,7 @@ unsafe extern "C" fn popup_draw_cb(mut c: *mut client, mut _ctx0: *mut screen_re
 }
 unsafe extern "C" fn popup_free_cb(mut c: *mut client) {
     let mut pd: *mut popup_data = (*c).overlay_data as *mut popup_data;
-    let mut item: *mut cmdq_item = (*pd).item;
+    let mut item: *mut crate::cmd_queue::cmdq_item = (*pd).item;
     let mut i: u_int = 0;
     if (*pd).cb.is_some() {
         (*pd).cb.expect("non-null function pointer")((*pd).status, (*pd).arg);
@@ -2001,11 +2020,11 @@ unsafe extern "C" fn popup_key_cb(mut c: *mut client, mut event: *mut key_event)
     let mut pd: *mut popup_data = (*c).overlay_data as *mut popup_data;
     let mut m: *mut mouse_event = &mut (*event).m;
     let mut fs: *mut cmd_find_state = &mut (*pd).fs;
-    let mut ft: *mut format_tree = 0 as *mut format_tree;
+    let mut ft: *mut crate::format::format_tree = 0 as *mut crate::format::format_tree;
     let mut cmd: *const libc::c_char = 0 as *const libc::c_char;
     let mut buf: *const libc::c_char = 0 as *const libc::c_char;
     let mut len: size_t = 0;
-    let mut state: *mut cmdq_state = 0 as *mut cmdq_state;
+    let mut state: *mut crate::cmd_queue::cmdq_state = 0 as *mut crate::cmd_queue::cmdq_state;
     let mut status: cmd_parse_status = CMD_PARSE_EMPTY;
     let mut error: *mut libc::c_char = 0 as *mut libc::c_char;
     if (*event).key & 0xfffffffffff as libc::c_ulonglong
@@ -2178,7 +2197,7 @@ unsafe extern "C" fn popup_key_cb(mut c: *mut client, mut event: *mut key_event)
     cmdq_free_state(state);
     return 1 as libc::c_int;
 }
-unsafe extern "C" fn popup_job_update_cb(mut job: *mut job) {
+unsafe extern "C" fn popup_job_update_cb(mut job: *mut crate::job::job) {
     let mut pd: *mut popup_data = job_get_data(job) as *mut popup_data;
     let mut evb: *mut evbuffer = (*job_get_event(job)).input;
     let mut c: *mut client = (*pd).c;
@@ -2208,7 +2227,7 @@ unsafe extern "C" fn popup_job_update_cb(mut job: *mut job) {
     );
     evbuffer_drain(evb, size);
 }
-unsafe extern "C" fn popup_job_complete_cb(mut job: *mut job) {
+unsafe extern "C" fn popup_job_complete_cb(mut job: *mut crate::job::job) {
     let mut pd: *mut popup_data = job_get_data(job) as *mut popup_data;
     let mut status: libc::c_int = 0;
     status = job_get_status((*pd).job);
@@ -2222,7 +2241,7 @@ unsafe extern "C" fn popup_job_complete_cb(mut job: *mut job) {
     } else {
         (*pd).status = 0 as libc::c_int
     }
-    (*pd).job = 0 as *mut job;
+    (*pd).job = 0 as *mut crate::job::job;
     if (*pd).flags & 0x2 as libc::c_int != 0
         || (*pd).flags & 0x4 as libc::c_int != 0 && (*pd).status == 0 as libc::c_int
     {
@@ -2257,7 +2276,7 @@ pub unsafe extern "C" fn popup_height(
 }
 #[no_mangle]
 pub unsafe extern "C" fn popup_width(
-    mut item: *mut cmdq_item,
+    mut item: *mut crate::cmd_queue::cmdq_item,
     mut nlines: u_int,
     mut lines: *mut *const libc::c_char,
     mut c: *mut client,
@@ -2267,7 +2286,7 @@ pub unsafe extern "C" fn popup_width(
     let mut next: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut loop_0: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut tmp: *mut libc::c_char = 0 as *mut libc::c_char;
-    let mut ft: *mut format_tree = 0 as *mut format_tree;
+    let mut ft: *mut crate::format::format_tree = 0 as *mut crate::format::format_tree;
     let mut i: u_int = 0;
     let mut width: u_int = 0 as libc::c_int as u_int;
     let mut tmpwidth: u_int = 0;
@@ -2313,7 +2332,7 @@ pub unsafe extern "C" fn popup_width(
 #[no_mangle]
 pub unsafe extern "C" fn popup_display(
     mut flags: libc::c_int,
-    mut item: *mut cmdq_item,
+    mut item: *mut crate::cmd_queue::cmdq_item,
     mut px: u_int,
     mut py: u_int,
     mut sx: u_int,
@@ -2394,8 +2413,8 @@ pub unsafe extern "C" fn popup_display(
             shellcmd,
             s,
             cwd,
-            Some(popup_job_update_cb as unsafe extern "C" fn(_: *mut job) -> ()),
-            Some(popup_job_complete_cb as unsafe extern "C" fn(_: *mut job) -> ()),
+            Some(popup_job_update_cb as unsafe extern "C" fn(_: *mut crate::job::job) -> ()),
+            Some(popup_job_complete_cb as unsafe extern "C" fn(_: *mut crate::job::job) -> ()),
             None,
             pd as *mut libc::c_void,
             jobflags,
@@ -2553,7 +2572,7 @@ pub unsafe extern "C" fn popup_editor(
     );
     if popup_display(
         0x1 as libc::c_int | 0x2 as libc::c_int,
-        0 as *mut cmdq_item,
+        0 as *mut crate::cmd_queue::cmdq_item,
         px,
         py,
         sx,

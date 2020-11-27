@@ -50,13 +50,13 @@ extern "C" {
     #[no_mangle]
     fn xstrdup(_: *const libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
-    fn environ_find(_: *mut environ, _: *const libc::c_char) -> *mut environ_entry;
+    fn environ_find(_: *mut crate::environ::environ, _: *const libc::c_char) -> *mut environ_entry;
     #[no_mangle]
-    fn cmdq_error(_: *mut cmdq_item, _: *const libc::c_char, _: ...);
+    fn cmdq_error(_: *mut crate::cmd_queue::cmdq_item, _: *const libc::c_char, _: ...);
     #[no_mangle]
     static mut clients: clients;
     #[no_mangle]
-    fn cmdq_get_client(_: *mut cmdq_item) -> *mut client;
+    fn cmdq_get_client(_: *mut crate::cmd_queue::cmdq_item) -> *mut client;
     #[no_mangle]
     static mut marked_pane: cmd_find_state;
     #[no_mangle]
@@ -70,9 +70,9 @@ extern "C" {
         _: *mut *mut winlink,
     ) -> *mut window_pane;
     #[no_mangle]
-    fn cmdq_get_event(_: *mut cmdq_item) -> *mut key_event;
+    fn cmdq_get_event(_: *mut crate::cmd_queue::cmdq_item) -> *mut key_event;
     #[no_mangle]
-    fn cmdq_get_current(_: *mut cmdq_item) -> *mut cmd_find_state;
+    fn cmdq_get_current(_: *mut crate::cmd_queue::cmdq_item) -> *mut cmd_find_state;
     #[no_mangle]
     fn server_client_get_pane(_: *mut client) -> *mut window_pane;
     #[no_mangle]
@@ -316,17 +316,17 @@ pub struct args {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct args_tree {
-    pub rbh_root: *mut args_entry,
+    pub rbh_root: *mut crate::arguments::args_entry,
 }
 
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct client {
     pub name: *const libc::c_char,
-    pub peer: *mut tmuxpeer,
-    pub queue: *mut cmdq_list,
+    pub peer: *mut crate::proc::tmuxpeer,
+    pub queue: *mut crate::cmd_queue::cmdq_list,
     pub windows: client_windows,
-    pub control_state: *mut control_state,
+    pub control_state: *mut crate::control::control_state,
     pub pause_age: u_int,
     pub pid: pid_t,
     pub fd: libc::c_int,
@@ -335,8 +335,8 @@ pub struct client {
     pub retval: libc::c_int,
     pub creation_time: timeval,
     pub activity_time: timeval,
-    pub environ: *mut environ,
-    pub jobs: *mut format_job_tree,
+    pub environ: *mut crate::environ::environ,
+    pub jobs: *mut crate::format::format_job_tree,
     pub title: *mut libc::c_char,
     pub cwd: *const libc::c_char,
     pub term_name: *mut libc::c_char,
@@ -495,7 +495,7 @@ pub type overlay_mode_cb =
 pub struct screen {
     pub title: *mut libc::c_char,
     pub path: *mut libc::c_char,
-    pub titles: *mut screen_titles,
+    pub titles: *mut crate::screen::screen_titles,
     pub grid: *mut grid,
     pub cx: u_int,
     pub cy: u_int,
@@ -510,8 +510,8 @@ pub struct screen {
     pub saved_cell: grid_cell,
     pub saved_flags: libc::c_int,
     pub tabs: *mut bitstr_t,
-    pub sel: *mut screen_sel,
-    pub write_list: *mut screen_write_collect_line,
+    pub sel: *mut crate::screen::screen_sel,
+    pub write_list: *mut crate::screen_write::screen_write_collect_line,
 }
 
 #[repr(C)]
@@ -610,11 +610,11 @@ pub struct session {
     pub windows: winlinks,
     pub statusat: libc::c_int,
     pub statuslines: u_int,
-    pub options: *mut options,
+    pub options: *mut crate::options::options,
     pub flags: libc::c_int,
     pub attached: u_int,
     pub tio: *mut termios,
-    pub environ: *mut environ,
+    pub environ: *mut crate::environ::environ,
     pub references: libc::c_int,
     pub gentry: C2RustUnnamed_13,
     pub entry: C2RustUnnamed_12,
@@ -706,7 +706,7 @@ pub struct window {
     pub flags: libc::c_int,
     pub alerts_queued: libc::c_int,
     pub alerts_entry: C2RustUnnamed_19,
-    pub options: *mut options,
+    pub options: *mut crate::options::options,
     pub references: u_int,
     pub winlinks: C2RustUnnamed_18,
     pub entry: C2RustUnnamed_17,
@@ -769,7 +769,7 @@ pub struct window_pane {
     pub id: u_int,
     pub active_point: u_int,
     pub window: *mut window,
-    pub options: *mut options,
+    pub options: *mut crate::options::options,
     pub layout_cell: *mut layout_cell,
     pub saved_layout_cell: *mut layout_cell,
     pub sx: u_int,
@@ -792,7 +792,7 @@ pub struct window_pane {
     pub base_offset: size_t,
     pub resize_timer: event,
     pub force_timer: event,
-    pub ictx: *mut input_ctx,
+    pub ictx: *mut crate::input::input_ctx,
     pub cached_gc: grid_cell,
     pub cached_active_gc: grid_cell,
     pub palette: *mut libc::c_int,
@@ -891,7 +891,9 @@ pub struct window_mode {
             _: *mut mouse_event,
         ) -> (),
     >,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
+    pub formats: Option<
+        unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut crate::format::format_tree) -> (),
+    >,
 }
 
 #[repr(C)]
@@ -991,7 +993,7 @@ pub struct C2RustUnnamed_27 {
 pub struct cmd_list {
     pub references: libc::c_int,
     pub group: u_int,
-    pub list: *mut cmds,
+    pub list: *mut crate::cmd::cmds,
 }
 pub type msgtype = libc::c_uint;
 pub const MSG_WRITE_CLOSE: msgtype = 306;
@@ -1146,7 +1148,7 @@ pub struct tty_term {
     pub tty: *mut tty,
     pub features: libc::c_int,
     pub acs: [[libc::c_char; 2]; 256],
-    pub codes: *mut tty_code,
+    pub codes: *mut crate::tty_term::tty_code,
     pub flags: libc::c_int,
     pub entry: C2RustUnnamed_30,
 }
@@ -1576,7 +1578,11 @@ unsafe extern "C" fn cmd_find_get_session(
         return 0 as libc::c_int;
     }
     /* Look for as a client. */
-    c = cmd_find_client(0 as *mut cmdq_item, session, 1 as libc::c_int);
+    c = cmd_find_client(
+        0 as *mut crate::cmd_queue::cmdq_item,
+        session,
+        1 as libc::c_int,
+    );
     if !c.is_null() && !(*c).session.is_null() {
         (*fs).s = (*c).session;
         return 0 as libc::c_int;
@@ -2395,7 +2401,7 @@ pub unsafe extern "C" fn cmd_find_from_client(
 #[no_mangle]
 pub unsafe extern "C" fn cmd_find_target(
     mut fs: *mut cmd_find_state,
-    mut item: *mut cmdq_item,
+    mut item: *mut crate::cmd_queue::cmdq_item,
     mut target: *const libc::c_char,
     mut type_0: cmd_find_type,
     mut flags: libc::c_int,
@@ -2557,9 +2563,9 @@ pub unsafe extern "C" fn cmd_find_target(
                     == 0 as libc::c_int
             {
                 m = &mut (*(cmdq_get_event
-                    as unsafe extern "C" fn(_: *mut cmdq_item) -> *mut key_event)(
-                    item
-                ))
+                    as unsafe extern "C" fn(
+                        _: *mut crate::cmd_queue::cmdq_item,
+                    ) -> *mut key_event)(item))
                 .m;
                 let mut current_block_51: u64;
                 match type_0 as libc::c_uint {
@@ -2913,7 +2919,7 @@ pub unsafe extern "C" fn cmd_find_target(
 }
 /* Find the current client. */
 unsafe extern "C" fn cmd_find_current_client(
-    mut item: *mut cmdq_item,
+    mut item: *mut crate::cmd_queue::cmdq_item,
     mut quiet: libc::c_int,
 ) -> *mut client {
     let mut c: *mut client = 0 as *mut client;
@@ -2972,7 +2978,7 @@ unsafe extern "C" fn cmd_find_current_client(
 /* Find the target client or report an error and return NULL. */
 #[no_mangle]
 pub unsafe extern "C" fn cmd_find_client(
-    mut item: *mut cmdq_item,
+    mut item: *mut crate::cmd_queue::cmdq_item,
     mut target: *const libc::c_char,
     mut quiet: libc::c_int,
 ) -> *mut client {

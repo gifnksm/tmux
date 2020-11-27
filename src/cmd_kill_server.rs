@@ -7,7 +7,7 @@ extern "C" {
     #[no_mangle]
     fn getpid() -> __pid_t;
     #[no_mangle]
-    fn cmd_get_entry(_: *mut cmd) -> *const cmd_entry;
+    fn cmd_get_entry(_: *mut crate::cmd::cmd) -> *const cmd_entry;
 }
 pub type __pid_t = libc::c_int;
 pub type cmd_find_type = libc::c_uint;
@@ -38,7 +38,12 @@ pub struct cmd_entry {
     pub source: cmd_entry_flag,
     pub target: cmd_entry_flag,
     pub flags: libc::c_int,
-    pub exec: Option<unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval>,
+    pub exec: Option<
+        unsafe extern "C" fn(
+            _: *mut crate::cmd::cmd,
+            _: *mut crate::cmd_queue::cmdq_item,
+        ) -> cmd_retval,
+    >,
 }
 
 #[repr(C)]
@@ -76,7 +81,10 @@ pub static mut cmd_kill_server_entry: cmd_entry = {
             flags: 0 as libc::c_int,
             exec: Some(
                 cmd_kill_server_exec
-                    as unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval,
+                    as unsafe extern "C" fn(
+                        _: *mut crate::cmd::cmd,
+                        _: *mut crate::cmd_queue::cmdq_item,
+                    ) -> cmd_retval,
             ),
         };
         init
@@ -110,7 +118,10 @@ pub static mut cmd_start_server_entry: cmd_entry = {
             flags: 0x1 as libc::c_int,
             exec: Some(
                 cmd_kill_server_exec
-                    as unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval,
+                    as unsafe extern "C" fn(
+                        _: *mut crate::cmd::cmd,
+                        _: *mut crate::cmd_queue::cmdq_item,
+                    ) -> cmd_retval,
             ),
         };
         init
@@ -136,8 +147,8 @@ pub static mut cmd_start_server_entry: cmd_entry = {
  * Kill the server and do nothing else.
  */
 unsafe extern "C" fn cmd_kill_server_exec(
-    mut self_0: *mut cmd,
-    mut _item: *mut cmdq_item,
+    mut self_0: *mut crate::cmd::cmd,
+    mut _item: *mut crate::cmd_queue::cmdq_item,
 ) -> cmd_retval {
     if cmd_get_entry(self_0) == &cmd_kill_server_entry as *const cmd_entry {
         kill(getpid(), 15 as libc::c_int);

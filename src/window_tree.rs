@@ -47,7 +47,7 @@ extern "C" {
     fn format_true(_: *const libc::c_char) -> libc::c_int;
     #[no_mangle]
     fn format_single(
-        _: *mut cmdq_item,
+        _: *mut crate::cmd_queue::cmdq_item,
         _: *const libc::c_char,
         _: *mut client,
         _: *mut session,
@@ -55,7 +55,10 @@ extern "C" {
         _: *mut window_pane,
     ) -> *mut libc::c_char;
     #[no_mangle]
-    fn options_get_number(_: *mut options, _: *const libc::c_char) -> libc::c_longlong;
+    fn options_get_number(
+        _: *mut crate::options::options,
+        _: *const libc::c_char,
+    ) -> libc::c_longlong;
     #[no_mangle]
     fn args_has(_: *mut args, _: u_char) -> libc::c_int;
     #[no_mangle]
@@ -74,9 +77,12 @@ extern "C" {
         _: *const libc::c_char,
         _: cmdq_cb,
         _: *mut libc::c_void,
-    ) -> *mut cmdq_item;
+    ) -> *mut crate::cmd_queue::cmdq_item;
     #[no_mangle]
-    fn cmdq_append(_: *mut client, _: *mut cmdq_item) -> *mut cmdq_item;
+    fn cmdq_append(
+        _: *mut client,
+        _: *mut crate::cmd_queue::cmdq_item,
+    ) -> *mut crate::cmd_queue::cmdq_item;
     #[no_mangle]
     fn server_set_marked(_: *mut session, _: *mut winlink, _: *mut window_pane);
     #[no_mangle]
@@ -141,18 +147,18 @@ extern "C" {
         _: libc::c_int,
     );
     #[no_mangle]
-    fn mode_tree_count_tagged(_: *mut mode_tree_data) -> u_int;
+    fn mode_tree_count_tagged(_: *mut crate::mode_tree::mode_tree_data) -> u_int;
     #[no_mangle]
-    fn mode_tree_get_current(_: *mut mode_tree_data) -> *mut libc::c_void;
+    fn mode_tree_get_current(_: *mut crate::mode_tree::mode_tree_data) -> *mut libc::c_void;
     #[no_mangle]
-    fn mode_tree_expand_current(_: *mut mode_tree_data);
+    fn mode_tree_expand_current(_: *mut crate::mode_tree::mode_tree_data);
     #[no_mangle]
-    fn mode_tree_expand(_: *mut mode_tree_data, _: uint64_t);
+    fn mode_tree_expand(_: *mut crate::mode_tree::mode_tree_data, _: uint64_t);
     #[no_mangle]
-    fn mode_tree_set_current(_: *mut mode_tree_data, _: uint64_t) -> libc::c_int;
+    fn mode_tree_set_current(_: *mut crate::mode_tree::mode_tree_data, _: uint64_t) -> libc::c_int;
     #[no_mangle]
     fn mode_tree_each_tagged(
-        _: *mut mode_tree_data,
+        _: *mut crate::mode_tree::mode_tree_data,
         _: mode_tree_each_cb,
         _: *mut client,
         _: key_code,
@@ -172,32 +178,35 @@ extern "C" {
         _: *mut *const libc::c_char,
         _: u_int,
         _: *mut *mut screen,
-    ) -> *mut mode_tree_data;
+    ) -> *mut crate::mode_tree::mode_tree_data;
     #[no_mangle]
-    fn mode_tree_zoom(_: *mut mode_tree_data, _: *mut args);
+    fn mode_tree_zoom(_: *mut crate::mode_tree::mode_tree_data, _: *mut args);
     #[no_mangle]
-    fn mode_tree_build(_: *mut mode_tree_data);
+    fn mode_tree_build(_: *mut crate::mode_tree::mode_tree_data);
     #[no_mangle]
-    fn mode_tree_free(_: *mut mode_tree_data);
+    fn mode_tree_free(_: *mut crate::mode_tree::mode_tree_data);
     #[no_mangle]
-    fn mode_tree_resize(_: *mut mode_tree_data, _: u_int, _: u_int);
+    fn mode_tree_resize(_: *mut crate::mode_tree::mode_tree_data, _: u_int, _: u_int);
     #[no_mangle]
     fn mode_tree_add(
-        _: *mut mode_tree_data,
-        _: *mut mode_tree_item,
+        _: *mut crate::mode_tree::mode_tree_data,
+        _: *mut crate::mode_tree::mode_tree_item,
         _: *mut libc::c_void,
         _: uint64_t,
         _: *const libc::c_char,
         _: *const libc::c_char,
         _: libc::c_int,
-    ) -> *mut mode_tree_item;
+    ) -> *mut crate::mode_tree::mode_tree_item;
     #[no_mangle]
-    fn mode_tree_remove(_: *mut mode_tree_data, _: *mut mode_tree_item);
+    fn mode_tree_remove(
+        _: *mut crate::mode_tree::mode_tree_data,
+        _: *mut crate::mode_tree::mode_tree_item,
+    );
     #[no_mangle]
-    fn mode_tree_draw(_: *mut mode_tree_data);
+    fn mode_tree_draw(_: *mut crate::mode_tree::mode_tree_data);
     #[no_mangle]
     fn mode_tree_key(
-        _: *mut mode_tree_data,
+        _: *mut crate::mode_tree::mode_tree_data,
         _: *mut client,
         _: *mut key_code,
         _: *mut mouse_event,
@@ -404,17 +413,17 @@ pub struct args {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct args_tree {
-    pub rbh_root: *mut args_entry,
+    pub rbh_root: *mut crate::arguments::args_entry,
 }
 
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct client {
     pub name: *const libc::c_char,
-    pub peer: *mut tmuxpeer,
-    pub queue: *mut cmdq_list,
+    pub peer: *mut crate::proc::tmuxpeer,
+    pub queue: *mut crate::cmd_queue::cmdq_list,
     pub windows: client_windows,
-    pub control_state: *mut control_state,
+    pub control_state: *mut crate::control::control_state,
     pub pause_age: u_int,
     pub pid: pid_t,
     pub fd: libc::c_int,
@@ -423,8 +432,8 @@ pub struct client {
     pub retval: libc::c_int,
     pub creation_time: timeval,
     pub activity_time: timeval,
-    pub environ: *mut environ,
-    pub jobs: *mut format_job_tree,
+    pub environ: *mut crate::environ::environ,
+    pub jobs: *mut crate::format::format_job_tree,
     pub title: *mut libc::c_char,
     pub cwd: *const libc::c_char,
     pub term_name: *mut libc::c_char,
@@ -583,7 +592,7 @@ pub type overlay_mode_cb =
 pub struct screen {
     pub title: *mut libc::c_char,
     pub path: *mut libc::c_char,
-    pub titles: *mut screen_titles,
+    pub titles: *mut crate::screen::screen_titles,
     pub grid: *mut grid,
     pub cx: u_int,
     pub cy: u_int,
@@ -598,8 +607,8 @@ pub struct screen {
     pub saved_cell: grid_cell,
     pub saved_flags: libc::c_int,
     pub tabs: *mut bitstr_t,
-    pub sel: *mut screen_sel,
-    pub write_list: *mut screen_write_collect_line,
+    pub sel: *mut crate::screen::screen_sel,
+    pub write_list: *mut crate::screen_write::screen_write_collect_line,
 }
 
 #[repr(C)]
@@ -698,11 +707,11 @@ pub struct session {
     pub windows: winlinks,
     pub statusat: libc::c_int,
     pub statuslines: u_int,
-    pub options: *mut options,
+    pub options: *mut crate::options::options,
     pub flags: libc::c_int,
     pub attached: u_int,
     pub tio: *mut termios,
-    pub environ: *mut environ,
+    pub environ: *mut crate::environ::environ,
     pub references: libc::c_int,
     pub gentry: C2RustUnnamed_13,
     pub entry: C2RustUnnamed_12,
@@ -794,7 +803,7 @@ pub struct window {
     pub flags: libc::c_int,
     pub alerts_queued: libc::c_int,
     pub alerts_entry: C2RustUnnamed_19,
-    pub options: *mut options,
+    pub options: *mut crate::options::options,
     pub references: u_int,
     pub winlinks: C2RustUnnamed_18,
     pub entry: C2RustUnnamed_17,
@@ -857,7 +866,7 @@ pub struct window_pane {
     pub id: u_int,
     pub active_point: u_int,
     pub window: *mut window,
-    pub options: *mut options,
+    pub options: *mut crate::options::options,
     pub layout_cell: *mut layout_cell,
     pub saved_layout_cell: *mut layout_cell,
     pub sx: u_int,
@@ -880,7 +889,7 @@ pub struct window_pane {
     pub base_offset: size_t,
     pub resize_timer: event,
     pub force_timer: event,
-    pub ictx: *mut input_ctx,
+    pub ictx: *mut crate::input::input_ctx,
     pub cached_gc: grid_cell,
     pub cached_active_gc: grid_cell,
     pub palette: *mut libc::c_int,
@@ -979,7 +988,9 @@ pub struct window_mode {
             _: *mut mouse_event,
         ) -> (),
     >,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
+    pub formats: Option<
+        unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut crate::format::format_tree) -> (),
+    >,
 }
 
 #[repr(C)]
@@ -1079,7 +1090,7 @@ pub struct C2RustUnnamed_27 {
 pub struct cmd_list {
     pub references: libc::c_int,
     pub group: u_int,
-    pub list: *mut cmds,
+    pub list: *mut crate::cmd::cmds,
 }
 pub type msgtype = libc::c_uint;
 pub const MSG_WRITE_CLOSE: msgtype = 306;
@@ -1234,7 +1245,7 @@ pub struct tty_term {
     pub tty: *mut tty,
     pub features: libc::c_int,
     pub acs: [[libc::c_char; 2]; 256],
-    pub codes: *mut tty_code,
+    pub codes: *mut crate::tty_term::tty_code,
     pub flags: libc::c_int,
     pub entry: C2RustUnnamed_30,
 }
@@ -1277,7 +1288,7 @@ pub struct screen_write_ctx {
     pub flags: libc::c_int,
     pub init_ctx_cb: screen_write_init_ctx_cb,
     pub arg: *mut libc::c_void,
-    pub item: *mut screen_write_collect_item,
+    pub item: *mut crate::screen_write::screen_write_collect_item,
     pub scrolled: u_int,
     pub bg: u_int,
     pub cells: u_int,
@@ -1556,8 +1567,9 @@ pub const CMD_RETURN_STOP: cmd_retval = 2;
 pub const CMD_RETURN_WAIT: cmd_retval = 1;
 pub const CMD_RETURN_NORMAL: cmd_retval = 0;
 pub const CMD_RETURN_ERROR: cmd_retval = -1;
-pub type cmdq_cb =
-    Option<unsafe extern "C" fn(_: *mut cmdq_item, _: *mut libc::c_void) -> cmd_retval>;
+pub type cmdq_cb = Option<
+    unsafe extern "C" fn(_: *mut crate::cmd_queue::cmdq_item, _: *mut libc::c_void) -> cmd_retval,
+>;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -1608,7 +1620,7 @@ pub struct window_tree_modedata {
     pub wp: *mut window_pane,
     pub dead: libc::c_int,
     pub references: libc::c_int,
-    pub data: *mut mode_tree_data,
+    pub data: *mut crate::mode_tree::mode_tree_data,
     pub format: *mut libc::c_char,
     pub command: *mut libc::c_char,
     pub squash_groups: libc::c_int,
@@ -2010,7 +2022,7 @@ unsafe extern "C" fn window_tree_build_pane(
     mut wl: *mut winlink,
     mut wp: *mut window_pane,
     mut modedata: *mut libc::c_void,
-    mut parent: *mut mode_tree_item,
+    mut parent: *mut crate::mode_tree::mode_tree_item,
 ) {
     let mut data: *mut window_tree_modedata = modedata as *mut window_tree_modedata;
     let mut item: *mut window_tree_itemdata = 0 as *mut window_tree_itemdata;
@@ -2024,7 +2036,7 @@ unsafe extern "C" fn window_tree_build_pane(
     (*item).winlink = (*wl).idx;
     (*item).pane = (*wp).id as libc::c_int;
     text = format_single(
-        0 as *mut cmdq_item,
+        0 as *mut crate::cmd_queue::cmdq_item,
         (*data).format,
         0 as *mut client,
         s,
@@ -2059,7 +2071,14 @@ unsafe extern "C" fn window_tree_filter_pane(
     if filter.is_null() {
         return 1 as libc::c_int;
     }
-    cp = format_single(0 as *mut cmdq_item, filter, 0 as *mut client, s, wl, wp);
+    cp = format_single(
+        0 as *mut crate::cmd_queue::cmdq_item,
+        filter,
+        0 as *mut client,
+        s,
+        wl,
+        wp,
+    );
     result = format_true(cp);
     free(cp as *mut libc::c_void);
     return result;
@@ -2069,12 +2088,12 @@ unsafe extern "C" fn window_tree_build_window(
     mut wl: *mut winlink,
     mut modedata: *mut libc::c_void,
     mut sort_crit: *mut mode_tree_sort_criteria,
-    mut parent: *mut mode_tree_item,
+    mut parent: *mut crate::mode_tree::mode_tree_item,
     mut filter: *const libc::c_char,
 ) -> libc::c_int {
     let mut data: *mut window_tree_modedata = modedata as *mut window_tree_modedata;
     let mut item: *mut window_tree_itemdata = 0 as *mut window_tree_itemdata;
-    let mut mti: *mut mode_tree_item = 0 as *mut mode_tree_item;
+    let mut mti: *mut crate::mode_tree::mode_tree_item = 0 as *mut crate::mode_tree::mode_tree_item;
     let mut name: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut text: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut wp: *mut window_pane = 0 as *mut window_pane;
@@ -2088,7 +2107,7 @@ unsafe extern "C" fn window_tree_build_window(
     (*item).winlink = (*wl).idx;
     (*item).pane = -(1 as libc::c_int);
     text = format_single(
-        0 as *mut cmdq_item,
+        0 as *mut crate::cmd_queue::cmdq_item,
         (*data).format,
         0 as *mut client,
         s,
@@ -2179,7 +2198,7 @@ unsafe extern "C" fn window_tree_build_session(
 ) {
     let mut data: *mut window_tree_modedata = modedata as *mut window_tree_modedata;
     let mut item: *mut window_tree_itemdata = 0 as *mut window_tree_itemdata;
-    let mut mti: *mut mode_tree_item = 0 as *mut mode_tree_item;
+    let mut mti: *mut crate::mode_tree::mode_tree_item = 0 as *mut crate::mode_tree::mode_tree_item;
     let mut text: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut wl: *mut winlink = 0 as *mut winlink;
     let mut l: *mut *mut winlink = 0 as *mut *mut winlink;
@@ -2193,7 +2212,7 @@ unsafe extern "C" fn window_tree_build_session(
     (*item).winlink = -(1 as libc::c_int);
     (*item).pane = -(1 as libc::c_int);
     text = format_single(
-        0 as *mut cmdq_item,
+        0 as *mut crate::cmd_queue::cmdq_item,
         (*data).format,
         0 as *mut client,
         s,
@@ -2207,7 +2226,7 @@ unsafe extern "C" fn window_tree_build_session(
     }
     mti = mode_tree_add(
         (*data).data,
-        0 as *mut mode_tree_item,
+        0 as *mut crate::mode_tree::mode_tree_item,
         item as *mut libc::c_void,
         s as uint64_t,
         (*s).name,
@@ -2412,7 +2431,7 @@ unsafe extern "C" fn window_tree_draw_session(
     mut sx: u_int,
     mut sy: u_int,
 ) {
-    let mut oo: *mut options = (*s).options;
+    let mut oo: *mut crate::options::options = (*s).options;
     let mut wl: *mut winlink = 0 as *mut winlink;
     let mut w: *mut window = 0 as *mut window;
     let mut cx: u_int = (*(*ctx).s).cx;
@@ -2648,7 +2667,7 @@ unsafe extern "C" fn window_tree_draw_window(
     mut sx: u_int,
     mut sy: u_int,
 ) {
-    let mut oo: *mut options = (*s).options;
+    let mut oo: *mut crate::options::options = (*s).options;
     let mut wp: *mut window_pane = 0 as *mut window_pane;
     let mut cx: u_int = (*(*ctx).s).cx;
     let mut cy: u_int = (*(*ctx).s).cy;
@@ -3186,7 +3205,7 @@ unsafe extern "C" fn window_tree_command_each(
     free(name as *mut libc::c_void);
 }
 unsafe extern "C" fn window_tree_command_done(
-    mut _item: *mut cmdq_item,
+    mut _item: *mut crate::cmd_queue::cmdq_item,
     mut modedata: *mut libc::c_void,
 ) -> cmd_retval {
     let mut data: *mut window_tree_modedata = modedata as *mut window_tree_modedata;
@@ -3232,7 +3251,10 @@ unsafe extern "C" fn window_tree_command_callback(
             b"window_tree_command_done\x00" as *const u8 as *const libc::c_char,
             Some(
                 window_tree_command_done
-                    as unsafe extern "C" fn(_: *mut cmdq_item, _: *mut libc::c_void) -> cmd_retval,
+                    as unsafe extern "C" fn(
+                        _: *mut crate::cmd_queue::cmdq_item,
+                        _: *mut libc::c_void,
+                    ) -> cmd_retval,
             ),
             data as *mut libc::c_void,
         ),
@@ -3288,7 +3310,7 @@ unsafe extern "C" fn window_tree_kill_current_callback(
     mut _done: libc::c_int,
 ) -> libc::c_int {
     let mut data: *mut window_tree_modedata = modedata as *mut window_tree_modedata;
-    let mut mtd: *mut mode_tree_data = (*data).data;
+    let mut mtd: *mut crate::mode_tree::mode_tree_data = (*data).data;
     if s.is_null() || *s as libc::c_int == '\u{0}' as i32 || (*data).dead != 0 {
         return 0 as libc::c_int;
     }
@@ -3330,7 +3352,10 @@ unsafe extern "C" fn window_tree_kill_current_callback(
             b"window_tree_command_done\x00" as *const u8 as *const libc::c_char,
             Some(
                 window_tree_command_done
-                    as unsafe extern "C" fn(_: *mut cmdq_item, _: *mut libc::c_void) -> cmd_retval,
+                    as unsafe extern "C" fn(
+                        _: *mut crate::cmd_queue::cmdq_item,
+                        _: *mut libc::c_void,
+                    ) -> cmd_retval,
             ),
             data as *mut libc::c_void,
         ),
@@ -3344,7 +3369,7 @@ unsafe extern "C" fn window_tree_kill_tagged_callback(
     mut _done: libc::c_int,
 ) -> libc::c_int {
     let mut data: *mut window_tree_modedata = modedata as *mut window_tree_modedata;
-    let mut mtd: *mut mode_tree_data = (*data).data;
+    let mut mtd: *mut crate::mode_tree::mode_tree_data = (*data).data;
     if s.is_null() || *s as libc::c_int == '\u{0}' as i32 || (*data).dead != 0 {
         return 0 as libc::c_int;
     }
@@ -3395,7 +3420,10 @@ unsafe extern "C" fn window_tree_kill_tagged_callback(
             b"window_tree_command_done\x00" as *const u8 as *const libc::c_char,
             Some(
                 window_tree_command_done
-                    as unsafe extern "C" fn(_: *mut cmdq_item, _: *mut libc::c_void) -> cmd_retval,
+                    as unsafe extern "C" fn(
+                        _: *mut crate::cmd_queue::cmdq_item,
+                        _: *mut libc::c_void,
+                    ) -> cmd_retval,
             ),
             data as *mut libc::c_void,
         ),

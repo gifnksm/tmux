@@ -100,13 +100,14 @@ extern "C" {
     #[no_mangle]
     fn xsnprintf(_: *mut libc::c_char, _: size_t, _: *const libc::c_char, _: ...) -> libc::c_int;
     #[no_mangle]
-    static mut global_options: *mut options;
+    static mut global_options: *mut crate::options::options;
     #[no_mangle]
     fn get_timer() -> uint64_t;
     #[no_mangle]
-    fn paste_buffer_data(_: *mut paste_buffer, _: *mut size_t) -> *const libc::c_char;
+    fn paste_buffer_data(_: *mut crate::paste::paste_buffer, _: *mut size_t)
+        -> *const libc::c_char;
     #[no_mangle]
-    fn paste_get_top(_: *mut *const libc::c_char) -> *mut paste_buffer;
+    fn paste_get_top(_: *mut *const libc::c_char) -> *mut crate::paste::paste_buffer;
     #[no_mangle]
     fn paste_add(_: *const libc::c_char, _: *mut libc::c_char, _: size_t);
     #[no_mangle]
@@ -117,14 +118,19 @@ extern "C" {
         _: *mut *mut libc::c_char,
     ) -> libc::c_int;
     #[no_mangle]
-    fn format_get_pane(_: *mut format_tree) -> *mut window_pane;
+    fn format_get_pane(_: *mut crate::format::format_tree) -> *mut window_pane;
     #[no_mangle]
-    fn format_add(_: *mut format_tree, _: *const libc::c_char, _: *const libc::c_char, _: ...);
+    fn format_add(
+        _: *mut crate::format::format_tree,
+        _: *const libc::c_char,
+        _: *const libc::c_char,
+        _: ...
+    );
     #[no_mangle]
-    fn format_add_cb(_: *mut format_tree, _: *const libc::c_char, _: format_cb);
+    fn format_add_cb(_: *mut crate::format::format_tree, _: *const libc::c_char, _: format_cb);
     #[no_mangle]
     fn format_single(
-        _: *mut cmdq_item,
+        _: *mut crate::cmd_queue::cmdq_item,
         _: *const libc::c_char,
         _: *mut client,
         _: *mut session,
@@ -136,9 +142,15 @@ extern "C" {
     #[no_mangle]
     fn format_grid_line(_: *mut grid, _: u_int) -> *mut libc::c_char;
     #[no_mangle]
-    fn options_get_string(_: *mut options, _: *const libc::c_char) -> *const libc::c_char;
+    fn options_get_string(
+        _: *mut crate::options::options,
+        _: *const libc::c_char,
+    ) -> *const libc::c_char;
     #[no_mangle]
-    fn options_get_number(_: *mut options, _: *const libc::c_char) -> libc::c_longlong;
+    fn options_get_number(
+        _: *mut crate::options::options,
+        _: *const libc::c_char,
+    ) -> libc::c_longlong;
     #[no_mangle]
     fn job_run(
         _: *const libc::c_char,
@@ -151,9 +163,9 @@ extern "C" {
         _: libc::c_int,
         _: libc::c_int,
         _: libc::c_int,
-    ) -> *mut job;
+    ) -> *mut crate::job::job;
     #[no_mangle]
-    fn job_get_event(_: *mut job) -> *mut bufferevent;
+    fn job_get_event(_: *mut crate::job::job) -> *mut bufferevent;
     #[no_mangle]
     fn tty_acs_get(_: *mut tty, _: u_char) -> *const libc::c_char;
     #[no_mangle]
@@ -283,7 +295,12 @@ extern "C" {
     #[no_mangle]
     fn log_debug(_: *const libc::c_char, _: ...);
     #[no_mangle]
-    fn style_apply(_: *mut grid_cell, _: *mut options, _: *const libc::c_char, _: *mut format_tree);
+    fn style_apply(
+        _: *mut grid_cell,
+        _: *mut crate::options::options,
+        _: *const libc::c_char,
+        _: *mut crate::format::format_tree,
+    );
 }
 pub type __builtin_va_list = [__va_list_tag; 1];
 
@@ -507,17 +524,17 @@ pub struct args {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct args_tree {
-    pub rbh_root: *mut args_entry,
+    pub rbh_root: *mut crate::arguments::args_entry,
 }
 
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct client {
     pub name: *const libc::c_char,
-    pub peer: *mut tmuxpeer,
-    pub queue: *mut cmdq_list,
+    pub peer: *mut crate::proc::tmuxpeer,
+    pub queue: *mut crate::cmd_queue::cmdq_list,
     pub windows: client_windows,
-    pub control_state: *mut control_state,
+    pub control_state: *mut crate::control::control_state,
     pub pause_age: u_int,
     pub pid: pid_t,
     pub fd: libc::c_int,
@@ -526,8 +543,8 @@ pub struct client {
     pub retval: libc::c_int,
     pub creation_time: timeval,
     pub activity_time: timeval,
-    pub environ: *mut environ,
-    pub jobs: *mut format_job_tree,
+    pub environ: *mut crate::environ::environ,
+    pub jobs: *mut crate::format::format_job_tree,
     pub title: *mut libc::c_char,
     pub cwd: *const libc::c_char,
     pub term_name: *mut libc::c_char,
@@ -686,7 +703,7 @@ pub type overlay_mode_cb =
 pub struct screen {
     pub title: *mut libc::c_char,
     pub path: *mut libc::c_char,
-    pub titles: *mut screen_titles,
+    pub titles: *mut crate::screen::screen_titles,
     pub grid: *mut grid,
     pub cx: u_int,
     pub cy: u_int,
@@ -701,8 +718,8 @@ pub struct screen {
     pub saved_cell: grid_cell,
     pub saved_flags: libc::c_int,
     pub tabs: *mut bitstr_t,
-    pub sel: *mut screen_sel,
-    pub write_list: *mut screen_write_collect_line,
+    pub sel: *mut crate::screen::screen_sel,
+    pub write_list: *mut crate::screen_write::screen_write_collect_line,
 }
 
 #[repr(C)]
@@ -801,11 +818,11 @@ pub struct session {
     pub windows: winlinks,
     pub statusat: libc::c_int,
     pub statuslines: u_int,
-    pub options: *mut options,
+    pub options: *mut crate::options::options,
     pub flags: libc::c_int,
     pub attached: u_int,
     pub tio: *mut termios,
-    pub environ: *mut environ,
+    pub environ: *mut crate::environ::environ,
     pub references: libc::c_int,
     pub gentry: C2RustUnnamed_13,
     pub entry: C2RustUnnamed_12,
@@ -897,7 +914,7 @@ pub struct window {
     pub flags: libc::c_int,
     pub alerts_queued: libc::c_int,
     pub alerts_entry: C2RustUnnamed_19,
-    pub options: *mut options,
+    pub options: *mut crate::options::options,
     pub references: u_int,
     pub winlinks: C2RustUnnamed_18,
     pub entry: C2RustUnnamed_17,
@@ -960,7 +977,7 @@ pub struct window_pane {
     pub id: u_int,
     pub active_point: u_int,
     pub window: *mut window,
-    pub options: *mut options,
+    pub options: *mut crate::options::options,
     pub layout_cell: *mut layout_cell,
     pub saved_layout_cell: *mut layout_cell,
     pub sx: u_int,
@@ -983,7 +1000,7 @@ pub struct window_pane {
     pub base_offset: size_t,
     pub resize_timer: event,
     pub force_timer: event,
-    pub ictx: *mut input_ctx,
+    pub ictx: *mut crate::input::input_ctx,
     pub cached_gc: grid_cell,
     pub cached_active_gc: grid_cell,
     pub palette: *mut libc::c_int,
@@ -1082,7 +1099,9 @@ pub struct window_mode {
             _: *mut mouse_event,
         ) -> (),
     >,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
+    pub formats: Option<
+        unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut crate::format::format_tree) -> (),
+    >,
 }
 
 #[repr(C)]
@@ -1182,7 +1201,7 @@ pub struct C2RustUnnamed_27 {
 pub struct cmd_list {
     pub references: libc::c_int,
     pub group: u_int,
-    pub list: *mut cmds,
+    pub list: *mut crate::cmd::cmds,
 }
 pub type msgtype = libc::c_uint;
 pub const MSG_WRITE_CLOSE: msgtype = 306;
@@ -1337,7 +1356,7 @@ pub struct tty_term {
     pub tty: *mut tty,
     pub features: libc::c_int,
     pub acs: [[libc::c_char; 2]; 256],
-    pub codes: *mut tty_code,
+    pub codes: *mut crate::tty_term::tty_code,
     pub flags: libc::c_int,
     pub entry: C2RustUnnamed_30,
 }
@@ -1380,7 +1399,7 @@ pub struct screen_write_ctx {
     pub flags: libc::c_int,
     pub init_ctx_cb: screen_write_init_ctx_cb,
     pub arg: *mut libc::c_void,
-    pub item: *mut screen_write_collect_item,
+    pub item: *mut crate::screen_write::screen_write_collect_item,
     pub scrolled: u_int,
     pub bg: u_int,
     pub cells: u_int,
@@ -1423,9 +1442,10 @@ pub struct tty_ctx {
 pub type tty_ctx_set_client_cb =
     Option<unsafe extern "C" fn(_: *mut tty_ctx, _: *mut client) -> libc::c_int>;
 pub type tty_ctx_redraw_cb = Option<unsafe extern "C" fn(_: *const tty_ctx) -> ()>;
-pub type format_cb = Option<unsafe extern "C" fn(_: *mut format_tree) -> *mut libc::c_char>;
-pub type job_update_cb = Option<unsafe extern "C" fn(_: *mut job) -> ()>;
-pub type job_complete_cb = Option<unsafe extern "C" fn(_: *mut job) -> ()>;
+pub type format_cb =
+    Option<unsafe extern "C" fn(_: *mut crate::format::format_tree) -> *mut libc::c_char>;
+pub type job_update_cb = Option<unsafe extern "C" fn(_: *mut crate::job::job) -> ()>;
+pub type job_complete_cb = Option<unsafe extern "C" fn(_: *mut crate::job::job) -> ()>;
 pub type job_free_cb = Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
 /*
  * Copy mode's visible screen (the "screen" field) is filled from one of two
@@ -1597,7 +1617,10 @@ pub static mut window_copy_mode: window_mode = {
             ),
             formats: Some(
                 window_copy_formats
-                    as unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> (),
+                    as unsafe extern "C" fn(
+                        _: *mut window_mode_entry,
+                        _: *mut crate::format::format_tree,
+                    ) -> (),
             ),
         };
         init
@@ -1640,7 +1663,10 @@ pub static mut window_view_mode: window_mode = {
             ),
             formats: Some(
                 window_copy_formats
-                    as unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> (),
+                    as unsafe extern "C" fn(
+                        _: *mut window_mode_entry,
+                        _: *mut crate::format::format_tree,
+                    ) -> (),
             ),
         };
         init
@@ -1836,7 +1862,7 @@ unsafe extern "C" fn window_copy_init(
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
-        item: 0 as *mut screen_write_collect_item,
+        item: 0 as *mut crate::screen_write::screen_write_collect_item,
         scrolled: 0,
         bg: 0,
         cells: 0,
@@ -1951,7 +1977,7 @@ pub unsafe extern "C" fn window_copy_vadd(
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
-        item: 0 as *mut screen_write_collect_item,
+        item: 0 as *mut crate::screen_write::screen_write_collect_item,
         scrolled: 0,
         bg: 0,
         cells: 0,
@@ -1964,7 +1990,7 @@ pub unsafe extern "C" fn window_copy_vadd(
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
-        item: 0 as *mut screen_write_collect_item,
+        item: 0 as *mut crate::screen_write::screen_write_collect_item,
         scrolled: 0,
         bg: 0,
         cells: 0,
@@ -2227,19 +2253,25 @@ pub unsafe extern "C" fn window_copy_get_line(
     let mut gd: *mut grid = (*data).screen.grid;
     return format_grid_line(gd, (*gd).hsize.wrapping_add(y));
 }
-unsafe extern "C" fn window_copy_cursor_word_cb(mut ft: *mut format_tree) -> *mut libc::c_char {
+unsafe extern "C" fn window_copy_cursor_word_cb(
+    mut ft: *mut crate::format::format_tree,
+) -> *mut libc::c_char {
     let mut wp: *mut window_pane = format_get_pane(ft);
     let mut wme: *mut window_mode_entry = (*wp).modes.tqh_first;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
     return window_copy_get_word(wp, (*data).cx, (*data).cy);
 }
-unsafe extern "C" fn window_copy_cursor_line_cb(mut ft: *mut format_tree) -> *mut libc::c_char {
+unsafe extern "C" fn window_copy_cursor_line_cb(
+    mut ft: *mut crate::format::format_tree,
+) -> *mut libc::c_char {
     let mut wp: *mut window_pane = format_get_pane(ft);
     let mut wme: *mut window_mode_entry = (*wp).modes.tqh_first;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
     return window_copy_get_line(wp, (*data).cy);
 }
-unsafe extern "C" fn window_copy_search_match_cb(mut ft: *mut format_tree) -> *mut libc::c_char {
+unsafe extern "C" fn window_copy_search_match_cb(
+    mut ft: *mut crate::format::format_tree,
+) -> *mut libc::c_char {
     let mut wp: *mut window_pane = format_get_pane(ft);
     let mut wme: *mut window_mode_entry = (*wp).modes.tqh_first;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
@@ -2247,7 +2279,7 @@ unsafe extern "C" fn window_copy_search_match_cb(mut ft: *mut format_tree) -> *m
 }
 unsafe extern "C" fn window_copy_formats(
     mut wme: *mut window_mode_entry,
-    mut ft: *mut format_tree,
+    mut ft: *mut crate::format::format_tree,
 ) {
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
     format_add(
@@ -2278,7 +2310,8 @@ unsafe extern "C" fn window_copy_formats(
         ft,
         b"selection_present\x00" as *const u8 as *const libc::c_char,
         b"%d\x00" as *const u8 as *const libc::c_char,
-        ((*data).screen.sel != 0 as *mut libc::c_void as *mut screen_sel) as libc::c_int,
+        ((*data).screen.sel != 0 as *mut libc::c_void as *mut crate::screen::screen_sel)
+            as libc::c_int,
     );
     if !(*data).screen.sel.is_null() {
         format_add(
@@ -2331,7 +2364,7 @@ unsafe extern "C" fn window_copy_formats(
         b"search_match\x00" as *const u8 as *const libc::c_char,
         Some(
             window_copy_search_match_cb
-                as unsafe extern "C" fn(_: *mut format_tree) -> *mut libc::c_char,
+                as unsafe extern "C" fn(_: *mut crate::format::format_tree) -> *mut libc::c_char,
         ),
     );
     format_add_cb(
@@ -2339,7 +2372,7 @@ unsafe extern "C" fn window_copy_formats(
         b"copy_cursor_word\x00" as *const u8 as *const libc::c_char,
         Some(
             window_copy_cursor_word_cb
-                as unsafe extern "C" fn(_: *mut format_tree) -> *mut libc::c_char,
+                as unsafe extern "C" fn(_: *mut crate::format::format_tree) -> *mut libc::c_char,
         ),
     );
     format_add_cb(
@@ -2347,7 +2380,7 @@ unsafe extern "C" fn window_copy_formats(
         b"copy_cursor_line\x00" as *const u8 as *const libc::c_char,
         Some(
             window_copy_cursor_line_cb
-                as unsafe extern "C" fn(_: *mut format_tree) -> *mut libc::c_char,
+                as unsafe extern "C" fn(_: *mut crate::format::format_tree) -> *mut libc::c_char,
         ),
     );
 }
@@ -2360,7 +2393,7 @@ unsafe extern "C" fn window_copy_size_changed(mut wme: *mut window_mode_entry) {
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
-        item: 0 as *mut screen_write_collect_item,
+        item: 0 as *mut crate::screen_write::screen_write_collect_item,
         scrolled: 0,
         bg: 0,
         cells: 0,
@@ -2465,7 +2498,7 @@ unsafe extern "C" fn window_copy_expand_search_string(
         if *argument as libc::c_int != '\u{0}' as i32 {
             if args_has((*cs).args, 'F' as i32 as u_char) != 0 {
                 expanded = format_single(
-                    0 as *mut cmdq_item,
+                    0 as *mut crate::cmd_queue::cmdq_item,
                     argument,
                     0 as *mut client,
                     0 as *mut session,
@@ -2577,7 +2610,7 @@ unsafe extern "C" fn window_copy_cmd_copy_end_of_line(
     let mut prefix: *mut libc::c_char = 0 as *mut libc::c_char;
     if (*(*cs).args).argc == 2 as libc::c_int {
         prefix = format_single(
-            0 as *mut cmdq_item,
+            0 as *mut crate::cmd_queue::cmdq_item,
             *(*(*cs).args).argv.offset(1 as libc::c_int as isize),
             c,
             s,
@@ -2612,7 +2645,7 @@ unsafe extern "C" fn window_copy_cmd_copy_line(
     let mut prefix: *mut libc::c_char = 0 as *mut libc::c_char;
     if (*(*cs).args).argc == 2 as libc::c_int {
         prefix = format_single(
-            0 as *mut cmdq_item,
+            0 as *mut crate::cmd_queue::cmdq_item,
             *(*(*cs).args).argv.offset(1 as libc::c_int as isize),
             c,
             s,
@@ -2647,7 +2680,7 @@ unsafe extern "C" fn window_copy_cmd_copy_selection_no_clear(
     let mut prefix: *mut libc::c_char = 0 as *mut libc::c_char;
     if (*(*cs).args).argc == 2 as libc::c_int {
         prefix = format_single(
-            0 as *mut cmdq_item,
+            0 as *mut crate::cmd_queue::cmdq_item,
             *(*(*cs).args).argv.offset(1 as libc::c_int as isize),
             c,
             s,
@@ -3600,7 +3633,7 @@ unsafe extern "C" fn window_copy_cmd_copy_pipe_no_clear(
     let mut prefix: *mut libc::c_char = 0 as *mut libc::c_char;
     if (*(*cs).args).argc == 3 as libc::c_int {
         prefix = format_single(
-            0 as *mut cmdq_item,
+            0 as *mut crate::cmd_queue::cmdq_item,
             *(*(*cs).args).argv.offset(2 as libc::c_int as isize),
             c,
             s,
@@ -3613,7 +3646,7 @@ unsafe extern "C" fn window_copy_cmd_copy_pipe_no_clear(
         && **(*(*cs).args).argv.offset(1 as libc::c_int as isize) as libc::c_int != '\u{0}' as i32
     {
         command = format_single(
-            0 as *mut cmdq_item,
+            0 as *mut crate::cmd_queue::cmdq_item,
             *(*(*cs).args).argv.offset(1 as libc::c_int as isize),
             c,
             s,
@@ -5922,7 +5955,7 @@ unsafe extern "C" fn window_copy_search(
     let mut ss: screen = screen {
         title: 0 as *mut libc::c_char,
         path: 0 as *mut libc::c_char,
-        titles: 0 as *mut screen_titles,
+        titles: 0 as *mut crate::screen::screen_titles,
         grid: 0 as *mut grid,
         cx: 0,
         cy: 0,
@@ -5949,8 +5982,8 @@ unsafe extern "C" fn window_copy_search(
         },
         saved_flags: 0,
         tabs: 0 as *mut bitstr_t,
-        sel: 0 as *mut screen_sel,
-        write_list: 0 as *mut screen_write_collect_line,
+        sel: 0 as *mut crate::screen::screen_sel,
+        write_list: 0 as *mut crate::screen_write::screen_write_collect_line,
     };
     let mut ctx: screen_write_ctx = screen_write_ctx {
         wp: 0 as *mut window_pane,
@@ -5958,7 +5991,7 @@ unsafe extern "C" fn window_copy_search(
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
-        item: 0 as *mut screen_write_collect_item,
+        item: 0 as *mut crate::screen_write::screen_write_collect_item,
         scrolled: 0,
         bg: 0,
         cells: 0,
@@ -6112,7 +6145,7 @@ unsafe extern "C" fn window_copy_search_marks(
     let mut ss: screen = screen {
         title: 0 as *mut libc::c_char,
         path: 0 as *mut libc::c_char,
-        titles: 0 as *mut screen_titles,
+        titles: 0 as *mut crate::screen::screen_titles,
         grid: 0 as *mut grid,
         cx: 0,
         cy: 0,
@@ -6139,8 +6172,8 @@ unsafe extern "C" fn window_copy_search_marks(
         },
         saved_flags: 0,
         tabs: 0 as *mut bitstr_t,
-        sel: 0 as *mut screen_sel,
-        write_list: 0 as *mut screen_write_collect_line,
+        sel: 0 as *mut crate::screen::screen_sel,
+        write_list: 0 as *mut crate::screen_write::screen_write_collect_line,
     };
     let mut ctx: screen_write_ctx = screen_write_ctx {
         wp: 0 as *mut window_pane,
@@ -6148,7 +6181,7 @@ unsafe extern "C" fn window_copy_search_marks(
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
-        item: 0 as *mut screen_write_collect_item,
+        item: 0 as *mut crate::screen_write::screen_write_collect_item,
         scrolled: 0,
         bg: 0,
         cells: 0,
@@ -6619,7 +6652,7 @@ unsafe extern "C" fn window_copy_write_line(
     let mut wp: *mut window_pane = (*wme).wp;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
     let mut s: *mut screen = &mut (*data).screen;
-    let mut oo: *mut options = (*(*wp).window).options;
+    let mut oo: *mut crate::options::options = (*(*wp).window).options;
     let mut gc: grid_cell = grid_cell {
         data: utf8_data {
             data: [0; 21],
@@ -6679,28 +6712,28 @@ unsafe extern "C" fn window_copy_write_line(
         &mut gc,
         oo,
         b"mode-style\x00" as *const u8 as *const libc::c_char,
-        0 as *mut format_tree,
+        0 as *mut crate::format::format_tree,
     );
     gc.flags = (gc.flags as libc::c_int | 0x20 as libc::c_int) as u_char;
     style_apply(
         &mut mgc,
         oo,
         b"copy-mode-match-style\x00" as *const u8 as *const libc::c_char,
-        0 as *mut format_tree,
+        0 as *mut crate::format::format_tree,
     );
     mgc.flags = (mgc.flags as libc::c_int | 0x20 as libc::c_int) as u_char;
     style_apply(
         &mut cgc,
         oo,
         b"copy-mode-current-match-style\x00" as *const u8 as *const libc::c_char,
-        0 as *mut format_tree,
+        0 as *mut crate::format::format_tree,
     );
     cgc.flags = (cgc.flags as libc::c_int | 0x20 as libc::c_int) as u_char;
     style_apply(
         &mut mkgc,
         oo,
         b"copy-mode-mark-style\x00" as *const u8 as *const libc::c_char,
-        0 as *mut format_tree,
+        0 as *mut crate::format::format_tree,
     );
     mkgc.flags = (mkgc.flags as libc::c_int | 0x20 as libc::c_int) as u_char;
     if py == 0 as libc::c_int as libc::c_uint
@@ -6865,7 +6898,7 @@ unsafe extern "C" fn window_copy_redraw_lines(
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
-        item: 0 as *mut screen_write_collect_item,
+        item: 0 as *mut crate::screen_write::screen_write_collect_item,
         scrolled: 0,
         bg: 0,
         cells: 0,
@@ -7000,7 +7033,7 @@ unsafe extern "C" fn window_copy_update_cursor(
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
-        item: 0 as *mut screen_write_collect_item,
+        item: 0 as *mut crate::screen_write::screen_write_collect_item,
         scrolled: 0,
         bg: 0,
         cells: 0,
@@ -7104,7 +7137,7 @@ unsafe extern "C" fn window_copy_set_selection(
     let mut wp: *mut window_pane = (*wme).wp;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
     let mut s: *mut screen = &mut (*data).screen;
-    let mut oo: *mut options = (*(*wp).window).options;
+    let mut oo: *mut crate::options::options = (*(*wp).window).options;
     let mut gc: grid_cell = grid_cell {
         data: utf8_data {
             data: [0; 21],
@@ -7144,7 +7177,7 @@ unsafe extern "C" fn window_copy_set_selection(
         &mut gc,
         oo,
         b"mode-style\x00" as *const u8 as *const libc::c_char,
-        0 as *mut format_tree,
+        0 as *mut crate::format::format_tree,
     );
     gc.flags = (gc.flags as libc::c_int | 0x20 as libc::c_int) as u_char;
     screen_set_selection(
@@ -7352,7 +7385,7 @@ unsafe extern "C" fn window_copy_copy_buffer(
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
-        item: 0 as *mut screen_write_collect_item,
+        item: 0 as *mut crate::screen_write::screen_write_collect_item,
         scrolled: 0,
         bg: 0,
         cells: 0,
@@ -7382,7 +7415,7 @@ unsafe extern "C" fn window_copy_copy_pipe(
 ) {
     let mut buf: *mut libc::c_void = 0 as *mut libc::c_void;
     let mut len: size_t = 0;
-    let mut job: *mut job = 0 as *mut job;
+    let mut job: *mut crate::job::job = 0 as *mut crate::job::job;
     buf = window_copy_get_selection(wme, &mut len);
     if cmd.is_null() || *cmd as libc::c_int == '\u{0}' as i32 {
         cmd = options_get_string(
@@ -7423,7 +7456,7 @@ unsafe extern "C" fn window_copy_copy_selection(
 unsafe extern "C" fn window_copy_append_selection(mut wme: *mut window_mode_entry) {
     let mut wp: *mut window_pane = (*wme).wp;
     let mut buf: *mut libc::c_char = 0 as *mut libc::c_char;
-    let mut pb: *mut paste_buffer = 0 as *mut paste_buffer;
+    let mut pb: *mut crate::paste::paste_buffer = 0 as *mut crate::paste::paste_buffer;
     let mut bufdata: *const libc::c_char = 0 as *const libc::c_char;
     let mut bufname: *const libc::c_char = 0 as *const libc::c_char;
     let mut len: size_t = 0;
@@ -7434,7 +7467,7 @@ unsafe extern "C" fn window_copy_append_selection(mut wme: *mut window_mode_entr
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
-        item: 0 as *mut screen_write_collect_item,
+        item: 0 as *mut crate::screen_write::screen_write_collect_item,
         scrolled: 0,
         bg: 0,
         cells: 0,
@@ -8281,7 +8314,7 @@ unsafe extern "C" fn window_copy_cursor_next_word_end_pos(
 ) {
     let mut wp: *mut window_pane = (*wme).wp;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut oo: *mut options = (*(*wp).window).options;
+    let mut oo: *mut crate::options::options = (*(*wp).window).options;
     let mut back_s: *mut screen = (*data).backing;
     let mut px: u_int = 0;
     let mut py: u_int = 0;
@@ -8343,7 +8376,7 @@ unsafe extern "C" fn window_copy_cursor_next_word_end(
 ) {
     let mut wp: *mut window_pane = (*wme).wp;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut oo: *mut options = (*(*wp).window).options;
+    let mut oo: *mut crate::options::options = (*(*wp).window).options;
     let mut back_s: *mut screen = (*data).backing;
     let mut px: u_int = 0;
     let mut py: u_int = 0;
@@ -8578,7 +8611,7 @@ unsafe extern "C" fn window_copy_scroll_up(mut wme: *mut window_mode_entry, mut 
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
-        item: 0 as *mut screen_write_collect_item,
+        item: 0 as *mut crate::screen_write::screen_write_collect_item,
         scrolled: 0,
         bg: 0,
         cells: 0,
@@ -8646,7 +8679,7 @@ unsafe extern "C" fn window_copy_scroll_down(mut wme: *mut window_mode_entry, mu
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
-        item: 0 as *mut screen_write_collect_item,
+        item: 0 as *mut crate::screen_write::screen_write_collect_item,
         scrolled: 0,
         bg: 0,
         cells: 0,

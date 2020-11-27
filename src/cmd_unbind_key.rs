@@ -9,9 +9,9 @@ extern "C" {
     #[no_mangle]
     fn args_get(_: *mut args, _: u_char) -> *const libc::c_char;
     #[no_mangle]
-    fn cmd_get_args(_: *mut cmd) -> *mut args;
+    fn cmd_get_args(_: *mut crate::cmd::cmd) -> *mut args;
     #[no_mangle]
-    fn cmdq_error(_: *mut cmdq_item, _: *const libc::c_char, _: ...);
+    fn cmdq_error(_: *mut crate::cmd_queue::cmdq_item, _: *const libc::c_char, _: ...);
     #[no_mangle]
     fn key_bindings_get_table(_: *const libc::c_char, _: libc::c_int) -> *mut key_table;
     #[no_mangle]
@@ -37,7 +37,7 @@ pub struct args {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct args_tree {
-    pub rbh_root: *mut args_entry,
+    pub rbh_root: *mut crate::arguments::args_entry,
 }
 pub type key_code = libc::c_ulonglong;
 
@@ -90,7 +90,7 @@ pub struct C2RustUnnamed_0 {
 pub struct cmd_list {
     pub references: libc::c_int,
     pub group: u_int,
-    pub list: *mut cmds,
+    pub list: *mut crate::cmd::cmds,
 }
 pub type cmd_find_type = libc::c_uint;
 pub const CMD_FIND_SESSION: cmd_find_type = 2;
@@ -120,7 +120,12 @@ pub struct cmd_entry {
     pub source: cmd_entry_flag,
     pub target: cmd_entry_flag,
     pub flags: libc::c_int,
-    pub exec: Option<unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval>,
+    pub exec: Option<
+        unsafe extern "C" fn(
+            _: *mut crate::cmd::cmd,
+            _: *mut crate::cmd_queue::cmdq_item,
+        ) -> cmd_retval,
+    >,
 }
 
 #[repr(C)]
@@ -158,7 +163,10 @@ pub static mut cmd_unbind_key_entry: cmd_entry = {
             flags: 0x4 as libc::c_int,
             exec: Some(
                 cmd_unbind_key_exec
-                    as unsafe extern "C" fn(_: *mut cmd, _: *mut cmdq_item) -> cmd_retval,
+                    as unsafe extern "C" fn(
+                        _: *mut crate::cmd::cmd,
+                        _: *mut crate::cmd_queue::cmdq_item,
+                    ) -> cmd_retval,
             ),
         };
         init
@@ -184,8 +192,8 @@ pub static mut cmd_unbind_key_entry: cmd_entry = {
  * Unbind key from command.
  */
 unsafe extern "C" fn cmd_unbind_key_exec(
-    mut self_0: *mut cmd,
-    mut item: *mut cmdq_item,
+    mut self_0: *mut crate::cmd::cmd,
+    mut item: *mut crate::cmd_queue::cmdq_item,
 ) -> cmd_retval {
     let mut args: *mut args = cmd_get_args(self_0);
     let mut key: key_code = 0;

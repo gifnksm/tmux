@@ -72,32 +72,35 @@ extern "C" {
         _: ::std::ffi::VaList,
     ) -> libc::c_int;
     #[no_mangle]
-    static mut global_environ: *mut environ;
+    static mut global_environ: *mut crate::environ::environ;
     #[no_mangle]
     fn format_true(_: *const libc::c_char) -> libc::c_int;
     #[no_mangle]
     fn format_create(
         _: *mut client,
-        _: *mut cmdq_item,
+        _: *mut crate::cmd_queue::cmdq_item,
         _: libc::c_int,
         _: libc::c_int,
-    ) -> *mut format_tree;
+    ) -> *mut crate::format::format_tree;
     #[no_mangle]
-    fn format_free(_: *mut format_tree);
+    fn format_free(_: *mut crate::format::format_tree);
     #[no_mangle]
-    fn format_expand(_: *mut format_tree, _: *const libc::c_char) -> *mut libc::c_char;
+    fn format_expand(
+        _: *mut crate::format::format_tree,
+        _: *const libc::c_char,
+    ) -> *mut libc::c_char;
     #[no_mangle]
     fn format_defaults(
-        _: *mut format_tree,
+        _: *mut crate::format::format_tree,
         _: *mut client,
         _: *mut session,
         _: *mut winlink,
         _: *mut window_pane,
     );
     #[no_mangle]
-    fn environ_find(_: *mut environ, _: *const libc::c_char) -> *mut environ_entry;
+    fn environ_find(_: *mut crate::environ::environ, _: *const libc::c_char) -> *mut environ_entry;
     #[no_mangle]
-    fn environ_put(_: *mut environ, _: *const libc::c_char, _: libc::c_int);
+    fn environ_put(_: *mut crate::environ::environ, _: *const libc::c_char, _: libc::c_int);
     #[no_mangle]
     fn cmd_find_valid_state(_: *mut cmd_find_state) -> libc::c_int;
     #[no_mangle]
@@ -123,11 +126,11 @@ extern "C" {
         _: *const libc::c_char,
         _: u_int,
         _: *mut *mut libc::c_char,
-    ) -> *mut cmd;
+    ) -> *mut crate::cmd::cmd;
     #[no_mangle]
     fn cmd_list_new() -> *mut cmd_list;
     #[no_mangle]
-    fn cmd_list_append(_: *mut cmd_list, _: *mut cmd);
+    fn cmd_list_append(_: *mut cmd_list, _: *mut crate::cmd::cmd);
     #[no_mangle]
     fn cmd_list_move(_: *mut cmd_list, _: *mut cmd_list);
     #[no_mangle]
@@ -135,13 +138,22 @@ extern "C" {
     #[no_mangle]
     fn cmd_list_print(_: *mut cmd_list, _: libc::c_int) -> *mut libc::c_char;
     #[no_mangle]
-    fn cmdq_print(_: *mut cmdq_item, _: *const libc::c_char, _: ...);
+    fn cmdq_print(_: *mut crate::cmd_queue::cmdq_item, _: *const libc::c_char, _: ...);
     #[no_mangle]
-    fn cmdq_insert_after(_: *mut cmdq_item, _: *mut cmdq_item) -> *mut cmdq_item;
+    fn cmdq_insert_after(
+        _: *mut crate::cmd_queue::cmdq_item,
+        _: *mut crate::cmd_queue::cmdq_item,
+    ) -> *mut crate::cmd_queue::cmdq_item;
     #[no_mangle]
-    fn cmdq_get_command(_: *mut cmd_list, _: *mut cmdq_state) -> *mut cmdq_item;
+    fn cmdq_get_command(
+        _: *mut cmd_list,
+        _: *mut crate::cmd_queue::cmdq_state,
+    ) -> *mut crate::cmd_queue::cmdq_item;
     #[no_mangle]
-    fn cmdq_append(_: *mut client, _: *mut cmdq_item) -> *mut cmdq_item;
+    fn cmdq_append(
+        _: *mut client,
+        _: *mut crate::cmd_queue::cmdq_item,
+    ) -> *mut crate::cmd_queue::cmdq_item;
     #[no_mangle]
     fn fatalx(_: *const libc::c_char, _: ...) -> !;
     #[no_mangle]
@@ -399,17 +411,17 @@ pub struct args {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct args_tree {
-    pub rbh_root: *mut args_entry,
+    pub rbh_root: *mut crate::arguments::args_entry,
 }
 
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct client {
     pub name: *const libc::c_char,
-    pub peer: *mut tmuxpeer,
-    pub queue: *mut cmdq_list,
+    pub peer: *mut crate::proc::tmuxpeer,
+    pub queue: *mut crate::cmd_queue::cmdq_list,
     pub windows: client_windows,
-    pub control_state: *mut control_state,
+    pub control_state: *mut crate::control::control_state,
     pub pause_age: u_int,
     pub pid: pid_t,
     pub fd: libc::c_int,
@@ -418,8 +430,8 @@ pub struct client {
     pub retval: libc::c_int,
     pub creation_time: timeval,
     pub activity_time: timeval,
-    pub environ: *mut environ,
-    pub jobs: *mut format_job_tree,
+    pub environ: *mut crate::environ::environ,
+    pub jobs: *mut crate::format::format_job_tree,
     pub title: *mut libc::c_char,
     pub cwd: *const libc::c_char,
     pub term_name: *mut libc::c_char,
@@ -578,7 +590,7 @@ pub type overlay_mode_cb =
 pub struct screen {
     pub title: *mut libc::c_char,
     pub path: *mut libc::c_char,
-    pub titles: *mut screen_titles,
+    pub titles: *mut crate::screen::screen_titles,
     pub grid: *mut grid,
     pub cx: u_int,
     pub cy: u_int,
@@ -593,8 +605,8 @@ pub struct screen {
     pub saved_cell: grid_cell,
     pub saved_flags: libc::c_int,
     pub tabs: *mut bitstr_t,
-    pub sel: *mut screen_sel,
-    pub write_list: *mut screen_write_collect_line,
+    pub sel: *mut crate::screen::screen_sel,
+    pub write_list: *mut crate::screen_write::screen_write_collect_line,
 }
 
 #[repr(C)]
@@ -693,11 +705,11 @@ pub struct session {
     pub windows: winlinks,
     pub statusat: libc::c_int,
     pub statuslines: u_int,
-    pub options: *mut options,
+    pub options: *mut crate::options::options,
     pub flags: libc::c_int,
     pub attached: u_int,
     pub tio: *mut termios,
-    pub environ: *mut environ,
+    pub environ: *mut crate::environ::environ,
     pub references: libc::c_int,
     pub gentry: C2RustUnnamed_14,
     pub entry: C2RustUnnamed_13,
@@ -789,7 +801,7 @@ pub struct window {
     pub flags: libc::c_int,
     pub alerts_queued: libc::c_int,
     pub alerts_entry: C2RustUnnamed_20,
-    pub options: *mut options,
+    pub options: *mut crate::options::options,
     pub references: u_int,
     pub winlinks: C2RustUnnamed_19,
     pub entry: C2RustUnnamed_18,
@@ -852,7 +864,7 @@ pub struct window_pane {
     pub id: u_int,
     pub active_point: u_int,
     pub window: *mut window,
-    pub options: *mut options,
+    pub options: *mut crate::options::options,
     pub layout_cell: *mut layout_cell,
     pub saved_layout_cell: *mut layout_cell,
     pub sx: u_int,
@@ -875,7 +887,7 @@ pub struct window_pane {
     pub base_offset: size_t,
     pub resize_timer: event,
     pub force_timer: event,
-    pub ictx: *mut input_ctx,
+    pub ictx: *mut crate::input::input_ctx,
     pub cached_gc: grid_cell,
     pub cached_active_gc: grid_cell,
     pub palette: *mut libc::c_int,
@@ -974,7 +986,9 @@ pub struct window_mode {
             _: *mut mouse_event,
         ) -> (),
     >,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
+    pub formats: Option<
+        unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut crate::format::format_tree) -> (),
+    >,
 }
 
 #[repr(C)]
@@ -1074,7 +1088,7 @@ pub struct C2RustUnnamed_28 {
 pub struct cmd_list {
     pub references: libc::c_int,
     pub group: u_int,
-    pub list: *mut cmds,
+    pub list: *mut crate::cmd::cmds,
 }
 pub type msgtype = libc::c_uint;
 pub const MSG_WRITE_CLOSE: msgtype = 306;
@@ -1229,7 +1243,7 @@ pub struct tty_term {
     pub tty: *mut tty,
     pub features: libc::c_int,
     pub acs: [[libc::c_char; 2]; 256],
-    pub codes: *mut tty_code,
+    pub codes: *mut crate::tty_term::tty_code,
     pub flags: libc::c_int,
     pub entry: C2RustUnnamed_31,
 }
@@ -1300,7 +1314,7 @@ pub struct cmd_parse_input {
     pub flags: libc::c_int,
     pub file: *const libc::c_char,
     pub line: u_int,
-    pub item: *mut cmdq_item,
+    pub item: *mut crate::cmd_queue::cmdq_item,
     pub c: *mut client,
     pub fs: cmd_find_state,
 }
@@ -2031,7 +2045,7 @@ unsafe extern "C" fn cmd_parse_build_commands(
     let mut i: libc::c_int = 0;
     let mut cmdlist: *mut cmd_list = 0 as *mut cmd_list;
     let mut result: *mut cmd_list = 0 as *mut cmd_list;
-    let mut add: *mut cmd = 0 as *mut cmd;
+    let mut add: *mut crate::cmd::cmd = 0 as *mut crate::cmd::cmd;
     let mut name: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut alias: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut cause: *mut libc::c_char = 0 as *mut libc::c_char;
@@ -2786,7 +2800,7 @@ pub unsafe extern "C" fn cmd_parse_from_file(
         flags: 0,
         file: 0 as *const libc::c_char,
         line: 0,
-        item: 0 as *mut cmdq_item,
+        item: 0 as *mut crate::cmd_queue::cmdq_item,
         c: 0 as *mut client,
         fs: cmd_find_state {
             flags: 0,
@@ -2880,7 +2894,7 @@ pub unsafe extern "C" fn cmd_parse_from_string(
         flags: 0,
         file: 0 as *const libc::c_char,
         line: 0,
-        item: 0 as *mut cmdq_item,
+        item: 0 as *mut crate::cmd_queue::cmdq_item,
         c: 0 as *mut client,
         fs: cmd_find_state {
             flags: 0,
@@ -2912,12 +2926,12 @@ pub unsafe extern "C" fn cmd_parse_from_string(
 pub unsafe extern "C" fn cmd_parse_and_insert(
     mut s: *const libc::c_char,
     mut pi: *mut cmd_parse_input,
-    mut after: *mut cmdq_item,
-    mut state: *mut cmdq_state,
+    mut after: *mut crate::cmd_queue::cmdq_item,
+    mut state: *mut crate::cmd_queue::cmdq_state,
     mut error: *mut *mut libc::c_char,
 ) -> cmd_parse_status {
     let mut pr: *mut cmd_parse_result = 0 as *mut cmd_parse_result;
-    let mut item: *mut cmdq_item = 0 as *mut cmdq_item;
+    let mut item: *mut crate::cmd_queue::cmdq_item = 0 as *mut crate::cmd_queue::cmdq_item;
     /* Backward compatibility with an undocumented macro.
     Use YYerror or YYUNDEF. */
     pr = cmd_parse_from_string(s, pi);
@@ -2944,11 +2958,11 @@ pub unsafe extern "C" fn cmd_parse_and_append(
     mut s: *const libc::c_char,
     mut pi: *mut cmd_parse_input,
     mut c: *mut client,
-    mut state: *mut cmdq_state,
+    mut state: *mut crate::cmd_queue::cmdq_state,
     mut error: *mut *mut libc::c_char,
 ) -> cmd_parse_status {
     let mut pr: *mut cmd_parse_result = 0 as *mut cmd_parse_result;
-    let mut item: *mut cmdq_item = 0 as *mut cmdq_item;
+    let mut item: *mut crate::cmd_queue::cmdq_item = 0 as *mut crate::cmd_queue::cmdq_item;
     pr = cmd_parse_from_string(s, pi);
     match (*pr).status as libc::c_uint {
         1 => {
@@ -2982,7 +2996,7 @@ pub unsafe extern "C" fn cmd_parse_from_buffer(
         flags: 0,
         file: 0 as *const libc::c_char,
         line: 0,
-        item: 0 as *mut cmdq_item,
+        item: 0 as *mut crate::cmd_queue::cmdq_item,
         c: 0 as *mut client,
         fs: cmd_find_state {
             flags: 0,
@@ -3033,7 +3047,7 @@ pub unsafe extern "C" fn cmd_parse_from_arguments(
         flags: 0,
         file: 0 as *const libc::c_char,
         line: 0,
-        item: 0 as *mut cmdq_item,
+        item: 0 as *mut crate::cmd_queue::cmdq_item,
         c: 0 as *mut client,
         fs: cmd_find_state {
             flags: 0,
@@ -3674,7 +3688,8 @@ unsafe extern "C" fn yyparse() -> libc::c_int {
                         12 => {
                             let mut ps_2: *mut cmd_parse_state = &mut parse_state;
                             let mut pi: *mut cmd_parse_input = (*ps_2).input;
-                            let mut ft: *mut format_tree = 0 as *mut format_tree;
+                            let mut ft: *mut crate::format::format_tree =
+                                0 as *mut crate::format::format_tree;
                             let mut c: *mut client = (*pi).c;
                             let mut fsp: *mut cmd_find_state = 0 as *mut cmd_find_state;
                             let mut fs: cmd_find_state = cmd_find_state {

@@ -108,32 +108,38 @@ extern "C" {
     #[no_mangle]
     fn get_timer() -> uint64_t;
     #[no_mangle]
-    fn format_free(_: *mut format_tree);
+    fn format_free(_: *mut crate::format::format_tree);
     #[no_mangle]
-    fn format_expand(_: *mut format_tree, _: *const libc::c_char) -> *mut libc::c_char;
+    fn format_expand(
+        _: *mut crate::format::format_tree,
+        _: *const libc::c_char,
+    ) -> *mut libc::c_char;
     #[no_mangle]
     fn format_create_defaults(
-        _: *mut cmdq_item,
+        _: *mut crate::cmd_queue::cmdq_item,
         _: *mut client,
         _: *mut session,
         _: *mut winlink,
         _: *mut window_pane,
-    ) -> *mut format_tree;
+    ) -> *mut crate::format::format_tree;
     #[no_mangle]
     fn cmd_parse_and_append(
         _: *const libc::c_char,
         _: *mut cmd_parse_input,
         _: *mut client,
-        _: *mut cmdq_state,
+        _: *mut crate::cmd_queue::cmdq_state,
         _: *mut *mut libc::c_char,
     ) -> cmd_parse_status;
     #[no_mangle]
-    fn cmdq_new_state(_: *mut cmd_find_state, _: *mut key_event, _: libc::c_int)
-        -> *mut cmdq_state;
+    fn cmdq_new_state(
+        _: *mut cmd_find_state,
+        _: *mut key_event,
+        _: libc::c_int,
+    ) -> *mut crate::cmd_queue::cmdq_state;
     #[no_mangle]
-    fn cmdq_free_state(_: *mut cmdq_state);
+    fn cmdq_free_state(_: *mut crate::cmd_queue::cmdq_state);
     #[no_mangle]
-    fn cmdq_guard(_: *mut cmdq_item, _: *const libc::c_char, _: libc::c_int);
+    fn cmdq_guard(_: *mut crate::cmd_queue::cmdq_item, _: *const libc::c_char, _: libc::c_int);
     #[no_mangle]
     fn winlinks_RB_NEXT(_: *mut winlink) -> *mut winlink;
     #[no_mangle]
@@ -143,15 +149,18 @@ extern "C" {
     #[no_mangle]
     fn window_find_by_id(_: u_int) -> *mut window;
     #[no_mangle]
-    fn cmdq_get_client(_: *mut cmdq_item) -> *mut client;
+    fn cmdq_get_client(_: *mut crate::cmd_queue::cmdq_item) -> *mut client;
     #[no_mangle]
     fn cmdq_get_callback1(
         _: *const libc::c_char,
         _: cmdq_cb,
         _: *mut libc::c_void,
-    ) -> *mut cmdq_item;
+    ) -> *mut crate::cmd_queue::cmdq_item;
     #[no_mangle]
-    fn cmdq_append(_: *mut client, _: *mut cmdq_item) -> *mut cmdq_item;
+    fn cmdq_append(
+        _: *mut client,
+        _: *mut crate::cmd_queue::cmdq_item,
+    ) -> *mut crate::cmd_queue::cmdq_item;
     #[no_mangle]
     fn window_pane_get_new_data(
         _: *mut window_pane,
@@ -361,15 +370,15 @@ pub struct args {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct args_tree {
-    pub rbh_root: *mut args_entry,
+    pub rbh_root: *mut crate::arguments::args_entry,
 }
 
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct client {
     pub name: *const libc::c_char,
-    pub peer: *mut tmuxpeer,
-    pub queue: *mut cmdq_list,
+    pub peer: *mut crate::proc::tmuxpeer,
+    pub queue: *mut crate::cmd_queue::cmdq_list,
     pub windows: client_windows,
     pub control_state: *mut control_state,
     pub pause_age: u_int,
@@ -380,8 +389,8 @@ pub struct client {
     pub retval: libc::c_int,
     pub creation_time: timeval,
     pub activity_time: timeval,
-    pub environ: *mut environ,
-    pub jobs: *mut format_job_tree,
+    pub environ: *mut crate::environ::environ,
+    pub jobs: *mut crate::format::format_job_tree,
     pub title: *mut libc::c_char,
     pub cwd: *const libc::c_char,
     pub term_name: *mut libc::c_char,
@@ -540,7 +549,7 @@ pub type overlay_mode_cb =
 pub struct screen {
     pub title: *mut libc::c_char,
     pub path: *mut libc::c_char,
-    pub titles: *mut screen_titles,
+    pub titles: *mut crate::screen::screen_titles,
     pub grid: *mut grid,
     pub cx: u_int,
     pub cy: u_int,
@@ -555,8 +564,8 @@ pub struct screen {
     pub saved_cell: grid_cell,
     pub saved_flags: libc::c_int,
     pub tabs: *mut bitstr_t,
-    pub sel: *mut screen_sel,
-    pub write_list: *mut screen_write_collect_line,
+    pub sel: *mut crate::screen::screen_sel,
+    pub write_list: *mut crate::screen_write::screen_write_collect_line,
 }
 
 #[repr(C)]
@@ -655,11 +664,11 @@ pub struct session {
     pub windows: winlinks,
     pub statusat: libc::c_int,
     pub statuslines: u_int,
-    pub options: *mut options,
+    pub options: *mut crate::options::options,
     pub flags: libc::c_int,
     pub attached: u_int,
     pub tio: *mut termios,
-    pub environ: *mut environ,
+    pub environ: *mut crate::environ::environ,
     pub references: libc::c_int,
     pub gentry: C2RustUnnamed_13,
     pub entry: C2RustUnnamed_12,
@@ -751,7 +760,7 @@ pub struct window {
     pub flags: libc::c_int,
     pub alerts_queued: libc::c_int,
     pub alerts_entry: C2RustUnnamed_19,
-    pub options: *mut options,
+    pub options: *mut crate::options::options,
     pub references: u_int,
     pub winlinks: C2RustUnnamed_18,
     pub entry: C2RustUnnamed_17,
@@ -814,7 +823,7 @@ pub struct window_pane {
     pub id: u_int,
     pub active_point: u_int,
     pub window: *mut window,
-    pub options: *mut options,
+    pub options: *mut crate::options::options,
     pub layout_cell: *mut layout_cell,
     pub saved_layout_cell: *mut layout_cell,
     pub sx: u_int,
@@ -837,7 +846,7 @@ pub struct window_pane {
     pub base_offset: size_t,
     pub resize_timer: event,
     pub force_timer: event,
-    pub ictx: *mut input_ctx,
+    pub ictx: *mut crate::input::input_ctx,
     pub cached_gc: grid_cell,
     pub cached_active_gc: grid_cell,
     pub palette: *mut libc::c_int,
@@ -936,7 +945,9 @@ pub struct window_mode {
             _: *mut mouse_event,
         ) -> (),
     >,
-    pub formats: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut format_tree) -> ()>,
+    pub formats: Option<
+        unsafe extern "C" fn(_: *mut window_mode_entry, _: *mut crate::format::format_tree) -> (),
+    >,
 }
 
 #[repr(C)]
@@ -1036,7 +1047,7 @@ pub struct C2RustUnnamed_27 {
 pub struct cmd_list {
     pub references: libc::c_int,
     pub group: u_int,
-    pub list: *mut cmds,
+    pub list: *mut crate::cmd::cmds,
 }
 pub type msgtype = libc::c_uint;
 pub const MSG_WRITE_CLOSE: msgtype = 306;
@@ -1191,7 +1202,7 @@ pub struct tty_term {
     pub tty: *mut tty,
     pub features: libc::c_int,
     pub acs: [[libc::c_char; 2]; 256],
-    pub codes: *mut tty_code,
+    pub codes: *mut crate::tty_term::tty_code,
     pub flags: libc::c_int,
     pub entry: C2RustUnnamed_30,
 }
@@ -1453,12 +1464,13 @@ pub struct cmd_parse_input {
     pub flags: libc::c_int,
     pub file: *const libc::c_char,
     pub line: u_int,
-    pub item: *mut cmdq_item,
+    pub item: *mut crate::cmd_queue::cmdq_item,
     pub c: *mut client,
     pub fs: cmd_find_state,
 }
-pub type cmdq_cb =
-    Option<unsafe extern "C" fn(_: *mut cmdq_item, _: *mut libc::c_void) -> cmd_retval>;
+pub type cmdq_cb = Option<
+    unsafe extern "C" fn(_: *mut crate::cmd_queue::cmdq_item, _: *mut libc::c_void) -> cmd_retval,
+>;
 /* Compare client panes. */
 unsafe extern "C" fn control_pane_cmp(
     mut cp1: *mut control_pane,
@@ -3930,7 +3942,7 @@ pub unsafe extern "C" fn control_write_output(mut c: *mut client, mut wp: *mut w
 }
 /* Control client error callback. */
 unsafe extern "C" fn control_error(
-    mut item: *mut cmdq_item,
+    mut item: *mut crate::cmd_queue::cmdq_item,
     mut data: *mut libc::c_void,
 ) -> cmd_retval {
     let mut c: *mut client = cmdq_get_client(item);
@@ -3972,7 +3984,7 @@ unsafe extern "C" fn control_read_callback(
     let mut buffer: *mut evbuffer = (*(*cs).read_event).input;
     let mut line: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut error: *mut libc::c_char = 0 as *mut libc::c_char;
-    let mut state: *mut cmdq_state = 0 as *mut cmdq_state;
+    let mut state: *mut crate::cmd_queue::cmdq_state = 0 as *mut crate::cmd_queue::cmdq_state;
     let mut status: cmd_parse_status = CMD_PARSE_EMPTY;
     loop {
         line = evbuffer_readln(buffer, 0 as *mut size_t, EVBUFFER_EOL_LF);
@@ -4008,7 +4020,7 @@ unsafe extern "C" fn control_read_callback(
                         Some(
                             control_error
                                 as unsafe extern "C" fn(
-                                    _: *mut cmdq_item,
+                                    _: *mut crate::cmd_queue::cmdq_item,
                                     _: *mut libc::c_void,
                                 )
                                     -> cmd_retval,
@@ -4430,10 +4442,10 @@ pub unsafe extern "C" fn control_stop(mut c: *mut client) {
 /* Check session subscription. */
 unsafe extern "C" fn control_check_subs_session(mut c: *mut client, mut csub: *mut control_sub) {
     let mut s: *mut session = (*c).session;
-    let mut ft: *mut format_tree = 0 as *mut format_tree;
+    let mut ft: *mut crate::format::format_tree = 0 as *mut crate::format::format_tree;
     let mut value: *mut libc::c_char = 0 as *mut libc::c_char;
     ft = format_create_defaults(
-        0 as *mut cmdq_item,
+        0 as *mut crate::cmd_queue::cmdq_item,
         c,
         s,
         0 as *mut winlink,
@@ -4461,7 +4473,7 @@ unsafe extern "C" fn control_check_subs_pane(mut c: *mut client, mut csub: *mut 
     let mut wp: *mut window_pane = 0 as *mut window_pane;
     let mut w: *mut window = 0 as *mut window;
     let mut wl: *mut winlink = 0 as *mut winlink;
-    let mut ft: *mut format_tree = 0 as *mut format_tree;
+    let mut ft: *mut crate::format::format_tree = 0 as *mut crate::format::format_tree;
     let mut value: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut csp: *mut control_sub_pane = 0 as *mut control_sub_pane;
     let mut find: control_sub_pane = control_sub_pane {
@@ -4483,7 +4495,7 @@ unsafe extern "C" fn control_check_subs_pane(mut c: *mut client, mut csub: *mut 
     wl = (*w).winlinks.tqh_first;
     while !wl.is_null() {
         if !((*wl).session != s) {
-            ft = format_create_defaults(0 as *mut cmdq_item, c, s, wl, wp);
+            ft = format_create_defaults(0 as *mut crate::cmd_queue::cmdq_item, c, s, wl, wp);
             value = format_expand(ft, (*csub).format);
             format_free(ft);
             find.pane = (*wp).id;
@@ -4525,7 +4537,7 @@ unsafe extern "C" fn control_check_subs_all_panes(mut c: *mut client, mut csub: 
     let mut wp: *mut window_pane = 0 as *mut window_pane;
     let mut w: *mut window = 0 as *mut window;
     let mut wl: *mut winlink = 0 as *mut winlink;
-    let mut ft: *mut format_tree = 0 as *mut format_tree;
+    let mut ft: *mut crate::format::format_tree = 0 as *mut crate::format::format_tree;
     let mut value: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut csp: *mut control_sub_pane = 0 as *mut control_sub_pane;
     let mut find: control_sub_pane = control_sub_pane {
@@ -4544,7 +4556,7 @@ unsafe extern "C" fn control_check_subs_all_panes(mut c: *mut client, mut csub: 
         w = (*wl).window;
         wp = (*w).panes.tqh_first;
         while !wp.is_null() {
-            ft = format_create_defaults(0 as *mut cmdq_item, c, s, wl, wp);
+            ft = format_create_defaults(0 as *mut crate::cmd_queue::cmdq_item, c, s, wl, wp);
             value = format_expand(ft, (*csub).format);
             format_free(ft);
             find.pane = (*wp).id;
@@ -4586,7 +4598,7 @@ unsafe extern "C" fn control_check_subs_window(mut c: *mut client, mut csub: *mu
     let mut s: *mut session = (*c).session;
     let mut w: *mut window = 0 as *mut window;
     let mut wl: *mut winlink = 0 as *mut winlink;
-    let mut ft: *mut format_tree = 0 as *mut format_tree;
+    let mut ft: *mut crate::format::format_tree = 0 as *mut crate::format::format_tree;
     let mut value: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut csw: *mut control_sub_window = 0 as *mut control_sub_window;
     let mut find: control_sub_window = control_sub_window {
@@ -4607,7 +4619,13 @@ unsafe extern "C" fn control_check_subs_window(mut c: *mut client, mut csub: *mu
     wl = (*w).winlinks.tqh_first;
     while !wl.is_null() {
         if !((*wl).session != s) {
-            ft = format_create_defaults(0 as *mut cmdq_item, c, s, wl, 0 as *mut window_pane);
+            ft = format_create_defaults(
+                0 as *mut crate::cmd_queue::cmdq_item,
+                c,
+                s,
+                wl,
+                0 as *mut window_pane,
+            );
             value = format_expand(ft, (*csub).format);
             format_free(ft);
             find.window = (*w).id;
@@ -4650,7 +4668,7 @@ unsafe extern "C" fn control_check_subs_all_windows(
     let mut s: *mut session = (*c).session;
     let mut w: *mut window = 0 as *mut window;
     let mut wl: *mut winlink = 0 as *mut winlink;
-    let mut ft: *mut format_tree = 0 as *mut format_tree;
+    let mut ft: *mut crate::format::format_tree = 0 as *mut crate::format::format_tree;
     let mut value: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut csw: *mut control_sub_window = 0 as *mut control_sub_window;
     let mut find: control_sub_window = control_sub_window {
@@ -4667,7 +4685,13 @@ unsafe extern "C" fn control_check_subs_all_windows(
     wl = winlinks_RB_MINMAX(&mut (*s).windows, -(1 as libc::c_int));
     while !wl.is_null() {
         w = (*wl).window;
-        ft = format_create_defaults(0 as *mut cmdq_item, c, s, wl, 0 as *mut window_pane);
+        ft = format_create_defaults(
+            0 as *mut crate::cmd_queue::cmdq_item,
+            c,
+            s,
+            wl,
+            0 as *mut window_pane,
+        );
         value = format_expand(ft, (*csub).format);
         format_free(ft);
         find.window = (*w).id;

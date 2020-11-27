@@ -51,10 +51,15 @@ pub struct glob_t {
     pub gl_offs: __size_t,
     pub gl_flags: libc::c_int,
     pub gl_closedir: Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>,
-    pub gl_readdir: Option<unsafe extern "C" fn(_: *mut libc::c_void) -> *mut dirent>,
+    pub gl_readdir:
+        Option<unsafe extern "C" fn(_: *mut libc::c_void) -> *mut crate::compat::closefrom::dirent>,
     pub gl_opendir: Option<unsafe extern "C" fn(_: *const libc::c_char) -> *mut libc::c_void>,
-    pub gl_lstat: Option<unsafe extern "C" fn(_: *const libc::c_char, _: *mut stat) -> libc::c_int>,
-    pub gl_stat: Option<unsafe extern "C" fn(_: *const libc::c_char, _: *mut stat) -> libc::c_int>,
+    pub gl_lstat: Option<
+        unsafe extern "C" fn(_: *const libc::c_char, _: *mut crate::server::stat) -> libc::c_int,
+    >,
+    pub gl_stat: Option<
+        unsafe extern "C" fn(_: *const libc::c_char, _: *mut crate::server::stat) -> libc::c_int,
+    >,
 }
 #[no_mangle]
 pub unsafe extern "C" fn getdtablecount() -> libc::c_int {
