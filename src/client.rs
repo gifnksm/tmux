@@ -1,4 +1,8 @@
-use crate::msg::{code as msgtype_code, Msgtype};
+use crate::msg::{
+    code as msgtype_code, Command as MsgCommand, Msgtype, ReadData as MsgReadData,
+    ReadDone as MsgReadDone, ReadOpen as MsgReadOpen, WriteClose as MsgWriteClose,
+    WriteData as MsgWriteData, WriteOpen as MsgWriteOpen, WriteReady as MsgWriteReady,
+};
 use ::libc;
 extern "C" {
     pub type sockaddr_x25;
@@ -1543,58 +1547,6 @@ pub struct C2RustUnnamed_43 {
     pub rbe_color: libc::c_int,
 }
 
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct msg_command {
-    pub argc: libc::c_int,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct msg_read_open {
-    pub stream: libc::c_int,
-    pub fd: libc::c_int,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct msg_read_data {
-    pub stream: libc::c_int,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct msg_read_done {
-    pub stream: libc::c_int,
-    pub error: libc::c_int,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct msg_write_open {
-    pub stream: libc::c_int,
-    pub fd: libc::c_int,
-    pub flags: libc::c_int,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct msg_write_data {
-    pub stream: libc::c_int,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct msg_write_ready {
-    pub stream: libc::c_int,
-    pub error: libc::c_int,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct msg_write_close {
-    pub stream: libc::c_int,
-}
 pub type cmd_parse_status = libc::c_uint;
 pub const CMD_PARSE_SUCCESS: cmd_parse_status = 2;
 pub const CMD_PARSE_ERROR: cmd_parse_status = 1;
@@ -1918,7 +1870,7 @@ pub unsafe extern "C" fn client_main(
     mut feat: libc::c_int,
 ) -> libc::c_int {
     let mut pr: *mut cmd_parse_result = 0 as *mut cmd_parse_result;
-    let mut data: *mut msg_command = 0 as *mut msg_command;
+    let mut data: *mut MsgCommand = 0 as *mut MsgCommand;
     let mut fd: libc::c_int = 0;
     let mut i: libc::c_int = 0;
     let mut ttynam: *const libc::c_char = 0 as *const libc::c_char;
@@ -2083,7 +2035,7 @@ pub unsafe extern "C" fn client_main(
         }
         if size
             > (16384 as libc::c_int as libc::c_ulong)
-                .wrapping_sub(::std::mem::size_of::<msg_command>() as libc::c_ulong)
+                .wrapping_sub(::std::mem::size_of::<MsgCommand>() as libc::c_ulong)
         {
             fprintf(
                 stderr,
@@ -2091,8 +2043,8 @@ pub unsafe extern "C" fn client_main(
             );
             return 1 as libc::c_int;
         }
-        data = xmalloc((::std::mem::size_of::<msg_command>() as libc::c_ulong).wrapping_add(size))
-            as *mut msg_command;
+        data = xmalloc((::std::mem::size_of::<MsgCommand>() as libc::c_ulong).wrapping_add(size))
+            as *mut MsgCommand;
         /* Prepare command for server. */
         (*data).argc = argc;
         if cmd_pack_argv(
@@ -2110,7 +2062,7 @@ pub unsafe extern "C" fn client_main(
             return 1 as libc::c_int;
         }
         size = (size as libc::c_ulong)
-            .wrapping_add(::std::mem::size_of::<msg_command>() as libc::c_ulong)
+            .wrapping_add(::std::mem::size_of::<MsgCommand>() as libc::c_ulong)
             as size_t as size_t;
         /* Send the command. */
         if proc_send(
@@ -2354,9 +2306,9 @@ unsafe extern "C" fn client_write_callback(mut _bev: *mut bufferevent, mut arg: 
 }
 /* Open write file. */
 unsafe extern "C" fn client_write_open(mut data: *mut libc::c_void, mut datalen: size_t) {
-    let mut msg: *mut msg_write_open = data as *mut msg_write_open;
+    let mut msg: *mut MsgWriteOpen = data as *mut MsgWriteOpen;
     let mut path: *const libc::c_char = 0 as *const libc::c_char;
-    let mut reply: msg_write_ready = msg_write_ready {
+    let mut reply: MsgWriteReady = MsgWriteReady {
         stream: 0,
         error: 0,
     };
@@ -2382,10 +2334,10 @@ unsafe extern "C" fn client_write_open(mut data: *mut libc::c_void, mut datalen:
     let mut cf: *mut client_file = 0 as *mut client_file;
     let flags: libc::c_int = 0o4000 as libc::c_int | 0o1 as libc::c_int | 0o100 as libc::c_int;
     let mut error: libc::c_int = 0 as libc::c_int;
-    if datalen < ::std::mem::size_of::<msg_write_open>() as libc::c_ulong {
+    if datalen < ::std::mem::size_of::<MsgWriteOpen>() as libc::c_ulong {
         fatalx(b"bad msgtype_code::WRITE_OPEN size\x00" as *const u8 as *const libc::c_char);
     }
-    if datalen == ::std::mem::size_of::<msg_write_open>() as libc::c_ulong {
+    if datalen == ::std::mem::size_of::<MsgWriteOpen>() as libc::c_ulong {
         path = b"-\x00" as *const u8 as *const libc::c_char
     } else {
         path = msg.offset(1 as libc::c_int as isize) as *const libc::c_char
@@ -2455,13 +2407,13 @@ unsafe extern "C" fn client_write_open(mut data: *mut libc::c_void, mut datalen:
         client_peer,
         msgtype_code::WRITE_READY,
         -(1 as libc::c_int),
-        &mut reply as *mut msg_write_ready as *const libc::c_void,
-        ::std::mem::size_of::<msg_write_ready>() as libc::c_ulong,
+        &mut reply as *mut MsgWriteReady as *const libc::c_void,
+        ::std::mem::size_of::<MsgWriteReady>() as libc::c_ulong,
     );
 }
 /* Write to client file. */
 unsafe extern "C" fn client_write_data(mut data: *mut libc::c_void, mut datalen: size_t) {
-    let mut msg: *mut msg_write_data = data as *mut msg_write_data;
+    let mut msg: *mut MsgWriteData = data as *mut MsgWriteData;
     let mut find: client_file = client_file {
         c: 0 as *mut client,
         references: 0,
@@ -2483,8 +2435,8 @@ unsafe extern "C" fn client_write_data(mut data: *mut libc::c_void, mut datalen:
     };
     let mut cf: *mut client_file = 0 as *mut client_file;
     let mut size: size_t =
-        datalen.wrapping_sub(::std::mem::size_of::<msg_write_data>() as libc::c_ulong);
-    if datalen < ::std::mem::size_of::<msg_write_data>() as libc::c_ulong {
+        datalen.wrapping_sub(::std::mem::size_of::<MsgWriteData>() as libc::c_ulong);
+    if datalen < ::std::mem::size_of::<MsgWriteData>() as libc::c_ulong {
         fatalx(b"bad msgtype_code::WRITE size\x00" as *const u8 as *const libc::c_char);
     }
     find.stream = (*msg).stream;
@@ -2507,7 +2459,7 @@ unsafe extern "C" fn client_write_data(mut data: *mut libc::c_void, mut datalen:
 }
 /* Close client file. */
 unsafe extern "C" fn client_write_close(mut data: *mut libc::c_void, mut datalen: size_t) {
-    let mut msg: *mut msg_write_close = data as *mut msg_write_close;
+    let mut msg: *mut MsgWriteClose = data as *mut MsgWriteClose;
     let mut find: client_file = client_file {
         c: 0 as *mut client,
         references: 0,
@@ -2528,7 +2480,7 @@ unsafe extern "C" fn client_write_close(mut data: *mut libc::c_void, mut datalen
         },
     };
     let mut cf: *mut client_file = 0 as *mut client_file;
-    if datalen != ::std::mem::size_of::<msg_write_close>() as libc::c_ulong {
+    if datalen != ::std::mem::size_of::<MsgWriteClose>() as libc::c_ulong {
         fatalx(b"bad msgtype_code::WRITE_CLOSE size\x00" as *const u8 as *const libc::c_char);
     }
     find.stream = (*msg).stream;
@@ -2558,9 +2510,9 @@ unsafe extern "C" fn client_read_callback(mut _bev: *mut bufferevent, mut arg: *
     let mut cf: *mut client_file = arg as *mut client_file;
     let mut bdata: *mut libc::c_void = 0 as *mut libc::c_void;
     let mut bsize: size_t = 0;
-    let mut msg: *mut msg_read_data = 0 as *mut msg_read_data;
+    let mut msg: *mut MsgReadData = 0 as *mut MsgReadData;
     let mut msglen: size_t = 0;
-    msg = xmalloc(::std::mem::size_of::<msg_read_data>() as libc::c_ulong) as *mut msg_read_data;
+    msg = xmalloc(::std::mem::size_of::<MsgReadData>() as libc::c_ulong) as *mut MsgReadData;
     loop {
         bdata = evbuffer_pullup((*(*cf).event).input, -(1 as libc::c_int) as ssize_t)
             as *mut libc::c_void;
@@ -2571,19 +2523,19 @@ unsafe extern "C" fn client_read_callback(mut _bev: *mut bufferevent, mut arg: *
         if bsize
             > (16384 as libc::c_int as libc::c_ulong)
                 .wrapping_sub(::std::mem::size_of::<imsg_hdr>() as libc::c_ulong)
-                .wrapping_sub(::std::mem::size_of::<msg_read_data>() as libc::c_ulong)
+                .wrapping_sub(::std::mem::size_of::<MsgReadData>() as libc::c_ulong)
         {
             bsize = (16384 as libc::c_int as libc::c_ulong)
                 .wrapping_sub(::std::mem::size_of::<imsg_hdr>() as libc::c_ulong)
-                .wrapping_sub(::std::mem::size_of::<msg_read_data>() as libc::c_ulong)
+                .wrapping_sub(::std::mem::size_of::<MsgReadData>() as libc::c_ulong)
         }
         log_debug(
             b"read %zu from file %d\x00" as *const u8 as *const libc::c_char,
             bsize,
             (*cf).stream,
         );
-        msglen = (::std::mem::size_of::<msg_read_data>() as libc::c_ulong).wrapping_add(bsize);
-        msg = xrealloc(msg as *mut libc::c_void, msglen) as *mut msg_read_data;
+        msglen = (::std::mem::size_of::<MsgReadData>() as libc::c_ulong).wrapping_add(bsize);
+        msg = xrealloc(msg as *mut libc::c_void, msglen) as *mut MsgReadData;
         (*msg).stream = (*cf).stream;
         memcpy(
             msg.offset(1 as libc::c_int as isize) as *mut libc::c_void,
@@ -2608,7 +2560,7 @@ unsafe extern "C" fn client_read_error_callback(
     mut arg: *mut libc::c_void,
 ) {
     let mut cf: *mut client_file = arg as *mut client_file;
-    let mut msg: msg_read_done = msg_read_done {
+    let mut msg: MsgReadDone = MsgReadDone {
         stream: 0,
         error: 0,
     };
@@ -2622,8 +2574,8 @@ unsafe extern "C" fn client_read_error_callback(
         client_peer,
         msgtype_code::READ_DONE,
         -(1 as libc::c_int),
-        &mut msg as *mut msg_read_done as *const libc::c_void,
-        ::std::mem::size_of::<msg_read_done>() as libc::c_ulong,
+        &mut msg as *mut MsgReadDone as *const libc::c_void,
+        ::std::mem::size_of::<MsgReadDone>() as libc::c_ulong,
     );
     bufferevent_free((*cf).event);
     close((*cf).fd);
@@ -2632,9 +2584,9 @@ unsafe extern "C" fn client_read_error_callback(
 }
 /* Open read file. */
 unsafe extern "C" fn client_read_open(mut data: *mut libc::c_void, mut datalen: size_t) {
-    let mut msg: *mut msg_read_open = data as *mut msg_read_open;
+    let mut msg: *mut MsgReadOpen = data as *mut MsgReadOpen;
     let mut path: *const libc::c_char = 0 as *const libc::c_char;
-    let mut reply: msg_read_done = msg_read_done {
+    let mut reply: MsgReadDone = MsgReadDone {
         stream: 0,
         error: 0,
     };
@@ -2660,10 +2612,10 @@ unsafe extern "C" fn client_read_open(mut data: *mut libc::c_void, mut datalen: 
     let mut cf: *mut client_file = 0 as *mut client_file;
     let flags: libc::c_int = 0o4000 as libc::c_int | 0 as libc::c_int;
     let mut error: libc::c_int = 0;
-    if datalen < ::std::mem::size_of::<msg_read_open>() as libc::c_ulong {
+    if datalen < ::std::mem::size_of::<MsgReadOpen>() as libc::c_ulong {
         fatalx(b"bad msgtype_code::READ_OPEN size\x00" as *const u8 as *const libc::c_char);
     }
-    if datalen == ::std::mem::size_of::<msg_read_open>() as libc::c_ulong {
+    if datalen == ::std::mem::size_of::<MsgReadOpen>() as libc::c_ulong {
         path = b"-\x00" as *const u8 as *const libc::c_char
     } else {
         path = msg.offset(1 as libc::c_int as isize) as *const libc::c_char
@@ -2734,8 +2686,8 @@ unsafe extern "C" fn client_read_open(mut data: *mut libc::c_void, mut datalen: 
         client_peer,
         msgtype_code::READ_DONE,
         -(1 as libc::c_int),
-        &mut reply as *mut msg_read_done as *const libc::c_void,
-        ::std::mem::size_of::<msg_read_done>() as libc::c_ulong,
+        &mut reply as *mut MsgReadDone as *const libc::c_void,
+        ::std::mem::size_of::<MsgReadDone>() as libc::c_ulong,
     );
 }
 /* Run command in shell; used for -c. */

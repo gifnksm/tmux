@@ -47,3 +47,60 @@ pub(crate) mod code {
     pub(crate) const WRITE_READY: Msgtype = 305;
     pub(crate) const WRITE_CLOSE: Msgtype = 306;
 }
+
+// Message data.
+//
+// Don't forget to bump PROTOCOL_VERSION if any of these change!
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub(crate) struct Command {
+    pub(crate) argc: libc::c_int,
+} // followed by packed argv
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub(crate) struct ReadOpen {
+    pub(crate) stream: libc::c_int,
+    pub(crate) fd: libc::c_int,
+} // followed by path
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub(crate) struct ReadData {
+    pub(crate) stream: libc::c_int,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub(crate) struct ReadDone {
+    pub(crate) stream: libc::c_int,
+    pub(crate) error: libc::c_int,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub(crate) struct WriteOpen {
+    pub(crate) stream: libc::c_int,
+    pub(crate) fd: libc::c_int,
+    pub(crate) flags: libc::c_int,
+} // followed by path
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub(crate) struct WriteData {
+    pub(crate) stream: libc::c_int,
+} // followed by data
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub(crate) struct WriteReady {
+    pub(crate) stream: libc::c_int,
+    pub(crate) error: libc::c_int,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub(crate) struct WriteClose {
+    pub(crate) stream: libc::c_int,
+}

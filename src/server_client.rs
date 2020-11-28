@@ -1,6 +1,9 @@
 use crate::{
     key_code::code as key_code_code,
-    msg::{code as msgtype_code, Msgtype},
+    msg::{
+        code as msgtype_code, Command as MsgCommand, Msgtype, ReadData as MsgReadData,
+        ReadDone as MsgReadDone, WriteReady as MsgWriteReady,
+    },
 };
 use ::libc;
 
@@ -1413,32 +1416,6 @@ pub struct C2RustUnnamed_31 {
     pub rbe_right: *mut client_window,
     pub rbe_parent: *mut client_window,
     pub rbe_color: libc::c_int,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct msg_command {
-    pub argc: libc::c_int,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct msg_read_data {
-    pub stream: libc::c_int,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct msg_read_done {
-    pub stream: libc::c_int,
-    pub error: libc::c_int,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct msg_write_ready {
-    pub stream: libc::c_int,
-    pub error: libc::c_int,
 }
 
 #[repr(C)]
@@ -5049,7 +5026,7 @@ unsafe extern "C" fn server_client_command_done(
 }
 /* Handle command message. */
 unsafe extern "C" fn server_client_dispatch_command(mut c: *mut client, mut imsg: *mut imsg) {
-    let mut data: msg_command = msg_command { argc: 0 };
+    let mut data: MsgCommand = MsgCommand { argc: 0 };
     let mut buf: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut len: size_t = 0;
     let mut argc: libc::c_int = 0;
@@ -5061,20 +5038,20 @@ unsafe extern "C" fn server_client_dispatch_command(mut c: *mut client, mut imsg
     }
     if ((*imsg).hdr.len as libc::c_ulong)
         .wrapping_sub(::std::mem::size_of::<imsg_hdr>() as libc::c_ulong)
-        < ::std::mem::size_of::<msg_command>() as libc::c_ulong
+        < ::std::mem::size_of::<MsgCommand>() as libc::c_ulong
     {
         fatalx(b"bad msgtype_code::COMMAND size\x00" as *const u8 as *const libc::c_char);
     }
     memcpy(
-        &mut data as *mut msg_command as *mut libc::c_void,
+        &mut data as *mut MsgCommand as *mut libc::c_void,
         (*imsg).data,
-        ::std::mem::size_of::<msg_command>() as libc::c_ulong,
+        ::std::mem::size_of::<MsgCommand>() as libc::c_ulong,
     );
     buf = ((*imsg).data as *mut libc::c_char)
-        .offset(::std::mem::size_of::<msg_command>() as libc::c_ulong as isize);
+        .offset(::std::mem::size_of::<MsgCommand>() as libc::c_ulong as isize);
     len = ((*imsg).hdr.len as libc::c_ulong)
         .wrapping_sub(::std::mem::size_of::<imsg_hdr>() as libc::c_ulong)
-        .wrapping_sub(::std::mem::size_of::<msg_command>() as libc::c_ulong);
+        .wrapping_sub(::std::mem::size_of::<MsgCommand>() as libc::c_ulong);
     if len > 0 as libc::c_int as libc::c_ulong
         && *buf.offset(len.wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize) as libc::c_int
             != '\u{0}' as i32
@@ -5401,7 +5378,7 @@ unsafe extern "C" fn server_client_dispatch_shell(mut c: *mut client) {
 }
 /* Handle write ready message. */
 unsafe extern "C" fn server_client_dispatch_write_ready(mut c: *mut client, mut imsg: *mut imsg) {
-    let mut msg: *mut msg_write_ready = (*imsg).data as *mut msg_write_ready;
+    let mut msg: *mut MsgWriteReady = (*imsg).data as *mut MsgWriteReady;
     let mut msglen: size_t = ((*imsg).hdr.len as libc::c_ulong)
         .wrapping_sub(::std::mem::size_of::<imsg_hdr>() as libc::c_ulong);
     let mut find: client_file = client_file {
@@ -5424,7 +5401,7 @@ unsafe extern "C" fn server_client_dispatch_write_ready(mut c: *mut client, mut 
         },
     };
     let mut cf: *mut client_file = 0 as *mut client_file;
-    if msglen != ::std::mem::size_of::<msg_write_ready>() as libc::c_ulong {
+    if msglen != ::std::mem::size_of::<MsgWriteReady>() as libc::c_ulong {
         fatalx(b"bad msgtype_code::WRITE_READY size\x00" as *const u8 as *const libc::c_char);
     }
     find.stream = (*msg).stream;
@@ -5441,7 +5418,7 @@ unsafe extern "C" fn server_client_dispatch_write_ready(mut c: *mut client, mut 
 }
 /* Handle read data message. */
 unsafe extern "C" fn server_client_dispatch_read_data(mut c: *mut client, mut imsg: *mut imsg) {
-    let mut msg: *mut msg_read_data = (*imsg).data as *mut msg_read_data;
+    let mut msg: *mut MsgReadData = (*imsg).data as *mut MsgReadData;
     let mut msglen: size_t = ((*imsg).hdr.len as libc::c_ulong)
         .wrapping_sub(::std::mem::size_of::<imsg_hdr>() as libc::c_ulong);
     let mut find: client_file = client_file {
@@ -5466,8 +5443,8 @@ unsafe extern "C" fn server_client_dispatch_read_data(mut c: *mut client, mut im
     let mut cf: *mut client_file = 0 as *mut client_file;
     let mut bdata: *mut libc::c_void = msg.offset(1 as libc::c_int as isize) as *mut libc::c_void;
     let mut bsize: size_t =
-        msglen.wrapping_sub(::std::mem::size_of::<msg_read_data>() as libc::c_ulong);
-    if msglen < ::std::mem::size_of::<msg_read_data>() as libc::c_ulong {
+        msglen.wrapping_sub(::std::mem::size_of::<MsgReadData>() as libc::c_ulong);
+    if msglen < ::std::mem::size_of::<MsgReadData>() as libc::c_ulong {
         fatalx(b"bad msgtype_code::READ_DATA size\x00" as *const u8 as *const libc::c_char);
     }
     find.stream = (*msg).stream;
@@ -5492,7 +5469,7 @@ unsafe extern "C" fn server_client_dispatch_read_data(mut c: *mut client, mut im
 }
 /* Handle read done message. */
 unsafe extern "C" fn server_client_dispatch_read_done(mut c: *mut client, mut imsg: *mut imsg) {
-    let mut msg: *mut msg_read_done = (*imsg).data as *mut msg_read_done;
+    let mut msg: *mut MsgReadDone = (*imsg).data as *mut MsgReadDone;
     let mut msglen: size_t = ((*imsg).hdr.len as libc::c_ulong)
         .wrapping_sub(::std::mem::size_of::<imsg_hdr>() as libc::c_ulong);
     let mut find: client_file = client_file {
@@ -5515,7 +5492,7 @@ unsafe extern "C" fn server_client_dispatch_read_done(mut c: *mut client, mut im
         },
     };
     let mut cf: *mut client_file = 0 as *mut client_file;
-    if msglen != ::std::mem::size_of::<msg_read_done>() as libc::c_ulong {
+    if msglen != ::std::mem::size_of::<MsgReadDone>() as libc::c_ulong {
         fatalx(b"bad msgtype_code::READ_DONE size\x00" as *const u8 as *const libc::c_char);
     }
     find.stream = (*msg).stream;

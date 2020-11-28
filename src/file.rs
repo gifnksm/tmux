@@ -1,4 +1,7 @@
-use crate::msg::code as msgtype_code;
+use crate::msg::{
+    code as msgtype_code, ReadOpen as MsgReadOpen, WriteClose as MsgWriteClose,
+    WriteData as MsgWriteData, WriteOpen as MsgWriteOpen,
+};
 use ::libc;
 
 extern "C" {
@@ -1160,32 +1163,6 @@ pub struct C2RustUnnamed_31 {
     pub rbe_color: libc::c_int,
 }
 
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct msg_read_open {
-    pub stream: libc::c_int,
-    pub fd: libc::c_int,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct msg_write_open {
-    pub stream: libc::c_int,
-    pub fd: libc::c_int,
-    pub flags: libc::c_int,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct msg_write_data {
-    pub stream: libc::c_int,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct msg_write_close {
-    pub stream: libc::c_int,
-}
 /* $OpenBSD$ */
 /*
  * Copyright (c) 2019 Nicholas Marriott <nicholas.marriott@gmail.com>
@@ -1912,7 +1889,7 @@ pub unsafe extern "C" fn file_vprint(
         },
     };
     let mut cf: *mut client_file = 0 as *mut client_file;
-    let mut msg: msg_write_open = msg_write_open {
+    let mut msg: MsgWriteOpen = MsgWriteOpen {
         stream: 0,
         fd: 0,
         flags: 0,
@@ -1933,8 +1910,8 @@ pub unsafe extern "C" fn file_vprint(
             (*c).peer,
             msgtype_code::WRITE_OPEN,
             -(1 as libc::c_int),
-            &mut msg as *mut msg_write_open as *const libc::c_void,
-            ::std::mem::size_of::<msg_write_open>() as libc::c_ulong,
+            &mut msg as *mut MsgWriteOpen as *const libc::c_void,
+            ::std::mem::size_of::<MsgWriteOpen>() as libc::c_ulong,
         );
     } else {
         evbuffer_add_vprintf((*cf).buffer, fmt, ap.as_va_list());
@@ -1967,7 +1944,7 @@ pub unsafe extern "C" fn file_print_buffer(
         },
     };
     let mut cf: *mut client_file = 0 as *mut client_file;
-    let mut msg: msg_write_open = msg_write_open {
+    let mut msg: MsgWriteOpen = MsgWriteOpen {
         stream: 0,
         fd: 0,
         flags: 0,
@@ -1988,8 +1965,8 @@ pub unsafe extern "C" fn file_print_buffer(
             (*c).peer,
             msgtype_code::WRITE_OPEN,
             -(1 as libc::c_int),
-            &mut msg as *mut msg_write_open as *const libc::c_void,
-            ::std::mem::size_of::<msg_write_open>() as libc::c_ulong,
+            &mut msg as *mut MsgWriteOpen as *const libc::c_void,
+            ::std::mem::size_of::<MsgWriteOpen>() as libc::c_ulong,
         );
     } else {
         evbuffer_add((*cf).buffer, data, size);
@@ -2022,7 +1999,7 @@ pub unsafe extern "C" fn file_error(
         },
     };
     let mut cf: *mut client_file = 0 as *mut client_file;
-    let mut msg: msg_write_open = msg_write_open {
+    let mut msg: MsgWriteOpen = MsgWriteOpen {
         stream: 0,
         fd: 0,
         flags: 0,
@@ -2045,8 +2022,8 @@ pub unsafe extern "C" fn file_error(
             (*c).peer,
             msgtype_code::WRITE_OPEN,
             -(1 as libc::c_int),
-            &mut msg as *mut msg_write_open as *const libc::c_void,
-            ::std::mem::size_of::<msg_write_open>() as libc::c_ulong,
+            &mut msg as *mut MsgWriteOpen as *const libc::c_void,
+            ::std::mem::size_of::<MsgWriteOpen>() as libc::c_ulong,
         );
     } else {
         evbuffer_add_vprintf((*cf).buffer, fmt, ap.as_va_list());
@@ -2066,7 +2043,7 @@ pub unsafe extern "C" fn file_write(
     let mut current_block: u64;
     let mut cf: *mut client_file = 0 as *mut client_file;
     let mut f: *mut FILE = 0 as *mut FILE;
-    let mut msg: *mut msg_write_open = 0 as *mut msg_write_open;
+    let mut msg: *mut MsgWriteOpen = 0 as *mut MsgWriteOpen;
     let mut msglen: size_t = 0;
     let mut fd: libc::c_int = -(1 as libc::c_int);
     let mut mode: *const libc::c_char = 0 as *const libc::c_char;
@@ -2115,21 +2092,21 @@ pub unsafe extern "C" fn file_write(
             evbuffer_add((*cf).buffer, bdata, bsize);
             msglen = strlen((*cf).path)
                 .wrapping_add(1 as libc::c_int as libc::c_ulong)
-                .wrapping_add(::std::mem::size_of::<msg_write_open>() as libc::c_ulong);
+                .wrapping_add(::std::mem::size_of::<MsgWriteOpen>() as libc::c_ulong);
             if msglen
                 > (16384 as libc::c_int as libc::c_ulong)
                     .wrapping_sub(::std::mem::size_of::<imsg_hdr>() as libc::c_ulong)
             {
                 (*cf).error = 7 as libc::c_int
             } else {
-                msg = xmalloc(msglen) as *mut msg_write_open;
+                msg = xmalloc(msglen) as *mut MsgWriteOpen;
                 (*msg).stream = (*cf).stream;
                 (*msg).fd = fd;
                 (*msg).flags = flags;
                 memcpy(
                     msg.offset(1 as libc::c_int as isize) as *mut libc::c_void,
                     (*cf).path as *const libc::c_void,
-                    msglen.wrapping_sub(::std::mem::size_of::<msg_write_open>() as libc::c_ulong),
+                    msglen.wrapping_sub(::std::mem::size_of::<MsgWriteOpen>() as libc::c_ulong),
                 );
                 if proc_send(
                     (*c).peer,
@@ -2161,7 +2138,7 @@ pub unsafe extern "C" fn file_read(
     let mut current_block: u64;
     let mut cf: *mut client_file = 0 as *mut client_file;
     let mut f: *mut FILE = 0 as *mut FILE;
-    let mut msg: *mut msg_read_open = 0 as *mut msg_read_open;
+    let mut msg: *mut MsgReadOpen = 0 as *mut MsgReadOpen;
     let mut msglen: size_t = 0;
     let mut size: size_t = 0;
     let mut fd: libc::c_int = -(1 as libc::c_int);
@@ -2233,20 +2210,20 @@ pub unsafe extern "C" fn file_read(
         8877882829518769139 => {
             msglen = strlen((*cf).path)
                 .wrapping_add(1 as libc::c_int as libc::c_ulong)
-                .wrapping_add(::std::mem::size_of::<msg_read_open>() as libc::c_ulong);
+                .wrapping_add(::std::mem::size_of::<MsgReadOpen>() as libc::c_ulong);
             if msglen
                 > (16384 as libc::c_int as libc::c_ulong)
                     .wrapping_sub(::std::mem::size_of::<imsg_hdr>() as libc::c_ulong)
             {
                 (*cf).error = 7 as libc::c_int
             } else {
-                msg = xmalloc(msglen) as *mut msg_read_open;
+                msg = xmalloc(msglen) as *mut MsgReadOpen;
                 (*msg).stream = (*cf).stream;
                 (*msg).fd = fd;
                 memcpy(
                     msg.offset(1 as libc::c_int as isize) as *mut libc::c_void,
                     (*cf).path as *const libc::c_void,
-                    msglen.wrapping_sub(::std::mem::size_of::<msg_read_open>() as libc::c_ulong),
+                    msglen.wrapping_sub(::std::mem::size_of::<MsgReadOpen>() as libc::c_ulong),
                 );
                 if proc_send(
                     (*c).peer,
@@ -2283,26 +2260,26 @@ unsafe extern "C" fn file_push_cb(
 #[no_mangle]
 pub unsafe extern "C" fn file_push(mut cf: *mut client_file) {
     let mut c: *mut client = (*cf).c;
-    let mut msg: *mut msg_write_data = 0 as *mut msg_write_data;
+    let mut msg: *mut MsgWriteData = 0 as *mut MsgWriteData;
     let mut msglen: size_t = 0;
     let mut sent: size_t = 0;
     let mut left: size_t = 0;
-    let mut close: msg_write_close = msg_write_close { stream: 0 };
-    msg = xmalloc(::std::mem::size_of::<msg_write_data>() as libc::c_ulong) as *mut msg_write_data;
+    let mut close: MsgWriteClose = MsgWriteClose { stream: 0 };
+    msg = xmalloc(::std::mem::size_of::<MsgWriteData>() as libc::c_ulong) as *mut MsgWriteData;
     left = evbuffer_get_length((*cf).buffer);
     while left != 0 as libc::c_int as libc::c_ulong {
         sent = left;
         if sent
             > (16384 as libc::c_int as libc::c_ulong)
                 .wrapping_sub(::std::mem::size_of::<imsg_hdr>() as libc::c_ulong)
-                .wrapping_sub(::std::mem::size_of::<msg_write_data>() as libc::c_ulong)
+                .wrapping_sub(::std::mem::size_of::<MsgWriteData>() as libc::c_ulong)
         {
             sent = (16384 as libc::c_int as libc::c_ulong)
                 .wrapping_sub(::std::mem::size_of::<imsg_hdr>() as libc::c_ulong)
-                .wrapping_sub(::std::mem::size_of::<msg_write_data>() as libc::c_ulong)
+                .wrapping_sub(::std::mem::size_of::<MsgWriteData>() as libc::c_ulong)
         }
-        msglen = (::std::mem::size_of::<msg_write_data>() as libc::c_ulong).wrapping_add(sent);
-        msg = xrealloc(msg as *mut libc::c_void, msglen) as *mut msg_write_data;
+        msglen = (::std::mem::size_of::<MsgWriteData>() as libc::c_ulong).wrapping_add(sent);
+        msg = xrealloc(msg as *mut libc::c_void, msglen) as *mut MsgWriteData;
         (*msg).stream = (*cf).stream;
         memcpy(
             msg.offset(1 as libc::c_int as isize) as *mut libc::c_void,
@@ -2351,8 +2328,8 @@ pub unsafe extern "C" fn file_push(mut cf: *mut client_file) {
             (*c).peer,
             msgtype_code::WRITE_CLOSE,
             -(1 as libc::c_int),
-            &mut close as *mut msg_write_close as *const libc::c_void,
-            ::std::mem::size_of::<msg_write_close>() as libc::c_ulong,
+            &mut close as *mut MsgWriteClose as *const libc::c_void,
+            ::std::mem::size_of::<MsgWriteClose>() as libc::c_ulong,
         );
         file_fire_done(cf);
     }
