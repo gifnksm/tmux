@@ -1,6 +1,7 @@
 use crate::{
     key_code::code as key_code_code,
     tty_code::{code as tty_code_code, Code as TtyCode},
+    utf8::{utf8_state, Utf8Char, Utf8Data, Utf8State},
 };
 use ::libc;
 
@@ -100,11 +101,11 @@ extern "C" {
         _: *const libc::c_char,
     ) -> *mut crate::options::options_entry;
     #[no_mangle]
-    fn utf8_from_data(_: *const utf8_data, _: *mut utf8_char) -> utf8_state;
+    fn utf8_from_data(_: *const Utf8Data, _: *mut Utf8Char) -> crate::utf8::Utf8State;
     #[no_mangle]
-    fn utf8_append(_: *mut utf8_data, _: u_char) -> utf8_state;
+    fn utf8_append(_: *mut Utf8Data, _: u_char) -> crate::utf8::Utf8State;
     #[no_mangle]
-    fn utf8_open(_: *mut utf8_data, _: u_char) -> utf8_state;
+    fn utf8_open(_: *mut Utf8Data, _: u_char) -> crate::utf8::Utf8State;
     #[no_mangle]
     fn log_debug(_: *const libc::c_char, _: ...);
     #[no_mangle]
@@ -347,14 +348,14 @@ pub struct client {
     pub message_string: *mut libc::c_char,
     pub message_timer: event,
     pub prompt_string: *mut libc::c_char,
-    pub prompt_buffer: *mut utf8_data,
+    pub prompt_buffer: *mut crate::utf8::Utf8Data,
     pub prompt_index: size_t,
     pub prompt_inputcb: prompt_input_cb,
     pub prompt_freecb: prompt_free_cb,
     pub prompt_data: *mut libc::c_void,
     pub prompt_hindex: u_int,
     pub prompt_mode: C2RustUnnamed_26,
-    pub prompt_saved: *mut utf8_data,
+    pub prompt_saved: *mut crate::utf8::Utf8Data,
     pub prompt_flags: libc::c_int,
     pub session: *mut session,
     pub last_session: *mut session,
@@ -501,21 +502,12 @@ pub struct screen {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct grid_cell {
-    pub data: utf8_data,
+    pub data: crate::utf8::Utf8Data,
     pub attr: u_short,
     pub flags: u_char,
     pub fg: libc::c_int,
     pub bg: libc::c_int,
     pub us: libc::c_int,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct utf8_data {
-    pub data: [u_char; 21],
-    pub have: u_char,
-    pub size: u_char,
-    pub width: u_char,
 }
 
 #[repr(C)]
@@ -544,14 +536,13 @@ pub struct grid_line {
 #[repr(C, packed)]
 #[derive(Copy, Clone)]
 pub struct grid_extd_entry {
-    pub data: utf8_char,
+    pub data: crate::utf8::Utf8Char,
     pub attr: u_short,
     pub flags: u_char,
     pub fg: libc::c_int,
     pub bg: libc::c_int,
     pub us: libc::c_int,
 }
-pub type utf8_char = u_int;
 
 #[repr(C, packed)]
 #[derive(Copy, Clone)]
@@ -1126,10 +1117,6 @@ pub struct C2RustUnnamed_32 {
     pub rbe_parent: *mut client_window,
     pub rbe_color: libc::c_int,
 }
-pub type utf8_state = libc::c_uint;
-pub const UTF8_ERROR: utf8_state = 2;
-pub const UTF8_DONE: utf8_state = 1;
-pub const UTF8_MORE: utf8_state = 0;
 pub type style_align = libc::c_uint;
 pub const STYLE_ALIGN_RIGHT: style_align = 3;
 pub const STYLE_ALIGN_CENTRE: style_align = 2;
@@ -3723,14 +3710,14 @@ unsafe extern "C" fn tty_keys_next1(
     let mut c: *mut client = (*tty).client;
     let mut tk: *mut tty_key = 0 as *mut tty_key;
     let mut tk1: *mut tty_key = 0 as *mut tty_key;
-    let mut ud: utf8_data = utf8_data {
+    let mut ud: Utf8Data = Utf8Data {
         data: [0; 21],
         have: 0,
         size: 0,
         width: 0,
     };
-    let mut more: utf8_state = UTF8_MORE;
-    let mut uc: utf8_char = 0;
+    let mut more: Utf8State = utf8_state::MORE;
+    let mut uc: Utf8Char = 0;
     let mut i: u_int = 0;
     log_debug(
         b"%s: next key is %zu (%.*s) (expired=%d)\x00" as *const u8 as *const libc::c_char,
@@ -3763,7 +3750,7 @@ unsafe extern "C" fn tty_keys_next1(
     }
     /* Is this valid UTF-8? */
     more = utf8_open(&mut ud, *buf as u_char);
-    if more as libc::c_uint == UTF8_MORE as libc::c_int as libc::c_uint {
+    if more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint {
         *size = ud.size as size_t;
         if len < ud.size as libc::c_ulong {
             if expired == 0 {
@@ -3776,11 +3763,11 @@ unsafe extern "C" fn tty_keys_next1(
             more = utf8_append(&mut ud, *buf.offset(i as isize) as u_char);
             i = i.wrapping_add(1)
         }
-        if more as libc::c_uint != UTF8_DONE as libc::c_int as libc::c_uint {
+        if more as libc::c_uint != utf8_state::DONE as libc::c_int as libc::c_uint {
             return -(1 as libc::c_int);
         }
         if utf8_from_data(&mut ud, &mut uc) as libc::c_uint
-            != UTF8_DONE as libc::c_int as libc::c_uint
+            != utf8_state::DONE as libc::c_int as libc::c_uint
         {
             return -(1 as libc::c_int);
         }

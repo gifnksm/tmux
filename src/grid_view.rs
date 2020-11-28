@@ -52,21 +52,12 @@ pub type size_t = libc::c_ulong;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct grid_cell {
-    pub data: utf8_data,
+    pub data: crate::utf8::Utf8Data,
     pub attr: u_short,
     pub flags: u_char,
     pub fg: libc::c_int,
     pub bg: libc::c_int,
     pub us: libc::c_int,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct utf8_data {
-    pub data: [u_char; 21],
-    pub have: u_char,
-    pub size: u_char,
-    pub width: u_char,
 }
 
 #[repr(C)]
@@ -95,14 +86,13 @@ pub struct grid_line {
 #[repr(C, packed)]
 #[derive(Copy, Clone)]
 pub struct grid_extd_entry {
-    pub data: utf8_char,
+    pub data: crate::utf8::Utf8Char,
     pub attr: u_short,
     pub flags: u_char,
     pub fg: libc::c_int,
     pub bg: libc::c_int,
     pub us: libc::c_int,
 }
-pub type utf8_char = u_int;
 
 #[repr(C, packed)]
 #[derive(Copy, Clone)]

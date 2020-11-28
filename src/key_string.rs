@@ -1,5 +1,9 @@
-use crate::key_code::code as key_code_code;
+use crate::{
+    key_code::code as key_code_code,
+    utf8::{utf8_state, Utf8Char, Utf8Data, Utf8State},
+};
 use ::libc;
+
 extern "C" {
     #[no_mangle]
     fn free(__ptr: *mut libc::c_void);
@@ -27,15 +31,15 @@ extern "C" {
     #[no_mangle]
     fn xsnprintf(_: *mut libc::c_char, _: size_t, _: *const libc::c_char, _: ...) -> libc::c_int;
     #[no_mangle]
-    fn utf8_from_data(_: *const utf8_data, _: *mut utf8_char) -> utf8_state;
+    fn utf8_from_data(_: *const Utf8Data, _: *mut Utf8Char) -> crate::utf8::Utf8State;
     #[no_mangle]
-    fn utf8_append(_: *mut utf8_data, _: u_char) -> utf8_state;
+    fn utf8_append(_: *mut Utf8Data, _: u_char) -> crate::utf8::Utf8State;
     #[no_mangle]
-    fn utf8_open(_: *mut utf8_data, _: u_char) -> utf8_state;
+    fn utf8_open(_: *mut Utf8Data, _: u_char) -> crate::utf8::Utf8State;
     #[no_mangle]
-    fn utf8_to_data(_: utf8_char, _: *mut utf8_data);
+    fn utf8_to_data(_: Utf8Char, _: *mut Utf8Data);
     #[no_mangle]
-    fn utf8_fromcstr(_: *const libc::c_char) -> *mut utf8_data;
+    fn utf8_fromcstr(_: *const libc::c_char) -> *mut Utf8Data;
 }
 pub type __u_char = libc::c_uchar;
 pub type __u_int = libc::c_uint;
@@ -44,20 +48,6 @@ pub type u_int = __u_int;
 pub type size_t = libc::c_ulong;
 pub type wchar_t = libc::c_int;
 pub type key_code = libc::c_ulonglong;
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct utf8_data {
-    pub data: [u_char; 21],
-    pub have: u_char,
-    pub size: u_char,
-    pub width: u_char,
-}
-pub type utf8_char = u_int;
-pub type utf8_state = libc::c_uint;
-pub const UTF8_ERROR: utf8_state = 2;
-pub const UTF8_DONE: utf8_state = 1;
-pub const UTF8_MORE: utf8_state = 0;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -1501,15 +1491,15 @@ pub unsafe extern "C" fn key_string_lookup_string(mut string: *const libc::c_cha
     let mut modifiers: key_code = 0;
     let mut u: u_int = 0;
     let mut i: u_int = 0;
-    let mut ud: utf8_data = utf8_data {
+    let mut ud: Utf8Data = Utf8Data {
         data: [0; 21],
         have: 0,
         size: 0,
         width: 0,
     };
-    let mut udp: *mut utf8_data = 0 as *mut utf8_data;
-    let mut more: utf8_state = UTF8_MORE;
-    let mut uc: utf8_char = 0;
+    let mut udp: *mut Utf8Data = 0 as *mut Utf8Data;
+    let mut more: Utf8State = utf8_state::MORE;
+    let mut uc: Utf8Char = 0;
     let mut m: [libc::c_char; 17] = [0; 17];
     let mut mlen: libc::c_int = 0;
     /* Is this no key or any key? */
@@ -1541,7 +1531,7 @@ pub unsafe extern "C" fn key_string_lookup_string(mut string: *const libc::c_cha
             || (*udp.offset(0 as libc::c_int as isize)).size as libc::c_int == 0 as libc::c_int
             || (*udp.offset(1 as libc::c_int as isize)).size as libc::c_int != 0 as libc::c_int
             || utf8_from_data(&mut *udp.offset(0 as libc::c_int as isize), &mut uc) as libc::c_uint
-                != UTF8_DONE as libc::c_int as libc::c_uint
+                != utf8_state::DONE as libc::c_int as libc::c_uint
         {
             free(udp as *mut libc::c_void);
             return 0xfe000000000 as libc::c_ulonglong;
@@ -1574,7 +1564,7 @@ pub unsafe extern "C" fn key_string_lookup_string(mut string: *const libc::c_cha
     } else {
         /* Try as a UTF-8 key. */
         more = utf8_open(&mut ud, *string as u_char);
-        if more as libc::c_uint == UTF8_MORE as libc::c_int as libc::c_uint {
+        if more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint {
             if strlen(string) != ud.size as libc::c_ulong {
                 return 0xfe000000000 as libc::c_ulonglong;
             }
@@ -1583,11 +1573,11 @@ pub unsafe extern "C" fn key_string_lookup_string(mut string: *const libc::c_cha
                 more = utf8_append(&mut ud, *string.offset(i as isize) as u_char);
                 i = i.wrapping_add(1)
             }
-            if more as libc::c_uint != UTF8_DONE as libc::c_int as libc::c_uint {
+            if more as libc::c_uint != utf8_state::DONE as libc::c_int as libc::c_uint {
                 return 0xfe000000000 as libc::c_ulonglong;
             }
             if utf8_from_data(&mut ud, &mut uc) as libc::c_uint
-                != UTF8_DONE as libc::c_int as libc::c_uint
+                != utf8_state::DONE as libc::c_int as libc::c_uint
             {
                 return 0xfe000000000 as libc::c_ulonglong;
             }
@@ -1640,7 +1630,7 @@ pub unsafe extern "C" fn key_string_lookup_key(
     let mut tmp: [libc::c_char; 8] = [0; 8];
     let mut s: *const libc::c_char = 0 as *const libc::c_char;
     let mut i: u_int = 0;
-    let mut ud: utf8_data = utf8_data {
+    let mut ud: Utf8Data = Utf8Data {
         data: [0; 21],
         have: 0,
         size: 0,
@@ -1774,7 +1764,7 @@ pub unsafe extern "C" fn key_string_lookup_key(
                 } else if key > 127 as libc::c_int as libc::c_ulonglong
                     && key < 0x1000000000 as libc::c_ulonglong
                 {
-                    utf8_to_data(key as utf8_char, &mut ud);
+                    utf8_to_data(key as Utf8Char, &mut ud);
                     off = strlen(out.as_mut_ptr());
                     memcpy(
                         out.as_mut_ptr().offset(off as isize) as *mut libc::c_void,

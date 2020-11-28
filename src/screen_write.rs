@@ -1,4 +1,6 @@
+use crate::utf8::{utf8_state, Utf8Data, Utf8State};
 use ::libc;
+
 extern "C" {
     pub type event_base;
     pub type evbuffer;
@@ -167,15 +169,15 @@ extern "C" {
     #[no_mangle]
     fn screen_alternate_off(_: *mut screen, _: *mut grid_cell, _: libc::c_int);
     #[no_mangle]
-    fn utf8_fromcstr(_: *const libc::c_char) -> *mut utf8_data;
+    fn utf8_fromcstr(_: *const libc::c_char) -> *mut Utf8Data;
     #[no_mangle]
-    fn utf8_append(_: *mut utf8_data, _: u_char) -> utf8_state;
+    fn utf8_append(_: *mut Utf8Data, _: u_char) -> crate::utf8::Utf8State;
     #[no_mangle]
-    fn utf8_open(_: *mut utf8_data, _: u_char) -> utf8_state;
+    fn utf8_open(_: *mut Utf8Data, _: u_char) -> crate::utf8::Utf8State;
     #[no_mangle]
-    fn utf8_copy(_: *mut utf8_data, _: *const utf8_data);
+    fn utf8_copy(_: *mut Utf8Data, _: *const Utf8Data);
     #[no_mangle]
-    fn utf8_set(_: *mut utf8_data, _: u_char);
+    fn utf8_set(_: *mut Utf8Data, _: u_char);
     #[no_mangle]
     fn fatalx(_: *const libc::c_char, _: ...) -> !;
     #[no_mangle]
@@ -418,14 +420,14 @@ pub struct client {
     pub message_string: *mut libc::c_char,
     pub message_timer: event,
     pub prompt_string: *mut libc::c_char,
-    pub prompt_buffer: *mut utf8_data,
+    pub prompt_buffer: *mut crate::utf8::Utf8Data,
     pub prompt_index: size_t,
     pub prompt_inputcb: prompt_input_cb,
     pub prompt_freecb: prompt_free_cb,
     pub prompt_data: *mut libc::c_void,
     pub prompt_hindex: u_int,
     pub prompt_mode: C2RustUnnamed_28,
-    pub prompt_saved: *mut utf8_data,
+    pub prompt_saved: *mut crate::utf8::Utf8Data,
     pub prompt_flags: libc::c_int,
     pub session: *mut session,
     pub last_session: *mut session,
@@ -606,7 +608,7 @@ pub struct C2RustUnnamed_11 {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct grid_cell {
-    pub data: utf8_data,
+    pub data: crate::utf8::Utf8Data,
     pub attr: u_short,
     pub flags: u_char,
     pub fg: libc::c_int,
@@ -614,14 +616,6 @@ pub struct grid_cell {
     pub us: libc::c_int,
 }
 
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct utf8_data {
-    pub data: [u_char; 21],
-    pub have: u_char,
-    pub size: u_char,
-    pub width: u_char,
-}
 pub type C2RustUnnamed_12 = libc::c_uint;
 pub const CLEAR_START: C2RustUnnamed_12 = 2;
 pub const CLEAR_END: C2RustUnnamed_12 = 1;
@@ -653,14 +647,13 @@ pub struct grid_line {
 #[repr(C, packed)]
 #[derive(Copy, Clone)]
 pub struct grid_extd_entry {
-    pub data: utf8_char,
+    pub data: crate::utf8::Utf8Char,
     pub attr: u_short,
     pub flags: u_char,
     pub fg: libc::c_int,
     pub bg: libc::c_int,
     pub us: libc::c_int,
 }
-pub type utf8_char = u_int;
 
 #[repr(C, packed)]
 #[derive(Copy, Clone)]
@@ -1287,10 +1280,6 @@ pub struct tty_ctx {
 pub type tty_ctx_set_client_cb =
     Option<unsafe extern "C" fn(_: *mut tty_ctx, _: *mut client) -> libc::c_int>;
 pub type tty_ctx_redraw_cb = Option<unsafe extern "C" fn(_: *const tty_ctx) -> ()>;
-pub type utf8_state = libc::c_uint;
-pub const UTF8_ERROR: utf8_state = 2;
-pub const UTF8_DONE: utf8_state = 1;
-pub const UTF8_MORE: utf8_state = 0;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -1658,7 +1647,7 @@ pub unsafe extern "C" fn screen_write_putc(
     mut ch: u_char,
 ) {
     let mut gc: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -1686,7 +1675,7 @@ pub unsafe extern "C" fn screen_write_strlen(
 ) -> size_t {
     let mut ap: ::std::ffi::VaListImpl;
     let mut msg: *mut libc::c_char = 0 as *mut libc::c_char;
-    let mut ud: utf8_data = utf8_data {
+    let mut ud: Utf8Data = Utf8Data {
         data: [0; 21],
         have: 0,
         size: 0,
@@ -1695,13 +1684,14 @@ pub unsafe extern "C" fn screen_write_strlen(
     let mut ptr: *mut u_char = 0 as *mut u_char;
     let mut left: size_t = 0;
     let mut size: size_t = 0 as libc::c_int as size_t;
-    let mut more: utf8_state = UTF8_MORE;
+    let mut more: Utf8State = utf8_state::MORE;
     ap = args.clone();
     xvasprintf(&mut msg, fmt, ap.as_va_list());
     ptr = msg as *mut u_char;
     while *ptr as libc::c_int != '\u{0}' as i32 {
         if *ptr as libc::c_int > 0x7f as libc::c_int
-            && utf8_open(&mut ud, *ptr) as libc::c_uint == UTF8_MORE as libc::c_int as libc::c_uint
+            && utf8_open(&mut ud, *ptr) as libc::c_uint
+                == utf8_state::MORE as libc::c_int as libc::c_uint
         {
             ptr = ptr.offset(1);
             left = strlen(ptr as *const libc::c_char);
@@ -1710,13 +1700,13 @@ pub unsafe extern "C" fn screen_write_strlen(
             }
             loop {
                 more = utf8_append(&mut ud, *ptr);
-                if !(more as libc::c_uint == UTF8_MORE as libc::c_int as libc::c_uint) {
+                if !(more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint) {
                     break;
                 }
                 ptr = ptr.offset(1)
             }
             ptr = ptr.offset(1);
-            if more as libc::c_uint == UTF8_DONE as libc::c_int as libc::c_uint {
+            if more as libc::c_uint == utf8_state::DONE as libc::c_int as libc::c_uint {
                 size = (size as libc::c_ulong).wrapping_add(ud.width as libc::c_ulong) as size_t
                     as size_t
             }
@@ -1754,9 +1744,9 @@ pub unsafe extern "C" fn screen_write_text(
     let mut idx: u_int = 0 as libc::c_int as u_int;
     let mut at: u_int = 0;
     let mut left: u_int = 0;
-    let mut text: *mut utf8_data = 0 as *mut utf8_data;
+    let mut text: *mut Utf8Data = 0 as *mut Utf8Data;
     let mut gc: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -1925,7 +1915,7 @@ pub unsafe extern "C" fn screen_write_vnputs(
     mut ap: ::std::ffi::VaList,
 ) {
     let mut gc: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -1937,12 +1927,12 @@ pub unsafe extern "C" fn screen_write_vnputs(
         bg: 0,
         us: 0,
     };
-    let mut ud: *mut utf8_data = &mut gc.data;
+    let mut ud: *mut Utf8Data = &mut gc.data;
     let mut msg: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut ptr: *mut u_char = 0 as *mut u_char;
     let mut left: size_t = 0;
     let mut size: size_t = 0 as libc::c_int as size_t;
-    let mut more: utf8_state = UTF8_MORE;
+    let mut more: Utf8State = utf8_state::MORE;
     memcpy(
         &mut gc as *mut grid_cell as *mut libc::c_void,
         gcp as *const libc::c_void,
@@ -1952,7 +1942,8 @@ pub unsafe extern "C" fn screen_write_vnputs(
     ptr = msg as *mut u_char;
     while *ptr as libc::c_int != '\u{0}' as i32 {
         if *ptr as libc::c_int > 0x7f as libc::c_int
-            && utf8_open(ud, *ptr) as libc::c_uint == UTF8_MORE as libc::c_int as libc::c_uint
+            && utf8_open(ud, *ptr) as libc::c_uint
+                == utf8_state::MORE as libc::c_int as libc::c_uint
         {
             ptr = ptr.offset(1);
             left = strlen(ptr as *const libc::c_char);
@@ -1961,13 +1952,13 @@ pub unsafe extern "C" fn screen_write_vnputs(
             }
             loop {
                 more = utf8_append(ud, *ptr);
-                if !(more as libc::c_uint == UTF8_MORE as libc::c_int as libc::c_uint) {
+                if !(more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint) {
                     break;
                 }
                 ptr = ptr.offset(1)
             }
             ptr = ptr.offset(1);
-            if more as libc::c_uint != UTF8_DONE as libc::c_int as libc::c_uint {
+            if more as libc::c_uint != utf8_state::DONE as libc::c_int as libc::c_uint {
                 continue;
             }
             if maxlen > 0 as libc::c_int as libc::c_long
@@ -2021,7 +2012,7 @@ pub unsafe extern "C" fn screen_write_fast_copy(
     let mut s: *mut screen = (*ctx).s;
     let mut gd: *mut grid = (*src).grid;
     let mut gc: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -2074,7 +2065,7 @@ pub unsafe extern "C" fn screen_write_hline(
 ) {
     let mut s: *mut screen = (*ctx).s;
     let mut gc: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -2124,7 +2115,7 @@ pub unsafe extern "C" fn screen_write_vline(
 ) {
     let mut s: *mut screen = (*ctx).s;
     let mut gc: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -2181,7 +2172,7 @@ pub unsafe extern "C" fn screen_write_menu(
 ) {
     let mut s: *mut screen = (*ctx).s;
     let mut default_gc: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -2291,7 +2282,7 @@ pub unsafe extern "C" fn screen_write_box(
 ) {
     let mut s: *mut screen = (*ctx).s;
     let mut gc: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -2366,7 +2357,7 @@ pub unsafe extern "C" fn screen_write_preview(
 ) {
     let mut s: *mut screen = (*ctx).s;
     let mut gc: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -2605,7 +2596,7 @@ pub unsafe extern "C" fn screen_write_alignmenttest(mut ctx: *mut screen_write_c
         sy: 0,
         bg: 0,
         defaults: grid_cell {
-            data: utf8_data {
+            data: Utf8Data {
                 data: [0; 21],
                 have: 0,
                 size: 0,
@@ -2625,7 +2616,7 @@ pub unsafe extern "C" fn screen_write_alignmenttest(mut ctx: *mut screen_write_c
         wsy: 0,
     };
     let mut gc: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -2701,7 +2692,7 @@ pub unsafe extern "C" fn screen_write_insertcharacter(
         sy: 0,
         bg: 0,
         defaults: grid_cell {
-            data: utf8_data {
+            data: Utf8Data {
                 data: [0; 21],
                 have: 0,
                 size: 0,
@@ -2782,7 +2773,7 @@ pub unsafe extern "C" fn screen_write_deletecharacter(
         sy: 0,
         bg: 0,
         defaults: grid_cell {
-            data: utf8_data {
+            data: Utf8Data {
                 data: [0; 21],
                 have: 0,
                 size: 0,
@@ -2863,7 +2854,7 @@ pub unsafe extern "C" fn screen_write_clearcharacter(
         sy: 0,
         bg: 0,
         defaults: grid_cell {
-            data: utf8_data {
+            data: Utf8Data {
                 data: [0; 21],
                 have: 0,
                 size: 0,
@@ -2952,7 +2943,7 @@ pub unsafe extern "C" fn screen_write_insertline(
         sy: 0,
         bg: 0,
         defaults: grid_cell {
-            data: utf8_data {
+            data: Utf8Data {
                 data: [0; 21],
                 have: 0,
                 size: 0,
@@ -3062,7 +3053,7 @@ pub unsafe extern "C" fn screen_write_deleteline(
         sy: 0,
         bg: 0,
         defaults: grid_cell {
-            data: utf8_data {
+            data: Utf8Data {
                 data: [0; 21],
                 have: 0,
                 size: 0,
@@ -3333,7 +3324,7 @@ pub unsafe extern "C" fn screen_write_reverseindex(mut ctx: *mut screen_write_ct
         sy: 0,
         bg: 0,
         defaults: grid_cell {
-            data: utf8_data {
+            data: Utf8Data {
                 data: [0; 21],
                 have: 0,
                 size: 0,
@@ -3545,7 +3536,7 @@ pub unsafe extern "C" fn screen_write_scrolldown(
         sy: 0,
         bg: 0,
         defaults: grid_cell {
-            data: utf8_data {
+            data: Utf8Data {
                 data: [0; 21],
                 have: 0,
                 size: 0,
@@ -3631,7 +3622,7 @@ pub unsafe extern "C" fn screen_write_clearendofscreen(
         sy: 0,
         bg: 0,
         defaults: grid_cell {
-            data: utf8_data {
+            data: Utf8Data {
                 data: [0; 21],
                 have: 0,
                 size: 0,
@@ -3728,7 +3719,7 @@ pub unsafe extern "C" fn screen_write_clearstartofscreen(
         sy: 0,
         bg: 0,
         defaults: grid_cell {
-            data: utf8_data {
+            data: Utf8Data {
                 data: [0; 21],
                 have: 0,
                 size: 0,
@@ -3821,7 +3812,7 @@ pub unsafe extern "C" fn screen_write_clearscreen(mut ctx: *mut screen_write_ctx
         sy: 0,
         bg: 0,
         defaults: grid_cell {
-            data: utf8_data {
+            data: Utf8Data {
                 data: [0; 21],
                 have: 0,
                 size: 0,
@@ -4163,7 +4154,7 @@ unsafe extern "C" fn screen_write_collect_flush(
         sy: 0,
         bg: 0,
         defaults: grid_cell {
-            data: utf8_data {
+            data: Utf8Data {
                 data: [0; 21],
                 have: 0,
                 size: 0,
@@ -4315,7 +4306,7 @@ pub unsafe extern "C" fn screen_write_collect_end(mut ctx: *mut screen_write_ctx
     let mut cl: *mut screen_write_collect_line =
         &mut *(*s).write_list.offset((*s).cy as isize) as *mut screen_write_collect_line;
     let mut gc: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -4485,7 +4476,7 @@ pub unsafe extern "C" fn screen_write_cell(
     let mut gl: *mut grid_line = 0 as *mut grid_line;
     let mut gce: *mut grid_cell_entry = 0 as *mut grid_cell_entry;
     let mut tmp_gc: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -4498,7 +4489,7 @@ pub unsafe extern "C" fn screen_write_cell(
         us: 0,
     };
     let mut now_gc: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -4531,7 +4522,7 @@ pub unsafe extern "C" fn screen_write_cell(
         sy: 0,
         bg: 0,
         defaults: grid_cell {
-            data: utf8_data {
+            data: Utf8Data {
                 data: [0; 21],
                 have: 0,
                 size: 0,
@@ -4769,13 +4760,13 @@ pub unsafe extern "C" fn screen_write_cell(
 /* Combine a UTF-8 zero-width character onto the previous. */
 unsafe extern "C" fn screen_write_combine(
     mut ctx: *mut screen_write_ctx,
-    mut ud: *const utf8_data,
+    mut ud: *const Utf8Data,
     mut xx: *mut u_int,
 ) -> *const grid_cell {
     let mut s: *mut screen = (*ctx).s;
     let mut gd: *mut grid = (*s).grid;
     static mut gc: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -4857,7 +4848,7 @@ unsafe extern "C" fn screen_write_overwrite(
     let mut s: *mut screen = (*ctx).s;
     let mut gd: *mut grid = (*s).grid;
     let mut tmp_gc: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -4975,7 +4966,7 @@ pub unsafe extern "C" fn screen_write_setselection(
         sy: 0,
         bg: 0,
         defaults: grid_cell {
-            data: utf8_data {
+            data: Utf8Data {
                 data: [0; 21],
                 have: 0,
                 size: 0,
@@ -5030,7 +5021,7 @@ pub unsafe extern "C" fn screen_write_rawstring(
         sy: 0,
         bg: 0,
         defaults: grid_cell {
-            data: utf8_data {
+            data: Utf8Data {
                 data: [0; 21],
                 have: 0,
                 size: 0,
@@ -5085,7 +5076,7 @@ pub unsafe extern "C" fn screen_write_alternateon(
         sy: 0,
         bg: 0,
         defaults: grid_cell {
-            data: utf8_data {
+            data: Utf8Data {
                 data: [0; 21],
                 have: 0,
                 size: 0,
@@ -5145,7 +5136,7 @@ pub unsafe extern "C" fn screen_write_alternateoff(
         sy: 0,
         bg: 0,
         defaults: grid_cell {
-            data: utf8_data {
+            data: Utf8Data {
                 data: [0; 21],
                 have: 0,
                 size: 0,

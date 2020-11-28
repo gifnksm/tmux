@@ -1,4 +1,6 @@
+use crate::utf8::{Utf8Char, Utf8Data};
 use ::libc;
+
 extern "C" {
     #[no_mangle]
     fn free(__ptr: *mut libc::c_void);
@@ -28,17 +30,17 @@ extern "C" {
     #[no_mangle]
     fn colour_split_rgb(_: libc::c_int, _: *mut u_char, _: *mut u_char, _: *mut u_char);
     #[no_mangle]
-    fn utf8_from_data(_: *const utf8_data, _: *mut utf8_char) -> utf8_state;
+    fn utf8_from_data(_: *const Utf8Data, _: *mut Utf8Char) -> crate::utf8::Utf8State;
     #[no_mangle]
     fn fatalx(_: *const libc::c_char, _: ...) -> !;
     #[no_mangle]
-    fn utf8_set(_: *mut utf8_data, _: u_char);
+    fn utf8_set(_: *mut Utf8Data, _: u_char);
     #[no_mangle]
-    fn utf8_to_data(_: utf8_char, _: *mut utf8_data);
+    fn utf8_to_data(_: Utf8Char, _: *mut Utf8Data);
     #[no_mangle]
     fn log_debug(_: *const libc::c_char, _: ...);
     #[no_mangle]
-    fn utf8_build_one(_: u_char) -> utf8_char;
+    fn utf8_build_one(_: u_char) -> Utf8Char;
 }
 pub type __u_char = libc::c_uchar;
 pub type __u_short = libc::c_ushort;
@@ -51,21 +53,12 @@ pub type size_t = libc::c_ulong;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct grid_cell {
-    pub data: utf8_data,
+    pub data: crate::utf8::Utf8Data,
     pub attr: u_short,
     pub flags: u_char,
     pub fg: libc::c_int,
     pub bg: libc::c_int,
     pub us: libc::c_int,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct utf8_data {
-    pub data: [u_char; 21],
-    pub have: u_char,
-    pub size: u_char,
-    pub width: u_char,
 }
 
 #[repr(C)]
@@ -94,14 +87,13 @@ pub struct grid_line {
 #[repr(C, packed)]
 #[derive(Copy, Clone)]
 pub struct grid_extd_entry {
-    pub data: utf8_char,
+    pub data: crate::utf8::Utf8Char,
     pub attr: u_short,
     pub flags: u_char,
     pub fg: libc::c_int,
     pub bg: libc::c_int,
     pub us: libc::c_int,
 }
-pub type utf8_char = u_int;
 
 #[repr(C, packed)]
 #[derive(Copy, Clone)]
@@ -125,10 +117,6 @@ pub struct C2RustUnnamed_0 {
     pub bg: u_char,
     pub data: u_char,
 }
-pub type utf8_state = libc::c_uint;
-pub const UTF8_ERROR: utf8_state = 2;
-pub const UTF8_DONE: utf8_state = 1;
-pub const UTF8_MORE: utf8_state = 0;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -168,7 +156,7 @@ pub struct C2RustUnnamed_1 {
 pub static mut grid_default_cell: grid_cell = {
     let mut init = grid_cell {
         data: {
-            let mut init = utf8_data {
+            let mut init = Utf8Data {
                 data: [
                     ' ' as i32 as u_char,
                     0,
@@ -213,7 +201,7 @@ pub static mut grid_default_cell: grid_cell = {
 static mut grid_padding_cell: grid_cell = {
     let mut init = grid_cell {
         data: {
-            let mut init = utf8_data {
+            let mut init = Utf8Data {
                 data: [
                     '!' as i32 as u_char,
                     0,
@@ -255,7 +243,7 @@ static mut grid_padding_cell: grid_cell = {
 static mut grid_cleared_cell: grid_cell = {
     let mut init = grid_cell {
         data: {
-            let mut init = utf8_data {
+            let mut init = Utf8Data {
                 data: [
                     ' ' as i32 as u_char,
                     0,
@@ -379,7 +367,7 @@ unsafe extern "C" fn grid_extended_cell(
 ) -> *mut grid_extd_entry {
     let mut gee: *mut grid_extd_entry = 0 as *mut grid_extd_entry;
     let mut flags: libc::c_int = (*gc).flags as libc::c_int & !(0x40 as libc::c_int);
-    let mut uc: utf8_char = 0;
+    let mut uc: Utf8Char = 0;
     if !((*gce).flags as libc::c_int) & 0x8 as libc::c_int != 0 {
         grid_get_extended_cell(gl, gce, flags);
     } else if (*gce).c2rust_unnamed.offset >= (*gl).extdsize {
@@ -607,7 +595,7 @@ pub unsafe extern "C" fn grid_compare(mut ga: *mut grid, mut gb: *mut grid) -> l
     let mut gla: *mut grid_line = 0 as *mut grid_line;
     let mut glb: *mut grid_line = 0 as *mut grid_line;
     let mut gca: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -620,7 +608,7 @@ pub unsafe extern "C" fn grid_compare(mut ga: *mut grid, mut gb: *mut grid) -> l
         us: 0,
     };
     let mut gcb: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -1653,7 +1641,7 @@ pub unsafe extern "C" fn grid_string_cells(
     mut trim: libc::c_int,
 ) -> *mut libc::c_char {
     let mut gc: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -1666,7 +1654,7 @@ pub unsafe extern "C" fn grid_string_cells(
         us: 0,
     };
     static mut lastgc1: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -1891,7 +1879,7 @@ unsafe extern "C" fn grid_reflow_join(
     let mut gl: *mut grid_line = 0 as *mut grid_line;
     let mut from: *mut grid_line = 0 as *mut grid_line;
     let mut gc: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -2042,7 +2030,7 @@ unsafe extern "C" fn grid_reflow_split(
     let mut gl: *mut grid_line = &mut *(*gd).linedata.offset(yy as isize) as *mut grid_line;
     let mut first: *mut grid_line = 0 as *mut grid_line;
     let mut gc: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -2138,7 +2126,7 @@ pub unsafe extern "C" fn grid_reflow(mut gd: *mut grid, mut sx: u_int) {
     let mut target: *mut grid = 0 as *mut grid;
     let mut gl: *mut grid_line = 0 as *mut grid_line;
     let mut gc: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -2325,7 +2313,7 @@ pub unsafe extern "C" fn grid_unwrap_position(
 #[no_mangle]
 pub unsafe extern "C" fn grid_line_length(mut gd: *mut grid, mut py: u_int) -> u_int {
     let mut gc: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,

@@ -1,4 +1,6 @@
+use crate::utf8::{utf8_state, Utf8Data, Utf8State};
 use ::libc;
+
 extern "C" {
     pub type event_base;
     pub type evbuffer;
@@ -52,11 +54,11 @@ extern "C" {
         _: u_int,
     );
     #[no_mangle]
-    fn utf8_open(_: *mut utf8_data, _: u_char) -> utf8_state;
+    fn utf8_open(_: *mut Utf8Data, _: u_char) -> crate::utf8::Utf8State;
     #[no_mangle]
-    fn utf8_append(_: *mut utf8_data, _: u_char) -> utf8_state;
+    fn utf8_append(_: *mut Utf8Data, _: u_char) -> crate::utf8::Utf8State;
     #[no_mangle]
-    fn utf8_set(_: *mut utf8_data, _: u_char);
+    fn utf8_set(_: *mut Utf8Data, _: u_char);
     #[no_mangle]
     fn log_debug(_: *const libc::c_char, _: ...);
     #[no_mangle]
@@ -290,14 +292,14 @@ pub struct client {
     pub message_string: *mut libc::c_char,
     pub message_timer: event,
     pub prompt_string: *mut libc::c_char,
-    pub prompt_buffer: *mut utf8_data,
+    pub prompt_buffer: *mut crate::utf8::Utf8Data,
     pub prompt_index: size_t,
     pub prompt_inputcb: prompt_input_cb,
     pub prompt_freecb: prompt_free_cb,
     pub prompt_data: *mut libc::c_void,
     pub prompt_hindex: u_int,
     pub prompt_mode: C2RustUnnamed_25,
-    pub prompt_saved: *mut utf8_data,
+    pub prompt_saved: *mut crate::utf8::Utf8Data,
     pub prompt_flags: libc::c_int,
     pub session: *mut session,
     pub last_session: *mut session,
@@ -444,21 +446,12 @@ pub struct screen {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct grid_cell {
-    pub data: utf8_data,
+    pub data: crate::utf8::Utf8Data,
     pub attr: u_short,
     pub flags: u_char,
     pub fg: libc::c_int,
     pub bg: libc::c_int,
     pub us: libc::c_int,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct utf8_data {
-    pub data: [u_char; 21],
-    pub have: u_char,
-    pub size: u_char,
-    pub width: u_char,
 }
 
 #[repr(C)]
@@ -487,14 +480,13 @@ pub struct grid_line {
 #[repr(C, packed)]
 #[derive(Copy, Clone)]
 pub struct grid_extd_entry {
-    pub data: utf8_char,
+    pub data: crate::utf8::Utf8Char,
     pub attr: u_short,
     pub flags: u_char,
     pub fg: libc::c_int,
     pub bg: libc::c_int,
     pub us: libc::c_int,
 }
-pub type utf8_char = u_int;
 
 #[repr(C, packed)]
 #[derive(Copy, Clone)]
@@ -1121,10 +1113,6 @@ pub struct tty_ctx {
 pub type tty_ctx_set_client_cb =
     Option<unsafe extern "C" fn(_: *mut tty_ctx, _: *mut client) -> libc::c_int>;
 pub type tty_ctx_redraw_cb = Option<unsafe extern "C" fn(_: *const tty_ctx) -> ()>;
-pub type utf8_state = libc::c_uint;
-pub const UTF8_ERROR: utf8_state = 2;
-pub const UTF8_DONE: utf8_state = 1;
-pub const UTF8_MORE: utf8_state = 0;
 pub type style_align = libc::c_uint;
 pub const STYLE_ALIGN_RIGHT: style_align = 3;
 pub const STYLE_ALIGN_CENTRE: style_align = 2;
@@ -2011,7 +1999,7 @@ pub unsafe extern "C" fn format_draw(
         saved_cy: 0,
         saved_grid: 0 as *mut grid,
         saved_cell: grid_cell {
-            data: utf8_data {
+            data: Utf8Data {
                 data: [0; 21],
                 have: 0,
                 size: 0,
@@ -2057,7 +2045,7 @@ pub unsafe extern "C" fn format_draw(
     let mut fill: libc::c_int = -(1 as libc::c_int);
     let mut list_align: style_align = STYLE_ALIGN_DEFAULT;
     let mut gc: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -2070,7 +2058,7 @@ pub unsafe extern "C" fn format_draw(
         us: 0,
     };
     let mut current_default: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -2084,7 +2072,7 @@ pub unsafe extern "C" fn format_draw(
     };
     let mut sy: style = style {
         gc: grid_cell {
-            data: utf8_data {
+            data: Utf8Data {
                 data: [0; 21],
                 have: 0,
                 size: 0,
@@ -2106,7 +2094,7 @@ pub unsafe extern "C" fn format_draw(
     };
     let mut saved_sy: style = style {
         gc: grid_cell {
-            data: utf8_data {
+            data: Utf8Data {
                 data: [0; 21],
                 have: 0,
                 size: 0,
@@ -2126,10 +2114,10 @@ pub unsafe extern "C" fn format_draw(
         range_argument: 0,
         default_type: STYLE_DEFAULT_BASE,
     };
-    let mut ud: *mut utf8_data = &mut sy.gc.data;
+    let mut ud: *mut Utf8Data = &mut sy.gc.data;
     let mut cp: *const libc::c_char = 0 as *const libc::c_char;
     let mut end: *const libc::c_char = 0 as *const libc::c_char;
-    let mut more: utf8_state = UTF8_MORE;
+    let mut more: Utf8State = utf8_state::MORE;
     let mut tmp: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut fr: *mut format_range = 0 as *mut format_range;
     let mut fr1: *mut format_range = 0 as *mut format_range;
@@ -2191,22 +2179,22 @@ pub unsafe extern "C" fn format_draw(
         {
             /* See if this is a UTF-8 character. */
             more = utf8_open(ud, *cp as u_char);
-            if more as libc::c_uint == UTF8_MORE as libc::c_int as libc::c_uint {
+            if more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint {
                 loop {
                     cp = cp.offset(1);
                     if !(*cp as libc::c_int != '\u{0}' as i32
-                        && more as libc::c_uint == UTF8_MORE as libc::c_int as libc::c_uint)
+                        && more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint)
                     {
                         break;
                     }
                     more = utf8_append(ud, *cp as u_char)
                 }
-                if more as libc::c_uint != UTF8_DONE as libc::c_int as libc::c_uint {
+                if more as libc::c_uint != utf8_state::DONE as libc::c_int as libc::c_uint {
                     cp = cp.offset(-((*ud).have as libc::c_int as isize))
                 }
             }
             /* Not a UTF-8 character - ASCII or not valid. */
-            if more as libc::c_uint != UTF8_DONE as libc::c_int as libc::c_uint {
+            if more as libc::c_uint != utf8_state::DONE as libc::c_int as libc::c_uint {
                 if (*cp as libc::c_int) < 0x20 as libc::c_int
                     || *cp as libc::c_int > 0x7e as libc::c_int
                 {
@@ -2633,13 +2621,13 @@ pub unsafe extern "C" fn format_width(mut expanded: *const libc::c_char) -> u_in
     let mut cp: *const libc::c_char = 0 as *const libc::c_char;
     let mut end: *const libc::c_char = 0 as *const libc::c_char;
     let mut width: u_int = 0 as libc::c_int as u_int;
-    let mut ud: utf8_data = utf8_data {
+    let mut ud: Utf8Data = Utf8Data {
         data: [0; 21],
         have: 0,
         size: 0,
         width: 0,
     };
-    let mut more: utf8_state = UTF8_MORE;
+    let mut more: Utf8State = utf8_state::MORE;
     cp = expanded;
     while *cp as libc::c_int != '\u{0}' as i32 {
         if *cp.offset(0 as libc::c_int as isize) as libc::c_int == '#' as i32
@@ -2655,17 +2643,17 @@ pub unsafe extern "C" fn format_width(mut expanded: *const libc::c_char) -> u_in
             cp = end.offset(1 as libc::c_int as isize)
         } else {
             more = utf8_open(&mut ud, *cp as u_char);
-            if more as libc::c_uint == UTF8_MORE as libc::c_int as libc::c_uint {
+            if more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint {
                 loop {
                     cp = cp.offset(1);
                     if !(*cp as libc::c_int != '\u{0}' as i32
-                        && more as libc::c_uint == UTF8_MORE as libc::c_int as libc::c_uint)
+                        && more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint)
                     {
                         break;
                     }
                     more = utf8_append(&mut ud, *cp as u_char)
                 }
-                if more as libc::c_uint == UTF8_DONE as libc::c_int as libc::c_uint {
+                if more as libc::c_uint == utf8_state::DONE as libc::c_int as libc::c_uint {
                     width = (width as libc::c_uint).wrapping_add(ud.width as libc::c_uint) as u_int
                         as u_int
                 } else {
@@ -2694,13 +2682,13 @@ pub unsafe extern "C" fn format_trim_left(
     let mut cp: *const libc::c_char = expanded;
     let mut end: *const libc::c_char = 0 as *const libc::c_char;
     let mut width: u_int = 0 as libc::c_int as u_int;
-    let mut ud: utf8_data = utf8_data {
+    let mut ud: Utf8Data = Utf8Data {
         data: [0; 21],
         have: 0,
         size: 0,
         width: 0,
     };
-    let mut more: utf8_state = UTF8_MORE;
+    let mut more: Utf8State = utf8_state::MORE;
     copy = xmalloc(strlen(expanded).wrapping_add(1 as libc::c_int as libc::c_ulong))
         as *mut libc::c_char;
     out = copy;
@@ -2728,17 +2716,17 @@ pub unsafe extern "C" fn format_trim_left(
             cp = end.offset(1 as libc::c_int as isize)
         } else {
             more = utf8_open(&mut ud, *cp as u_char);
-            if more as libc::c_uint == UTF8_MORE as libc::c_int as libc::c_uint {
+            if more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint {
                 loop {
                     cp = cp.offset(1);
                     if !(*cp as libc::c_int != '\u{0}' as i32
-                        && more as libc::c_uint == UTF8_MORE as libc::c_int as libc::c_uint)
+                        && more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint)
                     {
                         break;
                     }
                     more = utf8_append(&mut ud, *cp as u_char)
                 }
-                if more as libc::c_uint == UTF8_DONE as libc::c_int as libc::c_uint {
+                if more as libc::c_uint == utf8_state::DONE as libc::c_int as libc::c_uint {
                     if width.wrapping_add(ud.width as libc::c_uint) <= limit {
                         memcpy(
                             out as *mut libc::c_void,
@@ -2784,13 +2772,13 @@ pub unsafe extern "C" fn format_trim_right(
     let mut width: u_int = 0 as libc::c_int as u_int;
     let mut total_width: u_int = 0;
     let mut skip: u_int = 0;
-    let mut ud: utf8_data = utf8_data {
+    let mut ud: Utf8Data = Utf8Data {
         data: [0; 21],
         have: 0,
         size: 0,
         width: 0,
     };
-    let mut more: utf8_state = UTF8_MORE;
+    let mut more: Utf8State = utf8_state::MORE;
     total_width = format_width(expanded);
     if total_width <= limit {
         return xstrdup(expanded);
@@ -2823,17 +2811,17 @@ pub unsafe extern "C" fn format_trim_right(
             cp = end.offset(1 as libc::c_int as isize)
         } else {
             more = utf8_open(&mut ud, *cp as u_char);
-            if more as libc::c_uint == UTF8_MORE as libc::c_int as libc::c_uint {
+            if more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint {
                 loop {
                     cp = cp.offset(1);
                     if !(*cp as libc::c_int != '\u{0}' as i32
-                        && more as libc::c_uint == UTF8_MORE as libc::c_int as libc::c_uint)
+                        && more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint)
                     {
                         break;
                     }
                     more = utf8_append(&mut ud, *cp as u_char)
                 }
-                if more as libc::c_uint == UTF8_DONE as libc::c_int as libc::c_uint {
+                if more as libc::c_uint == utf8_state::DONE as libc::c_int as libc::c_uint {
                     if width >= skip {
                         memcpy(
                             out as *mut libc::c_void,

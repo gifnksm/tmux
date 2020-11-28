@@ -1,4 +1,6 @@
+use crate::utf8::{utf8_state, Utf8Data};
 use ::libc;
+
 extern "C" {
     pub type event_base;
     pub type evbuffer;
@@ -248,15 +250,15 @@ extern "C" {
         _: *mut libc::c_void,
     );
     #[no_mangle]
-    fn utf8_copy(_: *mut utf8_data, _: *const utf8_data);
+    fn utf8_copy(_: *mut Utf8Data, _: *const Utf8Data);
     #[no_mangle]
     fn utf8_isvalid(_: *const libc::c_char) -> libc::c_int;
     #[no_mangle]
-    fn utf8_set(_: *mut utf8_data, _: u_char);
+    fn utf8_set(_: *mut Utf8Data, _: u_char);
     #[no_mangle]
-    fn utf8_open(_: *mut utf8_data, _: u_char) -> utf8_state;
+    fn utf8_open(_: *mut Utf8Data, _: u_char) -> crate::utf8::Utf8State;
     #[no_mangle]
-    fn utf8_append(_: *mut utf8_data, _: u_char) -> utf8_state;
+    fn utf8_append(_: *mut Utf8Data, _: u_char) -> crate::utf8::Utf8State;
     #[no_mangle]
     fn fatalx(_: *const libc::c_char, _: ...) -> !;
     #[no_mangle]
@@ -497,14 +499,14 @@ pub struct client {
     pub message_string: *mut libc::c_char,
     pub message_timer: event,
     pub prompt_string: *mut libc::c_char,
-    pub prompt_buffer: *mut utf8_data,
+    pub prompt_buffer: *mut crate::utf8::Utf8Data,
     pub prompt_index: size_t,
     pub prompt_inputcb: prompt_input_cb,
     pub prompt_freecb: prompt_free_cb,
     pub prompt_data: *mut libc::c_void,
     pub prompt_hindex: u_int,
     pub prompt_mode: C2RustUnnamed_28,
-    pub prompt_saved: *mut utf8_data,
+    pub prompt_saved: *mut crate::utf8::Utf8Data,
     pub prompt_flags: libc::c_int,
     pub session: *mut session,
     pub last_session: *mut session,
@@ -651,21 +653,12 @@ pub struct screen {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct grid_cell {
-    pub data: utf8_data,
+    pub data: crate::utf8::Utf8Data,
     pub attr: u_short,
     pub flags: u_char,
     pub fg: libc::c_int,
     pub bg: libc::c_int,
     pub us: libc::c_int,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct utf8_data {
-    pub data: [u_char; 21],
-    pub have: u_char,
-    pub size: u_char,
-    pub width: u_char,
 }
 
 #[repr(C)]
@@ -694,14 +687,13 @@ pub struct grid_line {
 #[repr(C, packed)]
 #[derive(Copy, Clone)]
 pub struct grid_extd_entry {
-    pub data: utf8_char,
+    pub data: crate::utf8::Utf8Char,
     pub attr: u_short,
     pub flags: u_char,
     pub fg: libc::c_int,
     pub bg: libc::c_int,
     pub us: libc::c_int,
 }
-pub type utf8_char = u_int;
 
 #[repr(C, packed)]
 #[derive(Copy, Clone)]
@@ -1070,7 +1062,7 @@ pub struct input_ctx {
     pub input_end: C2RustUnnamed_27,
     pub param_list: [input_param; 24],
     pub param_list_len: u_int,
-    pub utf8data: utf8_data,
+    pub utf8data: Utf8Data,
     pub utf8started: libc::c_int,
     pub ch: libc::c_int,
     pub last: libc::c_int,
@@ -1451,10 +1443,6 @@ pub struct C2RustUnnamed_34 {
     pub rbe_parent: *mut client_window,
     pub rbe_color: libc::c_int,
 }
-pub type utf8_state = libc::c_uint;
-pub const UTF8_ERROR: utf8_state = 2;
-pub const UTF8_DONE: utf8_state = 1;
-pub const UTF8_MORE: utf8_state = 0;
 pub const INPUT_ESC_ST: input_esc_type = 14;
 pub const INPUT_ESC_SCSG1_OFF: input_esc_type = 12;
 pub const INPUT_ESC_SCSG1_ON: input_esc_type = 13;
@@ -6423,11 +6411,11 @@ unsafe extern "C" fn input_exit_rename(mut ictx: *mut input_ctx) {
 /* Open UTF-8 character. */
 unsafe extern "C" fn input_top_bit_set(mut ictx: *mut input_ctx) -> libc::c_int {
     let mut sctx: *mut screen_write_ctx = &mut (*ictx).ctx;
-    let mut ud: *mut utf8_data = &mut (*ictx).utf8data;
+    let mut ud: *mut Utf8Data = &mut (*ictx).utf8data;
     (*ictx).last = -(1 as libc::c_int);
     if (*ictx).utf8started == 0 {
         if utf8_open(ud, (*ictx).ch as u_char) as libc::c_uint
-            != UTF8_MORE as libc::c_int as libc::c_uint
+            != utf8_state::MORE as libc::c_int as libc::c_uint
         {
             return 0 as libc::c_int;
         }
@@ -6612,7 +6600,7 @@ unsafe extern "C" fn input_osc_4(mut ictx: *mut input_ctx, mut p: *const libc::c
 unsafe extern "C" fn input_osc_10(mut ictx: *mut input_ctx, mut p: *const libc::c_char) {
     let mut wp: *mut window_pane = (*ictx).wp;
     let mut defaults: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -6648,7 +6636,7 @@ unsafe extern "C" fn input_osc_10(mut ictx: *mut input_ctx, mut p: *const libc::
 unsafe extern "C" fn input_osc_11(mut ictx: *mut input_ctx, mut p: *const libc::c_char) {
     let mut wp: *mut window_pane = (*ictx).wp;
     let mut defaults: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,

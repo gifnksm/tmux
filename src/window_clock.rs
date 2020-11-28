@@ -1,4 +1,6 @@
+use crate::utf8::Utf8Data;
 use ::libc;
+
 extern "C" {
     pub type event_base;
     pub type evbuffer;
@@ -317,14 +319,14 @@ pub struct client {
     pub message_string: *mut libc::c_char,
     pub message_timer: event,
     pub prompt_string: *mut libc::c_char,
-    pub prompt_buffer: *mut utf8_data,
+    pub prompt_buffer: *mut crate::utf8::Utf8Data,
     pub prompt_index: size_t,
     pub prompt_inputcb: prompt_input_cb,
     pub prompt_freecb: prompt_free_cb,
     pub prompt_data: *mut libc::c_void,
     pub prompt_hindex: u_int,
     pub prompt_mode: C2RustUnnamed_25,
-    pub prompt_saved: *mut utf8_data,
+    pub prompt_saved: *mut crate::utf8::Utf8Data,
     pub prompt_flags: libc::c_int,
     pub session: *mut session,
     pub last_session: *mut session,
@@ -471,21 +473,12 @@ pub struct screen {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct grid_cell {
-    pub data: utf8_data,
+    pub data: crate::utf8::Utf8Data,
     pub attr: u_short,
     pub flags: u_char,
     pub fg: libc::c_int,
     pub bg: libc::c_int,
     pub us: libc::c_int,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct utf8_data {
-    pub data: [u_char; 21],
-    pub have: u_char,
-    pub size: u_char,
-    pub width: u_char,
 }
 
 #[repr(C)]
@@ -514,14 +507,13 @@ pub struct grid_line {
 #[repr(C, packed)]
 #[derive(Copy, Clone)]
 pub struct grid_extd_entry {
-    pub data: utf8_char,
+    pub data: crate::utf8::Utf8Char,
     pub attr: u_short,
     pub flags: u_char,
     pub fg: libc::c_int,
     pub bg: libc::c_int,
     pub us: libc::c_int,
 }
-pub type utf8_char = u_int;
 
 #[repr(C, packed)]
 #[derive(Copy, Clone)]
@@ -1878,7 +1870,7 @@ unsafe extern "C" fn window_clock_draw_screen(mut wme: *mut window_mode_entry) {
     let mut style: libc::c_int = 0;
     let mut s: *mut screen = &mut (*data).screen;
     let mut gc: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,

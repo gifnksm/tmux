@@ -64,19 +64,6 @@ pub const _ISlower: C2RustUnnamed = 512;
 pub const _ISupper: C2RustUnnamed = 256;
 pub type wchar_t = libc::c_int;
 
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct utf8_data {
-    pub data: [u_char; 21],
-    pub have: u_char,
-    pub size: u_char,
-    pub width: u_char,
-}
-pub type utf8_char = u_int;
-pub type utf8_state = libc::c_uint;
-pub const UTF8_ERROR: utf8_state = 2;
-pub const UTF8_DONE: utf8_state = 1;
-pub const UTF8_MORE: utf8_state = 0;
 /* $OpenBSD$ */
 /*
  * Copyright (c) 2008 Nicholas Marriott <nicholas.marriott@gmail.com>
@@ -93,6 +80,29 @@ pub const UTF8_MORE: utf8_state = 0;
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+
+/// A single UTF-8 character.
+pub type Utf8Char = u_int;
+
+// An expanded UTF-8 character. UTF8_SIZE must be big enough to hold combining
+// characters as well. It can't be more than 32 bytes without changes to how
+// characters are stored.
+const UTF8_SIZE: usize = 21;
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct Utf8Data {
+    pub data: [u_char; UTF8_SIZE],
+    pub have: u_char,
+    pub size: u_char,
+    pub width: u_char,
+}
+pub type Utf8State = libc::c_uint;
+pub(crate) mod utf8_state {
+    use super::Utf8State;
+    pub const MORE: Utf8State = 0;
+    pub const DONE: Utf8State = 1;
+    pub const ERROR: Utf8State = 2;
+}
 
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -625,9 +635,9 @@ unsafe extern "C" fn utf8_put_item(
 /* Get UTF-8 character from data. */
 #[no_mangle]
 pub unsafe extern "C" fn utf8_from_data(
-    mut ud: *const utf8_data,
-    mut uc: *mut utf8_char,
-) -> utf8_state {
+    mut ud: *const Utf8Data,
+    mut uc: *mut Utf8Char,
+) -> Utf8State {
     let mut current_block: u64;
     let mut index: u_int = 0;
     if (*ud).width as libc::c_int > 2 as libc::c_int {
@@ -638,9 +648,9 @@ pub unsafe extern "C" fn utf8_from_data(
     }
     if !((*ud).size as libc::c_int > 21 as libc::c_int) {
         if (*ud).size as libc::c_int <= 3 as libc::c_int {
-            index = ((*ud).data[2 as libc::c_int as usize] as utf8_char) << 16 as libc::c_int
-                | ((*ud).data[1 as libc::c_int as usize] as utf8_char) << 8 as libc::c_int
-                | (*ud).data[0 as libc::c_int as usize] as utf8_char;
+            index = ((*ud).data[2 as libc::c_int as usize] as Utf8Char) << 16 as libc::c_int
+                | ((*ud).data[1 as libc::c_int as usize] as Utf8Char) << 8 as libc::c_int
+                | (*ud).data[0 as libc::c_int as usize] as Utf8Char;
             current_block = 10879442775620481940;
         } else if utf8_put_item(
             (*ud).data.as_ptr() as *const libc::c_char,
@@ -655,8 +665,8 @@ pub unsafe extern "C" fn utf8_from_data(
         match current_block {
             8721612281967708268 => {}
             _ => {
-                *uc = ((*ud).size as utf8_char) << 24 as libc::c_int
-                    | ((*ud).width as utf8_char).wrapping_add(1 as libc::c_int as libc::c_uint)
+                *uc = ((*ud).size as Utf8Char) << 24 as libc::c_int
+                    | ((*ud).width as Utf8Char).wrapping_add(1 as libc::c_int as libc::c_uint)
                         << 29 as libc::c_int
                     | index;
                 log_debug(
@@ -671,36 +681,36 @@ pub unsafe extern "C" fn utf8_from_data(
                     (*ud).data.as_ptr(),
                     *uc,
                 );
-                return UTF8_DONE;
+                return utf8_state::DONE;
             }
         }
     }
     if (*ud).width as libc::c_int == 0 as libc::c_int {
-        *uc = (0 as libc::c_int as utf8_char) << 24 as libc::c_int
-            | (0 as libc::c_int as utf8_char).wrapping_add(1 as libc::c_int as libc::c_uint)
+        *uc = (0 as libc::c_int as Utf8Char) << 24 as libc::c_int
+            | (0 as libc::c_int as Utf8Char).wrapping_add(1 as libc::c_int as libc::c_uint)
                 << 29 as libc::c_int
     } else if (*ud).width as libc::c_int == 1 as libc::c_int {
-        *uc = (1 as libc::c_int as utf8_char) << 24 as libc::c_int
-            | (1 as libc::c_int as utf8_char).wrapping_add(1 as libc::c_int as libc::c_uint)
+        *uc = (1 as libc::c_int as Utf8Char) << 24 as libc::c_int
+            | (1 as libc::c_int as Utf8Char).wrapping_add(1 as libc::c_int as libc::c_uint)
                 << 29 as libc::c_int
             | 0x20 as libc::c_int as libc::c_uint
     } else {
-        *uc = (1 as libc::c_int as utf8_char) << 24 as libc::c_int
-            | (1 as libc::c_int as utf8_char).wrapping_add(1 as libc::c_int as libc::c_uint)
+        *uc = (1 as libc::c_int as Utf8Char) << 24 as libc::c_int
+            | (1 as libc::c_int as Utf8Char).wrapping_add(1 as libc::c_int as libc::c_uint)
                 << 29 as libc::c_int
             | 0x2020 as libc::c_int as libc::c_uint
     }
-    return UTF8_ERROR;
+    return utf8_state::ERROR;
 }
 /* Get UTF-8 data from character. */
 #[no_mangle]
-pub unsafe extern "C" fn utf8_to_data(mut uc: utf8_char, mut ud: *mut utf8_data) {
+pub unsafe extern "C" fn utf8_to_data(mut uc: Utf8Char, mut ud: *mut Utf8Data) {
     let mut ui: *mut utf8_item = 0 as *mut utf8_item;
     let mut index: u_int = 0;
     memset(
         ud as *mut libc::c_void,
         0 as libc::c_int,
-        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
     );
     (*ud).have = (uc >> 24 as libc::c_int & 0x1f as libc::c_int as libc::c_uint) as u_char;
     (*ud).size = (*ud).have;
@@ -740,17 +750,17 @@ pub unsafe extern "C" fn utf8_to_data(mut uc: utf8_char, mut ud: *mut utf8_data)
 }
 /* Get UTF-8 character from a single ASCII character. */
 #[no_mangle]
-pub unsafe extern "C" fn utf8_build_one(mut ch: u_char) -> utf8_char {
-    return (1 as libc::c_int as utf8_char) << 24 as libc::c_int
-        | (1 as libc::c_int as utf8_char).wrapping_add(1 as libc::c_int as libc::c_uint)
+pub unsafe extern "C" fn utf8_build_one(mut ch: u_char) -> Utf8Char {
+    return (1 as libc::c_int as Utf8Char) << 24 as libc::c_int
+        | (1 as libc::c_int as Utf8Char).wrapping_add(1 as libc::c_int as libc::c_uint)
             << 29 as libc::c_int
         | ch as libc::c_uint;
 }
 /* Set a single character. */
 #[no_mangle]
-pub unsafe extern "C" fn utf8_set(mut ud: *mut utf8_data, mut ch: u_char) {
-    static mut empty: utf8_data = {
-        let mut init = utf8_data {
+pub unsafe extern "C" fn utf8_set(mut ud: *mut Utf8Data, mut ch: u_char) {
+    static mut empty: Utf8Data = {
+        let mut init = Utf8Data {
             data: [
                 0 as libc::c_int as u_char,
                 0,
@@ -782,19 +792,19 @@ pub unsafe extern "C" fn utf8_set(mut ud: *mut utf8_data, mut ch: u_char) {
     };
     memcpy(
         ud as *mut libc::c_void,
-        &empty as *const utf8_data as *const libc::c_void,
-        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+        &empty as *const Utf8Data as *const libc::c_void,
+        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
     );
     *(*ud).data.as_mut_ptr() = ch;
 }
 /* Copy UTF-8 character. */
 #[no_mangle]
-pub unsafe extern "C" fn utf8_copy(mut to: *mut utf8_data, mut from: *const utf8_data) {
+pub unsafe extern "C" fn utf8_copy(mut to: *mut Utf8Data, mut from: *const Utf8Data) {
     let mut i: u_int = 0;
     memcpy(
         to as *mut libc::c_void,
         from as *const libc::c_void,
-        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
     );
     i = (*to).size as u_int;
     while (i as libc::c_ulong) < ::std::mem::size_of::<[u_char; 21]>() as libc::c_ulong {
@@ -803,7 +813,7 @@ pub unsafe extern "C" fn utf8_copy(mut to: *mut utf8_data, mut from: *const utf8
     }
 }
 /* Get width of Unicode character. */
-unsafe extern "C" fn utf8_width(mut ud: *mut utf8_data, mut width: *mut libc::c_int) -> utf8_state {
+unsafe extern "C" fn utf8_width(mut ud: *mut Utf8Data, mut width: *mut libc::c_int) -> Utf8State {
     let mut wc: wchar_t = 0;
     match mbtowc(
         &mut wc,
@@ -822,14 +832,14 @@ unsafe extern "C" fn utf8_width(mut ud: *mut utf8_data, mut width: *mut libc::c_
                 0 as *const libc::c_char,
                 __ctype_get_mb_cur_max(),
             );
-            return UTF8_ERROR;
+            return utf8_state::ERROR;
         }
-        0 => return UTF8_ERROR,
+        0 => return utf8_state::ERROR,
         _ => {}
     }
     *width = wcwidth(wc);
     if *width >= 0 as libc::c_int && *width <= 0xff as libc::c_int {
-        return UTF8_DONE;
+        return utf8_state::DONE;
     }
     log_debug(
         b"UTF-8 %.*s, wcwidth() %d\x00" as *const u8 as *const libc::c_char,
@@ -847,9 +857,9 @@ unsafe extern "C" fn utf8_width(mut ud: *mut utf8_data, mut width: *mut libc::c_
      */
     if *width < 0 as libc::c_int {
         *width = 1 as libc::c_int;
-        return UTF8_DONE;
+        return utf8_state::DONE;
     }
-    return UTF8_ERROR;
+    return utf8_state::ERROR;
 }
 /*
  * Open UTF-8 sequence.
@@ -859,11 +869,11 @@ unsafe extern "C" fn utf8_width(mut ud: *mut utf8_data, mut width: *mut libc::c_
  * 11110000-11110100 F0-F4 start of 4-byte sequence
  */
 #[no_mangle]
-pub unsafe extern "C" fn utf8_open(mut ud: *mut utf8_data, mut ch: u_char) -> utf8_state {
+pub unsafe extern "C" fn utf8_open(mut ud: *mut Utf8Data, mut ch: u_char) -> Utf8State {
     memset(
         ud as *mut libc::c_void,
         0 as libc::c_int,
-        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
     );
     if ch as libc::c_int >= 0xc2 as libc::c_int && ch as libc::c_int <= 0xdf as libc::c_int {
         (*ud).size = 2 as libc::c_int as u_char
@@ -872,14 +882,14 @@ pub unsafe extern "C" fn utf8_open(mut ud: *mut utf8_data, mut ch: u_char) -> ut
     } else if ch as libc::c_int >= 0xf0 as libc::c_int && ch as libc::c_int <= 0xf4 as libc::c_int {
         (*ud).size = 4 as libc::c_int as u_char
     } else {
-        return UTF8_ERROR;
+        return utf8_state::ERROR;
     }
     utf8_append(ud, ch);
-    return UTF8_MORE;
+    return utf8_state::MORE;
 }
 /* Append character to UTF-8, closing if finished. */
 #[no_mangle]
-pub unsafe extern "C" fn utf8_append(mut ud: *mut utf8_data, mut ch: u_char) -> utf8_state {
+pub unsafe extern "C" fn utf8_append(mut ud: *mut Utf8Data, mut ch: u_char) -> Utf8State {
     let mut width: libc::c_int = 0;
     if (*ud).have as libc::c_int >= (*ud).size as libc::c_int {
         fatalx(b"UTF-8 character overflow\x00" as *const u8 as *const libc::c_char);
@@ -896,16 +906,17 @@ pub unsafe extern "C" fn utf8_append(mut ud: *mut utf8_data, mut ch: u_char) -> 
     (*ud).have = (*ud).have.wrapping_add(1);
     (*ud).data[fresh1 as usize] = ch;
     if (*ud).have as libc::c_int != (*ud).size as libc::c_int {
-        return UTF8_MORE;
+        return utf8_state::MORE;
     }
     if (*ud).width as libc::c_int == 0xff as libc::c_int {
-        return UTF8_ERROR;
+        return utf8_state::ERROR;
     }
-    if utf8_width(ud, &mut width) as libc::c_uint != UTF8_DONE as libc::c_int as libc::c_uint {
-        return UTF8_ERROR;
+    if utf8_width(ud, &mut width) as libc::c_uint != utf8_state::DONE as libc::c_int as libc::c_uint
+    {
+        return utf8_state::ERROR;
     }
     (*ud).width = width as u_char;
-    return UTF8_DONE;
+    return utf8_state::DONE;
 }
 /*
  * Encode len characters from src into dst, which is guaranteed to have four
@@ -919,7 +930,7 @@ pub unsafe extern "C" fn utf8_strvis(
     mut len: size_t,
     mut flag: libc::c_int,
 ) -> libc::c_int {
-    let mut ud: utf8_data = utf8_data {
+    let mut ud: Utf8Data = Utf8Data {
         data: [0; 21],
         have: 0,
         size: 0,
@@ -927,20 +938,21 @@ pub unsafe extern "C" fn utf8_strvis(
     };
     let mut start: *const libc::c_char = dst;
     let mut end: *const libc::c_char = src.offset(len as isize);
-    let mut more: utf8_state = UTF8_MORE;
+    let mut more: Utf8State = utf8_state::MORE;
     let mut i: size_t = 0;
     while src < end {
         more = utf8_open(&mut ud, *src as u_char);
-        if more as libc::c_uint == UTF8_MORE as libc::c_int as libc::c_uint {
+        if more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint {
             loop {
                 src = src.offset(1);
-                if !(src < end && more as libc::c_uint == UTF8_MORE as libc::c_int as libc::c_uint)
+                if !(src < end
+                    && more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint)
                 {
                     break;
                 }
                 more = utf8_append(&mut ud, *src as u_char)
             }
-            if more as libc::c_uint == UTF8_DONE as libc::c_int as libc::c_uint {
+            if more as libc::c_uint == utf8_state::DONE as libc::c_int as libc::c_uint {
                 /* UTF-8 character finished. */
                 i = 0 as libc::c_int as size_t;
                 while i < ud.size as libc::c_ulong {
@@ -1035,26 +1047,28 @@ pub unsafe extern "C" fn utf8_stravisx(
 /* Does this string contain anything that isn't valid UTF-8? */
 #[no_mangle]
 pub unsafe extern "C" fn utf8_isvalid(mut s: *const libc::c_char) -> libc::c_int {
-    let mut ud: utf8_data = utf8_data {
+    let mut ud: Utf8Data = Utf8Data {
         data: [0; 21],
         have: 0,
         size: 0,
         width: 0,
     };
     let mut end: *const libc::c_char = 0 as *const libc::c_char;
-    let mut more: utf8_state = UTF8_MORE;
+    let mut more: Utf8State = utf8_state::MORE;
     end = s.offset(strlen(s) as isize);
     while s < end {
         more = utf8_open(&mut ud, *s as u_char);
-        if more as libc::c_uint == UTF8_MORE as libc::c_int as libc::c_uint {
+        if more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint {
             loop {
                 s = s.offset(1);
-                if !(s < end && more as libc::c_uint == UTF8_MORE as libc::c_int as libc::c_uint) {
+                if !(s < end
+                    && more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint)
+                {
                     break;
                 }
                 more = utf8_append(&mut ud, *s as u_char)
             }
-            if more as libc::c_uint == UTF8_DONE as libc::c_int as libc::c_uint {
+            if more as libc::c_uint == utf8_state::DONE as libc::c_int as libc::c_uint {
                 continue;
             }
             return 0 as libc::c_int;
@@ -1077,8 +1091,8 @@ pub unsafe extern "C" fn utf8_isvalid(mut s: *const libc::c_char) -> libc::c_int
 pub unsafe extern "C" fn utf8_sanitize(mut src: *const libc::c_char) -> *mut libc::c_char {
     let mut dst: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut n: size_t = 0 as libc::c_int as size_t;
-    let mut more: utf8_state = UTF8_MORE;
-    let mut ud: utf8_data = utf8_data {
+    let mut more: Utf8State = utf8_state::MORE;
+    let mut ud: Utf8Data = Utf8Data {
         data: [0; 21],
         have: 0,
         size: 0,
@@ -1092,17 +1106,17 @@ pub unsafe extern "C" fn utf8_sanitize(mut src: *const libc::c_char) -> *mut lib
             ::std::mem::size_of::<libc::c_char>() as libc::c_ulong,
         ) as *mut libc::c_char;
         more = utf8_open(&mut ud, *src as u_char);
-        if more as libc::c_uint == UTF8_MORE as libc::c_int as libc::c_uint {
+        if more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint {
             loop {
                 src = src.offset(1);
                 if !(*src as libc::c_int != '\u{0}' as i32
-                    && more as libc::c_uint == UTF8_MORE as libc::c_int as libc::c_uint)
+                    && more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint)
                 {
                     break;
                 }
                 more = utf8_append(&mut ud, *src as u_char)
             }
-            if more as libc::c_uint == UTF8_DONE as libc::c_int as libc::c_uint {
+            if more as libc::c_uint == utf8_state::DONE as libc::c_int as libc::c_uint {
                 dst = xreallocarray(
                     dst as *mut libc::c_void,
                     n.wrapping_add(ud.width as libc::c_ulong),
@@ -1142,7 +1156,7 @@ pub unsafe extern "C" fn utf8_sanitize(mut src: *const libc::c_char) -> *mut lib
 }
 /* Get UTF-8 buffer length. */
 #[no_mangle]
-pub unsafe extern "C" fn utf8_strlen(mut s: *const utf8_data) -> size_t {
+pub unsafe extern "C" fn utf8_strlen(mut s: *const Utf8Data) -> size_t {
     let mut i: size_t = 0;
     i = 0 as libc::c_int as size_t;
     while (*s.offset(i as isize)).size as libc::c_int != 0 as libc::c_int {
@@ -1153,7 +1167,7 @@ pub unsafe extern "C" fn utf8_strlen(mut s: *const utf8_data) -> size_t {
 }
 /* Get UTF-8 string width. */
 #[no_mangle]
-pub unsafe extern "C" fn utf8_strwidth(mut s: *const utf8_data, mut n: ssize_t) -> u_int {
+pub unsafe extern "C" fn utf8_strwidth(mut s: *const Utf8Data, mut n: ssize_t) -> u_int {
     let mut i: ssize_t = 0;
     let mut width: u_int = 0 as libc::c_int as u_int;
     i = 0 as libc::c_int as ssize_t;
@@ -1172,28 +1186,28 @@ pub unsafe extern "C" fn utf8_strwidth(mut s: *const utf8_data, mut n: ssize_t) 
  * Caller frees.
  */
 #[no_mangle]
-pub unsafe extern "C" fn utf8_fromcstr(mut src: *const libc::c_char) -> *mut utf8_data {
-    let mut dst: *mut utf8_data = 0 as *mut utf8_data;
+pub unsafe extern "C" fn utf8_fromcstr(mut src: *const libc::c_char) -> *mut Utf8Data {
+    let mut dst: *mut Utf8Data = 0 as *mut Utf8Data;
     let mut n: size_t = 0 as libc::c_int as size_t;
-    let mut more: utf8_state = UTF8_MORE;
+    let mut more: Utf8State = utf8_state::MORE;
     while *src as libc::c_int != '\u{0}' as i32 {
         dst = xreallocarray(
             dst as *mut libc::c_void,
             n.wrapping_add(1 as libc::c_int as libc::c_ulong),
-            ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
-        ) as *mut utf8_data;
+            ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
+        ) as *mut Utf8Data;
         more = utf8_open(&mut *dst.offset(n as isize), *src as u_char);
-        if more as libc::c_uint == UTF8_MORE as libc::c_int as libc::c_uint {
+        if more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint {
             loop {
                 src = src.offset(1);
                 if !(*src as libc::c_int != '\u{0}' as i32
-                    && more as libc::c_uint == UTF8_MORE as libc::c_int as libc::c_uint)
+                    && more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint)
                 {
                     break;
                 }
                 more = utf8_append(&mut *dst.offset(n as isize), *src as u_char)
             }
-            if more as libc::c_uint == UTF8_DONE as libc::c_int as libc::c_uint {
+            if more as libc::c_uint == utf8_state::DONE as libc::c_int as libc::c_uint {
                 n = n.wrapping_add(1);
                 continue;
             } else {
@@ -1207,14 +1221,14 @@ pub unsafe extern "C" fn utf8_fromcstr(mut src: *const libc::c_char) -> *mut utf
     dst = xreallocarray(
         dst as *mut libc::c_void,
         n.wrapping_add(1 as libc::c_int as libc::c_ulong),
-        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
-    ) as *mut utf8_data;
+        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
+    ) as *mut Utf8Data;
     (*dst.offset(n as isize)).size = 0 as libc::c_int as u_char;
     return dst;
 }
 /* Convert from a buffer of UTF-8 characters into a string. Caller frees. */
 #[no_mangle]
-pub unsafe extern "C" fn utf8_tocstr(mut src: *mut utf8_data) -> *mut libc::c_char {
+pub unsafe extern "C" fn utf8_tocstr(mut src: *mut Utf8Data) -> *mut libc::c_char {
     let mut dst: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut n: size_t = 0 as libc::c_int as size_t;
     while (*src).size as libc::c_int != 0 as libc::c_int {
@@ -1242,28 +1256,28 @@ pub unsafe extern "C" fn utf8_tocstr(mut src: *mut utf8_data) -> *mut libc::c_ch
 /* Get width of UTF-8 string. */
 #[no_mangle]
 pub unsafe extern "C" fn utf8_cstrwidth(mut s: *const libc::c_char) -> u_int {
-    let mut tmp: utf8_data = utf8_data {
+    let mut tmp: Utf8Data = Utf8Data {
         data: [0; 21],
         have: 0,
         size: 0,
         width: 0,
     };
     let mut width: u_int = 0;
-    let mut more: utf8_state = UTF8_MORE;
+    let mut more: Utf8State = utf8_state::MORE;
     width = 0 as libc::c_int as u_int;
     while *s as libc::c_int != '\u{0}' as i32 {
         more = utf8_open(&mut tmp, *s as u_char);
-        if more as libc::c_uint == UTF8_MORE as libc::c_int as libc::c_uint {
+        if more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint {
             loop {
                 s = s.offset(1);
                 if !(*s as libc::c_int != '\u{0}' as i32
-                    && more as libc::c_uint == UTF8_MORE as libc::c_int as libc::c_uint)
+                    && more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint)
                 {
                     break;
                 }
                 more = utf8_append(&mut tmp, *s as u_char)
             }
-            if more as libc::c_uint == UTF8_DONE as libc::c_int as libc::c_uint {
+            if more as libc::c_uint == utf8_state::DONE as libc::c_int as libc::c_uint {
                 width = (width as libc::c_uint).wrapping_add(tmp.width as libc::c_uint) as u_int
                     as u_int;
                 continue;
@@ -1343,10 +1357,10 @@ pub unsafe extern "C" fn utf8_rpadcstr(
 #[no_mangle]
 pub unsafe extern "C" fn utf8_cstrhas(
     mut s: *const libc::c_char,
-    mut ud: *const utf8_data,
+    mut ud: *const Utf8Data,
 ) -> libc::c_int {
-    let mut copy: *mut utf8_data = 0 as *mut utf8_data;
-    let mut loop_0: *mut utf8_data = 0 as *mut utf8_data;
+    let mut copy: *mut Utf8Data = 0 as *mut Utf8Data;
+    let mut loop_0: *mut Utf8Data = 0 as *mut Utf8Data;
     let mut found: libc::c_int = 0 as libc::c_int;
     copy = utf8_fromcstr(s);
     loop_0 = copy;

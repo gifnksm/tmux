@@ -1,3 +1,4 @@
+use crate::utf8::Utf8Data;
 use ::c2rust_bitfields;
 use ::libc;
 
@@ -319,9 +320,9 @@ extern "C" {
     #[no_mangle]
     fn sessions_RB_NEXT(_: *mut session) -> *mut session;
     #[no_mangle]
-    fn utf8_tocstr(_: *mut utf8_data) -> *mut libc::c_char;
+    fn utf8_tocstr(_: *mut Utf8Data) -> *mut libc::c_char;
     #[no_mangle]
-    fn utf8_cstrhas(_: *const libc::c_char, _: *const utf8_data) -> libc::c_int;
+    fn utf8_cstrhas(_: *const libc::c_char, _: *const Utf8Data) -> libc::c_int;
     #[no_mangle]
     fn session_group_count(_: *mut session_group) -> u_int;
     #[no_mangle]
@@ -650,14 +651,14 @@ pub struct client {
     pub message_string: *mut libc::c_char,
     pub message_timer: event,
     pub prompt_string: *mut libc::c_char,
-    pub prompt_buffer: *mut utf8_data,
+    pub prompt_buffer: *mut crate::utf8::Utf8Data,
     pub prompt_index: size_t,
     pub prompt_inputcb: prompt_input_cb,
     pub prompt_freecb: prompt_free_cb,
     pub prompt_data: *mut libc::c_void,
     pub prompt_hindex: u_int,
     pub prompt_mode: C2RustUnnamed_27,
-    pub prompt_saved: *mut utf8_data,
+    pub prompt_saved: *mut crate::utf8::Utf8Data,
     pub prompt_flags: libc::c_int,
     pub session: *mut session,
     pub last_session: *mut session,
@@ -804,21 +805,12 @@ pub struct screen {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct grid_cell {
-    pub data: utf8_data,
+    pub data: crate::utf8::Utf8Data,
     pub attr: u_short,
     pub flags: u_char,
     pub fg: libc::c_int,
     pub bg: libc::c_int,
     pub us: libc::c_int,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct utf8_data {
-    pub data: [u_char; 21],
-    pub have: u_char,
-    pub size: u_char,
-    pub width: u_char,
 }
 
 #[repr(C)]
@@ -847,14 +839,13 @@ pub struct grid_line {
 #[repr(C, packed)]
 #[derive(Copy, Clone)]
 pub struct grid_extd_entry {
-    pub data: utf8_char,
+    pub data: crate::utf8::Utf8Char,
     pub attr: u_short,
     pub flags: u_char,
     pub fg: libc::c_int,
     pub bg: libc::c_int,
     pub us: libc::c_int,
 }
-pub type utf8_char = u_int;
 
 #[repr(C, packed)]
 #[derive(Copy, Clone)]
@@ -3774,7 +3765,7 @@ unsafe extern "C" fn format_cb_pane_at_bottom(mut ft: *mut format_tree) -> *mut 
 unsafe extern "C" fn format_cb_cursor_character(mut ft: *mut format_tree) -> *mut libc::c_char {
     let mut wp: *mut window_pane = (*ft).wp;
     let mut gc: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -3810,7 +3801,7 @@ pub unsafe extern "C" fn format_grid_word(
 ) -> *mut libc::c_char {
     let mut gl: *const grid_line = 0 as *const grid_line;
     let mut gc: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -3823,7 +3814,7 @@ pub unsafe extern "C" fn format_grid_word(
         us: 0,
     };
     let mut ws: *const libc::c_char = 0 as *const libc::c_char;
-    let mut ud: *mut utf8_data = 0 as *mut utf8_data;
+    let mut ud: *mut Utf8Data = 0 as *mut Utf8Data;
     let mut end: u_int = 0;
     let mut size: size_t = 0 as libc::c_int as size_t;
     let mut found: libc::c_int = 0 as libc::c_int;
@@ -3892,14 +3883,14 @@ pub unsafe extern "C" fn format_grid_word(
         ud = xreallocarray(
             ud as *mut libc::c_void,
             size.wrapping_add(2 as libc::c_int as libc::c_ulong),
-            ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
-        ) as *mut utf8_data;
+            ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
+        ) as *mut Utf8Data;
         let fresh0 = size;
         size = size.wrapping_add(1);
         memcpy(
-            &mut *ud.offset(fresh0 as isize) as *mut utf8_data as *mut libc::c_void,
-            &mut gc.data as *mut utf8_data as *const libc::c_void,
-            ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+            &mut *ud.offset(fresh0 as isize) as *mut Utf8Data as *mut libc::c_void,
+            &mut gc.data as *mut Utf8Data as *const libc::c_void,
+            ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
         );
     }
     if size != 0 as libc::c_int as libc::c_ulong {
@@ -3942,7 +3933,7 @@ unsafe extern "C" fn format_cb_mouse_word(mut ft: *mut format_tree) -> *mut libc
 #[no_mangle]
 pub unsafe extern "C" fn format_grid_line(mut gd: *mut grid, mut y: u_int) -> *mut libc::c_char {
     let mut gc: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -3954,7 +3945,7 @@ pub unsafe extern "C" fn format_grid_line(mut gd: *mut grid, mut y: u_int) -> *m
         bg: 0,
         us: 0,
     };
-    let mut ud: *mut utf8_data = 0 as *mut utf8_data;
+    let mut ud: *mut Utf8Data = 0 as *mut Utf8Data;
     let mut x: u_int = 0;
     let mut size: size_t = 0 as libc::c_int as size_t;
     let mut s: *mut libc::c_char = 0 as *mut libc::c_char;
@@ -3967,14 +3958,14 @@ pub unsafe extern "C" fn format_grid_line(mut gd: *mut grid, mut y: u_int) -> *m
         ud = xreallocarray(
             ud as *mut libc::c_void,
             size.wrapping_add(2 as libc::c_int as libc::c_ulong),
-            ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
-        ) as *mut utf8_data;
+            ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
+        ) as *mut Utf8Data;
         let fresh1 = size;
         size = size.wrapping_add(1);
         memcpy(
-            &mut *ud.offset(fresh1 as isize) as *mut utf8_data as *mut libc::c_void,
-            &mut gc.data as *mut utf8_data as *const libc::c_void,
-            ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+            &mut *ud.offset(fresh1 as isize) as *mut Utf8Data as *mut libc::c_void,
+            &mut gc.data as *mut Utf8Data as *const libc::c_void,
+            ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
         );
         x = x.wrapping_add(1)
     }

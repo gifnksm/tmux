@@ -1,4 +1,6 @@
+use crate::utf8::Utf8Data;
 use ::libc;
+
 extern "C" {
     pub type event_base;
     pub type evbuffer;
@@ -129,9 +131,9 @@ extern "C" {
     #[no_mangle]
     fn status_prompt_redraw(_: *mut client) -> libc::c_int;
     #[no_mangle]
-    fn utf8_set(_: *mut utf8_data, _: u_char);
+    fn utf8_set(_: *mut Utf8Data, _: u_char);
     #[no_mangle]
-    fn utf8_copy(_: *mut utf8_data, _: *const utf8_data);
+    fn utf8_copy(_: *mut Utf8Data, _: *const Utf8Data);
     #[no_mangle]
     fn log_debug(_: *const libc::c_char, _: ...);
     #[no_mangle]
@@ -364,14 +366,14 @@ pub struct client {
     pub message_string: *mut libc::c_char,
     pub message_timer: event,
     pub prompt_string: *mut libc::c_char,
-    pub prompt_buffer: *mut utf8_data,
+    pub prompt_buffer: *mut crate::utf8::Utf8Data,
     pub prompt_index: size_t,
     pub prompt_inputcb: prompt_input_cb,
     pub prompt_freecb: prompt_free_cb,
     pub prompt_data: *mut libc::c_void,
     pub prompt_hindex: u_int,
     pub prompt_mode: C2RustUnnamed_25,
-    pub prompt_saved: *mut utf8_data,
+    pub prompt_saved: *mut crate::utf8::Utf8Data,
     pub prompt_flags: libc::c_int,
     pub session: *mut session,
     pub last_session: *mut session,
@@ -518,21 +520,12 @@ pub struct screen {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct grid_cell {
-    pub data: utf8_data,
+    pub data: crate::utf8::Utf8Data,
     pub attr: u_short,
     pub flags: u_char,
     pub fg: libc::c_int,
     pub bg: libc::c_int,
     pub us: libc::c_int,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct utf8_data {
-    pub data: [u_char; 21],
-    pub have: u_char,
-    pub size: u_char,
-    pub width: u_char,
 }
 
 #[repr(C)]
@@ -561,14 +554,13 @@ pub struct grid_line {
 #[repr(C, packed)]
 #[derive(Copy, Clone)]
 pub struct grid_extd_entry {
-    pub data: utf8_char,
+    pub data: crate::utf8::Utf8Char,
     pub attr: u_short,
     pub flags: u_char,
     pub fg: libc::c_int,
     pub bg: libc::c_int,
     pub us: libc::c_int,
 }
-pub type utf8_char = u_int;
 
 #[repr(C, packed)]
 #[derive(Copy, Clone)]
@@ -1199,11 +1191,11 @@ pub const SCREEN_REDRAW_BORDER: screen_redraw_border_type = 2;
 pub type screen_redraw_border_type = libc::c_uint;
 pub const SCREEN_REDRAW_INSIDE: screen_redraw_border_type = 1;
 pub const SCREEN_REDRAW_OUTSIDE: screen_redraw_border_type = 0;
-static mut screen_redraw_double_borders: [utf8_data; 13] = unsafe {
+static mut screen_redraw_double_borders: [Utf8Data; 13] = unsafe {
     [
         {
             let mut init =
-                 utf8_data{data:
+                 Utf8Data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
@@ -1213,7 +1205,7 @@ static mut screen_redraw_double_borders: [utf8_data; 13] = unsafe {
         },
         {
             let mut init =
-                 utf8_data{data:
+                 Utf8Data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x95\x91\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
@@ -1223,7 +1215,7 @@ static mut screen_redraw_double_borders: [utf8_data; 13] = unsafe {
         },
         {
             let mut init =
-                 utf8_data{data:
+                 Utf8Data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x95\x90\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
@@ -1233,7 +1225,7 @@ static mut screen_redraw_double_borders: [utf8_data; 13] = unsafe {
         },
         {
             let mut init =
-                 utf8_data{data:
+                 Utf8Data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x95\x94\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
@@ -1243,7 +1235,7 @@ static mut screen_redraw_double_borders: [utf8_data; 13] = unsafe {
         },
         {
             let mut init =
-                 utf8_data{data:
+                 Utf8Data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x95\x97\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
@@ -1253,7 +1245,7 @@ static mut screen_redraw_double_borders: [utf8_data; 13] = unsafe {
         },
         {
             let mut init =
-                 utf8_data{data:
+                 Utf8Data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x95\x9a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
@@ -1263,7 +1255,7 @@ static mut screen_redraw_double_borders: [utf8_data; 13] = unsafe {
         },
         {
             let mut init =
-                 utf8_data{data:
+                 Utf8Data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x95\x9d\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
@@ -1273,7 +1265,7 @@ static mut screen_redraw_double_borders: [utf8_data; 13] = unsafe {
         },
         {
             let mut init =
-                 utf8_data{data:
+                 Utf8Data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x95\xa6\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
@@ -1283,7 +1275,7 @@ static mut screen_redraw_double_borders: [utf8_data; 13] = unsafe {
         },
         {
             let mut init =
-                 utf8_data{data:
+                 Utf8Data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x95\xa9\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
@@ -1293,7 +1285,7 @@ static mut screen_redraw_double_borders: [utf8_data; 13] = unsafe {
         },
         {
             let mut init =
-                 utf8_data{data:
+                 Utf8Data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x95\xa0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
@@ -1303,7 +1295,7 @@ static mut screen_redraw_double_borders: [utf8_data; 13] = unsafe {
         },
         {
             let mut init =
-                 utf8_data{data:
+                 Utf8Data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x95\xa3\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
@@ -1313,7 +1305,7 @@ static mut screen_redraw_double_borders: [utf8_data; 13] = unsafe {
         },
         {
             let mut init =
-                 utf8_data{data:
+                 Utf8Data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x95\xac\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
@@ -1323,7 +1315,7 @@ static mut screen_redraw_double_borders: [utf8_data; 13] = unsafe {
         },
         {
             let mut init =
-                 utf8_data{data:
+                 Utf8Data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xc2\xb7\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
@@ -1333,11 +1325,11 @@ static mut screen_redraw_double_borders: [utf8_data; 13] = unsafe {
         },
     ]
 };
-static mut screen_redraw_heavy_borders: [utf8_data; 13] = unsafe {
+static mut screen_redraw_heavy_borders: [Utf8Data; 13] = unsafe {
     [
         {
             let mut init =
-                 utf8_data{data:
+                 Utf8Data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
@@ -1347,7 +1339,7 @@ static mut screen_redraw_heavy_borders: [utf8_data; 13] = unsafe {
         },
         {
             let mut init =
-                 utf8_data{data:
+                 Utf8Data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x94\x83\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
@@ -1357,7 +1349,7 @@ static mut screen_redraw_heavy_borders: [utf8_data; 13] = unsafe {
         },
         {
             let mut init =
-                 utf8_data{data:
+                 Utf8Data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x94\x81\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
@@ -1367,7 +1359,7 @@ static mut screen_redraw_heavy_borders: [utf8_data; 13] = unsafe {
         },
         {
             let mut init =
-                 utf8_data{data:
+                 Utf8Data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x94\x93\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
@@ -1377,7 +1369,7 @@ static mut screen_redraw_heavy_borders: [utf8_data; 13] = unsafe {
         },
         {
             let mut init =
-                 utf8_data{data:
+                 Utf8Data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x94\x8f\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
@@ -1387,7 +1379,7 @@ static mut screen_redraw_heavy_borders: [utf8_data; 13] = unsafe {
         },
         {
             let mut init =
-                 utf8_data{data:
+                 Utf8Data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x94\x97\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
@@ -1397,7 +1389,7 @@ static mut screen_redraw_heavy_borders: [utf8_data; 13] = unsafe {
         },
         {
             let mut init =
-                 utf8_data{data:
+                 Utf8Data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x94\x9b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
@@ -1407,7 +1399,7 @@ static mut screen_redraw_heavy_borders: [utf8_data; 13] = unsafe {
         },
         {
             let mut init =
-                 utf8_data{data:
+                 Utf8Data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x94\xb3\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
@@ -1417,7 +1409,7 @@ static mut screen_redraw_heavy_borders: [utf8_data; 13] = unsafe {
         },
         {
             let mut init =
-                 utf8_data{data:
+                 Utf8Data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x94\xbb\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
@@ -1427,7 +1419,7 @@ static mut screen_redraw_heavy_borders: [utf8_data; 13] = unsafe {
         },
         {
             let mut init =
-                 utf8_data{data:
+                 Utf8Data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x94\xa3\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
@@ -1437,7 +1429,7 @@ static mut screen_redraw_heavy_borders: [utf8_data; 13] = unsafe {
         },
         {
             let mut init =
-                 utf8_data{data:
+                 Utf8Data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x94\xab\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
@@ -1447,7 +1439,7 @@ static mut screen_redraw_heavy_borders: [utf8_data; 13] = unsafe {
         },
         {
             let mut init =
-                 utf8_data{data:
+                 Utf8Data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xe2\x95\x8b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
@@ -1457,7 +1449,7 @@ static mut screen_redraw_heavy_borders: [utf8_data; 13] = unsafe {
         },
         {
             let mut init =
-                 utf8_data{data:
+                 Utf8Data{data:
                                *::std::mem::transmute::<&[u8; 21],
                                                         &mut [u_char; 21]>(b"\xc2\xb7\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
                            have: 0 as libc::c_int as u_char,
@@ -1947,7 +1939,7 @@ unsafe extern "C" fn screen_redraw_make_pane_status(
 ) -> libc::c_int {
     let mut w: *mut window = (*wp).window;
     let mut gc: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -1998,7 +1990,7 @@ unsafe extern "C" fn screen_redraw_make_pane_status(
         saved_cy: 0,
         saved_grid: 0 as *mut grid,
         saved_cell: grid_cell {
-            data: utf8_data {
+            data: Utf8Data {
                 data: [0; 21],
                 have: 0,
                 size: 0,
@@ -2449,7 +2441,7 @@ unsafe extern "C" fn screen_redraw_draw_borders_cell(
     let mut y: u_int = (*ctx).oy.wrapping_add(j);
     let mut pane_status: libc::c_int = (*ctx).pane_status;
     let mut gc: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -2619,7 +2611,7 @@ unsafe extern "C" fn screen_redraw_draw_pane(
     let mut tty: *mut tty = &mut (*c).tty;
     let mut s: *mut screen = 0 as *mut screen;
     let mut defaults: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,

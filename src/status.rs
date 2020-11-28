@@ -1,5 +1,9 @@
-use crate::key_code::code as key_code_code;
+use crate::{
+    key_code::code as key_code_code,
+    utf8::{utf8_state, Utf8Char, Utf8Data, Utf8State},
+};
 use ::libc;
+
 extern "C" {
     pub type event_base;
     pub type _IO_wide_data;
@@ -220,7 +224,7 @@ extern "C" {
     #[no_mangle]
     fn winlinks_RB_MINMAX(_: *mut winlinks, _: libc::c_int) -> *mut winlink;
     #[no_mangle]
-    fn utf8_set(_: *mut utf8_data, _: u_char);
+    fn utf8_set(_: *mut Utf8Data, _: u_char);
     #[no_mangle]
     fn sessions_RB_MINMAX(_: *mut sessions, _: libc::c_int) -> *mut session;
     #[no_mangle]
@@ -230,27 +234,27 @@ extern "C" {
     #[no_mangle]
     fn session_find(_: *const libc::c_char) -> *mut session;
     #[no_mangle]
-    fn utf8_to_data(_: utf8_char, _: *mut utf8_data);
+    fn utf8_to_data(_: Utf8Char, _: *mut Utf8Data);
     #[no_mangle]
     fn menu_free(_: *mut menu);
     #[no_mangle]
-    fn utf8_strlen(_: *const utf8_data) -> size_t;
+    fn utf8_strlen(_: *const Utf8Data) -> size_t;
     #[no_mangle]
-    fn utf8_fromcstr(_: *const libc::c_char) -> *mut utf8_data;
+    fn utf8_fromcstr(_: *const libc::c_char) -> *mut Utf8Data;
     #[no_mangle]
-    fn utf8_copy(_: *mut utf8_data, _: *const utf8_data);
+    fn utf8_copy(_: *mut Utf8Data, _: *const Utf8Data);
     #[no_mangle]
-    fn utf8_strwidth(_: *const utf8_data, _: ssize_t) -> u_int;
+    fn utf8_strwidth(_: *const Utf8Data, _: ssize_t) -> u_int;
     #[no_mangle]
     fn log_debug(_: *const libc::c_char, _: ...);
     #[no_mangle]
-    fn utf8_tocstr(_: *mut utf8_data) -> *mut libc::c_char;
+    fn utf8_tocstr(_: *mut Utf8Data) -> *mut libc::c_char;
     #[no_mangle]
     fn fatalx(_: *const libc::c_char, _: ...) -> !;
     #[no_mangle]
-    fn utf8_append(_: *mut utf8_data, _: u_char) -> utf8_state;
+    fn utf8_append(_: *mut Utf8Data, _: u_char) -> crate::utf8::Utf8State;
     #[no_mangle]
-    fn utf8_open(_: *mut utf8_data, _: u_char) -> utf8_state;
+    fn utf8_open(_: *mut Utf8Data, _: u_char) -> crate::utf8::Utf8State;
     #[no_mangle]
     fn menu_create(_: *const libc::c_char) -> *mut menu;
     #[no_mangle]
@@ -558,14 +562,14 @@ pub struct client {
     pub message_string: *mut libc::c_char,
     pub message_timer: event,
     pub prompt_string: *mut libc::c_char,
-    pub prompt_buffer: *mut utf8_data,
+    pub prompt_buffer: *mut crate::utf8::Utf8Data,
     pub prompt_index: size_t,
     pub prompt_inputcb: prompt_input_cb,
     pub prompt_freecb: prompt_free_cb,
     pub prompt_data: *mut libc::c_void,
     pub prompt_hindex: u_int,
     pub prompt_mode: C2RustUnnamed_25,
-    pub prompt_saved: *mut utf8_data,
+    pub prompt_saved: *mut crate::utf8::Utf8Data,
     pub prompt_flags: libc::c_int,
     pub session: *mut session,
     pub last_session: *mut session,
@@ -712,21 +716,12 @@ pub struct screen {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct grid_cell {
-    pub data: utf8_data,
+    pub data: crate::utf8::Utf8Data,
     pub attr: u_short,
     pub flags: u_char,
     pub fg: libc::c_int,
     pub bg: libc::c_int,
     pub us: libc::c_int,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct utf8_data {
-    pub data: [u_char; 21],
-    pub have: u_char,
-    pub size: u_char,
-    pub width: u_char,
 }
 
 #[repr(C)]
@@ -755,14 +750,13 @@ pub struct grid_line {
 #[repr(C, packed)]
 #[derive(Copy, Clone)]
 pub struct grid_extd_entry {
-    pub data: utf8_char,
+    pub data: crate::utf8::Utf8Char,
     pub attr: u_short,
     pub flags: u_char,
     pub fg: libc::c_int,
     pub bg: libc::c_int,
     pub us: libc::c_int,
 }
-pub type utf8_char = u_int;
 
 #[repr(C, packed)]
 #[derive(Copy, Clone)]
@@ -1389,10 +1383,6 @@ pub struct tty_ctx {
 pub type tty_ctx_set_client_cb =
     Option<unsafe extern "C" fn(_: *mut tty_ctx, _: *mut client) -> libc::c_int>;
 pub type tty_ctx_redraw_cb = Option<unsafe extern "C" fn(_: *const tty_ctx) -> ()>;
-pub type utf8_state = libc::c_uint;
-pub const UTF8_ERROR: utf8_state = 2;
-pub const UTF8_DONE: utf8_state = 1;
-pub const UTF8_MORE: utf8_state = 0;
 pub type style_align = libc::c_uint;
 pub const STYLE_ALIGN_RIGHT: style_align = 3;
 pub const STYLE_ALIGN_CENTRE: style_align = 2;
@@ -1928,7 +1918,7 @@ pub unsafe extern "C" fn status_redraw(mut c: *mut client) -> libc::c_int {
         skipped: 0,
     };
     let mut gc: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -2227,7 +2217,7 @@ pub unsafe extern "C" fn status_message_redraw(mut c: *mut client) -> libc::c_in
         saved_cy: 0,
         saved_grid: 0 as *mut grid,
         saved_cell: grid_cell {
-            data: utf8_data {
+            data: Utf8Data {
                 data: [0; 21],
                 have: 0,
                 size: 0,
@@ -2248,7 +2238,7 @@ pub unsafe extern "C" fn status_message_redraw(mut c: *mut client) -> libc::c_in
     let mut lines: u_int = 0;
     let mut offset: u_int = 0;
     let mut gc: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -2427,9 +2417,9 @@ pub unsafe extern "C" fn status_prompt_clear(mut c: *mut client) {
     free((*c).prompt_string as *mut libc::c_void);
     (*c).prompt_string = 0 as *mut libc::c_char;
     free((*c).prompt_buffer as *mut libc::c_void);
-    (*c).prompt_buffer = 0 as *mut utf8_data;
+    (*c).prompt_buffer = 0 as *mut Utf8Data;
     free((*c).prompt_saved as *mut libc::c_void);
-    (*c).prompt_saved = 0 as *mut utf8_data;
+    (*c).prompt_saved = 0 as *mut Utf8Data;
     (*c).tty.flags &= !(0x1 as libc::c_int | 0x2 as libc::c_int);
     (*c).flags |= (0x8 as libc::c_int
         | 0x10 as libc::c_int
@@ -2506,7 +2496,7 @@ pub unsafe extern "C" fn status_prompt_redraw(mut c: *mut client) -> libc::c_int
         saved_cy: 0,
         saved_grid: 0 as *mut grid,
         saved_cell: grid_cell {
-            data: utf8_data {
+            data: Utf8Data {
                 data: [0; 21],
                 have: 0,
                 size: 0,
@@ -2532,7 +2522,7 @@ pub unsafe extern "C" fn status_prompt_redraw(mut c: *mut client) -> libc::c_int
     let mut pcursor: u_int = 0;
     let mut pwidth: u_int = 0;
     let mut gc: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -2545,7 +2535,7 @@ pub unsafe extern "C" fn status_prompt_redraw(mut c: *mut client) -> libc::c_int
         us: 0,
     };
     let mut cursorgc: grid_cell = grid_cell {
-        data: utf8_data {
+        data: Utf8Data {
             data: [0; 21],
             have: 0,
             size: 0,
@@ -2714,7 +2704,7 @@ pub unsafe extern "C" fn status_prompt_redraw(mut c: *mut client) -> libc::c_int
 /* Is this a separator? */
 unsafe extern "C" fn status_prompt_in_list(
     mut ws: *const libc::c_char,
-    mut ud: *const utf8_data,
+    mut ud: *const Utf8Data,
 ) -> libc::c_int {
     if (*ud).size as libc::c_int != 1 as libc::c_int
         || (*ud).width as libc::c_int != 1 as libc::c_int
@@ -2725,7 +2715,7 @@ unsafe extern "C" fn status_prompt_in_list(
         != 0 as *mut libc::c_void as *mut libc::c_char) as libc::c_int;
 }
 /* Is this a space? */
-unsafe extern "C" fn status_prompt_space(mut ud: *const utf8_data) -> libc::c_int {
+unsafe extern "C" fn status_prompt_space(mut ud: *const Utf8Data) -> libc::c_int {
     if (*ud).size as libc::c_int != 1 as libc::c_int
         || (*ud).width as libc::c_int != 1 as libc::c_int
     {
@@ -2909,9 +2899,9 @@ unsafe extern "C" fn status_prompt_paste(mut c: *mut client) -> libc::c_int {
     let mut n: size_t = 0;
     let mut bufsize: size_t = 0;
     let mut i: u_int = 0;
-    let mut ud: *mut utf8_data = 0 as *mut utf8_data;
-    let mut udp: *mut utf8_data = 0 as *mut utf8_data;
-    let mut more: utf8_state = UTF8_MORE;
+    let mut ud: *mut Utf8Data = 0 as *mut Utf8Data;
+    let mut udp: *mut Utf8Data = 0 as *mut Utf8Data;
+    let mut more: Utf8State = utf8_state::MORE;
     size = utf8_strlen((*c).prompt_buffer);
     if !(*c).prompt_saved.is_null() {
         ud = (*c).prompt_saved;
@@ -2925,24 +2915,24 @@ unsafe extern "C" fn status_prompt_paste(mut c: *mut client) -> libc::c_int {
         ud = xreallocarray(
             0 as *mut libc::c_void,
             bufsize.wrapping_add(1 as libc::c_int as libc::c_ulong),
-            ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
-        ) as *mut utf8_data;
+            ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
+        ) as *mut Utf8Data;
         udp = ud;
         i = 0 as libc::c_int as u_int;
         while i as libc::c_ulong != bufsize {
             /* nothing */
             more = utf8_open(udp, *bufdata.offset(i as isize) as u_char);
-            if more as libc::c_uint == UTF8_MORE as libc::c_int as libc::c_uint {
+            if more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint {
                 loop {
                     i = i.wrapping_add(1);
                     if !(i as libc::c_ulong != bufsize
-                        && more as libc::c_uint == UTF8_MORE as libc::c_int as libc::c_uint)
+                        && more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint)
                     {
                         break;
                     }
                     more = utf8_append(udp, *bufdata.offset(i as isize) as u_char)
                 }
-                if more as libc::c_uint == UTF8_DONE as libc::c_int as libc::c_uint {
+                if more as libc::c_uint == utf8_state::DONE as libc::c_int as libc::c_uint {
                     udp = udp.offset(1);
                     continue;
                 } else {
@@ -2969,13 +2959,13 @@ unsafe extern "C" fn status_prompt_paste(mut c: *mut client) -> libc::c_int {
         (*c).prompt_buffer as *mut libc::c_void,
         size.wrapping_add(n)
             .wrapping_add(1 as libc::c_int as libc::c_ulong),
-        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
-    ) as *mut utf8_data;
+        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
+    ) as *mut Utf8Data;
     if (*c).prompt_index == size {
         memcpy(
             (*c).prompt_buffer.offset((*c).prompt_index as isize) as *mut libc::c_void,
             ud as *const libc::c_void,
-            n.wrapping_mul(::std::mem::size_of::<utf8_data>() as libc::c_ulong),
+            n.wrapping_mul(::std::mem::size_of::<Utf8Data>() as libc::c_ulong),
         );
         (*c).prompt_index =
             ((*c).prompt_index as libc::c_ulong).wrapping_add(n) as size_t as size_t;
@@ -2988,12 +2978,12 @@ unsafe extern "C" fn status_prompt_paste(mut c: *mut client) -> libc::c_int {
             (*c).prompt_buffer.offset((*c).prompt_index as isize) as *const libc::c_void,
             size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                 .wrapping_sub((*c).prompt_index)
-                .wrapping_mul(::std::mem::size_of::<utf8_data>() as libc::c_ulong),
+                .wrapping_mul(::std::mem::size_of::<Utf8Data>() as libc::c_ulong),
         );
         memcpy(
             (*c).prompt_buffer.offset((*c).prompt_index as isize) as *mut libc::c_void,
             ud as *const libc::c_void,
-            n.wrapping_mul(::std::mem::size_of::<utf8_data>() as libc::c_ulong),
+            n.wrapping_mul(::std::mem::size_of::<Utf8Data>() as libc::c_ulong),
         );
         (*c).prompt_index = ((*c).prompt_index as libc::c_ulong).wrapping_add(n) as size_t as size_t
     }
@@ -3014,9 +3004,9 @@ unsafe extern "C" fn status_prompt_replace_complete(
     let mut off: size_t = 0;
     let mut idx: size_t = 0;
     let mut used: size_t = 0;
-    let mut first: *mut utf8_data = 0 as *mut utf8_data;
-    let mut last: *mut utf8_data = 0 as *mut utf8_data;
-    let mut ud: *mut utf8_data = 0 as *mut utf8_data;
+    let mut first: *mut Utf8Data = 0 as *mut Utf8Data;
+    let mut last: *mut Utf8Data = 0 as *mut Utf8Data;
+    let mut ud: *mut Utf8Data = 0 as *mut Utf8Data;
     /* Work out where the cursor currently is. */
     idx = (*c).prompt_index;
     if idx != 0 as libc::c_int as libc::c_ulong {
@@ -3024,14 +3014,14 @@ unsafe extern "C" fn status_prompt_replace_complete(
     }
     size = utf8_strlen((*c).prompt_buffer);
     /* Find the word we are in. */
-    first = &mut *(*c).prompt_buffer.offset(idx as isize) as *mut utf8_data;
+    first = &mut *(*c).prompt_buffer.offset(idx as isize) as *mut Utf8Data;
     while first > (*c).prompt_buffer && status_prompt_space(first) == 0 {
         first = first.offset(-1)
     }
     while (*first).size as libc::c_int != 0 as libc::c_int && status_prompt_space(first) != 0 {
         first = first.offset(1)
     }
-    last = &mut *(*c).prompt_buffer.offset(idx as isize) as *mut utf8_data;
+    last = &mut *(*c).prompt_buffer.offset(idx as isize) as *mut Utf8Data;
     while (*last).size as libc::c_int != 0 as libc::c_int && status_prompt_space(last) == 0 {
         last = last.offset(1)
     }
@@ -3088,7 +3078,7 @@ unsafe extern "C" fn status_prompt_replace_complete(
     memmove(
         first as *mut libc::c_void,
         last as *const libc::c_void,
-        n.wrapping_mul(::std::mem::size_of::<utf8_data>() as libc::c_ulong),
+        n.wrapping_mul(::std::mem::size_of::<Utf8Data>() as libc::c_ulong),
     );
     size = (size as libc::c_ulong)
         .wrapping_sub(last.wrapping_offset_from(first) as libc::c_long as libc::c_ulong)
@@ -3099,13 +3089,13 @@ unsafe extern "C" fn status_prompt_replace_complete(
     (*c).prompt_buffer = xreallocarray(
         (*c).prompt_buffer as *mut libc::c_void,
         size.wrapping_add(1 as libc::c_int as libc::c_ulong),
-        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
-    ) as *mut utf8_data;
+        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
+    ) as *mut Utf8Data;
     first = (*c).prompt_buffer.offset(off as isize);
     memmove(
         first.offset(strlen(s) as isize) as *mut libc::c_void,
         first as *const libc::c_void,
-        n.wrapping_mul(::std::mem::size_of::<utf8_data>() as libc::c_ulong),
+        n.wrapping_mul(::std::mem::size_of::<Utf8Data>() as libc::c_ulong),
     );
     idx = 0 as libc::c_int as size_t;
     while idx < strlen(s) {
@@ -3134,7 +3124,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
     let mut keystring: *const libc::c_char = 0 as *const libc::c_char;
     let mut size: size_t = 0;
     let mut idx: size_t = 0;
-    let mut tmp: utf8_data = utf8_data {
+    let mut tmp: Utf8Data = Utf8Data {
         data: [0; 21],
         have: 0,
         size: 0,
@@ -3390,17 +3380,17 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
-                                    ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                    ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     (*c).prompt_index
                                         .wrapping_sub(idx)
                                         .wrapping_add(1 as libc::c_int as libc::c_ulong),
                                 )
-                                    as *mut utf8_data;
+                                    as *mut Utf8Data;
                                 memcpy(
                                     (*c).prompt_saved as *mut libc::c_void,
                                     (*c).prompt_buffer.offset(idx as isize) as *const libc::c_void,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 memmove(
@@ -3410,7 +3400,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
-                                            ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                            ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                         ),
                                 );
                                 memset(
@@ -3420,7 +3410,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         as *mut libc::c_void,
                                     '\u{0}' as i32,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 (*c).prompt_index = idx;
@@ -3458,7 +3448,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
-                                                ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                                ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                             ),
                                     );
                                     current_block = 368077705793071303;
@@ -3484,7 +3474,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                                 as *const libc::c_void,
                                             size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                                 .wrapping_sub((*c).prompt_index)
-                                                .wrapping_mul(::std::mem::size_of::<utf8_data>()
+                                                .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
                                         );
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
@@ -3779,17 +3769,17 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
-                                    ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                    ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     (*c).prompt_index
                                         .wrapping_sub(idx)
                                         .wrapping_add(1 as libc::c_int as libc::c_ulong),
                                 )
-                                    as *mut utf8_data;
+                                    as *mut Utf8Data;
                                 memcpy(
                                     (*c).prompt_saved as *mut libc::c_void,
                                     (*c).prompt_buffer.offset(idx as isize) as *const libc::c_void,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 memmove(
@@ -3799,7 +3789,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
-                                            ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                            ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                         ),
                                 );
                                 memset(
@@ -3809,7 +3799,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         as *mut libc::c_void,
                                     '\u{0}' as i32,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 (*c).prompt_index = idx;
@@ -3842,7 +3832,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
-                                                ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                                ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                             ),
                                     );
                                     current_block = 368077705793071303;
@@ -3866,7 +3856,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                                 as *const libc::c_void,
                                             size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                                 .wrapping_sub((*c).prompt_index)
-                                                .wrapping_mul(::std::mem::size_of::<utf8_data>()
+                                                .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
                                         );
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
@@ -4142,17 +4132,17 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
-                                    ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                    ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     (*c).prompt_index
                                         .wrapping_sub(idx)
                                         .wrapping_add(1 as libc::c_int as libc::c_ulong),
                                 )
-                                    as *mut utf8_data;
+                                    as *mut Utf8Data;
                                 memcpy(
                                     (*c).prompt_saved as *mut libc::c_void,
                                     (*c).prompt_buffer.offset(idx as isize) as *const libc::c_void,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 memmove(
@@ -4162,7 +4152,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
-                                            ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                            ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                         ),
                                 );
                                 memset(
@@ -4172,7 +4162,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         as *mut libc::c_void,
                                     '\u{0}' as i32,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 (*c).prompt_index = idx;
@@ -4205,7 +4195,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
-                                                ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                                ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                             ),
                                     );
                                     current_block = 368077705793071303;
@@ -4229,7 +4219,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                                 as *const libc::c_void,
                                             size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                                 .wrapping_sub((*c).prompt_index)
-                                                .wrapping_mul(::std::mem::size_of::<utf8_data>()
+                                                .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
                                         );
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
@@ -4505,17 +4495,17 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
-                                    ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                    ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     (*c).prompt_index
                                         .wrapping_sub(idx)
                                         .wrapping_add(1 as libc::c_int as libc::c_ulong),
                                 )
-                                    as *mut utf8_data;
+                                    as *mut Utf8Data;
                                 memcpy(
                                     (*c).prompt_saved as *mut libc::c_void,
                                     (*c).prompt_buffer.offset(idx as isize) as *const libc::c_void,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 memmove(
@@ -4525,7 +4515,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
-                                            ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                            ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                         ),
                                 );
                                 memset(
@@ -4535,7 +4525,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         as *mut libc::c_void,
                                     '\u{0}' as i32,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 (*c).prompt_index = idx;
@@ -4568,7 +4558,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
-                                                ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                                ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                             ),
                                     );
                                     current_block = 368077705793071303;
@@ -4592,7 +4582,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                                 as *const libc::c_void,
                                             size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                                 .wrapping_sub((*c).prompt_index)
-                                                .wrapping_mul(::std::mem::size_of::<utf8_data>()
+                                                .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
                                         );
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
@@ -4868,17 +4858,17 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
-                                    ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                    ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     (*c).prompt_index
                                         .wrapping_sub(idx)
                                         .wrapping_add(1 as libc::c_int as libc::c_ulong),
                                 )
-                                    as *mut utf8_data;
+                                    as *mut Utf8Data;
                                 memcpy(
                                     (*c).prompt_saved as *mut libc::c_void,
                                     (*c).prompt_buffer.offset(idx as isize) as *const libc::c_void,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 memmove(
@@ -4888,7 +4878,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
-                                            ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                            ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                         ),
                                 );
                                 memset(
@@ -4898,7 +4888,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         as *mut libc::c_void,
                                     '\u{0}' as i32,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 (*c).prompt_index = idx;
@@ -4931,7 +4921,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
-                                                ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                                ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                             ),
                                     );
                                     current_block = 368077705793071303;
@@ -4955,7 +4945,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                                 as *const libc::c_void,
                                             size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                                 .wrapping_sub((*c).prompt_index)
-                                                .wrapping_mul(::std::mem::size_of::<utf8_data>()
+                                                .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
                                         );
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
@@ -5231,17 +5221,17 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
-                                    ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                    ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     (*c).prompt_index
                                         .wrapping_sub(idx)
                                         .wrapping_add(1 as libc::c_int as libc::c_ulong),
                                 )
-                                    as *mut utf8_data;
+                                    as *mut Utf8Data;
                                 memcpy(
                                     (*c).prompt_saved as *mut libc::c_void,
                                     (*c).prompt_buffer.offset(idx as isize) as *const libc::c_void,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 memmove(
@@ -5251,7 +5241,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
-                                            ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                            ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                         ),
                                 );
                                 memset(
@@ -5261,7 +5251,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         as *mut libc::c_void,
                                     '\u{0}' as i32,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 (*c).prompt_index = idx;
@@ -5294,7 +5284,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
-                                                ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                                ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                             ),
                                     );
                                     current_block = 368077705793071303;
@@ -5318,7 +5308,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                                 as *const libc::c_void,
                                             size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                                 .wrapping_sub((*c).prompt_index)
-                                                .wrapping_mul(::std::mem::size_of::<utf8_data>()
+                                                .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
                                         );
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
@@ -5594,17 +5584,17 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
-                                    ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                    ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     (*c).prompt_index
                                         .wrapping_sub(idx)
                                         .wrapping_add(1 as libc::c_int as libc::c_ulong),
                                 )
-                                    as *mut utf8_data;
+                                    as *mut Utf8Data;
                                 memcpy(
                                     (*c).prompt_saved as *mut libc::c_void,
                                     (*c).prompt_buffer.offset(idx as isize) as *const libc::c_void,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 memmove(
@@ -5614,7 +5604,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
-                                            ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                            ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                         ),
                                 );
                                 memset(
@@ -5624,7 +5614,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         as *mut libc::c_void,
                                     '\u{0}' as i32,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 (*c).prompt_index = idx;
@@ -5657,7 +5647,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
-                                                ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                                ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                             ),
                                     );
                                     current_block = 368077705793071303;
@@ -5681,7 +5671,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                                 as *const libc::c_void,
                                             size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                                 .wrapping_sub((*c).prompt_index)
-                                                .wrapping_mul(::std::mem::size_of::<utf8_data>()
+                                                .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
                                         );
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
@@ -5957,17 +5947,17 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
-                                    ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                    ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     (*c).prompt_index
                                         .wrapping_sub(idx)
                                         .wrapping_add(1 as libc::c_int as libc::c_ulong),
                                 )
-                                    as *mut utf8_data;
+                                    as *mut Utf8Data;
                                 memcpy(
                                     (*c).prompt_saved as *mut libc::c_void,
                                     (*c).prompt_buffer.offset(idx as isize) as *const libc::c_void,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 memmove(
@@ -5977,7 +5967,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
-                                            ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                            ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                         ),
                                 );
                                 memset(
@@ -5987,7 +5977,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         as *mut libc::c_void,
                                     '\u{0}' as i32,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 (*c).prompt_index = idx;
@@ -6020,7 +6010,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
-                                                ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                                ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                             ),
                                     );
                                     current_block = 368077705793071303;
@@ -6044,7 +6034,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                                 as *const libc::c_void,
                                             size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                                 .wrapping_sub((*c).prompt_index)
-                                                .wrapping_mul(::std::mem::size_of::<utf8_data>()
+                                                .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
                                         );
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
@@ -6320,17 +6310,17 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
-                                    ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                    ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     (*c).prompt_index
                                         .wrapping_sub(idx)
                                         .wrapping_add(1 as libc::c_int as libc::c_ulong),
                                 )
-                                    as *mut utf8_data;
+                                    as *mut Utf8Data;
                                 memcpy(
                                     (*c).prompt_saved as *mut libc::c_void,
                                     (*c).prompt_buffer.offset(idx as isize) as *const libc::c_void,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 memmove(
@@ -6340,7 +6330,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
-                                            ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                            ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                         ),
                                 );
                                 memset(
@@ -6350,7 +6340,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         as *mut libc::c_void,
                                     '\u{0}' as i32,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 (*c).prompt_index = idx;
@@ -6383,7 +6373,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
-                                                ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                                ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                             ),
                                     );
                                     current_block = 368077705793071303;
@@ -6407,7 +6397,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                                 as *const libc::c_void,
                                             size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                                 .wrapping_sub((*c).prompt_index)
-                                                .wrapping_mul(::std::mem::size_of::<utf8_data>()
+                                                .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
                                         );
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
@@ -6683,17 +6673,17 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
-                                    ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                    ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     (*c).prompt_index
                                         .wrapping_sub(idx)
                                         .wrapping_add(1 as libc::c_int as libc::c_ulong),
                                 )
-                                    as *mut utf8_data;
+                                    as *mut Utf8Data;
                                 memcpy(
                                     (*c).prompt_saved as *mut libc::c_void,
                                     (*c).prompt_buffer.offset(idx as isize) as *const libc::c_void,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 memmove(
@@ -6703,7 +6693,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
-                                            ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                            ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                         ),
                                 );
                                 memset(
@@ -6713,7 +6703,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         as *mut libc::c_void,
                                     '\u{0}' as i32,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 (*c).prompt_index = idx;
@@ -6746,7 +6736,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
-                                                ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                                ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                             ),
                                     );
                                     current_block = 368077705793071303;
@@ -6770,7 +6760,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                                 as *const libc::c_void,
                                             size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                                 .wrapping_sub((*c).prompt_index)
-                                                .wrapping_mul(::std::mem::size_of::<utf8_data>()
+                                                .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
                                         );
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
@@ -7046,17 +7036,17 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
-                                    ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                    ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     (*c).prompt_index
                                         .wrapping_sub(idx)
                                         .wrapping_add(1 as libc::c_int as libc::c_ulong),
                                 )
-                                    as *mut utf8_data;
+                                    as *mut Utf8Data;
                                 memcpy(
                                     (*c).prompt_saved as *mut libc::c_void,
                                     (*c).prompt_buffer.offset(idx as isize) as *const libc::c_void,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 memmove(
@@ -7066,7 +7056,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
-                                            ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                            ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                         ),
                                 );
                                 memset(
@@ -7076,7 +7066,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         as *mut libc::c_void,
                                     '\u{0}' as i32,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 (*c).prompt_index = idx;
@@ -7109,7 +7099,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
-                                                ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                                ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                             ),
                                     );
                                     current_block = 368077705793071303;
@@ -7133,7 +7123,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                                 as *const libc::c_void,
                                             size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                                 .wrapping_sub((*c).prompt_index)
-                                                .wrapping_mul(::std::mem::size_of::<utf8_data>()
+                                                .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
                                         );
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
@@ -7409,17 +7399,17 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
-                                    ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                    ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     (*c).prompt_index
                                         .wrapping_sub(idx)
                                         .wrapping_add(1 as libc::c_int as libc::c_ulong),
                                 )
-                                    as *mut utf8_data;
+                                    as *mut Utf8Data;
                                 memcpy(
                                     (*c).prompt_saved as *mut libc::c_void,
                                     (*c).prompt_buffer.offset(idx as isize) as *const libc::c_void,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 memmove(
@@ -7429,7 +7419,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
-                                            ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                            ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                         ),
                                 );
                                 memset(
@@ -7439,7 +7429,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         as *mut libc::c_void,
                                     '\u{0}' as i32,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 (*c).prompt_index = idx;
@@ -7472,7 +7462,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
-                                                ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                                ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                             ),
                                     );
                                     current_block = 368077705793071303;
@@ -7496,7 +7486,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                                 as *const libc::c_void,
                                             size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                                 .wrapping_sub((*c).prompt_index)
-                                                .wrapping_mul(::std::mem::size_of::<utf8_data>()
+                                                .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
                                         );
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
@@ -7772,17 +7762,17 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
-                                    ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                    ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     (*c).prompt_index
                                         .wrapping_sub(idx)
                                         .wrapping_add(1 as libc::c_int as libc::c_ulong),
                                 )
-                                    as *mut utf8_data;
+                                    as *mut Utf8Data;
                                 memcpy(
                                     (*c).prompt_saved as *mut libc::c_void,
                                     (*c).prompt_buffer.offset(idx as isize) as *const libc::c_void,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 memmove(
@@ -7792,7 +7782,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
-                                            ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                            ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                         ),
                                 );
                                 memset(
@@ -7802,7 +7792,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         as *mut libc::c_void,
                                     '\u{0}' as i32,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 (*c).prompt_index = idx;
@@ -7835,7 +7825,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
-                                                ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                                ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                             ),
                                     );
                                     current_block = 368077705793071303;
@@ -7859,7 +7849,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                                 as *const libc::c_void,
                                             size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                                 .wrapping_sub((*c).prompt_index)
-                                                .wrapping_mul(::std::mem::size_of::<utf8_data>()
+                                                .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
                                         );
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
@@ -8135,17 +8125,17 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
-                                    ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                    ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     (*c).prompt_index
                                         .wrapping_sub(idx)
                                         .wrapping_add(1 as libc::c_int as libc::c_ulong),
                                 )
-                                    as *mut utf8_data;
+                                    as *mut Utf8Data;
                                 memcpy(
                                     (*c).prompt_saved as *mut libc::c_void,
                                     (*c).prompt_buffer.offset(idx as isize) as *const libc::c_void,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 memmove(
@@ -8155,7 +8145,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
-                                            ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                            ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                         ),
                                 );
                                 memset(
@@ -8165,7 +8155,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         as *mut libc::c_void,
                                     '\u{0}' as i32,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 (*c).prompt_index = idx;
@@ -8198,7 +8188,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
-                                                ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                                ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                             ),
                                     );
                                     current_block = 368077705793071303;
@@ -8222,7 +8212,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                                 as *const libc::c_void,
                                             size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                                 .wrapping_sub((*c).prompt_index)
-                                                .wrapping_mul(::std::mem::size_of::<utf8_data>()
+                                                .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
                                         );
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
@@ -8498,17 +8488,17 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
-                                    ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                    ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     (*c).prompt_index
                                         .wrapping_sub(idx)
                                         .wrapping_add(1 as libc::c_int as libc::c_ulong),
                                 )
-                                    as *mut utf8_data;
+                                    as *mut Utf8Data;
                                 memcpy(
                                     (*c).prompt_saved as *mut libc::c_void,
                                     (*c).prompt_buffer.offset(idx as isize) as *const libc::c_void,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 memmove(
@@ -8518,7 +8508,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
-                                            ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                            ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                         ),
                                 );
                                 memset(
@@ -8528,7 +8518,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         as *mut libc::c_void,
                                     '\u{0}' as i32,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 (*c).prompt_index = idx;
@@ -8561,7 +8551,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
-                                                ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                                ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                             ),
                                     );
                                     current_block = 368077705793071303;
@@ -8585,7 +8575,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                                 as *const libc::c_void,
                                             size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                                 .wrapping_sub((*c).prompt_index)
-                                                .wrapping_mul(::std::mem::size_of::<utf8_data>()
+                                                .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
                                         );
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
@@ -8861,17 +8851,17 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
-                                    ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                    ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     (*c).prompt_index
                                         .wrapping_sub(idx)
                                         .wrapping_add(1 as libc::c_int as libc::c_ulong),
                                 )
-                                    as *mut utf8_data;
+                                    as *mut Utf8Data;
                                 memcpy(
                                     (*c).prompt_saved as *mut libc::c_void,
                                     (*c).prompt_buffer.offset(idx as isize) as *const libc::c_void,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 memmove(
@@ -8881,7 +8871,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
-                                            ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                            ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                         ),
                                 );
                                 memset(
@@ -8891,7 +8881,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         as *mut libc::c_void,
                                     '\u{0}' as i32,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 (*c).prompt_index = idx;
@@ -8924,7 +8914,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
-                                                ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                                ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                             ),
                                     );
                                     current_block = 368077705793071303;
@@ -8948,7 +8938,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                                 as *const libc::c_void,
                                             size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                                 .wrapping_sub((*c).prompt_index)
-                                                .wrapping_mul(::std::mem::size_of::<utf8_data>()
+                                                .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
                                         );
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
@@ -9224,17 +9214,17 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
-                                    ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                    ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     (*c).prompt_index
                                         .wrapping_sub(idx)
                                         .wrapping_add(1 as libc::c_int as libc::c_ulong),
                                 )
-                                    as *mut utf8_data;
+                                    as *mut Utf8Data;
                                 memcpy(
                                     (*c).prompt_saved as *mut libc::c_void,
                                     (*c).prompt_buffer.offset(idx as isize) as *const libc::c_void,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 memmove(
@@ -9244,7 +9234,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
-                                            ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                            ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                         ),
                                 );
                                 memset(
@@ -9254,7 +9244,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         as *mut libc::c_void,
                                     '\u{0}' as i32,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 (*c).prompt_index = idx;
@@ -9287,7 +9277,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
-                                                ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                                ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                             ),
                                     );
                                     current_block = 368077705793071303;
@@ -9311,7 +9301,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                                 as *const libc::c_void,
                                             size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                                 .wrapping_sub((*c).prompt_index)
-                                                .wrapping_mul(::std::mem::size_of::<utf8_data>()
+                                                .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
                                         );
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
@@ -9587,17 +9577,17 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
-                                    ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                    ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     (*c).prompt_index
                                         .wrapping_sub(idx)
                                         .wrapping_add(1 as libc::c_int as libc::c_ulong),
                                 )
-                                    as *mut utf8_data;
+                                    as *mut Utf8Data;
                                 memcpy(
                                     (*c).prompt_saved as *mut libc::c_void,
                                     (*c).prompt_buffer.offset(idx as isize) as *const libc::c_void,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 memmove(
@@ -9607,7 +9597,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
-                                            ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                            ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                         ),
                                 );
                                 memset(
@@ -9617,7 +9607,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         as *mut libc::c_void,
                                     '\u{0}' as i32,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 (*c).prompt_index = idx;
@@ -9650,7 +9640,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
-                                                ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                                ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                             ),
                                     );
                                     current_block = 368077705793071303;
@@ -9674,7 +9664,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                                 as *const libc::c_void,
                                             size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                                 .wrapping_sub((*c).prompt_index)
-                                                .wrapping_mul(::std::mem::size_of::<utf8_data>()
+                                                .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
                                         );
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
@@ -9950,17 +9940,17 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
-                                    ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                    ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     (*c).prompt_index
                                         .wrapping_sub(idx)
                                         .wrapping_add(1 as libc::c_int as libc::c_ulong),
                                 )
-                                    as *mut utf8_data;
+                                    as *mut Utf8Data;
                                 memcpy(
                                     (*c).prompt_saved as *mut libc::c_void,
                                     (*c).prompt_buffer.offset(idx as isize) as *const libc::c_void,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 memmove(
@@ -9970,7 +9960,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
-                                            ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                            ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                         ),
                                 );
                                 memset(
@@ -9980,7 +9970,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         as *mut libc::c_void,
                                     '\u{0}' as i32,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 (*c).prompt_index = idx;
@@ -10013,7 +10003,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
-                                                ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                                ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                             ),
                                     );
                                     current_block = 368077705793071303;
@@ -10037,7 +10027,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                                 as *const libc::c_void,
                                             size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                                 .wrapping_sub((*c).prompt_index)
-                                                .wrapping_mul(::std::mem::size_of::<utf8_data>()
+                                                .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
                                         );
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
@@ -10313,17 +10303,17 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
-                                    ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                    ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     (*c).prompt_index
                                         .wrapping_sub(idx)
                                         .wrapping_add(1 as libc::c_int as libc::c_ulong),
                                 )
-                                    as *mut utf8_data;
+                                    as *mut Utf8Data;
                                 memcpy(
                                     (*c).prompt_saved as *mut libc::c_void,
                                     (*c).prompt_buffer.offset(idx as isize) as *const libc::c_void,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 memmove(
@@ -10333,7 +10323,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
-                                            ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                            ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                         ),
                                 );
                                 memset(
@@ -10343,7 +10333,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         as *mut libc::c_void,
                                     '\u{0}' as i32,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 (*c).prompt_index = idx;
@@ -10376,7 +10366,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
-                                                ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                                ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                             ),
                                     );
                                     current_block = 368077705793071303;
@@ -10400,7 +10390,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                                 as *const libc::c_void,
                                             size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                                 .wrapping_sub((*c).prompt_index)
-                                                .wrapping_mul(::std::mem::size_of::<utf8_data>()
+                                                .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
                                         );
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
@@ -10676,17 +10666,17 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
-                                    ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                    ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     (*c).prompt_index
                                         .wrapping_sub(idx)
                                         .wrapping_add(1 as libc::c_int as libc::c_ulong),
                                 )
-                                    as *mut utf8_data;
+                                    as *mut Utf8Data;
                                 memcpy(
                                     (*c).prompt_saved as *mut libc::c_void,
                                     (*c).prompt_buffer.offset(idx as isize) as *const libc::c_void,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 memmove(
@@ -10696,7 +10686,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
-                                            ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                            ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                         ),
                                 );
                                 memset(
@@ -10706,7 +10696,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         as *mut libc::c_void,
                                     '\u{0}' as i32,
                                     (*c).prompt_index.wrapping_sub(idx).wrapping_mul(
-                                        ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
+                                        ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
                                     ),
                                 );
                                 (*c).prompt_index = idx;
@@ -10739,7 +10729,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
-                                                ::std::mem::size_of::<utf8_data>() as libc::c_ulong
+                                                ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
                                             ),
                                     );
                                     current_block = 368077705793071303;
@@ -10763,7 +10753,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                                 as *const libc::c_void,
                                             size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                                                 .wrapping_sub((*c).prompt_index)
-                                                .wrapping_mul(::std::mem::size_of::<utf8_data>()
+                                                .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
                                         );
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
@@ -10872,13 +10862,13 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
             if key <= 0x7f as libc::c_int as libc::c_ulonglong {
                 utf8_set(&mut tmp, key as u_char);
             } else {
-                utf8_to_data(key as utf8_char, &mut tmp);
+                utf8_to_data(key as Utf8Char, &mut tmp);
             }
             (*c).prompt_buffer = xreallocarray(
                 (*c).prompt_buffer as *mut libc::c_void,
                 size.wrapping_add(2 as libc::c_int as libc::c_ulong),
-                ::std::mem::size_of::<utf8_data>() as libc::c_ulong,
-            ) as *mut utf8_data;
+                ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
+            ) as *mut Utf8Data;
             if (*c).prompt_index == size {
                 utf8_copy(
                     &mut *(*c).prompt_buffer.offset((*c).prompt_index as isize),
@@ -10895,7 +10885,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                     (*c).prompt_buffer.offset((*c).prompt_index as isize) as *const libc::c_void,
                     size.wrapping_add(1 as libc::c_int as libc::c_ulong)
                         .wrapping_sub((*c).prompt_index)
-                        .wrapping_mul(::std::mem::size_of::<utf8_data>() as libc::c_ulong),
+                        .wrapping_mul(::std::mem::size_of::<Utf8Data>() as libc::c_ulong),
                 );
                 utf8_copy(
                     &mut *(*c).prompt_buffer.offset((*c).prompt_index as isize),
