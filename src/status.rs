@@ -1,6 +1,7 @@
 use crate::{
     grid::{Cell as GridCell, Grid},
     key_code::code as key_code_code,
+    style::{Range as StyleRange, Ranges as StyleRanges},
     utf8::{utf8_state, Utf8Char, Utf8Data, Utf8State},
 };
 use ::libc;
@@ -132,7 +133,7 @@ extern "C" {
         _: *const crate::grid::Cell,
         _: u_int,
         _: *const libc::c_char,
-        _: *mut style_ranges,
+        _: *mut crate::style::Ranges,
     );
     #[no_mangle]
     fn options_get_only(
@@ -1138,37 +1139,8 @@ pub struct status_line {
 #[derive(Copy, Clone)]
 pub struct status_line_entry {
     pub expanded: *mut libc::c_char,
-    pub ranges: style_ranges,
+    pub ranges: crate::style::Ranges,
 }
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct style_ranges {
-    pub tqh_first: *mut style_range,
-    pub tqh_last: *mut *mut style_range,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct style_range {
-    pub type_0: style_range_type,
-    pub argument: u_int,
-    pub start: u_int,
-    pub end: u_int,
-    pub entry: C2RustUnnamed_29,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct C2RustUnnamed_29 {
-    pub tqe_next: *mut style_range,
-    pub tqe_prev: *mut *mut style_range,
-}
-pub type style_range_type = libc::c_uint;
-pub const STYLE_RANGE_WINDOW: style_range_type = 3;
-pub const STYLE_RANGE_RIGHT: style_range_type = 2;
-pub const STYLE_RANGE_LEFT: style_range_type = 1;
-pub const STYLE_RANGE_NONE: style_range_type = 0;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -1317,34 +1289,6 @@ pub struct tty_ctx {
 pub type tty_ctx_set_client_cb =
     Option<unsafe extern "C" fn(_: *mut tty_ctx, _: *mut client) -> libc::c_int>;
 pub type tty_ctx_redraw_cb = Option<unsafe extern "C" fn(_: *const tty_ctx) -> ()>;
-pub type style_align = libc::c_uint;
-pub const STYLE_ALIGN_RIGHT: style_align = 3;
-pub const STYLE_ALIGN_CENTRE: style_align = 2;
-pub const STYLE_ALIGN_LEFT: style_align = 1;
-pub const STYLE_ALIGN_DEFAULT: style_align = 0;
-pub type style_list = libc::c_uint;
-pub const STYLE_LIST_RIGHT_MARKER: style_list = 4;
-pub const STYLE_LIST_LEFT_MARKER: style_list = 3;
-pub const STYLE_LIST_FOCUS: style_list = 2;
-pub const STYLE_LIST_ON: style_list = 1;
-pub const STYLE_LIST_OFF: style_list = 0;
-pub type style_default_type = libc::c_uint;
-pub const STYLE_DEFAULT_POP: style_default_type = 2;
-pub const STYLE_DEFAULT_PUSH: style_default_type = 1;
-pub const STYLE_DEFAULT_BASE: style_default_type = 0;
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct style {
-    pub gc: crate::grid::Cell,
-    pub ignore: libc::c_int,
-    pub fill: libc::c_int,
-    pub align: style_align,
-    pub list: style_list,
-    pub range_type: style_range_type,
-    pub range_argument: u_int,
-    pub default_type: style_default_type,
-}
 
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -1432,7 +1376,7 @@ pub struct options_array {
 pub union options_value {
     pub string: *mut libc::c_char,
     pub number: libc::c_longlong,
-    pub style: style,
+    pub style: crate::style::Style,
     pub array: options_array,
     pub cmdlist: *mut cmd_list,
 }
@@ -1713,14 +1657,14 @@ pub unsafe extern "C" fn status_get_range(
     mut c: *mut client,
     mut x: u_int,
     mut y: u_int,
-) -> *mut style_range {
+) -> *mut StyleRange {
     let mut sl: *mut status_line = &mut (*c).status;
-    let mut sr: *mut style_range = 0 as *mut style_range;
+    let mut sr: *mut StyleRange = 0 as *mut StyleRange;
     if y as libc::c_ulong
         >= (::std::mem::size_of::<[status_line_entry; 5]>() as libc::c_ulong)
             .wrapping_div(::std::mem::size_of::<status_line_entry>() as libc::c_ulong)
     {
-        return 0 as *mut style_range;
+        return 0 as *mut StyleRange;
     }
     sr = (*sl).entries[y as usize].ranges.tqh_first;
     while !sr.is_null() {
@@ -1729,12 +1673,12 @@ pub unsafe extern "C" fn status_get_range(
         }
         sr = (*sr).entry.tqe_next
     }
-    return 0 as *mut style_range;
+    return 0 as *mut StyleRange;
 }
 /* Free all ranges. */
-unsafe extern "C" fn status_free_ranges(mut srs: *mut style_ranges) {
-    let mut sr: *mut style_range = 0 as *mut style_range;
-    let mut sr1: *mut style_range = 0 as *mut style_range;
+unsafe extern "C" fn status_free_ranges(mut srs: *mut StyleRanges) {
+    let mut sr: *mut StyleRange = 0 as *mut StyleRange;
+    let mut sr1: *mut StyleRange = 0 as *mut StyleRange;
     sr = (*srs).tqh_first;
     while !sr.is_null() && {
         sr1 = (*sr).entry.tqe_next;
@@ -1779,7 +1723,7 @@ pub unsafe extern "C" fn status_init(mut c: *mut client) {
         < (::std::mem::size_of::<[status_line_entry; 5]>() as libc::c_ulong)
             .wrapping_div(::std::mem::size_of::<status_line_entry>() as libc::c_ulong)
     {
-        (*sl).entries[i as usize].ranges.tqh_first = 0 as *mut style_range;
+        (*sl).entries[i as usize].ranges.tqh_first = 0 as *mut StyleRange;
         (*sl).entries[i as usize].ranges.tqh_last =
             &mut (*(*sl).entries.as_mut_ptr().offset(i as isize))
                 .ranges
@@ -2219,7 +2163,7 @@ pub unsafe extern "C" fn status_message_redraw(mut c: *mut client) -> libc::c_in
             &mut gc,
             (*c).tty.sx,
             (*c).message_string,
-            0 as *mut style_ranges,
+            0 as *mut StyleRanges,
         );
     }
     screen_write_stop(&mut ctx);

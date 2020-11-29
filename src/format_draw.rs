@@ -1,5 +1,10 @@
 use crate::{
     grid::{Cell as GridCell, Grid},
+    style::{
+        align as style_align, default_type as style_default_type, list as style_list,
+        range_type as style_range_type, Align as StyleAlign, Range as StyleRange,
+        RangeType as StyleRangeType, Ranges as StyleRanges, Style,
+    },
     utf8::{utf8_state, Utf8Data, Utf8State},
 };
 use ::libc;
@@ -65,17 +70,17 @@ extern "C" {
     #[no_mangle]
     fn log_debug(_: *const libc::c_char, _: ...);
     #[no_mangle]
-    fn style_tostring(_: *mut style) -> *const libc::c_char;
+    fn style_tostring(_: *mut crate::style::Style) -> *const libc::c_char;
     #[no_mangle]
     fn style_parse(
-        _: *mut style,
+        _: *mut crate::style::Style,
         _: *const crate::grid::Cell,
         _: *const libc::c_char,
     ) -> libc::c_int;
     #[no_mangle]
-    fn style_set(_: *mut style, _: *const crate::grid::Cell);
+    fn style_set(_: *mut crate::style::Style, _: *const crate::grid::Cell);
     #[no_mangle]
-    fn style_copy(_: *mut style, _: *mut style);
+    fn style_copy(_: *mut crate::style::Style, _: *mut crate::style::Style);
 }
 pub type __u_char = libc::c_uchar;
 pub type __u_short = libc::c_ushort;
@@ -874,37 +879,8 @@ pub struct status_line {
 #[derive(Copy, Clone)]
 pub struct status_line_entry {
     pub expanded: *mut libc::c_char,
-    pub ranges: style_ranges,
+    pub ranges: crate::style::Ranges,
 }
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct style_ranges {
-    pub tqh_first: *mut style_range,
-    pub tqh_last: *mut *mut style_range,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct style_range {
-    pub type_0: style_range_type,
-    pub argument: u_int,
-    pub start: u_int,
-    pub end: u_int,
-    pub entry: C2RustUnnamed_29,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct C2RustUnnamed_29 {
-    pub tqe_next: *mut style_range,
-    pub tqe_prev: *mut *mut style_range,
-}
-pub type style_range_type = libc::c_uint;
-pub const STYLE_RANGE_WINDOW: style_range_type = 3;
-pub const STYLE_RANGE_RIGHT: style_range_type = 2;
-pub const STYLE_RANGE_LEFT: style_range_type = 1;
-pub const STYLE_RANGE_NONE: style_range_type = 0;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -1053,34 +1029,7 @@ pub struct tty_ctx {
 pub type tty_ctx_set_client_cb =
     Option<unsafe extern "C" fn(_: *mut tty_ctx, _: *mut client) -> libc::c_int>;
 pub type tty_ctx_redraw_cb = Option<unsafe extern "C" fn(_: *const tty_ctx) -> ()>;
-pub type style_align = libc::c_uint;
-pub const STYLE_ALIGN_RIGHT: style_align = 3;
-pub const STYLE_ALIGN_CENTRE: style_align = 2;
-pub const STYLE_ALIGN_LEFT: style_align = 1;
-pub const STYLE_ALIGN_DEFAULT: style_align = 0;
-pub type style_list = libc::c_uint;
-pub const STYLE_LIST_RIGHT_MARKER: style_list = 4;
-pub const STYLE_LIST_LEFT_MARKER: style_list = 3;
-pub const STYLE_LIST_FOCUS: style_list = 2;
-pub const STYLE_LIST_ON: style_list = 1;
-pub const STYLE_LIST_OFF: style_list = 0;
-pub type style_default_type = libc::c_uint;
-pub const STYLE_DEFAULT_POP: style_default_type = 2;
-pub const STYLE_DEFAULT_PUSH: style_default_type = 1;
-pub const STYLE_DEFAULT_BASE: style_default_type = 0;
 
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct style {
-    pub gc: crate::grid::Cell,
-    pub ignore: libc::c_int,
-    pub fill: libc::c_int,
-    pub align: style_align,
-    pub list: style_list,
-    pub range_type: style_range_type,
-    pub range_argument: u_int,
-    pub default_type: style_default_type,
-}
 pub const TOTAL: C2RustUnnamed_33 = 7;
 /* $OpenBSD$ */
 /*
@@ -1107,7 +1056,7 @@ pub struct format_range {
     pub s: *mut screen,
     pub start: u_int,
     pub end: u_int,
-    pub type_0: style_range_type,
+    pub type_0: StyleRangeType,
     pub argument: u_int,
     pub entry: C2RustUnnamed_32,
 }
@@ -1134,11 +1083,11 @@ pub const CENTRE: C2RustUnnamed_33 = 1;
 pub const LEFT: C2RustUnnamed_33 = 0;
 pub type C2RustUnnamed_33 = libc::c_uint;
 /* Does this range match this style? */
-unsafe extern "C" fn format_is_type(mut fr: *mut format_range, mut sy: *mut style) -> libc::c_int {
+unsafe extern "C" fn format_is_type(mut fr: *mut format_range, mut sy: *mut Style) -> libc::c_int {
     if (*fr).type_0 != (*sy).range_type {
         return 0i32;
     }
-    if (*fr).type_0 == STYLE_RANGE_WINDOW && (*fr).argument != (*sy).range_argument {
+    if (*fr).type_0 == style_range_type::WINDOW && (*fr).argument != (*sy).range_argument {
         return 0i32;
     }
     return 1i32;
@@ -1816,7 +1765,7 @@ pub unsafe extern "C" fn format_draw(
     mut base: *const GridCell,
     mut available: u_int,
     mut expanded: *const libc::c_char,
-    mut srs: *mut style_ranges,
+    mut srs: *mut StyleRanges,
 ) {
     let mut current_block: u64;
     let mut current: C2RustUnnamed_33 = LEFT;
@@ -1887,7 +1836,7 @@ pub unsafe extern "C" fn format_draw(
     let mut focus_end: libc::c_int = -(1i32);
     let mut list_state: libc::c_int = -(1i32);
     let mut fill: libc::c_int = -(1i32);
-    let mut list_align: style_align = STYLE_ALIGN_DEFAULT;
+    let mut list_align: StyleAlign = style_align::DEFAULT;
     let mut gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
@@ -1914,7 +1863,7 @@ pub unsafe extern "C" fn format_draw(
         bg: 0,
         us: 0,
     };
-    let mut sy: style = style {
+    let mut sy: Style = Style {
         gc: GridCell {
             data: Utf8Data {
                 data: [0; 21],
@@ -1930,13 +1879,13 @@ pub unsafe extern "C" fn format_draw(
         },
         ignore: 0,
         fill: 0,
-        align: STYLE_ALIGN_DEFAULT,
-        list: STYLE_LIST_OFF,
-        range_type: STYLE_RANGE_NONE,
+        align: style_align::DEFAULT,
+        list: style_list::OFF,
+        range_type: style_range_type::NONE,
         range_argument: 0,
-        default_type: STYLE_DEFAULT_BASE,
+        default_type: style_default_type::BASE,
     };
-    let mut saved_sy: style = style {
+    let mut saved_sy: Style = Style {
         gc: GridCell {
             data: Utf8Data {
                 data: [0; 21],
@@ -1952,11 +1901,11 @@ pub unsafe extern "C" fn format_draw(
         },
         ignore: 0,
         fill: 0,
-        align: STYLE_ALIGN_DEFAULT,
-        list: STYLE_LIST_OFF,
-        range_type: STYLE_RANGE_NONE,
+        align: style_align::DEFAULT,
+        list: style_list::OFF,
+        range_type: style_range_type::NONE,
         range_argument: 0,
-        default_type: STYLE_DEFAULT_BASE,
+        default_type: style_default_type::BASE,
     };
     let mut ud: *mut Utf8Data = &mut sy.gc.data;
     let mut cp: *const libc::c_char = 0 as *const libc::c_char;
@@ -1969,7 +1918,7 @@ pub unsafe extern "C" fn format_draw(
         tqh_first: 0 as *mut format_range,
         tqh_last: 0 as *mut *mut format_range,
     };
-    let mut sr: *mut style_range = 0 as *mut style_range;
+    let mut sr: *mut StyleRange = 0 as *mut StyleRange;
     memcpy(
         &mut current_default as *mut GridCell as *mut libc::c_void,
         base as *const libc::c_void,
@@ -2106,20 +2055,20 @@ pub unsafe extern "C" fn format_draw(
                         fill = sy.fill
                     }
                     /* If this style pushed or popped the default, update it. */
-                    if sy.default_type == STYLE_DEFAULT_PUSH {
+                    if sy.default_type == style_default_type::PUSH {
                         memcpy(
                             &mut current_default as *mut GridCell as *mut libc::c_void,
                             &mut saved_sy.gc as *mut GridCell as *const libc::c_void,
                             ::std::mem::size_of::<GridCell>() as libc::c_ulong,
                         );
-                        sy.default_type = STYLE_DEFAULT_BASE
-                    } else if sy.default_type == STYLE_DEFAULT_POP {
+                        sy.default_type = style_default_type::BASE
+                    } else if sy.default_type == style_default_type::POP {
                         memcpy(
                             &mut current_default as *mut GridCell as *mut libc::c_void,
                             base as *const libc::c_void,
                             ::std::mem::size_of::<GridCell>() as libc::c_ulong,
                         );
-                        sy.default_type = STYLE_DEFAULT_BASE
+                        sy.default_type = style_default_type::BASE
                     }
                     /* Check the list state. */
                     match sy.list {
@@ -2164,8 +2113,8 @@ pub unsafe extern "C" fn format_draw(
                                     focus_end = s[LIST as usize].cx as libc::c_int
                                 }
                                 map[list_align as usize] = AFTER;
-                                if list_align == STYLE_ALIGN_LEFT {
-                                    map[STYLE_ALIGN_DEFAULT as usize] = AFTER
+                                if list_align == style_align::LEFT {
+                                    map[style_align::DEFAULT as usize] = AFTER
                                 }
                                 list_state = 1i32
                             }
@@ -2236,7 +2185,7 @@ pub unsafe extern "C" fn format_draw(
                             }
                             fr = 0 as *mut format_range
                         }
-                        if fr.is_null() && sy.range_type != STYLE_RANGE_NONE {
+                        if fr.is_null() && sy.range_type != style_range_type::NONE {
                             fr = xcalloc(
                                 1u64,
                                 ::std::mem::size_of::<format_range>() as libc::c_ulong,
@@ -2388,13 +2337,13 @@ pub unsafe extern "C" fn format_draw(
                 fr1 = (*fr).entry.tqe_next;
                 (1i32) != 0
             } {
-                sr = xcalloc(1u64, ::std::mem::size_of::<style_range>() as libc::c_ulong)
-                    as *mut style_range;
+                sr = xcalloc(1u64, ::std::mem::size_of::<StyleRange>() as libc::c_ulong)
+                    as *mut StyleRange;
                 (*sr).type_0 = (*fr).type_0;
                 (*sr).argument = (*fr).argument;
                 (*sr).start = (*fr).start;
                 (*sr).end = (*fr).end;
-                (*sr).entry.tqe_next = 0 as *mut style_range;
+                (*sr).entry.tqe_next = 0 as *mut StyleRange;
                 (*sr).entry.tqe_prev = (*srs).tqh_last;
                 *(*srs).tqh_last = sr;
                 (*srs).tqh_last = &mut (*sr).entry.tqe_next;

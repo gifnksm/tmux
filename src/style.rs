@@ -45,7 +45,7 @@ extern "C" {
         _: *mut crate::options::options,
         _: *const libc::c_char,
         _: *mut crate::format::format_tree,
-    ) -> *mut style;
+    ) -> *mut Style;
     #[no_mangle]
     fn colour_tostring(_: libc::c_int) -> *const libc::c_char;
     #[no_mangle]
@@ -869,37 +869,8 @@ pub struct status_line {
 #[derive(Copy, Clone)]
 pub struct status_line_entry {
     pub expanded: *mut libc::c_char,
-    pub ranges: style_ranges,
+    pub ranges: crate::style::Ranges,
 }
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct style_ranges {
-    pub tqh_first: *mut style_range,
-    pub tqh_last: *mut *mut style_range,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct style_range {
-    pub type_0: style_range_type,
-    pub argument: u_int,
-    pub start: u_int,
-    pub end: u_int,
-    pub entry: C2RustUnnamed_30,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct C2RustUnnamed_30 {
-    pub tqe_next: *mut style_range,
-    pub tqe_prev: *mut *mut style_range,
-}
-pub type style_range_type = libc::c_uint;
-pub const STYLE_RANGE_WINDOW: style_range_type = 3;
-pub const STYLE_RANGE_RIGHT: style_range_type = 2;
-pub const STYLE_RANGE_LEFT: style_range_type = 1;
-pub const STYLE_RANGE_NONE: style_range_type = 0;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -996,34 +967,7 @@ pub struct C2RustUnnamed_32 {
     pub rbe_parent: *mut client_window,
     pub rbe_color: libc::c_int,
 }
-pub type style_align = libc::c_uint;
-pub const STYLE_ALIGN_RIGHT: style_align = 3;
-pub const STYLE_ALIGN_CENTRE: style_align = 2;
-pub const STYLE_ALIGN_LEFT: style_align = 1;
-pub const STYLE_ALIGN_DEFAULT: style_align = 0;
-pub type style_list = libc::c_uint;
-pub const STYLE_LIST_RIGHT_MARKER: style_list = 4;
-pub const STYLE_LIST_LEFT_MARKER: style_list = 3;
-pub const STYLE_LIST_FOCUS: style_list = 2;
-pub const STYLE_LIST_ON: style_list = 1;
-pub const STYLE_LIST_OFF: style_list = 0;
-pub type style_default_type = libc::c_uint;
-pub const STYLE_DEFAULT_POP: style_default_type = 2;
-pub const STYLE_DEFAULT_PUSH: style_default_type = 1;
-pub const STYLE_DEFAULT_BASE: style_default_type = 0;
 
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct style {
-    pub gc: crate::grid::Cell,
-    pub ignore: libc::c_int,
-    pub fill: libc::c_int,
-    pub align: style_align,
-    pub list: style_list,
-    pub range_type: style_range_type,
-    pub range_argument: u_int,
-    pub default_type: style_default_type,
-}
 #[inline]
 unsafe extern "C" fn atoi(mut __nptr: *const libc::c_char) -> libc::c_int {
     return strtol(__nptr, 0 as *mut *mut libc::c_char, 10i32) as libc::c_int;
@@ -1045,10 +989,89 @@ unsafe extern "C" fn atoi(mut __nptr: *const libc::c_char) -> libc::c_int {
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+/// Style alignment.
+pub type Align = libc::c_uint;
+pub mod align {
+    use super::Align;
+
+    pub const DEFAULT: Align = 0;
+    pub const LEFT: Align = 1;
+    pub const CENTRE: Align = 2;
+    pub const RIGHT: Align = 3;
+}
+
+/// Style list.
+pub type List = libc::c_uint;
+pub mod list {
+    use super::List;
+
+    pub const OFF: List = 0;
+    pub const ON: List = 1;
+    pub const FOCUS: List = 2;
+    pub const LEFT_MARKER: List = 3;
+    pub const RIGHT_MARKER: List = 4;
+}
+
+// Style range.
+pub type RangeType = libc::c_uint;
+pub mod range_type {
+    use super::RangeType;
+    pub const NONE: RangeType = 0;
+    pub const LEFT: RangeType = 1;
+    pub const RIGHT: RangeType = 2;
+    pub const WINDOW: RangeType = 3;
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct Range {
+    pub type_0: RangeType,
+    pub argument: u_int,
+    pub start: u_int,
+    pub end: u_int,
+    pub entry: C2RustUnnamed_30,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct C2RustUnnamed_30 {
+    pub tqe_next: *mut Range,
+    pub tqe_prev: *mut *mut Range,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct Ranges {
+    pub tqh_first: *mut Range,
+    pub tqh_last: *mut *mut Range,
+}
+
+/// Style default.
+pub type DefaultType = libc::c_uint;
+pub mod default_type {
+    use super::DefaultType;
+
+    pub const BASE: DefaultType = 0;
+    pub const PUSH: DefaultType = 1;
+    pub const POP: DefaultType = 2;
+}
+
+/// Style option.
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct Style {
+    pub gc: crate::grid::Cell,
+    pub ignore: libc::c_int,
+    pub fill: libc::c_int,
+    pub align: Align,
+    pub list: List,
+    pub range_type: RangeType,
+    pub range_argument: u_int,
+    pub default_type: DefaultType,
+}
+
 /* Mask for bits not included in style. */
 /* Default style. */
-static mut style_default: style = {
-    let mut init = style {
+static mut style_default: Style = {
+    let mut init = Style {
         gc: {
             let mut init = GridCell {
                 data: {
@@ -1092,11 +1115,11 @@ static mut style_default: style = {
         },
         ignore: 0i32,
         fill: 8i32,
-        align: STYLE_ALIGN_DEFAULT,
-        list: STYLE_LIST_OFF,
-        range_type: STYLE_RANGE_NONE,
+        align: align::DEFAULT,
+        list: list::OFF,
+        range_type: range_type::NONE,
         range_argument: 0u32,
-        default_type: STYLE_DEFAULT_BASE,
+        default_type: default_type::BASE,
     };
     init
 };
@@ -1107,12 +1130,12 @@ static mut style_default: style = {
  */
 #[no_mangle]
 pub unsafe extern "C" fn style_parse(
-    mut sy: *mut style,
+    mut sy: *mut Style,
     mut base: *const GridCell,
     mut in_0: *const libc::c_char,
 ) -> libc::c_int {
     let mut current_block: u64;
-    let mut saved: style = style {
+    let mut saved: Style = Style {
         gc: GridCell {
             data: Utf8Data {
                 data: [0; 21],
@@ -1128,11 +1151,11 @@ pub unsafe extern "C" fn style_parse(
         },
         ignore: 0,
         fill: 0,
-        align: STYLE_ALIGN_DEFAULT,
-        list: STYLE_LIST_OFF,
-        range_type: STYLE_RANGE_NONE,
+        align: align::DEFAULT,
+        list: list::OFF,
+        range_type: range_type::NONE,
         range_argument: 0,
-        default_type: STYLE_DEFAULT_BASE,
+        default_type: default_type::BASE,
     };
     let delimiters: [libc::c_char; 3] =
         *::std::mem::transmute::<&[u8; 3], &[libc::c_char; 3]>(b" ,\x00");
@@ -1203,19 +1226,19 @@ pub unsafe extern "C" fn style_parse(
             b"push-default\x00" as *const u8 as *const libc::c_char,
         ) == 0i32
         {
-            (*sy).default_type = STYLE_DEFAULT_PUSH
+            (*sy).default_type = default_type::PUSH
         } else if strcasecmp(
             tmp.as_mut_ptr(),
             b"pop-default\x00" as *const u8 as *const libc::c_char,
         ) == 0i32
         {
-            (*sy).default_type = STYLE_DEFAULT_POP
+            (*sy).default_type = default_type::POP
         } else if strcasecmp(
             tmp.as_mut_ptr(),
             b"nolist\x00" as *const u8 as *const libc::c_char,
         ) == 0i32
         {
-            (*sy).list = STYLE_LIST_OFF
+            (*sy).list = list::OFF
         } else if strncasecmp(
             tmp.as_mut_ptr(),
             b"list=\x00" as *const u8 as *const libc::c_char,
@@ -1227,19 +1250,19 @@ pub unsafe extern "C" fn style_parse(
                 b"on\x00" as *const u8 as *const libc::c_char,
             ) == 0i32
             {
-                (*sy).list = STYLE_LIST_ON
+                (*sy).list = list::ON
             } else if strcasecmp(
                 tmp.as_mut_ptr().offset(5isize),
                 b"focus\x00" as *const u8 as *const libc::c_char,
             ) == 0i32
             {
-                (*sy).list = STYLE_LIST_FOCUS
+                (*sy).list = list::FOCUS
             } else if strcasecmp(
                 tmp.as_mut_ptr().offset(5isize),
                 b"left-marker\x00" as *const u8 as *const libc::c_char,
             ) == 0i32
             {
-                (*sy).list = STYLE_LIST_LEFT_MARKER
+                (*sy).list = list::LEFT_MARKER
             } else {
                 if !(strcasecmp(
                     tmp.as_mut_ptr().offset(5isize),
@@ -1249,7 +1272,7 @@ pub unsafe extern "C" fn style_parse(
                     current_block = 13061046559241396907;
                     break;
                 }
-                (*sy).list = STYLE_LIST_RIGHT_MARKER
+                (*sy).list = list::RIGHT_MARKER
             }
         } else if strcasecmp(
             tmp.as_mut_ptr(),
@@ -1296,7 +1319,7 @@ pub unsafe extern "C" fn style_parse(
                     current_block = 13061046559241396907;
                     break;
                 }
-                (*sy).range_type = STYLE_RANGE_LEFT;
+                (*sy).range_type = range_type::LEFT;
                 (*sy).range_argument = 0u32
             } else if strcasecmp(
                 tmp.as_mut_ptr().offset(6isize),
@@ -1307,7 +1330,7 @@ pub unsafe extern "C" fn style_parse(
                     current_block = 13061046559241396907;
                     break;
                 }
-                (*sy).range_type = STYLE_RANGE_RIGHT;
+                (*sy).range_type = range_type::RIGHT;
                 (*sy).range_argument = 0u32
             } else if strcasecmp(
                 tmp.as_mut_ptr().offset(6isize),
@@ -1318,7 +1341,7 @@ pub unsafe extern "C" fn style_parse(
                     current_block = 13061046559241396907;
                     break;
                 }
-                (*sy).range_type = STYLE_RANGE_WINDOW;
+                (*sy).range_type = range_type::WINDOW;
                 (*sy).range_argument = atoi(found) as u_int
             }
         } else if strcasecmp(
@@ -1339,13 +1362,13 @@ pub unsafe extern "C" fn style_parse(
                 b"left\x00" as *const u8 as *const libc::c_char,
             ) == 0i32
             {
-                (*sy).align = STYLE_ALIGN_LEFT
+                (*sy).align = align::LEFT
             } else if strcasecmp(
                 tmp.as_mut_ptr().offset(6isize),
                 b"centre\x00" as *const u8 as *const libc::c_char,
             ) == 0i32
             {
-                (*sy).align = STYLE_ALIGN_CENTRE
+                (*sy).align = align::CENTRE
             } else {
                 if !(strcasecmp(
                     tmp.as_mut_ptr().offset(6isize),
@@ -1355,7 +1378,7 @@ pub unsafe extern "C" fn style_parse(
                     current_block = 13061046559241396907;
                     break;
                 }
-                (*sy).align = STYLE_ALIGN_RIGHT
+                (*sy).align = align::RIGHT
             }
         } else if end > 5u64
             && strncasecmp(
@@ -1444,7 +1467,7 @@ pub unsafe extern "C" fn style_parse(
 }
 /* Convert style to a string. */
 #[no_mangle]
-pub unsafe extern "C" fn style_tostring(mut sy: *mut style) -> *const libc::c_char {
+pub unsafe extern "C" fn style_tostring(mut sy: *mut Style) -> *const libc::c_char {
     let mut gc: *mut GridCell = &mut (*sy).gc;
     let mut off: libc::c_int = 0i32;
     let mut comma: *const libc::c_char = b"\x00" as *const u8 as *const libc::c_char;
@@ -1452,14 +1475,14 @@ pub unsafe extern "C" fn style_tostring(mut sy: *mut style) -> *const libc::c_ch
     static mut s: [libc::c_char; 256] = [0; 256];
     let mut b: [libc::c_char; 16] = [0; 16];
     *s.as_mut_ptr() = '\u{0}' as libc::c_char;
-    if (*sy).list != STYLE_LIST_OFF {
-        if (*sy).list == STYLE_LIST_ON {
+    if (*sy).list != list::OFF {
+        if (*sy).list == list::ON {
             tmp = b"on\x00" as *const u8 as *const libc::c_char
-        } else if (*sy).list == STYLE_LIST_FOCUS {
+        } else if (*sy).list == list::FOCUS {
             tmp = b"focus\x00" as *const u8 as *const libc::c_char
-        } else if (*sy).list == STYLE_LIST_LEFT_MARKER {
+        } else if (*sy).list == list::LEFT_MARKER {
             tmp = b"left-marker\x00" as *const u8 as *const libc::c_char
-        } else if (*sy).list == STYLE_LIST_RIGHT_MARKER {
+        } else if (*sy).list == list::RIGHT_MARKER {
             tmp = b"right-marker\x00" as *const u8 as *const libc::c_char
         }
         off += xsnprintf(
@@ -1472,12 +1495,12 @@ pub unsafe extern "C" fn style_tostring(mut sy: *mut style) -> *const libc::c_ch
         );
         comma = b",\x00" as *const u8 as *const libc::c_char
     }
-    if (*sy).range_type != STYLE_RANGE_NONE {
-        if (*sy).range_type == STYLE_RANGE_LEFT {
+    if (*sy).range_type != range_type::NONE {
+        if (*sy).range_type == range_type::LEFT {
             tmp = b"left\x00" as *const u8 as *const libc::c_char
-        } else if (*sy).range_type == STYLE_RANGE_RIGHT {
+        } else if (*sy).range_type == range_type::RIGHT {
             tmp = b"right\x00" as *const u8 as *const libc::c_char
-        } else if (*sy).range_type == STYLE_RANGE_WINDOW {
+        } else if (*sy).range_type == range_type::WINDOW {
             snprintf(
                 b.as_mut_ptr(),
                 ::std::mem::size_of::<[libc::c_char; 16]>() as libc::c_ulong,
@@ -1496,12 +1519,12 @@ pub unsafe extern "C" fn style_tostring(mut sy: *mut style) -> *const libc::c_ch
         );
         comma = b",\x00" as *const u8 as *const libc::c_char
     }
-    if (*sy).align != STYLE_ALIGN_DEFAULT {
-        if (*sy).align == STYLE_ALIGN_LEFT {
+    if (*sy).align != align::DEFAULT {
+        if (*sy).align == align::LEFT {
             tmp = b"left\x00" as *const u8 as *const libc::c_char
-        } else if (*sy).align == STYLE_ALIGN_CENTRE {
+        } else if (*sy).align == align::CENTRE {
             tmp = b"centre\x00" as *const u8 as *const libc::c_char
-        } else if (*sy).align == STYLE_ALIGN_RIGHT {
+        } else if (*sy).align == align::RIGHT {
             tmp = b"right\x00" as *const u8 as *const libc::c_char
         }
         off += xsnprintf(
@@ -1514,10 +1537,10 @@ pub unsafe extern "C" fn style_tostring(mut sy: *mut style) -> *const libc::c_ch
         );
         comma = b",\x00" as *const u8 as *const libc::c_char
     }
-    if (*sy).default_type != STYLE_DEFAULT_BASE {
-        if (*sy).default_type == STYLE_DEFAULT_PUSH {
+    if (*sy).default_type != default_type::BASE {
+        if (*sy).default_type == default_type::PUSH {
             tmp = b"push-default\x00" as *const u8 as *const libc::c_char
-        } else if (*sy).default_type == STYLE_DEFAULT_POP {
+        } else if (*sy).default_type == default_type::POP {
             tmp = b"pop-default\x00" as *const u8 as *const libc::c_char
         }
         off += xsnprintf(
@@ -1587,7 +1610,7 @@ pub unsafe extern "C" fn style_add(
     mut name: *const libc::c_char,
     mut ft: *mut crate::format::format_tree,
 ) {
-    let mut sy: *mut style = 0 as *mut style;
+    let mut sy: *mut Style = 0 as *mut Style;
     let mut ft0: *mut crate::format::format_tree = 0 as *mut crate::format::format_tree;
     if ft.is_null() {
         ft0 = format_create(
@@ -1630,11 +1653,11 @@ pub unsafe extern "C" fn style_apply(
 }
 /* Initialize style from cell. */
 #[no_mangle]
-pub unsafe extern "C" fn style_set(mut sy: *mut style, mut gc: *const GridCell) {
+pub unsafe extern "C" fn style_set(mut sy: *mut Style, mut gc: *const GridCell) {
     memcpy(
         sy as *mut libc::c_void,
-        &mut style_default as *mut style as *const libc::c_void,
-        ::std::mem::size_of::<style>() as libc::c_ulong,
+        &mut style_default as *mut Style as *const libc::c_void,
+        ::std::mem::size_of::<Style>() as libc::c_ulong,
     );
     memcpy(
         &mut (*sy).gc as *mut GridCell as *mut libc::c_void,
@@ -1644,10 +1667,10 @@ pub unsafe extern "C" fn style_set(mut sy: *mut style, mut gc: *const GridCell) 
 }
 /* Copy style. */
 #[no_mangle]
-pub unsafe extern "C" fn style_copy(mut dst: *mut style, mut src: *mut style) {
+pub unsafe extern "C" fn style_copy(mut dst: *mut Style, mut src: *mut Style) {
     memcpy(
         dst as *mut libc::c_void,
         src as *const libc::c_void,
-        ::std::mem::size_of::<style>() as libc::c_ulong,
+        ::std::mem::size_of::<Style>() as libc::c_ulong,
     );
 }

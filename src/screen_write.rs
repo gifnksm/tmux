@@ -1,5 +1,6 @@
 use crate::{
     grid::{Cell as GridCell, CellEntry as GridCellEntry, Grid, Line as GridLine},
+    style::Ranges as StyleRanges,
     utf8::{utf8_state, Utf8Data, Utf8State},
 };
 use ::libc;
@@ -48,7 +49,7 @@ extern "C" {
         _: *const crate::grid::Cell,
         _: u_int,
         _: *const libc::c_char,
-        _: *mut style_ranges,
+        _: *mut crate::style::Ranges,
     );
     #[no_mangle]
     fn options_get_number(
@@ -1054,37 +1055,8 @@ pub struct status_line {
 #[derive(Copy, Clone)]
 pub struct status_line_entry {
     pub expanded: *mut libc::c_char,
-    pub ranges: style_ranges,
+    pub ranges: crate::style::Ranges,
 }
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct style_ranges {
-    pub tqh_first: *mut style_range,
-    pub tqh_last: *mut *mut style_range,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct style_range {
-    pub type_0: style_range_type,
-    pub argument: u_int,
-    pub start: u_int,
-    pub end: u_int,
-    pub entry: C2RustUnnamed_32,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct C2RustUnnamed_32 {
-    pub tqe_next: *mut style_range,
-    pub tqe_prev: *mut *mut style_range,
-}
-pub type style_range_type = libc::c_uint;
-pub const STYLE_RANGE_WINDOW: style_range_type = 3;
-pub const STYLE_RANGE_RIGHT: style_range_type = 2;
-pub const STYLE_RANGE_LEFT: style_range_type = 1;
-pub const STYLE_RANGE_NONE: style_range_type = 0;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -2103,7 +2075,7 @@ pub unsafe extern "C" fn screen_write_menu(
         &mut default_gc,
         (*menu).width,
         (*menu).title,
-        0 as *mut style_ranges,
+        0 as *mut StyleRanges,
     );
     i = 0u32;
     while i < (*menu).count {
@@ -2140,10 +2112,10 @@ pub unsafe extern "C" fn screen_write_menu(
             if *name as libc::c_int == '-' as i32 {
                 name = name.offset(1);
                 default_gc.attr = (default_gc.attr as libc::c_int | 0x2i32) as u_short;
-                format_draw(ctx, gc, (*menu).width, name, 0 as *mut style_ranges);
+                format_draw(ctx, gc, (*menu).width, name, 0 as *mut StyleRanges);
                 default_gc.attr = (default_gc.attr as libc::c_int & !(0x2i32)) as u_short
             } else {
-                format_draw(ctx, gc, (*menu).width, name, 0 as *mut style_ranges);
+                format_draw(ctx, gc, (*menu).width, name, 0 as *mut StyleRanges);
             }
             gc = &mut default_gc
         }

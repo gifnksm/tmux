@@ -1,5 +1,6 @@
 use crate::{
     grid::{Cell as GridCell, Grid},
+    style::Ranges as StyleRanges,
     utf8::Utf8Data,
 };
 use ::libc;
@@ -50,7 +51,7 @@ extern "C" {
         _: *const crate::grid::Cell,
         _: u_int,
         _: *const libc::c_char,
-        _: *mut style_ranges,
+        _: *mut crate::style::Ranges,
     );
     #[no_mangle]
     fn options_get_string(
@@ -949,37 +950,8 @@ pub struct status_line {
 #[derive(Copy, Clone)]
 pub struct status_line_entry {
     pub expanded: *mut libc::c_char,
-    pub ranges: style_ranges,
+    pub ranges: crate::style::Ranges,
 }
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct style_ranges {
-    pub tqh_first: *mut style_range,
-    pub tqh_last: *mut *mut style_range,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct style_range {
-    pub type_0: style_range_type,
-    pub argument: u_int,
-    pub start: u_int,
-    pub end: u_int,
-    pub entry: C2RustUnnamed_29,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct C2RustUnnamed_29 {
-    pub tqe_next: *mut style_range,
-    pub tqe_prev: *mut *mut style_range,
-}
-pub type style_range_type = libc::c_uint;
-pub const STYLE_RANGE_WINDOW: style_range_type = 3;
-pub const STYLE_RANGE_RIGHT: style_range_type = 2;
-pub const STYLE_RANGE_LEFT: style_range_type = 1;
-pub const STYLE_RANGE_NONE: style_range_type = 0;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -1923,7 +1895,7 @@ unsafe extern "C" fn screen_redraw_make_pane_status(
     }
     gc.attr = (gc.attr as libc::c_int & !(0x80i32)) as u_short;
     screen_write_cursormove(&mut ctx, 0i32, 0i32, 0i32);
-    format_draw(&mut ctx, &mut gc, width, expanded, 0 as *mut style_ranges);
+    format_draw(&mut ctx, &mut gc, width, expanded, 0 as *mut StyleRanges);
     screen_write_stop(&mut ctx);
     free(expanded as *mut libc::c_void);
     format_free(ft);

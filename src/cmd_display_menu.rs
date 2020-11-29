@@ -1,4 +1,6 @@
+use crate::style::{range_type as style_range_type, Range as StyleRange, Ranges as StyleRanges};
 use ::libc;
+
 extern "C" {
     pub type event_base;
     pub type evbuffer;
@@ -912,37 +914,8 @@ pub struct status_line {
 #[derive(Copy, Clone)]
 pub struct status_line_entry {
     pub expanded: *mut libc::c_char,
-    pub ranges: style_ranges,
+    pub ranges: crate::style::Ranges,
 }
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct style_ranges {
-    pub tqh_first: *mut style_range,
-    pub tqh_last: *mut *mut style_range,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct style_range {
-    pub type_0: style_range_type,
-    pub argument: u_int,
-    pub start: u_int,
-    pub end: u_int,
-    pub entry: C2RustUnnamed_29,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct C2RustUnnamed_29 {
-    pub tqe_next: *mut style_range,
-    pub tqe_prev: *mut *mut style_range,
-}
-pub type style_range_type = libc::c_uint;
-pub const STYLE_RANGE_WINDOW: style_range_type = 3;
-pub const STYLE_RANGE_RIGHT: style_range_type = 2;
-pub const STYLE_RANGE_LEFT: style_range_type = 1;
-pub const STYLE_RANGE_NONE: style_range_type = 0;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -1212,8 +1185,8 @@ unsafe extern "C" fn cmd_display_menu_get_position(
     let mut s: *mut session = (*tc).session;
     let mut wl: *mut winlink = (*target).wl;
     let mut wp: *mut window_pane = (*target).wp;
-    let mut ranges: *mut style_ranges = 0 as *mut style_ranges;
-    let mut sr: *mut style_range = 0 as *mut style_range;
+    let mut ranges: *mut StyleRanges = 0 as *mut StyleRanges;
+    let mut sr: *mut StyleRange = 0 as *mut StyleRange;
     let mut xp: *const libc::c_char = 0 as *const libc::c_char;
     let mut yp: *const libc::c_char = 0 as *const libc::c_char;
     let mut line: u_int = 0;
@@ -1228,7 +1201,7 @@ unsafe extern "C" fn cmd_display_menu_get_position(
         ranges = &mut (*(*tc).status.entries.as_mut_ptr().offset(line as isize)).ranges;
         sr = (*ranges).tqh_first;
         while !sr.is_null() {
-            if (*sr).type_0 == STYLE_RANGE_WINDOW {
+            if (*sr).type_0 == style_range_type::WINDOW {
                 break;
             }
             sr = (*sr).entry.tqe_next
@@ -1269,7 +1242,7 @@ unsafe extern "C" fn cmd_display_menu_get_position(
         } else {
             sr = (*ranges).tqh_first;
             while !sr.is_null() {
-                if !((*sr).type_0 != STYLE_RANGE_WINDOW) {
+                if !((*sr).type_0 != style_range_type::WINDOW) {
                     if (*sr).argument == (*wl).idx as u_int {
                         break;
                     }

@@ -1,4 +1,11 @@
-use crate::{grid::Cell as GridCell, utf8::Utf8Data};
+use crate::{
+    grid::Cell as GridCell,
+    style::{
+        align as style_align, default_type as style_default_type, list as style_list,
+        range_type as style_range_type, Style,
+    },
+    utf8::Utf8Data,
+};
 use ::libc;
 
 extern "C" {
@@ -133,12 +140,12 @@ extern "C" {
     fn fatalx(_: *const libc::c_char, _: ...) -> !;
     #[no_mangle]
     fn style_parse(
-        _: *mut style,
+        _: *mut crate::style::Style,
         _: *const crate::grid::Cell,
         _: *const libc::c_char,
     ) -> libc::c_int;
     #[no_mangle]
-    fn style_set(_: *mut style, _: *const crate::grid::Cell);
+    fn style_set(_: *mut crate::style::Style, _: *const crate::grid::Cell);
 }
 pub type __builtin_va_list = [__va_list_tag; 1];
 
@@ -603,7 +610,7 @@ pub struct options_entry {
     pub tableentry: *const options_table_entry,
     pub value: options_value,
     pub cached: libc::c_int,
-    pub style: style,
+    pub style: crate::style::Style,
     pub entry: C2RustUnnamed_15,
 }
 
@@ -618,43 +625,10 @@ pub struct C2RustUnnamed_15 {
 
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct style {
-    pub gc: crate::grid::Cell,
-    pub ignore: libc::c_int,
-    pub fill: libc::c_int,
-    pub align: style_align,
-    pub list: style_list,
-    pub range_type: style_range_type,
-    pub range_argument: u_int,
-    pub default_type: style_default_type,
-}
-pub type style_default_type = libc::c_uint;
-pub const STYLE_DEFAULT_POP: style_default_type = 2;
-pub const STYLE_DEFAULT_PUSH: style_default_type = 1;
-pub const STYLE_DEFAULT_BASE: style_default_type = 0;
-pub type style_range_type = libc::c_uint;
-pub const STYLE_RANGE_WINDOW: style_range_type = 3;
-pub const STYLE_RANGE_RIGHT: style_range_type = 2;
-pub const STYLE_RANGE_LEFT: style_range_type = 1;
-pub const STYLE_RANGE_NONE: style_range_type = 0;
-pub type style_list = libc::c_uint;
-pub const STYLE_LIST_RIGHT_MARKER: style_list = 4;
-pub const STYLE_LIST_LEFT_MARKER: style_list = 3;
-pub const STYLE_LIST_FOCUS: style_list = 2;
-pub const STYLE_LIST_ON: style_list = 1;
-pub const STYLE_LIST_OFF: style_list = 0;
-pub type style_align = libc::c_uint;
-pub const STYLE_ALIGN_RIGHT: style_align = 3;
-pub const STYLE_ALIGN_CENTRE: style_align = 2;
-pub const STYLE_ALIGN_LEFT: style_align = 1;
-pub const STYLE_ALIGN_DEFAULT: style_align = 0;
-
-#[repr(C)]
-#[derive(Copy, Clone)]
 pub union options_value {
     pub string: *mut libc::c_char,
     pub number: libc::c_longlong,
-    pub style: style,
+    pub style: crate::style::Style,
     pub array: options_array,
     pub cmdlist: *mut cmd_list,
 }
@@ -1109,31 +1083,7 @@ pub struct status_line {
 #[derive(Copy, Clone)]
 pub struct status_line_entry {
     pub expanded: *mut libc::c_char,
-    pub ranges: style_ranges,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct style_ranges {
-    pub tqh_first: *mut style_range,
-    pub tqh_last: *mut *mut style_range,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct style_range {
-    pub type_0: style_range_type,
-    pub argument: u_int,
-    pub start: u_int,
-    pub end: u_int,
-    pub entry: C2RustUnnamed_32,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct C2RustUnnamed_32 {
-    pub tqe_next: *mut style_range,
-    pub tqe_prev: *mut *mut style_range,
+    pub ranges: crate::style::Ranges,
 }
 
 #[repr(C)]
@@ -2434,7 +2384,7 @@ pub unsafe extern "C" fn options_get_only(
                 string: 0 as *mut libc::c_char,
             },
             cached: 0,
-            style: style {
+            style: Style {
                 gc: GridCell {
                     data: Utf8Data {
                         data: [0; 21],
@@ -2450,11 +2400,11 @@ pub unsafe extern "C" fn options_get_only(
                 },
                 ignore: 0,
                 fill: 0,
-                align: STYLE_ALIGN_DEFAULT,
-                list: STYLE_LIST_OFF,
-                range_type: STYLE_RANGE_NONE,
+                align: style_align::DEFAULT,
+                list: style_list::OFF,
+                range_type: style_range_type::NONE,
                 range_argument: 0,
-                default_type: STYLE_DEFAULT_BASE,
+                default_type: style_default_type::BASE,
             },
             entry: C2RustUnnamed_15 {
                 rbe_left: 0 as *mut options_entry,
@@ -3328,7 +3278,7 @@ pub unsafe extern "C" fn options_string_to_style(
     mut oo: *mut options,
     mut name: *const libc::c_char,
     mut ft: *mut crate::format::format_tree,
-) -> *mut style {
+) -> *mut Style {
     let mut o: *mut options_entry = 0 as *mut options_entry;
     let mut s: *const libc::c_char = 0 as *const libc::c_char;
     let mut expanded: *mut libc::c_char = 0 as *mut libc::c_char;
@@ -3336,7 +3286,7 @@ pub unsafe extern "C" fn options_string_to_style(
     if o.is_null()
         || !((*o).tableentry.is_null() || (*(*o).tableentry).type_0 == OPTIONS_TABLE_STRING)
     {
-        return 0 as *mut style;
+        return 0 as *mut Style;
     }
     if (*o).cached != 0 {
         return &mut (*o).style;
@@ -3356,11 +3306,11 @@ pub unsafe extern "C" fn options_string_to_style(
         expanded = format_expand(ft, s);
         if style_parse(&mut (*o).style, &grid_default_cell, expanded) != 0i32 {
             free(expanded as *mut libc::c_void);
-            return 0 as *mut style;
+            return 0 as *mut Style;
         }
         free(expanded as *mut libc::c_void);
     } else if style_parse(&mut (*o).style, &grid_default_cell, s) != 0i32 {
-        return 0 as *mut style;
+        return 0 as *mut Style;
     }
     return &mut (*o).style;
 }
@@ -3369,7 +3319,7 @@ unsafe extern "C" fn options_from_string_check(
     mut value: *const libc::c_char,
     mut cause: *mut *mut libc::c_char,
 ) -> libc::c_int {
-    let mut sy: style = style {
+    let mut sy: Style = Style {
         gc: GridCell {
             data: Utf8Data {
                 data: [0; 21],
@@ -3385,11 +3335,11 @@ unsafe extern "C" fn options_from_string_check(
         },
         ignore: 0,
         fill: 0,
-        align: STYLE_ALIGN_DEFAULT,
-        list: STYLE_LIST_OFF,
-        range_type: STYLE_RANGE_NONE,
+        align: style_align::DEFAULT,
+        list: style_list::OFF,
+        range_type: style_range_type::NONE,
         range_argument: 0,
-        default_type: STYLE_DEFAULT_BASE,
+        default_type: style_default_type::BASE,
     };
     if oe.is_null() {
         return 0i32;

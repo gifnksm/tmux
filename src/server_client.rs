@@ -4,6 +4,7 @@ use crate::{
         code as msgtype_code, Command as MsgCommand, Msgtype, ReadData as MsgReadData,
         ReadDone as MsgReadDone, WriteReady as MsgWriteReady,
     },
+    style::Range as StyleRange,
 };
 use ::libc;
 
@@ -281,7 +282,7 @@ extern "C" {
     #[no_mangle]
     fn server_status_client(_: *mut client);
     #[no_mangle]
-    fn status_get_range(_: *mut client, _: u_int, _: u_int) -> *mut style_range;
+    fn status_get_range(_: *mut client, _: u_int, _: u_int) -> *mut crate::style::Range;
     #[no_mangle]
     fn status_line_size(_: *mut client) -> u_int;
     #[no_mangle]
@@ -1213,37 +1214,8 @@ pub struct status_line {
 #[derive(Copy, Clone)]
 pub struct status_line_entry {
     pub expanded: *mut libc::c_char,
-    pub ranges: style_ranges,
+    pub ranges: crate::style::Ranges,
 }
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct style_ranges {
-    pub tqh_first: *mut style_range,
-    pub tqh_last: *mut *mut style_range,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct style_range {
-    pub type_0: style_range_type,
-    pub argument: u_int,
-    pub start: u_int,
-    pub end: u_int,
-    pub entry: C2RustUnnamed_29,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct C2RustUnnamed_29 {
-    pub tqe_next: *mut style_range,
-    pub tqe_prev: *mut *mut style_range,
-}
-pub type style_range_type = libc::c_uint;
-pub const STYLE_RANGE_WINDOW: style_range_type = 3;
-pub const STYLE_RANGE_RIGHT: style_range_type = 2;
-pub const STYLE_RANGE_LEFT: style_range_type = 1;
-pub const STYLE_RANGE_NONE: style_range_type = 0;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -2485,7 +2457,7 @@ unsafe extern "C" fn server_client_check_mouse(
         tv_sec: 0,
         tv_usec: 0,
     };
-    let mut sr: *mut style_range = 0 as *mut style_range;
+    let mut sr: *mut StyleRange = 0 as *mut StyleRange;
     let mut type_0: C2RustUnnamed_35 = NOTYPE;
     let mut where_0: C2RustUnnamed_34 = NOWHERE;
     log_debug(
