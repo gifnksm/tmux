@@ -1,4 +1,4 @@
-use crate::grid::Cell as GridCell;
+use crate::grid::{Cell as GridCell, Line as GridLine};
 use ::libc;
 
 extern "C" {
@@ -63,7 +63,7 @@ extern "C" {
     #[no_mangle]
     fn grid_clear_history(_: *mut grid);
     #[no_mangle]
-    fn grid_peek_line(_: *mut grid, _: u_int) -> *const grid_line;
+    fn grid_peek_line(_: *mut grid, _: u_int) -> *const GridLine;
     #[no_mangle]
     fn grid_string_cells(
         _: *mut grid,
@@ -464,18 +464,7 @@ pub struct grid {
     pub hscrolled: u_int,
     pub hsize: u_int,
     pub hlimit: u_int,
-    pub linedata: *mut grid_line,
-}
-
-#[repr(C, packed)]
-#[derive(Copy, Clone)]
-pub struct grid_line {
-    pub cellused: u_int,
-    pub cellsize: u_int,
-    pub celldata: *mut crate::grid::CellEntry,
-    pub extdsize: u_int,
-    pub extddata: *mut crate::grid::ExtdEntry,
-    pub flags: libc::c_int,
+    pub linedata: *mut crate::grid::Line,
 }
 
 pub type overlay_check_cb =
@@ -1221,7 +1210,7 @@ unsafe extern "C" fn cmd_capture_pane_history(
     mut len: *mut size_t,
 ) -> *mut libc::c_char {
     let mut gd: *mut grid = 0 as *mut grid;
-    let mut gl: *const grid_line = 0 as *const grid_line;
+    let mut gl: *const GridLine = 0 as *const GridLine;
     let mut gc: *mut GridCell = 0 as *mut GridCell;
     let mut n: libc::c_int = 0;
     let mut with_codes: libc::c_int = 0;

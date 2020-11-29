@@ -1,5 +1,5 @@
 use crate::{
-    grid::{Cell as GridCell, CellEntry as GridCellEntry},
+    grid::{Cell as GridCell, CellEntry as GridCellEntry, Line as GridLine},
     utf8::{Utf8Char, Utf8Data},
 };
 use ::c2rust_bitfields;
@@ -174,11 +174,11 @@ extern "C" {
     #[no_mangle]
     static grid_default_cell: crate::grid::Cell;
     #[no_mangle]
-    fn grid_peek_line(_: *mut grid, _: u_int) -> *const grid_line;
+    fn grid_peek_line(_: *mut grid, _: u_int) -> *const GridLine;
     #[no_mangle]
     fn grid_get_cell(_: *mut grid, _: u_int, _: u_int, _: *mut crate::grid::Cell);
     #[no_mangle]
-    fn grid_get_line(_: *mut grid, _: u_int) -> *mut grid_line;
+    fn grid_get_line(_: *mut grid, _: u_int) -> *mut GridLine;
     #[no_mangle]
     fn grid_duplicate_lines(_: *mut grid, _: u_int, _: *mut grid, _: u_int, _: u_int);
     #[no_mangle]
@@ -718,18 +718,7 @@ pub struct grid {
     pub hscrolled: u_int,
     pub hsize: u_int,
     pub hlimit: u_int,
-    pub linedata: *mut grid_line,
-}
-
-#[repr(C, packed)]
-#[derive(Copy, Clone)]
-pub struct grid_line {
-    pub cellused: u_int,
-    pub cellsize: u_int,
-    pub celldata: *mut crate::grid::CellEntry,
-    pub extdsize: u_int,
-    pub extddata: *mut crate::grid::ExtdEntry,
-    pub flags: libc::c_int,
+    pub linedata: *mut crate::grid::Line,
 }
 
 pub type overlay_check_cb =
@@ -1600,7 +1589,7 @@ unsafe extern "C" fn window_copy_clone_screen(
     mut trim: libc::c_int,
 ) -> *mut screen {
     let mut dst: *mut screen = 0 as *mut screen;
-    let mut gl: *const grid_line = 0 as *const grid_line;
+    let mut gl: *const GridLine = 0 as *const GridLine;
     let mut sy: u_int = 0;
     let mut wx: u_int = 0;
     let mut wy: u_int = 0;
@@ -2938,7 +2927,7 @@ unsafe extern "C" fn window_copy_cmd_next_matching_bracket(
         us: 0,
     };
     let mut failed: libc::c_int = 0;
-    let mut gl: *mut grid_line = 0 as *mut grid_line;
+    let mut gl: *mut GridLine = 0 as *mut GridLine;
     's_33: while np != 0u32 {
         /* Get cursor position and line length. */
         px = (*data).cx;
@@ -5006,7 +4995,7 @@ unsafe extern "C" fn window_copy_search_lr(
     let mut pywrap: u_int = 0;
     let mut endline: u_int = 0;
     let mut matched: libc::c_int = 0;
-    let mut gl: *mut grid_line = 0 as *mut grid_line;
+    let mut gl: *mut GridLine = 0 as *mut GridLine;
     endline = (*gd).hsize.wrapping_add((*gd).sy).wrapping_sub(1u32);
     ax = first;
     while ax < last {
@@ -5056,7 +5045,7 @@ unsafe extern "C" fn window_copy_search_rl(
     let mut pywrap: u_int = 0;
     let mut endline: u_int = 0;
     let mut matched: libc::c_int = 0;
-    let mut gl: *mut grid_line = 0 as *mut grid_line;
+    let mut gl: *mut GridLine = 0 as *mut GridLine;
     endline = (*gd).hsize.wrapping_add((*gd).sy).wrapping_sub(1u32);
     ax = last;
     while ax > first {
@@ -5109,7 +5098,7 @@ unsafe extern "C" fn window_copy_search_lr_regex(
     let mut size: u_int = 1u32;
     let mut buf: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut regmatch: regmatch_t = regmatch_t { rm_so: 0, rm_eo: 0 };
-    let mut gl: *mut grid_line = 0 as *mut grid_line;
+    let mut gl: *mut GridLine = 0 as *mut GridLine;
     /*
      * This can happen during search if the last match was the last
      * character on a line.
@@ -5187,7 +5176,7 @@ unsafe extern "C" fn window_copy_search_rl_regex(
     let mut pywrap: u_int = 0;
     let mut size: u_int = 1u32;
     let mut buf: *mut libc::c_char = 0 as *mut libc::c_char;
-    let mut gl: *mut grid_line = 0 as *mut grid_line;
+    let mut gl: *mut GridLine = 0 as *mut GridLine;
     /* Set flags for regex search. */
     if first != 0u32 {
         eflags |= 1i32
@@ -5218,7 +5207,7 @@ unsafe extern "C" fn window_copy_search_rl_regex(
     return 0i32;
 }
 unsafe extern "C" fn window_copy_cellstring(
-    mut gl: *const grid_line,
+    mut gl: *const GridLine,
     mut px: u_int,
     mut size: *mut size_t,
     mut allocated: *mut libc::c_int,
@@ -5345,7 +5334,7 @@ unsafe extern "C" fn window_copy_stringify(
     let mut ax: u_int = 0;
     let mut bx: u_int = 0;
     let mut newsize: u_int = *size;
-    let mut gl: *const grid_line = 0 as *const grid_line;
+    let mut gl: *const GridLine = 0 as *const GridLine;
     let mut d: *const libc::c_char = 0 as *const libc::c_char;
     let mut bufsize: size_t = 1024u64;
     let mut dlen: size_t = 0;
@@ -5400,7 +5389,7 @@ unsafe extern "C" fn window_copy_cstrtocellpos(
     let mut pos: u_int = 0;
     let mut len: u_int = 0;
     let mut match_0: libc::c_int = 0;
-    let mut gl: *const grid_line = 0 as *const grid_line;
+    let mut gl: *const GridLine = 0 as *const GridLine;
     let mut d: *const libc::c_char = 0 as *const libc::c_char;
     let mut dlen: size_t = 0;
     let mut cells: *mut C2RustUnnamed_36 = 0 as *mut C2RustUnnamed_36;
@@ -5839,7 +5828,7 @@ unsafe extern "C" fn window_copy_visible_lines(
     mut end: *mut u_int,
 ) {
     let mut gd: *mut grid = (*(*data).backing).grid;
-    let mut gl: *const grid_line = 0 as *const grid_line;
+    let mut gl: *const GridLine = 0 as *const GridLine;
     *start = (*gd).hsize.wrapping_sub((*data).oy);
     while *start > 0u32 {
         gl = grid_peek_line(gd, (*start).wrapping_sub(1u32));
@@ -7194,7 +7183,7 @@ unsafe extern "C" fn window_copy_copy_line(
         bg: 0,
         us: 0,
     };
-    let mut gl: *mut grid_line = 0 as *mut grid_line;
+    let mut gl: *mut GridLine = 0 as *mut GridLine;
     let mut ud: Utf8Data = Utf8Data {
         data: [0; 21],
         have: 0,
@@ -7384,7 +7373,7 @@ unsafe extern "C" fn window_copy_cursor_end_of_line(mut wme: *mut window_mode_en
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
     let mut back_s: *mut screen = (*data).backing;
     let mut gd: *mut grid = (*back_s).grid;
-    let mut gl: *mut grid_line = 0 as *mut grid_line;
+    let mut gl: *mut GridLine = 0 as *mut GridLine;
     let mut px: u_int = 0;
     let mut py: u_int = 0;
     py = (*(*back_s).grid)

@@ -1,5 +1,7 @@
 use crate::{
-    grid::{Cell as GridCell, CellEntry as GridCellEntry, ExtdEntry as GridExtdEntry},
+    grid::{
+        Cell as GridCell, CellEntry as GridCellEntry, ExtdEntry as GridExtdEntry, Line as GridLine,
+    },
     utf8::Utf8Data,
 };
 use ::c2rust_bitfields;
@@ -260,7 +262,7 @@ extern "C" {
     #[no_mangle]
     fn grid_line_length(_: *mut grid, _: u_int) -> u_int;
     #[no_mangle]
-    fn grid_peek_line(_: *mut grid, _: u_int) -> *const grid_line;
+    fn grid_peek_line(_: *mut grid, _: u_int) -> *const GridLine;
     #[no_mangle]
     fn server_client_get_cwd(_: *mut client, _: *mut session) -> *const libc::c_char;
     #[no_mangle]
@@ -270,7 +272,7 @@ extern "C" {
     #[no_mangle]
     fn server_client_get_flags(_: *mut client) -> *const libc::c_char;
     #[no_mangle]
-    fn grid_get_line(_: *mut grid, _: u_int) -> *mut grid_line;
+    fn grid_get_line(_: *mut grid, _: u_int) -> *mut GridLine;
     #[no_mangle]
     static mut marked_pane: cmd_find_state;
     #[no_mangle]
@@ -814,18 +816,7 @@ pub struct grid {
     pub hscrolled: u_int,
     pub hsize: u_int,
     pub hlimit: u_int,
-    pub linedata: *mut grid_line,
-}
-
-#[repr(C, packed)]
-#[derive(Copy, Clone)]
-pub struct grid_line {
-    pub cellused: u_int,
-    pub cellsize: u_int,
-    pub celldata: *mut crate::grid::CellEntry,
-    pub extdsize: u_int,
-    pub extddata: *mut crate::grid::ExtdEntry,
-    pub flags: libc::c_int,
+    pub linedata: *mut crate::grid::Line,
 }
 
 pub type overlay_check_cb =
@@ -3397,7 +3388,7 @@ unsafe extern "C" fn format_cb_current_path(mut ft: *mut format_tree) -> *mut li
 unsafe extern "C" fn format_cb_history_bytes(mut ft: *mut format_tree) -> *mut libc::c_char {
     let mut wp: *mut window_pane = (*ft).wp;
     let mut gd: *mut grid = 0 as *mut grid;
-    let mut gl: *mut grid_line = 0 as *mut grid_line;
+    let mut gl: *mut GridLine = 0 as *mut GridLine;
     let mut size: size_t = 0u64;
     let mut i: u_int = 0;
     let mut value: *mut libc::c_char = 0 as *mut libc::c_char;
@@ -3420,7 +3411,7 @@ unsafe extern "C" fn format_cb_history_bytes(mut ft: *mut format_tree) -> *mut l
     }
     size = (size).wrapping_add(
         ((*gd).hsize.wrapping_add((*gd).sy) as libc::c_ulong)
-            .wrapping_mul(::std::mem::size_of::<grid_line>() as libc::c_ulong),
+            .wrapping_mul(::std::mem::size_of::<GridLine>() as libc::c_ulong),
     );
     xasprintf(
         &mut value as *mut *mut libc::c_char,
@@ -3433,7 +3424,7 @@ unsafe extern "C" fn format_cb_history_bytes(mut ft: *mut format_tree) -> *mut l
 unsafe extern "C" fn format_cb_history_all_bytes(mut ft: *mut format_tree) -> *mut libc::c_char {
     let mut wp: *mut window_pane = (*ft).wp;
     let mut gd: *mut grid = 0 as *mut grid;
-    let mut gl: *mut grid_line = 0 as *mut grid_line;
+    let mut gl: *mut GridLine = 0 as *mut GridLine;
     let mut i: u_int = 0;
     let mut lines: u_int = 0;
     let mut cells: u_int = 0u32;
@@ -3455,7 +3446,7 @@ unsafe extern "C" fn format_cb_history_all_bytes(mut ft: *mut format_tree) -> *m
         &mut value as *mut *mut libc::c_char,
         b"%u,%zu,%u,%zu,%u,%zu\x00" as *const u8 as *const libc::c_char,
         lines,
-        (lines as libc::c_ulong).wrapping_mul(::std::mem::size_of::<grid_line>() as libc::c_ulong),
+        (lines as libc::c_ulong).wrapping_mul(::std::mem::size_of::<GridLine>() as libc::c_ulong),
         cells,
         (cells as libc::c_ulong)
             .wrapping_mul(::std::mem::size_of::<GridCellEntry>() as libc::c_ulong),
@@ -3715,7 +3706,7 @@ pub unsafe extern "C" fn format_grid_word(
     mut x: u_int,
     mut y: u_int,
 ) -> *mut libc::c_char {
-    let mut gl: *const grid_line = 0 as *const grid_line;
+    let mut gl: *const GridLine = 0 as *const GridLine;
     let mut gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],

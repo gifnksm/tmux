@@ -1,5 +1,5 @@
 use crate::{
-    grid::{Cell as GridCell, CellEntry as GridCellEntry},
+    grid::{Cell as GridCell, CellEntry as GridCellEntry, Line as GridLine},
     utf8::{utf8_state, Utf8Data, Utf8State},
 };
 use ::libc;
@@ -121,7 +121,7 @@ extern "C" {
     #[no_mangle]
     fn grid_get_cell(_: *mut grid, _: u_int, _: u_int, _: *mut crate::grid::Cell);
     #[no_mangle]
-    fn grid_get_line(_: *mut grid, _: u_int) -> *mut grid_line;
+    fn grid_get_line(_: *mut grid, _: u_int) -> *mut GridLine;
     #[no_mangle]
     fn grid_view_get_cell(_: *mut grid, _: u_int, _: u_int, _: *mut crate::grid::Cell);
     #[no_mangle]
@@ -622,18 +622,7 @@ pub struct grid {
     pub hscrolled: u_int,
     pub hsize: u_int,
     pub hlimit: u_int,
-    pub linedata: *mut grid_line,
-}
-
-#[repr(C, packed)]
-#[derive(Copy, Clone)]
-pub struct grid_line {
-    pub cellused: u_int,
-    pub cellsize: u_int,
-    pub celldata: *mut crate::grid::CellEntry,
-    pub extdsize: u_int,
-    pub extddata: *mut crate::grid::ExtdEntry,
-    pub flags: libc::c_int,
+    pub linedata: *mut crate::grid::Line,
 }
 
 pub type overlay_check_cb =
@@ -2412,7 +2401,7 @@ pub unsafe extern "C" fn screen_write_cursorleft(mut ctx: *mut screen_write_ctx,
 #[no_mangle]
 pub unsafe extern "C" fn screen_write_backspace(mut ctx: *mut screen_write_ctx) {
     let mut s: *mut screen = (*ctx).s;
-    let mut gl: *mut grid_line = 0 as *mut grid_line;
+    let mut gl: *mut GridLine = 0 as *mut GridLine;
     let mut cx: u_int = (*s).cx;
     let mut cy: u_int = (*s).cy;
     if cx == 0u32 {
@@ -2955,7 +2944,7 @@ pub unsafe extern "C" fn screen_write_deleteline(
 #[no_mangle]
 pub unsafe extern "C" fn screen_write_clearline(mut ctx: *mut screen_write_ctx, mut bg: u_int) {
     let mut s: *mut screen = (*ctx).s;
-    let mut gl: *mut grid_line = 0 as *mut grid_line;
+    let mut gl: *mut GridLine = 0 as *mut GridLine;
     let mut sx: u_int = (*(*s).grid).sx;
     gl = grid_get_line((*s).grid, (*(*s).grid).hsize.wrapping_add((*s).cy));
     if (*gl).cellsize == 0u32 && (bg == 8u32 || bg == 9u32) {
@@ -2973,7 +2962,7 @@ pub unsafe extern "C" fn screen_write_clearendofline(
     mut bg: u_int,
 ) {
     let mut s: *mut screen = (*ctx).s;
-    let mut gl: *mut grid_line = 0 as *mut grid_line;
+    let mut gl: *mut GridLine = 0 as *mut GridLine;
     let mut sx: u_int = (*(*s).grid).sx;
     let mut ci: *mut screen_write_collect_item = (*ctx).item;
     if (*s).cx == 0u32 {
@@ -3189,7 +3178,7 @@ pub unsafe extern "C" fn screen_write_linefeed(
 ) {
     let mut s: *mut screen = (*ctx).s;
     let mut gd: *mut grid = (*s).grid;
-    let mut gl: *mut grid_line = 0 as *mut grid_line;
+    let mut gl: *mut GridLine = 0 as *mut GridLine;
     gl = grid_get_line(gd, (*gd).hsize.wrapping_add((*s).cy));
     if wrapped != 0 {
         (*gl).flags |= 0x1i32
@@ -4168,7 +4157,7 @@ pub unsafe extern "C" fn screen_write_cell(
 ) {
     let mut s: *mut screen = (*ctx).s;
     let mut gd: *mut grid = (*s).grid;
-    let mut gl: *mut grid_line = 0 as *mut grid_line;
+    let mut gl: *mut GridLine = 0 as *mut GridLine;
     let mut gce: *mut GridCellEntry = 0 as *mut GridCellEntry;
     let mut tmp_gc: GridCell = GridCell {
         data: Utf8Data {

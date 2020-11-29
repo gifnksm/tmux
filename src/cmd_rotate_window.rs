@@ -411,18 +411,7 @@ pub struct grid {
     pub hscrolled: u_int,
     pub hsize: u_int,
     pub hlimit: u_int,
-    pub linedata: *mut grid_line,
-}
-
-#[repr(C, packed)]
-#[derive(Copy, Clone)]
-pub struct grid_line {
-    pub cellused: u_int,
-    pub cellsize: u_int,
-    pub celldata: *mut crate::grid::CellEntry,
-    pub extdsize: u_int,
-    pub extddata: *mut crate::grid::ExtdEntry,
-    pub flags: libc::c_int,
+    pub linedata: *mut crate::grid::Line,
 }
 
 pub type overlay_check_cb =

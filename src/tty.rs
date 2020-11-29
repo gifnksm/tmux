@@ -1,5 +1,5 @@
 use crate::{
-    grid::Cell as GridCell,
+    grid::{Cell as GridCell, Line as GridLine},
     tty_code::{code as tty_code_code, Code as TtyCode},
     utf8::Utf8Data,
 };
@@ -169,7 +169,7 @@ extern "C" {
     #[no_mangle]
     fn grid_view_get_cell(_: *mut grid, _: u_int, _: u_int, _: *mut crate::grid::Cell);
     #[no_mangle]
-    fn grid_get_line(_: *mut grid, _: u_int) -> *mut grid_line;
+    fn grid_get_line(_: *mut grid, _: u_int) -> *mut GridLine;
     #[no_mangle]
     fn fatalx(_: *const libc::c_char, _: ...) -> !;
     #[no_mangle]
@@ -279,18 +279,7 @@ pub struct grid {
     pub hscrolled: u_int,
     pub hsize: u_int,
     pub hlimit: u_int,
-    pub linedata: *mut grid_line,
-}
-
-#[repr(C, packed)]
-#[derive(Copy, Clone)]
-pub struct grid_line {
-    pub cellused: u_int,
-    pub cellsize: u_int,
-    pub celldata: *mut crate::grid::CellEntry,
-    pub extdsize: u_int,
-    pub extddata: *mut crate::grid::ExtdEntry,
-    pub flags: libc::c_int,
+    pub linedata: *mut crate::grid::Line,
 }
 
 pub type cc_t = libc::c_uchar;
@@ -2815,7 +2804,7 @@ pub unsafe extern "C" fn tty_draw_line(
         us: 0,
     };
     let mut gcp: *const GridCell = 0 as *const GridCell;
-    let mut gl: *mut grid_line = 0 as *mut grid_line;
+    let mut gl: *mut GridLine = 0 as *mut GridLine;
     let mut i: u_int = 0;
     let mut j: u_int = 0;
     let mut ux: u_int = 0;
@@ -2866,7 +2855,7 @@ pub unsafe extern "C" fn tty_draw_line(
     }
     ux = 0u32;
     if py == 0u32 {
-        gl = 0 as *mut grid_line
+        gl = 0 as *mut GridLine
     } else {
         gl = grid_get_line(gd, (*gd).hsize.wrapping_add(py).wrapping_sub(1u32))
     }

@@ -1,4 +1,4 @@
-use crate::grid::Cell as GridCell;
+use crate::grid::{Cell as GridCell, Line as GridLine};
 use ::libc;
 
 extern "C" {
@@ -24,7 +24,7 @@ extern "C" {
         _: size_t,
     );
     #[no_mangle]
-    fn grid_get_line(_: *mut grid, _: u_int) -> *mut grid_line;
+    fn grid_get_line(_: *mut grid, _: u_int) -> *mut GridLine;
     #[no_mangle]
     fn grid_clear(_: *mut grid, _: u_int, _: u_int, _: u_int, _: u_int, _: u_int);
     #[no_mangle]
@@ -60,18 +60,7 @@ pub struct grid {
     pub hscrolled: u_int,
     pub hsize: u_int,
     pub hlimit: u_int,
-    pub linedata: *mut grid_line,
-}
-
-#[repr(C, packed)]
-#[derive(Copy, Clone)]
-pub struct grid_line {
-    pub cellused: u_int,
-    pub cellsize: u_int,
-    pub celldata: *mut crate::grid::CellEntry,
-    pub extdsize: u_int,
-    pub extddata: *mut crate::grid::ExtdEntry,
-    pub flags: libc::c_int,
+    pub linedata: *mut crate::grid::Line,
 }
 
 /* Get cell. */
@@ -114,7 +103,7 @@ pub unsafe extern "C" fn grid_view_set_cells(
 /* Clear into history. */
 #[no_mangle]
 pub unsafe extern "C" fn grid_view_clear_history(mut gd: *mut grid, mut bg: u_int) {
-    let mut gl: *mut grid_line = 0 as *mut grid_line;
+    let mut gl: *mut GridLine = 0 as *mut GridLine;
     let mut yy: u_int = 0;
     let mut last: u_int = 0;
     /* Find the last used line. */
