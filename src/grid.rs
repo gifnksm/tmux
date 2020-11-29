@@ -52,18 +52,6 @@ pub type size_t = libc::c_ulong;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct grid {
-    pub flags: libc::c_int,
-    pub sx: u_int,
-    pub sy: u_int,
-    pub hscrolled: u_int,
-    pub hsize: u_int,
-    pub hlimit: u_int,
-    pub linedata: *mut Line,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
 pub struct C2RustUnnamed_1 {
     pub mask: u_int,
     pub code: u_int,
@@ -153,6 +141,19 @@ pub struct Line {
     pub extdsize: u_int,
     pub extddata: *mut ExtdEntry,
     pub flags: libc::c_int,
+}
+
+/// Entire grid of cells.
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct Grid {
+    pub flags: libc::c_int,
+    pub sx: u_int,
+    pub sy: u_int,
+    pub hscrolled: u_int,
+    pub hsize: u_int,
+    pub hlimit: u_int,
+    pub linedata: *mut Line,
 }
 
 /* Default grid cell data. */
@@ -434,12 +435,12 @@ unsafe extern "C" fn grid_compact_line(mut gl: *mut Line) {
 }
 /* Get line data. */
 #[no_mangle]
-pub unsafe extern "C" fn grid_get_line(mut gd: *mut grid, mut line: u_int) -> *mut Line {
+pub unsafe extern "C" fn grid_get_line(mut gd: *mut Grid, mut line: u_int) -> *mut Line {
     return &mut *(*gd).linedata.offset(line as isize) as *mut Line;
 }
 /* Adjust number of lines. */
 #[no_mangle]
-pub unsafe extern "C" fn grid_adjust_lines(mut gd: *mut grid, mut lines: u_int) {
+pub unsafe extern "C" fn grid_adjust_lines(mut gd: *mut Grid, mut lines: u_int) {
     (*gd).linedata = xreallocarray(
         (*gd).linedata as *mut libc::c_void,
         lines as size_t,
@@ -448,7 +449,7 @@ pub unsafe extern "C" fn grid_adjust_lines(mut gd: *mut grid, mut lines: u_int) 
 }
 /* Copy default into a cell. */
 unsafe extern "C" fn grid_clear_cell(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut px: u_int,
     mut py: u_int,
     mut bg: u_int,
@@ -476,7 +477,7 @@ unsafe extern "C" fn grid_clear_cell(
 }
 /* Check grid y position. */
 unsafe extern "C" fn grid_check_y(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut from: *const libc::c_char,
     mut py: u_int,
 ) -> libc::c_int {
@@ -528,7 +529,7 @@ pub unsafe extern "C" fn grid_cells_equal(
     ) == 0i32) as libc::c_int;
 }
 /* Free one line. */
-unsafe extern "C" fn grid_free_line(mut gd: *mut grid, mut py: u_int) {
+unsafe extern "C" fn grid_free_line(mut gd: *mut Grid, mut py: u_int) {
     free((*(*gd).linedata.offset(py as isize)).celldata as *mut libc::c_void);
     let ref mut fresh1 = (*(*gd).linedata.offset(py as isize)).celldata;
     *fresh1 = 0 as *mut CellEntry;
@@ -537,7 +538,7 @@ unsafe extern "C" fn grid_free_line(mut gd: *mut grid, mut py: u_int) {
     *fresh2 = 0 as *mut ExtdEntry;
 }
 /* Free several lines. */
-unsafe extern "C" fn grid_free_lines(mut gd: *mut grid, mut py: u_int, mut ny: u_int) {
+unsafe extern "C" fn grid_free_lines(mut gd: *mut Grid, mut py: u_int, mut ny: u_int) {
     let mut yy: u_int = 0;
     yy = py;
     while yy < py.wrapping_add(ny) {
@@ -548,9 +549,9 @@ unsafe extern "C" fn grid_free_lines(mut gd: *mut grid, mut py: u_int, mut ny: u
 }
 /* Create a new grid. */
 #[no_mangle]
-pub unsafe extern "C" fn grid_create(mut sx: u_int, mut sy: u_int, mut hlimit: u_int) -> *mut grid {
-    let mut gd: *mut grid = 0 as *mut grid;
-    gd = xmalloc(::std::mem::size_of::<grid>() as libc::c_ulong) as *mut grid;
+pub unsafe extern "C" fn grid_create(mut sx: u_int, mut sy: u_int, mut hlimit: u_int) -> *mut Grid {
+    let mut gd: *mut Grid = 0 as *mut Grid;
+    gd = xmalloc(::std::mem::size_of::<Grid>() as libc::c_ulong) as *mut Grid;
     (*gd).sx = sx;
     (*gd).sy = sy;
     if hlimit != 0u32 {
@@ -573,14 +574,14 @@ pub unsafe extern "C" fn grid_create(mut sx: u_int, mut sy: u_int, mut hlimit: u
 }
 /* Destroy grid. */
 #[no_mangle]
-pub unsafe extern "C" fn grid_destroy(mut gd: *mut grid) {
+pub unsafe extern "C" fn grid_destroy(mut gd: *mut Grid) {
     grid_free_lines(gd, 0u32, (*gd).hsize.wrapping_add((*gd).sy));
     free((*gd).linedata as *mut libc::c_void);
     free(gd as *mut libc::c_void);
 }
 /* Compare grids. */
 #[no_mangle]
-pub unsafe extern "C" fn grid_compare(mut ga: *mut grid, mut gb: *mut grid) -> libc::c_int {
+pub unsafe extern "C" fn grid_compare(mut ga: *mut Grid, mut gb: *mut Grid) -> libc::c_int {
     let mut gla: *mut Line = 0 as *mut Line;
     let mut glb: *mut Line = 0 as *mut Line;
     let mut gca: Cell = Cell {
@@ -635,7 +636,7 @@ pub unsafe extern "C" fn grid_compare(mut ga: *mut grid, mut gb: *mut grid) -> l
     return 0i32;
 }
 /* Trim lines from the history. */
-unsafe extern "C" fn grid_trim_history(mut gd: *mut grid, mut ny: u_int) {
+unsafe extern "C" fn grid_trim_history(mut gd: *mut Grid, mut ny: u_int) {
     grid_free_lines(gd, 0u32, ny);
     memmove(
         &mut *(*gd).linedata.offset(0isize) as *mut Line as *mut libc::c_void,
@@ -649,7 +650,7 @@ unsafe extern "C" fn grid_trim_history(mut gd: *mut grid, mut ny: u_int) {
  * and shift up.
  */
 #[no_mangle]
-pub unsafe extern "C" fn grid_collect_history(mut gd: *mut grid) {
+pub unsafe extern "C" fn grid_collect_history(mut gd: *mut Grid) {
     let mut ny: u_int = 0;
     if (*gd).hsize == 0u32 || (*gd).hsize < (*gd).hlimit {
         return;
@@ -673,7 +674,7 @@ pub unsafe extern "C" fn grid_collect_history(mut gd: *mut grid) {
 }
 /* Remove lines from the bottom of the history. */
 #[no_mangle]
-pub unsafe extern "C" fn grid_remove_history(mut gd: *mut grid, mut ny: u_int) {
+pub unsafe extern "C" fn grid_remove_history(mut gd: *mut Grid, mut ny: u_int) {
     let mut yy: u_int = 0;
     if ny > (*gd).hsize {
         return;
@@ -697,7 +698,7 @@ pub unsafe extern "C" fn grid_remove_history(mut gd: *mut grid, mut ny: u_int) {
  * allocate a new line at the bottom and move the history size indicator.
  */
 #[no_mangle]
-pub unsafe extern "C" fn grid_scroll_history(mut gd: *mut grid, mut bg: u_int) {
+pub unsafe extern "C" fn grid_scroll_history(mut gd: *mut Grid, mut bg: u_int) {
     let mut yy: u_int = 0;
     yy = (*gd).hsize.wrapping_add((*gd).sy);
     (*gd).linedata = xreallocarray(
@@ -712,7 +713,7 @@ pub unsafe extern "C" fn grid_scroll_history(mut gd: *mut grid, mut bg: u_int) {
 }
 /* Clear the history. */
 #[no_mangle]
-pub unsafe extern "C" fn grid_clear_history(mut gd: *mut grid) {
+pub unsafe extern "C" fn grid_clear_history(mut gd: *mut Grid) {
     grid_trim_history(gd, (*gd).hsize);
     (*gd).hscrolled = 0u32;
     (*gd).hsize = 0u32;
@@ -725,7 +726,7 @@ pub unsafe extern "C" fn grid_clear_history(mut gd: *mut grid) {
 /* Scroll a region up, moving the top line into the history. */
 #[no_mangle]
 pub unsafe extern "C" fn grid_scroll_history_region(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut upper: u_int,
     mut lower: u_int,
     mut bg: u_int,
@@ -771,7 +772,7 @@ pub unsafe extern "C" fn grid_scroll_history_region(
 }
 /* Expand line to fit to cell. */
 unsafe extern "C" fn grid_expand_line(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut py: u_int,
     mut sx: u_int,
     mut bg: u_int,
@@ -803,7 +804,7 @@ unsafe extern "C" fn grid_expand_line(
 }
 /* Empty a line and set background colour if needed. */
 #[no_mangle]
-pub unsafe extern "C" fn grid_empty_line(mut gd: *mut grid, mut py: u_int, mut bg: u_int) {
+pub unsafe extern "C" fn grid_empty_line(mut gd: *mut Grid, mut py: u_int, mut bg: u_int) {
     memset(
         &mut *(*gd).linedata.offset(py as isize) as *mut Line as *mut libc::c_void,
         0i32,
@@ -815,7 +816,7 @@ pub unsafe extern "C" fn grid_empty_line(mut gd: *mut grid, mut py: u_int, mut b
 }
 /* Peek at grid line. */
 #[no_mangle]
-pub unsafe extern "C" fn grid_peek_line(mut gd: *mut grid, mut py: u_int) -> *const Line {
+pub unsafe extern "C" fn grid_peek_line(mut gd: *mut Grid, mut py: u_int) -> *const Line {
     if grid_check_y(
         gd,
         (*::std::mem::transmute::<&[u8; 15], &[libc::c_char; 15]>(b"grid_peek_line\x00")).as_ptr(),
@@ -865,7 +866,7 @@ unsafe extern "C" fn grid_get_cell1(mut gl: *mut Line, mut px: u_int, mut gc: *m
 /* Get cell for reading. */
 #[no_mangle]
 pub unsafe extern "C" fn grid_get_cell(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut px: u_int,
     mut py: u_int,
     mut gc: *mut Cell,
@@ -889,7 +890,7 @@ pub unsafe extern "C" fn grid_get_cell(
 /* Set cell at position. */
 #[no_mangle]
 pub unsafe extern "C" fn grid_set_cell(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut px: u_int,
     mut py: u_int,
     mut gc: *const Cell,
@@ -918,13 +919,13 @@ pub unsafe extern "C" fn grid_set_cell(
 }
 /* Set padding at position. */
 #[no_mangle]
-pub unsafe extern "C" fn grid_set_padding(mut gd: *mut grid, mut px: u_int, mut py: u_int) {
+pub unsafe extern "C" fn grid_set_padding(mut gd: *mut Grid, mut px: u_int, mut py: u_int) {
     grid_set_cell(gd, px, py, &grid_padding_cell);
 }
 /* Set cells at position. */
 #[no_mangle]
 pub unsafe extern "C" fn grid_set_cells(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut px: u_int,
     mut py: u_int,
     mut gc: *const Cell,
@@ -968,7 +969,7 @@ pub unsafe extern "C" fn grid_set_cells(
 /* Clear area. */
 #[no_mangle]
 pub unsafe extern "C" fn grid_clear(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut px: u_int,
     mut py: u_int,
     mut nx: u_int,
@@ -1041,7 +1042,7 @@ pub unsafe extern "C" fn grid_clear(
 /* Clear lines. This just frees and truncates the lines. */
 #[no_mangle]
 pub unsafe extern "C" fn grid_clear_lines(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut py: u_int,
     mut ny: u_int,
     mut bg: u_int,
@@ -1081,7 +1082,7 @@ pub unsafe extern "C" fn grid_clear_lines(
 /* Move a group of lines. */
 #[no_mangle]
 pub unsafe extern "C" fn grid_move_lines(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut dy: u_int,
     mut py: u_int,
     mut ny: u_int,
@@ -1157,7 +1158,7 @@ pub unsafe extern "C" fn grid_move_lines(
 /* Move a group of cells. */
 #[no_mangle]
 pub unsafe extern "C" fn grid_move_cells(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut dx: u_int,
     mut px: u_int,
     mut py: u_int,
@@ -1591,7 +1592,7 @@ unsafe extern "C" fn grid_string_cells_code(
 /* Convert cells into a string. */
 #[no_mangle]
 pub unsafe extern "C" fn grid_string_cells(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut px: u_int,
     mut py: u_int,
     mut nx: u_int,
@@ -1719,9 +1720,9 @@ pub unsafe extern "C" fn grid_string_cells(
  */
 #[no_mangle]
 pub unsafe extern "C" fn grid_duplicate_lines(
-    mut dst: *mut grid,
+    mut dst: *mut Grid,
     mut dy: u_int,
-    mut src: *mut grid,
+    mut src: *mut Grid,
     mut sy: u_int,
     mut ny: u_int,
 ) {
@@ -1788,7 +1789,7 @@ unsafe extern "C" fn grid_reflow_dead(mut gl: *mut Line) {
     (*gl).flags = 0x4i32;
 }
 /* Add lines, return the first new one. */
-unsafe extern "C" fn grid_reflow_add(mut gd: *mut grid, mut n: u_int) -> *mut Line {
+unsafe extern "C" fn grid_reflow_add(mut gd: *mut Grid, mut n: u_int) -> *mut Line {
     let mut gl: *mut Line = 0 as *mut Line;
     let mut sy: u_int = (*gd).sy.wrapping_add(n);
     (*gd).linedata = xreallocarray(
@@ -1806,7 +1807,7 @@ unsafe extern "C" fn grid_reflow_add(mut gd: *mut grid, mut n: u_int) -> *mut Li
     return gl;
 }
 /* Move a line across. */
-unsafe extern "C" fn grid_reflow_move(mut gd: *mut grid, mut from: *mut Line) -> *mut Line {
+unsafe extern "C" fn grid_reflow_move(mut gd: *mut Grid, mut from: *mut Line) -> *mut Line {
     let mut to: *mut Line = 0 as *mut Line;
     to = grid_reflow_add(gd, 1u32);
     memcpy(
@@ -1819,8 +1820,8 @@ unsafe extern "C" fn grid_reflow_move(mut gd: *mut grid, mut from: *mut Line) ->
 }
 /* Join line below onto this one. */
 unsafe extern "C" fn grid_reflow_join(
-    mut target: *mut grid,
-    mut gd: *mut grid,
+    mut target: *mut Grid,
+    mut gd: *mut Grid,
     mut sx: u_int,
     mut yy: u_int,
     mut width: u_int,
@@ -1949,8 +1950,8 @@ unsafe extern "C" fn grid_reflow_join(
 }
 /* Split this line into several new ones */
 unsafe extern "C" fn grid_reflow_split(
-    mut target: *mut grid,
-    mut gd: *mut grid,
+    mut target: *mut Grid,
+    mut gd: *mut Grid,
     mut sx: u_int,
     mut yy: u_int,
     mut at: u_int,
@@ -2041,8 +2042,8 @@ unsafe extern "C" fn grid_reflow_split(
 }
 /* Reflow lines on grid to new width. */
 #[no_mangle]
-pub unsafe extern "C" fn grid_reflow(mut gd: *mut grid, mut sx: u_int) {
-    let mut target: *mut grid = 0 as *mut grid;
+pub unsafe extern "C" fn grid_reflow(mut gd: *mut Grid, mut sx: u_int) {
+    let mut target: *mut Grid = 0 as *mut Grid;
     let mut gl: *mut Line = 0 as *mut Line;
     let mut gc: Cell = Cell {
         data: Utf8Data {
@@ -2139,7 +2140,7 @@ pub unsafe extern "C" fn grid_reflow(mut gd: *mut grid, mut sx: u_int) {
 /* Convert to position based on wrapped lines. */
 #[no_mangle]
 pub unsafe extern "C" fn grid_wrap_position(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut px: u_int,
     mut py: u_int,
     mut wx: *mut u_int,
@@ -2169,7 +2170,7 @@ pub unsafe extern "C" fn grid_wrap_position(
 /* Convert position based on wrapped lines back. */
 #[no_mangle]
 pub unsafe extern "C" fn grid_unwrap_position(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut px: *mut u_int,
     mut py: *mut u_int,
     mut wx: u_int,
@@ -2210,7 +2211,7 @@ pub unsafe extern "C" fn grid_unwrap_position(
 }
 /* Get length of line. */
 #[no_mangle]
-pub unsafe extern "C" fn grid_line_length(mut gd: *mut grid, mut py: u_int) -> u_int {
+pub unsafe extern "C" fn grid_line_length(mut gd: *mut Grid, mut py: u_int) -> u_int {
     let mut gc: Cell = Cell {
         data: Utf8Data {
             data: [0; 21],

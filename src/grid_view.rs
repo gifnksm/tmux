@@ -1,22 +1,22 @@
-use crate::grid::{Cell as GridCell, Line as GridLine};
+use crate::grid::{Cell as GridCell, Grid, Line as GridLine};
 use ::libc;
 
 extern "C" {
     #[no_mangle]
-    fn grid_collect_history(_: *mut grid);
+    fn grid_collect_history(_: *mut crate::grid::Grid);
     #[no_mangle]
-    fn grid_scroll_history(_: *mut grid, _: u_int);
+    fn grid_scroll_history(_: *mut crate::grid::Grid, _: u_int);
     #[no_mangle]
-    fn grid_scroll_history_region(_: *mut grid, _: u_int, _: u_int, _: u_int);
+    fn grid_scroll_history_region(_: *mut crate::grid::Grid, _: u_int, _: u_int, _: u_int);
     #[no_mangle]
-    fn grid_get_cell(_: *mut grid, _: u_int, _: u_int, _: *mut crate::grid::Cell);
+    fn grid_get_cell(_: *mut crate::grid::Grid, _: u_int, _: u_int, _: *mut crate::grid::Cell);
     #[no_mangle]
-    fn grid_set_cell(_: *mut grid, _: u_int, _: u_int, _: *const crate::grid::Cell);
+    fn grid_set_cell(_: *mut crate::grid::Grid, _: u_int, _: u_int, _: *const crate::grid::Cell);
     #[no_mangle]
-    fn grid_set_padding(_: *mut grid, _: u_int, _: u_int);
+    fn grid_set_padding(_: *mut crate::grid::Grid, _: u_int, _: u_int);
     #[no_mangle]
     fn grid_set_cells(
-        _: *mut grid,
+        _: *mut crate::grid::Grid,
         _: u_int,
         _: u_int,
         _: *const crate::grid::Cell,
@@ -24,16 +24,16 @@ extern "C" {
         _: size_t,
     );
     #[no_mangle]
-    fn grid_get_line(_: *mut grid, _: u_int) -> *mut GridLine;
+    fn grid_get_line(_: *mut crate::grid::Grid, _: u_int) -> *mut GridLine;
     #[no_mangle]
-    fn grid_clear(_: *mut grid, _: u_int, _: u_int, _: u_int, _: u_int, _: u_int);
+    fn grid_clear(_: *mut crate::grid::Grid, _: u_int, _: u_int, _: u_int, _: u_int, _: u_int);
     #[no_mangle]
-    fn grid_move_lines(_: *mut grid, _: u_int, _: u_int, _: u_int, _: u_int);
+    fn grid_move_lines(_: *mut crate::grid::Grid, _: u_int, _: u_int, _: u_int, _: u_int);
     #[no_mangle]
-    fn grid_move_cells(_: *mut grid, _: u_int, _: u_int, _: u_int, _: u_int, _: u_int);
+    fn grid_move_cells(_: *mut crate::grid::Grid, _: u_int, _: u_int, _: u_int, _: u_int, _: u_int);
     #[no_mangle]
     fn grid_string_cells(
-        _: *mut grid,
+        _: *mut crate::grid::Grid,
         _: u_int,
         _: u_int,
         _: u_int,
@@ -51,22 +51,10 @@ pub type u_short = __u_short;
 pub type u_int = __u_int;
 pub type size_t = libc::c_ulong;
 
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct grid {
-    pub flags: libc::c_int,
-    pub sx: u_int,
-    pub sy: u_int,
-    pub hscrolled: u_int,
-    pub hsize: u_int,
-    pub hlimit: u_int,
-    pub linedata: *mut crate::grid::Line,
-}
-
 /* Get cell. */
 #[no_mangle]
 pub unsafe extern "C" fn grid_view_get_cell(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut px: u_int,
     mut py: u_int,
     mut gc: *mut GridCell,
@@ -76,7 +64,7 @@ pub unsafe extern "C" fn grid_view_get_cell(
 /* Set cell. */
 #[no_mangle]
 pub unsafe extern "C" fn grid_view_set_cell(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut px: u_int,
     mut py: u_int,
     mut gc: *const GridCell,
@@ -85,13 +73,17 @@ pub unsafe extern "C" fn grid_view_set_cell(
 }
 /* Set padding. */
 #[no_mangle]
-pub unsafe extern "C" fn grid_view_set_padding(mut gd: *mut grid, mut px: u_int, mut py: u_int) {
+pub unsafe extern "C" fn grid_view_set_padding(
+    mut gd: *mut crate::grid::Grid,
+    mut px: u_int,
+    mut py: u_int,
+) {
     grid_set_padding(gd, px, (*gd).hsize.wrapping_add(py));
 }
 /* Set cells. */
 #[no_mangle]
 pub unsafe extern "C" fn grid_view_set_cells(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut px: u_int,
     mut py: u_int,
     mut gc: *const GridCell,
@@ -102,7 +94,7 @@ pub unsafe extern "C" fn grid_view_set_cells(
 }
 /* Clear into history. */
 #[no_mangle]
-pub unsafe extern "C" fn grid_view_clear_history(mut gd: *mut grid, mut bg: u_int) {
+pub unsafe extern "C" fn grid_view_clear_history(mut gd: *mut Grid, mut bg: u_int) {
     let mut gl: *mut GridLine = 0 as *mut GridLine;
     let mut yy: u_int = 0;
     let mut last: u_int = 0;
@@ -135,7 +127,7 @@ pub unsafe extern "C" fn grid_view_clear_history(mut gd: *mut grid, mut bg: u_in
 /* Clear area. */
 #[no_mangle]
 pub unsafe extern "C" fn grid_view_clear(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut px: u_int,
     mut py: u_int,
     mut nx: u_int,
@@ -149,7 +141,7 @@ pub unsafe extern "C" fn grid_view_clear(
 /* Scroll region up. */
 #[no_mangle]
 pub unsafe extern "C" fn grid_view_scroll_region_up(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut rupper: u_int,
     mut rlower: u_int,
     mut bg: u_int,
@@ -178,7 +170,7 @@ pub unsafe extern "C" fn grid_view_scroll_region_up(
 /* Scroll region down. */
 #[no_mangle]
 pub unsafe extern "C" fn grid_view_scroll_region_down(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut rupper: u_int,
     mut rlower: u_int,
     mut bg: u_int,
@@ -196,7 +188,7 @@ pub unsafe extern "C" fn grid_view_scroll_region_down(
 /* Insert lines. */
 #[no_mangle]
 pub unsafe extern "C" fn grid_view_insert_lines(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut py: u_int,
     mut ny: u_int,
     mut bg: u_int,
@@ -215,7 +207,7 @@ pub unsafe extern "C" fn grid_view_insert_lines(
 /* Insert lines in region. */
 #[no_mangle]
 pub unsafe extern "C" fn grid_view_insert_lines_region(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut rlower: u_int,
     mut py: u_int,
     mut ny: u_int,
@@ -238,7 +230,7 @@ pub unsafe extern "C" fn grid_view_insert_lines_region(
 /* Delete lines. */
 #[no_mangle]
 pub unsafe extern "C" fn grid_view_delete_lines(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut py: u_int,
     mut ny: u_int,
     mut bg: u_int,
@@ -265,7 +257,7 @@ pub unsafe extern "C" fn grid_view_delete_lines(
 /* Delete lines inside scroll region. */
 #[no_mangle]
 pub unsafe extern "C" fn grid_view_delete_lines_region(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut rlower: u_int,
     mut py: u_int,
     mut ny: u_int,
@@ -288,7 +280,7 @@ pub unsafe extern "C" fn grid_view_delete_lines_region(
 /* Insert characters. */
 #[no_mangle]
 pub unsafe extern "C" fn grid_view_insert_cells(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut px: u_int,
     mut py: u_int,
     mut nx: u_int,
@@ -314,7 +306,7 @@ pub unsafe extern "C" fn grid_view_insert_cells(
 /* Delete characters. */
 #[no_mangle]
 pub unsafe extern "C" fn grid_view_delete_cells(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut px: u_int,
     mut py: u_int,
     mut nx: u_int,
@@ -344,7 +336,7 @@ pub unsafe extern "C" fn grid_view_delete_cells(
 /* Convert cells into a string. */
 #[no_mangle]
 pub unsafe extern "C" fn grid_view_string_cells(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut px: u_int,
     mut py: u_int,
     mut nx: u_int,

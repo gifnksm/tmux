@@ -1,4 +1,8 @@
-use crate::{grid::Cell as GridCell, key_code::code as key_code_code, utf8::Utf8Data};
+use crate::{
+    grid::{Cell as GridCell, Grid},
+    key_code::code as key_code_code,
+    utf8::Utf8Data,
+};
 use ::libc;
 
 extern "C" {
@@ -651,7 +655,7 @@ pub struct screen {
     pub title: *mut libc::c_char,
     pub path: *mut libc::c_char,
     pub titles: *mut crate::screen::screen_titles,
-    pub grid: *mut grid,
+    pub grid: *mut crate::grid::Grid,
     pub cx: u_int,
     pub cy: u_int,
     pub cstyle: u_int,
@@ -661,24 +665,12 @@ pub struct screen {
     pub mode: libc::c_int,
     pub saved_cx: u_int,
     pub saved_cy: u_int,
-    pub saved_grid: *mut grid,
+    pub saved_grid: *mut crate::grid::Grid,
     pub saved_cell: crate::grid::Cell,
     pub saved_flags: libc::c_int,
     pub tabs: *mut bitstr_t,
     pub sel: *mut crate::screen::screen_sel,
     pub write_list: *mut crate::screen_write::screen_write_collect_line,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct grid {
-    pub flags: libc::c_int,
-    pub sx: u_int,
-    pub sy: u_int,
-    pub hscrolled: u_int,
-    pub hsize: u_int,
-    pub hlimit: u_int,
-    pub linedata: *mut crate::grid::Line,
 }
 
 pub type overlay_check_cb =
@@ -1500,7 +1492,7 @@ unsafe extern "C" fn popup_draw_cb(mut c: *mut client, mut _ctx0: *mut screen_re
         title: 0 as *mut libc::c_char,
         path: 0 as *mut libc::c_char,
         titles: 0 as *mut crate::screen::screen_titles,
-        grid: 0 as *mut grid,
+        grid: 0 as *mut Grid,
         cx: 0,
         cy: 0,
         cstyle: 0,
@@ -1510,7 +1502,7 @@ unsafe extern "C" fn popup_draw_cb(mut c: *mut client, mut _ctx0: *mut screen_re
         mode: 0,
         saved_cx: 0,
         saved_cy: 0,
-        saved_grid: 0 as *mut grid,
+        saved_grid: 0 as *mut Grid,
         saved_cell: GridCell {
             data: Utf8Data {
                 data: [0; 21],

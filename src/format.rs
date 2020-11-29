@@ -1,6 +1,7 @@
 use crate::{
     grid::{
-        Cell as GridCell, CellEntry as GridCellEntry, ExtdEntry as GridExtdEntry, Line as GridLine,
+        Cell as GridCell, CellEntry as GridCellEntry, ExtdEntry as GridExtdEntry, Grid,
+        Line as GridLine,
     },
     utf8::Utf8Data,
 };
@@ -258,11 +259,11 @@ extern "C" {
     #[no_mangle]
     fn cmdq_get_target_client(_: *mut crate::cmd_queue::cmdq_item) -> *mut client;
     #[no_mangle]
-    fn grid_get_cell(_: *mut grid, _: u_int, _: u_int, _: *mut crate::grid::Cell);
+    fn grid_get_cell(_: *mut crate::grid::Grid, _: u_int, _: u_int, _: *mut crate::grid::Cell);
     #[no_mangle]
-    fn grid_line_length(_: *mut grid, _: u_int) -> u_int;
+    fn grid_line_length(_: *mut crate::grid::Grid, _: u_int) -> u_int;
     #[no_mangle]
-    fn grid_peek_line(_: *mut grid, _: u_int) -> *const GridLine;
+    fn grid_peek_line(_: *mut crate::grid::Grid, _: u_int) -> *const GridLine;
     #[no_mangle]
     fn server_client_get_cwd(_: *mut client, _: *mut session) -> *const libc::c_char;
     #[no_mangle]
@@ -272,13 +273,13 @@ extern "C" {
     #[no_mangle]
     fn server_client_get_flags(_: *mut client) -> *const libc::c_char;
     #[no_mangle]
-    fn grid_get_line(_: *mut grid, _: u_int) -> *mut GridLine;
+    fn grid_get_line(_: *mut crate::grid::Grid, _: u_int) -> *mut GridLine;
     #[no_mangle]
     static mut marked_pane: cmd_find_state;
     #[no_mangle]
     fn server_check_marked() -> libc::c_int;
     #[no_mangle]
-    fn grid_view_get_cell(_: *mut grid, _: u_int, _: u_int, _: *mut crate::grid::Cell);
+    fn grid_view_get_cell(_: *mut crate::grid::Grid, _: u_int, _: u_int, _: *mut crate::grid::Cell);
     #[no_mangle]
     fn server_client_unref(_: *mut client);
     #[no_mangle]
@@ -789,7 +790,7 @@ pub struct screen {
     pub title: *mut libc::c_char,
     pub path: *mut libc::c_char,
     pub titles: *mut crate::screen::screen_titles,
-    pub grid: *mut grid,
+    pub grid: *mut crate::grid::Grid,
     pub cx: u_int,
     pub cy: u_int,
     pub cstyle: u_int,
@@ -799,24 +800,12 @@ pub struct screen {
     pub mode: libc::c_int,
     pub saved_cx: u_int,
     pub saved_cy: u_int,
-    pub saved_grid: *mut grid,
+    pub saved_grid: *mut crate::grid::Grid,
     pub saved_cell: crate::grid::Cell,
     pub saved_flags: libc::c_int,
     pub tabs: *mut bitstr_t,
     pub sel: *mut crate::screen::screen_sel,
     pub write_list: *mut crate::screen_write::screen_write_collect_line,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct grid {
-    pub flags: libc::c_int,
-    pub sx: u_int,
-    pub sy: u_int,
-    pub hscrolled: u_int,
-    pub hsize: u_int,
-    pub hlimit: u_int,
-    pub linedata: *mut crate::grid::Line,
 }
 
 pub type overlay_check_cb =
@@ -3387,7 +3376,7 @@ unsafe extern "C" fn format_cb_current_path(mut ft: *mut format_tree) -> *mut li
 /* Callback for history_bytes. */
 unsafe extern "C" fn format_cb_history_bytes(mut ft: *mut format_tree) -> *mut libc::c_char {
     let mut wp: *mut window_pane = (*ft).wp;
-    let mut gd: *mut grid = 0 as *mut grid;
+    let mut gd: *mut Grid = 0 as *mut Grid;
     let mut gl: *mut GridLine = 0 as *mut GridLine;
     let mut size: size_t = 0u64;
     let mut i: u_int = 0;
@@ -3423,7 +3412,7 @@ unsafe extern "C" fn format_cb_history_bytes(mut ft: *mut format_tree) -> *mut l
 /* Callback for history_all_bytes. */
 unsafe extern "C" fn format_cb_history_all_bytes(mut ft: *mut format_tree) -> *mut libc::c_char {
     let mut wp: *mut window_pane = (*ft).wp;
-    let mut gd: *mut grid = 0 as *mut grid;
+    let mut gd: *mut Grid = 0 as *mut Grid;
     let mut gl: *mut GridLine = 0 as *mut GridLine;
     let mut i: u_int = 0;
     let mut lines: u_int = 0;
@@ -3702,7 +3691,7 @@ unsafe extern "C" fn format_cb_cursor_character(mut ft: *mut format_tree) -> *mu
 /* Return word at given coordinates. Caller frees. */
 #[no_mangle]
 pub unsafe extern "C" fn format_grid_word(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut x: u_int,
     mut y: u_int,
 ) -> *mut libc::c_char {
@@ -3804,7 +3793,7 @@ pub unsafe extern "C" fn format_grid_word(
 /* Callback for mouse_word. */
 unsafe extern "C" fn format_cb_mouse_word(mut ft: *mut format_tree) -> *mut libc::c_char {
     let mut wp: *mut window_pane = 0 as *mut window_pane;
-    let mut gd: *mut grid = 0 as *mut grid;
+    let mut gd: *mut Grid = 0 as *mut Grid;
     let mut x: u_int = 0;
     let mut y: u_int = 0;
     let mut s: *mut libc::c_char = 0 as *mut libc::c_char;
@@ -3832,7 +3821,7 @@ unsafe extern "C" fn format_cb_mouse_word(mut ft: *mut format_tree) -> *mut libc
 }
 /* Return line at given coordinates. Caller frees. */
 #[no_mangle]
-pub unsafe extern "C" fn format_grid_line(mut gd: *mut grid, mut y: u_int) -> *mut libc::c_char {
+pub unsafe extern "C" fn format_grid_line(mut gd: *mut Grid, mut y: u_int) -> *mut libc::c_char {
     let mut gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
@@ -3880,7 +3869,7 @@ pub unsafe extern "C" fn format_grid_line(mut gd: *mut grid, mut y: u_int) -> *m
 /* Callback for mouse_line. */
 unsafe extern "C" fn format_cb_mouse_line(mut ft: *mut format_tree) -> *mut libc::c_char {
     let mut wp: *mut window_pane = 0 as *mut window_pane;
-    let mut gd: *mut grid = 0 as *mut grid;
+    let mut gd: *mut Grid = 0 as *mut Grid;
     let mut x: u_int = 0;
     let mut y: u_int = 0;
     if (*ft).m.valid == 0 {
@@ -7103,7 +7092,7 @@ unsafe extern "C" fn format_defaults_winlink(mut ft: *mut format_tree, mut wl: *
 #[no_mangle]
 pub unsafe extern "C" fn format_defaults_pane(mut ft: *mut format_tree, mut wp: *mut window_pane) {
     let mut w: *mut window = (*wp).window;
-    let mut gd: *mut grid = (*wp).base.grid;
+    let mut gd: *mut Grid = (*wp).base.grid;
     let mut status: libc::c_int = (*wp).status;
     let mut idx: u_int = 0;
     let mut wme: *mut window_mode_entry = 0 as *mut window_mode_entry;
@@ -7417,7 +7406,7 @@ pub unsafe extern "C" fn format_defaults_pane(mut ft: *mut format_tree, mut wp: 
         ft,
         b"alternate_on\x00" as *const u8 as *const libc::c_char,
         b"%d\x00" as *const u8 as *const libc::c_char,
-        ((*wp).base.saved_grid != 0 as *mut grid) as libc::c_int,
+        ((*wp).base.saved_grid != 0 as *mut Grid) as libc::c_int,
     );
     if (*wp).base.saved_cx != (2147483647u32).wrapping_mul(2u32).wrapping_add(1u32) {
         format_add(

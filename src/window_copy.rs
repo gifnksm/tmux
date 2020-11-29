@@ -1,5 +1,5 @@
 use crate::{
-    grid::{Cell as GridCell, CellEntry as GridCellEntry, Line as GridLine},
+    grid::{Cell as GridCell, CellEntry as GridCellEntry, Grid, Line as GridLine},
     utf8::{Utf8Char, Utf8Data},
 };
 use ::c2rust_bitfields;
@@ -125,9 +125,9 @@ extern "C" {
         _: *mut window_pane,
     ) -> *mut libc::c_char;
     #[no_mangle]
-    fn format_grid_word(_: *mut grid, _: u_int, _: u_int) -> *mut libc::c_char;
+    fn format_grid_word(_: *mut crate::grid::Grid, _: u_int, _: u_int) -> *mut libc::c_char;
     #[no_mangle]
-    fn format_grid_line(_: *mut grid, _: u_int) -> *mut libc::c_char;
+    fn format_grid_line(_: *mut crate::grid::Grid, _: u_int) -> *mut libc::c_char;
     #[no_mangle]
     fn options_get_string(
         _: *mut crate::options::options,
@@ -174,19 +174,37 @@ extern "C" {
     #[no_mangle]
     static grid_default_cell: crate::grid::Cell;
     #[no_mangle]
-    fn grid_peek_line(_: *mut grid, _: u_int) -> *const GridLine;
+    fn grid_peek_line(_: *mut crate::grid::Grid, _: u_int) -> *const GridLine;
     #[no_mangle]
-    fn grid_get_cell(_: *mut grid, _: u_int, _: u_int, _: *mut crate::grid::Cell);
+    fn grid_get_cell(_: *mut crate::grid::Grid, _: u_int, _: u_int, _: *mut crate::grid::Cell);
     #[no_mangle]
-    fn grid_get_line(_: *mut grid, _: u_int) -> *mut GridLine;
+    fn grid_get_line(_: *mut crate::grid::Grid, _: u_int) -> *mut GridLine;
     #[no_mangle]
-    fn grid_duplicate_lines(_: *mut grid, _: u_int, _: *mut grid, _: u_int, _: u_int);
+    fn grid_duplicate_lines(
+        _: *mut crate::grid::Grid,
+        _: u_int,
+        _: *mut crate::grid::Grid,
+        _: u_int,
+        _: u_int,
+    );
     #[no_mangle]
-    fn grid_wrap_position(_: *mut grid, _: u_int, _: u_int, _: *mut u_int, _: *mut u_int);
+    fn grid_wrap_position(
+        _: *mut crate::grid::Grid,
+        _: u_int,
+        _: u_int,
+        _: *mut u_int,
+        _: *mut u_int,
+    );
     #[no_mangle]
-    fn grid_unwrap_position(_: *mut grid, _: *mut u_int, _: *mut u_int, _: u_int, _: u_int);
+    fn grid_unwrap_position(
+        _: *mut crate::grid::Grid,
+        _: *mut u_int,
+        _: *mut u_int,
+        _: u_int,
+        _: u_int,
+    );
     #[no_mangle]
-    fn grid_line_length(_: *mut grid, _: u_int) -> u_int;
+    fn grid_line_length(_: *mut crate::grid::Grid, _: u_int) -> u_int;
     #[no_mangle]
     fn screen_write_start_pane(_: *mut screen_write_ctx, _: *mut window_pane, _: *mut screen);
     #[no_mangle]
@@ -691,7 +709,7 @@ pub struct screen {
     pub title: *mut libc::c_char,
     pub path: *mut libc::c_char,
     pub titles: *mut crate::screen::screen_titles,
-    pub grid: *mut grid,
+    pub grid: *mut crate::grid::Grid,
     pub cx: u_int,
     pub cy: u_int,
     pub cstyle: u_int,
@@ -701,24 +719,12 @@ pub struct screen {
     pub mode: libc::c_int,
     pub saved_cx: u_int,
     pub saved_cy: u_int,
-    pub saved_grid: *mut grid,
+    pub saved_grid: *mut crate::grid::Grid,
     pub saved_cell: crate::grid::Cell,
     pub saved_flags: libc::c_int,
     pub tabs: *mut bitstr_t,
     pub sel: *mut crate::screen::screen_sel,
     pub write_list: *mut crate::screen_write::screen_write_collect_line,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct grid {
-    pub flags: libc::c_int,
-    pub sx: u_int,
-    pub sy: u_int,
-    pub hscrolled: u_int,
-    pub hsize: u_int,
-    pub hlimit: u_int,
-    pub linedata: *mut crate::grid::Line,
 }
 
 pub type overlay_check_cb =
@@ -2073,7 +2079,7 @@ pub unsafe extern "C" fn window_copy_get_word(
 ) -> *mut libc::c_char {
     let mut wme: *mut window_mode_entry = (*wp).modes.tqh_first;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut gd: *mut grid = (*data).screen.grid;
+    let mut gd: *mut Grid = (*data).screen.grid;
     return format_grid_word(gd, x, (*gd).hsize.wrapping_add(y));
 }
 #[no_mangle]
@@ -2083,7 +2089,7 @@ pub unsafe extern "C" fn window_copy_get_line(
 ) -> *mut libc::c_char {
     let mut wme: *mut window_mode_entry = (*wp).modes.tqh_first;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut gd: *mut grid = (*data).screen.grid;
+    let mut gd: *mut Grid = (*data).screen.grid;
     return format_grid_line(gd, (*gd).hsize.wrapping_add(y));
 }
 unsafe extern "C" fn window_copy_cursor_word_cb(
@@ -2251,7 +2257,7 @@ unsafe extern "C" fn window_copy_resize(
 ) {
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
     let mut s: *mut screen = &mut (*data).screen;
-    let mut gd: *mut grid = (*(*data).backing).grid;
+    let mut gd: *mut Grid = (*(*data).backing).grid;
     let mut cx: u_int = 0;
     let mut cy: u_int = 0;
     let mut wx: u_int = 0;
@@ -4879,7 +4885,7 @@ unsafe extern "C" fn window_copy_scroll_to(
     mut no_redraw: libc::c_int,
 ) {
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut gd: *mut grid = (*(*data).backing).grid;
+    let mut gd: *mut Grid = (*(*data).backing).grid;
     let mut offset: u_int = 0;
     let mut gap: u_int = 0;
     (*data).cx = px;
@@ -4910,10 +4916,10 @@ unsafe extern "C" fn window_copy_scroll_to(
     };
 }
 unsafe extern "C" fn window_copy_search_compare(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut px: u_int,
     mut py: u_int,
-    mut sgd: *mut grid,
+    mut sgd: *mut Grid,
     mut spx: u_int,
     mut cis: libc::c_int,
 ) -> libc::c_int {
@@ -4981,8 +4987,8 @@ unsafe extern "C" fn window_copy_search_compare(
     ) == 0i32) as libc::c_int;
 }
 unsafe extern "C" fn window_copy_search_lr(
-    mut gd: *mut grid,
-    mut sgd: *mut grid,
+    mut gd: *mut Grid,
+    mut sgd: *mut Grid,
     mut ppx: *mut u_int,
     mut py: u_int,
     mut first: u_int,
@@ -5031,8 +5037,8 @@ unsafe extern "C" fn window_copy_search_lr(
     return 0i32;
 }
 unsafe extern "C" fn window_copy_search_rl(
-    mut gd: *mut grid,
-    mut sgd: *mut grid,
+    mut gd: *mut Grid,
+    mut sgd: *mut Grid,
     mut ppx: *mut u_int,
     mut py: u_int,
     mut first: u_int,
@@ -5081,7 +5087,7 @@ unsafe extern "C" fn window_copy_search_rl(
     return 0i32;
 }
 unsafe extern "C" fn window_copy_search_lr_regex(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut ppx: *mut u_int,
     mut psx: *mut u_int,
     mut py: u_int,
@@ -5162,7 +5168,7 @@ unsafe extern "C" fn window_copy_search_lr_regex(
     return 0i32;
 }
 unsafe extern "C" fn window_copy_search_rl_regex(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut ppx: *mut u_int,
     mut psx: *mut u_int,
     mut py: u_int,
@@ -5252,7 +5258,7 @@ unsafe extern "C" fn window_copy_cellstring(
 }
 /* Find last match in given range. */
 unsafe extern "C" fn window_copy_last_regex(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut py: u_int,
     mut first: u_int,
     mut last: u_int,
@@ -5324,7 +5330,7 @@ unsafe extern "C" fn window_copy_last_regex(
 }
 /* Stringify line and append to input buffer. Caller frees. */
 unsafe extern "C" fn window_copy_stringify(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut py: u_int,
     mut first: u_int,
     mut last: u_int,
@@ -5376,7 +5382,7 @@ unsafe extern "C" fn window_copy_stringify(
 }
 /* Map start of C string containing UTF-8 data to grid cell position. */
 unsafe extern "C" fn window_copy_cstrtocellpos(
-    mut gd: *mut grid,
+    mut gd: *mut Grid,
     mut ncells: u_int,
     mut ppx: *mut u_int,
     mut ppy: *mut u_int,
@@ -5544,8 +5550,8 @@ unsafe extern "C" fn window_copy_is_lowercase(mut ptr: *const libc::c_char) -> l
  */
 unsafe extern "C" fn window_copy_search_jump(
     mut wme: *mut window_mode_entry,
-    mut gd: *mut grid,
-    mut sgd: *mut grid,
+    mut gd: *mut Grid,
+    mut sgd: *mut Grid,
     mut fx: u_int,
     mut fy: u_int,
     mut endline: u_int,
@@ -5690,7 +5696,7 @@ unsafe extern "C" fn window_copy_search(
         title: 0 as *mut libc::c_char,
         path: 0 as *mut libc::c_char,
         titles: 0 as *mut crate::screen::screen_titles,
-        grid: 0 as *mut grid,
+        grid: 0 as *mut Grid,
         cx: 0,
         cy: 0,
         cstyle: 0,
@@ -5700,7 +5706,7 @@ unsafe extern "C" fn window_copy_search(
         mode: 0,
         saved_cx: 0,
         saved_cy: 0,
-        saved_grid: 0 as *mut grid,
+        saved_grid: 0 as *mut Grid,
         saved_cell: GridCell {
             data: Utf8Data {
                 data: [0; 21],
@@ -5732,7 +5738,7 @@ unsafe extern "C" fn window_copy_search(
         written: 0,
         skipped: 0,
     };
-    let mut gd: *mut grid = (*s).grid;
+    let mut gd: *mut Grid = (*s).grid;
     let mut str: *const libc::c_char = (*data).searchstr;
     let mut fx: u_int = 0;
     let mut fy: u_int = 0;
@@ -5827,7 +5833,7 @@ unsafe extern "C" fn window_copy_visible_lines(
     mut start: *mut u_int,
     mut end: *mut u_int,
 ) {
-    let mut gd: *mut grid = (*(*data).backing).grid;
+    let mut gd: *mut Grid = (*(*data).backing).grid;
     let mut gl: *const GridLine = 0 as *const GridLine;
     *start = (*gd).hsize.wrapping_sub((*data).oy);
     while *start > 0u32 {
@@ -5846,7 +5852,7 @@ unsafe extern "C" fn window_copy_search_mark_at(
     mut at: *mut u_int,
 ) -> libc::c_int {
     let mut s: *mut screen = (*data).backing;
-    let mut gd: *mut grid = (*s).grid;
+    let mut gd: *mut Grid = (*s).grid;
     if py < (*gd).hsize.wrapping_sub((*data).oy) {
         return -(1i32);
     }
@@ -5877,7 +5883,7 @@ unsafe extern "C" fn window_copy_search_marks(
         title: 0 as *mut libc::c_char,
         path: 0 as *mut libc::c_char,
         titles: 0 as *mut crate::screen::screen_titles,
-        grid: 0 as *mut grid,
+        grid: 0 as *mut Grid,
         cx: 0,
         cy: 0,
         cstyle: 0,
@@ -5887,7 +5893,7 @@ unsafe extern "C" fn window_copy_search_marks(
         mode: 0,
         saved_cx: 0,
         saved_cy: 0,
-        saved_grid: 0 as *mut grid,
+        saved_grid: 0 as *mut Grid,
         saved_cell: GridCell {
             data: Utf8Data {
                 data: [0; 21],
@@ -5919,7 +5925,7 @@ unsafe extern "C" fn window_copy_search_marks(
         written: 0,
         skipped: 0,
     };
-    let mut gd: *mut grid = (*s).grid;
+    let mut gd: *mut Grid = (*s).grid;
     let mut found: libc::c_int = 0;
     let mut cis: libc::c_int = 0;
     let mut which: libc::c_int = -(1i32);
@@ -6143,7 +6149,7 @@ unsafe extern "C" fn window_copy_match_start_end(
     mut start: *mut u_int,
     mut end: *mut u_int,
 ) {
-    let mut gd: *mut grid = (*(*data).backing).grid;
+    let mut gd: *mut Grid = (*(*data).backing).grid;
     let mut last: u_int = (*gd).sy.wrapping_mul((*gd).sx).wrapping_sub(1u32);
     let mut mark: u_char = *(*data).searchmark.offset(at as isize);
     *end = at;
@@ -6168,7 +6174,7 @@ unsafe extern "C" fn window_copy_match_start_end(
 unsafe extern "C" fn window_copy_match_at_cursor(
     mut data: *mut window_copy_mode_data,
 ) -> *mut libc::c_char {
-    let mut gd: *mut grid = (*(*data).backing).grid;
+    let mut gd: *mut Grid = (*(*data).backing).grid;
     let mut gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
@@ -6326,7 +6332,7 @@ unsafe extern "C" fn window_copy_write_one(
     mut mkgc: *const GridCell,
 ) {
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut gd: *mut grid = (*(*data).backing).grid;
+    let mut gd: *mut Grid = (*(*data).backing).grid;
     let mut gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
@@ -6554,7 +6560,7 @@ unsafe extern "C" fn window_copy_redraw_selection(
     mut old_y: u_int,
 ) {
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut gd: *mut grid = (*(*data).backing).grid;
+    let mut gd: *mut Grid = (*(*data).backing).grid;
     let mut new_y: u_int = 0;
     let mut start: u_int = 0;
     let mut end: u_int = 0;
@@ -7169,7 +7175,7 @@ unsafe extern "C" fn window_copy_copy_line(
     mut ex: u_int,
 ) {
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut gd: *mut grid = (*(*data).backing).grid;
+    let mut gd: *mut Grid = (*(*data).backing).grid;
     let mut gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
@@ -7311,7 +7317,7 @@ unsafe extern "C" fn window_copy_find_length(
 unsafe extern "C" fn window_copy_cursor_start_of_line(mut wme: *mut window_mode_entry) {
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
     let mut back_s: *mut screen = (*data).backing;
-    let mut gd: *mut grid = (*back_s).grid;
+    let mut gd: *mut Grid = (*back_s).grid;
     let mut py: u_int = 0;
     if (*data).cx == 0u32 && (*data).lineflag == LINE_SEL_NONE {
         py = (*(*back_s).grid)
@@ -7372,7 +7378,7 @@ unsafe extern "C" fn window_copy_cursor_back_to_indentation(mut wme: *mut window
 unsafe extern "C" fn window_copy_cursor_end_of_line(mut wme: *mut window_mode_entry) {
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
     let mut back_s: *mut screen = (*data).backing;
-    let mut gd: *mut grid = (*back_s).grid;
+    let mut gd: *mut Grid = (*back_s).grid;
     let mut gl: *mut GridLine = 0 as *mut GridLine;
     let mut px: u_int = 0;
     let mut py: u_int = 0;

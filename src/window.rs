@@ -1,4 +1,8 @@
-use crate::{grid::Cell as GridCell, key_code::code as key_code_code, utf8::Utf8Data};
+use crate::{
+    grid::{Cell as GridCell, Grid},
+    key_code::code as key_code_code,
+    utf8::Utf8Data,
+};
 use ::c2rust_bitfields;
 use ::libc;
 
@@ -151,7 +155,12 @@ extern "C" {
         _: *const crate::grid::Cell,
     ) -> libc::c_int;
     #[no_mangle]
-    fn grid_view_string_cells(_: *mut grid, _: u_int, _: u_int, _: u_int) -> *mut libc::c_char;
+    fn grid_view_string_cells(
+        _: *mut crate::grid::Grid,
+        _: u_int,
+        _: u_int,
+        _: u_int,
+    ) -> *mut libc::c_char;
     #[no_mangle]
     fn options_create(_: *mut crate::options::options) -> *mut crate::options::options;
     #[no_mangle]
@@ -613,7 +622,7 @@ pub struct screen {
     pub title: *mut libc::c_char,
     pub path: *mut libc::c_char,
     pub titles: *mut crate::screen::screen_titles,
-    pub grid: *mut grid,
+    pub grid: *mut crate::grid::Grid,
     pub cx: u_int,
     pub cy: u_int,
     pub cstyle: u_int,
@@ -623,24 +632,12 @@ pub struct screen {
     pub mode: libc::c_int,
     pub saved_cx: u_int,
     pub saved_cy: u_int,
-    pub saved_grid: *mut grid,
+    pub saved_grid: *mut crate::grid::Grid,
     pub saved_cell: crate::grid::Cell,
     pub saved_flags: libc::c_int,
     pub tabs: *mut bitstr_t,
     pub sel: *mut crate::screen::screen_sel,
     pub write_list: *mut crate::screen_write::screen_write_collect_line,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct grid {
-    pub flags: libc::c_int,
-    pub sx: u_int,
-    pub sy: u_int,
-    pub hscrolled: u_int,
-    pub hsize: u_int,
-    pub hlimit: u_int,
-    pub linedata: *mut crate::grid::Line,
 }
 
 pub type overlay_check_cb =
@@ -4186,7 +4183,7 @@ pub unsafe extern "C" fn window_pane_find_by_id(mut id: u_int) -> *mut window_pa
             title: 0 as *mut libc::c_char,
             path: 0 as *mut libc::c_char,
             titles: 0 as *mut crate::screen::screen_titles,
-            grid: 0 as *mut grid,
+            grid: 0 as *mut Grid,
             cx: 0,
             cy: 0,
             cstyle: 0,
@@ -4196,7 +4193,7 @@ pub unsafe extern "C" fn window_pane_find_by_id(mut id: u_int) -> *mut window_pa
             mode: 0,
             saved_cx: 0,
             saved_cy: 0,
-            saved_grid: 0 as *mut grid,
+            saved_grid: 0 as *mut Grid,
             saved_cell: GridCell {
                 data: Utf8Data {
                     data: [0; 21],
@@ -4219,7 +4216,7 @@ pub unsafe extern "C" fn window_pane_find_by_id(mut id: u_int) -> *mut window_pa
             title: 0 as *mut libc::c_char,
             path: 0 as *mut libc::c_char,
             titles: 0 as *mut crate::screen::screen_titles,
-            grid: 0 as *mut grid,
+            grid: 0 as *mut Grid,
             cx: 0,
             cy: 0,
             cstyle: 0,
@@ -4229,7 +4226,7 @@ pub unsafe extern "C" fn window_pane_find_by_id(mut id: u_int) -> *mut window_pa
             mode: 0,
             saved_cx: 0,
             saved_cy: 0,
-            saved_grid: 0 as *mut grid,
+            saved_grid: 0 as *mut Grid,
             saved_cell: GridCell {
                 data: Utf8Data {
                     data: [0; 21],
@@ -4455,7 +4452,7 @@ pub unsafe extern "C" fn window_pane_resize(
         &mut (*wp).base,
         sx,
         sy,
-        ((*wp).base.saved_grid == 0 as *mut grid) as libc::c_int,
+        ((*wp).base.saved_grid == 0 as *mut Grid) as libc::c_int,
     );
     wme = (*wp).modes.tqh_first;
     if !wme.is_null() && (*(*wme).mode).resize.is_some() {

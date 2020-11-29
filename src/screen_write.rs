@@ -1,5 +1,5 @@
 use crate::{
-    grid::{Cell as GridCell, CellEntry as GridCellEntry, Line as GridLine},
+    grid::{Cell as GridCell, CellEntry as GridCellEntry, Grid, Line as GridLine},
     utf8::{utf8_state, Utf8Data, Utf8State},
 };
 use ::libc;
@@ -117,20 +117,25 @@ extern "C" {
     #[no_mangle]
     fn grid_cells_equal(_: *const crate::grid::Cell, _: *const crate::grid::Cell) -> libc::c_int;
     #[no_mangle]
-    fn grid_clear_history(_: *mut grid);
+    fn grid_clear_history(_: *mut crate::grid::Grid);
     #[no_mangle]
-    fn grid_get_cell(_: *mut grid, _: u_int, _: u_int, _: *mut crate::grid::Cell);
+    fn grid_get_cell(_: *mut crate::grid::Grid, _: u_int, _: u_int, _: *mut crate::grid::Cell);
     #[no_mangle]
-    fn grid_get_line(_: *mut grid, _: u_int) -> *mut GridLine;
+    fn grid_get_line(_: *mut crate::grid::Grid, _: u_int) -> *mut GridLine;
     #[no_mangle]
-    fn grid_view_get_cell(_: *mut grid, _: u_int, _: u_int, _: *mut crate::grid::Cell);
+    fn grid_view_get_cell(_: *mut crate::grid::Grid, _: u_int, _: u_int, _: *mut crate::grid::Cell);
     #[no_mangle]
-    fn grid_view_set_cell(_: *mut grid, _: u_int, _: u_int, _: *const crate::grid::Cell);
+    fn grid_view_set_cell(
+        _: *mut crate::grid::Grid,
+        _: u_int,
+        _: u_int,
+        _: *const crate::grid::Cell,
+    );
     #[no_mangle]
-    fn grid_view_set_padding(_: *mut grid, _: u_int, _: u_int);
+    fn grid_view_set_padding(_: *mut crate::grid::Grid, _: u_int, _: u_int);
     #[no_mangle]
     fn grid_view_set_cells(
-        _: *mut grid,
+        _: *mut crate::grid::Grid,
         _: u_int,
         _: u_int,
         _: *const crate::grid::Cell,
@@ -138,25 +143,37 @@ extern "C" {
         _: size_t,
     );
     #[no_mangle]
-    fn grid_view_clear_history(_: *mut grid, _: u_int);
+    fn grid_view_clear_history(_: *mut crate::grid::Grid, _: u_int);
     #[no_mangle]
-    fn grid_view_clear(_: *mut grid, _: u_int, _: u_int, _: u_int, _: u_int, _: u_int);
+    fn grid_view_clear(_: *mut crate::grid::Grid, _: u_int, _: u_int, _: u_int, _: u_int, _: u_int);
     #[no_mangle]
-    fn grid_view_scroll_region_up(_: *mut grid, _: u_int, _: u_int, _: u_int);
+    fn grid_view_scroll_region_up(_: *mut crate::grid::Grid, _: u_int, _: u_int, _: u_int);
     #[no_mangle]
-    fn grid_view_scroll_region_down(_: *mut grid, _: u_int, _: u_int, _: u_int);
+    fn grid_view_scroll_region_down(_: *mut crate::grid::Grid, _: u_int, _: u_int, _: u_int);
     #[no_mangle]
-    fn grid_view_insert_lines(_: *mut grid, _: u_int, _: u_int, _: u_int);
+    fn grid_view_insert_lines(_: *mut crate::grid::Grid, _: u_int, _: u_int, _: u_int);
     #[no_mangle]
-    fn grid_view_insert_lines_region(_: *mut grid, _: u_int, _: u_int, _: u_int, _: u_int);
+    fn grid_view_insert_lines_region(
+        _: *mut crate::grid::Grid,
+        _: u_int,
+        _: u_int,
+        _: u_int,
+        _: u_int,
+    );
     #[no_mangle]
-    fn grid_view_delete_lines(_: *mut grid, _: u_int, _: u_int, _: u_int);
+    fn grid_view_delete_lines(_: *mut crate::grid::Grid, _: u_int, _: u_int, _: u_int);
     #[no_mangle]
-    fn grid_view_delete_lines_region(_: *mut grid, _: u_int, _: u_int, _: u_int, _: u_int);
+    fn grid_view_delete_lines_region(
+        _: *mut crate::grid::Grid,
+        _: u_int,
+        _: u_int,
+        _: u_int,
+        _: u_int,
+    );
     #[no_mangle]
-    fn grid_view_insert_cells(_: *mut grid, _: u_int, _: u_int, _: u_int, _: u_int);
+    fn grid_view_insert_cells(_: *mut crate::grid::Grid, _: u_int, _: u_int, _: u_int, _: u_int);
     #[no_mangle]
-    fn grid_view_delete_cells(_: *mut grid, _: u_int, _: u_int, _: u_int, _: u_int);
+    fn grid_view_delete_cells(_: *mut crate::grid::Grid, _: u_int, _: u_int, _: u_int, _: u_int);
     #[no_mangle]
     fn screen_reset_tabs(_: *mut screen);
     #[no_mangle]
@@ -556,7 +573,7 @@ pub struct screen {
     pub title: *mut libc::c_char,
     pub path: *mut libc::c_char,
     pub titles: *mut crate::screen::screen_titles,
-    pub grid: *mut grid,
+    pub grid: *mut crate::grid::Grid,
     pub cx: u_int,
     pub cy: u_int,
     pub cstyle: u_int,
@@ -566,7 +583,7 @@ pub struct screen {
     pub mode: libc::c_int,
     pub saved_cx: u_int,
     pub saved_cy: u_int,
-    pub saved_grid: *mut grid,
+    pub saved_grid: *mut crate::grid::Grid,
     pub saved_cell: crate::grid::Cell,
     pub saved_flags: libc::c_int,
     pub tabs: *mut bitstr_t,
@@ -612,18 +629,6 @@ pub type C2RustUnnamed_12 = libc::c_uint;
 pub const CLEAR_START: C2RustUnnamed_12 = 2;
 pub const CLEAR_END: C2RustUnnamed_12 = 1;
 pub const TEXT: C2RustUnnamed_12 = 0;
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct grid {
-    pub flags: libc::c_int,
-    pub sx: u_int,
-    pub sy: u_int,
-    pub hscrolled: u_int,
-    pub hsize: u_int,
-    pub hlimit: u_int,
-    pub linedata: *mut crate::grid::Line,
-}
 
 pub type overlay_check_cb =
     Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
@@ -1896,7 +1901,7 @@ pub unsafe extern "C" fn screen_write_fast_copy(
     mut ny: u_int,
 ) {
     let mut s: *mut screen = (*ctx).s;
-    let mut gd: *mut grid = (*src).grid;
+    let mut gd: *mut Grid = (*src).grid;
     let mut gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
@@ -2744,7 +2749,7 @@ pub unsafe extern "C" fn screen_write_insertline(
     mut bg: u_int,
 ) {
     let mut s: *mut screen = (*ctx).s;
-    let mut gd: *mut grid = (*s).grid;
+    let mut gd: *mut Grid = (*s).grid;
     let mut ttyctx: tty_ctx = tty_ctx {
         s: 0 as *mut screen,
         redraw_cb: None,
@@ -2846,7 +2851,7 @@ pub unsafe extern "C" fn screen_write_deleteline(
     mut bg: u_int,
 ) {
     let mut s: *mut screen = (*ctx).s;
-    let mut gd: *mut grid = (*s).grid;
+    let mut gd: *mut Grid = (*s).grid;
     let mut ttyctx: tty_ctx = tty_ctx {
         s: 0 as *mut screen,
         redraw_cb: None,
@@ -3177,7 +3182,7 @@ pub unsafe extern "C" fn screen_write_linefeed(
     mut bg: u_int,
 ) {
     let mut s: *mut screen = (*ctx).s;
-    let mut gd: *mut grid = (*s).grid;
+    let mut gd: *mut Grid = (*s).grid;
     let mut gl: *mut GridLine = 0 as *mut GridLine;
     gl = grid_get_line(gd, (*gd).hsize.wrapping_add((*s).cy));
     if wrapped != 0 {
@@ -3221,7 +3226,7 @@ pub unsafe extern "C" fn screen_write_scrollup(
     mut bg: u_int,
 ) {
     let mut s: *mut screen = (*ctx).s;
-    let mut gd: *mut grid = (*s).grid;
+    let mut gd: *mut Grid = (*s).grid;
     let mut i: u_int = 0;
     if lines == 0u32 {
         lines = 1u32
@@ -3255,7 +3260,7 @@ pub unsafe extern "C" fn screen_write_scrolldown(
     mut bg: u_int,
 ) {
     let mut s: *mut screen = (*ctx).s;
-    let mut gd: *mut grid = (*s).grid;
+    let mut gd: *mut Grid = (*s).grid;
     let mut ttyctx: tty_ctx = tty_ctx {
         s: 0 as *mut screen,
         redraw_cb: None,
@@ -3333,7 +3338,7 @@ pub unsafe extern "C" fn screen_write_clearendofscreen(
     mut bg: u_int,
 ) {
     let mut s: *mut screen = (*ctx).s;
-    let mut gd: *mut grid = (*s).grid;
+    let mut gd: *mut Grid = (*s).grid;
     let mut ttyctx: tty_ctx = tty_ctx {
         s: 0 as *mut screen,
         redraw_cb: None,
@@ -4156,7 +4161,7 @@ pub unsafe extern "C" fn screen_write_cell(
     mut gc: *const GridCell,
 ) {
     let mut s: *mut screen = (*ctx).s;
-    let mut gd: *mut grid = (*s).grid;
+    let mut gd: *mut Grid = (*s).grid;
     let mut gl: *mut GridLine = 0 as *mut GridLine;
     let mut gce: *mut GridCellEntry = 0 as *mut GridCellEntry;
     let mut tmp_gc: GridCell = GridCell {
@@ -4432,7 +4437,7 @@ unsafe extern "C" fn screen_write_combine(
     mut xx: *mut u_int,
 ) -> *const GridCell {
     let mut s: *mut screen = (*ctx).s;
-    let mut gd: *mut grid = (*s).grid;
+    let mut gd: *mut Grid = (*s).grid;
     static mut gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
@@ -4514,7 +4519,7 @@ unsafe extern "C" fn screen_write_overwrite(
     mut width: u_int,
 ) -> libc::c_int {
     let mut s: *mut screen = (*ctx).s;
-    let mut gd: *mut grid = (*s).grid;
+    let mut gd: *mut Grid = (*s).grid;
     let mut tmp_gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],

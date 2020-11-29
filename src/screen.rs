@@ -1,4 +1,7 @@
-use crate::{grid::Cell as GridCell, utf8::Utf8Data};
+use crate::{
+    grid::{Cell as GridCell, Grid},
+    utf8::Utf8Data,
+};
 use ::libc;
 
 extern "C" {
@@ -15,27 +18,45 @@ extern "C" {
     #[no_mangle]
     fn xstrdup(_: *const libc::c_char) -> *mut libc::c_char;
     #[no_mangle]
-    fn grid_empty_line(_: *mut grid, _: u_int, _: u_int);
+    fn grid_empty_line(_: *mut crate::grid::Grid, _: u_int, _: u_int);
     #[no_mangle]
-    fn grid_create(_: u_int, _: u_int, _: u_int) -> *mut grid;
+    fn grid_create(_: u_int, _: u_int, _: u_int) -> *mut crate::grid::Grid;
     #[no_mangle]
-    fn grid_destroy(_: *mut grid);
+    fn grid_destroy(_: *mut crate::grid::Grid);
     #[no_mangle]
-    fn grid_adjust_lines(_: *mut grid, _: u_int);
+    fn grid_adjust_lines(_: *mut crate::grid::Grid, _: u_int);
     #[no_mangle]
-    fn grid_clear_lines(_: *mut grid, _: u_int, _: u_int, _: u_int);
+    fn grid_clear_lines(_: *mut crate::grid::Grid, _: u_int, _: u_int, _: u_int);
     #[no_mangle]
-    fn grid_duplicate_lines(_: *mut grid, _: u_int, _: *mut grid, _: u_int, _: u_int);
+    fn grid_duplicate_lines(
+        _: *mut crate::grid::Grid,
+        _: u_int,
+        _: *mut crate::grid::Grid,
+        _: u_int,
+        _: u_int,
+    );
     #[no_mangle]
-    fn grid_reflow(_: *mut grid, _: u_int);
+    fn grid_reflow(_: *mut crate::grid::Grid, _: u_int);
     #[no_mangle]
-    fn grid_wrap_position(_: *mut grid, _: u_int, _: u_int, _: *mut u_int, _: *mut u_int);
+    fn grid_wrap_position(
+        _: *mut crate::grid::Grid,
+        _: u_int,
+        _: u_int,
+        _: *mut u_int,
+        _: *mut u_int,
+    );
     #[no_mangle]
-    fn grid_unwrap_position(_: *mut grid, _: *mut u_int, _: *mut u_int, _: u_int, _: u_int);
+    fn grid_unwrap_position(
+        _: *mut crate::grid::Grid,
+        _: *mut u_int,
+        _: *mut u_int,
+        _: u_int,
+        _: u_int,
+    );
     #[no_mangle]
-    fn grid_view_clear(_: *mut grid, _: u_int, _: u_int, _: u_int, _: u_int, _: u_int);
+    fn grid_view_clear(_: *mut crate::grid::Grid, _: u_int, _: u_int, _: u_int, _: u_int, _: u_int);
     #[no_mangle]
-    fn grid_view_delete_lines(_: *mut grid, _: u_int, _: u_int, _: u_int);
+    fn grid_view_delete_lines(_: *mut crate::grid::Grid, _: u_int, _: u_int, _: u_int);
     #[no_mangle]
     fn screen_write_make_list(_: *mut screen);
     #[no_mangle]
@@ -72,7 +93,7 @@ pub struct screen {
     pub title: *mut libc::c_char,
     pub path: *mut libc::c_char,
     pub titles: *mut screen_titles,
-    pub grid: *mut grid,
+    pub grid: *mut crate::grid::Grid,
     pub cx: u_int,
     pub cy: u_int,
     pub cstyle: u_int,
@@ -82,7 +103,7 @@ pub struct screen {
     pub mode: libc::c_int,
     pub saved_cx: u_int,
     pub saved_cy: u_int,
-    pub saved_grid: *mut grid,
+    pub saved_grid: *mut crate::grid::Grid,
     pub saved_cell: crate::grid::Cell,
     pub saved_flags: libc::c_int,
     pub tabs: *mut bitstr_t,
@@ -118,18 +139,6 @@ pub struct screen_sel {
     pub ex: u_int,
     pub ey: u_int,
     pub cell: crate::grid::Cell,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct grid {
-    pub flags: libc::c_int,
-    pub sx: u_int,
-    pub sy: u_int,
-    pub hscrolled: u_int,
-    pub hsize: u_int,
-    pub hlimit: u_int,
-    pub linedata: *mut crate::grid::Line,
 }
 
 #[repr(C)]
@@ -185,7 +194,7 @@ pub unsafe extern "C" fn screen_init(
     mut hlimit: u_int,
 ) {
     (*s).grid = grid_create(sx, sy, hlimit);
-    (*s).saved_grid = 0 as *mut grid;
+    (*s).saved_grid = 0 as *mut Grid;
     (*s).title = xstrdup(b"\x00" as *const u8 as *const libc::c_char);
     (*s).titles = 0 as *mut screen_titles;
     (*s).path = 0 as *mut libc::c_char;
@@ -413,7 +422,7 @@ unsafe extern "C" fn screen_resize_y(
     mut eat_empty: libc::c_int,
     mut cy: *mut u_int,
 ) {
-    let mut gd: *mut grid = (*s).grid;
+    let mut gd: *mut Grid = (*s).grid;
     let mut needed: u_int = 0;
     let mut available: u_int = 0;
     let mut oldy: u_int = 0;
@@ -806,5 +815,5 @@ pub unsafe extern "C" fn screen_alternate_off(
         screen_resize(s, sx, sy, 1i32);
     }
     grid_destroy((*s).saved_grid);
-    (*s).saved_grid = 0 as *mut grid;
+    (*s).saved_grid = 0 as *mut Grid;
 }

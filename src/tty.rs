@@ -1,5 +1,5 @@
 use crate::{
-    grid::{Cell as GridCell, Line as GridLine},
+    grid::{Cell as GridCell, Grid, Line as GridLine},
     tty_code::{code as tty_code_code, Code as TtyCode},
     utf8::Utf8Data,
 };
@@ -167,9 +167,9 @@ extern "C" {
     #[no_mangle]
     fn screen_select_cell(_: *mut screen, _: *mut crate::grid::Cell, _: *const crate::grid::Cell);
     #[no_mangle]
-    fn grid_view_get_cell(_: *mut grid, _: u_int, _: u_int, _: *mut crate::grid::Cell);
+    fn grid_view_get_cell(_: *mut crate::grid::Grid, _: u_int, _: u_int, _: *mut crate::grid::Cell);
     #[no_mangle]
-    fn grid_get_line(_: *mut grid, _: u_int) -> *mut GridLine;
+    fn grid_get_line(_: *mut crate::grid::Grid, _: u_int) -> *mut GridLine;
     #[no_mangle]
     fn fatalx(_: *const libc::c_char, _: ...) -> !;
     #[no_mangle]
@@ -251,7 +251,7 @@ pub struct screen {
     pub title: *mut libc::c_char,
     pub path: *mut libc::c_char,
     pub titles: *mut crate::screen::screen_titles,
-    pub grid: *mut grid,
+    pub grid: *mut crate::grid::Grid,
     pub cx: u_int,
     pub cy: u_int,
     pub cstyle: u_int,
@@ -261,7 +261,7 @@ pub struct screen {
     pub mode: libc::c_int,
     pub saved_cx: u_int,
     pub saved_cy: u_int,
-    pub saved_grid: *mut grid,
+    pub saved_grid: *mut crate::grid::Grid,
     pub saved_cell: crate::grid::Cell,
     pub saved_flags: libc::c_int,
     pub tabs: *mut bitstr_t,
@@ -269,18 +269,6 @@ pub struct screen {
     pub write_list: *mut crate::screen_write::screen_write_collect_line,
 }
 pub type bitstr_t = libc::c_uchar;
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct grid {
-    pub flags: libc::c_int,
-    pub sx: u_int,
-    pub sy: u_int,
-    pub hscrolled: u_int,
-    pub hsize: u_int,
-    pub hlimit: u_int,
-    pub linedata: *mut crate::grid::Line,
-}
 
 pub type cc_t = libc::c_uchar;
 pub type speed_t = libc::c_uint;
@@ -2776,7 +2764,7 @@ pub unsafe extern "C" fn tty_draw_line(
     mut defaults: *const GridCell,
     mut palette: *mut libc::c_int,
 ) {
-    let mut gd: *mut grid = (*s).grid;
+    let mut gd: *mut Grid = (*s).grid;
     let mut gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],

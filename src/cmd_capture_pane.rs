@@ -1,4 +1,4 @@
-use crate::grid::{Cell as GridCell, Line as GridLine};
+use crate::grid::{Cell as GridCell, Grid, Line as GridLine};
 use ::libc;
 
 extern "C" {
@@ -61,12 +61,12 @@ extern "C" {
     #[no_mangle]
     fn input_pending(_: *mut crate::input::input_ctx) -> *mut evbuffer;
     #[no_mangle]
-    fn grid_clear_history(_: *mut grid);
+    fn grid_clear_history(_: *mut crate::grid::Grid);
     #[no_mangle]
-    fn grid_peek_line(_: *mut grid, _: u_int) -> *const GridLine;
+    fn grid_peek_line(_: *mut crate::grid::Grid, _: u_int) -> *const GridLine;
     #[no_mangle]
     fn grid_string_cells(
-        _: *mut grid,
+        _: *mut crate::grid::Grid,
         _: u_int,
         _: u_int,
         _: u_int,
@@ -437,7 +437,7 @@ pub struct screen {
     pub title: *mut libc::c_char,
     pub path: *mut libc::c_char,
     pub titles: *mut crate::screen::screen_titles,
-    pub grid: *mut grid,
+    pub grid: *mut crate::grid::Grid,
     pub cx: u_int,
     pub cy: u_int,
     pub cstyle: u_int,
@@ -447,24 +447,12 @@ pub struct screen {
     pub mode: libc::c_int,
     pub saved_cx: u_int,
     pub saved_cy: u_int,
-    pub saved_grid: *mut grid,
+    pub saved_grid: *mut crate::grid::Grid,
     pub saved_cell: crate::grid::Cell,
     pub saved_flags: libc::c_int,
     pub tabs: *mut bitstr_t,
     pub sel: *mut crate::screen::screen_sel,
     pub write_list: *mut crate::screen_write::screen_write_collect_line,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct grid {
-    pub flags: libc::c_int,
-    pub sx: u_int,
-    pub sy: u_int,
-    pub hscrolled: u_int,
-    pub hsize: u_int,
-    pub hlimit: u_int,
-    pub linedata: *mut crate::grid::Line,
 }
 
 pub type overlay_check_cb =
@@ -1209,7 +1197,7 @@ unsafe extern "C" fn cmd_capture_pane_history(
     mut wp: *mut window_pane,
     mut len: *mut size_t,
 ) -> *mut libc::c_char {
-    let mut gd: *mut grid = 0 as *mut grid;
+    let mut gd: *mut Grid = 0 as *mut Grid;
     let mut gl: *const GridLine = 0 as *const GridLine;
     let mut gc: *mut GridCell = 0 as *mut GridCell;
     let mut n: libc::c_int = 0;

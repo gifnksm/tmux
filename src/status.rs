@@ -1,5 +1,5 @@
 use crate::{
-    grid::Cell as GridCell,
+    grid::{Cell as GridCell, Grid},
     key_code::code as key_code_code,
     utf8::{utf8_state, Utf8Char, Utf8Data, Utf8State},
 };
@@ -198,7 +198,7 @@ extern "C" {
     #[no_mangle]
     fn grid_cells_equal(_: *const crate::grid::Cell, _: *const crate::grid::Cell) -> libc::c_int;
     #[no_mangle]
-    fn grid_compare(_: *mut grid, _: *mut grid) -> libc::c_int;
+    fn grid_compare(_: *mut crate::grid::Grid, _: *mut crate::grid::Grid) -> libc::c_int;
     #[no_mangle]
     fn screen_write_nputs(
         _: *mut screen_write_ctx,
@@ -696,7 +696,7 @@ pub struct screen {
     pub title: *mut libc::c_char,
     pub path: *mut libc::c_char,
     pub titles: *mut crate::screen::screen_titles,
-    pub grid: *mut grid,
+    pub grid: *mut crate::grid::Grid,
     pub cx: u_int,
     pub cy: u_int,
     pub cstyle: u_int,
@@ -706,24 +706,12 @@ pub struct screen {
     pub mode: libc::c_int,
     pub saved_cx: u_int,
     pub saved_cy: u_int,
-    pub saved_grid: *mut grid,
+    pub saved_grid: *mut crate::grid::Grid,
     pub saved_cell: crate::grid::Cell,
     pub saved_flags: libc::c_int,
     pub tabs: *mut bitstr_t,
     pub sel: *mut crate::screen::screen_sel,
     pub write_list: *mut crate::screen_write::screen_write_collect_line,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct grid {
-    pub flags: libc::c_int,
-    pub sx: u_int,
-    pub sy: u_int,
-    pub hscrolled: u_int,
-    pub hsize: u_int,
-    pub hlimit: u_int,
-    pub linedata: *mut crate::grid::Line,
 }
 
 pub type overlay_check_cb =
@@ -2111,7 +2099,7 @@ pub unsafe extern "C" fn status_message_redraw(mut c: *mut client) -> libc::c_in
         title: 0 as *mut libc::c_char,
         path: 0 as *mut libc::c_char,
         titles: 0 as *mut crate::screen::screen_titles,
-        grid: 0 as *mut grid,
+        grid: 0 as *mut Grid,
         cx: 0,
         cy: 0,
         cstyle: 0,
@@ -2121,7 +2109,7 @@ pub unsafe extern "C" fn status_message_redraw(mut c: *mut client) -> libc::c_in
         mode: 0,
         saved_cx: 0,
         saved_cy: 0,
-        saved_grid: 0 as *mut grid,
+        saved_grid: 0 as *mut Grid,
         saved_cell: GridCell {
             data: Utf8Data {
                 data: [0; 21],
@@ -2374,7 +2362,7 @@ pub unsafe extern "C" fn status_prompt_redraw(mut c: *mut client) -> libc::c_int
         title: 0 as *mut libc::c_char,
         path: 0 as *mut libc::c_char,
         titles: 0 as *mut crate::screen::screen_titles,
-        grid: 0 as *mut grid,
+        grid: 0 as *mut Grid,
         cx: 0,
         cy: 0,
         cstyle: 0,
@@ -2384,7 +2372,7 @@ pub unsafe extern "C" fn status_prompt_redraw(mut c: *mut client) -> libc::c_int
         mode: 0,
         saved_cx: 0,
         saved_cy: 0,
-        saved_grid: 0 as *mut grid,
+        saved_grid: 0 as *mut Grid,
         saved_cell: GridCell {
             data: Utf8Data {
                 data: [0; 21],
