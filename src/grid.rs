@@ -69,19 +69,8 @@ pub struct grid_line {
     pub cellsize: u_int,
     pub celldata: *mut grid_cell_entry,
     pub extdsize: u_int,
-    pub extddata: *mut grid_extd_entry,
+    pub extddata: *mut ExtdEntry,
     pub flags: libc::c_int,
-}
-
-#[repr(C, packed)]
-#[derive(Copy, Clone)]
-pub struct grid_extd_entry {
-    pub data: crate::utf8::Utf8Char,
-    pub attr: u_short,
-    pub flags: u_char,
-    pub fg: libc::c_int,
-    pub bg: libc::c_int,
-    pub us: libc::c_int,
 }
 
 #[repr(C, packed)]
@@ -145,6 +134,18 @@ pub struct C2RustUnnamed_1 {
 #[derive(Copy, Clone)]
 pub struct Cell {
     pub data: crate::utf8::Utf8Data,
+    pub attr: u_short,
+    pub flags: u_char,
+    pub fg: libc::c_int,
+    pub bg: libc::c_int,
+    pub us: libc::c_int,
+}
+
+/// Grid extended cell entry.
+#[repr(C, packed)]
+#[derive(Copy, Clone)]
+pub struct ExtdEntry {
+    pub data: crate::utf8::Utf8Char,
     pub attr: u_short,
     pub flags: u_char,
     pub fg: libc::c_int,
@@ -350,8 +351,8 @@ unsafe extern "C" fn grid_get_extended_cell(
     (*gl).extddata = xreallocarray(
         (*gl).extddata as *mut libc::c_void,
         at as size_t,
-        ::std::mem::size_of::<grid_extd_entry>() as libc::c_ulong,
-    ) as *mut grid_extd_entry;
+        ::std::mem::size_of::<ExtdEntry>() as libc::c_ulong,
+    ) as *mut ExtdEntry;
     (*gl).extdsize = at;
     (*gce).c2rust_unnamed.offset = at.wrapping_sub(1u32);
     (*gce).flags = (flags | 0x8i32) as u_char;
@@ -361,8 +362,8 @@ unsafe extern "C" fn grid_extended_cell(
     mut gl: *mut grid_line,
     mut gce: *mut grid_cell_entry,
     mut gc: *const Cell,
-) -> *mut grid_extd_entry {
-    let mut gee: *mut grid_extd_entry = 0 as *mut grid_extd_entry;
+) -> *mut ExtdEntry {
+    let mut gee: *mut ExtdEntry = 0 as *mut ExtdEntry;
     let mut flags: libc::c_int = (*gc).flags as libc::c_int & !(0x40i32);
     let mut uc: Utf8Char = 0;
     if !((*gce).flags as libc::c_int) & 0x8i32 != 0 {
@@ -372,8 +373,7 @@ unsafe extern "C" fn grid_extended_cell(
     }
     (*gl).flags |= 0x2i32;
     utf8_from_data(&(*gc).data, &mut uc);
-    gee =
-        &mut *(*gl).extddata.offset((*gce).c2rust_unnamed.offset as isize) as *mut grid_extd_entry;
+    gee = &mut *(*gl).extddata.offset((*gce).c2rust_unnamed.offset as isize) as *mut ExtdEntry;
     (*gee).data = uc;
     (*gee).attr = (*gc).attr;
     (*gee).flags = flags as u_char;
@@ -385,9 +385,9 @@ unsafe extern "C" fn grid_extended_cell(
 /* Free up unused extended cells. */
 unsafe extern "C" fn grid_compact_line(mut gl: *mut grid_line) {
     let mut new_extdsize: libc::c_int = 0i32;
-    let mut new_extddata: *mut grid_extd_entry = 0 as *mut grid_extd_entry;
+    let mut new_extddata: *mut ExtdEntry = 0 as *mut ExtdEntry;
     let mut gce: *mut grid_cell_entry = 0 as *mut grid_cell_entry;
-    let mut gee: *mut grid_extd_entry = 0 as *mut grid_extd_entry;
+    let mut gee: *mut ExtdEntry = 0 as *mut ExtdEntry;
     let mut px: u_int = 0;
     let mut idx: u_int = 0;
     if (*gl).extdsize == 0u32 {
@@ -403,27 +403,26 @@ unsafe extern "C" fn grid_compact_line(mut gl: *mut grid_line) {
     }
     if new_extdsize == 0i32 {
         free((*gl).extddata as *mut libc::c_void);
-        (*gl).extddata = 0 as *mut grid_extd_entry;
+        (*gl).extddata = 0 as *mut ExtdEntry;
         (*gl).extdsize = 0u32;
         return;
     }
     new_extddata = xreallocarray(
         0 as *mut libc::c_void,
         new_extdsize as size_t,
-        ::std::mem::size_of::<grid_extd_entry>() as libc::c_ulong,
-    ) as *mut grid_extd_entry;
+        ::std::mem::size_of::<ExtdEntry>() as libc::c_ulong,
+    ) as *mut ExtdEntry;
     idx = 0u32;
     px = 0u32;
     while px < (*gl).cellsize {
         gce = &mut *(*gl).celldata.offset(px as isize) as *mut grid_cell_entry;
         if (*gce).flags as libc::c_int & 0x8i32 != 0 {
             gee = &mut *(*gl).extddata.offset((*gce).c2rust_unnamed.offset as isize)
-                as *mut grid_extd_entry;
+                as *mut ExtdEntry;
             memcpy(
-                &mut *new_extddata.offset(idx as isize) as *mut grid_extd_entry
-                    as *mut libc::c_void,
+                &mut *new_extddata.offset(idx as isize) as *mut ExtdEntry as *mut libc::c_void,
                 gee as *const libc::c_void,
-                ::std::mem::size_of::<grid_extd_entry>() as libc::c_ulong,
+                ::std::mem::size_of::<ExtdEntry>() as libc::c_ulong,
             );
             let fresh0 = idx;
             idx = idx.wrapping_add(1);
@@ -459,7 +458,7 @@ unsafe extern "C" fn grid_clear_cell(
     let mut gl: *mut grid_line = &mut *(*gd).linedata.offset(py as isize) as *mut grid_line;
     let mut gce: *mut grid_cell_entry =
         &mut *(*gl).celldata.offset(px as isize) as *mut grid_cell_entry;
-    let mut gee: *mut grid_extd_entry = 0 as *mut grid_extd_entry;
+    let mut gee: *mut ExtdEntry = 0 as *mut ExtdEntry;
     memcpy(
         gce as *mut libc::c_void,
         &grid_cleared_entry as *const grid_cell_entry as *const libc::c_void,
@@ -538,7 +537,7 @@ unsafe extern "C" fn grid_free_line(mut gd: *mut grid, mut py: u_int) {
     *fresh1 = 0 as *mut grid_cell_entry;
     free((*(*gd).linedata.offset(py as isize)).extddata as *mut libc::c_void);
     let ref mut fresh2 = (*(*gd).linedata.offset(py as isize)).extddata;
-    *fresh2 = 0 as *mut grid_extd_entry;
+    *fresh2 = 0 as *mut ExtdEntry;
 }
 /* Free several lines. */
 unsafe extern "C" fn grid_free_lines(mut gd: *mut grid, mut py: u_int, mut ny: u_int) {
@@ -835,7 +834,7 @@ pub unsafe extern "C" fn grid_peek_line(mut gd: *mut grid, mut py: u_int) -> *co
 unsafe extern "C" fn grid_get_cell1(mut gl: *mut grid_line, mut px: u_int, mut gc: *mut Cell) {
     let mut gce: *mut grid_cell_entry =
         &mut *(*gl).celldata.offset(px as isize) as *mut grid_cell_entry;
-    let mut gee: *mut grid_extd_entry = 0 as *mut grid_extd_entry;
+    let mut gee: *mut ExtdEntry = 0 as *mut ExtdEntry;
     if (*gce).flags as libc::c_int & 0x8i32 != 0 {
         if (*gce).c2rust_unnamed.offset >= (*gl).extdsize {
             memcpy(
@@ -845,7 +844,7 @@ unsafe extern "C" fn grid_get_cell1(mut gl: *mut grid_line, mut px: u_int, mut g
             );
         } else {
             gee = &mut *(*gl).extddata.offset((*gce).c2rust_unnamed.offset as isize)
-                as *mut grid_extd_entry;
+                as *mut ExtdEntry;
             (*gc).flags = (*gee).flags;
             (*gc).attr = (*gee).attr;
             (*gc).fg = (*gee).fg;
@@ -939,7 +938,7 @@ pub unsafe extern "C" fn grid_set_cells(
 ) {
     let mut gl: *mut grid_line = 0 as *mut grid_line;
     let mut gce: *mut grid_cell_entry = 0 as *mut grid_cell_entry;
-    let mut gee: *mut grid_extd_entry = 0 as *mut grid_extd_entry;
+    let mut gee: *mut ExtdEntry = 0 as *mut ExtdEntry;
     let mut i: u_int = 0;
     if grid_check_y(
         gd,
@@ -1771,13 +1770,13 @@ pub unsafe extern "C" fn grid_duplicate_lines(
             (*dstl).extddata = xreallocarray(
                 0 as *mut libc::c_void,
                 (*dstl).extdsize as size_t,
-                ::std::mem::size_of::<grid_extd_entry>() as libc::c_ulong,
-            ) as *mut grid_extd_entry;
+                ::std::mem::size_of::<ExtdEntry>() as libc::c_ulong,
+            ) as *mut ExtdEntry;
             memcpy(
                 (*dstl).extddata as *mut libc::c_void,
                 (*srcl).extddata as *const libc::c_void,
                 ((*dstl).extdsize as libc::c_ulong)
-                    .wrapping_mul(::std::mem::size_of::<grid_extd_entry>() as libc::c_ulong),
+                    .wrapping_mul(::std::mem::size_of::<ExtdEntry>() as libc::c_ulong),
             );
         }
         sy = sy.wrapping_add(1);

@@ -503,19 +503,8 @@ pub struct grid_line {
     pub cellsize: u_int,
     pub celldata: *mut grid_cell_entry,
     pub extdsize: u_int,
-    pub extddata: *mut grid_extd_entry,
+    pub extddata: *mut crate::grid::ExtdEntry,
     pub flags: libc::c_int,
-}
-
-#[repr(C, packed)]
-#[derive(Copy, Clone)]
-pub struct grid_extd_entry {
-    pub data: crate::utf8::Utf8Char,
-    pub attr: u_short,
-    pub flags: u_char,
-    pub fg: libc::c_int,
-    pub bg: libc::c_int,
-    pub us: libc::c_int,
 }
 
 #[repr(C, packed)]

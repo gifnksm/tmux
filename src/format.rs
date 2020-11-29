@@ -1,4 +1,7 @@
-use crate::{grid::Cell as GridCell, utf8::Utf8Data};
+use crate::{
+    grid::{Cell as GridCell, ExtdEntry as GridExtdEntry},
+    utf8::Utf8Data,
+};
 use ::c2rust_bitfields;
 use ::libc;
 
@@ -821,19 +824,8 @@ pub struct grid_line {
     pub cellsize: u_int,
     pub celldata: *mut grid_cell_entry,
     pub extdsize: u_int,
-    pub extddata: *mut grid_extd_entry,
+    pub extddata: *mut crate::grid::ExtdEntry,
     pub flags: libc::c_int,
-}
-
-#[repr(C, packed)]
-#[derive(Copy, Clone)]
-pub struct grid_extd_entry {
-    pub data: crate::utf8::Utf8Char,
-    pub attr: u_short,
-    pub flags: u_char,
-    pub fg: libc::c_int,
-    pub bg: libc::c_int,
-    pub us: libc::c_int,
 }
 
 #[repr(C, packed)]
@@ -3444,7 +3436,7 @@ unsafe extern "C" fn format_cb_history_bytes(mut ft: *mut format_tree) -> *mut l
         );
         size = (size).wrapping_add(
             ((*gl).extdsize as libc::c_ulong)
-                .wrapping_mul(::std::mem::size_of::<grid_extd_entry>() as libc::c_ulong),
+                .wrapping_mul(::std::mem::size_of::<GridExtdEntry>() as libc::c_ulong),
         );
         i = i.wrapping_add(1)
     }
@@ -3491,7 +3483,7 @@ unsafe extern "C" fn format_cb_history_all_bytes(mut ft: *mut format_tree) -> *m
             .wrapping_mul(::std::mem::size_of::<grid_cell_entry>() as libc::c_ulong),
         extended_cells,
         (extended_cells as libc::c_ulong)
-            .wrapping_mul(::std::mem::size_of::<grid_extd_entry>() as libc::c_ulong),
+            .wrapping_mul(::std::mem::size_of::<GridExtdEntry>() as libc::c_ulong),
     );
     return value;
 }
