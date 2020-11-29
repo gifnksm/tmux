@@ -1,6 +1,7 @@
 use crate::{
     grid::{Cell as GridCell, Grid},
     key_code::code as key_code_code,
+    screen::Screen,
     style::{Range as StyleRange, Ranges as StyleRanges},
     utf8::{utf8_state, Utf8Char, Utf8Data, Utf8State},
 };
@@ -178,9 +179,9 @@ extern "C" {
     #[no_mangle]
     fn server_add_message(_: *const libc::c_char, _: ...);
     #[no_mangle]
-    fn screen_init(_: *mut screen, _: u_int, _: u_int, _: u_int);
+    fn screen_init(_: *mut crate::screen::Screen, _: u_int, _: u_int, _: u_int);
     #[no_mangle]
-    fn screen_free(_: *mut screen);
+    fn screen_free(_: *mut crate::screen::Screen);
     #[no_mangle]
     fn screen_write_stop(_: *mut screen_write_ctx);
     #[no_mangle]
@@ -193,9 +194,9 @@ extern "C" {
     #[no_mangle]
     fn screen_write_putc(_: *mut screen_write_ctx, _: *const crate::grid::Cell, _: u_char);
     #[no_mangle]
-    fn screen_write_start(_: *mut screen_write_ctx, _: *mut screen);
+    fn screen_write_start(_: *mut screen_write_ctx, _: *mut crate::screen::Screen);
     #[no_mangle]
-    fn screen_resize(_: *mut screen, _: u_int, _: u_int, _: libc::c_int);
+    fn screen_resize(_: *mut crate::screen::Screen, _: u_int, _: u_int, _: libc::c_int);
     #[no_mangle]
     fn grid_cells_equal(_: *const crate::grid::Cell, _: *const crate::grid::Cell) -> libc::c_int;
     #[no_mangle]
@@ -211,7 +212,7 @@ extern "C" {
     #[no_mangle]
     fn screen_write_fast_copy(
         _: *mut screen_write_ctx,
-        _: *mut screen,
+        _: *mut crate::screen::Screen,
         _: u_int,
         _: u_int,
         _: u_int,
@@ -688,32 +689,13 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct screen {
-    pub title: *mut libc::c_char,
-    pub path: *mut libc::c_char,
-    pub titles: *mut crate::screen::screen_titles,
-    pub grid: *mut crate::grid::Grid,
-    pub cx: u_int,
-    pub cy: u_int,
-    pub cstyle: u_int,
-    pub ccolour: *mut libc::c_char,
-    pub rupper: u_int,
-    pub rlower: u_int,
-    pub mode: libc::c_int,
-    pub saved_cx: u_int,
-    pub saved_cy: u_int,
-    pub saved_grid: *mut crate::grid::Grid,
-    pub saved_cell: crate::grid::Cell,
-    pub saved_flags: libc::c_int,
-    pub tabs: *mut bitstr_t,
-    pub sel: *mut crate::screen::screen_sel,
-    pub write_list: *mut crate::screen_write::screen_write_collect_line,
-}
+pub type overlay_mode_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut u_int,
+        _: *mut u_int,
+    ) -> *mut crate::screen::Screen,
+>;
 
 pub type overlay_check_cb =
     Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
@@ -923,9 +905,9 @@ pub struct window_pane {
     pub pipe_fd: libc::c_int,
     pub pipe_event: *mut bufferevent,
     pub pipe_offset: window_pane_offset,
-    pub screen: *mut screen,
-    pub base: screen,
-    pub status_screen: screen,
+    pub screen: *mut crate::screen::Screen,
+    pub base: crate::screen::Screen,
+    pub status_screen: crate::screen::Screen,
     pub status_size: size_t,
     pub modes: C2RustUnnamed_23,
     pub searchstr: *mut libc::c_char,
@@ -968,7 +950,7 @@ pub struct window_mode_entry {
     pub swp: *mut window_pane,
     pub mode: *const window_mode,
     pub data: *mut libc::c_void,
-    pub screen: *mut screen,
+    pub screen: *mut crate::screen::Screen,
     pub prefix: u_int,
     pub entry: C2RustUnnamed_24,
 }
@@ -990,7 +972,7 @@ pub struct window_mode {
             _: *mut window_mode_entry,
             _: *mut cmd_find_state,
             _: *mut args,
-        ) -> *mut screen,
+        ) -> *mut crate::screen::Screen,
     >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
     pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
@@ -1128,8 +1110,8 @@ pub const CLIENT_EXIT_RETURN: C2RustUnnamed_28 = 0;
 #[derive(Copy, Clone)]
 pub struct status_line {
     pub timer: event,
-    pub screen: screen,
-    pub active: *mut screen,
+    pub screen: crate::screen::Screen,
+    pub active: *mut crate::screen::Screen,
     pub references: libc::c_int,
     pub style: crate::grid::Cell,
     pub entries: [status_line_entry; 5],
@@ -1242,7 +1224,7 @@ pub struct C2RustUnnamed_31 {
 #[derive(Copy, Clone)]
 pub struct screen_write_ctx {
     pub wp: *mut window_pane,
-    pub s: *mut screen,
+    pub s: *mut crate::screen::Screen,
     pub flags: libc::c_int,
     pub init_ctx_cb: screen_write_init_ctx_cb,
     pub arg: *mut libc::c_void,
@@ -1259,7 +1241,7 @@ pub type screen_write_init_ctx_cb =
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct tty_ctx {
-    pub s: *mut screen,
+    pub s: *mut crate::screen::Screen,
     pub redraw_cb: tty_ctx_redraw_cb,
     pub set_client_cb: tty_ctx_set_client_cb,
     pub arg: *mut libc::c_void,
@@ -1697,8 +1679,8 @@ unsafe extern "C" fn status_free_ranges(mut srs: *mut StyleRanges) {
 /* Save old status line. */
 unsafe extern "C" fn status_push_screen(mut c: *mut client) {
     let mut sl: *mut status_line = &mut (*c).status;
-    if (*sl).active == &mut (*sl).screen as *mut screen {
-        (*sl).active = xmalloc(::std::mem::size_of::<screen>() as libc::c_ulong) as *mut screen;
+    if (*sl).active == &mut (*sl).screen as *mut Screen {
+        (*sl).active = xmalloc(::std::mem::size_of::<Screen>() as libc::c_ulong) as *mut Screen;
         screen_init((*sl).active, (*c).tty.sx, status_line_size(c), 0u32);
     }
     (*sl).references += 1;
@@ -1750,7 +1732,7 @@ pub unsafe extern "C" fn status_free(mut c: *mut client) {
     if event_initialized(&mut (*sl).timer) != 0 {
         event_del(&mut (*sl).timer);
     }
-    if (*sl).active != &mut (*sl).screen as *mut screen {
+    if (*sl).active != &mut (*sl).screen as *mut crate::screen::Screen {
         screen_free((*sl).active);
         free((*sl).active as *mut libc::c_void);
     }
@@ -1764,7 +1746,7 @@ pub unsafe extern "C" fn status_redraw(mut c: *mut client) -> libc::c_int {
     let mut s: *mut session = (*c).session;
     let mut ctx: screen_write_ctx = screen_write_ctx {
         wp: 0 as *mut window_pane,
-        s: 0 as *mut screen,
+        s: 0 as *mut crate::screen::Screen,
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
@@ -1806,7 +1788,7 @@ pub unsafe extern "C" fn status_redraw(mut c: *mut client) -> libc::c_int {
         (*::std::mem::transmute::<&[u8; 14], &[libc::c_char; 14]>(b"status_redraw\x00")).as_ptr(),
     );
     /* Shouldn't get here if not the active screen. */
-    if (*sl).active != &mut (*sl).screen as *mut screen {
+    if (*sl).active != &mut (*sl).screen as *mut crate::screen::Screen {
         fatalx(b"not the active screen\x00" as *const u8 as *const libc::c_char);
     }
     /* No status line? */
@@ -2027,7 +2009,7 @@ pub unsafe extern "C" fn status_message_redraw(mut c: *mut client) -> libc::c_in
     let mut sl: *mut status_line = &mut (*c).status;
     let mut ctx: screen_write_ctx = screen_write_ctx {
         wp: 0 as *mut window_pane,
-        s: 0 as *mut screen,
+        s: 0 as *mut crate::screen::Screen,
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
@@ -2039,7 +2021,7 @@ pub unsafe extern "C" fn status_message_redraw(mut c: *mut client) -> libc::c_in
         skipped: 0,
     };
     let mut s: *mut session = (*c).session;
-    let mut old_screen: screen = screen {
+    let mut old_screen: Screen = Screen {
         title: 0 as *mut libc::c_char,
         path: 0 as *mut libc::c_char,
         titles: 0 as *mut crate::screen::screen_titles,
@@ -2093,9 +2075,9 @@ pub unsafe extern "C" fn status_message_redraw(mut c: *mut client) -> libc::c_in
         return 0i32;
     }
     memcpy(
-        &mut old_screen as *mut screen as *mut libc::c_void,
+        &mut old_screen as *mut crate::screen::Screen as *mut libc::c_void,
         (*sl).active as *const libc::c_void,
-        ::std::mem::size_of::<screen>() as libc::c_ulong,
+        ::std::mem::size_of::<Screen>() as libc::c_ulong,
     );
     lines = status_line_size(c);
     if lines <= 1u32 {
@@ -2290,7 +2272,7 @@ pub unsafe extern "C" fn status_prompt_redraw(mut c: *mut client) -> libc::c_int
     let mut sl: *mut status_line = &mut (*c).status;
     let mut ctx: screen_write_ctx = screen_write_ctx {
         wp: 0 as *mut window_pane,
-        s: 0 as *mut screen,
+        s: 0 as *mut crate::screen::Screen,
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
@@ -2302,7 +2284,7 @@ pub unsafe extern "C" fn status_prompt_redraw(mut c: *mut client) -> libc::c_int
         skipped: 0,
     };
     let mut s: *mut session = (*c).session;
-    let mut old_screen: screen = screen {
+    let mut old_screen: Screen = Screen {
         title: 0 as *mut libc::c_char,
         path: 0 as *mut libc::c_char,
         titles: 0 as *mut crate::screen::screen_titles,
@@ -2374,9 +2356,9 @@ pub unsafe extern "C" fn status_prompt_redraw(mut c: *mut client) -> libc::c_int
         return 0i32;
     }
     memcpy(
-        &mut old_screen as *mut screen as *mut libc::c_void,
+        &mut old_screen as *mut crate::screen::Screen as *mut libc::c_void,
         (*sl).active as *const libc::c_void,
-        ::std::mem::size_of::<screen>() as libc::c_ulong,
+        ::std::mem::size_of::<Screen>() as libc::c_ulong,
     );
     lines = status_line_size(c);
     if lines <= 1u32 {

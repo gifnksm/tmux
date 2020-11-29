@@ -1,5 +1,6 @@
 use crate::{
     grid::{Cell as GridCell, Grid},
+    screen::Screen,
     style::Ranges as StyleRanges,
     utf8::Utf8Data,
 };
@@ -83,11 +84,11 @@ extern "C" {
         _: *mut libc::c_int,
     );
     #[no_mangle]
-    fn tty_update_mode(_: *mut tty, _: libc::c_int, _: *mut screen);
+    fn tty_update_mode(_: *mut tty, _: libc::c_int, _: *mut crate::screen::Screen);
     #[no_mangle]
     fn tty_draw_line(
         _: *mut tty,
-        _: *mut screen,
+        _: *mut crate::screen::Screen,
         _: u_int,
         _: u_int,
         _: u_int,
@@ -117,7 +118,7 @@ extern "C" {
     #[no_mangle]
     fn grid_compare(_: *mut crate::grid::Grid, _: *mut crate::grid::Grid) -> libc::c_int;
     #[no_mangle]
-    fn screen_write_start(_: *mut screen_write_ctx, _: *mut screen);
+    fn screen_write_start(_: *mut screen_write_ctx, _: *mut crate::screen::Screen);
     #[no_mangle]
     fn screen_write_stop(_: *mut screen_write_ctx);
     #[no_mangle]
@@ -134,9 +135,9 @@ extern "C" {
     #[no_mangle]
     fn window_pane_index(_: *mut window_pane, _: *mut u_int) -> libc::c_int;
     #[no_mangle]
-    fn screen_free(_: *mut screen);
+    fn screen_free(_: *mut crate::screen::Screen);
     #[no_mangle]
-    fn screen_init(_: *mut screen, _: u_int, _: u_int, _: u_int);
+    fn screen_init(_: *mut crate::screen::Screen, _: u_int, _: u_int, _: u_int);
     #[no_mangle]
     fn status_prompt_redraw(_: *mut client) -> libc::c_int;
     #[no_mangle]
@@ -499,32 +500,13 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct screen {
-    pub title: *mut libc::c_char,
-    pub path: *mut libc::c_char,
-    pub titles: *mut crate::screen::screen_titles,
-    pub grid: *mut crate::grid::Grid,
-    pub cx: u_int,
-    pub cy: u_int,
-    pub cstyle: u_int,
-    pub ccolour: *mut libc::c_char,
-    pub rupper: u_int,
-    pub rlower: u_int,
-    pub mode: libc::c_int,
-    pub saved_cx: u_int,
-    pub saved_cy: u_int,
-    pub saved_grid: *mut crate::grid::Grid,
-    pub saved_cell: crate::grid::Cell,
-    pub saved_flags: libc::c_int,
-    pub tabs: *mut bitstr_t,
-    pub sel: *mut crate::screen::screen_sel,
-    pub write_list: *mut crate::screen_write::screen_write_collect_line,
-}
+pub type overlay_mode_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut u_int,
+        _: *mut u_int,
+    ) -> *mut crate::screen::Screen,
+>;
 
 pub type overlay_check_cb =
     Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
@@ -734,9 +716,9 @@ pub struct window_pane {
     pub pipe_fd: libc::c_int,
     pub pipe_event: *mut bufferevent,
     pub pipe_offset: window_pane_offset,
-    pub screen: *mut screen,
-    pub base: screen,
-    pub status_screen: screen,
+    pub screen: *mut crate::screen::Screen,
+    pub base: crate::screen::Screen,
+    pub status_screen: crate::screen::Screen,
     pub status_size: size_t,
     pub modes: C2RustUnnamed_23,
     pub searchstr: *mut libc::c_char,
@@ -779,7 +761,7 @@ pub struct window_mode_entry {
     pub swp: *mut window_pane,
     pub mode: *const window_mode,
     pub data: *mut libc::c_void,
-    pub screen: *mut screen,
+    pub screen: *mut crate::screen::Screen,
     pub prefix: u_int,
     pub entry: C2RustUnnamed_24,
 }
@@ -801,7 +783,7 @@ pub struct window_mode {
             _: *mut window_mode_entry,
             _: *mut cmd_find_state,
             _: *mut args,
-        ) -> *mut screen,
+        ) -> *mut crate::screen::Screen,
     >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
     pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
@@ -939,8 +921,8 @@ pub const CLIENT_EXIT_RETURN: C2RustUnnamed_28 = 0;
 #[derive(Copy, Clone)]
 pub struct status_line {
     pub timer: event,
-    pub screen: screen,
-    pub active: *mut screen,
+    pub screen: crate::screen::Screen,
+    pub active: *mut crate::screen::Screen,
     pub references: libc::c_int,
     pub style: crate::grid::Cell,
     pub entries: [status_line_entry; 5],
@@ -1053,7 +1035,7 @@ pub struct C2RustUnnamed_31 {
 #[derive(Copy, Clone)]
 pub struct screen_write_ctx {
     pub wp: *mut window_pane,
-    pub s: *mut screen,
+    pub s: *mut crate::screen::Screen,
     pub flags: libc::c_int,
     pub init_ctx_cb: screen_write_init_ctx_cb,
     pub arg: *mut libc::c_void,
@@ -1070,7 +1052,7 @@ pub type screen_write_init_ctx_cb =
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct tty_ctx {
-    pub s: *mut screen,
+    pub s: *mut crate::screen::Screen,
     pub redraw_cb: tty_ctx_redraw_cb,
     pub set_client_cb: tty_ctx_set_client_cb,
     pub arg: *mut libc::c_void,
@@ -1789,7 +1771,7 @@ unsafe extern "C" fn screen_redraw_make_pane_status(
     let mut py: u_int = 0;
     let mut ctx: screen_write_ctx = screen_write_ctx {
         wp: 0 as *mut window_pane,
-        s: 0 as *mut screen,
+        s: 0 as *mut crate::screen::Screen,
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
@@ -1800,7 +1782,7 @@ unsafe extern "C" fn screen_redraw_make_pane_status(
         written: 0,
         skipped: 0,
     };
-    let mut old: screen = screen {
+    let mut old: Screen = Screen {
         title: 0 as *mut libc::c_char,
         path: 0 as *mut libc::c_char,
         titles: 0 as *mut crate::screen::screen_titles,
@@ -1868,9 +1850,9 @@ unsafe extern "C" fn screen_redraw_make_pane_status(
         (*wp).status_size = width as size_t
     }
     memcpy(
-        &mut old as *mut screen as *mut libc::c_void,
-        &mut (*wp).status_screen as *mut screen as *const libc::c_void,
-        ::std::mem::size_of::<screen>() as libc::c_ulong,
+        &mut old as *mut crate::screen::Screen as *mut libc::c_void,
+        &mut (*wp).status_screen as *mut crate::screen::Screen as *const libc::c_void,
+        ::std::mem::size_of::<Screen>() as libc::c_ulong,
     );
     screen_init(&mut (*wp).status_screen, width, 1u32, 0u32);
     (*wp).status_screen.mode = 0i32;
@@ -1912,7 +1894,7 @@ unsafe extern "C" fn screen_redraw_draw_pane_status(mut ctx: *mut screen_redraw_
     let mut w: *mut window = (*(*(*c).session).curw).window;
     let mut tty: *mut tty = &mut (*c).tty;
     let mut wp: *mut window_pane = 0 as *mut window_pane;
-    let mut s: *mut screen = 0 as *mut screen;
+    let mut s: *mut Screen = 0 as *mut Screen;
     let mut i: u_int = 0;
     let mut x: u_int = 0;
     let mut width: u_int = 0;
@@ -2129,7 +2111,11 @@ pub unsafe extern "C" fn screen_redraw_screen(mut c: *mut client) {
         return;
     }
     screen_redraw_set_context(c, &mut ctx);
-    tty_update_mode(&mut (*c).tty, (*c).tty.mode, 0 as *mut screen);
+    tty_update_mode(
+        &mut (*c).tty,
+        (*c).tty.mode,
+        0 as *mut crate::screen::Screen,
+    );
     tty_sync_start(&mut (*c).tty);
     if flags & (0x8i32 | 0x400i32) != 0 {
         log_debug(
@@ -2182,7 +2168,11 @@ pub unsafe extern "C" fn screen_redraw_pane(mut c: *mut client, mut wp: *mut win
         return;
     }
     screen_redraw_set_context(c, &mut ctx);
-    tty_update_mode(&mut (*c).tty, (*c).tty.mode, 0 as *mut screen);
+    tty_update_mode(
+        &mut (*c).tty,
+        (*c).tty.mode,
+        0 as *mut crate::screen::Screen,
+    );
     tty_sync_start(&mut (*c).tty);
     screen_redraw_draw_pane(&mut ctx, wp);
     tty_reset(&mut (*c).tty);
@@ -2363,7 +2353,7 @@ unsafe extern "C" fn screen_redraw_draw_status(mut ctx: *mut screen_redraw_ctx) 
     let mut c: *mut client = (*ctx).c;
     let mut w: *mut window = (*(*(*c).session).curw).window;
     let mut tty: *mut tty = &mut (*c).tty;
-    let mut s: *mut screen = (*c).status.active;
+    let mut s: *mut Screen = (*c).status.active;
     let mut i: u_int = 0;
     let mut y: u_int = 0;
     log_debug(
@@ -2404,7 +2394,7 @@ unsafe extern "C" fn screen_redraw_draw_pane(
     let mut c: *mut client = (*ctx).c;
     let mut w: *mut window = (*(*(*c).session).curw).window;
     let mut tty: *mut tty = &mut (*c).tty;
-    let mut s: *mut screen = 0 as *mut screen;
+    let mut s: *mut Screen = 0 as *mut Screen;
     let mut defaults: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],

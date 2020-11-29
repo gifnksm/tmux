@@ -1,5 +1,6 @@
 use crate::{
     grid::{Cell as GridCell, CellEntry as GridCellEntry, Grid, Line as GridLine},
+    screen::Screen,
     utf8::{Utf8Char, Utf8Data},
 };
 use ::c2rust_bitfields;
@@ -206,9 +207,13 @@ extern "C" {
     #[no_mangle]
     fn grid_line_length(_: *mut crate::grid::Grid, _: u_int) -> u_int;
     #[no_mangle]
-    fn screen_write_start_pane(_: *mut screen_write_ctx, _: *mut window_pane, _: *mut screen);
+    fn screen_write_start_pane(
+        _: *mut screen_write_ctx,
+        _: *mut window_pane,
+        _: *mut crate::screen::Screen,
+    );
     #[no_mangle]
-    fn screen_write_start(_: *mut screen_write_ctx, _: *mut screen);
+    fn screen_write_start(_: *mut screen_write_ctx, _: *mut crate::screen::Screen);
     #[no_mangle]
     fn screen_write_stop(_: *mut screen_write_ctx);
     #[no_mangle]
@@ -258,14 +263,14 @@ extern "C" {
     #[no_mangle]
     fn screen_write_setselection(_: *mut screen_write_ctx, _: *mut u_char, _: u_int);
     #[no_mangle]
-    fn screen_init(_: *mut screen, _: u_int, _: u_int, _: u_int);
+    fn screen_init(_: *mut crate::screen::Screen, _: u_int, _: u_int, _: u_int);
     #[no_mangle]
-    fn screen_free(_: *mut screen);
+    fn screen_free(_: *mut crate::screen::Screen);
     #[no_mangle]
-    fn screen_resize(_: *mut screen, _: u_int, _: u_int, _: libc::c_int);
+    fn screen_resize(_: *mut crate::screen::Screen, _: u_int, _: u_int, _: libc::c_int);
     #[no_mangle]
     fn screen_resize_cursor(
-        _: *mut screen,
+        _: *mut crate::screen::Screen,
         _: u_int,
         _: u_int,
         _: libc::c_int,
@@ -274,7 +279,7 @@ extern "C" {
     );
     #[no_mangle]
     fn screen_set_selection(
-        _: *mut screen,
+        _: *mut crate::screen::Screen,
         _: u_int,
         _: u_int,
         _: u_int,
@@ -284,9 +289,9 @@ extern "C" {
         _: *mut crate::grid::Cell,
     );
     #[no_mangle]
-    fn screen_clear_selection(_: *mut screen);
+    fn screen_clear_selection(_: *mut crate::screen::Screen);
     #[no_mangle]
-    fn screen_hide_selection(_: *mut screen);
+    fn screen_hide_selection(_: *mut crate::screen::Screen);
     #[no_mangle]
     fn notify_pane(_: *const libc::c_char, _: *mut window_pane);
     #[no_mangle]
@@ -700,32 +705,13 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct screen {
-    pub title: *mut libc::c_char,
-    pub path: *mut libc::c_char,
-    pub titles: *mut crate::screen::screen_titles,
-    pub grid: *mut crate::grid::Grid,
-    pub cx: u_int,
-    pub cy: u_int,
-    pub cstyle: u_int,
-    pub ccolour: *mut libc::c_char,
-    pub rupper: u_int,
-    pub rlower: u_int,
-    pub mode: libc::c_int,
-    pub saved_cx: u_int,
-    pub saved_cy: u_int,
-    pub saved_grid: *mut crate::grid::Grid,
-    pub saved_cell: crate::grid::Cell,
-    pub saved_flags: libc::c_int,
-    pub tabs: *mut bitstr_t,
-    pub sel: *mut crate::screen::screen_sel,
-    pub write_list: *mut crate::screen_write::screen_write_collect_line,
-}
+pub type overlay_mode_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut u_int,
+        _: *mut u_int,
+    ) -> *mut crate::screen::Screen,
+>;
 
 pub type overlay_check_cb =
     Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
@@ -935,9 +921,9 @@ pub struct window_pane {
     pub pipe_fd: libc::c_int,
     pub pipe_event: *mut bufferevent,
     pub pipe_offset: window_pane_offset,
-    pub screen: *mut screen,
-    pub base: screen,
-    pub status_screen: screen,
+    pub screen: *mut crate::screen::Screen,
+    pub base: crate::screen::Screen,
+    pub status_screen: crate::screen::Screen,
     pub status_size: size_t,
     pub modes: C2RustUnnamed_23,
     pub searchstr: *mut libc::c_char,
@@ -980,7 +966,7 @@ pub struct window_mode_entry {
     pub swp: *mut window_pane,
     pub mode: *const window_mode,
     pub data: *mut libc::c_void,
-    pub screen: *mut screen,
+    pub screen: *mut crate::screen::Screen,
     pub prefix: u_int,
     pub entry: C2RustUnnamed_24,
 }
@@ -1002,7 +988,7 @@ pub struct window_mode {
             _: *mut window_mode_entry,
             _: *mut cmd_find_state,
             _: *mut args,
-        ) -> *mut screen,
+        ) -> *mut crate::screen::Screen,
     >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
     pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
@@ -1140,8 +1126,8 @@ pub const CLIENT_EXIT_RETURN: C2RustUnnamed_28 = 0;
 #[derive(Copy, Clone)]
 pub struct status_line {
     pub timer: event,
-    pub screen: screen,
-    pub active: *mut screen,
+    pub screen: crate::screen::Screen,
+    pub active: *mut crate::screen::Screen,
     pub references: libc::c_int,
     pub style: crate::grid::Cell,
     pub entries: [status_line_entry; 5],
@@ -1254,7 +1240,7 @@ pub struct C2RustUnnamed_31 {
 #[derive(Copy, Clone)]
 pub struct screen_write_ctx {
     pub wp: *mut window_pane,
-    pub s: *mut screen,
+    pub s: *mut crate::screen::Screen,
     pub flags: libc::c_int,
     pub init_ctx_cb: screen_write_init_ctx_cb,
     pub arg: *mut libc::c_void,
@@ -1271,7 +1257,7 @@ pub type screen_write_init_ctx_cb =
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct tty_ctx {
-    pub s: *mut screen,
+    pub s: *mut crate::screen::Screen,
     pub redraw_cb: tty_ctx_redraw_cb,
     pub set_client_cb: tty_ctx_set_client_cb,
     pub arg: *mut libc::c_void,
@@ -1324,8 +1310,8 @@ pub type job_free_cb = Option<unsafe extern "C" fn(_: *mut libc::c_void) -> ()>;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct window_copy_mode_data {
-    pub screen: screen,
-    pub backing: *mut screen,
+    pub screen: crate::screen::Screen,
+    pub backing: *mut crate::screen::Screen,
     pub backing_written: libc::c_int,
     pub viewmode: libc::c_int,
     pub oy: u_int,
@@ -1451,7 +1437,7 @@ pub static mut window_copy_mode: window_mode = {
                         _: *mut window_mode_entry,
                         _: *mut cmd_find_state,
                         _: *mut args,
-                    ) -> *mut screen,
+                    ) -> *mut crate::screen::Screen,
             ),
             free: Some(window_copy_free as unsafe extern "C" fn(_: *mut window_mode_entry) -> ()),
             resize: Some(
@@ -1497,7 +1483,7 @@ pub static mut window_view_mode: window_mode = {
                         _: *mut window_mode_entry,
                         _: *mut cmd_find_state,
                         _: *mut args,
-                    ) -> *mut screen,
+                    ) -> *mut crate::screen::Screen,
             ),
             free: Some(window_copy_free as unsafe extern "C" fn(_: *mut window_mode_entry) -> ()),
             resize: Some(
@@ -1559,19 +1545,19 @@ unsafe extern "C" fn window_copy_scroll_timer(
     };
 }
 unsafe extern "C" fn window_copy_clone_screen(
-    mut src: *mut screen,
-    mut hint: *mut screen,
+    mut src: *mut crate::screen::Screen,
+    mut hint: *mut crate::screen::Screen,
     mut cx: *mut u_int,
     mut cy: *mut u_int,
     mut trim: libc::c_int,
-) -> *mut screen {
-    let mut dst: *mut screen = 0 as *mut screen;
+) -> *mut Screen {
+    let mut dst: *mut Screen = 0 as *mut Screen;
     let mut gl: *const GridLine = 0 as *const GridLine;
     let mut sy: u_int = 0;
     let mut wx: u_int = 0;
     let mut wy: u_int = 0;
     let mut reflow: libc::c_int = 0;
-    dst = xcalloc(1u64, ::std::mem::size_of::<screen>() as libc::c_ulong) as *mut screen;
+    dst = xcalloc(1u64, ::std::mem::size_of::<Screen>() as libc::c_ulong) as *mut Screen;
     sy = (*(*src).grid).hsize.wrapping_add((*(*src).grid).sy);
     if trim != 0 {
         while sy > (*(*src).grid).hsize {
@@ -1636,7 +1622,7 @@ unsafe extern "C" fn window_copy_common_init(
 ) -> *mut window_copy_mode_data {
     let mut wp: *mut window_pane = (*wme).wp;
     let mut data: *mut window_copy_mode_data = 0 as *mut window_copy_mode_data;
-    let mut base: *mut screen = &mut (*wp).base;
+    let mut base: *mut Screen = &mut (*wp).base;
     data = xcalloc(
         1u64,
         ::std::mem::size_of::<window_copy_mode_data>() as libc::c_ulong,
@@ -1689,13 +1675,13 @@ unsafe extern "C" fn window_copy_init(
     mut wme: *mut window_mode_entry,
     mut _fs: *mut cmd_find_state,
     mut args: *mut args,
-) -> *mut screen {
+) -> *mut Screen {
     let mut wp: *mut window_pane = (*wme).swp;
     let mut data: *mut window_copy_mode_data = 0 as *mut window_copy_mode_data;
-    let mut base: *mut screen = &mut (*wp).base;
+    let mut base: *mut Screen = &mut (*wp).base;
     let mut ctx: screen_write_ctx = screen_write_ctx {
         wp: 0 as *mut window_pane,
-        s: 0 as *mut screen,
+        s: 0 as *mut crate::screen::Screen,
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
@@ -1754,14 +1740,14 @@ unsafe extern "C" fn window_copy_view_init(
     mut wme: *mut window_mode_entry,
     mut _fs: *mut cmd_find_state,
     mut _args: *mut args,
-) -> *mut screen {
+) -> *mut Screen {
     let mut wp: *mut window_pane = (*wme).wp;
     let mut data: *mut window_copy_mode_data = 0 as *mut window_copy_mode_data;
-    let mut base: *mut screen = &mut (*wp).base;
-    let mut s: *mut screen = 0 as *mut screen;
+    let mut base: *mut Screen = &mut (*wp).base;
+    let mut s: *mut Screen = 0 as *mut Screen;
     data = window_copy_common_init(wme);
     (*data).viewmode = 1i32;
-    s = xmalloc(::std::mem::size_of::<screen>() as libc::c_ulong) as *mut screen;
+    s = xmalloc(::std::mem::size_of::<Screen>() as libc::c_ulong) as *mut crate::screen::Screen;
     (*data).backing = s;
     screen_init(
         s,
@@ -1805,10 +1791,10 @@ pub unsafe extern "C" fn window_copy_vadd(
 ) {
     let mut wme: *mut window_mode_entry = (*wp).modes.tqh_first;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut backing: *mut screen = (*data).backing;
+    let mut backing: *mut Screen = (*data).backing;
     let mut back_ctx: screen_write_ctx = screen_write_ctx {
         wp: 0 as *mut window_pane,
-        s: 0 as *mut screen,
+        s: 0 as *mut crate::screen::Screen,
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
@@ -1821,7 +1807,7 @@ pub unsafe extern "C" fn window_copy_vadd(
     };
     let mut ctx: screen_write_ctx = screen_write_ctx {
         wp: 0 as *mut window_pane,
-        s: 0 as *mut screen,
+        s: 0 as *mut crate::screen::Screen,
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
@@ -1894,7 +1880,7 @@ unsafe extern "C" fn window_copy_pageup1(
     mut half_page: libc::c_int,
 ) {
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut s: *mut screen = &mut (*data).screen;
+    let mut s: *mut Screen = &mut (*data).screen;
     let mut n: u_int = 0;
     let mut ox: u_int = 0;
     let mut oy: u_int = 0;
@@ -1939,7 +1925,12 @@ unsafe extern "C" fn window_copy_pageup1(
         }
     }
     if !(*data).searchmark.is_null() && (*data).timeout == 0 {
-        window_copy_search_marks(wme, 0 as *mut screen, (*data).searchregex, 1i32);
+        window_copy_search_marks(
+            wme,
+            0 as *mut crate::screen::Screen,
+            (*data).searchregex,
+            1i32,
+        );
     }
     window_copy_update_selection(wme, 1i32, 0i32);
     window_copy_redraw_screen(wme);
@@ -1950,7 +1941,7 @@ unsafe extern "C" fn window_copy_pagedown(
     mut scroll_exit: libc::c_int,
 ) -> libc::c_int {
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut s: *mut screen = &mut (*data).screen;
+    let mut s: *mut Screen = &mut (*data).screen;
     let mut n: u_int = 0;
     let mut ox: u_int = 0;
     let mut oy: u_int = 0;
@@ -1998,7 +1989,12 @@ unsafe extern "C" fn window_copy_pagedown(
         return 1i32;
     }
     if !(*data).searchmark.is_null() && (*data).timeout == 0 {
-        window_copy_search_marks(wme, 0 as *mut screen, (*data).searchregex, 1i32);
+        window_copy_search_marks(
+            wme,
+            0 as *mut crate::screen::Screen,
+            (*data).searchregex,
+            1i32,
+        );
     }
     window_copy_update_selection(wme, 1i32, 0i32);
     window_copy_redraw_screen(wme);
@@ -2021,7 +2017,7 @@ unsafe extern "C" fn window_copy_previous_paragraph(mut wme: *mut window_mode_en
 }
 unsafe extern "C" fn window_copy_next_paragraph(mut wme: *mut window_mode_entry) {
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut s: *mut screen = &mut (*data).screen;
+    let mut s: *mut Screen = &mut (*data).screen;
     let mut maxy: u_int = 0;
     let mut ox: u_int = 0;
     let mut oy: u_int = 0;
@@ -2194,10 +2190,10 @@ unsafe extern "C" fn window_copy_formats(
 }
 unsafe extern "C" fn window_copy_size_changed(mut wme: *mut window_mode_entry) {
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut s: *mut screen = &mut (*data).screen;
+    let mut s: *mut Screen = &mut (*data).screen;
     let mut ctx: screen_write_ctx = screen_write_ctx {
         wp: 0 as *mut window_pane,
-        s: 0 as *mut screen,
+        s: 0 as *mut crate::screen::Screen,
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
@@ -2215,7 +2211,12 @@ unsafe extern "C" fn window_copy_size_changed(mut wme: *mut window_mode_entry) {
     window_copy_write_lines(wme, &mut ctx, 0u32, (*(*s).grid).sy);
     screen_write_stop(&mut ctx);
     if search != 0 && (*data).timeout == 0 {
-        window_copy_search_marks(wme, 0 as *mut screen, (*data).searchregex, 0i32);
+        window_copy_search_marks(
+            wme,
+            0 as *mut crate::screen::Screen,
+            (*data).searchregex,
+            0i32,
+        );
     }
     (*data).searchx = (*data).cx as libc::c_int;
     (*data).searchy = (*data).cy as libc::c_int;
@@ -2227,7 +2228,7 @@ unsafe extern "C" fn window_copy_resize(
     mut sy: u_int,
 ) {
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut s: *mut screen = &mut (*data).screen;
+    let mut s: *mut Screen = &mut (*data).screen;
     let mut gd: *mut Grid = (*(*data).backing).grid;
     let mut cx: u_int = 0;
     let mut cy: u_int = 0;
@@ -2619,7 +2620,7 @@ unsafe extern "C" fn window_copy_cmd_history_bottom(
 ) -> window_copy_cmd_action {
     let mut wme: *mut window_mode_entry = (*cs).wme;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut s: *mut screen = (*data).backing;
+    let mut s: *mut Screen = (*data).backing;
     let mut oy: u_int = 0;
     oy = (*(*s).grid)
         .hsize
@@ -2632,7 +2633,12 @@ unsafe extern "C" fn window_copy_cmd_history_bottom(
     (*data).cx = window_copy_find_length(wme, (*(*s).grid).hsize.wrapping_add((*data).cy));
     (*data).oy = 0u32;
     if !(*data).searchmark.is_null() && (*data).timeout == 0 {
-        window_copy_search_marks(wme, 0 as *mut screen, (*data).searchregex, 1i32);
+        window_copy_search_marks(
+            wme,
+            0 as *mut crate::screen::Screen,
+            (*data).searchregex,
+            1i32,
+        );
     }
     window_copy_update_selection(wme, 1i32, 0i32);
     return WINDOW_COPY_CMD_REDRAW;
@@ -2654,7 +2660,12 @@ unsafe extern "C" fn window_copy_cmd_history_top(
     (*data).cx = 0u32;
     (*data).oy = (*(*(*data).backing).grid).hsize;
     if !(*data).searchmark.is_null() && (*data).timeout == 0 {
-        window_copy_search_marks(wme, 0 as *mut screen, (*data).searchregex, 1i32);
+        window_copy_search_marks(
+            wme,
+            0 as *mut crate::screen::Screen,
+            (*data).searchregex,
+            1i32,
+        );
     }
     window_copy_update_selection(wme, 1i32, 0i32);
     return WINDOW_COPY_CMD_REDRAW;
@@ -2748,7 +2759,7 @@ unsafe extern "C" fn window_copy_cmd_previous_matching_bracket(
     let mut wme: *mut window_mode_entry = (*cs).wme;
     let mut np: u_int = (*wme).prefix;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut s: *mut screen = (*data).backing;
+    let mut s: *mut Screen = (*data).backing;
     let mut open: [libc::c_char; 4] =
         *::std::mem::transmute::<&[u8; 4], &mut [libc::c_char; 4]>(b"{[(\x00");
     let mut close: [libc::c_char; 4] =
@@ -2874,7 +2885,7 @@ unsafe extern "C" fn window_copy_cmd_next_matching_bracket(
     let mut wme: *mut window_mode_entry = (*cs).wme;
     let mut np: u_int = (*wme).prefix;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut s: *mut screen = (*data).backing;
+    let mut s: *mut Screen = (*data).backing;
     let mut open: [libc::c_char; 4] =
         *::std::mem::transmute::<&[u8; 4], &mut [libc::c_char; 4]>(b"{[(\x00");
     let mut close: [libc::c_char; 4] =
@@ -4879,7 +4890,12 @@ unsafe extern "C" fn window_copy_scroll_to(
         (*data).oy = (*gd).hsize.wrapping_sub(offset)
     }
     if no_redraw == 0 && !(*data).searchmark.is_null() && (*data).timeout == 0 {
-        window_copy_search_marks(wme, 0 as *mut screen, (*data).searchregex, 1i32);
+        window_copy_search_marks(
+            wme,
+            0 as *mut crate::screen::Screen,
+            (*data).searchregex,
+            1i32,
+        );
     }
     window_copy_update_selection(wme, 1i32, 0i32);
     if no_redraw == 0 {
@@ -5461,7 +5477,7 @@ unsafe extern "C" fn window_copy_cstrtocellpos(
     free(cells as *mut libc::c_void);
 }
 unsafe extern "C" fn window_copy_move_left(
-    mut s: *mut screen,
+    mut s: *mut crate::screen::Screen,
     mut fx: *mut u_int,
     mut fy: *mut u_int,
     mut wrapflag: libc::c_int,
@@ -5662,8 +5678,8 @@ unsafe extern "C" fn window_copy_search(
 ) -> libc::c_int {
     let mut wp: *mut window_pane = (*wme).wp;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut s: *mut screen = (*data).backing;
-    let mut ss: screen = screen {
+    let mut s: *mut Screen = (*data).backing;
+    let mut ss: Screen = Screen {
         title: 0 as *mut libc::c_char,
         path: 0 as *mut libc::c_char,
         titles: 0 as *mut crate::screen::screen_titles,
@@ -5698,7 +5714,7 @@ unsafe extern "C" fn window_copy_search(
     };
     let mut ctx: screen_write_ctx = screen_write_ctx {
         wp: 0 as *mut window_pane,
-        s: 0 as *mut screen,
+        s: 0 as *mut crate::screen::Screen,
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
@@ -5822,7 +5838,7 @@ unsafe extern "C" fn window_copy_search_mark_at(
     mut py: u_int,
     mut at: *mut u_int,
 ) -> libc::c_int {
-    let mut s: *mut screen = (*data).backing;
+    let mut s: *mut Screen = (*data).backing;
     let mut gd: *mut Grid = (*s).grid;
     if py < (*gd).hsize.wrapping_sub((*data).oy) {
         return -(1i32);
@@ -5844,13 +5860,13 @@ unsafe extern "C" fn window_copy_search_mark_at(
 }
 unsafe extern "C" fn window_copy_search_marks(
     mut wme: *mut window_mode_entry,
-    mut ssp: *mut screen,
+    mut ssp: *mut crate::screen::Screen,
     mut regex: libc::c_int,
     mut visible_only: libc::c_int,
 ) -> libc::c_int {
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut s: *mut screen = (*data).backing;
-    let mut ss: screen = screen {
+    let mut s: *mut Screen = (*data).backing;
+    let mut ss: Screen = Screen {
         title: 0 as *mut libc::c_char,
         path: 0 as *mut libc::c_char,
         titles: 0 as *mut crate::screen::screen_titles,
@@ -5885,7 +5901,7 @@ unsafe extern "C" fn window_copy_search_marks(
     };
     let mut ctx: screen_write_ctx = screen_write_ctx {
         wp: 0 as *mut window_pane,
-        s: 0 as *mut screen,
+        s: 0 as *mut crate::screen::Screen,
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
@@ -6069,7 +6085,7 @@ unsafe extern "C" fn window_copy_search_marks(
             break;
         }
     }
-    if ssp == &mut ss as *mut screen {
+    if ssp == &mut ss as *mut crate::screen::Screen {
         screen_free(&mut ss);
     }
     if regex != 0 {
@@ -6336,7 +6352,7 @@ unsafe extern "C" fn window_copy_write_line(
 ) {
     let mut wp: *mut window_pane = (*wme).wp;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut s: *mut screen = &mut (*data).screen;
+    let mut s: *mut Screen = &mut (*data).screen;
     let mut oo: *mut crate::options::options = (*(*wp).window).options;
     let mut gc: GridCell = GridCell {
         data: Utf8Data {
@@ -6564,7 +6580,7 @@ unsafe extern "C" fn window_copy_redraw_lines(
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
     let mut ctx: screen_write_ctx = screen_write_ctx {
         wp: 0 as *mut window_pane,
-        s: 0 as *mut screen,
+        s: 0 as *mut crate::screen::Screen,
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
@@ -6576,7 +6592,7 @@ unsafe extern "C" fn window_copy_redraw_lines(
         skipped: 0,
     };
     let mut i: u_int = 0;
-    screen_write_start_pane(&mut ctx, wp, 0 as *mut screen);
+    screen_write_start_pane(&mut ctx, wp, 0 as *mut Screen);
     i = py;
     while i < py.wrapping_add(ny) {
         window_copy_write_line(wme, &mut ctx, i);
@@ -6685,10 +6701,10 @@ unsafe extern "C" fn window_copy_update_cursor(
 ) {
     let mut wp: *mut window_pane = (*wme).wp;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut s: *mut screen = &mut (*data).screen;
+    let mut s: *mut Screen = &mut (*data).screen;
     let mut ctx: screen_write_ctx = screen_write_ctx {
         wp: 0 as *mut window_pane,
-        s: 0 as *mut screen,
+        s: 0 as *mut crate::screen::Screen,
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
@@ -6711,7 +6727,7 @@ unsafe extern "C" fn window_copy_update_cursor(
     if (*data).cx == (*(*s).grid).sx {
         window_copy_redraw_lines(wme, (*data).cy, 1u32);
     } else {
-        screen_write_start_pane(&mut ctx, wp, 0 as *mut screen);
+        screen_write_start_pane(&mut ctx, wp, 0 as *mut crate::screen::Screen);
         screen_write_cursormove(
             &mut ctx,
             (*data).cx as libc::c_int,
@@ -6739,7 +6755,7 @@ unsafe extern "C" fn window_copy_adjust_selection(
     mut sely: *mut u_int,
 ) -> libc::c_int {
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut s: *mut screen = &mut (*data).screen;
+    let mut s: *mut Screen = &mut (*data).screen;
     let mut sx: u_int = 0;
     let mut sy: u_int = 0;
     let mut ty: u_int = 0;
@@ -6773,7 +6789,7 @@ unsafe extern "C" fn window_copy_update_selection(
     mut no_reset: libc::c_int,
 ) -> libc::c_int {
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut s: *mut screen = &mut (*data).screen;
+    let mut s: *mut Screen = &mut (*data).screen;
     if (*s).sel.is_null() && (*data).lineflag == LINE_SEL_NONE {
         return 0i32;
     }
@@ -6786,7 +6802,7 @@ unsafe extern "C" fn window_copy_set_selection(
 ) -> libc::c_int {
     let mut wp: *mut window_pane = (*wme).wp;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut s: *mut screen = &mut (*data).screen;
+    let mut s: *mut Screen = &mut (*data).screen;
     let mut oo: *mut crate::options::options = (*(*wp).window).options;
     let mut gc: GridCell = GridCell {
         data: Utf8Data {
@@ -6867,7 +6883,7 @@ unsafe extern "C" fn window_copy_get_selection(
 ) -> *mut libc::c_void {
     let mut wp: *mut window_pane = (*wme).wp;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut s: *mut screen = &mut (*data).screen;
+    let mut s: *mut Screen = &mut (*data).screen;
     let mut buf: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut off: size_t = 0;
     let mut i: u_int = 0;
@@ -7007,7 +7023,7 @@ unsafe extern "C" fn window_copy_copy_buffer(
     let mut wp: *mut window_pane = (*wme).wp;
     let mut ctx: screen_write_ctx = screen_write_ctx {
         wp: 0 as *mut window_pane,
-        s: 0 as *mut screen,
+        s: 0 as *mut crate::screen::Screen,
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
@@ -7023,7 +7039,7 @@ unsafe extern "C" fn window_copy_copy_buffer(
         b"set-clipboard\x00" as *const u8 as *const libc::c_char,
     ) != 0i64
     {
-        screen_write_start_pane(&mut ctx, wp, 0 as *mut screen);
+        screen_write_start_pane(&mut ctx, wp, 0 as *mut crate::screen::Screen);
         screen_write_setselection(&mut ctx, buf as *mut u_char, len as u_int);
         screen_write_stop(&mut ctx);
         notify_pane(
@@ -7089,7 +7105,7 @@ unsafe extern "C" fn window_copy_append_selection(mut wme: *mut window_mode_entr
     let mut bufsize: size_t = 0;
     let mut ctx: screen_write_ctx = screen_write_ctx {
         wp: 0 as *mut window_pane,
-        s: 0 as *mut screen,
+        s: 0 as *mut crate::screen::Screen,
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
@@ -7109,7 +7125,7 @@ unsafe extern "C" fn window_copy_append_selection(mut wme: *mut window_mode_entr
         b"set-clipboard\x00" as *const u8 as *const libc::c_char,
     ) != 0i64
     {
-        screen_write_start_pane(&mut ctx, wp, 0 as *mut screen);
+        screen_write_start_pane(&mut ctx, wp, 0 as *mut crate::screen::Screen);
         screen_write_setselection(&mut ctx, buf as *mut u_char, len as u_int);
         screen_write_stop(&mut ctx);
         notify_pane(
@@ -7287,7 +7303,7 @@ unsafe extern "C" fn window_copy_find_length(
 }
 unsafe extern "C" fn window_copy_cursor_start_of_line(mut wme: *mut window_mode_entry) {
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut back_s: *mut screen = (*data).backing;
+    let mut back_s: *mut Screen = (*data).backing;
     let mut gd: *mut Grid = (*back_s).grid;
     let mut py: u_int = 0;
     if (*data).cx == 0u32 && (*data).lineflag == LINE_SEL_NONE {
@@ -7348,7 +7364,7 @@ unsafe extern "C" fn window_copy_cursor_back_to_indentation(mut wme: *mut window
 }
 unsafe extern "C" fn window_copy_cursor_end_of_line(mut wme: *mut window_mode_entry) {
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut back_s: *mut screen = (*data).backing;
+    let mut back_s: *mut Screen = (*data).backing;
     let mut gd: *mut Grid = (*back_s).grid;
     let mut gl: *mut GridLine = 0 as *mut GridLine;
     let mut px: u_int = 0;
@@ -7385,7 +7401,7 @@ unsafe extern "C" fn window_copy_cursor_end_of_line(mut wme: *mut window_mode_en
 }
 unsafe extern "C" fn window_copy_other_end(mut wme: *mut window_mode_entry) {
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut s: *mut screen = &mut (*data).screen;
+    let mut s: *mut Screen = &mut (*data).screen;
     let mut selx: u_int = 0;
     let mut sely: u_int = 0;
     let mut cy: u_int = 0;
@@ -7536,7 +7552,7 @@ unsafe extern "C" fn window_copy_cursor_up(
     mut scroll_only: libc::c_int,
 ) {
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut s: *mut screen = &mut (*data).screen;
+    let mut s: *mut Screen = &mut (*data).screen;
     let mut ox: u_int = 0;
     let mut oy: u_int = 0;
     let mut px: u_int = 0;
@@ -7594,7 +7610,7 @@ unsafe extern "C" fn window_copy_cursor_down(
     mut scroll_only: libc::c_int,
 ) {
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut s: *mut screen = &mut (*data).screen;
+    let mut s: *mut Screen = &mut (*data).screen;
     let mut ox: u_int = 0;
     let mut oy: u_int = 0;
     let mut px: u_int = 0;
@@ -7641,7 +7657,7 @@ unsafe extern "C" fn window_copy_cursor_down(
 }
 unsafe extern "C" fn window_copy_cursor_jump(mut wme: *mut window_mode_entry) {
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut back_s: *mut screen = (*data).backing;
+    let mut back_s: *mut Screen = (*data).backing;
     let mut gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
@@ -7681,7 +7697,7 @@ unsafe extern "C" fn window_copy_cursor_jump(mut wme: *mut window_mode_entry) {
 }
 unsafe extern "C" fn window_copy_cursor_jump_back(mut wme: *mut window_mode_entry) {
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut back_s: *mut screen = (*data).backing;
+    let mut back_s: *mut Screen = (*data).backing;
     let mut gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
@@ -7725,7 +7741,7 @@ unsafe extern "C" fn window_copy_cursor_jump_back(mut wme: *mut window_mode_entr
 }
 unsafe extern "C" fn window_copy_cursor_jump_to(mut wme: *mut window_mode_entry) {
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut back_s: *mut screen = (*data).backing;
+    let mut back_s: *mut Screen = (*data).backing;
     let mut gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
@@ -7765,7 +7781,7 @@ unsafe extern "C" fn window_copy_cursor_jump_to(mut wme: *mut window_mode_entry)
 }
 unsafe extern "C" fn window_copy_cursor_jump_to_back(mut wme: *mut window_mode_entry) {
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut back_s: *mut screen = (*data).backing;
+    let mut back_s: *mut Screen = (*data).backing;
     let mut gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
@@ -7815,7 +7831,7 @@ unsafe extern "C" fn window_copy_cursor_next_word(
     mut separators: *const libc::c_char,
 ) {
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut back_s: *mut screen = (*data).backing;
+    let mut back_s: *mut Screen = (*data).backing;
     let mut px: u_int = 0;
     let mut py: u_int = 0;
     let mut xx: u_int = 0;
@@ -7875,7 +7891,7 @@ unsafe extern "C" fn window_copy_cursor_next_word_end_pos(
     let mut wp: *mut window_pane = (*wme).wp;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
     let mut oo: *mut crate::options::options = (*(*wp).window).options;
-    let mut back_s: *mut screen = (*data).backing;
+    let mut back_s: *mut Screen = (*data).backing;
     let mut px: u_int = 0;
     let mut py: u_int = 0;
     let mut xx: u_int = 0;
@@ -7937,7 +7953,7 @@ unsafe extern "C" fn window_copy_cursor_next_word_end(
     let mut wp: *mut window_pane = (*wme).wp;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
     let mut oo: *mut crate::options::options = (*(*wp).window).options;
-    let mut back_s: *mut screen = (*data).backing;
+    let mut back_s: *mut Screen = (*data).backing;
     let mut px: u_int = 0;
     let mut py: u_int = 0;
     let mut xx: u_int = 0;
@@ -8138,10 +8154,10 @@ unsafe extern "C" fn window_copy_cursor_previous_word(
 unsafe extern "C" fn window_copy_scroll_up(mut wme: *mut window_mode_entry, mut ny: u_int) {
     let mut wp: *mut window_pane = (*wme).wp;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut s: *mut screen = &mut (*data).screen;
+    let mut s: *mut Screen = &mut (*data).screen;
     let mut ctx: screen_write_ctx = screen_write_ctx {
         wp: 0 as *mut window_pane,
-        s: 0 as *mut screen,
+        s: 0 as *mut crate::screen::Screen,
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
@@ -8160,10 +8176,15 @@ unsafe extern "C" fn window_copy_scroll_up(mut wme: *mut window_mode_entry, mut 
     }
     (*data).oy = ((*data).oy).wrapping_sub(ny);
     if !(*data).searchmark.is_null() && (*data).timeout == 0 {
-        window_copy_search_marks(wme, 0 as *mut screen, (*data).searchregex, 1i32);
+        window_copy_search_marks(
+            wme,
+            0 as *mut crate::screen::Screen,
+            (*data).searchregex,
+            1i32,
+        );
     }
     window_copy_update_selection(wme, 0i32, 0i32);
-    screen_write_start_pane(&mut ctx, wp, 0 as *mut screen);
+    screen_write_start_pane(&mut ctx, wp, 0 as *mut crate::screen::Screen);
     screen_write_cursormove(&mut ctx, 0i32, 0i32, 0i32);
     screen_write_deleteline(&mut ctx, ny, 8u32);
     window_copy_write_lines(wme, &mut ctx, (*(*s).grid).sy.wrapping_sub(ny), ny);
@@ -8192,10 +8213,10 @@ unsafe extern "C" fn window_copy_scroll_up(mut wme: *mut window_mode_entry, mut 
 unsafe extern "C" fn window_copy_scroll_down(mut wme: *mut window_mode_entry, mut ny: u_int) {
     let mut wp: *mut window_pane = (*wme).wp;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut s: *mut screen = &mut (*data).screen;
+    let mut s: *mut Screen = &mut (*data).screen;
     let mut ctx: screen_write_ctx = screen_write_ctx {
         wp: 0 as *mut window_pane,
-        s: 0 as *mut screen,
+        s: 0 as *mut crate::screen::Screen,
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
@@ -8217,10 +8238,15 @@ unsafe extern "C" fn window_copy_scroll_down(mut wme: *mut window_mode_entry, mu
     }
     (*data).oy = ((*data).oy).wrapping_add(ny);
     if !(*data).searchmark.is_null() && (*data).timeout == 0 {
-        window_copy_search_marks(wme, 0 as *mut screen, (*data).searchregex, 1i32);
+        window_copy_search_marks(
+            wme,
+            0 as *mut crate::screen::Screen,
+            (*data).searchregex,
+            1i32,
+        );
     }
     window_copy_update_selection(wme, 0i32, 0i32);
-    screen_write_start_pane(&mut ctx, wp, 0 as *mut screen);
+    screen_write_start_pane(&mut ctx, wp, 0 as *mut crate::screen::Screen);
     screen_write_cursormove(&mut ctx, 0i32, 0i32, 0i32);
     screen_write_insertline(&mut ctx, ny, 8u32);
     window_copy_write_lines(wme, &mut ctx, 0u32, ny);

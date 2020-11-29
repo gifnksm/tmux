@@ -1,6 +1,6 @@
 use crate::{
-    grid::Cell as GridCell, key_code::code as key_code_code, style::Ranges as StyleRanges,
-    utf8::Utf8Data,
+    grid::Cell as GridCell, key_code::code as key_code_code, screen::Screen,
+    style::Ranges as StyleRanges, utf8::Utf8Data,
 };
 use ::libc;
 
@@ -105,7 +105,7 @@ extern "C" {
         _: libc::c_int,
     );
     #[no_mangle]
-    fn screen_write_start(_: *mut screen_write_ctx, _: *mut screen);
+    fn screen_write_start(_: *mut screen_write_ctx, _: *mut crate::screen::Screen);
     #[no_mangle]
     fn screen_write_stop(_: *mut screen_write_ctx);
     #[no_mangle]
@@ -137,11 +137,11 @@ extern "C" {
     #[no_mangle]
     fn screen_write_clearscreen(_: *mut screen_write_ctx, _: u_int);
     #[no_mangle]
-    fn screen_init(_: *mut screen, _: u_int, _: u_int, _: u_int);
+    fn screen_init(_: *mut crate::screen::Screen, _: u_int, _: u_int, _: u_int);
     #[no_mangle]
-    fn screen_free(_: *mut screen);
+    fn screen_free(_: *mut crate::screen::Screen);
     #[no_mangle]
-    fn screen_resize(_: *mut screen, _: u_int, _: u_int, _: libc::c_int);
+    fn screen_resize(_: *mut crate::screen::Screen, _: u_int, _: u_int, _: libc::c_int);
     #[no_mangle]
     fn window_zoom(_: *mut window_pane) -> libc::c_int;
     #[no_mangle]
@@ -531,32 +531,13 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct screen {
-    pub title: *mut libc::c_char,
-    pub path: *mut libc::c_char,
-    pub titles: *mut crate::screen::screen_titles,
-    pub grid: *mut crate::grid::Grid,
-    pub cx: u_int,
-    pub cy: u_int,
-    pub cstyle: u_int,
-    pub ccolour: *mut libc::c_char,
-    pub rupper: u_int,
-    pub rlower: u_int,
-    pub mode: libc::c_int,
-    pub saved_cx: u_int,
-    pub saved_cy: u_int,
-    pub saved_grid: *mut crate::grid::Grid,
-    pub saved_cell: crate::grid::Cell,
-    pub saved_flags: libc::c_int,
-    pub tabs: *mut bitstr_t,
-    pub sel: *mut crate::screen::screen_sel,
-    pub write_list: *mut crate::screen_write::screen_write_collect_line,
-}
+pub type overlay_mode_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut u_int,
+        _: *mut u_int,
+    ) -> *mut crate::screen::Screen,
+>;
 
 pub type overlay_check_cb =
     Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
@@ -766,9 +747,9 @@ pub struct window_pane {
     pub pipe_fd: libc::c_int,
     pub pipe_event: *mut bufferevent,
     pub pipe_offset: window_pane_offset,
-    pub screen: *mut screen,
-    pub base: screen,
-    pub status_screen: screen,
+    pub screen: *mut crate::screen::Screen,
+    pub base: crate::screen::Screen,
+    pub status_screen: crate::screen::Screen,
     pub status_size: size_t,
     pub modes: C2RustUnnamed_23,
     pub searchstr: *mut libc::c_char,
@@ -811,7 +792,7 @@ pub struct window_mode_entry {
     pub swp: *mut window_pane,
     pub mode: *const window_mode,
     pub data: *mut libc::c_void,
-    pub screen: *mut screen,
+    pub screen: *mut crate::screen::Screen,
     pub prefix: u_int,
     pub entry: C2RustUnnamed_24,
 }
@@ -833,7 +814,7 @@ pub struct window_mode {
             _: *mut window_mode_entry,
             _: *mut cmd_find_state,
             _: *mut args,
-        ) -> *mut screen,
+        ) -> *mut crate::screen::Screen,
     >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
     pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
@@ -971,8 +952,8 @@ pub const CLIENT_EXIT_RETURN: C2RustUnnamed_28 = 0;
 #[derive(Copy, Clone)]
 pub struct status_line {
     pub timer: event,
-    pub screen: screen,
-    pub active: *mut screen,
+    pub screen: crate::screen::Screen,
+    pub active: *mut crate::screen::Screen,
     pub references: libc::c_int,
     pub style: crate::grid::Cell,
     pub entries: [status_line_entry; 5],
@@ -1107,7 +1088,7 @@ pub struct mode_tree_data {
     pub height: u_int,
     pub offset: u_int,
     pub current: u_int,
-    pub screen: screen,
+    pub screen: crate::screen::Screen,
     pub preview: libc::c_int,
     pub search: *mut libc::c_char,
     pub filter: *mut libc::c_char,
@@ -1194,7 +1175,7 @@ pub type mode_tree_draw_cb = Option<
 #[derive(Copy, Clone)]
 pub struct screen_write_ctx {
     pub wp: *mut window_pane,
-    pub s: *mut screen,
+    pub s: *mut crate::screen::Screen,
     pub flags: libc::c_int,
     pub init_ctx_cb: screen_write_init_ctx_cb,
     pub arg: *mut libc::c_void,
@@ -1211,7 +1192,7 @@ pub type screen_write_init_ctx_cb =
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct tty_ctx {
-    pub s: *mut screen,
+    pub s: *mut crate::screen::Screen,
     pub redraw_cb: tty_ctx_redraw_cb,
     pub set_client_cb: tty_ctx_set_client_cb,
     pub arg: *mut libc::c_void,
@@ -1633,7 +1614,7 @@ pub unsafe extern "C" fn mode_tree_start(
     mut menu: *const menu_item,
     mut sort_list: *mut *const libc::c_char,
     mut sort_size: u_int,
-    mut s: *mut *mut screen,
+    mut s: *mut *mut crate::screen::Screen,
 ) -> *mut mode_tree_data {
     let mut mtd: *mut mode_tree_data = 0 as *mut mode_tree_data;
     let mut sort: *const libc::c_char = 0 as *const libc::c_char;
@@ -1690,7 +1671,7 @@ pub unsafe extern "C" fn mode_tree_zoom(mut mtd: *mut mode_tree_data, mut args: 
     };
 }
 unsafe extern "C" fn mode_tree_set_height(mut mtd: *mut mode_tree_data) {
-    let mut s: *mut screen = &mut (*mtd).screen;
+    let mut s: *mut Screen = &mut (*mtd).screen;
     let mut height: u_int = 0;
     if (*mtd).heightcb.is_some() {
         height = (*mtd).heightcb.expect("non-null function pointer")(
@@ -1715,7 +1696,7 @@ unsafe extern "C" fn mode_tree_set_height(mut mtd: *mut mode_tree_data) {
 }
 #[no_mangle]
 pub unsafe extern "C" fn mode_tree_build(mut mtd: *mut mode_tree_data) {
-    let mut s: *mut screen = &mut (*mtd).screen;
+    let mut s: *mut Screen = &mut (*mtd).screen;
     let mut tag: uint64_t = 0;
     if !(*mtd).line_list.is_null() {
         tag = (*(*(*mtd).line_list.offset((*mtd).current as isize)).item).tag
@@ -1789,7 +1770,7 @@ pub unsafe extern "C" fn mode_tree_resize(
     mut sx: u_int,
     mut sy: u_int,
 ) {
-    let mut s: *mut screen = &mut (*mtd).screen;
+    let mut s: *mut Screen = &mut (*mtd).screen;
     screen_resize(s, sx, sy, 0i32);
     mode_tree_build(mtd);
     mode_tree_draw(mtd);
@@ -1889,13 +1870,13 @@ pub unsafe extern "C" fn mode_tree_remove(
 #[no_mangle]
 pub unsafe extern "C" fn mode_tree_draw(mut mtd: *mut mode_tree_data) {
     let mut wp: *mut window_pane = (*mtd).wp;
-    let mut s: *mut screen = &mut (*mtd).screen;
+    let mut s: *mut Screen = &mut (*mtd).screen;
     let mut line: *mut mode_tree_line = 0 as *mut mode_tree_line;
     let mut mti: *mut mode_tree_item = 0 as *mut mode_tree_item;
     let mut oo: *mut crate::options::options = (*(*wp).window).options;
     let mut ctx: screen_write_ctx = screen_write_ctx {
         wp: 0 as *mut window_pane,
-        s: 0 as *mut screen,
+        s: 0 as *mut crate::screen::Screen,
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,

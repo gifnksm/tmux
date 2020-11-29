@@ -1,4 +1,6 @@
-use crate::{grid::Cell as GridCell, key_code::code as key_code_code, utf8::Utf8Data};
+use crate::{
+    grid::Cell as GridCell, key_code::code as key_code_code, screen::Screen, utf8::Utf8Data,
+};
 use ::libc;
 
 extern "C" {
@@ -38,7 +40,7 @@ extern "C" {
     #[no_mangle]
     fn tty_draw_line(
         _: *mut tty,
-        _: *mut screen,
+        _: *mut crate::screen::Screen,
         _: u_int,
         _: u_int,
         _: u_int,
@@ -92,7 +94,7 @@ extern "C" {
     #[no_mangle]
     static grid_default_cell: crate::grid::Cell;
     #[no_mangle]
-    fn screen_write_start(_: *mut screen_write_ctx, _: *mut screen);
+    fn screen_write_start(_: *mut screen_write_ctx, _: *mut crate::screen::Screen);
     #[no_mangle]
     fn screen_write_stop(_: *mut screen_write_ctx);
     #[no_mangle]
@@ -105,9 +107,9 @@ extern "C" {
     #[no_mangle]
     fn screen_write_clearscreen(_: *mut screen_write_ctx, _: u_int);
     #[no_mangle]
-    fn screen_init(_: *mut screen, _: u_int, _: u_int, _: u_int);
+    fn screen_init(_: *mut crate::screen::Screen, _: u_int, _: u_int, _: u_int);
     #[no_mangle]
-    fn screen_free(_: *mut screen);
+    fn screen_free(_: *mut crate::screen::Screen);
     #[no_mangle]
     fn style_apply(
         _: *mut crate::grid::Cell,
@@ -462,32 +464,13 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct screen {
-    pub title: *mut libc::c_char,
-    pub path: *mut libc::c_char,
-    pub titles: *mut crate::screen::screen_titles,
-    pub grid: *mut crate::grid::Grid,
-    pub cx: u_int,
-    pub cy: u_int,
-    pub cstyle: u_int,
-    pub ccolour: *mut libc::c_char,
-    pub rupper: u_int,
-    pub rlower: u_int,
-    pub mode: libc::c_int,
-    pub saved_cx: u_int,
-    pub saved_cy: u_int,
-    pub saved_grid: *mut crate::grid::Grid,
-    pub saved_cell: crate::grid::Cell,
-    pub saved_flags: libc::c_int,
-    pub tabs: *mut bitstr_t,
-    pub sel: *mut crate::screen::screen_sel,
-    pub write_list: *mut crate::screen_write::screen_write_collect_line,
-}
+pub type overlay_mode_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut u_int,
+        _: *mut u_int,
+    ) -> *mut crate::screen::Screen,
+>;
 
 pub type overlay_check_cb =
     Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
@@ -697,9 +680,9 @@ pub struct window_pane {
     pub pipe_fd: libc::c_int,
     pub pipe_event: *mut bufferevent,
     pub pipe_offset: window_pane_offset,
-    pub screen: *mut screen,
-    pub base: screen,
-    pub status_screen: screen,
+    pub screen: *mut crate::screen::Screen,
+    pub base: crate::screen::Screen,
+    pub status_screen: crate::screen::Screen,
     pub status_size: size_t,
     pub modes: C2RustUnnamed_23,
     pub searchstr: *mut libc::c_char,
@@ -742,7 +725,7 @@ pub struct window_mode_entry {
     pub swp: *mut window_pane,
     pub mode: *const window_mode,
     pub data: *mut libc::c_void,
-    pub screen: *mut screen,
+    pub screen: *mut crate::screen::Screen,
     pub prefix: u_int,
     pub entry: C2RustUnnamed_24,
 }
@@ -764,7 +747,7 @@ pub struct window_mode {
             _: *mut window_mode_entry,
             _: *mut cmd_find_state,
             _: *mut args,
-        ) -> *mut screen,
+        ) -> *mut crate::screen::Screen,
     >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
     pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
@@ -902,8 +885,8 @@ pub const CLIENT_EXIT_RETURN: C2RustUnnamed_28 = 0;
 #[derive(Copy, Clone)]
 pub struct status_line {
     pub timer: event,
-    pub screen: screen,
-    pub active: *mut screen,
+    pub screen: crate::screen::Screen,
+    pub active: *mut crate::screen::Screen,
     pub references: libc::c_int,
     pub style: crate::grid::Cell,
     pub entries: [status_line_entry; 5],
@@ -1016,7 +999,7 @@ pub struct C2RustUnnamed_31 {
 #[derive(Copy, Clone)]
 pub struct screen_write_ctx {
     pub wp: *mut window_pane,
-    pub s: *mut screen,
+    pub s: *mut crate::screen::Screen,
     pub flags: libc::c_int,
     pub init_ctx_cb: screen_write_init_ctx_cb,
     pub arg: *mut libc::c_void,
@@ -1033,7 +1016,7 @@ pub type screen_write_init_ctx_cb =
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct tty_ctx {
-    pub s: *mut screen,
+    pub s: *mut crate::screen::Screen,
     pub redraw_cb: tty_ctx_redraw_cb,
     pub set_client_cb: tty_ctx_set_client_cb,
     pub arg: *mut libc::c_void,
@@ -1120,7 +1103,7 @@ pub struct menu_data {
     pub item: *mut crate::cmd_queue::cmdq_item,
     pub flags: libc::c_int,
     pub fs: cmd_find_state,
-    pub s: screen,
+    pub s: crate::screen::Screen,
     pub px: u_int,
     pub py: u_int,
     pub menu: *mut menu,
@@ -1266,18 +1249,18 @@ unsafe extern "C" fn menu_mode_cb(
     mut c: *mut client,
     mut _cx: *mut u_int,
     mut _cy: *mut u_int,
-) -> *mut screen {
+) -> *mut Screen {
     let mut md: *mut menu_data = (*c).overlay_data as *mut menu_data;
     return &mut (*md).s;
 }
 unsafe extern "C" fn menu_draw_cb(mut c: *mut client, mut _ctx0: *mut screen_redraw_ctx) {
     let mut md: *mut menu_data = (*c).overlay_data as *mut menu_data;
     let mut tty: *mut tty = &mut (*c).tty;
-    let mut s: *mut screen = &mut (*md).s;
+    let mut s: *mut Screen = &mut (*md).s;
     let mut menu: *mut menu = (*md).menu;
     let mut ctx: screen_write_ctx = screen_write_ctx {
         wp: 0 as *mut window_pane,
-        s: 0 as *mut screen,
+        s: 0 as *mut crate::screen::Screen,
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
@@ -2597,7 +2580,7 @@ pub unsafe extern "C" fn menu_display(
                     _: *mut client,
                     _: *mut u_int,
                     _: *mut u_int,
-                ) -> *mut screen,
+                ) -> *mut crate::screen::Screen,
         ),
         Some(menu_draw_cb as unsafe extern "C" fn(_: *mut client, _: *mut screen_redraw_ctx) -> ()),
         Some(menu_key_cb as unsafe extern "C" fn(_: *mut client, _: *mut key_event) -> libc::c_int),

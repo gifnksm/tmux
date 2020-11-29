@@ -58,9 +58,9 @@ extern "C" {
     #[no_mangle]
     fn grid_view_delete_lines(_: *mut crate::grid::Grid, _: u_int, _: u_int, _: u_int);
     #[no_mangle]
-    fn screen_write_make_list(_: *mut screen);
+    fn screen_write_make_list(_: *mut Screen);
     #[no_mangle]
-    fn screen_write_free_list(_: *mut screen);
+    fn screen_write_free_list(_: *mut Screen);
     #[no_mangle]
     fn utf8_copy(_: *mut Utf8Data, _: *const Utf8Data);
     #[no_mangle]
@@ -86,10 +86,27 @@ pub type u_short = __u_short;
 pub type u_int = __u_int;
 pub type size_t = libc::c_ulong;
 pub type bitstr_t = libc::c_uchar;
+/* $OpenBSD$ */
+/*
+ * Copyright (c) 2007 Nicholas Marriott <nicholas.marriott@gmail.com>
+ *
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
+ * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
+ * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 
+/// Virtual screen.
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct screen {
+pub struct Screen {
     pub title: *mut libc::c_char,
     pub path: *mut libc::c_char,
     pub titles: *mut screen_titles,
@@ -110,22 +127,7 @@ pub struct screen {
     pub sel: *mut screen_sel,
     pub write_list: *mut crate::screen_write::screen_write_collect_line,
 }
-/* $OpenBSD$ */
-/*
- * Copyright (c) 2007 Nicholas Marriott <nicholas.marriott@gmail.com>
- *
- * Permission to use, copy, modify, and distribute this software for any
- * purpose with or without fee is hereby granted, provided that the above
- * copyright notice and this permission notice appear in all copies.
- *
- * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
- * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
- * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
- * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
- * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
- * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
+
 /* Selected area in screen. */
 
 #[repr(C)]
@@ -163,7 +165,7 @@ pub struct C2RustUnnamed_1 {
     pub tqe_prev: *mut *mut screen_title_entry,
 }
 /* Free titles stack. */
-unsafe extern "C" fn screen_free_titles(mut s: *mut screen) {
+unsafe extern "C" fn screen_free_titles(mut s: *mut Screen) {
     let mut title_entry: *mut screen_title_entry = 0 as *mut screen_title_entry;
     if (*s).titles.is_null() {
         return;
@@ -188,7 +190,7 @@ unsafe extern "C" fn screen_free_titles(mut s: *mut screen) {
 /* Create a new screen. */
 #[no_mangle]
 pub unsafe extern "C" fn screen_init(
-    mut s: *mut screen,
+    mut s: *mut Screen,
     mut sx: u_int,
     mut sy: u_int,
     mut hlimit: u_int,
@@ -207,7 +209,7 @@ pub unsafe extern "C" fn screen_init(
 }
 /* Reinitialise screen. */
 #[no_mangle]
-pub unsafe extern "C" fn screen_reinit(mut s: *mut screen) {
+pub unsafe extern "C" fn screen_reinit(mut s: *mut Screen) {
     (*s).cx = 0u32;
     (*s).cy = 0u32;
     (*s).rupper = 0u32;
@@ -225,7 +227,7 @@ pub unsafe extern "C" fn screen_reinit(mut s: *mut screen) {
 }
 /* Destroy a screen. */
 #[no_mangle]
-pub unsafe extern "C" fn screen_free(mut s: *mut screen) {
+pub unsafe extern "C" fn screen_free(mut s: *mut Screen) {
     free((*s).sel as *mut libc::c_void);
     free((*s).tabs as *mut libc::c_void);
     free((*s).path as *mut libc::c_void);
@@ -242,7 +244,7 @@ pub unsafe extern "C" fn screen_free(mut s: *mut screen) {
 }
 /* Reset tabs to default, eight spaces apart. */
 #[no_mangle]
-pub unsafe extern "C" fn screen_reset_tabs(mut s: *mut screen) {
+pub unsafe extern "C" fn screen_reset_tabs(mut s: *mut Screen) {
     let mut i: u_int = 0;
     free((*s).tabs as *mut libc::c_void);
     (*s).tabs = calloc(
@@ -261,7 +263,7 @@ pub unsafe extern "C" fn screen_reset_tabs(mut s: *mut screen) {
 }
 /* Set screen cursor style. */
 #[no_mangle]
-pub unsafe extern "C" fn screen_set_cursor_style(mut s: *mut screen, mut style: u_int) {
+pub unsafe extern "C" fn screen_set_cursor_style(mut s: *mut Screen, mut style: u_int) {
     if style <= 6u32 {
         (*s).cstyle = style
     };
@@ -269,7 +271,7 @@ pub unsafe extern "C" fn screen_set_cursor_style(mut s: *mut screen, mut style: 
 /* Set screen cursor colour. */
 #[no_mangle]
 pub unsafe extern "C" fn screen_set_cursor_colour(
-    mut s: *mut screen,
+    mut s: *mut Screen,
     mut colour: *const libc::c_char,
 ) {
     free((*s).ccolour as *mut libc::c_void);
@@ -278,7 +280,7 @@ pub unsafe extern "C" fn screen_set_cursor_colour(
 /* Set screen title. */
 #[no_mangle]
 pub unsafe extern "C" fn screen_set_title(
-    mut s: *mut screen,
+    mut s: *mut Screen,
     mut title: *const libc::c_char,
 ) -> libc::c_int {
     if utf8_isvalid(title) == 0 {
@@ -290,13 +292,13 @@ pub unsafe extern "C" fn screen_set_title(
 }
 /* Set screen path. */
 #[no_mangle]
-pub unsafe extern "C" fn screen_set_path(mut s: *mut screen, mut path: *const libc::c_char) {
+pub unsafe extern "C" fn screen_set_path(mut s: *mut Screen, mut path: *const libc::c_char) {
     free((*s).path as *mut libc::c_void);
     utf8_stravis(&mut (*s).path, path, 0x1i32 | 0x2i32 | 0x8i32 | 0x10i32);
 }
 /* Push the current title onto the stack. */
 #[no_mangle]
-pub unsafe extern "C" fn screen_push_title(mut s: *mut screen) {
+pub unsafe extern "C" fn screen_push_title(mut s: *mut Screen) {
     let mut title_entry: *mut screen_title_entry = 0 as *mut screen_title_entry;
     if (*s).titles.is_null() {
         (*s).titles =
@@ -321,7 +323,7 @@ pub unsafe extern "C" fn screen_push_title(mut s: *mut screen) {
  * empty, do nothing.
  */
 #[no_mangle]
-pub unsafe extern "C" fn screen_pop_title(mut s: *mut screen) {
+pub unsafe extern "C" fn screen_pop_title(mut s: *mut Screen) {
     let mut title_entry: *mut screen_title_entry = 0 as *mut screen_title_entry;
     if (*s).titles.is_null() {
         return;
@@ -342,7 +344,7 @@ pub unsafe extern "C" fn screen_pop_title(mut s: *mut screen) {
 /* Resize screen with options. */
 #[no_mangle]
 pub unsafe extern "C" fn screen_resize_cursor(
-    mut s: *mut screen,
+    mut s: *mut Screen,
     mut sx: u_int,
     mut sy: u_int,
     mut reflow: libc::c_int,
@@ -409,7 +411,7 @@ pub unsafe extern "C" fn screen_resize_cursor(
 /* Resize screen. */
 #[no_mangle]
 pub unsafe extern "C" fn screen_resize(
-    mut s: *mut screen,
+    mut s: *mut Screen,
     mut sx: u_int,
     mut sy: u_int,
     mut reflow: libc::c_int,
@@ -417,7 +419,7 @@ pub unsafe extern "C" fn screen_resize(
     screen_resize_cursor(s, sx, sy, reflow, 1i32, 1i32);
 }
 unsafe extern "C" fn screen_resize_y(
-    mut s: *mut screen,
+    mut s: *mut Screen,
     mut sy: u_int,
     mut eat_empty: libc::c_int,
     mut cy: *mut u_int,
@@ -507,7 +509,7 @@ unsafe extern "C" fn screen_resize_y(
 /* Set selection. */
 #[no_mangle]
 pub unsafe extern "C" fn screen_set_selection(
-    mut s: *mut screen,
+    mut s: *mut Screen,
     mut sx: u_int,
     mut sy: u_int,
     mut ex: u_int,
@@ -535,13 +537,13 @@ pub unsafe extern "C" fn screen_set_selection(
 }
 /* Clear selection. */
 #[no_mangle]
-pub unsafe extern "C" fn screen_clear_selection(mut s: *mut screen) {
+pub unsafe extern "C" fn screen_clear_selection(mut s: *mut Screen) {
     free((*s).sel as *mut libc::c_void);
     (*s).sel = 0 as *mut screen_sel;
 }
 /* Hide selection. */
 #[no_mangle]
-pub unsafe extern "C" fn screen_hide_selection(mut s: *mut screen) {
+pub unsafe extern "C" fn screen_hide_selection(mut s: *mut Screen) {
     if !(*s).sel.is_null() {
         (*(*s).sel).hidden = 1i32
     };
@@ -549,7 +551,7 @@ pub unsafe extern "C" fn screen_hide_selection(mut s: *mut screen) {
 /* Check if cell in selection. */
 #[no_mangle]
 pub unsafe extern "C" fn screen_check_selection(
-    mut s: *mut screen,
+    mut s: *mut Screen,
     mut px: u_int,
     mut py: u_int,
 ) -> libc::c_int {
@@ -671,7 +673,7 @@ pub unsafe extern "C" fn screen_check_selection(
 /* Get selected grid cell. */
 #[no_mangle]
 pub unsafe extern "C" fn screen_select_cell(
-    mut s: *mut screen,
+    mut s: *mut Screen,
     mut dst: *mut GridCell,
     mut src: *const GridCell,
 ) {
@@ -690,7 +692,7 @@ pub unsafe extern "C" fn screen_select_cell(
 }
 /* Reflow wrapped lines. */
 unsafe extern "C" fn screen_reflow(
-    mut s: *mut screen,
+    mut s: *mut Screen,
     mut new_x: u_int,
     mut cx: *mut u_int,
     mut cy: *mut u_int,
@@ -731,7 +733,7 @@ unsafe extern "C" fn screen_reflow(
  */
 #[no_mangle]
 pub unsafe extern "C" fn screen_alternate_on(
-    mut s: *mut screen,
+    mut s: *mut Screen,
     mut gc: *mut GridCell,
     mut cursor: libc::c_int,
 ) {
@@ -760,7 +762,7 @@ pub unsafe extern "C" fn screen_alternate_on(
 /* Exit alternate screen mode and restore the copied grid. */
 #[no_mangle]
 pub unsafe extern "C" fn screen_alternate_off(
-    mut s: *mut screen,
+    mut s: *mut Screen,
     mut gc: *mut GridCell,
     mut cursor: libc::c_int,
 ) {

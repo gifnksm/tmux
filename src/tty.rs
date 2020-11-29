@@ -1,5 +1,6 @@
 use crate::{
     grid::{Cell as GridCell, Grid, Line as GridLine},
+    screen::Screen,
     tty_code::{code as tty_code_code, Code as TtyCode},
     utf8::Utf8Data,
 };
@@ -165,7 +166,11 @@ extern "C" {
     #[no_mangle]
     fn utf8_set(_: *mut Utf8Data, _: u_char);
     #[no_mangle]
-    fn screen_select_cell(_: *mut screen, _: *mut crate::grid::Cell, _: *const crate::grid::Cell);
+    fn screen_select_cell(
+        _: *mut crate::screen::Screen,
+        _: *mut crate::grid::Cell,
+        _: *const crate::grid::Cell,
+    );
     #[no_mangle]
     fn grid_view_get_cell(_: *mut crate::grid::Grid, _: u_int, _: u_int, _: *mut crate::grid::Cell);
     #[no_mangle]
@@ -245,29 +250,6 @@ pub struct winsize {
 pub type uint8_t = __uint8_t;
 pub type uint64_t = __uint64_t;
 
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct screen {
-    pub title: *mut libc::c_char,
-    pub path: *mut libc::c_char,
-    pub titles: *mut crate::screen::screen_titles,
-    pub grid: *mut crate::grid::Grid,
-    pub cx: u_int,
-    pub cy: u_int,
-    pub cstyle: u_int,
-    pub ccolour: *mut libc::c_char,
-    pub rupper: u_int,
-    pub rlower: u_int,
-    pub mode: libc::c_int,
-    pub saved_cx: u_int,
-    pub saved_cy: u_int,
-    pub saved_grid: *mut crate::grid::Grid,
-    pub saved_cell: crate::grid::Cell,
-    pub saved_flags: libc::c_int,
-    pub tabs: *mut bitstr_t,
-    pub sel: *mut crate::screen::screen_sel,
-    pub write_list: *mut crate::screen_write::screen_write_collect_line,
-}
 pub type bitstr_t = libc::c_uchar;
 
 pub type cc_t = libc::c_uchar;
@@ -593,8 +575,13 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
+pub type overlay_mode_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut u_int,
+        _: *mut u_int,
+    ) -> *mut crate::screen::Screen,
+>;
 pub type overlay_check_cb =
     Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
 
@@ -803,9 +790,9 @@ pub struct window_pane {
     pub pipe_fd: libc::c_int,
     pub pipe_event: *mut bufferevent,
     pub pipe_offset: window_pane_offset,
-    pub screen: *mut screen,
-    pub base: screen,
-    pub status_screen: screen,
+    pub screen: *mut crate::screen::Screen,
+    pub base: crate::screen::Screen,
+    pub status_screen: crate::screen::Screen,
     pub status_size: size_t,
     pub modes: C2RustUnnamed_23,
     pub searchstr: *mut libc::c_char,
@@ -848,7 +835,7 @@ pub struct window_mode_entry {
     pub swp: *mut window_pane,
     pub mode: *const window_mode,
     pub data: *mut libc::c_void,
-    pub screen: *mut screen,
+    pub screen: *mut crate::screen::Screen,
     pub prefix: u_int,
     pub entry: C2RustUnnamed_24,
 }
@@ -870,7 +857,7 @@ pub struct window_mode {
             _: *mut window_mode_entry,
             _: *mut cmd_find_state,
             _: *mut args,
-        ) -> *mut screen,
+        ) -> *mut crate::screen::Screen,
     >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
     pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
@@ -1008,8 +995,8 @@ pub const CLIENT_EXIT_RETURN: C2RustUnnamed_28 = 0;
 #[derive(Copy, Clone)]
 pub struct status_line {
     pub timer: event,
-    pub screen: screen,
-    pub active: *mut screen,
+    pub screen: crate::screen::Screen,
+    pub active: *mut crate::screen::Screen,
     pub references: libc::c_int,
     pub style: crate::grid::Cell,
     pub entries: [status_line_entry; 5],
@@ -1121,7 +1108,7 @@ pub struct C2RustUnnamed_31 {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct tty_ctx {
-    pub s: *mut screen,
+    pub s: *mut crate::screen::Screen,
     pub redraw_cb: tty_ctx_redraw_cb,
     pub set_client_cb: tty_ctx_set_client_cb,
     pub arg: *mut libc::c_void,
@@ -1940,7 +1927,7 @@ unsafe extern "C" fn tty_force_cursor_colour(mut tty: *mut tty, mut ccolour: *co
 pub unsafe extern "C" fn tty_update_mode(
     mut tty: *mut tty,
     mut mode: libc::c_int,
-    mut s: *mut screen,
+    mut s: *mut crate::screen::Screen,
 ) {
     let mut c: *mut client = (*tty).client;
     let mut changed: libc::c_int = 0;
@@ -2625,7 +2612,7 @@ unsafe extern "C" fn tty_clear_pane_area(
     };
 }
 unsafe extern "C" fn tty_draw_pane(mut tty: *mut tty, mut ctx: *const tty_ctx, mut py: u_int) {
-    let mut s: *mut screen = (*ctx).s;
+    let mut s: *mut Screen = (*ctx).s;
     let mut nx: u_int = (*ctx).sx;
     let mut i: u_int = 0;
     let mut x: u_int = 0;
@@ -2726,7 +2713,7 @@ unsafe extern "C" fn tty_check_overlay(
 #[no_mangle]
 pub unsafe extern "C" fn tty_draw_line(
     mut tty: *mut tty,
-    mut s: *mut screen,
+    mut s: *mut crate::screen::Screen,
     mut px: u_int,
     mut py: u_int,
     mut nx: u_int,
@@ -3550,7 +3537,7 @@ unsafe extern "C" fn tty_invalidate(mut tty: *mut tty) {
         }
         tty_putcode(tty, tty_code_code::SGR0);
         (*tty).mode = 0xffffffi32;
-        tty_update_mode(tty, 0x1i32, 0 as *mut screen);
+        tty_update_mode(tty, 0x1i32, 0 as *mut crate::screen::Screen);
         tty_cursor(tty, 0u32, 0u32);
         tty_region_off(tty);
         tty_margin_off(tty);

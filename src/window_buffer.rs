@@ -1,4 +1,4 @@
-use crate::grid::Cell as GridCell;
+use crate::{grid::Cell as GridCell, screen::Screen};
 use ::libc;
 
 extern "C" {
@@ -128,7 +128,7 @@ extern "C" {
         _: *const menu_item,
         _: *mut *const libc::c_char,
         _: u_int,
-        _: *mut *mut screen,
+        _: *mut *mut crate::screen::Screen,
     ) -> *mut crate::mode_tree::mode_tree_data;
     #[no_mangle]
     fn mode_tree_zoom(_: *mut crate::mode_tree::mode_tree_data, _: *mut args);
@@ -532,32 +532,13 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct screen {
-    pub title: *mut libc::c_char,
-    pub path: *mut libc::c_char,
-    pub titles: *mut crate::screen::screen_titles,
-    pub grid: *mut crate::grid::Grid,
-    pub cx: u_int,
-    pub cy: u_int,
-    pub cstyle: u_int,
-    pub ccolour: *mut libc::c_char,
-    pub rupper: u_int,
-    pub rlower: u_int,
-    pub mode: libc::c_int,
-    pub saved_cx: u_int,
-    pub saved_cy: u_int,
-    pub saved_grid: *mut crate::grid::Grid,
-    pub saved_cell: crate::grid::Cell,
-    pub saved_flags: libc::c_int,
-    pub tabs: *mut bitstr_t,
-    pub sel: *mut crate::screen::screen_sel,
-    pub write_list: *mut crate::screen_write::screen_write_collect_line,
-}
+pub type overlay_mode_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut u_int,
+        _: *mut u_int,
+    ) -> *mut crate::screen::Screen,
+>;
 
 pub type overlay_check_cb =
     Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
@@ -767,9 +748,9 @@ pub struct window_pane {
     pub pipe_fd: libc::c_int,
     pub pipe_event: *mut bufferevent,
     pub pipe_offset: window_pane_offset,
-    pub screen: *mut screen,
-    pub base: screen,
-    pub status_screen: screen,
+    pub screen: *mut crate::screen::Screen,
+    pub base: crate::screen::Screen,
+    pub status_screen: crate::screen::Screen,
     pub status_size: size_t,
     pub modes: C2RustUnnamed_23,
     pub searchstr: *mut libc::c_char,
@@ -812,7 +793,7 @@ pub struct window_mode_entry {
     pub swp: *mut window_pane,
     pub mode: *const window_mode,
     pub data: *mut libc::c_void,
-    pub screen: *mut screen,
+    pub screen: *mut crate::screen::Screen,
     pub prefix: u_int,
     pub entry: C2RustUnnamed_24,
 }
@@ -834,7 +815,7 @@ pub struct window_mode {
             _: *mut window_mode_entry,
             _: *mut cmd_find_state,
             _: *mut args,
-        ) -> *mut screen,
+        ) -> *mut crate::screen::Screen,
     >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
     pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
@@ -972,8 +953,8 @@ pub const CLIENT_EXIT_RETURN: C2RustUnnamed_28 = 0;
 #[derive(Copy, Clone)]
 pub struct status_line {
     pub timer: event,
-    pub screen: screen,
-    pub active: *mut screen,
+    pub screen: crate::screen::Screen,
+    pub active: *mut crate::screen::Screen,
     pub references: libc::c_int,
     pub style: crate::grid::Cell,
     pub entries: [status_line_entry; 5],
@@ -1086,7 +1067,7 @@ pub struct C2RustUnnamed_31 {
 #[derive(Copy, Clone)]
 pub struct screen_write_ctx {
     pub wp: *mut window_pane,
-    pub s: *mut screen,
+    pub s: *mut crate::screen::Screen,
     pub flags: libc::c_int,
     pub init_ctx_cb: screen_write_init_ctx_cb,
     pub arg: *mut libc::c_void,
@@ -1103,7 +1084,7 @@ pub type screen_write_init_ctx_cb =
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct tty_ctx {
-    pub s: *mut screen,
+    pub s: *mut crate::screen::Screen,
     pub redraw_cb: tty_ctx_redraw_cb,
     pub set_client_cb: tty_ctx_set_client_cb,
     pub arg: *mut libc::c_void,
@@ -1329,7 +1310,7 @@ pub static mut window_buffer_mode: window_mode = {
                         _: *mut window_mode_entry,
                         _: *mut cmd_find_state,
                         _: *mut args,
-                    ) -> *mut screen,
+                    ) -> *mut crate::screen::Screen,
             ),
             free: Some(window_buffer_free as unsafe extern "C" fn(_: *mut window_mode_entry) -> ()),
             resize: Some(
@@ -1633,10 +1614,10 @@ unsafe extern "C" fn window_buffer_init(
     mut wme: *mut window_mode_entry,
     mut fs: *mut cmd_find_state,
     mut args: *mut args,
-) -> *mut screen {
+) -> *mut Screen {
     let mut wp: *mut window_pane = (*wme).wp;
     let mut data: *mut window_buffer_modedata = 0 as *mut window_buffer_modedata;
-    let mut s: *mut screen = 0 as *mut screen;
+    let mut s: *mut Screen = 0 as *mut Screen;
     data = xcalloc(
         1u64,
         ::std::mem::size_of::<window_buffer_modedata>() as libc::c_ulong,

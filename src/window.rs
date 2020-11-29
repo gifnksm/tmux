@@ -1,6 +1,7 @@
 use crate::{
     grid::{Cell as GridCell, Grid},
     key_code::code as key_code_code,
+    screen::Screen,
     utf8::Utf8Data,
 };
 use ::c2rust_bitfields;
@@ -196,13 +197,13 @@ extern "C" {
     #[no_mangle]
     fn layout_free(_: *mut window);
     #[no_mangle]
-    fn screen_resize(_: *mut screen, _: u_int, _: u_int, _: libc::c_int);
+    fn screen_resize(_: *mut crate::screen::Screen, _: u_int, _: u_int, _: libc::c_int);
     #[no_mangle]
-    fn screen_set_title(_: *mut screen, _: *const libc::c_char) -> libc::c_int;
+    fn screen_set_title(_: *mut crate::screen::Screen, _: *const libc::c_char) -> libc::c_int;
     #[no_mangle]
-    fn screen_free(_: *mut screen);
+    fn screen_free(_: *mut crate::screen::Screen);
     #[no_mangle]
-    fn screen_init(_: *mut screen, _: u_int, _: u_int, _: u_int);
+    fn screen_init(_: *mut crate::screen::Screen, _: u_int, _: u_int, _: u_int);
     #[no_mangle]
     fn utf8_stravis(
         _: *mut *mut libc::c_char,
@@ -613,32 +614,13 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct screen {
-    pub title: *mut libc::c_char,
-    pub path: *mut libc::c_char,
-    pub titles: *mut crate::screen::screen_titles,
-    pub grid: *mut crate::grid::Grid,
-    pub cx: u_int,
-    pub cy: u_int,
-    pub cstyle: u_int,
-    pub ccolour: *mut libc::c_char,
-    pub rupper: u_int,
-    pub rlower: u_int,
-    pub mode: libc::c_int,
-    pub saved_cx: u_int,
-    pub saved_cy: u_int,
-    pub saved_grid: *mut crate::grid::Grid,
-    pub saved_cell: crate::grid::Cell,
-    pub saved_flags: libc::c_int,
-    pub tabs: *mut bitstr_t,
-    pub sel: *mut crate::screen::screen_sel,
-    pub write_list: *mut crate::screen_write::screen_write_collect_line,
-}
+pub type overlay_mode_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut u_int,
+        _: *mut u_int,
+    ) -> *mut crate::screen::Screen,
+>;
 
 pub type overlay_check_cb =
     Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
@@ -848,9 +830,9 @@ pub struct window_pane {
     pub pipe_fd: libc::c_int,
     pub pipe_event: *mut bufferevent,
     pub pipe_offset: window_pane_offset,
-    pub screen: *mut screen,
-    pub base: screen,
-    pub status_screen: screen,
+    pub screen: *mut crate::screen::Screen,
+    pub base: crate::screen::Screen,
+    pub status_screen: crate::screen::Screen,
     pub status_size: size_t,
     pub modes: C2RustUnnamed_24,
     pub searchstr: *mut libc::c_char,
@@ -893,7 +875,7 @@ pub struct window_mode_entry {
     pub swp: *mut window_pane,
     pub mode: *const window_mode,
     pub data: *mut libc::c_void,
-    pub screen: *mut screen,
+    pub screen: *mut crate::screen::Screen,
     pub prefix: u_int,
     pub entry: C2RustUnnamed_25,
 }
@@ -915,7 +897,7 @@ pub struct window_mode {
             _: *mut window_mode_entry,
             _: *mut cmd_find_state,
             _: *mut args,
-        ) -> *mut screen,
+        ) -> *mut crate::screen::Screen,
     >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
     pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
@@ -1053,8 +1035,8 @@ pub const CLIENT_EXIT_RETURN: C2RustUnnamed_29 = 0;
 #[derive(Copy, Clone)]
 pub struct status_line {
     pub timer: event,
-    pub screen: screen,
-    pub active: *mut screen,
+    pub screen: crate::screen::Screen,
+    pub active: *mut crate::screen::Screen,
     pub references: libc::c_int,
     pub style: crate::grid::Cell,
     pub entries: [status_line_entry; 5],
@@ -4149,8 +4131,8 @@ pub unsafe extern "C" fn window_pane_find_by_id(mut id: u_int) -> *mut window_pa
         pipe_fd: 0,
         pipe_event: 0 as *mut bufferevent,
         pipe_offset: window_pane_offset { used: 0 },
-        screen: 0 as *mut screen,
-        base: screen {
+        screen: 0 as *mut crate::screen::Screen,
+        base: Screen {
             title: 0 as *mut libc::c_char,
             path: 0 as *mut libc::c_char,
             titles: 0 as *mut crate::screen::screen_titles,
@@ -4183,7 +4165,7 @@ pub unsafe extern "C" fn window_pane_find_by_id(mut id: u_int) -> *mut window_pa
             sel: 0 as *mut crate::screen::screen_sel,
             write_list: 0 as *mut crate::screen_write::screen_write_collect_line,
         },
-        status_screen: screen {
+        status_screen: Screen {
             title: 0 as *mut libc::c_char,
             path: 0 as *mut libc::c_char,
             titles: 0 as *mut crate::screen::screen_titles,
@@ -4682,7 +4664,7 @@ pub unsafe extern "C" fn window_pane_search(
     mut regex: libc::c_int,
     mut ignore: libc::c_int,
 ) -> u_int {
-    let mut s: *mut screen = &mut (*wp).base;
+    let mut s: *mut Screen = &mut (*wp).base;
     let mut r: regex_t = regex_t {
         buffer: 0 as *mut re_dfa_t,
         allocated: 0,

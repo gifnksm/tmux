@@ -1,5 +1,6 @@
 use crate::{
     grid::{Cell as GridCell, Grid},
+    screen::Screen,
     style::{
         align as style_align, default_type as style_default_type, list as style_list,
         range_type as style_range_type, Align as StyleAlign, Range as StyleRange,
@@ -37,9 +38,9 @@ extern "C" {
         _: libc::c_int,
     );
     #[no_mangle]
-    fn screen_free(_: *mut screen);
+    fn screen_free(_: *mut crate::screen::Screen);
     #[no_mangle]
-    fn screen_init(_: *mut screen, _: u_int, _: u_int, _: u_int);
+    fn screen_init(_: *mut crate::screen::Screen, _: u_int, _: u_int, _: u_int);
     #[no_mangle]
     fn screen_write_clearendofline(_: *mut screen_write_ctx, _: u_int);
     #[no_mangle]
@@ -49,13 +50,13 @@ extern "C" {
     #[no_mangle]
     fn screen_write_putc(_: *mut screen_write_ctx, _: *const crate::grid::Cell, _: u_char);
     #[no_mangle]
-    fn screen_write_start(_: *mut screen_write_ctx, _: *mut screen);
+    fn screen_write_start(_: *mut screen_write_ctx, _: *mut crate::screen::Screen);
     #[no_mangle]
     fn screen_write_stop(_: *mut screen_write_ctx);
     #[no_mangle]
     fn screen_write_fast_copy(
         _: *mut screen_write_ctx,
-        _: *mut screen,
+        _: *mut crate::screen::Screen,
         _: u_int,
         _: u_int,
         _: u_int,
@@ -428,32 +429,13 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct screen {
-    pub title: *mut libc::c_char,
-    pub path: *mut libc::c_char,
-    pub titles: *mut crate::screen::screen_titles,
-    pub grid: *mut crate::grid::Grid,
-    pub cx: u_int,
-    pub cy: u_int,
-    pub cstyle: u_int,
-    pub ccolour: *mut libc::c_char,
-    pub rupper: u_int,
-    pub rlower: u_int,
-    pub mode: libc::c_int,
-    pub saved_cx: u_int,
-    pub saved_cy: u_int,
-    pub saved_grid: *mut crate::grid::Grid,
-    pub saved_cell: crate::grid::Cell,
-    pub saved_flags: libc::c_int,
-    pub tabs: *mut bitstr_t,
-    pub sel: *mut crate::screen::screen_sel,
-    pub write_list: *mut crate::screen_write::screen_write_collect_line,
-}
+pub type overlay_mode_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut u_int,
+        _: *mut u_int,
+    ) -> *mut crate::screen::Screen,
+>;
 
 pub type overlay_check_cb =
     Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
@@ -663,9 +645,9 @@ pub struct window_pane {
     pub pipe_fd: libc::c_int,
     pub pipe_event: *mut bufferevent,
     pub pipe_offset: window_pane_offset,
-    pub screen: *mut screen,
-    pub base: screen,
-    pub status_screen: screen,
+    pub screen: *mut crate::screen::Screen,
+    pub base: crate::screen::Screen,
+    pub status_screen: crate::screen::Screen,
     pub status_size: size_t,
     pub modes: C2RustUnnamed_23,
     pub searchstr: *mut libc::c_char,
@@ -708,7 +690,7 @@ pub struct window_mode_entry {
     pub swp: *mut window_pane,
     pub mode: *const window_mode,
     pub data: *mut libc::c_void,
-    pub screen: *mut screen,
+    pub screen: *mut crate::screen::Screen,
     pub prefix: u_int,
     pub entry: C2RustUnnamed_24,
 }
@@ -730,7 +712,7 @@ pub struct window_mode {
             _: *mut window_mode_entry,
             _: *mut cmd_find_state,
             _: *mut args,
-        ) -> *mut screen,
+        ) -> *mut crate::screen::Screen,
     >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
     pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
@@ -868,8 +850,8 @@ pub const CLIENT_EXIT_RETURN: C2RustUnnamed_28 = 0;
 #[derive(Copy, Clone)]
 pub struct status_line {
     pub timer: event,
-    pub screen: screen,
-    pub active: *mut screen,
+    pub screen: crate::screen::Screen,
+    pub active: *mut crate::screen::Screen,
     pub references: libc::c_int,
     pub style: crate::grid::Cell,
     pub entries: [status_line_entry; 5],
@@ -982,7 +964,7 @@ pub struct C2RustUnnamed_31 {
 #[derive(Copy, Clone)]
 pub struct screen_write_ctx {
     pub wp: *mut window_pane,
-    pub s: *mut screen,
+    pub s: *mut crate::screen::Screen,
     pub flags: libc::c_int,
     pub init_ctx_cb: screen_write_init_ctx_cb,
     pub arg: *mut libc::c_void,
@@ -999,7 +981,7 @@ pub type screen_write_init_ctx_cb =
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct tty_ctx {
-    pub s: *mut screen,
+    pub s: *mut crate::screen::Screen,
     pub redraw_cb: tty_ctx_redraw_cb,
     pub set_client_cb: tty_ctx_set_client_cb,
     pub arg: *mut libc::c_void,
@@ -1053,7 +1035,7 @@ pub const TOTAL: C2RustUnnamed_33 = 7;
 #[derive(Copy, Clone)]
 pub struct format_range {
     pub index: u_int,
-    pub s: *mut screen,
+    pub s: *mut crate::screen::Screen,
     pub start: u_int,
     pub end: u_int,
     pub type_0: StyleRangeType,
@@ -1105,7 +1087,7 @@ unsafe extern "C" fn format_free_range(mut frs: *mut format_ranges, mut fr: *mut
 /* Fix range positions. */
 unsafe extern "C" fn format_update_ranges(
     mut frs: *mut format_ranges,
-    mut s: *mut screen,
+    mut s: *mut crate::screen::Screen,
     mut offset: u_int,
     mut start: u_int,
     mut width: u_int,
@@ -1148,7 +1130,7 @@ unsafe extern "C" fn format_draw_put(
     mut octx: *mut screen_write_ctx,
     mut ocx: u_int,
     mut ocy: u_int,
-    mut s: *mut screen,
+    mut s: *mut crate::screen::Screen,
     mut frs: *mut format_ranges,
     mut offset: u_int,
     mut start: u_int,
@@ -1174,9 +1156,9 @@ unsafe extern "C" fn format_draw_put_list(
     mut ocy: u_int,
     mut offset: u_int,
     mut width: u_int,
-    mut list: *mut screen,
-    mut list_left: *mut screen,
-    mut list_right: *mut screen,
+    mut list: *mut crate::screen::Screen,
+    mut list_left: *mut crate::screen::Screen,
+    mut list_right: *mut crate::screen::Screen,
     mut focus_start: libc::c_int,
     mut focus_end: libc::c_int,
     mut frs: *mut format_ranges,
@@ -1232,9 +1214,9 @@ unsafe extern "C" fn format_draw_none(
     mut available: u_int,
     mut ocx: u_int,
     mut ocy: u_int,
-    mut left: *mut screen,
-    mut centre: *mut screen,
-    mut right: *mut screen,
+    mut left: *mut crate::screen::Screen,
+    mut centre: *mut crate::screen::Screen,
+    mut right: *mut crate::screen::Screen,
     mut frs: *mut format_ranges,
 ) {
     let mut width_left: u_int = 0;
@@ -1306,13 +1288,13 @@ unsafe extern "C" fn format_draw_left(
     mut available: u_int,
     mut ocx: u_int,
     mut ocy: u_int,
-    mut left: *mut screen,
-    mut centre: *mut screen,
-    mut right: *mut screen,
-    mut list: *mut screen,
-    mut list_left: *mut screen,
-    mut list_right: *mut screen,
-    mut after: *mut screen,
+    mut left: *mut crate::screen::Screen,
+    mut centre: *mut crate::screen::Screen,
+    mut right: *mut crate::screen::Screen,
+    mut list: *mut crate::screen::Screen,
+    mut list_left: *mut crate::screen::Screen,
+    mut list_right: *mut crate::screen::Screen,
+    mut after: *mut crate::screen::Screen,
     mut focus_start: libc::c_int,
     mut focus_end: libc::c_int,
     mut frs: *mut format_ranges,
@@ -1324,7 +1306,7 @@ unsafe extern "C" fn format_draw_left(
     let mut width_after: u_int = 0;
     let mut ctx: screen_write_ctx = screen_write_ctx {
         wp: 0 as *mut window_pane,
-        s: 0 as *mut screen,
+        s: 0 as *mut crate::screen::Screen,
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
@@ -1458,13 +1440,13 @@ unsafe extern "C" fn format_draw_centre(
     mut available: u_int,
     mut ocx: u_int,
     mut ocy: u_int,
-    mut left: *mut screen,
-    mut centre: *mut screen,
-    mut right: *mut screen,
-    mut list: *mut screen,
-    mut list_left: *mut screen,
-    mut list_right: *mut screen,
-    mut after: *mut screen,
+    mut left: *mut crate::screen::Screen,
+    mut centre: *mut crate::screen::Screen,
+    mut right: *mut crate::screen::Screen,
+    mut list: *mut crate::screen::Screen,
+    mut list_left: *mut crate::screen::Screen,
+    mut list_right: *mut crate::screen::Screen,
+    mut after: *mut crate::screen::Screen,
     mut focus_start: libc::c_int,
     mut focus_end: libc::c_int,
     mut frs: *mut format_ranges,
@@ -1477,7 +1459,7 @@ unsafe extern "C" fn format_draw_centre(
     let mut middle: u_int = 0;
     let mut ctx: screen_write_ctx = screen_write_ctx {
         wp: 0 as *mut window_pane,
-        s: 0 as *mut screen,
+        s: 0 as *mut crate::screen::Screen,
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
@@ -1610,13 +1592,13 @@ unsafe extern "C" fn format_draw_right(
     mut available: u_int,
     mut ocx: u_int,
     mut ocy: u_int,
-    mut left: *mut screen,
-    mut centre: *mut screen,
-    mut right: *mut screen,
-    mut list: *mut screen,
-    mut list_left: *mut screen,
-    mut list_right: *mut screen,
-    mut after: *mut screen,
+    mut left: *mut crate::screen::Screen,
+    mut centre: *mut crate::screen::Screen,
+    mut right: *mut crate::screen::Screen,
+    mut list: *mut crate::screen::Screen,
+    mut list_left: *mut crate::screen::Screen,
+    mut list_right: *mut crate::screen::Screen,
+    mut after: *mut crate::screen::Screen,
     mut focus_start: libc::c_int,
     mut focus_end: libc::c_int,
     mut frs: *mut format_ranges,
@@ -1628,7 +1610,7 @@ unsafe extern "C" fn format_draw_right(
     let mut width_after: u_int = 0;
     let mut ctx: screen_write_ctx = screen_write_ctx {
         wp: 0 as *mut window_pane,
-        s: 0 as *mut screen,
+        s: 0 as *mut crate::screen::Screen,
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
@@ -1780,8 +1762,8 @@ pub unsafe extern "C" fn format_draw(
         b"AFTER\x00" as *const u8 as *const libc::c_char,
     ];
     let mut size: size_t = strlen(expanded);
-    let mut os: *mut screen = (*octx).s;
-    let mut s: [screen; 7] = [screen {
+    let mut os: *mut Screen = (*octx).s;
+    let mut s: [Screen; 7] = [Screen {
         title: 0 as *mut libc::c_char,
         path: 0 as *mut libc::c_char,
         titles: 0 as *mut crate::screen::screen_titles,
@@ -1816,7 +1798,7 @@ pub unsafe extern "C" fn format_draw(
     }; 7];
     let mut ctx: [screen_write_ctx; 7] = [screen_write_ctx {
         wp: 0 as *mut window_pane,
-        s: 0 as *mut screen,
+        s: 0 as *mut crate::screen::Screen,
         flags: 0,
         init_ctx_cb: None,
         arg: 0 as *mut libc::c_void,
@@ -2191,7 +2173,8 @@ pub unsafe extern "C" fn format_draw(
                                 ::std::mem::size_of::<format_range>() as libc::c_ulong,
                             ) as *mut format_range;
                             (*fr).index = current;
-                            (*fr).s = &mut *s.as_mut_ptr().offset(current as isize) as *mut screen;
+                            (*fr).s = &mut *s.as_mut_ptr().offset(current as isize)
+                                as *mut crate::screen::Screen;
                             (*fr).start = s[current as usize].cx;
                             (*fr).type_0 = sy.range_type;
                             (*fr).argument = sy.range_argument

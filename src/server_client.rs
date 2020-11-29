@@ -4,6 +4,7 @@ use crate::{
         code as msgtype_code, Command as MsgCommand, Msgtype, ReadData as MsgReadData,
         ReadDone as MsgReadDone, WriteReady as MsgWriteReady,
     },
+    screen::Screen,
     style::Range as StyleRange,
 };
 use ::libc;
@@ -203,7 +204,7 @@ extern "C" {
     #[no_mangle]
     fn tty_set_title(_: *mut tty, _: *const libc::c_char);
     #[no_mangle]
-    fn tty_update_mode(_: *mut tty, _: libc::c_int, _: *mut screen);
+    fn tty_update_mode(_: *mut tty, _: libc::c_int, _: *mut crate::screen::Screen);
     #[no_mangle]
     fn tty_sync_end(_: *mut tty);
     #[no_mangle]
@@ -763,32 +764,13 @@ pub struct screen_redraw_ctx {
     pub ox: u_int,
     pub oy: u_int,
 }
-pub type overlay_mode_cb =
-    Option<unsafe extern "C" fn(_: *mut client, _: *mut u_int, _: *mut u_int) -> *mut screen>;
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct screen {
-    pub title: *mut libc::c_char,
-    pub path: *mut libc::c_char,
-    pub titles: *mut crate::screen::screen_titles,
-    pub grid: *mut crate::grid::Grid,
-    pub cx: u_int,
-    pub cy: u_int,
-    pub cstyle: u_int,
-    pub ccolour: *mut libc::c_char,
-    pub rupper: u_int,
-    pub rlower: u_int,
-    pub mode: libc::c_int,
-    pub saved_cx: u_int,
-    pub saved_cy: u_int,
-    pub saved_grid: *mut crate::grid::Grid,
-    pub saved_cell: crate::grid::Cell,
-    pub saved_flags: libc::c_int,
-    pub tabs: *mut bitstr_t,
-    pub sel: *mut crate::screen::screen_sel,
-    pub write_list: *mut crate::screen_write::screen_write_collect_line,
-}
+pub type overlay_mode_cb = Option<
+    unsafe extern "C" fn(
+        _: *mut client,
+        _: *mut u_int,
+        _: *mut u_int,
+    ) -> *mut crate::screen::Screen,
+>;
 
 pub type overlay_check_cb =
     Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
@@ -998,9 +980,9 @@ pub struct window_pane {
     pub pipe_fd: libc::c_int,
     pub pipe_event: *mut bufferevent,
     pub pipe_offset: window_pane_offset,
-    pub screen: *mut screen,
-    pub base: screen,
-    pub status_screen: screen,
+    pub screen: *mut crate::screen::Screen,
+    pub base: crate::screen::Screen,
+    pub status_screen: crate::screen::Screen,
     pub status_size: size_t,
     pub modes: C2RustUnnamed_23,
     pub searchstr: *mut libc::c_char,
@@ -1043,7 +1025,7 @@ pub struct window_mode_entry {
     pub swp: *mut window_pane,
     pub mode: *const window_mode,
     pub data: *mut libc::c_void,
-    pub screen: *mut screen,
+    pub screen: *mut crate::screen::Screen,
     pub prefix: u_int,
     pub entry: C2RustUnnamed_24,
 }
@@ -1065,7 +1047,7 @@ pub struct window_mode {
             _: *mut window_mode_entry,
             _: *mut cmd_find_state,
             _: *mut args,
-        ) -> *mut screen,
+        ) -> *mut crate::screen::Screen,
     >,
     pub free: Option<unsafe extern "C" fn(_: *mut window_mode_entry) -> ()>,
     pub resize: Option<unsafe extern "C" fn(_: *mut window_mode_entry, _: u_int, _: u_int) -> ()>,
@@ -1203,8 +1185,8 @@ pub const CLIENT_EXIT_RETURN: C2RustUnnamed_28 = 0;
 #[derive(Copy, Clone)]
 pub struct status_line {
     pub timer: event,
-    pub screen: screen,
-    pub active: *mut screen,
+    pub screen: crate::screen::Screen,
+    pub active: *mut crate::screen::Screen,
     pub references: libc::c_int,
     pub style: crate::grid::Cell,
     pub entries: [status_line_entry; 5],
@@ -4158,7 +4140,7 @@ unsafe extern "C" fn server_client_reset_state(mut c: *mut client) {
     let mut w: *mut window = (*(*(*c).session).curw).window;
     let mut wp: *mut window_pane = server_client_get_pane(c);
     let mut loop_0: *mut window_pane = 0 as *mut window_pane;
-    let mut s: *mut screen = 0 as *mut screen;
+    let mut s: *mut Screen = 0 as *mut Screen;
     let mut oo: *mut crate::options::options = (*(*c).session).options;
     let mut mode: libc::c_int = 0i32;
     let mut cursor: libc::c_int = 0;
@@ -4631,7 +4613,7 @@ unsafe extern "C" fn server_client_check_redraw(mut c: *mut client) {
         screen_redraw_screen(c);
     }
     (*tty).flags = (*tty).flags & !(0x1i32) | flags & 0x1i32;
-    tty_update_mode(tty, mode, 0 as *mut screen);
+    tty_update_mode(tty, mode, 0 as *mut crate::screen::Screen);
     (*tty).flags = (*tty).flags & !(0x80i32 | 0x2i32 | 0x1i32) | flags;
     (*c).flags &=
         !(0x8i32 | 0x10i32 | 0x1000000i32 | 0x400i32 | 0x2000000i32 | 0x20000000i32 | 0x80000i32)
