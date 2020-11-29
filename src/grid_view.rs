@@ -68,34 +68,12 @@ pub struct grid {
 pub struct grid_line {
     pub cellused: u_int,
     pub cellsize: u_int,
-    pub celldata: *mut grid_cell_entry,
+    pub celldata: *mut crate::grid::CellEntry,
     pub extdsize: u_int,
     pub extddata: *mut crate::grid::ExtdEntry,
     pub flags: libc::c_int,
 }
 
-#[repr(C, packed)]
-#[derive(Copy, Clone)]
-pub struct grid_cell_entry {
-    pub flags: u_char,
-    pub c2rust_unnamed: C2RustUnnamed,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub union C2RustUnnamed {
-    pub offset: u_int,
-    pub data: C2RustUnnamed_0,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct C2RustUnnamed_0 {
-    pub attr: u_char,
-    pub fg: u_char,
-    pub bg: u_char,
-    pub data: u_char,
-}
 /* Get cell. */
 #[no_mangle]
 pub unsafe extern "C" fn grid_view_get_cell(

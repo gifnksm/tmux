@@ -611,34 +611,12 @@ pub struct grid {
 pub struct grid_line {
     pub cellused: u_int,
     pub cellsize: u_int,
-    pub celldata: *mut grid_cell_entry,
+    pub celldata: *mut crate::grid::CellEntry,
     pub extdsize: u_int,
     pub extddata: *mut crate::grid::ExtdEntry,
     pub flags: libc::c_int,
 }
 
-#[repr(C, packed)]
-#[derive(Copy, Clone)]
-pub struct grid_cell_entry {
-    pub flags: u_char,
-    pub c2rust_unnamed: C2RustUnnamed_10,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub union C2RustUnnamed_10 {
-    pub offset: u_int,
-    pub data: C2RustUnnamed_11,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct C2RustUnnamed_11 {
-    pub attr: u_char,
-    pub fg: u_char,
-    pub bg: u_char,
-    pub data: u_char,
-}
 pub type overlay_check_cb =
     Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
 

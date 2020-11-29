@@ -1,5 +1,5 @@
 use crate::{
-    grid::Cell as GridCell,
+    grid::{Cell as GridCell, CellEntry as GridCellEntry},
     utf8::{Utf8Char, Utf8Data},
 };
 use ::c2rust_bitfields;
@@ -726,34 +726,12 @@ pub struct grid {
 pub struct grid_line {
     pub cellused: u_int,
     pub cellsize: u_int,
-    pub celldata: *mut grid_cell_entry,
+    pub celldata: *mut crate::grid::CellEntry,
     pub extdsize: u_int,
     pub extddata: *mut crate::grid::ExtdEntry,
     pub flags: libc::c_int,
 }
 
-#[repr(C, packed)]
-#[derive(Copy, Clone)]
-pub struct grid_cell_entry {
-    pub flags: u_char,
-    pub c2rust_unnamed: C2RustUnnamed_10,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub union C2RustUnnamed_10 {
-    pub offset: u_int,
-    pub data: C2RustUnnamed_11,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct C2RustUnnamed_11 {
-    pub attr: u_char,
-    pub fg: u_char,
-    pub bg: u_char,
-    pub data: u_char,
-}
 pub type overlay_check_cb =
     Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
 
@@ -5251,14 +5229,14 @@ unsafe extern "C" fn window_copy_cellstring(
         size: 0,
         width: 0,
     };
-    let mut gce: *mut grid_cell_entry = 0 as *mut grid_cell_entry;
+    let mut gce: *mut GridCellEntry = 0 as *mut GridCellEntry;
     let mut copy: *mut libc::c_char = 0 as *mut libc::c_char;
     if px >= (*gl).cellsize {
         *size = 1u64;
         *allocated = 0i32;
         return b" \x00" as *const u8 as *const libc::c_char;
     }
-    gce = &mut *(*gl).celldata.offset(px as isize) as *mut grid_cell_entry;
+    gce = &mut *(*gl).celldata.offset(px as isize) as *mut GridCellEntry;
     if (*gce).flags as libc::c_int & 0x4i32 != 0 {
         *size = 0u64;
         *allocated = 0i32;

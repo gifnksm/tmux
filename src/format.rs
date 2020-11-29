@@ -1,5 +1,5 @@
 use crate::{
-    grid::{Cell as GridCell, ExtdEntry as GridExtdEntry},
+    grid::{Cell as GridCell, CellEntry as GridCellEntry, ExtdEntry as GridExtdEntry},
     utf8::Utf8Data,
 };
 use ::c2rust_bitfields;
@@ -822,34 +822,12 @@ pub struct grid {
 pub struct grid_line {
     pub cellused: u_int,
     pub cellsize: u_int,
-    pub celldata: *mut grid_cell_entry,
+    pub celldata: *mut crate::grid::CellEntry,
     pub extdsize: u_int,
     pub extddata: *mut crate::grid::ExtdEntry,
     pub flags: libc::c_int,
 }
 
-#[repr(C, packed)]
-#[derive(Copy, Clone)]
-pub struct grid_cell_entry {
-    pub flags: u_char,
-    pub c2rust_unnamed: C2RustUnnamed_11,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub union C2RustUnnamed_11 {
-    pub offset: u_int,
-    pub data: C2RustUnnamed_12,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct C2RustUnnamed_12 {
-    pub attr: u_char,
-    pub fg: u_char,
-    pub bg: u_char,
-    pub data: u_char,
-}
 pub type overlay_check_cb =
     Option<unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int>;
 
@@ -3432,7 +3410,7 @@ unsafe extern "C" fn format_cb_history_bytes(mut ft: *mut format_tree) -> *mut l
         gl = grid_get_line(gd, i);
         size = (size).wrapping_add(
             ((*gl).cellsize as libc::c_ulong)
-                .wrapping_mul(::std::mem::size_of::<grid_cell_entry>() as libc::c_ulong),
+                .wrapping_mul(::std::mem::size_of::<GridCellEntry>() as libc::c_ulong),
         );
         size = (size).wrapping_add(
             ((*gl).extdsize as libc::c_ulong)
@@ -3480,7 +3458,7 @@ unsafe extern "C" fn format_cb_history_all_bytes(mut ft: *mut format_tree) -> *m
         (lines as libc::c_ulong).wrapping_mul(::std::mem::size_of::<grid_line>() as libc::c_ulong),
         cells,
         (cells as libc::c_ulong)
-            .wrapping_mul(::std::mem::size_of::<grid_cell_entry>() as libc::c_ulong),
+            .wrapping_mul(::std::mem::size_of::<GridCellEntry>() as libc::c_ulong),
         extended_cells,
         (extended_cells as libc::c_ulong)
             .wrapping_mul(::std::mem::size_of::<GridExtdEntry>() as libc::c_ulong),
