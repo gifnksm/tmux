@@ -1150,8 +1150,8 @@ pub static mut cmd_run_shell_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"bd:t:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 1 as libc::c_int,
+                    lower: 0i32,
+                    upper: 1i32,
                 };
                 init
             },
@@ -1164,13 +1164,13 @@ pub static mut cmd_run_shell_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_PANE,
-                    flags: 0x40 as libc::c_int,
+                    flags: 0x40i32,
                 };
                 init
             },
-            flags: 0 as libc::c_int,
+            flags: 0i32,
             exec: Some(
                 cmd_run_shell_exec
                     as unsafe extern "C" fn(
@@ -1198,7 +1198,7 @@ unsafe extern "C" fn cmd_run_shell_print(
         idx: 0,
     };
     let mut wme: *mut window_mode_entry = 0 as *mut window_mode_entry;
-    if (*cdata).wp_id != -(1 as libc::c_int) {
+    if (*cdata).wp_id != -(1i32) {
         wp = window_pane_find_by_id((*cdata).wp_id as u_int)
     }
     if wp.is_null() {
@@ -1210,7 +1210,7 @@ unsafe extern "C" fn cmd_run_shell_print(
             );
             return;
         }
-        if cmd_find_from_nothing(&mut fs, 0 as libc::c_int) != 0 as libc::c_int {
+        if cmd_find_from_nothing(&mut fs, 0i32) != 0i32 {
             return;
         }
         wp = fs.wp;
@@ -1267,22 +1267,21 @@ unsafe extern "C" fn cmd_run_shell_exec(
     };
     let mut end: *mut libc::c_char = 0 as *mut libc::c_char;
     cdata = xcalloc(
-        1 as libc::c_int as size_t,
+        1u64,
         ::std::mem::size_of::<cmd_run_shell_data>() as libc::c_ulong,
     ) as *mut cmd_run_shell_data;
-    if (*args).argc != 0 as libc::c_int {
-        (*cdata).cmd =
-            format_single_from_target(item, *(*args).argv.offset(0 as libc::c_int as isize))
+    if (*args).argc != 0i32 {
+        (*cdata).cmd = format_single_from_target(item, *(*args).argv.offset(0isize))
     }
-    if args_has(args, 't' as i32 as u_char) != 0 && !wp.is_null() {
+    if args_has(args, 't' as u_char) != 0 && !wp.is_null() {
         (*cdata).wp_id = (*wp).id as libc::c_int
     } else {
-        (*cdata).wp_id = -(1 as libc::c_int)
+        (*cdata).wp_id = -(1i32)
     }
-    if args_has(args, 'b' as i32 as u_char) == 0 {
+    if args_has(args, 'b' as u_char) == 0 {
         (*cdata).item = item
     } else {
-        (*cdata).flags |= 0x1 as libc::c_int
+        (*cdata).flags |= 0x1i32
     }
     (*cdata).cwd = xstrdup(server_client_get_cwd(cmdq_get_client(item), s));
     (*cdata).s = s;
@@ -1295,8 +1294,8 @@ unsafe extern "C" fn cmd_run_shell_exec(
     }
     event_set(
         &mut (*cdata).timer,
-        -(1 as libc::c_int),
-        0 as libc::c_int as libc::c_short,
+        -(1i32),
+        0i16,
         Some(
             cmd_run_shell_timer
                 as unsafe extern "C" fn(
@@ -1307,7 +1306,7 @@ unsafe extern "C" fn cmd_run_shell_exec(
         ),
         cdata as *mut libc::c_void,
     );
-    delay = args_get(args, 'd' as i32 as u_char);
+    delay = args_get(args, 'd' as u_char);
     if !delay.is_null() {
         d = strtod(delay, &mut end);
         if *end as libc::c_int != '\u{0}' as i32 {
@@ -1319,20 +1318,15 @@ unsafe extern "C" fn cmd_run_shell_exec(
             cmd_run_shell_free(cdata as *mut libc::c_void);
             return CMD_RETURN_ERROR;
         }
-        tv.tv_usec = 0 as libc::c_int as __suseconds_t;
+        tv.tv_usec = 0i64;
         tv.tv_sec = tv.tv_usec;
         tv.tv_sec = d as time_t;
-        tv.tv_usec = ((d - tv.tv_sec as libc::c_double) * 1000000 as libc::c_uint as libc::c_double)
-            as __suseconds_t;
+        tv.tv_usec = ((d - tv.tv_sec as libc::c_double) * 1000000f64) as __suseconds_t;
         event_add(&mut (*cdata).timer, &mut tv);
     } else {
-        cmd_run_shell_timer(
-            -(1 as libc::c_int),
-            0 as libc::c_int as libc::c_short,
-            cdata as *mut libc::c_void,
-        );
+        cmd_run_shell_timer(-(1i32), 0i16, cdata as *mut libc::c_void);
     }
-    if args_has(args, 'b' as i32 as u_char) != 0 {
+    if args_has(args, 'b' as u_char) != 0 {
         return CMD_RETURN_NORMAL;
     }
     return CMD_RETURN_WAIT;
@@ -1353,8 +1347,8 @@ unsafe extern "C" fn cmd_run_shell_timer(
             Some(cmd_run_shell_free as unsafe extern "C" fn(_: *mut libc::c_void) -> ()),
             cdata as *mut libc::c_void,
             (*cdata).flags,
-            -(1 as libc::c_int),
-            -(1 as libc::c_int),
+            -(1i32),
+            -(1i32),
         )
         .is_null()
         {
@@ -1388,21 +1382,21 @@ unsafe extern "C" fn cmd_run_shell_callback(mut job: *mut crate::job::job) {
         }
     }
     size = evbuffer_get_length((*event).input);
-    if size != 0 as libc::c_int as libc::c_ulong {
-        line = xmalloc(size.wrapping_add(1 as libc::c_int as libc::c_ulong)) as *mut libc::c_char;
+    if size != 0u64 {
+        line = xmalloc(size.wrapping_add(1u64)) as *mut libc::c_char;
         memcpy(
             line as *mut libc::c_void,
-            evbuffer_pullup((*event).input, -(1 as libc::c_int) as ssize_t) as *const libc::c_void,
+            evbuffer_pullup((*event).input, -1i64) as *const libc::c_void,
             size,
         );
-        *line.offset(size as isize) = '\u{0}' as i32 as libc::c_char;
+        *line.offset(size as isize) = '\u{0}' as libc::c_char;
         cmd_run_shell_print(job, line);
         free(line as *mut libc::c_void);
     }
     status = job_get_status(job);
-    if status & 0x7f as libc::c_int == 0 as libc::c_int {
-        retcode = (status & 0xff00 as libc::c_int) >> 8 as libc::c_int;
-        if retcode != 0 as libc::c_int {
+    if status & 0x7fi32 == 0i32 {
+        retcode = (status & 0xff00i32) >> 8i32;
+        if retcode != 0i32 {
             xasprintf(
                 &mut msg as *mut *mut libc::c_char,
                 b"\'%s\' returned %d\x00" as *const u8 as *const libc::c_char,
@@ -1410,20 +1404,17 @@ unsafe extern "C" fn cmd_run_shell_callback(mut job: *mut crate::job::job) {
                 retcode,
             );
         }
-    } else if ((status & 0x7f as libc::c_int) + 1 as libc::c_int) as libc::c_schar as libc::c_int
-        >> 1 as libc::c_int
-        > 0 as libc::c_int
-    {
-        retcode = status & 0x7f as libc::c_int;
+    } else if ((status & 0x7fi32) + 1i32) as libc::c_schar as libc::c_int >> 1i32 > 0i32 {
+        retcode = status & 0x7fi32;
         xasprintf(
             &mut msg as *mut *mut libc::c_char,
             b"\'%s\' terminated by signal %d\x00" as *const u8 as *const libc::c_char,
             cmd,
             retcode,
         );
-        retcode += 128 as libc::c_int
+        retcode += 128i32
     } else {
-        retcode = 0 as libc::c_int
+        retcode = 0i32
     }
     if !msg.is_null() {
         cmd_run_shell_print(job, msg);

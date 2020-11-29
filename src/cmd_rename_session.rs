@@ -1071,8 +1071,8 @@ pub static mut cmd_rename_session_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"t:\x00" as *const u8 as *const libc::c_char,
-                    lower: 1 as libc::c_int,
-                    upper: 1 as libc::c_int,
+                    lower: 1i32,
+                    upper: 1i32,
                 };
                 init
             },
@@ -1084,13 +1084,13 @@ pub static mut cmd_rename_session_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_SESSION,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0x4 as libc::c_int,
+            flags: 0x4i32,
             exec: Some(
                 cmd_rename_session_exec
                     as unsafe extern "C" fn(
@@ -1130,10 +1130,10 @@ unsafe extern "C" fn cmd_rename_session_exec(
     let mut s: *mut session = (*target).s;
     let mut newname: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut tmp: *mut libc::c_char = 0 as *mut libc::c_char;
-    tmp = format_single_from_target(item, *(*args).argv.offset(0 as libc::c_int as isize));
+    tmp = format_single_from_target(item, *(*args).argv.offset(0isize));
     newname = session_check_name(tmp);
     free(tmp as *mut libc::c_void);
-    if strcmp(newname, (*s).name) == 0 as libc::c_int {
+    if strcmp(newname, (*s).name) == 0i32 {
         free(newname as *mut libc::c_void);
         return CMD_RETURN_NORMAL;
     }

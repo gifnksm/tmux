@@ -1062,8 +1062,8 @@ pub static mut cmd_find_window_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"CiNrt:TZ\x00" as *const u8 as *const libc::c_char,
-                    lower: 1 as libc::c_int,
-                    upper: 1 as libc::c_int,
+                    lower: 1i32,
+                    upper: 1i32,
                 };
                 init
             },
@@ -1076,13 +1076,13 @@ pub static mut cmd_find_window_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_PANE,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0 as libc::c_int,
+            flags: 0i32,
             exec: Some(
                 cmd_find_window_exec
                     as unsafe extern "C" fn(
@@ -1121,25 +1121,25 @@ unsafe extern "C" fn cmd_find_window_exec(
     let mut new_args: *mut args = 0 as *mut args;
     let mut target: *mut cmd_find_state = cmdq_get_target(item);
     let mut wp: *mut window_pane = (*target).wp;
-    let mut s: *const libc::c_char = *(*args).argv.offset(0 as libc::c_int as isize);
+    let mut s: *const libc::c_char = *(*args).argv.offset(0isize);
     let mut suffix: *const libc::c_char = b"\x00" as *const u8 as *const libc::c_char;
     let mut filter: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut argv: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut C: libc::c_int = 0;
     let mut N: libc::c_int = 0;
     let mut T: libc::c_int = 0;
-    C = args_has(args, 'C' as i32 as u_char);
-    N = args_has(args, 'N' as i32 as u_char);
-    T = args_has(args, 'T' as i32 as u_char);
-    if args_has(args, 'r' as i32 as u_char) != 0 && args_has(args, 'i' as i32 as u_char) != 0 {
+    C = args_has(args, 'C' as u_char);
+    N = args_has(args, 'N' as u_char);
+    T = args_has(args, 'T' as u_char);
+    if args_has(args, 'r' as u_char) != 0 && args_has(args, 'i' as u_char) != 0 {
         suffix = b"/ri\x00" as *const u8 as *const libc::c_char
-    } else if args_has(args, 'r' as i32 as u_char) != 0 {
+    } else if args_has(args, 'r' as u_char) != 0 {
         suffix = b"/r\x00" as *const u8 as *const libc::c_char
-    } else if args_has(args, 'i' as i32 as u_char) != 0 {
+    } else if args_has(args, 'i' as u_char) != 0 {
         suffix = b"/i\x00" as *const u8 as *const libc::c_char
     }
     if C == 0 && N == 0 && T == 0 {
-        T = 1 as libc::c_int;
+        T = 1i32;
         N = T;
         C = N
     }
@@ -1205,15 +1205,11 @@ unsafe extern "C" fn cmd_find_window_exec(
             s,
         );
     }
-    new_args = args_parse(
-        b"\x00" as *const u8 as *const libc::c_char,
-        1 as libc::c_int,
-        &mut argv,
-    );
-    if args_has(args, 'Z' as i32 as u_char) != 0 {
-        args_set(new_args, 'Z' as i32 as u_char, 0 as *const libc::c_char);
+    new_args = args_parse(b"\x00" as *const u8 as *const libc::c_char, 1i32, &mut argv);
+    if args_has(args, 'Z' as u_char) != 0 {
+        args_set(new_args, 'Z' as u_char, 0 as *const libc::c_char);
     }
-    args_set(new_args, 'f' as i32 as u_char, filter);
+    args_set(new_args, 'f' as u_char, filter);
     window_pane_set_mode(
         wp,
         0 as *mut window_pane,

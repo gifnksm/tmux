@@ -1082,8 +1082,8 @@ pub static mut cmd_set_buffer_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"ab:t:n:w\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 1 as libc::c_int,
+                    lower: 0i32,
+                    upper: 1i32,
                 };
                 init
             },
@@ -1099,7 +1099,7 @@ pub static mut cmd_set_buffer_entry: cmd_entry = {
                 type_0: CMD_FIND_PANE,
                 flags: 0,
             },
-            flags: 0x4 as libc::c_int | 0x10 as libc::c_int | 0x20 as libc::c_int,
+            flags: 0x4i32 | 0x10i32 | 0x20i32,
             exec: Some(
                 cmd_set_buffer_exec
                     as unsafe extern "C" fn(
@@ -1120,8 +1120,8 @@ pub static mut cmd_delete_buffer_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"b:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -1136,7 +1136,7 @@ pub static mut cmd_delete_buffer_entry: cmd_entry = {
                 type_0: CMD_FIND_PANE,
                 flags: 0,
             },
-            flags: 0x4 as libc::c_int,
+            flags: 0x4i32,
             exec: Some(
                 cmd_set_buffer_exec
                     as unsafe extern "C" fn(
@@ -1180,7 +1180,7 @@ unsafe extern "C" fn cmd_set_buffer_exec(
     let mut olddata: *const libc::c_char = 0 as *const libc::c_char;
     let mut bufsize: size_t = 0;
     let mut newsize: size_t = 0;
-    bufname = args_get(args, 'b' as i32 as u_char);
+    bufname = args_get(args, 'b' as u_char);
     if bufname.is_null() {
         pb = 0 as *mut crate::paste::paste_buffer
     } else {
@@ -1197,7 +1197,7 @@ unsafe extern "C" fn cmd_set_buffer_exec(
         paste_free(pb);
         return CMD_RETURN_NORMAL;
     }
-    if args_has(args, 'n' as i32 as u_char) != 0 {
+    if args_has(args, 'n' as u_char) != 0 {
         if pb.is_null() {
             pb = paste_get_top(&mut bufname)
         }
@@ -1205,29 +1205,27 @@ unsafe extern "C" fn cmd_set_buffer_exec(
             cmdq_error(item, b"no buffer\x00" as *const u8 as *const libc::c_char);
             return CMD_RETURN_ERROR;
         }
-        if paste_rename(bufname, args_get(args, 'n' as i32 as u_char), &mut cause)
-            != 0 as libc::c_int
-        {
+        if paste_rename(bufname, args_get(args, 'n' as u_char), &mut cause) != 0i32 {
             cmdq_error(item, b"%s\x00" as *const u8 as *const libc::c_char, cause);
             free(cause as *mut libc::c_void);
             return CMD_RETURN_ERROR;
         }
         return CMD_RETURN_NORMAL;
     }
-    if (*args).argc != 1 as libc::c_int {
+    if (*args).argc != 1i32 {
         cmdq_error(
             item,
             b"no data specified\x00" as *const u8 as *const libc::c_char,
         );
         return CMD_RETURN_ERROR;
     }
-    newsize = strlen(*(*args).argv.offset(0 as libc::c_int as isize));
-    if newsize == 0 as libc::c_int as libc::c_ulong {
+    newsize = strlen(*(*args).argv.offset(0isize));
+    if newsize == 0u64 {
         return CMD_RETURN_NORMAL;
     }
-    bufsize = 0 as libc::c_int as size_t;
+    bufsize = 0u64;
     bufdata = 0 as *mut libc::c_char;
-    if args_has(args, 'a' as i32 as u_char) != 0 && !pb.is_null() {
+    if args_has(args, 'a' as u_char) != 0 && !pb.is_null() {
         olddata = paste_buffer_data(pb, &mut bufsize);
         bufdata = xmalloc(bufsize) as *mut libc::c_char;
         memcpy(
@@ -1240,17 +1238,17 @@ unsafe extern "C" fn cmd_set_buffer_exec(
         xrealloc(bufdata as *mut libc::c_void, bufsize.wrapping_add(newsize)) as *mut libc::c_char;
     memcpy(
         bufdata.offset(bufsize as isize) as *mut libc::c_void,
-        *(*args).argv.offset(0 as libc::c_int as isize) as *const libc::c_void,
+        *(*args).argv.offset(0isize) as *const libc::c_void,
         newsize,
     );
-    bufsize = (bufsize as libc::c_ulong).wrapping_add(newsize) as size_t as size_t;
-    if paste_set(bufdata, bufsize, bufname, &mut cause) != 0 as libc::c_int {
+    bufsize = (bufsize).wrapping_add(newsize);
+    if paste_set(bufdata, bufsize, bufname, &mut cause) != 0i32 {
         cmdq_error(item, b"%s\x00" as *const u8 as *const libc::c_char, cause);
         free(bufdata as *mut libc::c_void);
         free(cause as *mut libc::c_void);
         return CMD_RETURN_ERROR;
     }
-    if args_has(args, 'w' as i32 as u_char) != 0 && !tc.is_null() {
+    if args_has(args, 'w' as u_char) != 0 && !tc.is_null() {
         tty_set_selection(&mut (*tc).tty, bufdata, bufsize);
     }
     return CMD_RETURN_NORMAL;

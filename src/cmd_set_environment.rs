@@ -1070,8 +1070,8 @@ pub static mut cmd_set_environment_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"Fhgrt:u\x00" as *const u8 as *const libc::c_char,
-                    lower: 1 as libc::c_int,
-                    upper: 2 as libc::c_int,
+                    lower: 1i32,
+                    upper: 2i32,
                 };
                 init
             },
@@ -1084,13 +1084,13 @@ pub static mut cmd_set_environment_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_SESSION,
-                    flags: 0x40 as libc::c_int,
+                    flags: 0x40i32,
                 };
                 init
             },
-            flags: 0x4 as libc::c_int,
+            flags: 0x4i32,
             exec: Some(
                 cmd_set_environment_exec
                     as unsafe extern "C" fn(
@@ -1134,7 +1134,7 @@ unsafe extern "C" fn cmd_set_environment_exec(
     let mut tflag: *const libc::c_char = 0 as *const libc::c_char;
     let mut expand: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut retval: cmd_retval = CMD_RETURN_NORMAL;
-    name = *(*args).argv.offset(0 as libc::c_int as isize);
+    name = *(*args).argv.offset(0isize);
     if *name as libc::c_int == '\u{0}' as i32 {
         cmdq_error(
             item,
@@ -1149,19 +1149,19 @@ unsafe extern "C" fn cmd_set_environment_exec(
         );
         return CMD_RETURN_ERROR;
     }
-    if (*args).argc < 2 as libc::c_int {
+    if (*args).argc < 2i32 {
         value = 0 as *const libc::c_char
-    } else if args_has(args, 'F' as i32 as u_char) != 0 {
-        expand = format_single_from_target(item, *(*args).argv.offset(1 as libc::c_int as isize));
+    } else if args_has(args, 'F' as u_char) != 0 {
+        expand = format_single_from_target(item, *(*args).argv.offset(1isize));
         value = expand
     } else {
-        value = *(*args).argv.offset(1 as libc::c_int as isize)
+        value = *(*args).argv.offset(1isize)
     }
-    if args_has(args, 'g' as i32 as u_char) != 0 {
+    if args_has(args, 'g' as u_char) != 0 {
         env = global_environ;
         current_block = 10043043949733653460;
     } else if (*target).s.is_null() {
-        tflag = args_get(args, 't' as i32 as u_char);
+        tflag = args_get(args, 't' as u_char);
         if !tflag.is_null() {
             cmdq_error(
                 item,
@@ -1182,7 +1182,7 @@ unsafe extern "C" fn cmd_set_environment_exec(
     }
     match current_block {
         10043043949733653460 => {
-            if args_has(args, 'u' as i32 as u_char) != 0 {
+            if args_has(args, 'u' as u_char) != 0 {
                 if !value.is_null() {
                     cmdq_error(
                         item,
@@ -1192,7 +1192,7 @@ unsafe extern "C" fn cmd_set_environment_exec(
                 } else {
                     environ_unset(env, name);
                 }
-            } else if args_has(args, 'r' as i32 as u_char) != 0 {
+            } else if args_has(args, 'r' as u_char) != 0 {
                 if !value.is_null() {
                     cmdq_error(
                         item,
@@ -1208,11 +1208,11 @@ unsafe extern "C" fn cmd_set_environment_exec(
                     b"no value specified\x00" as *const u8 as *const libc::c_char,
                 );
                 retval = CMD_RETURN_ERROR
-            } else if args_has(args, 'h' as i32 as u_char) != 0 {
+            } else if args_has(args, 'h' as u_char) != 0 {
                 environ_set(
                     env,
                     name,
-                    0x1 as libc::c_int,
+                    0x1i32,
                     b"%s\x00" as *const u8 as *const libc::c_char,
                     value,
                 );
@@ -1220,7 +1220,7 @@ unsafe extern "C" fn cmd_set_environment_exec(
                 environ_set(
                     env,
                     name,
-                    0 as libc::c_int,
+                    0i32,
                     b"%s\x00" as *const u8 as *const libc::c_char,
                     value,
                 );

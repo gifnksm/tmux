@@ -31,33 +31,21 @@ pub unsafe extern "C" fn recallocarray(
     if ptr.is_null() {
         return calloc(newnmemb, size);
     }
-    if (newnmemb
-        >= (1 as libc::c_int as size_t)
-            << (::std::mem::size_of::<size_t>() as libc::c_ulong)
-                .wrapping_mul(4 as libc::c_int as libc::c_ulong)
-        || size
-            >= (1 as libc::c_int as size_t)
-                << (::std::mem::size_of::<size_t>() as libc::c_ulong)
-                    .wrapping_mul(4 as libc::c_int as libc::c_ulong))
-        && newnmemb > 0 as libc::c_int as libc::c_ulong
-        && (18446744073709551615 as libc::c_ulong).wrapping_div(newnmemb) < size
+    if (newnmemb >= (1u64) << (::std::mem::size_of::<size_t>() as libc::c_ulong).wrapping_mul(4u64)
+        || size >= (1u64) << (::std::mem::size_of::<size_t>() as libc::c_ulong).wrapping_mul(4u64))
+        && newnmemb > 0u64
+        && (18446744073709551615u64).wrapping_div(newnmemb) < size
     {
-        *__errno_location() = 12 as libc::c_int;
+        *__errno_location() = 12i32;
         return 0 as *mut libc::c_void;
     }
     newsize = newnmemb.wrapping_mul(size);
-    if (oldnmemb
-        >= (1 as libc::c_int as size_t)
-            << (::std::mem::size_of::<size_t>() as libc::c_ulong)
-                .wrapping_mul(4 as libc::c_int as libc::c_ulong)
-        || size
-            >= (1 as libc::c_int as size_t)
-                << (::std::mem::size_of::<size_t>() as libc::c_ulong)
-                    .wrapping_mul(4 as libc::c_int as libc::c_ulong))
-        && oldnmemb > 0 as libc::c_int as libc::c_ulong
-        && (18446744073709551615 as libc::c_ulong).wrapping_div(oldnmemb) < size
+    if (oldnmemb >= (1u64) << (::std::mem::size_of::<size_t>() as libc::c_ulong).wrapping_mul(4u64)
+        || size >= (1u64) << (::std::mem::size_of::<size_t>() as libc::c_ulong).wrapping_mul(4u64))
+        && oldnmemb > 0u64
+        && (18446744073709551615u64).wrapping_div(oldnmemb) < size
     {
-        *__errno_location() = 22 as libc::c_int;
+        *__errno_location() = 22i32;
         return 0 as *mut libc::c_void;
     }
     oldsize = oldnmemb.wrapping_mul(size);
@@ -67,12 +55,10 @@ pub unsafe extern "C" fn recallocarray(
      */
     if newsize <= oldsize {
         let mut d: size_t = oldsize.wrapping_sub(newsize);
-        if d < oldsize.wrapping_div(2 as libc::c_int as libc::c_ulong)
-            && d < getpagesize() as size_t
-        {
+        if d < oldsize.wrapping_div(2u64) && d < getpagesize() as size_t {
             memset(
                 (ptr as *mut libc::c_char).offset(newsize as isize) as *mut libc::c_void,
-                0 as libc::c_int,
+                0i32,
                 d,
             );
             return ptr;
@@ -86,7 +72,7 @@ pub unsafe extern "C" fn recallocarray(
         memcpy(newptr, ptr, oldsize);
         memset(
             (newptr as *mut libc::c_char).offset(oldsize as isize) as *mut libc::c_void,
-            0 as libc::c_int,
+            0i32,
             newsize.wrapping_sub(oldsize),
         );
     } else {

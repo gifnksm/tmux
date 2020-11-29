@@ -1246,12 +1246,12 @@ pub unsafe extern "C" fn menu_add_item(
     line = (item.is_null()
         || (*item).name.is_null()
         || *(*item).name as libc::c_int == '\u{0}' as i32) as libc::c_int;
-    if line != 0 && (*menu).count == 0 as libc::c_int as libc::c_uint {
+    if line != 0 && (*menu).count == 0u32 {
         return;
     }
     (*menu).items = xreallocarray(
         (*menu).items as *mut libc::c_void,
-        (*menu).count.wrapping_add(1 as libc::c_int as libc::c_uint) as size_t,
+        (*menu).count.wrapping_add(1u32) as size_t,
         ::std::mem::size_of::<menu_item>() as libc::c_ulong,
     ) as *mut menu_item;
     let fresh0 = (*menu).count;
@@ -1259,7 +1259,7 @@ pub unsafe extern "C" fn menu_add_item(
     new_item = &mut *(*menu).items.offset(fresh0 as isize) as *mut menu_item;
     memset(
         new_item as *mut libc::c_void,
-        0 as libc::c_int,
+        0i32,
         ::std::mem::size_of::<menu_item>() as libc::c_ulong,
     );
     if line != 0 {
@@ -1283,10 +1283,10 @@ pub unsafe extern "C" fn menu_add_item(
         return;
     }
     if *s as libc::c_int != '-' as i32
-        && (*item).key != 0xfe000000000 as libc::c_ulonglong
-        && (*item).key != 0xff000000000 as libc::c_ulonglong
+        && (*item).key != 0xfe000000000u64
+        && (*item).key != 0xff000000000u64
     {
-        key = key_string_lookup_key((*item).key, 0 as libc::c_int);
+        key = key_string_lookup_key((*item).key, 0i32);
         xasprintf(
             &mut name as *mut *mut libc::c_char,
             b"%s#[default] #[align=right](%s)\x00" as *const u8 as *const libc::c_char,
@@ -1329,10 +1329,7 @@ pub unsafe extern "C" fn menu_add_item(
 #[no_mangle]
 pub unsafe extern "C" fn menu_create(mut title: *const libc::c_char) -> *mut menu {
     let mut menu: *mut menu = 0 as *mut menu;
-    menu = xcalloc(
-        1 as libc::c_int as size_t,
-        ::std::mem::size_of::<menu>() as libc::c_ulong,
-    ) as *mut menu;
+    menu = xcalloc(1u64, ::std::mem::size_of::<menu>() as libc::c_ulong) as *mut menu;
     (*menu).title = xstrdup(title);
     (*menu).width = format_width(title);
     return menu;
@@ -1340,7 +1337,7 @@ pub unsafe extern "C" fn menu_create(mut title: *const libc::c_char) -> *mut men
 #[no_mangle]
 pub unsafe extern "C" fn menu_free(mut menu: *mut menu) {
     let mut i: u_int = 0;
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < (*menu).count {
         free((*(*menu).items.offset(i as isize)).name as *mut libc::c_void);
         free((*(*menu).items.offset(i as isize)).command as *mut libc::c_void);
@@ -1399,17 +1396,17 @@ unsafe extern "C" fn menu_draw_cb(mut c: *mut client, mut _ctx0: *mut screen_red
         0 as *mut crate::format::format_tree,
     );
     screen_write_start(&mut ctx, s);
-    screen_write_clearscreen(&mut ctx, 8 as libc::c_int as u_int);
+    screen_write_clearscreen(&mut ctx, 8u32);
     screen_write_menu(&mut ctx, menu, (*md).choice, &mut gc);
     screen_write_stop(&mut ctx);
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < (*(*md).s.grid).sy {
         tty_draw_line(
             tty,
             s,
-            0 as libc::c_int as u_int,
+            0u32,
             i,
-            (*menu).width.wrapping_add(4 as libc::c_int as libc::c_uint),
+            (*menu).width.wrapping_add(4u32),
             px,
             py.wrapping_add(i),
             &grid_default_cell,
@@ -1426,10 +1423,8 @@ unsafe extern "C" fn menu_free_cb(mut c: *mut client) {
     if (*md).cb.is_some() {
         (*md).cb.expect("non-null function pointer")(
             (*md).menu,
-            (2147483647 as libc::c_int as libc::c_uint)
-                .wrapping_mul(2 as libc::c_uint)
-                .wrapping_add(1 as libc::c_uint),
-            0xff000000000 as libc::c_ulonglong,
+            (2147483647u32).wrapping_mul(2u32).wrapping_add(1u32),
+            0xff000000000u64,
             (*md).data,
         );
     }
@@ -1450,57 +1445,45 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
     let mut state: *mut crate::cmd_queue::cmdq_state = 0 as *mut crate::cmd_queue::cmdq_state;
     let mut status: cmd_parse_status = CMD_PARSE_EMPTY;
     let mut error: *mut libc::c_char = 0 as *mut libc::c_char;
-    if (*event).key & 0xfffffffffff as libc::c_ulonglong
-        >= key_code_code::MOUSE as libc::c_ulong as libc::c_ulonglong
-        && ((*event).key & 0xfffffffffff as libc::c_ulonglong)
-            < key_code_code::BSPACE as libc::c_ulong as libc::c_ulonglong
+    if (*event).key & 0xfffffffffffu64 >= key_code_code::MOUSE
+        && ((*event).key & 0xfffffffffffu64) < key_code_code::BSPACE
     {
-        if (*md).flags & 0x1 as libc::c_int != 0 {
-            if (*m).b & 3 as libc::c_int as libc::c_uint != 0 as libc::c_int as libc::c_uint {
-                return 1 as libc::c_int;
+        if (*md).flags & 0x1i32 != 0 {
+            if (*m).b & 3u32 != 0u32 {
+                return 1i32;
             }
-            return 0 as libc::c_int;
+            return 0i32;
         }
         if (*m).x < (*md).px
-            || (*m).x
-                > (*md)
-                    .px
-                    .wrapping_add(4 as libc::c_int as libc::c_uint)
-                    .wrapping_add((*menu).width)
-            || (*m).y < (*md).py.wrapping_add(1 as libc::c_int as libc::c_uint)
+            || (*m).x > (*md).px.wrapping_add(4u32).wrapping_add((*menu).width)
+            || (*m).y < (*md).py.wrapping_add(1u32)
             || (*m).y
                 > (*md)
                     .py
-                    .wrapping_add(1 as libc::c_int as libc::c_uint)
+                    .wrapping_add(1u32)
                     .wrapping_add(count as libc::c_uint)
-                    .wrapping_sub(1 as libc::c_int as libc::c_uint)
+                    .wrapping_sub(1u32)
         {
-            if !(*md).flags & 0x4 as libc::c_int != 0 {
-                if (*m).b & 3 as libc::c_int as libc::c_uint == 3 as libc::c_int as libc::c_uint {
-                    return 1 as libc::c_int;
+            if !(*md).flags & 0x4i32 != 0 {
+                if (*m).b & 3u32 == 3u32 {
+                    return 1i32;
                 }
-            } else if !((*m).b & 3 as libc::c_int as libc::c_uint
-                == 3 as libc::c_int as libc::c_uint)
-                && (*m).b & 64 as libc::c_int as libc::c_uint == 0 as libc::c_int as libc::c_uint
-                && (*m).b & 32 as libc::c_int as libc::c_uint == 0
-            {
-                return 1 as libc::c_int;
+            } else if !((*m).b & 3u32 == 3u32) && (*m).b & 64u32 == 0u32 && (*m).b & 32u32 == 0 {
+                return 1i32;
             }
-            if (*md).choice != -(1 as libc::c_int) {
-                (*md).choice = -(1 as libc::c_int);
-                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong
+            if (*md).choice != -(1i32) {
+                (*md).choice = -(1i32);
+                (*c).flags |= 0x2000000u64
             }
-            return 0 as libc::c_int;
+            return 0i32;
         }
-        if !(*md).flags & 0x4 as libc::c_int != 0 {
-            if (*m).b & 3 as libc::c_int as libc::c_uint == 3 as libc::c_int as libc::c_uint {
+        if !(*md).flags & 0x4i32 != 0 {
+            if (*m).b & 3u32 == 3u32 {
                 current_block = 13409614927677246897;
             } else {
                 current_block = 15925075030174552612;
             }
-        } else if (*m).b & 64 as libc::c_int as libc::c_uint == 0 as libc::c_int as libc::c_uint
-            && (*m).b & 32 as libc::c_int as libc::c_uint == 0
-        {
+        } else if (*m).b & 64u32 == 0u32 && (*m).b & 32u32 == 0 {
             current_block = 13409614927677246897;
         } else {
             current_block = 15925075030174552612;
@@ -1508,18 +1491,15 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
         match current_block {
             13409614927677246897 => {}
             _ => {
-                (*md).choice = (*m)
-                    .y
-                    .wrapping_sub((*md).py.wrapping_add(1 as libc::c_int as libc::c_uint))
-                    as libc::c_int;
+                (*md).choice = (*m).y.wrapping_sub((*md).py.wrapping_add(1u32)) as libc::c_int;
                 if (*md).choice != old {
-                    (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong
+                    (*c).flags |= 0x2000000u64
                 }
-                return 0 as libc::c_int;
+                return 0i32;
             }
         }
     } else {
-        i = 0 as libc::c_int as u_int;
+        i = 0u32;
         loop {
             if !(i < count as u_int) {
                 current_block = 7746103178988627676;
@@ -1538,30 +1518,30 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
         match current_block {
             13409614927677246897 => {}
             _ => {
-                match (*event).key & !(0xff000000000000 as libc::c_ulonglong) {
+                match (*event).key & !(0xff000000000000u64) {
                     68719476908 | 107 => {
                         current_block = 11976616061117098778;
                         match current_block {
                             7328775138574252198 => {
-                                if (*md).choice > count - 6 as libc::c_int {
-                                    (*md).choice = count - 1 as libc::c_int
+                                if (*md).choice > count - 6i32 {
+                                    (*md).choice = count - 1i32
                                 } else {
-                                    (*md).choice += 5 as libc::c_int
+                                    (*md).choice += 5i32
                                 }
-                                while (*md).choice != -(1 as libc::c_int)
+                                while (*md).choice != -(1i32)
                                     && (name.is_null() || *name as libc::c_int == '-' as i32)
                                 {
                                     (*md).choice -= 1
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000u64;
                                 current_block = 18383263831861166299;
                             }
                             7272745134570625308 => {
                                 /* C-b */
-                                if (*md).choice > 5 as libc::c_int {
-                                    (*md).choice -= 5 as libc::c_int
+                                if (*md).choice > 5i32 {
+                                    (*md).choice -= 5i32
                                 } else {
-                                    (*md).choice = 0 as libc::c_int
+                                    (*md).choice = 0i32
                                 }
                                 while (*md).choice != count
                                     && (name.is_null() || *name as libc::c_int == '-' as i32)
@@ -1569,39 +1549,37 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                                     (*md).choice += 1
                                 }
                                 if (*md).choice == count {
-                                    (*md).choice = -(1 as libc::c_int)
+                                    (*md).choice = -(1i32)
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000u64;
                                 current_block = 18383263831861166299;
                             }
                             2215219764755711832 =>
                             /* Tab */
                             {
-                                if !(*md).flags & 0x2 as libc::c_int != 0 {
+                                if !(*md).flags & 0x2i32 != 0 {
                                     current_block = 18383263831861166299;
                                 } else {
-                                    if (*md).choice == count - 1 as libc::c_int {
-                                        return 1 as libc::c_int;
+                                    if (*md).choice == count - 1i32 {
+                                        return 1i32;
                                     }
                                     current_block = 10827572169919271282;
                                 }
                             }
                             4625365797902618311 => {
-                                if !(*md).flags & 0x2 as libc::c_int != 0 {
+                                if !(*md).flags & 0x2i32 != 0 {
                                     current_block = 18383263831861166299;
                                 } else {
-                                    return 1 as libc::c_int;
+                                    return 1i32;
                                 }
                             }
                             11976616061117098778 => {
-                                if old == -(1 as libc::c_int) {
-                                    old = 0 as libc::c_int
+                                if old == -(1i32) {
+                                    old = 0i32
                                 }
                                 loop {
-                                    if (*md).choice == -(1 as libc::c_int)
-                                        || (*md).choice == 0 as libc::c_int
-                                    {
-                                        (*md).choice = count - 1 as libc::c_int
+                                    if (*md).choice == -(1i32) || (*md).choice == 0i32 {
+                                        (*md).choice = count - 1i32
                                     } else {
                                         (*md).choice -= 1
                                     }
@@ -1612,8 +1590,8 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                                         break;
                                     }
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x2000000u64;
+                                return 0i32;
                             }
                             8312313396388474857 =>
                             /* Escape */
@@ -1626,14 +1604,12 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                             10827572169919271282 =>
                             /* FALLTHROUGH */
                             {
-                                if old == -(1 as libc::c_int) {
-                                    old = 0 as libc::c_int
+                                if old == -(1i32) {
+                                    old = 0i32
                                 }
                                 loop {
-                                    if (*md).choice == -(1 as libc::c_int)
-                                        || (*md).choice == count - 1 as libc::c_int
-                                    {
-                                        (*md).choice = 0 as libc::c_int
+                                    if (*md).choice == -(1i32) || (*md).choice == count - 1i32 {
+                                        (*md).choice = 0i32
                                     } else {
                                         (*md).choice += 1
                                     }
@@ -1644,13 +1620,13 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                                         break;
                                     }
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x2000000u64;
+                                return 0i32;
                             }
                             18383263831861166299 =>
                             /* C-f */
                             {
-                                return 0 as libc::c_int
+                                return 0i32
                             }
                             5768530447596251282 =>
                                 /* C-c */
@@ -1658,30 +1634,30 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                             _ => {}
                         }
                         /* C-g */
-                        return 1 as libc::c_int;
+                        return 1i32;
                     }
                     68719476888 => {
                         current_block = 4625365797902618311;
                         match current_block {
                             7328775138574252198 => {
-                                if (*md).choice > count - 6 as libc::c_int {
-                                    (*md).choice = count - 1 as libc::c_int
+                                if (*md).choice > count - 6i32 {
+                                    (*md).choice = count - 1i32
                                 } else {
-                                    (*md).choice += 5 as libc::c_int
+                                    (*md).choice += 5i32
                                 }
-                                while (*md).choice != -(1 as libc::c_int)
+                                while (*md).choice != -(1i32)
                                     && (name.is_null() || *name as libc::c_int == '-' as i32)
                                 {
                                     (*md).choice -= 1
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000u64;
                                 current_block = 18383263831861166299;
                             }
                             7272745134570625308 => {
-                                if (*md).choice > 5 as libc::c_int {
-                                    (*md).choice -= 5 as libc::c_int
+                                if (*md).choice > 5i32 {
+                                    (*md).choice -= 5i32
                                 } else {
-                                    (*md).choice = 0 as libc::c_int
+                                    (*md).choice = 0i32
                                 }
                                 while (*md).choice != count
                                     && (name.is_null() || *name as libc::c_int == '-' as i32)
@@ -1689,37 +1665,35 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                                     (*md).choice += 1
                                 }
                                 if (*md).choice == count {
-                                    (*md).choice = -(1 as libc::c_int)
+                                    (*md).choice = -(1i32)
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000u64;
                                 current_block = 18383263831861166299;
                             }
                             2215219764755711832 => {
-                                if !(*md).flags & 0x2 as libc::c_int != 0 {
+                                if !(*md).flags & 0x2i32 != 0 {
                                     current_block = 18383263831861166299;
                                 } else {
-                                    if (*md).choice == count - 1 as libc::c_int {
-                                        return 1 as libc::c_int;
+                                    if (*md).choice == count - 1i32 {
+                                        return 1i32;
                                     }
                                     current_block = 10827572169919271282;
                                 }
                             }
                             4625365797902618311 => {
-                                if !(*md).flags & 0x2 as libc::c_int != 0 {
+                                if !(*md).flags & 0x2i32 != 0 {
                                     current_block = 18383263831861166299;
                                 } else {
-                                    return 1 as libc::c_int;
+                                    return 1i32;
                                 }
                             }
                             11976616061117098778 => {
-                                if old == -(1 as libc::c_int) {
-                                    old = 0 as libc::c_int
+                                if old == -(1i32) {
+                                    old = 0i32
                                 }
                                 loop {
-                                    if (*md).choice == -(1 as libc::c_int)
-                                        || (*md).choice == 0 as libc::c_int
-                                    {
-                                        (*md).choice = count - 1 as libc::c_int
+                                    if (*md).choice == -(1i32) || (*md).choice == 0i32 {
+                                        (*md).choice = count - 1i32
                                     } else {
                                         (*md).choice -= 1
                                     }
@@ -1730,8 +1704,8 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                                         break;
                                     }
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x2000000u64;
+                                return 0i32;
                             }
                             8312313396388474857 => {
                                 current_block = 5768530447596251282;
@@ -1740,14 +1714,12 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                         }
                         match current_block {
                             10827572169919271282 => {
-                                if old == -(1 as libc::c_int) {
-                                    old = 0 as libc::c_int
+                                if old == -(1i32) {
+                                    old = 0i32
                                 }
                                 loop {
-                                    if (*md).choice == -(1 as libc::c_int)
-                                        || (*md).choice == count - 1 as libc::c_int
-                                    {
-                                        (*md).choice = 0 as libc::c_int
+                                    if (*md).choice == -(1i32) || (*md).choice == count - 1i32 {
+                                        (*md).choice = 0i32
                                     } else {
                                         (*md).choice += 1
                                     }
@@ -1758,37 +1730,37 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                                         break;
                                     }
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x2000000u64;
+                                return 0i32;
                             }
-                            18383263831861166299 => return 0 as libc::c_int,
+                            18383263831861166299 => return 0i32,
                             5768530447596251282 => {}
                             _ => {}
                         }
-                        return 1 as libc::c_int;
+                        return 1i32;
                     }
                     9 => {
                         current_block = 2215219764755711832;
                         match current_block {
                             7328775138574252198 => {
-                                if (*md).choice > count - 6 as libc::c_int {
-                                    (*md).choice = count - 1 as libc::c_int
+                                if (*md).choice > count - 6i32 {
+                                    (*md).choice = count - 1i32
                                 } else {
-                                    (*md).choice += 5 as libc::c_int
+                                    (*md).choice += 5i32
                                 }
-                                while (*md).choice != -(1 as libc::c_int)
+                                while (*md).choice != -(1i32)
                                     && (name.is_null() || *name as libc::c_int == '-' as i32)
                                 {
                                     (*md).choice -= 1
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000u64;
                                 current_block = 18383263831861166299;
                             }
                             7272745134570625308 => {
-                                if (*md).choice > 5 as libc::c_int {
-                                    (*md).choice -= 5 as libc::c_int
+                                if (*md).choice > 5i32 {
+                                    (*md).choice -= 5i32
                                 } else {
-                                    (*md).choice = 0 as libc::c_int
+                                    (*md).choice = 0i32
                                 }
                                 while (*md).choice != count
                                     && (name.is_null() || *name as libc::c_int == '-' as i32)
@@ -1796,37 +1768,35 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                                     (*md).choice += 1
                                 }
                                 if (*md).choice == count {
-                                    (*md).choice = -(1 as libc::c_int)
+                                    (*md).choice = -(1i32)
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000u64;
                                 current_block = 18383263831861166299;
                             }
                             2215219764755711832 => {
-                                if !(*md).flags & 0x2 as libc::c_int != 0 {
+                                if !(*md).flags & 0x2i32 != 0 {
                                     current_block = 18383263831861166299;
                                 } else {
-                                    if (*md).choice == count - 1 as libc::c_int {
-                                        return 1 as libc::c_int;
+                                    if (*md).choice == count - 1i32 {
+                                        return 1i32;
                                     }
                                     current_block = 10827572169919271282;
                                 }
                             }
                             4625365797902618311 => {
-                                if !(*md).flags & 0x2 as libc::c_int != 0 {
+                                if !(*md).flags & 0x2i32 != 0 {
                                     current_block = 18383263831861166299;
                                 } else {
-                                    return 1 as libc::c_int;
+                                    return 1i32;
                                 }
                             }
                             11976616061117098778 => {
-                                if old == -(1 as libc::c_int) {
-                                    old = 0 as libc::c_int
+                                if old == -(1i32) {
+                                    old = 0i32
                                 }
                                 loop {
-                                    if (*md).choice == -(1 as libc::c_int)
-                                        || (*md).choice == 0 as libc::c_int
-                                    {
-                                        (*md).choice = count - 1 as libc::c_int
+                                    if (*md).choice == -(1i32) || (*md).choice == 0i32 {
+                                        (*md).choice = count - 1i32
                                     } else {
                                         (*md).choice -= 1
                                     }
@@ -1837,8 +1807,8 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                                         break;
                                     }
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x2000000u64;
+                                return 0i32;
                             }
                             8312313396388474857 => {
                                 current_block = 5768530447596251282;
@@ -1847,14 +1817,12 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                         }
                         match current_block {
                             10827572169919271282 => {
-                                if old == -(1 as libc::c_int) {
-                                    old = 0 as libc::c_int
+                                if old == -(1i32) {
+                                    old = 0i32
                                 }
                                 loop {
-                                    if (*md).choice == -(1 as libc::c_int)
-                                        || (*md).choice == count - 1 as libc::c_int
-                                    {
-                                        (*md).choice = 0 as libc::c_int
+                                    if (*md).choice == -(1i32) || (*md).choice == count - 1i32 {
+                                        (*md).choice = 0i32
                                     } else {
                                         (*md).choice += 1
                                     }
@@ -1865,37 +1833,37 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                                         break;
                                     }
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x2000000u64;
+                                return 0i32;
                             }
-                            18383263831861166299 => return 0 as libc::c_int,
+                            18383263831861166299 => return 0i32,
                             5768530447596251282 => {}
                             _ => {}
                         }
-                        return 1 as libc::c_int;
+                        return 1i32;
                     }
                     68719476909 | 106 => {
                         current_block = 10827572169919271282;
                         match current_block {
                             7328775138574252198 => {
-                                if (*md).choice > count - 6 as libc::c_int {
-                                    (*md).choice = count - 1 as libc::c_int
+                                if (*md).choice > count - 6i32 {
+                                    (*md).choice = count - 1i32
                                 } else {
-                                    (*md).choice += 5 as libc::c_int
+                                    (*md).choice += 5i32
                                 }
-                                while (*md).choice != -(1 as libc::c_int)
+                                while (*md).choice != -(1i32)
                                     && (name.is_null() || *name as libc::c_int == '-' as i32)
                                 {
                                     (*md).choice -= 1
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000u64;
                                 current_block = 18383263831861166299;
                             }
                             7272745134570625308 => {
-                                if (*md).choice > 5 as libc::c_int {
-                                    (*md).choice -= 5 as libc::c_int
+                                if (*md).choice > 5i32 {
+                                    (*md).choice -= 5i32
                                 } else {
-                                    (*md).choice = 0 as libc::c_int
+                                    (*md).choice = 0i32
                                 }
                                 while (*md).choice != count
                                     && (name.is_null() || *name as libc::c_int == '-' as i32)
@@ -1903,37 +1871,35 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                                     (*md).choice += 1
                                 }
                                 if (*md).choice == count {
-                                    (*md).choice = -(1 as libc::c_int)
+                                    (*md).choice = -(1i32)
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000u64;
                                 current_block = 18383263831861166299;
                             }
                             2215219764755711832 => {
-                                if !(*md).flags & 0x2 as libc::c_int != 0 {
+                                if !(*md).flags & 0x2i32 != 0 {
                                     current_block = 18383263831861166299;
                                 } else {
-                                    if (*md).choice == count - 1 as libc::c_int {
-                                        return 1 as libc::c_int;
+                                    if (*md).choice == count - 1i32 {
+                                        return 1i32;
                                     }
                                     current_block = 10827572169919271282;
                                 }
                             }
                             4625365797902618311 => {
-                                if !(*md).flags & 0x2 as libc::c_int != 0 {
+                                if !(*md).flags & 0x2i32 != 0 {
                                     current_block = 18383263831861166299;
                                 } else {
-                                    return 1 as libc::c_int;
+                                    return 1i32;
                                 }
                             }
                             11976616061117098778 => {
-                                if old == -(1 as libc::c_int) {
-                                    old = 0 as libc::c_int
+                                if old == -(1i32) {
+                                    old = 0i32
                                 }
                                 loop {
-                                    if (*md).choice == -(1 as libc::c_int)
-                                        || (*md).choice == 0 as libc::c_int
-                                    {
-                                        (*md).choice = count - 1 as libc::c_int
+                                    if (*md).choice == -(1i32) || (*md).choice == 0i32 {
+                                        (*md).choice = count - 1i32
                                     } else {
                                         (*md).choice -= 1
                                     }
@@ -1944,8 +1910,8 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                                         break;
                                     }
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x2000000u64;
+                                return 0i32;
                             }
                             8312313396388474857 => {
                                 current_block = 5768530447596251282;
@@ -1954,14 +1920,12 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                         }
                         match current_block {
                             10827572169919271282 => {
-                                if old == -(1 as libc::c_int) {
-                                    old = 0 as libc::c_int
+                                if old == -(1i32) {
+                                    old = 0i32
                                 }
                                 loop {
-                                    if (*md).choice == -(1 as libc::c_int)
-                                        || (*md).choice == count - 1 as libc::c_int
-                                    {
-                                        (*md).choice = 0 as libc::c_int
+                                    if (*md).choice == -(1i32) || (*md).choice == count - 1i32 {
+                                        (*md).choice = 0i32
                                     } else {
                                         (*md).choice += 1
                                     }
@@ -1972,37 +1936,37 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                                         break;
                                     }
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x2000000u64;
+                                return 0i32;
                             }
-                            18383263831861166299 => return 0 as libc::c_int,
+                            18383263831861166299 => return 0i32,
                             5768530447596251282 => {}
                             _ => {}
                         }
-                        return 1 as libc::c_int;
+                        return 1i32;
                     }
                     103 | 68719476906 | 2 => {
                         current_block = 7272745134570625308;
                         match current_block {
                             7328775138574252198 => {
-                                if (*md).choice > count - 6 as libc::c_int {
-                                    (*md).choice = count - 1 as libc::c_int
+                                if (*md).choice > count - 6i32 {
+                                    (*md).choice = count - 1i32
                                 } else {
-                                    (*md).choice += 5 as libc::c_int
+                                    (*md).choice += 5i32
                                 }
-                                while (*md).choice != -(1 as libc::c_int)
+                                while (*md).choice != -(1i32)
                                     && (name.is_null() || *name as libc::c_int == '-' as i32)
                                 {
                                     (*md).choice -= 1
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000u64;
                                 current_block = 18383263831861166299;
                             }
                             7272745134570625308 => {
-                                if (*md).choice > 5 as libc::c_int {
-                                    (*md).choice -= 5 as libc::c_int
+                                if (*md).choice > 5i32 {
+                                    (*md).choice -= 5i32
                                 } else {
-                                    (*md).choice = 0 as libc::c_int
+                                    (*md).choice = 0i32
                                 }
                                 while (*md).choice != count
                                     && (name.is_null() || *name as libc::c_int == '-' as i32)
@@ -2010,37 +1974,35 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                                     (*md).choice += 1
                                 }
                                 if (*md).choice == count {
-                                    (*md).choice = -(1 as libc::c_int)
+                                    (*md).choice = -(1i32)
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000u64;
                                 current_block = 18383263831861166299;
                             }
                             2215219764755711832 => {
-                                if !(*md).flags & 0x2 as libc::c_int != 0 {
+                                if !(*md).flags & 0x2i32 != 0 {
                                     current_block = 18383263831861166299;
                                 } else {
-                                    if (*md).choice == count - 1 as libc::c_int {
-                                        return 1 as libc::c_int;
+                                    if (*md).choice == count - 1i32 {
+                                        return 1i32;
                                     }
                                     current_block = 10827572169919271282;
                                 }
                             }
                             4625365797902618311 => {
-                                if !(*md).flags & 0x2 as libc::c_int != 0 {
+                                if !(*md).flags & 0x2i32 != 0 {
                                     current_block = 18383263831861166299;
                                 } else {
-                                    return 1 as libc::c_int;
+                                    return 1i32;
                                 }
                             }
                             11976616061117098778 => {
-                                if old == -(1 as libc::c_int) {
-                                    old = 0 as libc::c_int
+                                if old == -(1i32) {
+                                    old = 0i32
                                 }
                                 loop {
-                                    if (*md).choice == -(1 as libc::c_int)
-                                        || (*md).choice == 0 as libc::c_int
-                                    {
-                                        (*md).choice = count - 1 as libc::c_int
+                                    if (*md).choice == -(1i32) || (*md).choice == 0i32 {
+                                        (*md).choice = count - 1i32
                                     } else {
                                         (*md).choice -= 1
                                     }
@@ -2051,8 +2013,8 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                                         break;
                                     }
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x2000000u64;
+                                return 0i32;
                             }
                             8312313396388474857 => {
                                 current_block = 5768530447596251282;
@@ -2061,14 +2023,12 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                         }
                         match current_block {
                             10827572169919271282 => {
-                                if old == -(1 as libc::c_int) {
-                                    old = 0 as libc::c_int
+                                if old == -(1i32) {
+                                    old = 0i32
                                 }
                                 loop {
-                                    if (*md).choice == -(1 as libc::c_int)
-                                        || (*md).choice == count - 1 as libc::c_int
-                                    {
-                                        (*md).choice = 0 as libc::c_int
+                                    if (*md).choice == -(1i32) || (*md).choice == count - 1i32 {
+                                        (*md).choice = 0i32
                                     } else {
                                         (*md).choice += 1
                                     }
@@ -2079,37 +2039,37 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                                         break;
                                     }
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x2000000u64;
+                                return 0i32;
                             }
-                            18383263831861166299 => return 0 as libc::c_int,
+                            18383263831861166299 => return 0i32,
                             5768530447596251282 => {}
                             _ => {}
                         }
-                        return 1 as libc::c_int;
+                        return 1i32;
                     }
                     71 | 68719476905 => {
                         current_block = 7328775138574252198;
                         match current_block {
                             7328775138574252198 => {
-                                if (*md).choice > count - 6 as libc::c_int {
-                                    (*md).choice = count - 1 as libc::c_int
+                                if (*md).choice > count - 6i32 {
+                                    (*md).choice = count - 1i32
                                 } else {
-                                    (*md).choice += 5 as libc::c_int
+                                    (*md).choice += 5i32
                                 }
-                                while (*md).choice != -(1 as libc::c_int)
+                                while (*md).choice != -(1i32)
                                     && (name.is_null() || *name as libc::c_int == '-' as i32)
                                 {
                                     (*md).choice -= 1
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000u64;
                                 current_block = 18383263831861166299;
                             }
                             7272745134570625308 => {
-                                if (*md).choice > 5 as libc::c_int {
-                                    (*md).choice -= 5 as libc::c_int
+                                if (*md).choice > 5i32 {
+                                    (*md).choice -= 5i32
                                 } else {
-                                    (*md).choice = 0 as libc::c_int
+                                    (*md).choice = 0i32
                                 }
                                 while (*md).choice != count
                                     && (name.is_null() || *name as libc::c_int == '-' as i32)
@@ -2117,37 +2077,35 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                                     (*md).choice += 1
                                 }
                                 if (*md).choice == count {
-                                    (*md).choice = -(1 as libc::c_int)
+                                    (*md).choice = -(1i32)
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000u64;
                                 current_block = 18383263831861166299;
                             }
                             2215219764755711832 => {
-                                if !(*md).flags & 0x2 as libc::c_int != 0 {
+                                if !(*md).flags & 0x2i32 != 0 {
                                     current_block = 18383263831861166299;
                                 } else {
-                                    if (*md).choice == count - 1 as libc::c_int {
-                                        return 1 as libc::c_int;
+                                    if (*md).choice == count - 1i32 {
+                                        return 1i32;
                                     }
                                     current_block = 10827572169919271282;
                                 }
                             }
                             4625365797902618311 => {
-                                if !(*md).flags & 0x2 as libc::c_int != 0 {
+                                if !(*md).flags & 0x2i32 != 0 {
                                     current_block = 18383263831861166299;
                                 } else {
-                                    return 1 as libc::c_int;
+                                    return 1i32;
                                 }
                             }
                             11976616061117098778 => {
-                                if old == -(1 as libc::c_int) {
-                                    old = 0 as libc::c_int
+                                if old == -(1i32) {
+                                    old = 0i32
                                 }
                                 loop {
-                                    if (*md).choice == -(1 as libc::c_int)
-                                        || (*md).choice == 0 as libc::c_int
-                                    {
-                                        (*md).choice = count - 1 as libc::c_int
+                                    if (*md).choice == -(1i32) || (*md).choice == 0i32 {
+                                        (*md).choice = count - 1i32
                                     } else {
                                         (*md).choice -= 1
                                     }
@@ -2158,8 +2116,8 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                                         break;
                                     }
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x2000000u64;
+                                return 0i32;
                             }
                             8312313396388474857 => {
                                 current_block = 5768530447596251282;
@@ -2168,14 +2126,12 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                         }
                         match current_block {
                             10827572169919271282 => {
-                                if old == -(1 as libc::c_int) {
-                                    old = 0 as libc::c_int
+                                if old == -(1i32) {
+                                    old = 0i32
                                 }
                                 loop {
-                                    if (*md).choice == -(1 as libc::c_int)
-                                        || (*md).choice == count - 1 as libc::c_int
-                                    {
-                                        (*md).choice = 0 as libc::c_int
+                                    if (*md).choice == -(1i32) || (*md).choice == count - 1i32 {
+                                        (*md).choice = 0i32
                                     } else {
                                         (*md).choice += 1
                                     }
@@ -2186,38 +2142,38 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                                         break;
                                     }
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x2000000u64;
+                                return 0i32;
                             }
-                            18383263831861166299 => return 0 as libc::c_int,
+                            18383263831861166299 => return 0i32,
                             5768530447596251282 => {}
                             _ => {}
                         }
-                        return 1 as libc::c_int;
+                        return 1i32;
                     }
                     13 => {}
                     27 => {
                         current_block = 8312313396388474857;
                         match current_block {
                             7328775138574252198 => {
-                                if (*md).choice > count - 6 as libc::c_int {
-                                    (*md).choice = count - 1 as libc::c_int
+                                if (*md).choice > count - 6i32 {
+                                    (*md).choice = count - 1i32
                                 } else {
-                                    (*md).choice += 5 as libc::c_int
+                                    (*md).choice += 5i32
                                 }
-                                while (*md).choice != -(1 as libc::c_int)
+                                while (*md).choice != -(1i32)
                                     && (name.is_null() || *name as libc::c_int == '-' as i32)
                                 {
                                     (*md).choice -= 1
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000u64;
                                 current_block = 18383263831861166299;
                             }
                             7272745134570625308 => {
-                                if (*md).choice > 5 as libc::c_int {
-                                    (*md).choice -= 5 as libc::c_int
+                                if (*md).choice > 5i32 {
+                                    (*md).choice -= 5i32
                                 } else {
-                                    (*md).choice = 0 as libc::c_int
+                                    (*md).choice = 0i32
                                 }
                                 while (*md).choice != count
                                     && (name.is_null() || *name as libc::c_int == '-' as i32)
@@ -2225,37 +2181,35 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                                     (*md).choice += 1
                                 }
                                 if (*md).choice == count {
-                                    (*md).choice = -(1 as libc::c_int)
+                                    (*md).choice = -(1i32)
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000u64;
                                 current_block = 18383263831861166299;
                             }
                             2215219764755711832 => {
-                                if !(*md).flags & 0x2 as libc::c_int != 0 {
+                                if !(*md).flags & 0x2i32 != 0 {
                                     current_block = 18383263831861166299;
                                 } else {
-                                    if (*md).choice == count - 1 as libc::c_int {
-                                        return 1 as libc::c_int;
+                                    if (*md).choice == count - 1i32 {
+                                        return 1i32;
                                     }
                                     current_block = 10827572169919271282;
                                 }
                             }
                             4625365797902618311 => {
-                                if !(*md).flags & 0x2 as libc::c_int != 0 {
+                                if !(*md).flags & 0x2i32 != 0 {
                                     current_block = 18383263831861166299;
                                 } else {
-                                    return 1 as libc::c_int;
+                                    return 1i32;
                                 }
                             }
                             11976616061117098778 => {
-                                if old == -(1 as libc::c_int) {
-                                    old = 0 as libc::c_int
+                                if old == -(1i32) {
+                                    old = 0i32
                                 }
                                 loop {
-                                    if (*md).choice == -(1 as libc::c_int)
-                                        || (*md).choice == 0 as libc::c_int
-                                    {
-                                        (*md).choice = count - 1 as libc::c_int
+                                    if (*md).choice == -(1i32) || (*md).choice == 0i32 {
+                                        (*md).choice = count - 1i32
                                     } else {
                                         (*md).choice -= 1
                                     }
@@ -2266,8 +2220,8 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                                         break;
                                     }
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x2000000u64;
+                                return 0i32;
                             }
                             8312313396388474857 => {
                                 current_block = 5768530447596251282;
@@ -2276,14 +2230,12 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                         }
                         match current_block {
                             10827572169919271282 => {
-                                if old == -(1 as libc::c_int) {
-                                    old = 0 as libc::c_int
+                                if old == -(1i32) {
+                                    old = 0i32
                                 }
                                 loop {
-                                    if (*md).choice == -(1 as libc::c_int)
-                                        || (*md).choice == count - 1 as libc::c_int
-                                    {
-                                        (*md).choice = 0 as libc::c_int
+                                    if (*md).choice == -(1i32) || (*md).choice == count - 1i32 {
+                                        (*md).choice = 0i32
                                     } else {
                                         (*md).choice += 1
                                     }
@@ -2294,37 +2246,37 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                                         break;
                                     }
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x2000000u64;
+                                return 0i32;
                             }
-                            18383263831861166299 => return 0 as libc::c_int,
+                            18383263831861166299 => return 0i32,
                             5768530447596251282 => {}
                             _ => {}
                         }
-                        return 1 as libc::c_int;
+                        return 1i32;
                     }
                     3 => {
                         current_block = 5768530447596251282;
                         match current_block {
                             7328775138574252198 => {
-                                if (*md).choice > count - 6 as libc::c_int {
-                                    (*md).choice = count - 1 as libc::c_int
+                                if (*md).choice > count - 6i32 {
+                                    (*md).choice = count - 1i32
                                 } else {
-                                    (*md).choice += 5 as libc::c_int
+                                    (*md).choice += 5i32
                                 }
-                                while (*md).choice != -(1 as libc::c_int)
+                                while (*md).choice != -(1i32)
                                     && (name.is_null() || *name as libc::c_int == '-' as i32)
                                 {
                                     (*md).choice -= 1
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000u64;
                                 current_block = 18383263831861166299;
                             }
                             7272745134570625308 => {
-                                if (*md).choice > 5 as libc::c_int {
-                                    (*md).choice -= 5 as libc::c_int
+                                if (*md).choice > 5i32 {
+                                    (*md).choice -= 5i32
                                 } else {
-                                    (*md).choice = 0 as libc::c_int
+                                    (*md).choice = 0i32
                                 }
                                 while (*md).choice != count
                                     && (name.is_null() || *name as libc::c_int == '-' as i32)
@@ -2332,37 +2284,35 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                                     (*md).choice += 1
                                 }
                                 if (*md).choice == count {
-                                    (*md).choice = -(1 as libc::c_int)
+                                    (*md).choice = -(1i32)
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000u64;
                                 current_block = 18383263831861166299;
                             }
                             2215219764755711832 => {
-                                if !(*md).flags & 0x2 as libc::c_int != 0 {
+                                if !(*md).flags & 0x2i32 != 0 {
                                     current_block = 18383263831861166299;
                                 } else {
-                                    if (*md).choice == count - 1 as libc::c_int {
-                                        return 1 as libc::c_int;
+                                    if (*md).choice == count - 1i32 {
+                                        return 1i32;
                                     }
                                     current_block = 10827572169919271282;
                                 }
                             }
                             4625365797902618311 => {
-                                if !(*md).flags & 0x2 as libc::c_int != 0 {
+                                if !(*md).flags & 0x2i32 != 0 {
                                     current_block = 18383263831861166299;
                                 } else {
-                                    return 1 as libc::c_int;
+                                    return 1i32;
                                 }
                             }
                             11976616061117098778 => {
-                                if old == -(1 as libc::c_int) {
-                                    old = 0 as libc::c_int
+                                if old == -(1i32) {
+                                    old = 0i32
                                 }
                                 loop {
-                                    if (*md).choice == -(1 as libc::c_int)
-                                        || (*md).choice == 0 as libc::c_int
-                                    {
-                                        (*md).choice = count - 1 as libc::c_int
+                                    if (*md).choice == -(1i32) || (*md).choice == 0i32 {
+                                        (*md).choice = count - 1i32
                                     } else {
                                         (*md).choice -= 1
                                     }
@@ -2373,8 +2323,8 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                                         break;
                                     }
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x2000000u64;
+                                return 0i32;
                             }
                             8312313396388474857 => {
                                 current_block = 5768530447596251282;
@@ -2383,14 +2333,12 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                         }
                         match current_block {
                             10827572169919271282 => {
-                                if old == -(1 as libc::c_int) {
-                                    old = 0 as libc::c_int
+                                if old == -(1i32) {
+                                    old = 0i32
                                 }
                                 loop {
-                                    if (*md).choice == -(1 as libc::c_int)
-                                        || (*md).choice == count - 1 as libc::c_int
-                                    {
-                                        (*md).choice = 0 as libc::c_int
+                                    if (*md).choice == -(1i32) || (*md).choice == count - 1i32 {
+                                        (*md).choice = 0i32
                                     } else {
                                         (*md).choice += 1
                                     }
@@ -2401,37 +2349,37 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                                         break;
                                     }
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x2000000u64;
+                                return 0i32;
                             }
-                            18383263831861166299 => return 0 as libc::c_int,
+                            18383263831861166299 => return 0i32,
                             5768530447596251282 => {}
                             _ => {}
                         }
-                        return 1 as libc::c_int;
+                        return 1i32;
                     }
                     7 | 113 => {
                         current_block = 13300134386176516907;
                         match current_block {
                             7328775138574252198 => {
-                                if (*md).choice > count - 6 as libc::c_int {
-                                    (*md).choice = count - 1 as libc::c_int
+                                if (*md).choice > count - 6i32 {
+                                    (*md).choice = count - 1i32
                                 } else {
-                                    (*md).choice += 5 as libc::c_int
+                                    (*md).choice += 5i32
                                 }
-                                while (*md).choice != -(1 as libc::c_int)
+                                while (*md).choice != -(1i32)
                                     && (name.is_null() || *name as libc::c_int == '-' as i32)
                                 {
                                     (*md).choice -= 1
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000u64;
                                 current_block = 18383263831861166299;
                             }
                             7272745134570625308 => {
-                                if (*md).choice > 5 as libc::c_int {
-                                    (*md).choice -= 5 as libc::c_int
+                                if (*md).choice > 5i32 {
+                                    (*md).choice -= 5i32
                                 } else {
-                                    (*md).choice = 0 as libc::c_int
+                                    (*md).choice = 0i32
                                 }
                                 while (*md).choice != count
                                     && (name.is_null() || *name as libc::c_int == '-' as i32)
@@ -2439,37 +2387,35 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                                     (*md).choice += 1
                                 }
                                 if (*md).choice == count {
-                                    (*md).choice = -(1 as libc::c_int)
+                                    (*md).choice = -(1i32)
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000u64;
                                 current_block = 18383263831861166299;
                             }
                             2215219764755711832 => {
-                                if !(*md).flags & 0x2 as libc::c_int != 0 {
+                                if !(*md).flags & 0x2i32 != 0 {
                                     current_block = 18383263831861166299;
                                 } else {
-                                    if (*md).choice == count - 1 as libc::c_int {
-                                        return 1 as libc::c_int;
+                                    if (*md).choice == count - 1i32 {
+                                        return 1i32;
                                     }
                                     current_block = 10827572169919271282;
                                 }
                             }
                             4625365797902618311 => {
-                                if !(*md).flags & 0x2 as libc::c_int != 0 {
+                                if !(*md).flags & 0x2i32 != 0 {
                                     current_block = 18383263831861166299;
                                 } else {
-                                    return 1 as libc::c_int;
+                                    return 1i32;
                                 }
                             }
                             11976616061117098778 => {
-                                if old == -(1 as libc::c_int) {
-                                    old = 0 as libc::c_int
+                                if old == -(1i32) {
+                                    old = 0i32
                                 }
                                 loop {
-                                    if (*md).choice == -(1 as libc::c_int)
-                                        || (*md).choice == 0 as libc::c_int
-                                    {
-                                        (*md).choice = count - 1 as libc::c_int
+                                    if (*md).choice == -(1i32) || (*md).choice == 0i32 {
+                                        (*md).choice = count - 1i32
                                     } else {
                                         (*md).choice -= 1
                                     }
@@ -2480,8 +2426,8 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                                         break;
                                     }
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x2000000u64;
+                                return 0i32;
                             }
                             8312313396388474857 => {
                                 current_block = 5768530447596251282;
@@ -2490,14 +2436,12 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                         }
                         match current_block {
                             10827572169919271282 => {
-                                if old == -(1 as libc::c_int) {
-                                    old = 0 as libc::c_int
+                                if old == -(1i32) {
+                                    old = 0i32
                                 }
                                 loop {
-                                    if (*md).choice == -(1 as libc::c_int)
-                                        || (*md).choice == count - 1 as libc::c_int
-                                    {
-                                        (*md).choice = 0 as libc::c_int
+                                    if (*md).choice == -(1i32) || (*md).choice == count - 1i32 {
+                                        (*md).choice = 0i32
                                     } else {
                                         (*md).choice += 1
                                     }
@@ -2508,37 +2452,37 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                                         break;
                                     }
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x2000000u64;
+                                return 0i32;
                             }
-                            18383263831861166299 => return 0 as libc::c_int,
+                            18383263831861166299 => return 0i32,
                             5768530447596251282 => {}
                             _ => {}
                         }
-                        return 1 as libc::c_int;
+                        return 1i32;
                     }
                     6 | _ => {
                         current_block = 18383263831861166299;
                         match current_block {
                             7328775138574252198 => {
-                                if (*md).choice > count - 6 as libc::c_int {
-                                    (*md).choice = count - 1 as libc::c_int
+                                if (*md).choice > count - 6i32 {
+                                    (*md).choice = count - 1i32
                                 } else {
-                                    (*md).choice += 5 as libc::c_int
+                                    (*md).choice += 5i32
                                 }
-                                while (*md).choice != -(1 as libc::c_int)
+                                while (*md).choice != -(1i32)
                                     && (name.is_null() || *name as libc::c_int == '-' as i32)
                                 {
                                     (*md).choice -= 1
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000u64;
                                 current_block = 18383263831861166299;
                             }
                             7272745134570625308 => {
-                                if (*md).choice > 5 as libc::c_int {
-                                    (*md).choice -= 5 as libc::c_int
+                                if (*md).choice > 5i32 {
+                                    (*md).choice -= 5i32
                                 } else {
-                                    (*md).choice = 0 as libc::c_int
+                                    (*md).choice = 0i32
                                 }
                                 while (*md).choice != count
                                     && (name.is_null() || *name as libc::c_int == '-' as i32)
@@ -2546,37 +2490,35 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                                     (*md).choice += 1
                                 }
                                 if (*md).choice == count {
-                                    (*md).choice = -(1 as libc::c_int)
+                                    (*md).choice = -(1i32)
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+                                (*c).flags |= 0x2000000u64;
                                 current_block = 18383263831861166299;
                             }
                             2215219764755711832 => {
-                                if !(*md).flags & 0x2 as libc::c_int != 0 {
+                                if !(*md).flags & 0x2i32 != 0 {
                                     current_block = 18383263831861166299;
                                 } else {
-                                    if (*md).choice == count - 1 as libc::c_int {
-                                        return 1 as libc::c_int;
+                                    if (*md).choice == count - 1i32 {
+                                        return 1i32;
                                     }
                                     current_block = 10827572169919271282;
                                 }
                             }
                             4625365797902618311 => {
-                                if !(*md).flags & 0x2 as libc::c_int != 0 {
+                                if !(*md).flags & 0x2i32 != 0 {
                                     current_block = 18383263831861166299;
                                 } else {
-                                    return 1 as libc::c_int;
+                                    return 1i32;
                                 }
                             }
                             11976616061117098778 => {
-                                if old == -(1 as libc::c_int) {
-                                    old = 0 as libc::c_int
+                                if old == -(1i32) {
+                                    old = 0i32
                                 }
                                 loop {
-                                    if (*md).choice == -(1 as libc::c_int)
-                                        || (*md).choice == 0 as libc::c_int
-                                    {
-                                        (*md).choice = count - 1 as libc::c_int
+                                    if (*md).choice == -(1i32) || (*md).choice == 0i32 {
+                                        (*md).choice = count - 1i32
                                     } else {
                                         (*md).choice -= 1
                                     }
@@ -2587,8 +2529,8 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                                         break;
                                     }
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x2000000u64;
+                                return 0i32;
                             }
                             8312313396388474857 => {
                                 current_block = 5768530447596251282;
@@ -2597,14 +2539,12 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                         }
                         match current_block {
                             10827572169919271282 => {
-                                if old == -(1 as libc::c_int) {
-                                    old = 0 as libc::c_int
+                                if old == -(1i32) {
+                                    old = 0i32
                                 }
                                 loop {
-                                    if (*md).choice == -(1 as libc::c_int)
-                                        || (*md).choice == count - 1 as libc::c_int
-                                    {
-                                        (*md).choice = 0 as libc::c_int
+                                    if (*md).choice == -(1i32) || (*md).choice == count - 1i32 {
+                                        (*md).choice = 0i32
                                     } else {
                                         (*md).choice += 1
                                     }
@@ -2615,28 +2555,28 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
                                         break;
                                     }
                                 }
-                                (*c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x2000000u64;
+                                return 0i32;
                             }
-                            18383263831861166299 => return 0 as libc::c_int,
+                            18383263831861166299 => return 0i32,
                             5768530447596251282 => {}
                             _ => {}
                         }
-                        return 1 as libc::c_int;
+                        return 1i32;
                     }
                 }
             }
         }
     }
-    if (*md).choice == -(1 as libc::c_int) {
-        return 1 as libc::c_int;
+    if (*md).choice == -(1i32) {
+        return 1i32;
     }
     item = &mut *(*menu).items.offset((*md).choice as isize) as *mut menu_item;
     if (*item).name.is_null() || *(*item).name as libc::c_int == '-' as i32 {
-        if (*md).flags & 0x4 as libc::c_int != 0 {
-            return 0 as libc::c_int;
+        if (*md).flags & 0x4i32 != 0 {
+            return 0i32;
         }
-        return 1 as libc::c_int;
+        return 1i32;
     }
     if (*md).cb.is_some() {
         (*md).cb.expect("non-null function pointer")(
@@ -2646,14 +2586,14 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
             (*md).data,
         );
         (*md).cb = None;
-        return 1 as libc::c_int;
+        return 1i32;
     }
     if !(*md).item.is_null() {
         event = cmdq_get_event((*md).item)
     } else {
         event = 0 as *mut key_event
     }
-    state = cmdq_new_state(&mut (*md).fs, event, 0 as libc::c_int);
+    state = cmdq_new_state(&mut (*md).fs, event, 0i32);
     status = cmd_parse_and_append(
         (*item).command,
         0 as *mut cmd_parse_input,
@@ -2661,12 +2601,12 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
         state,
         &mut error,
     );
-    if status as libc::c_uint == CMD_PARSE_ERROR as libc::c_int as libc::c_uint {
+    if status == CMD_PARSE_ERROR {
         cmdq_append(c, cmdq_get_error(error));
         free(error as *mut libc::c_void);
     }
     cmdq_free_state(state);
-    return 1 as libc::c_int;
+    return 1i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn menu_display(
@@ -2683,37 +2623,18 @@ pub unsafe extern "C" fn menu_display(
     let mut md: *mut menu_data = 0 as *mut menu_data;
     let mut i: u_int = 0;
     let mut name: *const libc::c_char = 0 as *const libc::c_char;
-    if (*c).tty.sx < (*menu).width.wrapping_add(4 as libc::c_int as libc::c_uint)
-        || (*c).tty.sy < (*menu).count.wrapping_add(2 as libc::c_int as libc::c_uint)
+    if (*c).tty.sx < (*menu).width.wrapping_add(4u32)
+        || (*c).tty.sy < (*menu).count.wrapping_add(2u32)
     {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
-    if px
-        .wrapping_add((*menu).width)
-        .wrapping_add(4 as libc::c_int as libc::c_uint)
-        > (*c).tty.sx
-    {
-        px = (*c)
-            .tty
-            .sx
-            .wrapping_sub((*menu).width)
-            .wrapping_sub(4 as libc::c_int as libc::c_uint)
+    if px.wrapping_add((*menu).width).wrapping_add(4u32) > (*c).tty.sx {
+        px = (*c).tty.sx.wrapping_sub((*menu).width).wrapping_sub(4u32)
     }
-    if py
-        .wrapping_add((*menu).count)
-        .wrapping_add(2 as libc::c_int as libc::c_uint)
-        > (*c).tty.sy
-    {
-        py = (*c)
-            .tty
-            .sy
-            .wrapping_sub((*menu).count)
-            .wrapping_sub(2 as libc::c_int as libc::c_uint)
+    if py.wrapping_add((*menu).count).wrapping_add(2u32) > (*c).tty.sy {
+        py = (*c).tty.sy.wrapping_sub((*menu).count).wrapping_sub(2u32)
     }
-    md = xcalloc(
-        1 as libc::c_int as size_t,
-        ::std::mem::size_of::<menu_data>() as libc::c_ulong,
-    ) as *mut menu_data;
+    md = xcalloc(1u64, ::std::mem::size_of::<menu_data>() as libc::c_ulong) as *mut menu_data;
     (*md).item = item;
     (*md).flags = flags;
     if !fs.is_null() {
@@ -2721,19 +2642,19 @@ pub unsafe extern "C" fn menu_display(
     }
     screen_init(
         &mut (*md).s,
-        (*menu).width.wrapping_add(4 as libc::c_int as libc::c_uint),
-        (*menu).count.wrapping_add(2 as libc::c_int as libc::c_uint),
-        0 as libc::c_int as u_int,
+        (*menu).width.wrapping_add(4u32),
+        (*menu).count.wrapping_add(2u32),
+        0u32,
     );
-    if !(*md).flags & 0x1 as libc::c_int != 0 {
-        (*md).s.mode |= 0x1000 as libc::c_int
+    if !(*md).flags & 0x1i32 != 0 {
+        (*md).s.mode |= 0x1000i32
     }
-    (*md).s.mode &= !(0x1 as libc::c_int);
+    (*md).s.mode &= !(0x1i32);
     (*md).px = px;
     (*md).py = py;
     (*md).menu = menu;
-    if (*md).flags & 0x1 as libc::c_int != 0 {
-        i = 0 as libc::c_int as u_int;
+    if (*md).flags & 0x1i32 != 0 {
+        i = 0u32;
         while i < (*menu).count {
             name = (*(*menu).items.offset(i as isize)).name;
             if !name.is_null() && *name as libc::c_int != '-' as i32 {
@@ -2744,16 +2665,16 @@ pub unsafe extern "C" fn menu_display(
         if i != (*menu).count {
             (*md).choice = i as libc::c_int
         } else {
-            (*md).choice = -(1 as libc::c_int)
+            (*md).choice = -(1i32)
         }
     } else {
-        (*md).choice = -(1 as libc::c_int)
+        (*md).choice = -(1i32)
     }
     (*md).cb = cb;
     (*md).data = data;
     server_client_set_overlay(
         c,
-        0 as libc::c_int as u_int,
+        0u32,
         None,
         Some(
             menu_mode_cb
@@ -2768,5 +2689,5 @@ pub unsafe extern "C" fn menu_display(
         Some(menu_free_cb as unsafe extern "C" fn(_: *mut client) -> ()),
         md as *mut libc::c_void,
     );
-    return 0 as libc::c_int;
+    return 0i32;
 }

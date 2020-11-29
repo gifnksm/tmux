@@ -1098,7 +1098,7 @@ pub struct cmd_confirm_before_data {
 }
 #[inline]
 unsafe extern "C" fn tolower(mut __c: libc::c_int) -> libc::c_int {
-    return if __c >= -(128 as libc::c_int) && __c < 256 as libc::c_int {
+    return if __c >= -(128i32) && __c < 256i32 {
         *(*__ctype_tolower_loc()).offset(__c as isize)
     } else {
         __c
@@ -1113,8 +1113,8 @@ pub static mut cmd_confirm_before_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"p:t:\x00" as *const u8 as *const libc::c_char,
-                    lower: 1 as libc::c_int,
-                    upper: 1 as libc::c_int,
+                    lower: 1i32,
+                    upper: 1i32,
                 };
                 init
             },
@@ -1130,7 +1130,7 @@ pub static mut cmd_confirm_before_entry: cmd_entry = {
                 type_0: CMD_FIND_PANE,
                 flags: 0,
             },
-            flags: 0x10 as libc::c_int,
+            flags: 0x10i32,
             exec: Some(
                 cmd_confirm_before_exec
                     as unsafe extern "C" fn(
@@ -1174,7 +1174,7 @@ unsafe extern "C" fn cmd_confirm_before_exec(
     let mut new_prompt: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut ptr: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut prompt: *const libc::c_char = 0 as *const libc::c_char;
-    prompt = args_get(args, 'p' as i32 as u_char);
+    prompt = args_get(args, 'p' as u_char);
     if !prompt.is_null() {
         xasprintf(
             &mut new_prompt as *mut *mut libc::c_char,
@@ -1182,7 +1182,7 @@ unsafe extern "C" fn cmd_confirm_before_exec(
             prompt,
         );
     } else {
-        copy = xstrdup(*(*args).argv.offset(0 as libc::c_int as isize));
+        copy = xstrdup(*(*args).argv.offset(0isize));
         ptr = copy;
         cmd = strsep(&mut ptr, b" \t\x00" as *const u8 as *const libc::c_char);
         xasprintf(
@@ -1194,7 +1194,7 @@ unsafe extern "C" fn cmd_confirm_before_exec(
     }
     cdata = xmalloc(::std::mem::size_of::<cmd_confirm_before_data>() as libc::c_ulong)
         as *mut cmd_confirm_before_data;
-    (*cdata).cmd = xstrdup(*(*args).argv.offset(0 as libc::c_int as isize));
+    (*cdata).cmd = xstrdup(*(*args).argv.offset(0isize));
     status_prompt_set(
         tc,
         target,
@@ -1211,7 +1211,7 @@ unsafe extern "C" fn cmd_confirm_before_exec(
         ),
         Some(cmd_confirm_before_free as unsafe extern "C" fn(_: *mut libc::c_void) -> ()),
         cdata as *mut libc::c_void,
-        0x1 as libc::c_int,
+        0x1i32,
     );
     free(new_prompt as *mut libc::c_void);
     return CMD_RETURN_NORMAL;
@@ -1225,35 +1225,34 @@ unsafe extern "C" fn cmd_confirm_before_callback(
     let mut cdata: *mut cmd_confirm_before_data = data as *mut cmd_confirm_before_data;
     let mut error: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut status: cmd_parse_status = CMD_PARSE_EMPTY;
-    if (*c).flags & 0x200 as libc::c_int as libc::c_ulong != 0 {
-        return 0 as libc::c_int;
+    if (*c).flags & 0x200u64 != 0 {
+        return 0i32;
     }
     if s.is_null() || *s as libc::c_int == '\u{0}' as i32 {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     if ({
         let mut __res: libc::c_int = 0;
-        if ::std::mem::size_of::<u_char>() as libc::c_ulong > 1 as libc::c_int as libc::c_ulong {
+        if ::std::mem::size_of::<u_char>() as libc::c_ulong > 1u64 {
             if 0 != 0 {
-                let mut __c: libc::c_int =
-                    *s.offset(0 as libc::c_int as isize) as u_char as libc::c_int;
-                __res = if __c < -(128 as libc::c_int) || __c > 255 as libc::c_int {
+                let mut __c: libc::c_int = *s.offset(0isize) as u_char as libc::c_int;
+                __res = if __c < -(128i32) || __c > 255i32 {
                     __c
                 } else {
                     *(*__ctype_tolower_loc()).offset(__c as isize)
                 }
             } else {
-                __res = tolower(*s.offset(0 as libc::c_int as isize) as u_char as libc::c_int)
+                __res = tolower(*s.offset(0isize) as u_char as libc::c_int)
             }
         } else {
             __res = *(*__ctype_tolower_loc())
-                .offset(*s.offset(0 as libc::c_int as isize) as u_char as libc::c_int as isize)
+                .offset(*s.offset(0isize) as u_char as libc::c_int as isize)
         }
         __res
     }) != 'y' as i32
-        || *s.offset(1 as libc::c_int as isize) as libc::c_int != '\u{0}' as i32
+        || *s.offset(1isize) as libc::c_int != '\u{0}' as i32
     {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     status = cmd_parse_and_append(
         (*cdata).cmd,
@@ -1262,11 +1261,11 @@ unsafe extern "C" fn cmd_confirm_before_callback(
         0 as *mut crate::cmd_queue::cmdq_state,
         &mut error,
     );
-    if status as libc::c_uint == CMD_PARSE_ERROR as libc::c_int as libc::c_uint {
+    if status == CMD_PARSE_ERROR {
         cmdq_append(c, cmdq_get_error(error));
         free(error as *mut libc::c_void);
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 unsafe extern "C" fn cmd_confirm_before_free(mut data: *mut libc::c_void) {
     let mut cdata: *mut cmd_confirm_before_data = data as *mut cmd_confirm_before_data;

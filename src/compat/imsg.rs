@@ -194,19 +194,19 @@ unsafe extern "C" fn __cmsg_nxthdr(
         ((*__cmsg)
             .cmsg_len
             .wrapping_add(::std::mem::size_of::<size_t>() as libc::c_ulong)
-            .wrapping_sub(1 as libc::c_int as libc::c_ulong)
-            & !(::std::mem::size_of::<size_t>() as libc::c_ulong)
-                .wrapping_sub(1 as libc::c_int as libc::c_ulong)) as isize,
+            .wrapping_sub(1u64)
+            & !(::std::mem::size_of::<size_t>() as libc::c_ulong).wrapping_sub(1u64))
+            as isize,
     ) as *mut cmsghdr;
-    if __cmsg.offset(1 as libc::c_int as isize) as *mut libc::c_uchar
+    if __cmsg.offset(1isize) as *mut libc::c_uchar
         > ((*__mhdr).msg_control as *mut libc::c_uchar).offset((*__mhdr).msg_controllen as isize)
         || (__cmsg as *mut libc::c_uchar).offset(
             ((*__cmsg)
                 .cmsg_len
                 .wrapping_add(::std::mem::size_of::<size_t>() as libc::c_ulong)
-                .wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                & !(::std::mem::size_of::<size_t>() as libc::c_ulong)
-                    .wrapping_sub(1 as libc::c_int as libc::c_ulong)) as isize,
+                .wrapping_sub(1u64)
+                & !(::std::mem::size_of::<size_t>() as libc::c_ulong).wrapping_sub(1u64))
+                as isize,
         ) > ((*__mhdr).msg_control as *mut libc::c_uchar)
             .offset((*__mhdr).msg_controllen as isize)
     {
@@ -231,13 +231,13 @@ unsafe extern "C" fn __cmsg_nxthdr(
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 #[no_mangle]
-pub static mut imsg_fd_overhead: libc::c_int = 0 as libc::c_int;
+pub static mut imsg_fd_overhead: libc::c_int = 0i32;
 #[no_mangle]
 pub unsafe extern "C" fn imsg_init(mut ibuf: *mut imsgbuf, mut fd: libc::c_int) {
     msgbuf_init(&mut (*ibuf).w);
     memset(
         &mut (*ibuf).r as *mut ibuf_read as *mut libc::c_void,
-        0 as libc::c_int,
+        0i32,
         ::std::mem::size_of::<ibuf_read>() as libc::c_ulong,
     );
     (*ibuf).fd = fd;
@@ -270,87 +270,77 @@ pub unsafe extern "C" fn imsg_read(mut ibuf: *mut imsgbuf) -> ssize_t {
         iov_base: 0 as *mut libc::c_void,
         iov_len: 0,
     };
-    let mut n: ssize_t = -(1 as libc::c_int) as ssize_t;
+    let mut n: ssize_t = -1i64;
     let mut fd: libc::c_int = 0;
     let mut ifd: *mut imsg_fd = 0 as *mut imsg_fd;
     memset(
         &mut msg as *mut msghdr as *mut libc::c_void,
-        0 as libc::c_int,
+        0i32,
         ::std::mem::size_of::<msghdr>() as libc::c_ulong,
     );
     memset(
         &mut cmsgbuf as *mut C2RustUnnamed_4 as *mut libc::c_void,
-        0 as libc::c_int,
+        0i32,
         ::std::mem::size_of::<C2RustUnnamed_4>() as libc::c_ulong,
     );
     iov.iov_base = (*ibuf).r.buf.as_mut_ptr().offset((*ibuf).r.wpos as isize) as *mut libc::c_void;
     iov.iov_len = (::std::mem::size_of::<[libc::c_uchar; 65535]>() as libc::c_ulong)
         .wrapping_sub((*ibuf).r.wpos);
     msg.msg_iov = &mut iov;
-    msg.msg_iovlen = 1 as libc::c_int as size_t;
+    msg.msg_iovlen = 1u64;
     msg.msg_control = &mut cmsgbuf.buf as *mut [libc::c_char; 24] as *mut libc::c_void;
     msg.msg_controllen = ::std::mem::size_of::<[libc::c_char; 24]>() as libc::c_ulong;
-    ifd = calloc(
-        1 as libc::c_int as libc::c_ulong,
-        ::std::mem::size_of::<imsg_fd>() as libc::c_ulong,
-    ) as *mut imsg_fd;
+    ifd = calloc(1u64, ::std::mem::size_of::<imsg_fd>() as libc::c_ulong) as *mut imsg_fd;
     if ifd.is_null() {
-        return -(1 as libc::c_int) as ssize_t;
+        return -1i64;
     }
     loop {
         if getdtablecount()
             + imsg_fd_overhead
             + ((::std::mem::size_of::<libc::c_int>() as libc::c_ulong)
                 .wrapping_add(::std::mem::size_of::<size_t>() as libc::c_ulong)
-                .wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                & !(::std::mem::size_of::<size_t>() as libc::c_ulong)
-                    .wrapping_sub(1 as libc::c_int as libc::c_ulong))
+                .wrapping_sub(1u64)
+                & !(::std::mem::size_of::<size_t>() as libc::c_ulong).wrapping_sub(1u64))
             .wrapping_add(
                 (::std::mem::size_of::<cmsghdr>() as libc::c_ulong)
                     .wrapping_add(::std::mem::size_of::<size_t>() as libc::c_ulong)
-                    .wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                    & !(::std::mem::size_of::<size_t>() as libc::c_ulong)
-                        .wrapping_sub(1 as libc::c_int as libc::c_ulong),
+                    .wrapping_sub(1u64)
+                    & !(::std::mem::size_of::<size_t>() as libc::c_ulong).wrapping_sub(1u64),
             )
             .wrapping_sub(
-                ((0 as libc::c_int as libc::c_ulong)
+                ((0u64)
                     .wrapping_add(::std::mem::size_of::<size_t>() as libc::c_ulong)
-                    .wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                    & !(::std::mem::size_of::<size_t>() as libc::c_ulong)
-                        .wrapping_sub(1 as libc::c_int as libc::c_ulong))
+                    .wrapping_sub(1u64)
+                    & !(::std::mem::size_of::<size_t>() as libc::c_ulong).wrapping_sub(1u64))
                 .wrapping_add(
                     (::std::mem::size_of::<cmsghdr>() as libc::c_ulong)
                         .wrapping_add(::std::mem::size_of::<size_t>() as libc::c_ulong)
-                        .wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                        & !(::std::mem::size_of::<size_t>() as libc::c_ulong)
-                            .wrapping_sub(1 as libc::c_int as libc::c_ulong),
+                        .wrapping_sub(1u64)
+                        & !(::std::mem::size_of::<size_t>() as libc::c_ulong).wrapping_sub(1u64),
                 ),
             )
             .wrapping_div(::std::mem::size_of::<libc::c_int>() as libc::c_ulong)
                 as libc::c_int
             >= getdtablesize()
         {
-            *__errno_location() = 11 as libc::c_int;
+            *__errno_location() = 11i32;
             free(ifd as *mut libc::c_void);
-            return -(1 as libc::c_int) as ssize_t;
+            return -1i64;
         }
-        n = recvmsg((*ibuf).fd, &mut msg, 0 as libc::c_int);
-        if n == -(1 as libc::c_int) as libc::c_long {
-            if !(*__errno_location() == 4 as libc::c_int) {
+        n = recvmsg((*ibuf).fd, &mut msg, 0i32);
+        if n == -1i64 {
+            if !(*__errno_location() == 4i32) {
                 break;
             }
         } else {
-            (*ibuf).r.wpos = ((*ibuf).r.wpos as libc::c_ulong).wrapping_add(n as libc::c_ulong)
-                as size_t as size_t;
+            (*ibuf).r.wpos = ((*ibuf).r.wpos).wrapping_add(n as libc::c_ulong);
             cmsg = if msg.msg_controllen >= ::std::mem::size_of::<cmsghdr>() as libc::c_ulong {
                 msg.msg_control as *mut cmsghdr
             } else {
                 0 as *mut cmsghdr
             };
             while !cmsg.is_null() {
-                if (*cmsg).cmsg_level == 1 as libc::c_int
-                    && (*cmsg).cmsg_type == SCM_RIGHTS as libc::c_int
-                {
+                if (*cmsg).cmsg_level == 1i32 && (*cmsg).cmsg_type == SCM_RIGHTS as libc::c_int {
                     let mut i: libc::c_int = 0;
                     let mut j: libc::c_int = 0;
                     /*
@@ -361,10 +351,10 @@ pub unsafe extern "C" fn imsg_read(mut ibuf: *mut imsgbuf) -> ssize_t {
                     j = ((cmsg as *mut libc::c_char)
                         .offset((*cmsg).cmsg_len as isize)
                         .wrapping_offset_from((*cmsg).__cmsg_data.as_mut_ptr() as *mut libc::c_char)
-                        as libc::c_long as libc::c_ulong)
+                        as libc::c_ulong)
                         .wrapping_div(::std::mem::size_of::<libc::c_int>() as libc::c_ulong)
                         as libc::c_int;
-                    i = 0 as libc::c_int;
+                    i = 0i32;
                     while i < j {
                         fd = *((*cmsg).__cmsg_data.as_mut_ptr() as *mut libc::c_int)
                             .offset(i as isize);
@@ -397,7 +387,7 @@ pub unsafe extern "C" fn imsg_get(mut ibuf: *mut imsgbuf, mut imsg: *mut imsg) -
     let mut datalen: size_t = 0;
     av = (*ibuf).r.wpos;
     if ::std::mem::size_of::<imsg_hdr>() as libc::c_ulong > av {
-        return 0 as libc::c_int as ssize_t;
+        return 0i64;
     }
     memcpy(
         &mut (*imsg).hdr as *mut imsg_hdr as *mut libc::c_void,
@@ -405,13 +395,13 @@ pub unsafe extern "C" fn imsg_get(mut ibuf: *mut imsgbuf, mut imsg: *mut imsg) -
         ::std::mem::size_of::<imsg_hdr>() as libc::c_ulong,
     );
     if ((*imsg).hdr.len as libc::c_ulong) < ::std::mem::size_of::<imsg_hdr>() as libc::c_ulong
-        || (*imsg).hdr.len as libc::c_int > 16384 as libc::c_int
+        || (*imsg).hdr.len as libc::c_int > 16384i32
     {
-        *__errno_location() = 34 as libc::c_int;
-        return -(1 as libc::c_int) as ssize_t;
+        *__errno_location() = 34i32;
+        return -1i64;
     }
     if (*imsg).hdr.len as libc::c_ulong > av {
-        return 0 as libc::c_int as ssize_t;
+        return 0i64;
     }
     datalen = ((*imsg).hdr.len as libc::c_ulong)
         .wrapping_sub(::std::mem::size_of::<imsg_hdr>() as libc::c_ulong);
@@ -419,19 +409,19 @@ pub unsafe extern "C" fn imsg_get(mut ibuf: *mut imsgbuf, mut imsg: *mut imsg) -
         .r
         .buf
         .as_mut_ptr()
-        .offset(::std::mem::size_of::<imsg_hdr>() as libc::c_ulong as isize);
-    if datalen == 0 as libc::c_int as libc::c_ulong {
+        .offset(::std::mem::size_of::<imsg_hdr>() as isize);
+    if datalen == 0u64 {
         (*imsg).data = 0 as *mut libc::c_void
     } else {
         (*imsg).data = malloc(datalen);
         if (*imsg).data.is_null() {
-            return -(1 as libc::c_int) as ssize_t;
+            return -1i64;
         }
     }
-    if (*imsg).hdr.flags as libc::c_int & 1 as libc::c_int != 0 {
+    if (*imsg).hdr.flags as libc::c_int & 1i32 != 0 {
         (*imsg).fd = imsg_get_fd(ibuf)
     } else {
-        (*imsg).fd = -(1 as libc::c_int)
+        (*imsg).fd = -(1i32)
     }
     memcpy((*imsg).data, (*ibuf).r.rptr as *const libc::c_void, datalen);
     if ((*imsg).hdr.len as libc::c_ulong) < av {
@@ -447,7 +437,7 @@ pub unsafe extern "C" fn imsg_get(mut ibuf: *mut imsgbuf, mut imsg: *mut imsg) -
         );
         (*ibuf).r.wpos = left
     } else {
-        (*ibuf).r.wpos = 0 as libc::c_int as size_t
+        (*ibuf).r.wpos = 0u64
     }
     return datalen.wrapping_add(::std::mem::size_of::<imsg_hdr>() as libc::c_ulong) as ssize_t;
 }
@@ -464,14 +454,14 @@ pub unsafe extern "C" fn imsg_compose(
     let mut wbuf: *mut ibuf = 0 as *mut ibuf;
     wbuf = imsg_create(ibuf, type_0, peerid, pid, datalen);
     if wbuf.is_null() {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
-    if imsg_add(wbuf, data, datalen) == -(1 as libc::c_int) {
-        return -(1 as libc::c_int);
+    if imsg_add(wbuf, data, datalen) == -(1i32) {
+        return -(1i32);
     }
     (*wbuf).fd = fd;
     imsg_close(ibuf, wbuf);
-    return 1 as libc::c_int;
+    return 1i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn imsg_composev(
@@ -485,32 +475,32 @@ pub unsafe extern "C" fn imsg_composev(
 ) -> libc::c_int {
     let mut wbuf: *mut ibuf = 0 as *mut ibuf;
     let mut i: libc::c_int = 0;
-    let mut datalen: libc::c_int = 0 as libc::c_int;
-    i = 0 as libc::c_int;
+    let mut datalen: libc::c_int = 0i32;
+    i = 0i32;
     while i < iovcnt {
         datalen = (datalen as libc::c_ulong).wrapping_add((*iov.offset(i as isize)).iov_len)
-            as libc::c_int as libc::c_int;
+            as libc::c_int;
         i += 1
     }
     wbuf = imsg_create(ibuf, type_0, peerid, pid, datalen as uint16_t);
     if wbuf.is_null() {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
-    i = 0 as libc::c_int;
+    i = 0i32;
     while i < iovcnt {
         if imsg_add(
             wbuf,
             (*iov.offset(i as isize)).iov_base,
             (*iov.offset(i as isize)).iov_len as uint16_t,
-        ) == -(1 as libc::c_int)
+        ) == -(1i32)
         {
-            return -(1 as libc::c_int);
+            return -(1i32);
         }
         i += 1
     }
     (*wbuf).fd = fd;
     imsg_close(ibuf, wbuf);
-    return 1 as libc::c_int;
+    return 1i32;
 }
 /* ARGSUSED */
 #[no_mangle]
@@ -530,28 +520,27 @@ pub unsafe extern "C" fn imsg_create(
         pid: 0,
     };
     datalen = (datalen as libc::c_ulong)
-        .wrapping_add(::std::mem::size_of::<imsg_hdr>() as libc::c_ulong) as uint16_t
-        as uint16_t;
-    if datalen as libc::c_int > 16384 as libc::c_int {
-        *__errno_location() = 34 as libc::c_int;
+        .wrapping_add(::std::mem::size_of::<imsg_hdr>() as libc::c_ulong) as uint16_t;
+    if datalen as libc::c_int > 16384i32 {
+        *__errno_location() = 34i32;
         return 0 as *mut ibuf;
     }
     hdr.type_0 = type_0;
-    hdr.flags = 0 as libc::c_int as uint16_t;
+    hdr.flags = 0u16;
     hdr.peerid = peerid;
     hdr.pid = pid as uint32_t;
-    if hdr.pid == 0 as libc::c_int as libc::c_uint {
+    if hdr.pid == 0u32 {
         hdr.pid = (*ibuf).pid as uint32_t
     }
-    wbuf = ibuf_dynamic(datalen as size_t, 16384 as libc::c_int as size_t);
+    wbuf = ibuf_dynamic(datalen as size_t, 16384u64);
     if wbuf.is_null() {
         return 0 as *mut ibuf;
     }
     if imsg_add(
         wbuf,
         &mut hdr as *mut imsg_hdr as *const libc::c_void,
-        ::std::mem::size_of::<imsg_hdr>() as libc::c_ulong as uint16_t,
-    ) == -(1 as libc::c_int)
+        ::std::mem::size_of::<imsg_hdr>() as uint16_t,
+    ) == -(1i32)
     {
         return 0 as *mut ibuf;
     }
@@ -564,9 +553,9 @@ pub unsafe extern "C" fn imsg_add(
     mut datalen: uint16_t,
 ) -> libc::c_int {
     if datalen != 0 {
-        if ibuf_add(msg, data, datalen as size_t) == -(1 as libc::c_int) {
+        if ibuf_add(msg, data, datalen as size_t) == -(1i32) {
             ibuf_free(msg);
-            return -(1 as libc::c_int);
+            return -(1i32);
         }
     }
     return datalen as libc::c_int;
@@ -575,9 +564,9 @@ pub unsafe extern "C" fn imsg_add(
 pub unsafe extern "C" fn imsg_close(mut ibuf: *mut imsgbuf, mut msg: *mut ibuf) {
     let mut hdr: *mut imsg_hdr = 0 as *mut imsg_hdr;
     hdr = (*msg).buf as *mut imsg_hdr;
-    (*hdr).flags = ((*hdr).flags as libc::c_int & !(1 as libc::c_int)) as uint16_t;
-    if (*msg).fd != -(1 as libc::c_int) {
-        (*hdr).flags = ((*hdr).flags as libc::c_int | 1 as libc::c_int) as uint16_t
+    (*hdr).flags = ((*hdr).flags as libc::c_int & !(1i32)) as uint16_t;
+    if (*msg).fd != -(1i32) {
+        (*hdr).flags = ((*hdr).flags as libc::c_int | 1i32) as uint16_t
     }
     (*hdr).len = (*msg).wpos as uint16_t;
     ibuf_close(&mut (*ibuf).w, msg);
@@ -595,7 +584,7 @@ unsafe extern "C" fn imsg_get_fd(mut ibuf: *mut imsgbuf) -> libc::c_int {
     let mut ifd: *mut imsg_fd = 0 as *mut imsg_fd;
     ifd = (*ibuf).fds.tqh_first;
     if ifd.is_null() {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     fd = (*ifd).fd;
     if !(*ifd).entry.tqe_next.is_null() {
@@ -610,11 +599,11 @@ unsafe extern "C" fn imsg_get_fd(mut ibuf: *mut imsgbuf) -> libc::c_int {
 #[no_mangle]
 pub unsafe extern "C" fn imsg_flush(mut ibuf: *mut imsgbuf) -> libc::c_int {
     while (*ibuf).w.queued != 0 {
-        if msgbuf_write(&mut (*ibuf).w) <= 0 as libc::c_int {
-            return -(1 as libc::c_int);
+        if msgbuf_write(&mut (*ibuf).w) <= 0i32 {
+            return -(1i32);
         }
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn imsg_clear(mut ibuf: *mut imsgbuf) {
@@ -622,7 +611,7 @@ pub unsafe extern "C" fn imsg_clear(mut ibuf: *mut imsgbuf) {
     msgbuf_clear(&mut (*ibuf).w);
     loop {
         fd = imsg_get_fd(ibuf);
-        if !(fd != -(1 as libc::c_int)) {
+        if !(fd != -(1i32)) {
             break;
         }
         close(fd);

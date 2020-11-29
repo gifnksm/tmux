@@ -52,7 +52,7 @@ pub struct termios {
  */
 #[no_mangle]
 pub unsafe extern "C" fn getptmfd() -> libc::c_int {
-    return 2147483647 as libc::c_int;
+    return 2147483647i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn fdforkpty(

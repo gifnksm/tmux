@@ -1058,7 +1058,7 @@ static mut tty_feature_title: tty_feature = unsafe {
         let mut init = tty_feature {
             name: b"title\x00" as *const u8 as *const libc::c_char,
             capabilities: tty_feature_title_capabilities.as_ptr() as *mut _,
-            flags: 0 as libc::c_int,
+            flags: 0i32,
         };
         init
     }
@@ -1073,7 +1073,7 @@ static mut tty_feature_clipboard: tty_feature = unsafe {
         let mut init = tty_feature {
             name: b"clipboard\x00" as *const u8 as *const libc::c_char,
             capabilities: tty_feature_clipboard_capabilities.as_ptr() as *mut _,
-            flags: 0 as libc::c_int,
+            flags: 0i32,
         };
         init
     }
@@ -1098,7 +1098,7 @@ static mut tty_feature_rgb: tty_feature = unsafe {
         let mut init = tty_feature {
             name: b"RGB\x00" as *const u8 as *const libc::c_char,
             capabilities: tty_feature_rgb_capabilities.as_ptr() as *mut _,
-            flags: 0x1 as libc::c_int | 0x10 as libc::c_int,
+            flags: 0x1i32 | 0x10i32,
         };
         init
     }
@@ -1117,7 +1117,7 @@ static mut tty_feature_256: tty_feature = unsafe {
         let mut init = tty_feature {
             name: b"256\x00" as *const u8 as *const libc::c_char,
             capabilities: tty_feature_256_capabilities.as_ptr() as *mut _,
-            flags: 0x1 as libc::c_int,
+            flags: 0x1i32,
         };
         init
     }
@@ -1132,7 +1132,7 @@ static mut tty_feature_overline: tty_feature = unsafe {
         let mut init = tty_feature {
             name: b"overline\x00" as *const u8 as *const libc::c_char,
             capabilities: tty_feature_overline_capabilities.as_ptr() as *mut _,
-            flags: 0 as libc::c_int,
+            flags: 0i32,
         };
         init
     }
@@ -1150,7 +1150,7 @@ static mut tty_feature_usstyle: tty_feature = unsafe {
         let mut init = tty_feature {
             name: b"usstyle\x00" as *const u8 as *const libc::c_char,
             capabilities: tty_feature_usstyle_capabilities.as_ptr() as *mut _,
-            flags: 0 as libc::c_int,
+            flags: 0i32,
         };
         init
     }
@@ -1166,7 +1166,7 @@ static mut tty_feature_bpaste: tty_feature = unsafe {
         let mut init = tty_feature {
             name: b"bpaste\x00" as *const u8 as *const libc::c_char,
             capabilities: tty_feature_bpaste_capabilities.as_ptr() as *mut _,
-            flags: 0 as libc::c_int,
+            flags: 0i32,
         };
         init
     }
@@ -1182,7 +1182,7 @@ static mut tty_feature_focus: tty_feature = unsafe {
         let mut init = tty_feature {
             name: b"focus\x00" as *const u8 as *const libc::c_char,
             capabilities: tty_feature_focus_capabilities.as_ptr() as *mut _,
-            flags: 0 as libc::c_int,
+            flags: 0i32,
         };
         init
     }
@@ -1198,7 +1198,7 @@ static mut tty_feature_cstyle: tty_feature = unsafe {
         let mut init = tty_feature {
             name: b"cstyle\x00" as *const u8 as *const libc::c_char,
             capabilities: tty_feature_cstyle_capabilities.as_ptr() as *mut _,
-            flags: 0 as libc::c_int,
+            flags: 0i32,
         };
         init
     }
@@ -1214,7 +1214,7 @@ static mut tty_feature_ccolour: tty_feature = unsafe {
         let mut init = tty_feature {
             name: b"ccolour\x00" as *const u8 as *const libc::c_char,
             capabilities: tty_feature_ccolour_capabilities.as_ptr() as *mut _,
-            flags: 0 as libc::c_int,
+            flags: 0i32,
         };
         init
     }
@@ -1229,7 +1229,7 @@ static mut tty_feature_strikethrough: tty_feature = unsafe {
         let mut init = tty_feature {
             name: b"strikethrough\x00" as *const u8 as *const libc::c_char,
             capabilities: tty_feature_strikethrough_capabilities.as_ptr() as *mut _,
-            flags: 0 as libc::c_int,
+            flags: 0i32,
         };
         init
     }
@@ -1244,7 +1244,7 @@ static mut tty_feature_sync: tty_feature = unsafe {
         let mut init = tty_feature {
             name: b"sync\x00" as *const u8 as *const libc::c_char,
             capabilities: tty_feature_sync_capabilities.as_ptr() as *mut _,
-            flags: 0 as libc::c_int,
+            flags: 0i32,
         };
         init
     }
@@ -1260,7 +1260,7 @@ static mut tty_feature_extkeys: tty_feature = unsafe {
         let mut init = tty_feature {
             name: b"extkeys\x00" as *const u8 as *const libc::c_char,
             capabilities: tty_feature_extkeys_capabilities.as_ptr() as *mut _,
-            flags: 0 as libc::c_int,
+            flags: 0i32,
         };
         init
     }
@@ -1278,7 +1278,7 @@ static mut tty_feature_margins: tty_feature = unsafe {
         let mut init = tty_feature {
             name: b"margins\x00" as *const u8 as *const libc::c_char,
             capabilities: tty_feature_margins_capabilities.as_ptr() as *mut _,
-            flags: 0x4 as libc::c_int,
+            flags: 0x4i32,
         };
         init
     }
@@ -1287,8 +1287,8 @@ static mut tty_feature_margins: tty_feature = unsafe {
 static mut tty_feature_rectfill: tty_feature = {
     let mut init = tty_feature {
         name: b"rectfill\x00" as *const u8 as *const libc::c_char,
-        capabilities: 0 as *const *const libc::c_char as *mut *const libc::c_char,
-        flags: 0x8 as libc::c_int,
+        capabilities: 0 as *mut *const libc::c_char,
+        flags: 0x8i32,
     };
     init
 };
@@ -1334,13 +1334,13 @@ pub unsafe extern "C" fn tty_add_features(
         if next.is_null() {
             break;
         }
-        i = 0 as libc::c_int as u_int;
+        i = 0u32;
         while (i as libc::c_ulong)
             < (::std::mem::size_of::<[*const tty_feature; 15]>() as libc::c_ulong)
                 .wrapping_div(::std::mem::size_of::<*const tty_feature>() as libc::c_ulong)
         {
             tf = tty_features[i as usize];
-            if strcasecmp((*tf).name, next) == 0 as libc::c_int {
+            if strcasecmp((*tf).name, next) == 0i32 {
                 break;
             }
             i = i.wrapping_add(1)
@@ -1354,12 +1354,12 @@ pub unsafe extern "C" fn tty_add_features(
                 next,
             );
             break;
-        } else if !*feat & (1 as libc::c_int) << i != 0 {
+        } else if !*feat & (1i32) << i != 0 {
             log_debug(
                 b"adding terminal feature: %s\x00" as *const u8 as *const libc::c_char,
                 (*tf).name,
             );
-            *feat |= (1 as libc::c_int) << i
+            *feat |= (1i32) << i
         }
     }
     free(copy as *mut libc::c_void);
@@ -1369,13 +1369,13 @@ pub unsafe extern "C" fn tty_get_features(mut feat: libc::c_int) -> *const libc:
     let mut tf: *const tty_feature = 0 as *const tty_feature;
     static mut s: [libc::c_char; 512] = [0; 512];
     let mut i: u_int = 0;
-    *s.as_mut_ptr() = '\u{0}' as i32 as libc::c_char;
-    i = 0 as libc::c_int as u_int;
+    *s.as_mut_ptr() = '\u{0}' as libc::c_char;
+    i = 0u32;
     while (i as libc::c_ulong)
         < (::std::mem::size_of::<[*const tty_feature; 15]>() as libc::c_ulong)
             .wrapping_div(::std::mem::size_of::<*const tty_feature>() as libc::c_ulong)
     {
-        if !(!feat & (1 as libc::c_int) << i != 0) {
+        if !(!feat & (1i32) << i != 0) {
             tf = tty_features[i as usize];
             strlcat(
                 s.as_mut_ptr(),
@@ -1391,8 +1391,7 @@ pub unsafe extern "C" fn tty_get_features(mut feat: libc::c_int) -> *const libc:
         i = i.wrapping_add(1)
     }
     if *s.as_mut_ptr() as libc::c_int != '\u{0}' as i32 {
-        s[strlen(s.as_mut_ptr()).wrapping_sub(1 as libc::c_int as libc::c_ulong) as usize] =
-            '\u{0}' as i32 as libc::c_char
+        s[strlen(s.as_mut_ptr()).wrapping_sub(1u64) as usize] = '\u{0}' as libc::c_char
     }
     return s.as_mut_ptr();
 }
@@ -1404,21 +1403,19 @@ pub unsafe extern "C" fn tty_apply_features(
     let mut tf: *const tty_feature = 0 as *const tty_feature;
     let mut capability: *mut *const libc::c_char = 0 as *mut *const libc::c_char;
     let mut i: u_int = 0;
-    if feat == 0 as libc::c_int {
-        return 0 as libc::c_int;
+    if feat == 0i32 {
+        return 0i32;
     }
     log_debug(
         b"applying terminal features: %s\x00" as *const u8 as *const libc::c_char,
         tty_get_features(feat),
     );
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while (i as libc::c_ulong)
         < (::std::mem::size_of::<[*const tty_feature; 15]>() as libc::c_ulong)
             .wrapping_div(::std::mem::size_of::<*const tty_feature>() as libc::c_ulong)
     {
-        if !((*term).features & (1 as libc::c_int) << i != 0
-            || !feat & (1 as libc::c_int) << i != 0)
-        {
+        if !((*term).features & (1i32) << i != 0 || !feat & (1i32) << i != 0) {
             tf = tty_features[i as usize];
             log_debug(
                 b"applying terminal feature: %s\x00" as *const u8 as *const libc::c_char,
@@ -1431,7 +1428,7 @@ pub unsafe extern "C" fn tty_apply_features(
                         b"adding capability: %s\x00" as *const u8 as *const libc::c_char,
                         *capability,
                     );
-                    tty_term_apply(term, *capability, 1 as libc::c_int);
+                    tty_term_apply(term, *capability, 1i32);
                     capability = capability.offset(1)
                 }
             }
@@ -1440,10 +1437,10 @@ pub unsafe extern "C" fn tty_apply_features(
         i = i.wrapping_add(1)
     }
     if (*term).features | feat == (*term).features {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     (*term).features |= feat;
-    return 1 as libc::c_int;
+    return 1i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn tty_default_features(
@@ -1509,14 +1506,13 @@ pub unsafe extern "C" fn tty_default_features(
         },
     ];
     let mut i: u_int = 0;
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while (i as libc::c_ulong)
         < (::std::mem::size_of::<[C2RustUnnamed_32; 5]>() as libc::c_ulong)
             .wrapping_div(::std::mem::size_of::<C2RustUnnamed_32>() as libc::c_ulong)
     {
-        if !(strcmp(table[i as usize].name, name) != 0 as libc::c_int) {
-            if !(version != 0 as libc::c_int as libc::c_uint && version < table[i as usize].version)
-            {
+        if !(strcmp(table[i as usize].name, name) != 0i32) {
+            if !(version != 0u32 && version < table[i as usize].version) {
                 tty_add_features(
                     feat,
                     table[i as usize].features,

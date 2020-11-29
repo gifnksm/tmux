@@ -1065,8 +1065,8 @@ pub static mut cmd_paste_buffer_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"db:prs:t:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -1079,13 +1079,13 @@ pub static mut cmd_paste_buffer_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_PANE,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0x4 as libc::c_int,
+            flags: 0x4i32,
             exec: Some(
                 cmd_paste_buffer_exec
                     as unsafe extern "C" fn(
@@ -1131,10 +1131,10 @@ unsafe extern "C" fn cmd_paste_buffer_exec(
     let mut line: *const libc::c_char = 0 as *const libc::c_char;
     let mut seplen: size_t = 0;
     let mut bufsize: size_t = 0;
-    let mut bracket: libc::c_int = args_has(args, 'p' as i32 as u_char);
+    let mut bracket: libc::c_int = args_has(args, 'p' as u_char);
     bufname = 0 as *const libc::c_char;
-    if args_has(args, 'b' as i32 as u_char) != 0 {
-        bufname = args_get(args, 'b' as i32 as u_char)
+    if args_has(args, 'b' as u_char) != 0 {
+        bufname = args_get(args, 'b' as u_char)
     }
     if bufname.is_null() {
         pb = paste_get_top(0 as *mut *const libc::c_char)
@@ -1149,21 +1149,21 @@ unsafe extern "C" fn cmd_paste_buffer_exec(
             return CMD_RETURN_ERROR;
         }
     }
-    if !pb.is_null() && !(*wp).flags & 0x40 as libc::c_int != 0 {
-        sepstr = args_get(args, 's' as i32 as u_char);
+    if !pb.is_null() && !(*wp).flags & 0x40i32 != 0 {
+        sepstr = args_get(args, 's' as u_char);
         if sepstr.is_null() {
-            if args_has(args, 'r' as i32 as u_char) != 0 {
+            if args_has(args, 'r' as u_char) != 0 {
                 sepstr = b"\n\x00" as *const u8 as *const libc::c_char
             } else {
                 sepstr = b"\r\x00" as *const u8 as *const libc::c_char
             }
         }
         seplen = strlen(sepstr);
-        if bracket != 0 && (*(*wp).screen).mode & 0x400 as libc::c_int != 0 {
+        if bracket != 0 && (*(*wp).screen).mode & 0x400i32 != 0 {
             bufferevent_write(
                 (*wp).event,
-                b"\x1b[200~\x00" as *const u8 as *const libc::c_char as *const libc::c_void,
-                6 as libc::c_int as size_t,
+                b"\x1b[200~\x00" as *const u8 as *const libc::c_void,
+                6u64,
             );
         }
         bufdata = paste_buffer_data(pb, &mut bufsize);
@@ -1172,7 +1172,7 @@ unsafe extern "C" fn cmd_paste_buffer_exec(
             line = memchr(
                 bufdata as *const libc::c_void,
                 '\n' as i32,
-                bufend.wrapping_offset_from(bufdata) as libc::c_long as libc::c_ulong,
+                bufend.wrapping_offset_from(bufdata) as libc::c_ulong,
             ) as *const libc::c_char;
             if line.is_null() {
                 break;
@@ -1180,27 +1180,27 @@ unsafe extern "C" fn cmd_paste_buffer_exec(
             bufferevent_write(
                 (*wp).event,
                 bufdata as *const libc::c_void,
-                line.wrapping_offset_from(bufdata) as libc::c_long as size_t,
+                line.wrapping_offset_from(bufdata) as size_t,
             );
             bufferevent_write((*wp).event, sepstr as *const libc::c_void, seplen);
-            bufdata = line.offset(1 as libc::c_int as isize)
+            bufdata = line.offset(1isize)
         }
         if bufdata != bufend {
             bufferevent_write(
                 (*wp).event,
                 bufdata as *const libc::c_void,
-                bufend.wrapping_offset_from(bufdata) as libc::c_long as size_t,
+                bufend.wrapping_offset_from(bufdata) as size_t,
             );
         }
-        if bracket != 0 && (*(*wp).screen).mode & 0x400 as libc::c_int != 0 {
+        if bracket != 0 && (*(*wp).screen).mode & 0x400i32 != 0 {
             bufferevent_write(
                 (*wp).event,
-                b"\x1b[201~\x00" as *const u8 as *const libc::c_char as *const libc::c_void,
-                6 as libc::c_int as size_t,
+                b"\x1b[201~\x00" as *const u8 as *const libc::c_void,
+                6u64,
             );
         }
     }
-    if !pb.is_null() && args_has(args, 'd' as i32 as u_char) != 0 {
+    if !pb.is_null() && args_has(args, 'd' as u_char) != 0 {
         paste_free(pb);
     }
     return CMD_RETURN_NORMAL;

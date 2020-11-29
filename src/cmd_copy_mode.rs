@@ -1074,8 +1074,8 @@ pub static mut cmd_copy_mode_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"eHMs:t:uq\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -1083,21 +1083,21 @@ pub static mut cmd_copy_mode_entry: cmd_entry = {
                 as *const libc::c_char,
             source: {
                 let mut init = cmd_entry_flag {
-                    flag: 's' as i32 as libc::c_char,
+                    flag: 's' as libc::c_char,
                     type_0: CMD_FIND_PANE,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_PANE,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0x4 as libc::c_int,
+            flags: 0x4i32,
             exec: Some(
                 cmd_copy_mode_exec
                     as unsafe extern "C" fn(
@@ -1118,8 +1118,8 @@ pub static mut cmd_clock_mode_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"t:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -1131,13 +1131,13 @@ pub static mut cmd_clock_mode_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_PANE,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0x4 as libc::c_int,
+            flags: 0x4i32,
             exec: Some(
                 cmd_copy_mode_exec
                     as unsafe extern "C" fn(
@@ -1180,11 +1180,11 @@ unsafe extern "C" fn cmd_copy_mode_exec(
     let mut s: *mut session = 0 as *mut session;
     let mut wp: *mut window_pane = (*target).wp;
     let mut swp: *mut window_pane = 0 as *mut window_pane;
-    if args_has(args, 'q' as i32 as u_char) != 0 {
+    if args_has(args, 'q' as u_char) != 0 {
         window_pane_reset_mode_all(wp);
         return CMD_RETURN_NORMAL;
     }
-    if args_has(args, 'M' as i32 as u_char) != 0 {
+    if args_has(args, 'M' as u_char) != 0 {
         wp = cmd_mouse_pane(&mut (*event).m, &mut s, 0 as *mut *mut winlink);
         if wp.is_null() {
             return CMD_RETURN_NORMAL;
@@ -1203,18 +1203,18 @@ unsafe extern "C" fn cmd_copy_mode_exec(
         );
         return CMD_RETURN_NORMAL;
     }
-    if args_has(args, 's' as i32 as u_char) != 0 {
+    if args_has(args, 's' as u_char) != 0 {
         swp = (*source).wp
     } else {
         swp = wp
     }
     if window_pane_set_mode(wp, swp, &window_copy_mode, 0 as *mut cmd_find_state, args) == 0 {
-        if args_has(args, 'M' as i32 as u_char) != 0 {
+        if args_has(args, 'M' as u_char) != 0 {
             window_copy_start_drag(c, &mut (*event).m);
         }
     }
-    if args_has(args, 'u' as i32 as u_char) != 0 {
-        window_copy_pageup(wp, 0 as libc::c_int);
+    if args_has(args, 'u' as u_char) != 0 {
+        window_copy_pageup(wp, 0i32);
     }
     return CMD_RETURN_NORMAL;
 }

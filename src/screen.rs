@@ -234,7 +234,7 @@ pub unsafe extern "C" fn screen_init(
     (*s).title = xstrdup(b"\x00" as *const u8 as *const libc::c_char);
     (*s).titles = 0 as *mut screen_titles;
     (*s).path = 0 as *mut libc::c_char;
-    (*s).cstyle = 0 as libc::c_int as u_int;
+    (*s).cstyle = 0u32;
     (*s).ccolour = xstrdup(b"\x00" as *const u8 as *const libc::c_char);
     (*s).tabs = 0 as *mut bitstr_t;
     (*s).sel = 0 as *mut screen_sel;
@@ -244,29 +244,18 @@ pub unsafe extern "C" fn screen_init(
 /* Reinitialise screen. */
 #[no_mangle]
 pub unsafe extern "C" fn screen_reinit(mut s: *mut screen) {
-    (*s).cx = 0 as libc::c_int as u_int;
-    (*s).cy = 0 as libc::c_int as u_int;
-    (*s).rupper = 0 as libc::c_int as u_int;
-    (*s).rlower = (*(*s).grid)
-        .sy
-        .wrapping_sub(1 as libc::c_int as libc::c_uint);
-    (*s).mode = 0x1 as libc::c_int | 0x10 as libc::c_int;
+    (*s).cx = 0u32;
+    (*s).cy = 0u32;
+    (*s).rupper = 0u32;
+    (*s).rlower = (*(*s).grid).sy.wrapping_sub(1u32);
+    (*s).mode = 0x1i32 | 0x10i32;
     if !(*s).saved_grid.is_null() {
-        screen_alternate_off(s, 0 as *mut GridCell, 0 as libc::c_int);
+        screen_alternate_off(s, 0 as *mut GridCell, 0i32);
     }
-    (*s).saved_cx = (2147483647 as libc::c_int as libc::c_uint)
-        .wrapping_mul(2 as libc::c_uint)
-        .wrapping_add(1 as libc::c_uint);
-    (*s).saved_cy = (2147483647 as libc::c_int as libc::c_uint)
-        .wrapping_mul(2 as libc::c_uint)
-        .wrapping_add(1 as libc::c_uint);
+    (*s).saved_cx = (2147483647u32).wrapping_mul(2u32).wrapping_add(1u32);
+    (*s).saved_cy = (2147483647u32).wrapping_mul(2u32).wrapping_add(1u32);
     screen_reset_tabs(s);
-    grid_clear_lines(
-        (*s).grid,
-        (*(*s).grid).hsize,
-        (*(*s).grid).sy,
-        8 as libc::c_int as u_int,
-    );
+    grid_clear_lines((*s).grid, (*(*s).grid).hsize, (*(*s).grid).sy, 8u32);
     screen_clear_selection(s);
     screen_free_titles(s);
 }
@@ -293,28 +282,23 @@ pub unsafe extern "C" fn screen_reset_tabs(mut s: *mut screen) {
     let mut i: u_int = 0;
     free((*s).tabs as *mut libc::c_void);
     (*s).tabs = calloc(
-        ((*(*s).grid)
-            .sx
-            .wrapping_add(7 as libc::c_int as libc::c_uint)
-            >> 3 as libc::c_int) as size_t,
+        ((*(*s).grid).sx.wrapping_add(7u32) >> 3i32) as size_t,
         ::std::mem::size_of::<bitstr_t>() as libc::c_ulong,
     ) as *mut bitstr_t;
     if (*s).tabs.is_null() {
         fatal(b"bit_alloc failed\x00" as *const u8 as *const libc::c_char);
     }
-    i = 8 as libc::c_int as u_int;
+    i = 8u32;
     while i < (*(*s).grid).sx {
-        let ref mut fresh0 = *(*s).tabs.offset((i >> 3 as libc::c_int) as isize);
-        *fresh0 = (*fresh0 as libc::c_int
-            | (1 as libc::c_int) << (i & 0x7 as libc::c_int as libc::c_uint))
-            as bitstr_t;
-        i = (i as libc::c_uint).wrapping_add(8 as libc::c_int as libc::c_uint) as u_int as u_int
+        let ref mut fresh0 = *(*s).tabs.offset((i >> 3i32) as isize);
+        *fresh0 = (*fresh0 as libc::c_int | (1i32) << (i & 0x7u32)) as bitstr_t;
+        i = (i).wrapping_add(8u32)
     }
 }
 /* Set screen cursor style. */
 #[no_mangle]
 pub unsafe extern "C" fn screen_set_cursor_style(mut s: *mut screen, mut style: u_int) {
-    if style <= 6 as libc::c_int as libc::c_uint {
+    if style <= 6u32 {
         (*s).cstyle = style
     };
 }
@@ -334,21 +318,17 @@ pub unsafe extern "C" fn screen_set_title(
     mut title: *const libc::c_char,
 ) -> libc::c_int {
     if utf8_isvalid(title) == 0 {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     free((*s).title as *mut libc::c_void);
     (*s).title = xstrdup(title);
-    return 1 as libc::c_int;
+    return 1i32;
 }
 /* Set screen path. */
 #[no_mangle]
 pub unsafe extern "C" fn screen_set_path(mut s: *mut screen, mut path: *const libc::c_char) {
     free((*s).path as *mut libc::c_void);
-    utf8_stravis(
-        &mut (*s).path,
-        path,
-        0x1 as libc::c_int | 0x2 as libc::c_int | 0x8 as libc::c_int | 0x10 as libc::c_int,
-    );
+    utf8_stravis(&mut (*s).path, path, 0x1i32 | 0x2i32 | 0x8i32 | 0x10i32);
 }
 /* Push the current title onto the stack. */
 #[no_mangle]
@@ -424,17 +404,17 @@ pub unsafe extern "C" fn screen_resize_cursor(
         cx,
         cy,
     );
-    if sx < 1 as libc::c_int as libc::c_uint {
-        sx = 1 as libc::c_int as u_int
+    if sx < 1u32 {
+        sx = 1u32
     }
-    if sy < 1 as libc::c_int as libc::c_uint {
-        sy = 1 as libc::c_int as u_int
+    if sy < 1u32 {
+        sy = 1u32
     }
     if sx != (*(*s).grid).sx {
         (*(*s).grid).sx = sx;
         screen_reset_tabs(s);
     } else {
-        reflow = 0 as libc::c_int
+        reflow = 0i32
     }
     if sy != (*(*s).grid).sy {
         screen_resize_y(s, sy, eat_empty, &mut cy);
@@ -446,8 +426,8 @@ pub unsafe extern "C" fn screen_resize_cursor(
         (*s).cx = cx;
         (*s).cy = cy.wrapping_sub((*(*s).grid).hsize)
     } else {
-        (*s).cx = 0 as libc::c_int as u_int;
-        (*s).cy = 0 as libc::c_int as u_int
+        (*s).cx = 0u32;
+        (*s).cy = 0u32
     }
     log_debug(
         b"%s: cursor finished at %u,%u = %u,%u\x00" as *const u8 as *const libc::c_char,
@@ -470,7 +450,7 @@ pub unsafe extern "C" fn screen_resize(
     mut sy: u_int,
     mut reflow: libc::c_int,
 ) {
-    screen_resize_cursor(s, sx, sy, reflow, 1 as libc::c_int, 1 as libc::c_int);
+    screen_resize_cursor(s, sx, sy, reflow, 1i32, 1i32);
 }
 unsafe extern "C" fn screen_resize_y(
     mut s: *mut screen,
@@ -483,7 +463,7 @@ unsafe extern "C" fn screen_resize_y(
     let mut available: u_int = 0;
     let mut oldy: u_int = 0;
     let mut i: u_int = 0;
-    if sy == 0 as libc::c_int as libc::c_uint {
+    if sy == 0u32 {
         fatalx(b"zero size\x00" as *const u8 as *const libc::c_char);
     }
     oldy = (*(*s).grid).sy;
@@ -502,21 +482,14 @@ unsafe extern "C" fn screen_resize_y(
         needed = oldy.wrapping_sub(sy);
         /* Delete as many lines as possible from the bottom. */
         if eat_empty != 0 {
-            available = oldy
-                .wrapping_sub(1 as libc::c_int as libc::c_uint)
-                .wrapping_sub((*s).cy);
-            if available > 0 as libc::c_int as libc::c_uint {
+            available = oldy.wrapping_sub(1u32).wrapping_sub((*s).cy);
+            if available > 0u32 {
                 if available > needed {
                     available = needed
                 }
-                grid_view_delete_lines(
-                    gd,
-                    oldy.wrapping_sub(available),
-                    available,
-                    8 as libc::c_int as u_int,
-                );
+                grid_view_delete_lines(gd, oldy.wrapping_sub(available), available, 8u32);
             }
-            needed = (needed as libc::c_uint).wrapping_sub(available) as u_int as u_int
+            needed = (needed).wrapping_sub(available)
         }
         /*
          * Now just increase the history size, if possible, to take
@@ -524,23 +497,15 @@ unsafe extern "C" fn screen_resize_y(
          * lines from the top.
          */
         available = (*s).cy;
-        if (*gd).flags & 0x1 as libc::c_int != 0 {
-            (*gd).hscrolled =
-                ((*gd).hscrolled as libc::c_uint).wrapping_add(needed) as u_int as u_int;
-            (*gd).hsize = ((*gd).hsize as libc::c_uint).wrapping_add(needed) as u_int as u_int
-        } else if needed > 0 as libc::c_int as libc::c_uint
-            && available > 0 as libc::c_int as libc::c_uint
-        {
+        if (*gd).flags & 0x1i32 != 0 {
+            (*gd).hscrolled = ((*gd).hscrolled).wrapping_add(needed);
+            (*gd).hsize = ((*gd).hsize).wrapping_add(needed)
+        } else if needed > 0u32 && available > 0u32 {
             if available > needed {
                 available = needed
             }
-            grid_view_delete_lines(
-                gd,
-                0 as libc::c_int as u_int,
-                available,
-                8 as libc::c_int as u_int,
-            );
-            *cy = (*cy as libc::c_uint).wrapping_sub(available) as u_int as u_int
+            grid_view_delete_lines(gd, 0u32, available, 8u32);
+            *cy = (*cy).wrapping_sub(available)
         }
     }
     /* Resize line array. */
@@ -553,30 +518,27 @@ unsafe extern "C" fn screen_resize_y(
          * is is enabled.
          */
         available = (*gd).hscrolled;
-        if (*gd).flags & 0x1 as libc::c_int != 0 && available > 0 as libc::c_int as libc::c_uint {
+        if (*gd).flags & 0x1i32 != 0 && available > 0u32 {
             if available > needed {
                 available = needed
             }
-            (*gd).hscrolled =
-                ((*gd).hscrolled as libc::c_uint).wrapping_sub(available) as u_int as u_int;
-            (*gd).hsize = ((*gd).hsize as libc::c_uint).wrapping_sub(available) as u_int as u_int
+            (*gd).hscrolled = ((*gd).hscrolled).wrapping_sub(available);
+            (*gd).hsize = ((*gd).hsize).wrapping_sub(available)
         } else {
-            available = 0 as libc::c_int as u_int
+            available = 0u32
         }
-        needed = (needed as libc::c_uint).wrapping_sub(available) as u_int as u_int;
+        needed = (needed).wrapping_sub(available);
         /* Then fill the rest in with blanks. */
         i = (*gd).hsize.wrapping_add(sy).wrapping_sub(needed);
         while i < (*gd).hsize.wrapping_add(sy) {
-            grid_empty_line(gd, i, 8 as libc::c_int as u_int);
+            grid_empty_line(gd, i, 8u32);
             i = i.wrapping_add(1)
         }
     }
     /* Set the new size, and reset the scroll region. */
     (*gd).sy = sy;
-    (*s).rupper = 0 as libc::c_int as u_int;
-    (*s).rlower = (*(*s).grid)
-        .sy
-        .wrapping_sub(1 as libc::c_int as libc::c_uint);
+    (*s).rupper = 0u32;
+    (*s).rlower = (*(*s).grid).sy.wrapping_sub(1u32);
 }
 /* Set selection. */
 #[no_mangle]
@@ -591,17 +553,15 @@ pub unsafe extern "C" fn screen_set_selection(
     mut gc: *mut GridCell,
 ) {
     if (*s).sel.is_null() {
-        (*s).sel = xcalloc(
-            1 as libc::c_int as size_t,
-            ::std::mem::size_of::<screen_sel>() as libc::c_ulong,
-        ) as *mut screen_sel
+        (*s).sel =
+            xcalloc(1u64, ::std::mem::size_of::<screen_sel>() as libc::c_ulong) as *mut screen_sel
     }
     memcpy(
         &mut (*(*s).sel).cell as *mut GridCell as *mut libc::c_void,
         gc as *const libc::c_void,
         ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
-    (*(*s).sel).hidden = 0 as libc::c_int;
+    (*(*s).sel).hidden = 0i32;
     (*(*s).sel).rectangle = rectangle as libc::c_int;
     (*(*s).sel).modekeys = modekeys;
     (*(*s).sel).sx = sx;
@@ -619,7 +579,7 @@ pub unsafe extern "C" fn screen_clear_selection(mut s: *mut screen) {
 #[no_mangle]
 pub unsafe extern "C" fn screen_hide_selection(mut s: *mut screen) {
     if !(*s).sel.is_null() {
-        (*(*s).sel).hidden = 1 as libc::c_int
+        (*(*s).sel).hidden = 1i32
     };
 }
 /* Check if cell in selection. */
@@ -632,21 +592,21 @@ pub unsafe extern "C" fn screen_check_selection(
     let mut sel: *mut screen_sel = (*s).sel;
     let mut xx: u_int = 0;
     if sel.is_null() || (*sel).hidden != 0 {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     if (*sel).rectangle != 0 {
         if (*sel).sy < (*sel).ey {
             /* start line < end line -- downward selection. */
             if py < (*sel).sy || py > (*sel).ey {
-                return 0 as libc::c_int;
+                return 0i32;
             }
         } else if (*sel).sy > (*sel).ey {
             /* start line > end line -- upward selection. */
             if py > (*sel).sy || py < (*sel).ey {
-                return 0 as libc::c_int;
+                return 0i32;
             }
         } else if py != (*sel).sy {
-            return 0 as libc::c_int;
+            return 0i32;
         }
         /* starting line == ending line. */
         /*
@@ -657,18 +617,18 @@ pub unsafe extern "C" fn screen_check_selection(
         if (*sel).ex < (*sel).sx {
             /* Cursor (ex) is on the left. */
             if px < (*sel).ex {
-                return 0 as libc::c_int;
+                return 0i32;
             }
             if px > (*sel).sx {
-                return 0 as libc::c_int;
+                return 0i32;
             }
         } else {
             /* Selection start (sx) is on the left. */
             if px < (*sel).sx {
-                return 0 as libc::c_int;
+                return 0i32;
             }
             if px > (*sel).ex {
-                return 0 as libc::c_int;
+                return 0i32;
             }
         }
     } else if (*sel).sy < (*sel).ey {
@@ -678,71 +638,71 @@ pub unsafe extern "C" fn screen_check_selection(
          */
         /* starting line < ending line -- downward selection. */
         if py < (*sel).sy || py > (*sel).ey {
-            return 0 as libc::c_int;
+            return 0i32;
         }
         if py == (*sel).sy && px < (*sel).sx {
-            return 0 as libc::c_int;
+            return 0i32;
         }
-        if (*sel).modekeys == 0 as libc::c_int {
-            xx = if (*sel).ex == 0 as libc::c_int as libc::c_uint {
-                0 as libc::c_int as libc::c_uint
+        if (*sel).modekeys == 0i32 {
+            xx = if (*sel).ex == 0u32 {
+                0u32
             } else {
-                (*sel).ex.wrapping_sub(1 as libc::c_int as libc::c_uint)
+                (*sel).ex.wrapping_sub(1u32)
             }
         } else {
             xx = (*sel).ex
         }
         if py == (*sel).ey && px > xx {
-            return 0 as libc::c_int;
+            return 0i32;
         }
     } else if (*sel).sy > (*sel).ey {
         /* starting line > ending line -- upward selection. */
         if py > (*sel).sy || py < (*sel).ey {
-            return 0 as libc::c_int;
+            return 0i32;
         }
         if py == (*sel).ey && px < (*sel).ex {
-            return 0 as libc::c_int;
+            return 0i32;
         }
-        if (*sel).modekeys == 0 as libc::c_int {
-            xx = (*sel).sx.wrapping_sub(1 as libc::c_int as libc::c_uint)
+        if (*sel).modekeys == 0i32 {
+            xx = (*sel).sx.wrapping_sub(1u32)
         } else {
             xx = (*sel).sx
         }
-        if py == (*sel).sy && ((*sel).sx == 0 as libc::c_int as libc::c_uint || px > xx) {
-            return 0 as libc::c_int;
+        if py == (*sel).sy && ((*sel).sx == 0u32 || px > xx) {
+            return 0i32;
         }
     } else {
         /* starting line == ending line. */
         if py != (*sel).sy {
-            return 0 as libc::c_int;
+            return 0i32;
         }
         if (*sel).ex < (*sel).sx {
             /* cursor (ex) is on the left */
-            if (*sel).modekeys == 0 as libc::c_int {
-                xx = (*sel).sx.wrapping_sub(1 as libc::c_int as libc::c_uint)
+            if (*sel).modekeys == 0i32 {
+                xx = (*sel).sx.wrapping_sub(1u32)
             } else {
                 xx = (*sel).sx
             }
             if px > xx || px < (*sel).ex {
-                return 0 as libc::c_int;
+                return 0i32;
             }
         } else {
             /* selection start (sx) is on the left */
-            if (*sel).modekeys == 0 as libc::c_int {
-                xx = if (*sel).ex == 0 as libc::c_int as libc::c_uint {
-                    0 as libc::c_int as libc::c_uint
+            if (*sel).modekeys == 0i32 {
+                xx = if (*sel).ex == 0u32 {
+                    0u32
                 } else {
-                    (*sel).ex.wrapping_sub(1 as libc::c_int as libc::c_uint)
+                    (*sel).ex.wrapping_sub(1u32)
                 }
             } else {
                 xx = (*sel).ex
             }
             if px < (*sel).sx || px > xx {
-                return 0 as libc::c_int;
+                return 0i32;
             }
         }
     }
-    return 1 as libc::c_int;
+    return 1i32;
 }
 /* Get selected grid cell. */
 #[no_mangle]
@@ -760,9 +720,8 @@ pub unsafe extern "C" fn screen_select_cell(
         ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
     utf8_copy(&mut (*dst).data, &(*src).data);
-    (*dst).attr = ((*dst).attr as libc::c_int & !(0x80 as libc::c_int)) as u_short;
-    (*dst).attr =
-        ((*dst).attr as libc::c_int | (*src).attr as libc::c_int & 0x80 as libc::c_int) as u_short;
+    (*dst).attr = ((*dst).attr as libc::c_int & !(0x80i32)) as u_short;
+    (*dst).attr = ((*dst).attr as libc::c_int | (*src).attr as libc::c_int & 0x80i32) as u_short;
     (*dst).flags = (*src).flags;
 }
 /* Reflow wrapped lines. */
@@ -798,7 +757,7 @@ unsafe extern "C" fn screen_reflow(
             *cy,
         );
     } else {
-        *cx = 0 as libc::c_int as u_int;
+        *cx = 0u32;
         *cy = (*(*s).grid).hsize
     };
 }
@@ -819,14 +778,8 @@ pub unsafe extern "C" fn screen_alternate_on(
     }
     sx = (*(*s).grid).sx;
     sy = (*(*s).grid).sy;
-    (*s).saved_grid = grid_create(sx, sy, 0 as libc::c_int as u_int);
-    grid_duplicate_lines(
-        (*s).saved_grid,
-        0 as libc::c_int as u_int,
-        (*s).grid,
-        (*(*s).grid).hsize,
-        sy,
-    );
+    (*s).saved_grid = grid_create(sx, sy, 0u32);
+    grid_duplicate_lines((*s).saved_grid, 0u32, (*s).grid, (*(*s).grid).hsize, sy);
     if cursor != 0 {
         (*s).saved_cx = (*s).cx;
         (*s).saved_cy = (*s).cy
@@ -836,16 +789,9 @@ pub unsafe extern "C" fn screen_alternate_on(
         gc as *const libc::c_void,
         ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
-    grid_view_clear(
-        (*s).grid,
-        0 as libc::c_int as u_int,
-        0 as libc::c_int as u_int,
-        sx,
-        sy,
-        8 as libc::c_int as u_int,
-    );
+    grid_view_clear((*s).grid, 0u32, 0u32, sx, sy, 8u32);
     (*s).saved_flags = (*(*s).grid).flags;
-    (*(*s).grid).flags &= !(0x1 as libc::c_int);
+    (*(*s).grid).flags &= !(0x1i32);
 }
 /* Exit alternate screen mode and restore the copied grid. */
 #[no_mangle]
@@ -861,34 +807,16 @@ pub unsafe extern "C" fn screen_alternate_off(
      * currently in the alternate screen.
      */
     if cursor != 0
-        && (*s).saved_cx
-            != (2147483647 as libc::c_int as libc::c_uint)
-                .wrapping_mul(2 as libc::c_uint)
-                .wrapping_add(1 as libc::c_uint)
-        && (*s).saved_cy
-            != (2147483647 as libc::c_int as libc::c_uint)
-                .wrapping_mul(2 as libc::c_uint)
-                .wrapping_add(1 as libc::c_uint)
+        && (*s).saved_cx != (2147483647u32).wrapping_mul(2u32).wrapping_add(1u32)
+        && (*s).saved_cy != (2147483647u32).wrapping_mul(2u32).wrapping_add(1u32)
     {
         (*s).cx = (*s).saved_cx;
-        if (*s).cx
-            > (*(*s).grid)
-                .sx
-                .wrapping_sub(1 as libc::c_int as libc::c_uint)
-        {
-            (*s).cx = (*(*s).grid)
-                .sx
-                .wrapping_sub(1 as libc::c_int as libc::c_uint)
+        if (*s).cx > (*(*s).grid).sx.wrapping_sub(1u32) {
+            (*s).cx = (*(*s).grid).sx.wrapping_sub(1u32)
         }
         (*s).cy = (*s).saved_cy;
-        if (*s).cy
-            > (*(*s).grid)
-                .sy
-                .wrapping_sub(1 as libc::c_int as libc::c_uint)
-        {
-            (*s).cy = (*(*s).grid)
-                .sy
-                .wrapping_sub(1 as libc::c_int as libc::c_uint)
+        if (*s).cy > (*(*s).grid).sy.wrapping_sub(1u32) {
+            (*s).cy = (*(*s).grid).sy.wrapping_sub(1u32)
         }
         if !gc.is_null() {
             memcpy(
@@ -908,25 +836,19 @@ pub unsafe extern "C" fn screen_alternate_off(
      * before copying back.
      */
     if sy > (*(*s).saved_grid).sy {
-        screen_resize(s, sx, (*(*s).saved_grid).sy, 1 as libc::c_int);
+        screen_resize(s, sx, (*(*s).saved_grid).sy, 1i32);
     }
     /* Restore the saved grid. */
-    grid_duplicate_lines(
-        (*s).grid,
-        (*(*s).grid).hsize,
-        (*s).saved_grid,
-        0 as libc::c_int as u_int,
-        sy,
-    );
+    grid_duplicate_lines((*s).grid, (*(*s).grid).hsize, (*s).saved_grid, 0u32, sy);
     /*
      * Turn history back on (so resize can use it) and then resize back to
      * the current size.
      */
-    if (*s).saved_flags & 0x1 as libc::c_int != 0 {
-        (*(*s).grid).flags |= 0x1 as libc::c_int
+    if (*s).saved_flags & 0x1i32 != 0 {
+        (*(*s).grid).flags |= 0x1i32
     }
     if sy > (*(*s).saved_grid).sy || sx != (*(*s).saved_grid).sx {
-        screen_resize(s, sx, sy, 1 as libc::c_int);
+        screen_resize(s, sx, sy, 1i32);
     }
     grid_destroy((*s).saved_grid);
     (*s).saved_grid = 0 as *mut grid;

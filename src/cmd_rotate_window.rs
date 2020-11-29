@@ -1061,8 +1061,8 @@ pub static mut cmd_rotate_window_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"Dt:UZ\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -1074,13 +1074,13 @@ pub static mut cmd_rotate_window_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_WINDOW,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0 as libc::c_int,
+            flags: 0i32,
             exec: Some(
                 cmd_rotate_window_exec
                     as unsafe extern "C" fn(
@@ -1127,8 +1127,8 @@ unsafe extern "C" fn cmd_rotate_window_exec(
     let mut sy: u_int = 0;
     let mut xoff: u_int = 0;
     let mut yoff: u_int = 0;
-    window_push_zoom(w, args_has(args, 'Z' as i32 as u_char));
-    if args_has(args, 'D' as i32 as u_char) != 0 {
+    window_push_zoom(w, args_has(args, 'Z' as u_char));
+    if args_has(args, 'D' as u_char) != 0 {
         wp = *(*((*w).panes.tqh_last as *mut window_panes)).tqh_last;
         if !(*wp).entry.tqe_next.is_null() {
             (*(*wp).entry.tqe_next).entry.tqe_prev = (*wp).entry.tqe_prev
@@ -1219,8 +1219,8 @@ unsafe extern "C" fn cmd_rotate_window_exec(
             wp = (*w).panes.tqh_first
         }
     }
-    window_set_active_pane(w, wp, 1 as libc::c_int);
-    cmd_find_from_winlink_pane(current, wl, wp, 0 as libc::c_int);
+    window_set_active_pane(w, wp, 1i32);
+    cmd_find_from_winlink_pane(current, wl, wp, 0i32);
     window_pop_zoom(w);
     server_redraw_window(w);
     return CMD_RETURN_NORMAL;

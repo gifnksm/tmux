@@ -1112,8 +1112,8 @@ pub static mut cmd_switch_client_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"lc:EFnpt:rT:Z\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -1129,7 +1129,7 @@ pub static mut cmd_switch_client_entry: cmd_entry = {
                 type_0: CMD_FIND_PANE,
                 flags: 0,
             },
-            flags: 0x2 as libc::c_int | 0x8 as libc::c_int,
+            flags: 0x2i32 | 0x8i32,
             exec: Some(
                 cmd_switch_client_exec
                     as unsafe extern "C" fn(
@@ -1175,7 +1175,7 @@ unsafe extern "C" fn cmd_switch_client_exec(
         wp: 0 as *mut window_pane,
         idx: 0,
     };
-    let mut tflag: *const libc::c_char = args_get(args, 't' as i32 as u_char);
+    let mut tflag: *const libc::c_char = args_get(args, 't' as u_char);
     let mut type_0: cmd_find_type = CMD_FIND_PANE;
     let mut flags: libc::c_int = 0;
     let mut tc: *mut client = cmdq_get_target_client(item);
@@ -1191,27 +1191,27 @@ unsafe extern "C" fn cmd_switch_client_exec(
             != '\u{0}' as i32
     {
         type_0 = CMD_FIND_PANE;
-        flags = 0 as libc::c_int
+        flags = 0i32
     } else {
         type_0 = CMD_FIND_SESSION;
-        flags = 0x1 as libc::c_int
+        flags = 0x1i32
     }
-    if cmd_find_target(&mut target, item, tflag, type_0, flags) != 0 as libc::c_int {
+    if cmd_find_target(&mut target, item, tflag, type_0, flags) != 0i32 {
         return CMD_RETURN_ERROR;
     }
     s = target.s;
     wl = target.wl;
     wp = target.wp;
-    if args_has(args, 'r' as i32 as u_char) != 0 {
-        if (*tc).flags & 0x800 as libc::c_int as libc::c_ulong != 0 {
-            (*tc).flags &= !(0x800 as libc::c_int | 0x20000 as libc::c_int) as libc::c_ulong
+    if args_has(args, 'r' as u_char) != 0 {
+        if (*tc).flags & 0x800u64 != 0 {
+            (*tc).flags &= !(0x800i32 | 0x20000i32) as libc::c_ulong
         } else {
-            (*tc).flags |= (0x800 as libc::c_int | 0x20000 as libc::c_int) as libc::c_ulong
+            (*tc).flags |= (0x800i32 | 0x20000i32) as libc::c_ulong
         }
     }
-    tablename = args_get(args, 'T' as i32 as u_char);
+    tablename = args_get(args, 'T' as u_char);
     if !tablename.is_null() {
-        table = key_bindings_get_table(tablename, 0 as libc::c_int);
+        table = key_bindings_get_table(tablename, 0i32);
         if table.is_null() {
             cmdq_error(
                 item,
@@ -1225,7 +1225,7 @@ unsafe extern "C" fn cmd_switch_client_exec(
         (*tc).keytable = table;
         return CMD_RETURN_NORMAL;
     }
-    if args_has(args, 'n' as i32 as u_char) != 0 {
+    if args_has(args, 'n' as u_char) != 0 {
         s = session_next_session((*tc).session);
         if s.is_null() {
             cmdq_error(
@@ -1234,7 +1234,7 @@ unsafe extern "C" fn cmd_switch_client_exec(
             );
             return CMD_RETURN_ERROR;
         }
-    } else if args_has(args, 'p' as i32 as u_char) != 0 {
+    } else if args_has(args, 'p' as u_char) != 0 {
         s = session_previous_session((*tc).session);
         if s.is_null() {
             cmdq_error(
@@ -1243,7 +1243,7 @@ unsafe extern "C" fn cmd_switch_client_exec(
             );
             return CMD_RETURN_ERROR;
         }
-    } else if args_has(args, 'l' as i32 as u_char) != 0 {
+    } else if args_has(args, 'l' as u_char) != 0 {
         if !(*tc).last_session.is_null() && session_alive((*tc).last_session) != 0 {
             s = (*tc).last_session
         } else {
@@ -1262,28 +1262,28 @@ unsafe extern "C" fn cmd_switch_client_exec(
         }
         if !wl.is_null() && !wp.is_null() && wp != (*(*wl).window).active {
             w = (*wl).window;
-            if window_push_zoom(w, args_has(args, 'Z' as i32 as u_char)) != 0 {
+            if window_push_zoom(w, args_has(args, 'Z' as u_char)) != 0 {
                 server_redraw_window(w);
             }
             window_redraw_active_switch(w, wp);
-            window_set_active_pane(w, wp, 1 as libc::c_int);
+            window_set_active_pane(w, wp, 1i32);
             if window_pop_zoom(w) != 0 {
                 server_redraw_window(w);
             }
         }
         if !wl.is_null() {
             session_set_current(s, wl);
-            cmd_find_from_session(current, s, 0 as libc::c_int);
+            cmd_find_from_session(current, s, 0i32);
         }
     }
-    if args_has(args, 'E' as i32 as u_char) == 0 {
+    if args_has(args, 'E' as u_char) == 0 {
         environ_update((*s).options, (*tc).environ, (*s).environ);
     }
     if !(*tc).session.is_null() && (*tc).session != s {
         (*tc).last_session = (*tc).session
     }
     (*tc).session = s;
-    if !cmdq_get_flags(item) & 0x1 as libc::c_int != 0 {
+    if !cmdq_get_flags(item) & 0x1i32 != 0 {
         server_client_set_key_table(tc, 0 as *const libc::c_char);
     }
     tty_update_client_offset(tc);
@@ -1296,7 +1296,7 @@ unsafe extern "C" fn cmd_switch_client_exec(
     gettimeofday(&mut (*s).last_attached_time, 0 as *mut libc::c_void);
     server_check_unattached();
     server_redraw_client(tc);
-    (*(*s).curw).flags &= !(0x1 as libc::c_int | 0x2 as libc::c_int | 0x4 as libc::c_int);
+    (*(*s).curw).flags &= !(0x1i32 | 0x2i32 | 0x4i32);
     (*(*(*s).curw).window).latest = tc as *mut libc::c_void;
     recalculate_sizes();
     alerts_check_session(s);

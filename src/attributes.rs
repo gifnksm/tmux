@@ -46,87 +46,86 @@ pub struct C2RustUnnamed {
 pub unsafe extern "C" fn attributes_tostring(mut attr: libc::c_int) -> *const libc::c_char {
     static mut buf: [libc::c_char; 512] = [0; 512];
     let mut len: size_t = 0;
-    if attr == 0 as libc::c_int {
+    if attr == 0i32 {
         return b"none\x00" as *const u8 as *const libc::c_char;
     }
     len = xsnprintf(
         buf.as_mut_ptr(),
         ::std::mem::size_of::<[libc::c_char; 512]>() as libc::c_ulong,
         b"%s%s%s%s%s%s%s%s%s%s%s%s%s%s\x00" as *const u8 as *const libc::c_char,
-        if attr & 0x80 as libc::c_int != 0 {
+        if attr & 0x80i32 != 0 {
             b"acs,\x00" as *const u8 as *const libc::c_char
         } else {
             b"\x00" as *const u8 as *const libc::c_char
         },
-        if attr & 0x1 as libc::c_int != 0 {
+        if attr & 0x1i32 != 0 {
             b"bright,\x00" as *const u8 as *const libc::c_char
         } else {
             b"\x00" as *const u8 as *const libc::c_char
         },
-        if attr & 0x2 as libc::c_int != 0 {
+        if attr & 0x2i32 != 0 {
             b"dim,\x00" as *const u8 as *const libc::c_char
         } else {
             b"\x00" as *const u8 as *const libc::c_char
         },
-        if attr & 0x4 as libc::c_int != 0 {
+        if attr & 0x4i32 != 0 {
             b"underscore,\x00" as *const u8 as *const libc::c_char
         } else {
             b"\x00" as *const u8 as *const libc::c_char
         },
-        if attr & 0x8 as libc::c_int != 0 {
+        if attr & 0x8i32 != 0 {
             b"blink,\x00" as *const u8 as *const libc::c_char
         } else {
             b"\x00" as *const u8 as *const libc::c_char
         },
-        if attr & 0x10 as libc::c_int != 0 {
+        if attr & 0x10i32 != 0 {
             b"reverse,\x00" as *const u8 as *const libc::c_char
         } else {
             b"\x00" as *const u8 as *const libc::c_char
         },
-        if attr & 0x20 as libc::c_int != 0 {
+        if attr & 0x20i32 != 0 {
             b"hidden,\x00" as *const u8 as *const libc::c_char
         } else {
             b"\x00" as *const u8 as *const libc::c_char
         },
-        if attr & 0x40 as libc::c_int != 0 {
+        if attr & 0x40i32 != 0 {
             b"italics,\x00" as *const u8 as *const libc::c_char
         } else {
             b"\x00" as *const u8 as *const libc::c_char
         },
-        if attr & 0x100 as libc::c_int != 0 {
+        if attr & 0x100i32 != 0 {
             b"strikethrough,\x00" as *const u8 as *const libc::c_char
         } else {
             b"\x00" as *const u8 as *const libc::c_char
         },
-        if attr & 0x200 as libc::c_int != 0 {
+        if attr & 0x200i32 != 0 {
             b"double-underscore,\x00" as *const u8 as *const libc::c_char
         } else {
             b"\x00" as *const u8 as *const libc::c_char
         },
-        if attr & 0x400 as libc::c_int != 0 {
+        if attr & 0x400i32 != 0 {
             b"curly-underscore,\x00" as *const u8 as *const libc::c_char
         } else {
             b"\x00" as *const u8 as *const libc::c_char
         },
-        if attr & 0x800 as libc::c_int != 0 {
+        if attr & 0x800i32 != 0 {
             b"dotted-underscore,\x00" as *const u8 as *const libc::c_char
         } else {
             b"\x00" as *const u8 as *const libc::c_char
         },
-        if attr & 0x1000 as libc::c_int != 0 {
+        if attr & 0x1000i32 != 0 {
             b"dashed-underscore,\x00" as *const u8 as *const libc::c_char
         } else {
             b"\x00" as *const u8 as *const libc::c_char
         },
-        if attr & 0x2000 as libc::c_int != 0 {
+        if attr & 0x2000i32 != 0 {
             b"overline,\x00" as *const u8 as *const libc::c_char
         } else {
             b"\x00" as *const u8 as *const libc::c_char
         },
     ) as size_t;
-    if len > 0 as libc::c_int as libc::c_ulong {
-        buf[len.wrapping_sub(1 as libc::c_int as libc::c_ulong) as usize] =
-            '\u{0}' as i32 as libc::c_char
+    if len > 0u64 {
+        buf[len.wrapping_sub(1u64) as usize] = '\u{0}' as libc::c_char
     }
     return buf.as_mut_ptr();
 }
@@ -141,138 +140,135 @@ pub unsafe extern "C" fn attributes_fromstring(mut str: *const libc::c_char) -> 
         {
             let mut init = C2RustUnnamed {
                 name: b"acs\x00" as *const u8 as *const libc::c_char,
-                attr: 0x80 as libc::c_int,
+                attr: 0x80i32,
             };
             init
         },
         {
             let mut init = C2RustUnnamed {
                 name: b"bright\x00" as *const u8 as *const libc::c_char,
-                attr: 0x1 as libc::c_int,
+                attr: 0x1i32,
             };
             init
         },
         {
             let mut init = C2RustUnnamed {
                 name: b"bold\x00" as *const u8 as *const libc::c_char,
-                attr: 0x1 as libc::c_int,
+                attr: 0x1i32,
             };
             init
         },
         {
             let mut init = C2RustUnnamed {
                 name: b"dim\x00" as *const u8 as *const libc::c_char,
-                attr: 0x2 as libc::c_int,
+                attr: 0x2i32,
             };
             init
         },
         {
             let mut init = C2RustUnnamed {
                 name: b"underscore\x00" as *const u8 as *const libc::c_char,
-                attr: 0x4 as libc::c_int,
+                attr: 0x4i32,
             };
             init
         },
         {
             let mut init = C2RustUnnamed {
                 name: b"blink\x00" as *const u8 as *const libc::c_char,
-                attr: 0x8 as libc::c_int,
+                attr: 0x8i32,
             };
             init
         },
         {
             let mut init = C2RustUnnamed {
                 name: b"reverse\x00" as *const u8 as *const libc::c_char,
-                attr: 0x10 as libc::c_int,
+                attr: 0x10i32,
             };
             init
         },
         {
             let mut init = C2RustUnnamed {
                 name: b"hidden\x00" as *const u8 as *const libc::c_char,
-                attr: 0x20 as libc::c_int,
+                attr: 0x20i32,
             };
             init
         },
         {
             let mut init = C2RustUnnamed {
                 name: b"italics\x00" as *const u8 as *const libc::c_char,
-                attr: 0x40 as libc::c_int,
+                attr: 0x40i32,
             };
             init
         },
         {
             let mut init = C2RustUnnamed {
                 name: b"strikethrough\x00" as *const u8 as *const libc::c_char,
-                attr: 0x100 as libc::c_int,
+                attr: 0x100i32,
             };
             init
         },
         {
             let mut init = C2RustUnnamed {
                 name: b"double-underscore\x00" as *const u8 as *const libc::c_char,
-                attr: 0x200 as libc::c_int,
+                attr: 0x200i32,
             };
             init
         },
         {
             let mut init = C2RustUnnamed {
                 name: b"curly-underscore\x00" as *const u8 as *const libc::c_char,
-                attr: 0x400 as libc::c_int,
+                attr: 0x400i32,
             };
             init
         },
         {
             let mut init = C2RustUnnamed {
                 name: b"dotted-underscore\x00" as *const u8 as *const libc::c_char,
-                attr: 0x800 as libc::c_int,
+                attr: 0x800i32,
             };
             init
         },
         {
             let mut init = C2RustUnnamed {
                 name: b"dashed-underscore\x00" as *const u8 as *const libc::c_char,
-                attr: 0x1000 as libc::c_int,
+                attr: 0x1000i32,
             };
             init
         },
         {
             let mut init = C2RustUnnamed {
                 name: b"overline\x00" as *const u8 as *const libc::c_char,
-                attr: 0x2000 as libc::c_int,
+                attr: 0x2000i32,
             };
             init
         },
     ];
-    if *str as libc::c_int == '\u{0}' as i32
-        || strcspn(str, delimiters.as_ptr()) == 0 as libc::c_int as libc::c_ulong
-    {
-        return -(1 as libc::c_int);
+    if *str as libc::c_int == '\u{0}' as i32 || strcspn(str, delimiters.as_ptr()) == 0u64 {
+        return -(1i32);
     }
     if !strchr(
         delimiters.as_ptr(),
-        *str.offset(strlen(str).wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize)
-            as libc::c_int,
+        *str.offset(strlen(str).wrapping_sub(1u64) as isize) as libc::c_int,
     )
     .is_null()
     {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
-    if strcasecmp(str, b"default\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int
-        || strcasecmp(str, b"none\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int
+    if strcasecmp(str, b"default\x00" as *const u8 as *const libc::c_char) == 0i32
+        || strcasecmp(str, b"none\x00" as *const u8 as *const libc::c_char) == 0i32
     {
-        return 0 as libc::c_int;
+        return 0i32;
     }
-    attr = 0 as libc::c_int;
+    attr = 0i32;
     loop {
         end = strcspn(str, delimiters.as_ptr());
-        i = 0 as libc::c_int as u_int;
+        i = 0u32;
         while (i as libc::c_ulong)
             < (::std::mem::size_of::<[C2RustUnnamed; 15]>() as libc::c_ulong)
                 .wrapping_div(::std::mem::size_of::<C2RustUnnamed>() as libc::c_ulong)
         {
             if !(end != strlen(table[i as usize].name)) {
-                if strncasecmp(str, table[i as usize].name, end) == 0 as libc::c_int {
+                if strncasecmp(str, table[i as usize].name, end) == 0i32 {
                     attr |= table[i as usize].attr;
                     break;
                 }
@@ -283,7 +279,7 @@ pub unsafe extern "C" fn attributes_fromstring(mut str: *const libc::c_char) -> 
             == (::std::mem::size_of::<[C2RustUnnamed; 15]>() as libc::c_ulong)
                 .wrapping_div(::std::mem::size_of::<C2RustUnnamed>() as libc::c_ulong)
         {
-            return -(1 as libc::c_int);
+            return -(1i32);
         }
         str = str.offset(
             end.wrapping_add(strspn(str.offset(end as isize), delimiters.as_ptr())) as isize,

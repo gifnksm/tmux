@@ -1110,16 +1110,14 @@ unsafe extern "C" fn name_time_expired(mut w: *mut window, mut tv: *mut timeval)
     };
     offset.tv_sec = (*tv).tv_sec - (*w).name_time.tv_sec;
     offset.tv_usec = (*tv).tv_usec - (*w).name_time.tv_usec;
-    if offset.tv_usec < 0 as libc::c_int as libc::c_long {
+    if offset.tv_usec < 0i64 {
         offset.tv_sec -= 1;
-        offset.tv_usec += 1000000 as libc::c_int as libc::c_long
+        offset.tv_usec += 1000000i64
     }
-    if offset.tv_sec != 0 as libc::c_int as libc::c_long
-        || offset.tv_usec > 500000 as libc::c_int as libc::c_long
-    {
-        return 0 as libc::c_int;
+    if offset.tv_sec != 0i64 || offset.tv_usec > 500000i64 {
+        return 0i32;
     }
-    return (500000 as libc::c_int as libc::c_long - offset.tv_usec) as libc::c_int;
+    return (500000i64 - offset.tv_usec) as libc::c_int;
 }
 #[no_mangle]
 pub unsafe extern "C" fn check_window_name(mut w: *mut window) {
@@ -1143,7 +1141,7 @@ pub unsafe extern "C" fn check_window_name(mut w: *mut window) {
     {
         return;
     }
-    if !(*(*w).active).flags & 0x80 as libc::c_int != 0 {
+    if !(*(*w).active).flags & 0x80i32 != 0 {
         log_debug(
             b"@%u active pane not changed\x00" as *const u8 as *const libc::c_char,
             (*w).id,
@@ -1156,12 +1154,12 @@ pub unsafe extern "C" fn check_window_name(mut w: *mut window) {
     );
     gettimeofday(&mut tv, 0 as *mut libc::c_void);
     left = name_time_expired(w, &mut tv);
-    if left != 0 as libc::c_int {
+    if left != 0i32 {
         if event_initialized(&mut (*w).name_event) == 0 {
             event_set(
                 &mut (*w).name_event,
-                -(1 as libc::c_int),
-                0 as libc::c_int as libc::c_short,
+                -(1i32),
+                0i16,
                 Some(
                     name_time_callback
                         as unsafe extern "C" fn(
@@ -1173,18 +1171,13 @@ pub unsafe extern "C" fn check_window_name(mut w: *mut window) {
                 w as *mut libc::c_void,
             );
         }
-        if event_pending(
-            &mut (*w).name_event,
-            0x1 as libc::c_int as libc::c_short,
-            0 as *mut timeval,
-        ) == 0
-        {
+        if event_pending(&mut (*w).name_event, 0x1i16, 0 as *mut timeval) == 0 {
             log_debug(
                 b"@%u name timer queued (%d left)\x00" as *const u8 as *const libc::c_char,
                 (*w).id,
                 left,
             );
-            next.tv_usec = 0 as libc::c_int as __suseconds_t;
+            next.tv_usec = 0i64;
             next.tv_sec = next.tv_usec;
             next.tv_usec = left as __suseconds_t;
             event_add(&mut (*w).name_event, &mut next);
@@ -1205,9 +1198,9 @@ pub unsafe extern "C" fn check_window_name(mut w: *mut window) {
     if event_initialized(&mut (*w).name_event) != 0 {
         event_del(&mut (*w).name_event);
     }
-    (*(*w).active).flags &= !(0x80 as libc::c_int);
+    (*(*w).active).flags &= !(0x80i32);
     name = format_window_name(w);
-    if strcmp(name, (*w).name) != 0 as libc::c_int {
+    if strcmp(name, (*w).name) != 0i32 {
         log_debug(
             b"@%u new name %s (was %s)\x00" as *const u8 as *const libc::c_char,
             (*w).id,
@@ -1246,8 +1239,8 @@ unsafe extern "C" fn format_window_name(mut w: *mut window) -> *mut libc::c_char
     ft = format_create(
         0 as *mut client,
         0 as *mut crate::cmd_queue::cmdq_item,
-        (0x40000000 as libc::c_uint | (*w).id) as libc::c_int,
-        0 as libc::c_int,
+        (0x40000000u32 | (*w).id) as libc::c_int,
+        0i32,
     );
     format_defaults_window(ft, w);
     format_defaults_pane(ft, (*w).active);
@@ -1270,40 +1263,37 @@ pub unsafe extern "C" fn parse_window_name(mut in_0: *const libc::c_char) -> *mu
         name = name.offset(1)
     }
     *name.offset(strcspn(name, b"\"\x00" as *const u8 as *const libc::c_char) as isize) =
-        '\u{0}' as i32 as libc::c_char;
+        '\u{0}' as libc::c_char;
     if strncmp(
         name,
         b"exec \x00" as *const u8 as *const libc::c_char,
-        (::std::mem::size_of::<[libc::c_char; 6]>() as libc::c_ulong)
-            .wrapping_sub(1 as libc::c_int as libc::c_ulong),
-    ) == 0 as libc::c_int
+        (::std::mem::size_of::<[libc::c_char; 6]>() as libc::c_ulong).wrapping_sub(1u64),
+    ) == 0i32
     {
         name = name
-            .offset(::std::mem::size_of::<[libc::c_char; 6]>() as libc::c_ulong as isize)
-            .offset(-(1 as libc::c_int as isize))
+            .offset(::std::mem::size_of::<[libc::c_char; 6]>() as isize)
+            .offset(-(1isize))
     }
     while *name as libc::c_int == ' ' as i32 || *name as libc::c_int == '-' as i32 {
         name = name.offset(1)
     }
     ptr = strchr(name, ' ' as i32);
     if !ptr.is_null() {
-        *ptr = '\u{0}' as i32 as libc::c_char
+        *ptr = '\u{0}' as libc::c_char
     }
     if *name as libc::c_int != '\u{0}' as i32 {
-        ptr = name
-            .offset(strlen(name) as isize)
-            .offset(-(1 as libc::c_int as isize));
+        ptr = name.offset(strlen(name) as isize).offset(-(1isize));
         while ptr > name
             && *(*__ctype_b_loc()).offset(*ptr as u_char as libc::c_int as isize) as libc::c_int
-                & _ISalnum as libc::c_int as libc::c_ushort as libc::c_int
+                & _ISalnum as libc::c_ushort as libc::c_int
                 == 0
             && *(*__ctype_b_loc()).offset(*ptr as u_char as libc::c_int as isize) as libc::c_int
-                & _ISpunct as libc::c_int as libc::c_ushort as libc::c_int
+                & _ISpunct as libc::c_ushort as libc::c_int
                 == 0
         {
             let fresh0 = ptr;
             ptr = ptr.offset(-1);
-            *fresh0 = '\u{0}' as i32 as libc::c_char
+            *fresh0 = '\u{0}' as libc::c_char
         }
     }
     if *name as libc::c_int == '/' as i32 {

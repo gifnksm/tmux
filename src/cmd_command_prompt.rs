@@ -1120,8 +1120,8 @@ pub static mut cmd_command_prompt_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"1kiI:Np:Tt:W\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 1 as libc::c_int,
+                    lower: 0i32,
+                    upper: 1i32,
                 };
                 init
             },
@@ -1137,7 +1137,7 @@ pub static mut cmd_command_prompt_entry: cmd_entry = {
                 type_0: CMD_FIND_PANE,
                 flags: 0,
             },
-            flags: 0x10 as libc::c_int,
+            flags: 0x10i32,
             exec: Some(
                 cmd_command_prompt_exec
                     as unsafe extern "C" fn(
@@ -1186,7 +1186,7 @@ unsafe extern "C" fn cmd_command_prompt_exec(
         return CMD_RETURN_NORMAL;
     }
     cdata = xcalloc(
-        1 as libc::c_int as size_t,
+        1u64,
         ::std::mem::size_of::<cmd_command_prompt_cdata>() as libc::c_ulong,
     ) as *mut cmd_command_prompt_cdata;
     (*cdata).inputs = 0 as *mut libc::c_char;
@@ -1194,16 +1194,16 @@ unsafe extern "C" fn cmd_command_prompt_exec(
     (*cdata).prompts = 0 as *mut libc::c_char;
     (*cdata).next_prompt = 0 as *mut libc::c_char;
     (*cdata).template = 0 as *mut libc::c_char;
-    (*cdata).idx = 1 as libc::c_int;
-    if (*args).argc != 0 as libc::c_int {
-        (*cdata).template = xstrdup(*(*args).argv.offset(0 as libc::c_int as isize))
+    (*cdata).idx = 1i32;
+    if (*args).argc != 0i32 {
+        (*cdata).template = xstrdup(*(*args).argv.offset(0isize))
     } else {
         (*cdata).template = xstrdup(b"%1\x00" as *const u8 as *const libc::c_char)
     }
-    prompts = args_get(args, 'p' as i32 as u_char);
+    prompts = args_get(args, 'p' as u_char);
     if !prompts.is_null() {
         (*cdata).prompts = xstrdup(prompts)
-    } else if (*args).argc != 0 as libc::c_int {
+    } else if (*args).argc != 0i32 {
         n = strcspn(
             (*cdata).template,
             b" ,\x00" as *const u8 as *const libc::c_char,
@@ -1233,7 +1233,7 @@ unsafe extern "C" fn cmd_command_prompt_exec(
         );
     }
     /* Get initial prompt input. */
-    inputs = args_get(args, 'I' as i32 as u_char);
+    inputs = args_get(args, 'I' as u_char);
     if !inputs.is_null() {
         (*cdata).inputs = xstrdup(inputs);
         (*cdata).next_input = (*cdata).inputs;
@@ -1242,18 +1242,18 @@ unsafe extern "C" fn cmd_command_prompt_exec(
             b",\x00" as *const u8 as *const libc::c_char,
         )
     }
-    if args_has(args, '1' as i32 as u_char) != 0 {
-        (*cdata).flags |= 0x1 as libc::c_int
-    } else if args_has(args, 'N' as i32 as u_char) != 0 {
-        (*cdata).flags |= 0x2 as libc::c_int
-    } else if args_has(args, 'i' as i32 as u_char) != 0 {
-        (*cdata).flags |= 0x4 as libc::c_int
-    } else if args_has(args, 'k' as i32 as u_char) != 0 {
-        (*cdata).flags |= 0x10 as libc::c_int
-    } else if args_has(args, 'W' as i32 as u_char) != 0 {
-        (*cdata).flags |= 0x20 as libc::c_int
-    } else if args_has(args, 'T' as i32 as u_char) != 0 {
-        (*cdata).flags |= 0x40 as libc::c_int
+    if args_has(args, '1' as u_char) != 0 {
+        (*cdata).flags |= 0x1i32
+    } else if args_has(args, 'N' as u_char) != 0 {
+        (*cdata).flags |= 0x2i32
+    } else if args_has(args, 'i' as u_char) != 0 {
+        (*cdata).flags |= 0x4i32
+    } else if args_has(args, 'k' as u_char) != 0 {
+        (*cdata).flags |= 0x10i32
+    } else if args_has(args, 'W' as u_char) != 0 {
+        (*cdata).flags |= 0x20i32
+    } else if args_has(args, 'T' as u_char) != 0 {
+        (*cdata).flags |= 0x40i32
     }
     status_prompt_set(
         tc,
@@ -1290,10 +1290,10 @@ unsafe extern "C" fn cmd_command_prompt_callback(
     let mut input: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut status: cmd_parse_status = CMD_PARSE_EMPTY;
     if s.is_null() {
-        return 0 as libc::c_int;
+        return 0i32;
     }
-    if done != 0 && (*cdata).flags & 0x4 as libc::c_int != 0 {
-        return 0 as libc::c_int;
+    if done != 0 && (*cdata).flags & 0x4i32 != 0 {
+        return 0i32;
     }
     new_template = cmd_template_replace((*cdata).template, s, (*cdata).idx);
     if done != 0 {
@@ -1323,7 +1323,7 @@ unsafe extern "C" fn cmd_command_prompt_callback(
         status_prompt_update(c, prompt, input);
         free(prompt as *mut libc::c_void);
         (*cdata).idx += 1;
-        return 1 as libc::c_int;
+        return 1i32;
     }
     status = cmd_parse_and_append(
         new_template,
@@ -1332,7 +1332,7 @@ unsafe extern "C" fn cmd_command_prompt_callback(
         0 as *mut crate::cmd_queue::cmdq_state,
         &mut error,
     );
-    if status as libc::c_uint == CMD_PARSE_ERROR as libc::c_int as libc::c_uint {
+    if status == CMD_PARSE_ERROR {
         cmdq_append(c, cmdq_get_error(error));
         free(error as *mut libc::c_void);
     }
@@ -1350,9 +1350,9 @@ unsafe extern "C" fn cmd_command_prompt_callback(
                 ) -> libc::c_int,
         )
     {
-        return 1 as libc::c_int;
+        return 1i32;
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 unsafe extern "C" fn cmd_command_prompt_free(mut data: *mut libc::c_void) {
     let mut cdata: *mut cmd_command_prompt_cdata = data as *mut cmd_command_prompt_cdata;

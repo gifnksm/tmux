@@ -1080,29 +1080,29 @@ pub static mut cmd_swap_window_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_34 {
                     template: b"ds:t:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
             usage: b"[-d] [-s src-window] [-t dst-window]\x00" as *const u8 as *const libc::c_char,
             source: {
                 let mut init = cmd_entry_flag {
-                    flag: 's' as i32 as libc::c_char,
+                    flag: 's' as libc::c_char,
                     type_0: CMD_FIND_WINDOW,
-                    flags: 0x8 as libc::c_int,
+                    flags: 0x8i32,
                 };
                 init
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_WINDOW,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0 as libc::c_int,
+            flags: 0i32,
             exec: Some(
                 cmd_swap_window_exec
                     as unsafe extern "C" fn(
@@ -1184,7 +1184,7 @@ unsafe extern "C" fn cmd_swap_window_exec(
     (*wl_src).wentry.tqe_prev = (*w_dst).winlinks.tqh_last;
     *(*w_dst).winlinks.tqh_last = wl_src;
     (*w_dst).winlinks.tqh_last = &mut (*wl_src).wentry.tqe_next;
-    if args_has(args, 'd' as i32 as u_char) != 0 {
+    if args_has(args, 'd' as u_char) != 0 {
         session_select(dst, (*wl_dst).idx);
         if src != dst {
             session_select(src, (*wl_src).idx);

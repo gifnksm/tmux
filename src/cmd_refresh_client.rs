@@ -1122,9 +1122,9 @@ pub static mut cmd_refresh_client_entry: cmd_entry = {
                                                                as *const u8 as
                                                                *const libc::c_char,
                                                        lower:
-                                                           0 as libc::c_int,
+                                                           0i32,
                                                        upper:
-                                                           1 as libc::c_int,};
+                                                           1i32,};
                                   init
                               },
                           usage:
@@ -1138,7 +1138,7 @@ pub static mut cmd_refresh_client_entry: cmd_entry = {
                               cmd_entry_flag{flag: 0,
                                              type_0: CMD_FIND_PANE,
                                              flags: 0,},
-                          flags: 0x4 as libc::c_int | 0x10 as libc::c_int,
+                          flags: 0x4i32 | 0x10i32,
                           exec:
                               Some(cmd_refresh_client_exec as
                                        unsafe extern "C" fn(_: *mut crate::cmd::cmd,
@@ -1156,7 +1156,7 @@ unsafe extern "C" fn cmd_refresh_client_update_subscription(
     let mut name: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut what: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut subtype: control_sub_type = CONTROL_SUB_SESSION;
-    let mut subid: libc::c_int = -(1 as libc::c_int);
+    let mut subid: libc::c_int = -(1i32);
     name = xstrdup(value);
     copy = name;
     split = strchr(copy, ':' as i32);
@@ -1165,33 +1165,31 @@ unsafe extern "C" fn cmd_refresh_client_update_subscription(
     } else {
         let fresh0 = split;
         split = split.offset(1);
-        *fresh0 = '\u{0}' as i32 as libc::c_char;
+        *fresh0 = '\u{0}' as libc::c_char;
         what = split;
         split = strchr(what, ':' as i32);
         if !split.is_null() {
             let fresh1 = split;
             split = split.offset(1);
-            *fresh1 = '\u{0}' as i32 as libc::c_char;
-            if strcmp(what, b"%*\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
+            *fresh1 = '\u{0}' as libc::c_char;
+            if strcmp(what, b"%*\x00" as *const u8 as *const libc::c_char) == 0i32 {
                 subtype = CONTROL_SUB_ALL_PANES
             } else if sscanf(
                 what,
                 b"%%%d\x00" as *const u8 as *const libc::c_char,
                 &mut subid as *mut libc::c_int,
-            ) == 1 as libc::c_int
-                && subid >= 0 as libc::c_int
+            ) == 1i32
+                && subid >= 0i32
             {
                 subtype = CONTROL_SUB_PANE
-            } else if strcmp(what, b"@*\x00" as *const u8 as *const libc::c_char)
-                == 0 as libc::c_int
-            {
+            } else if strcmp(what, b"@*\x00" as *const u8 as *const libc::c_char) == 0i32 {
                 subtype = CONTROL_SUB_ALL_WINDOWS
             } else if sscanf(
                 what,
                 b"@%d\x00" as *const u8 as *const libc::c_char,
                 &mut subid as *mut libc::c_int,
-            ) == 1 as libc::c_int
-                && subid >= 0 as libc::c_int
+            ) == 1i32
+                && subid >= 0i32
             {
                 subtype = CONTROL_SUB_WINDOW
             } else {
@@ -1218,29 +1216,23 @@ unsafe extern "C" fn cmd_refresh_client_update_offset(
     if !split.is_null() {
         let fresh2 = split;
         split = split.offset(1);
-        *fresh2 = '\u{0}' as i32 as libc::c_char;
+        *fresh2 = '\u{0}' as libc::c_char;
         if !(sscanf(
             copy,
             b"%%%u\x00" as *const u8 as *const libc::c_char,
             &mut pane as *mut u_int,
-        ) != 1 as libc::c_int)
+        ) != 1i32)
         {
             wp = window_pane_find_by_id(pane);
             if !wp.is_null() {
-                if strcmp(split, b"on\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int
-                {
+                if strcmp(split, b"on\x00" as *const u8 as *const libc::c_char) == 0i32 {
                     control_set_pane_on(tc, wp);
-                } else if strcmp(split, b"off\x00" as *const u8 as *const libc::c_char)
-                    == 0 as libc::c_int
-                {
+                } else if strcmp(split, b"off\x00" as *const u8 as *const libc::c_char) == 0i32 {
                     control_set_pane_off(tc, wp);
-                } else if strcmp(split, b"continue\x00" as *const u8 as *const libc::c_char)
-                    == 0 as libc::c_int
+                } else if strcmp(split, b"continue\x00" as *const u8 as *const libc::c_char) == 0i32
                 {
                     control_continue_pane(tc, wp);
-                } else if strcmp(split, b"pause\x00" as *const u8 as *const libc::c_char)
-                    == 0 as libc::c_int
-                {
+                } else if strcmp(split, b"pause\x00" as *const u8 as *const libc::c_char) == 0i32 {
                     control_pause_pane(tc, wp);
                 }
             }
@@ -1282,19 +1274,19 @@ unsafe extern "C" fn cmd_refresh_client_exec(
     let mut y: u_int = 0;
     let mut adjust: u_int = 0;
     let mut av: *mut crate::arguments::args_value = 0 as *mut crate::arguments::args_value;
-    if args_has(args, 'c' as i32 as u_char) != 0
-        || args_has(args, 'L' as i32 as u_char) != 0
-        || args_has(args, 'R' as i32 as u_char) != 0
-        || args_has(args, 'U' as i32 as u_char) != 0
-        || args_has(args, 'D' as i32 as u_char) != 0
+    if args_has(args, 'c' as u_char) != 0
+        || args_has(args, 'L' as u_char) != 0
+        || args_has(args, 'R' as u_char) != 0
+        || args_has(args, 'U' as u_char) != 0
+        || args_has(args, 'D' as u_char) != 0
     {
-        if (*args).argc == 0 as libc::c_int {
-            adjust = 1 as libc::c_int as u_int
+        if (*args).argc == 0i32 {
+            adjust = 1u32
         } else {
             adjust = strtonum(
-                *(*args).argv.offset(0 as libc::c_int as isize),
-                1 as libc::c_int as libc::c_longlong,
-                2147483647 as libc::c_int as libc::c_longlong,
+                *(*args).argv.offset(0isize),
+                1i64,
+                2147483647i64,
                 &mut errstr,
             ) as u_int;
             if !errstr.is_null() {
@@ -1306,7 +1298,7 @@ unsafe extern "C" fn cmd_refresh_client_exec(
                 return CMD_RETURN_ERROR;
             }
         }
-        if args_has(args, 'c' as i32 as u_char) != 0 {
+        if args_has(args, 'c' as u_char) != 0 {
             (*tc).pan_window = 0 as *mut libc::c_void
         } else {
             w = (*(*(*tc).session).curw).window;
@@ -1315,29 +1307,25 @@ unsafe extern "C" fn cmd_refresh_client_exec(
                 (*tc).pan_ox = (*tty).oox;
                 (*tc).pan_oy = (*tty).ooy
             }
-            if args_has(args, 'L' as i32 as u_char) != 0 {
+            if args_has(args, 'L' as u_char) != 0 {
                 if (*tc).pan_ox > adjust {
-                    (*tc).pan_ox =
-                        ((*tc).pan_ox as libc::c_uint).wrapping_sub(adjust) as u_int as u_int
+                    (*tc).pan_ox = ((*tc).pan_ox).wrapping_sub(adjust)
                 } else {
-                    (*tc).pan_ox = 0 as libc::c_int as u_int
+                    (*tc).pan_ox = 0u32
                 }
-            } else if args_has(args, 'R' as i32 as u_char) != 0 {
-                (*tc).pan_ox =
-                    ((*tc).pan_ox as libc::c_uint).wrapping_add(adjust) as u_int as u_int;
+            } else if args_has(args, 'R' as u_char) != 0 {
+                (*tc).pan_ox = ((*tc).pan_ox).wrapping_add(adjust);
                 if (*tc).pan_ox > (*w).sx.wrapping_sub((*tty).osx) {
                     (*tc).pan_ox = (*w).sx.wrapping_sub((*tty).osx)
                 }
-            } else if args_has(args, 'U' as i32 as u_char) != 0 {
+            } else if args_has(args, 'U' as u_char) != 0 {
                 if (*tc).pan_oy > adjust {
-                    (*tc).pan_oy =
-                        ((*tc).pan_oy as libc::c_uint).wrapping_sub(adjust) as u_int as u_int
+                    (*tc).pan_oy = ((*tc).pan_oy).wrapping_sub(adjust)
                 } else {
-                    (*tc).pan_oy = 0 as libc::c_int as u_int
+                    (*tc).pan_oy = 0u32
                 }
-            } else if args_has(args, 'D' as i32 as u_char) != 0 {
-                (*tc).pan_oy =
-                    ((*tc).pan_oy as libc::c_uint).wrapping_add(adjust) as u_int as u_int;
+            } else if args_has(args, 'D' as u_char) != 0 {
+                (*tc).pan_oy = ((*tc).pan_oy).wrapping_add(adjust);
                 if (*tc).pan_oy > (*w).sy.wrapping_sub((*tty).osy) {
                     (*tc).pan_oy = (*w).sy.wrapping_sub((*tty).osy)
                 }
@@ -1347,55 +1335,55 @@ unsafe extern "C" fn cmd_refresh_client_exec(
         server_redraw_client(tc);
         return CMD_RETURN_NORMAL;
     }
-    if args_has(args, 'l' as i32 as u_char) != 0 {
+    if args_has(args, 'l' as u_char) != 0 {
         tty_putcode_ptr2(
             &mut (*tc).tty,
             tty_code_code::MS,
-            b"\x00" as *const u8 as *const libc::c_char as *const libc::c_void,
-            b"?\x00" as *const u8 as *const libc::c_char as *const libc::c_void,
+            b"\x00" as *const u8 as *const libc::c_void,
+            b"?\x00" as *const u8 as *const libc::c_void,
         );
         return CMD_RETURN_NORMAL;
     }
-    if args_has(args, 'F' as i32 as u_char) != 0 {
+    if args_has(args, 'F' as u_char) != 0 {
         /* -F is an alias for -f */
-        server_client_set_flags(tc, args_get(args, 'F' as i32 as u_char));
+        server_client_set_flags(tc, args_get(args, 'F' as u_char));
     }
-    if args_has(args, 'f' as i32 as u_char) != 0 {
-        server_client_set_flags(tc, args_get(args, 'f' as i32 as u_char));
+    if args_has(args, 'f' as u_char) != 0 {
+        server_client_set_flags(tc, args_get(args, 'f' as u_char));
     }
-    if args_has(args, 'A' as i32 as u_char) != 0 {
-        if !(!(*tc).flags & 0x2000 as libc::c_int as libc::c_ulong != 0) {
-            value = args_first_value(args, 'A' as i32 as u_char, &mut av);
+    if args_has(args, 'A' as u_char) != 0 {
+        if !(!(*tc).flags & 0x2000u64 != 0) {
+            value = args_first_value(args, 'A' as u_char, &mut av);
             while !value.is_null() {
                 cmd_refresh_client_update_offset(tc, value);
                 value = args_next_value(&mut av)
             }
             return CMD_RETURN_NORMAL;
         }
-    } else if args_has(args, 'B' as i32 as u_char) != 0 {
-        if !(!(*tc).flags & 0x2000 as libc::c_int as libc::c_ulong != 0) {
-            value = args_first_value(args, 'B' as i32 as u_char, &mut av);
+    } else if args_has(args, 'B' as u_char) != 0 {
+        if !(!(*tc).flags & 0x2000u64 != 0) {
+            value = args_first_value(args, 'B' as u_char, &mut av);
             while !value.is_null() {
                 cmd_refresh_client_update_subscription(tc, value);
                 value = args_next_value(&mut av)
             }
             return CMD_RETURN_NORMAL;
         }
-    } else if args_has(args, 'C' as i32 as u_char) != 0 {
-        if !(!(*tc).flags & 0x2000 as libc::c_int as libc::c_ulong != 0) {
-            size = args_get(args, 'C' as i32 as u_char);
+    } else if args_has(args, 'C' as u_char) != 0 {
+        if !(!(*tc).flags & 0x2000u64 != 0) {
+            size = args_get(args, 'C' as u_char);
             if sscanf(
                 size,
                 b"%u,%u\x00" as *const u8 as *const libc::c_char,
                 &mut x as *mut u_int,
                 &mut y as *mut u_int,
-            ) != 2 as libc::c_int
+            ) != 2i32
                 && sscanf(
                     size,
                     b"%ux%u\x00" as *const u8 as *const libc::c_char,
                     &mut x as *mut u_int,
                     &mut y as *mut u_int,
-                ) != 2 as libc::c_int
+                ) != 2i32
             {
                 cmdq_error(
                     item,
@@ -1403,34 +1391,24 @@ unsafe extern "C" fn cmd_refresh_client_exec(
                 );
                 return CMD_RETURN_ERROR;
             }
-            if x < 1 as libc::c_int as libc::c_uint
-                || x > 10000 as libc::c_int as libc::c_uint
-                || y < 1 as libc::c_int as libc::c_uint
-                || y > 10000 as libc::c_int as libc::c_uint
-            {
+            if x < 1u32 || x > 10000u32 || y < 1u32 || y > 10000u32 {
                 cmdq_error(
                     item,
                     b"size too small or too big\x00" as *const u8 as *const libc::c_char,
                 );
                 return CMD_RETURN_ERROR;
             }
-            tty_set_size(
-                &mut (*tc).tty,
-                x,
-                y,
-                0 as libc::c_int as u_int,
-                0 as libc::c_int as u_int,
-            );
-            (*tc).flags |= 0x400000 as libc::c_int as libc::c_ulong;
-            recalculate_sizes_now(1 as libc::c_int);
+            tty_set_size(&mut (*tc).tty, x, y, 0u32, 0u32);
+            (*tc).flags |= 0x400000u64;
+            recalculate_sizes_now(1i32);
             return CMD_RETURN_NORMAL;
         }
     } else {
-        if args_has(args, 'S' as i32 as u_char) != 0 {
-            (*tc).flags |= 0x80000 as libc::c_int as libc::c_ulong;
+        if args_has(args, 'S' as u_char) != 0 {
+            (*tc).flags |= 0x80000u64;
             server_status_client(tc);
         } else {
-            (*tc).flags |= 0x80000 as libc::c_int as libc::c_ulong;
+            (*tc).flags |= 0x80000u64;
             server_redraw_client(tc);
         }
         return CMD_RETURN_NORMAL;

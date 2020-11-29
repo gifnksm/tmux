@@ -1259,7 +1259,7 @@ pub struct clients {
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-static mut tty_log_fd: libc::c_int = -(1 as libc::c_int);
+static mut tty_log_fd: libc::c_int = -(1i32);
 #[no_mangle]
 pub unsafe extern "C" fn tty_create_log() {
     let mut name: [libc::c_char; 64] = [0; 64];
@@ -1269,34 +1269,28 @@ pub unsafe extern "C" fn tty_create_log() {
         b"tmux-out-%ld.log\x00" as *const u8 as *const libc::c_char,
         getpid() as libc::c_long,
     );
-    tty_log_fd = open(
-        name.as_mut_ptr(),
-        0o1 as libc::c_int | 0o100 as libc::c_int | 0o1000 as libc::c_int,
-        0o644 as libc::c_int,
-    );
-    if tty_log_fd != -(1 as libc::c_int)
-        && fcntl(tty_log_fd, 2 as libc::c_int, 1 as libc::c_int) == -(1 as libc::c_int)
-    {
+    tty_log_fd = open(name.as_mut_ptr(), 0o1i32 | 0o100i32 | 0o1000i32, 0o644i32);
+    if tty_log_fd != -(1i32) && fcntl(tty_log_fd, 2i32, 1i32) == -(1i32) {
         fatal(b"fcntl failed\x00" as *const u8 as *const libc::c_char);
     };
 }
 #[no_mangle]
 pub unsafe extern "C" fn tty_init(mut tty: *mut tty, mut c: *mut client) -> libc::c_int {
     if isatty((*c).fd) == 0 {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     memset(
         tty as *mut libc::c_void,
-        0 as libc::c_int,
+        0i32,
         ::std::mem::size_of::<tty>() as libc::c_ulong,
     );
     (*tty).client = c;
-    (*tty).cstyle = 0 as libc::c_int as u_int;
+    (*tty).cstyle = 0u32;
     (*tty).ccolour = xstrdup(b"\x00" as *const u8 as *const libc::c_char);
-    if tcgetattr((*c).fd, &mut (*tty).tio) != 0 as libc::c_int {
-        return -(1 as libc::c_int);
+    if tcgetattr((*c).fd, &mut (*tty).tio) != 0i32 {
+        return -(1i32);
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn tty_resize(mut tty: *mut tty) {
@@ -1311,31 +1305,26 @@ pub unsafe extern "C" fn tty_resize(mut tty: *mut tty) {
     let mut sy: u_int = 0;
     let mut xpixel: u_int = 0;
     let mut ypixel: u_int = 0;
-    if ioctl(
-        (*c).fd,
-        0x5413 as libc::c_int as libc::c_ulong,
-        &mut ws as *mut winsize,
-    ) != -(1 as libc::c_int)
-    {
+    if ioctl((*c).fd, 0x5413u64, &mut ws as *mut winsize) != -(1i32) {
         sx = ws.ws_col as u_int;
-        if sx == 0 as libc::c_int as libc::c_uint {
-            sx = 80 as libc::c_int as u_int;
-            xpixel = 0 as libc::c_int as u_int
+        if sx == 0u32 {
+            sx = 80u32;
+            xpixel = 0u32
         } else {
             xpixel = (ws.ws_xpixel as libc::c_uint).wrapping_div(sx)
         }
         sy = ws.ws_row as u_int;
-        if sy == 0 as libc::c_int as libc::c_uint {
-            sy = 24 as libc::c_int as u_int;
-            ypixel = 0 as libc::c_int as u_int
+        if sy == 0u32 {
+            sy = 24u32;
+            ypixel = 0u32
         } else {
             ypixel = (ws.ws_ypixel as libc::c_uint).wrapping_div(sy)
         }
     } else {
-        sx = 80 as libc::c_int as u_int;
-        sy = 24 as libc::c_int as u_int;
-        xpixel = 0 as libc::c_int as u_int;
-        ypixel = 0 as libc::c_int as u_int
+        sx = 80u32;
+        sy = 24u32;
+        xpixel = 0u32;
+        ypixel = 0u32
     }
     log_debug(
         b"%s: %s now %ux%u (%ux%u)\x00" as *const u8 as *const libc::c_char,
@@ -1372,9 +1361,9 @@ unsafe extern "C" fn tty_read_callback(
     let mut name: *const libc::c_char = (*c).name;
     let mut size: size_t = evbuffer_get_length((*tty).in_0);
     let mut nread: libc::c_int = 0;
-    nread = evbuffer_read((*tty).in_0, (*c).fd, -(1 as libc::c_int));
-    if nread == 0 as libc::c_int || nread == -(1 as libc::c_int) {
-        if nread == 0 as libc::c_int {
+    nread = evbuffer_read((*tty).in_0, (*c).fd, -(1i32));
+    if nread == 0i32 || nread == -(1i32) {
+        if nread == 0i32 {
             log_debug(
                 b"%s: read closed\x00" as *const u8 as *const libc::c_char,
                 name,
@@ -1408,7 +1397,7 @@ unsafe extern "C" fn tty_timer_callback(
     let mut tv: timeval = {
         let mut init = timeval {
             tv_sec: 0,
-            tv_usec: 100000 as libc::c_int as __suseconds_t,
+            tv_usec: 100000i64,
         };
         init
     };
@@ -1417,27 +1406,17 @@ unsafe extern "C" fn tty_timer_callback(
         (*c).name,
         (*tty).discarded,
     );
-    (*c).flags |= (0x8 as libc::c_int
-        | 0x10 as libc::c_int
-        | 0x1000000 as libc::c_int
-        | 0x400 as libc::c_int
-        | 0x2000000 as libc::c_int
-        | 0x20000000 as libc::c_int) as libc::c_ulong;
-    (*c).discarded =
-        ((*c).discarded as libc::c_ulong).wrapping_add((*tty).discarded) as size_t as size_t;
+    (*c).flags |= (0x8i32 | 0x10i32 | 0x1000000i32 | 0x400i32 | 0x2000000i32 | 0x20000000i32)
+        as libc::c_ulong;
+    (*c).discarded = ((*c).discarded).wrapping_add((*tty).discarded);
     if (*tty).discarded
-        < (1 as libc::c_int as libc::c_uint).wrapping_add(
-            (*tty)
-                .sx
-                .wrapping_mul((*tty).sy)
-                .wrapping_div(8 as libc::c_int as libc::c_uint),
-        ) as libc::c_ulong
+        < (1u32).wrapping_add((*tty).sx.wrapping_mul((*tty).sy).wrapping_div(8u32)) as libc::c_ulong
     {
-        (*tty).flags &= !(0x80 as libc::c_int);
+        (*tty).flags &= !(0x80i32);
         tty_invalidate(tty);
         return;
     }
-    (*tty).discarded = 0 as libc::c_int as size_t;
+    (*tty).discarded = 0u64;
     event_add(&mut (*tty).timer, &mut tv);
 }
 unsafe extern "C" fn tty_block_maybe(mut tty: *mut tty) -> libc::c_int {
@@ -1446,34 +1425,29 @@ unsafe extern "C" fn tty_block_maybe(mut tty: *mut tty) -> libc::c_int {
     let mut tv: timeval = {
         let mut init = timeval {
             tv_sec: 0,
-            tv_usec: 100000 as libc::c_int as __suseconds_t,
+            tv_usec: 100000i64,
         };
         init
     };
     if size
-        < (1 as libc::c_int as libc::c_uint).wrapping_add(
-            (*tty)
-                .sx
-                .wrapping_mul((*tty).sy)
-                .wrapping_mul(8 as libc::c_int as libc::c_uint),
-        ) as libc::c_ulong
+        < (1u32).wrapping_add((*tty).sx.wrapping_mul((*tty).sy).wrapping_mul(8u32)) as libc::c_ulong
     {
-        return 0 as libc::c_int;
+        return 0i32;
     }
-    if (*tty).flags & 0x80 as libc::c_int != 0 {
-        return 1 as libc::c_int;
+    if (*tty).flags & 0x80i32 != 0 {
+        return 1i32;
     }
-    (*tty).flags |= 0x80 as libc::c_int;
+    (*tty).flags |= 0x80i32;
     log_debug(
         b"%s: can\'t keep up, %zu discarded\x00" as *const u8 as *const libc::c_char,
         (*c).name,
         size,
     );
     evbuffer_drain((*tty).out, size);
-    (*c).discarded = ((*c).discarded as libc::c_ulong).wrapping_add(size) as size_t as size_t;
-    (*tty).discarded = 0 as libc::c_int as size_t;
+    (*c).discarded = ((*c).discarded).wrapping_add(size);
+    (*tty).discarded = 0u64;
     event_add(&mut (*tty).timer, &mut tv);
-    return 1 as libc::c_int;
+    return 1i32;
 }
 unsafe extern "C" fn tty_write_callback(
     mut _fd: libc::c_int,
@@ -1485,7 +1459,7 @@ unsafe extern "C" fn tty_write_callback(
     let mut size: size_t = evbuffer_get_length((*tty).out);
     let mut nwrite: libc::c_int = 0;
     nwrite = evbuffer_write((*tty).out, (*c).fd);
-    if nwrite == -(1 as libc::c_int) {
+    if nwrite == -(1i32) {
         return;
     }
     log_debug(
@@ -1494,12 +1468,11 @@ unsafe extern "C" fn tty_write_callback(
         nwrite,
         size,
     );
-    if (*c).redraw > 0 as libc::c_int as libc::c_ulong {
+    if (*c).redraw > 0u64 {
         if nwrite as size_t >= (*c).redraw {
-            (*c).redraw = 0 as libc::c_int as size_t
+            (*c).redraw = 0u64
         } else {
-            (*c).redraw = ((*c).redraw as libc::c_ulong).wrapping_sub(nwrite as libc::c_ulong)
-                as size_t as size_t
+            (*c).redraw = ((*c).redraw).wrapping_sub(nwrite as libc::c_ulong)
         }
         log_debug(
             b"%s: waiting for redraw, %zu bytes left\x00" as *const u8 as *const libc::c_char,
@@ -1509,7 +1482,7 @@ unsafe extern "C" fn tty_write_callback(
     } else if tty_block_maybe(tty) != 0 {
         return;
     }
-    if evbuffer_get_length((*tty).out) != 0 as libc::c_int as libc::c_ulong {
+    if evbuffer_get_length((*tty).out) != 0u64 {
         event_add(&mut (*tty).event_out, 0 as *const timeval);
     };
 }
@@ -1522,15 +1495,14 @@ pub unsafe extern "C" fn tty_open(
     (*tty).term = tty_term_create(tty, (*c).term_name, &mut (*c).term_features, (*c).fd, cause);
     if (*tty).term.is_null() {
         tty_close(tty);
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
-    (*tty).flags |= 0x20 as libc::c_int;
-    (*tty).flags &=
-        !(0x1 as libc::c_int | 0x2 as libc::c_int | 0x80 as libc::c_int | 0x4 as libc::c_int);
+    (*tty).flags |= 0x20i32;
+    (*tty).flags &= !(0x1i32 | 0x2i32 | 0x80i32 | 0x4i32);
     event_set(
         &mut (*tty).event_in,
         (*c).fd,
-        (0x10 as libc::c_int | 0x2 as libc::c_int) as libc::c_short,
+        (0x10i32 | 0x2i32) as libc::c_short,
         Some(
             tty_read_callback
                 as unsafe extern "C" fn(
@@ -1548,7 +1520,7 @@ pub unsafe extern "C" fn tty_open(
     event_set(
         &mut (*tty).event_out,
         (*c).fd,
-        0x4 as libc::c_int as libc::c_short,
+        0x4i16,
         Some(
             tty_write_callback
                 as unsafe extern "C" fn(
@@ -1565,8 +1537,8 @@ pub unsafe extern "C" fn tty_open(
     }
     event_set(
         &mut (*tty).timer,
-        -(1 as libc::c_int),
-        0 as libc::c_int as libc::c_short,
+        -(1i32),
+        0i16,
         Some(
             tty_timer_callback
                 as unsafe extern "C" fn(
@@ -1579,7 +1551,7 @@ pub unsafe extern "C" fn tty_open(
     );
     tty_start_tty(tty);
     tty_keys_build(tty);
-    return 0 as libc::c_int;
+    return 0i32;
 }
 unsafe extern "C" fn tty_start_timer_callback(
     mut _fd: libc::c_int,
@@ -1592,10 +1564,10 @@ unsafe extern "C" fn tty_start_timer_callback(
         b"%s: start timer fired\x00" as *const u8 as *const libc::c_char,
         (*c).name,
     );
-    if (*tty).flags & (0x100 as libc::c_int | 0x200 as libc::c_int) == 0 as libc::c_int {
+    if (*tty).flags & (0x100i32 | 0x200i32) == 0i32 {
         tty_update_features(tty);
     }
-    (*tty).flags |= 0x100 as libc::c_int | 0x200 as libc::c_int;
+    (*tty).flags |= 0x100i32 | 0x200i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn tty_start_tty(mut tty: *mut tty) {
@@ -1612,42 +1584,35 @@ pub unsafe extern "C" fn tty_start_tty(mut tty: *mut tty) {
     };
     let mut tv: timeval = {
         let mut init = timeval {
-            tv_sec: 1 as libc::c_int as __time_t,
+            tv_sec: 1i64,
             tv_usec: 0,
         };
         init
     };
-    setblocking((*c).fd, 0 as libc::c_int);
+    setblocking((*c).fd, 0i32);
     event_add(&mut (*tty).event_in, 0 as *const timeval);
     memcpy(
         &mut tio as *mut termios as *mut libc::c_void,
         &mut (*tty).tio as *mut termios as *const libc::c_void,
         ::std::mem::size_of::<termios>() as libc::c_ulong,
     );
-    tio.c_iflag &= !(0o2000 as libc::c_int
-        | 0o10000 as libc::c_int
-        | 0o400 as libc::c_int
-        | 0o100 as libc::c_int
-        | 0o200 as libc::c_int
-        | 0o20000 as libc::c_int
-        | 0o40 as libc::c_int) as libc::c_uint;
-    tio.c_iflag |= 0o1 as libc::c_int as libc::c_uint;
-    tio.c_oflag &=
-        !(0o1 as libc::c_int | 0o4 as libc::c_int | 0o10 as libc::c_int | 0o40 as libc::c_int)
-            as libc::c_uint;
-    tio.c_lflag &= !(0o100000 as libc::c_int
-        | 0o2 as libc::c_int
-        | 0o10 as libc::c_int
-        | 0o20 as libc::c_int
-        | 0o100 as libc::c_int
-        | 0o1000 as libc::c_int
-        | 0o2000 as libc::c_int
-        | 0o4000 as libc::c_int
-        | 0o1 as libc::c_int) as libc::c_uint;
-    tio.c_cc[6 as libc::c_int as usize] = 1 as libc::c_int as cc_t;
-    tio.c_cc[5 as libc::c_int as usize] = 0 as libc::c_int as cc_t;
-    if tcsetattr((*c).fd, 0 as libc::c_int, &mut tio) == 0 as libc::c_int {
-        tcflush((*c).fd, 2 as libc::c_int);
+    tio.c_iflag &= !(0o2000i32 | 0o10000i32 | 0o400i32 | 0o100i32 | 0o200i32 | 0o20000i32 | 0o40i32)
+        as libc::c_uint;
+    tio.c_iflag |= 0o1u32;
+    tio.c_oflag &= !(0o1i32 | 0o4i32 | 0o10i32 | 0o40i32) as libc::c_uint;
+    tio.c_lflag &= !(0o100000i32
+        | 0o2i32
+        | 0o10i32
+        | 0o20i32
+        | 0o100i32
+        | 0o1000i32
+        | 0o2000i32
+        | 0o4000i32
+        | 0o1i32) as libc::c_uint;
+    tio.c_cc[6usize] = 1u8;
+    tio.c_cc[5usize] = 0u8;
+    if tcsetattr((*c).fd, 0i32, &mut tio) == 0i32 {
+        tcflush((*c).fd, 2i32);
     }
     tty_putcode(tty, tty_code_code::SMCUP);
     tty_putcode(tty, tty_code_code::SMKX);
@@ -1677,8 +1642,8 @@ pub unsafe extern "C" fn tty_start_tty(mut tty: *mut tty) {
     }
     event_set(
         &mut (*tty).start_timer,
-        -(1 as libc::c_int),
-        0 as libc::c_int as libc::c_short,
+        -(1i32),
+        0i16,
         Some(
             tty_start_timer_callback
                 as unsafe extern "C" fn(
@@ -1690,29 +1655,29 @@ pub unsafe extern "C" fn tty_start_tty(mut tty: *mut tty) {
         tty as *mut libc::c_void,
     );
     event_add(&mut (*tty).start_timer, &mut tv);
-    (*tty).flags |= 0x10 as libc::c_int;
+    (*tty).flags |= 0x10i32;
     tty_invalidate(tty);
     if *(*tty).ccolour as libc::c_int != '\u{0}' as i32 {
         tty_force_cursor_colour(tty, b"\x00" as *const u8 as *const libc::c_char);
     }
-    (*tty).mouse_drag_flag = 0 as libc::c_int;
+    (*tty).mouse_drag_flag = 0i32;
     (*tty).mouse_drag_update = None;
     (*tty).mouse_drag_release = None;
 }
 #[no_mangle]
 pub unsafe extern "C" fn tty_send_requests(mut tty: *mut tty) {
-    if !(*tty).flags & 0x10 as libc::c_int != 0 {
+    if !(*tty).flags & 0x10i32 != 0 {
         return;
     }
-    if (*(*tty).term).flags & 0x20 as libc::c_int != 0 {
-        if !(*tty).flags & 0x100 as libc::c_int != 0 {
+    if (*(*tty).term).flags & 0x20i32 != 0 {
+        if !(*tty).flags & 0x100i32 != 0 {
             tty_puts(tty, b"\x1b[>c\x00" as *const u8 as *const libc::c_char);
         }
-        if !(*tty).flags & 0x200 as libc::c_int != 0 {
+        if !(*tty).flags & 0x200i32 != 0 {
             tty_puts(tty, b"\x1b[>q\x00" as *const u8 as *const libc::c_char);
         }
     } else {
-        (*tty).flags |= 0x100 as libc::c_int | 0x200 as libc::c_int
+        (*tty).flags |= 0x100i32 | 0x200i32
     };
 }
 #[no_mangle]
@@ -1724,13 +1689,13 @@ pub unsafe extern "C" fn tty_stop_tty(mut tty: *mut tty) {
         ws_xpixel: 0,
         ws_ypixel: 0,
     };
-    if (*tty).flags & 0x10 as libc::c_int == 0 {
+    if (*tty).flags & 0x10i32 == 0 {
         return;
     }
-    (*tty).flags &= !(0x10 as libc::c_int);
+    (*tty).flags &= !(0x10i32);
     event_del(&mut (*tty).start_timer);
     event_del(&mut (*tty).timer);
-    (*tty).flags &= !(0x80 as libc::c_int);
+    (*tty).flags &= !(0x80i32);
     event_del(&mut (*tty).event_in);
     event_del(&mut (*tty).event_out);
     /*
@@ -1738,15 +1703,10 @@ pub unsafe extern "C" fn tty_stop_tty(mut tty: *mut tty) {
      * because the fd is invalid. Things like ssh -t can easily leave us
      * with a dead tty.
      */
-    if ioctl(
-        (*c).fd,
-        0x5413 as libc::c_int as libc::c_ulong,
-        &mut ws as *mut winsize,
-    ) == -(1 as libc::c_int)
-    {
+    if ioctl((*c).fd, 0x5413u64, &mut ws as *mut winsize) == -(1i32) {
         return;
     }
-    if tcsetattr((*c).fd, 0 as libc::c_int, &mut (*tty).tio) == -(1 as libc::c_int) {
+    if tcsetattr((*c).fd, 0i32, &mut (*tty).tio) == -(1i32) {
         return;
     }
     tty_raw(
@@ -1754,8 +1714,8 @@ pub unsafe extern "C" fn tty_stop_tty(mut tty: *mut tty) {
         tty_term_string2(
             (*tty).term,
             tty_code_code::CSR,
-            0 as libc::c_int,
-            ws.ws_row as libc::c_int - 1 as libc::c_int,
+            0i32,
+            ws.ws_row as libc::c_int - 1i32,
         ),
     );
     if tty_acs_needed(tty) != 0 {
@@ -1764,19 +1724,14 @@ pub unsafe extern "C" fn tty_stop_tty(mut tty: *mut tty) {
     tty_raw(tty, tty_term_string((*tty).term, tty_code_code::SGR0));
     tty_raw(tty, tty_term_string((*tty).term, tty_code_code::RMKX));
     tty_raw(tty, tty_term_string((*tty).term, tty_code_code::CLEAR));
-    if tty_term_has((*tty).term, tty_code_code::SS) != 0
-        && (*tty).cstyle != 0 as libc::c_int as libc::c_uint
-    {
+    if tty_term_has((*tty).term, tty_code_code::SS) != 0 && (*tty).cstyle != 0u32 {
         if tty_term_has((*tty).term, tty_code_code::SE) != 0 {
             tty_raw(tty, tty_term_string((*tty).term, tty_code_code::SE));
         } else {
-            tty_raw(
-                tty,
-                tty_term_string1((*tty).term, tty_code_code::SS, 0 as libc::c_int),
-            );
+            tty_raw(tty, tty_term_string1((*tty).term, tty_code_code::SS, 0i32));
         }
     }
-    if (*tty).mode & 0x400 as libc::c_int != 0 {
+    if (*tty).mode & 0x400i32 != 0 {
         tty_raw(tty, tty_term_string((*tty).term, tty_code_code::DSBP));
     }
     if *(*tty).ccolour as libc::c_int != '\u{0}' as i32 {
@@ -1793,16 +1748,16 @@ pub unsafe extern "C" fn tty_stop_tty(mut tty: *mut tty) {
             b"\x1b[?1006l\x1b[?1005l\x00" as *const u8 as *const libc::c_char,
         );
     }
-    if (*(*tty).term).flags & 0x20 as libc::c_int != 0 {
+    if (*(*tty).term).flags & 0x20i32 != 0 {
         tty_raw(tty, b"\x1b[?7727l\x00" as *const u8 as *const libc::c_char);
     }
     tty_raw(tty, tty_term_string((*tty).term, tty_code_code::DSFCS));
     tty_raw(tty, tty_term_string((*tty).term, tty_code_code::DSEKS));
-    if (*(*tty).term).flags & 0x4 as libc::c_int != 0 {
+    if (*(*tty).term).flags & 0x4i32 != 0 {
         tty_raw(tty, tty_term_string((*tty).term, tty_code_code::DSMG));
     }
     tty_raw(tty, tty_term_string((*tty).term, tty_code_code::RMCUP));
-    setblocking((*c).fd, 1 as libc::c_int);
+    setblocking((*c).fd, 1i32);
 }
 #[no_mangle]
 pub unsafe extern "C" fn tty_close(mut tty: *mut tty) {
@@ -1810,14 +1765,14 @@ pub unsafe extern "C" fn tty_close(mut tty: *mut tty) {
         event_del(&mut (*tty).key_timer);
     }
     tty_stop_tty(tty);
-    if (*tty).flags & 0x20 as libc::c_int != 0 {
+    if (*tty).flags & 0x20i32 != 0 {
         evbuffer_free((*tty).in_0);
         event_del(&mut (*tty).event_in);
         evbuffer_free((*tty).out);
         event_del(&mut (*tty).event_out);
         tty_term_free((*tty).term);
         tty_keys_free(tty);
-        (*tty).flags &= !(0x20 as libc::c_int)
+        (*tty).flags &= !(0x20i32)
     };
 }
 #[no_mangle]
@@ -1831,7 +1786,7 @@ pub unsafe extern "C" fn tty_update_features(mut tty: *mut tty) {
     if tty_apply_features((*tty).term, (*c).term_features) != 0 {
         tty_term_apply_overrides((*tty).term);
     }
-    if (*(*tty).term).flags & 0x4 as libc::c_int != 0 {
+    if (*(*tty).term).flags & 0x4i32 != 0 {
         tty_putcode(tty, tty_code_code::ENMG);
     }
     if options_get_number(
@@ -1848,7 +1803,7 @@ pub unsafe extern "C" fn tty_update_features(mut tty: *mut tty) {
     {
         tty_puts(tty, tty_term_string((*tty).term, tty_code_code::ENFCS));
     }
-    if (*(*tty).term).flags & 0x20 as libc::c_int != 0 {
+    if (*(*tty).term).flags & 0x20i32 != 0 {
         tty_puts(tty, b"\x1b[?7727h\x00" as *const u8 as *const libc::c_char);
     };
 }
@@ -1859,21 +1814,19 @@ pub unsafe extern "C" fn tty_raw(mut tty: *mut tty, mut s: *const libc::c_char) 
     let mut slen: ssize_t = 0;
     let mut i: u_int = 0;
     slen = strlen(s) as ssize_t;
-    i = 0 as libc::c_int as u_int;
-    while i < 5 as libc::c_int as libc::c_uint {
+    i = 0u32;
+    while i < 5u32 {
         n = write((*c).fd, s as *const libc::c_void, slen as size_t);
-        if n >= 0 as libc::c_int as libc::c_long {
+        if n >= 0i64 {
             s = s.offset(n as isize);
             slen -= n;
-            if slen == 0 as libc::c_int as libc::c_long {
+            if slen == 0i64 {
                 break;
             }
-        } else if n == -(1 as libc::c_int) as libc::c_long
-            && *__errno_location() != 11 as libc::c_int
-        {
+        } else if n == -1i64 && *__errno_location() != 11i32 {
             break;
         }
-        usleep(100 as libc::c_int as __useconds_t);
+        usleep(100u32);
         i = i.wrapping_add(1)
     }
 }
@@ -1883,7 +1836,7 @@ pub unsafe extern "C" fn tty_putcode(mut tty: *mut tty, mut code: TtyCode) {
 }
 #[no_mangle]
 pub unsafe extern "C" fn tty_putcode1(mut tty: *mut tty, mut code: TtyCode, mut a: libc::c_int) {
-    if a < 0 as libc::c_int {
+    if a < 0i32 {
         return;
     }
     tty_puts(tty, tty_term_string1((*tty).term, code, a));
@@ -1895,7 +1848,7 @@ pub unsafe extern "C" fn tty_putcode2(
     mut a: libc::c_int,
     mut b: libc::c_int,
 ) {
-    if a < 0 as libc::c_int || b < 0 as libc::c_int {
+    if a < 0i32 || b < 0i32 {
         return;
     }
     tty_puts(tty, tty_term_string2((*tty).term, code, a, b));
@@ -1908,7 +1861,7 @@ pub unsafe extern "C" fn tty_putcode3(
     mut b: libc::c_int,
     mut c: libc::c_int,
 ) {
-    if a < 0 as libc::c_int || b < 0 as libc::c_int || c < 0 as libc::c_int {
+    if a < 0i32 || b < 0i32 || c < 0i32 {
         return;
     }
     tty_puts(tty, tty_term_string3((*tty).term, code, a, b, c));
@@ -1936,9 +1889,8 @@ pub unsafe extern "C" fn tty_putcode_ptr2(
 }
 unsafe extern "C" fn tty_add(mut tty: *mut tty, mut buf: *const libc::c_char, mut len: size_t) {
     let mut c: *mut client = (*tty).client;
-    if (*tty).flags & 0x80 as libc::c_int != 0 {
-        (*tty).discarded =
-            ((*tty).discarded as libc::c_ulong).wrapping_add(len) as size_t as size_t;
+    if (*tty).flags & 0x80i32 != 0 {
+        (*tty).discarded = ((*tty).discarded).wrapping_add(len);
         return;
     }
     evbuffer_add((*tty).out, buf as *const libc::c_void, len);
@@ -1948,11 +1900,11 @@ unsafe extern "C" fn tty_add(mut tty: *mut tty, mut buf: *const libc::c_char, mu
         len as libc::c_int,
         buf,
     );
-    (*c).written = ((*c).written as libc::c_ulong).wrapping_add(len) as size_t as size_t;
-    if tty_log_fd != -(1 as libc::c_int) {
+    (*c).written = ((*c).written).wrapping_add(len);
+    if tty_log_fd != -(1i32) {
         write(tty_log_fd, buf as *const libc::c_void, len);
     }
-    if (*tty).flags & 0x10 as libc::c_int != 0 {
+    if (*tty).flags & 0x10i32 != 0 {
         event_add(&mut (*tty).event_out, 0 as *const timeval);
     };
 }
@@ -1965,35 +1917,27 @@ pub unsafe extern "C" fn tty_puts(mut tty: *mut tty, mut s: *const libc::c_char)
 #[no_mangle]
 pub unsafe extern "C" fn tty_putc(mut tty: *mut tty, mut ch: u_char) {
     let mut acs: *const libc::c_char = 0 as *const libc::c_char;
-    if (*(*tty).term).flags & 0x2 as libc::c_int != 0
-        && ch as libc::c_int >= 0x20 as libc::c_int
-        && ch as libc::c_int != 0x7f as libc::c_int
-        && (*tty).cy == (*tty).sy.wrapping_sub(1 as libc::c_int as libc::c_uint)
-        && (*tty).cx.wrapping_add(1 as libc::c_int as libc::c_uint) >= (*tty).sx
+    if (*(*tty).term).flags & 0x2i32 != 0
+        && ch as libc::c_int >= 0x20i32
+        && ch as libc::c_int != 0x7fi32
+        && (*tty).cy == (*tty).sy.wrapping_sub(1u32)
+        && (*tty).cx.wrapping_add(1u32) >= (*tty).sx
     {
         return;
     }
-    if (*tty).cell.attr as libc::c_int & 0x80 as libc::c_int != 0 {
+    if (*tty).cell.attr as libc::c_int & 0x80i32 != 0 {
         acs = tty_acs_get(tty, ch);
         if !acs.is_null() {
             tty_add(tty, acs, strlen(acs));
         } else {
-            tty_add(
-                tty,
-                &mut ch as *mut u_char as *const libc::c_char,
-                1 as libc::c_int as size_t,
-            );
+            tty_add(tty, &mut ch as *mut u_char as *const libc::c_char, 1u64);
         }
     } else {
-        tty_add(
-            tty,
-            &mut ch as *mut u_char as *const libc::c_char,
-            1 as libc::c_int as size_t,
-        );
+        tty_add(tty, &mut ch as *mut u_char as *const libc::c_char, 1u64);
     }
-    if ch as libc::c_int >= 0x20 as libc::c_int && ch as libc::c_int != 0x7f as libc::c_int {
+    if ch as libc::c_int >= 0x20i32 && ch as libc::c_int != 0x7fi32 {
         if (*tty).cx >= (*tty).sx {
-            (*tty).cx = 1 as libc::c_int as u_int;
+            (*tty).cx = 1u32;
             if (*tty).cy != (*tty).rlower {
                 (*tty).cy = (*tty).cy.wrapping_add(1)
             }
@@ -2002,7 +1946,7 @@ pub unsafe extern "C" fn tty_putc(mut tty: *mut tty, mut ch: u_char) {
              * we think it should be after a line wrap - this means
              * it works on sensible terminals as well.
              */
-            if (*(*tty).term).flags & 0x2 as libc::c_int != 0 {
+            if (*(*tty).term).flags & 0x2i32 != 0 {
                 tty_putcode2(
                     tty,
                     tty_code_code::CUP,
@@ -2022,14 +1966,11 @@ pub unsafe extern "C" fn tty_putn(
     mut len: size_t,
     mut width: u_int,
 ) {
-    if (*(*tty).term).flags & 0x2 as libc::c_int != 0
-        && (*tty).cy == (*tty).sy.wrapping_sub(1 as libc::c_int as libc::c_uint)
+    if (*(*tty).term).flags & 0x2i32 != 0
+        && (*tty).cy == (*tty).sy.wrapping_sub(1u32)
         && ((*tty).cx as libc::c_ulong).wrapping_add(len) >= (*tty).sx as libc::c_ulong
     {
-        len = (*tty)
-            .sx
-            .wrapping_sub((*tty).cx)
-            .wrapping_sub(1 as libc::c_int as libc::c_uint) as size_t
+        len = (*tty).sx.wrapping_sub((*tty).cx).wrapping_sub(1u32) as size_t
     }
     tty_add(tty, buf as *const libc::c_char, len);
     if (*tty).cx.wrapping_add(width) > (*tty).sx {
@@ -2037,13 +1978,11 @@ pub unsafe extern "C" fn tty_putn(
         if (*tty).cx <= (*tty).sx {
             (*tty).cy = (*tty).cy.wrapping_add(1)
         } else {
-            (*tty).cy = (2147483647 as libc::c_int as libc::c_uint)
-                .wrapping_mul(2 as libc::c_uint)
-                .wrapping_add(1 as libc::c_uint);
+            (*tty).cy = (2147483647u32).wrapping_mul(2u32).wrapping_add(1u32);
             (*tty).cx = (*tty).cy
         }
     } else {
-        (*tty).cx = ((*tty).cx as libc::c_uint).wrapping_add(width) as u_int as u_int
+        (*tty).cx = ((*tty).cx).wrapping_add(width)
     };
 }
 unsafe extern "C" fn tty_set_italics(mut tty: *mut tty) {
@@ -2053,12 +1992,8 @@ unsafe extern "C" fn tty_set_italics(mut tty: *mut tty) {
             global_options,
             b"default-terminal\x00" as *const u8 as *const libc::c_char,
         );
-        if strcmp(s, b"screen\x00" as *const u8 as *const libc::c_char) != 0 as libc::c_int
-            && strncmp(
-                s,
-                b"screen-\x00" as *const u8 as *const libc::c_char,
-                7 as libc::c_int as libc::c_ulong,
-            ) != 0 as libc::c_int
+        if strcmp(s, b"screen\x00" as *const u8 as *const libc::c_char) != 0i32
+            && strncmp(s, b"screen-\x00" as *const u8 as *const libc::c_char, 7u64) != 0i32
         {
             tty_putcode(tty, tty_code_code::SITM);
             return;
@@ -2094,14 +2029,14 @@ pub unsafe extern "C" fn tty_update_mode(
 ) {
     let mut c: *mut client = (*tty).client;
     let mut changed: libc::c_int = 0;
-    if !s.is_null() && strcmp((*s).ccolour, (*tty).ccolour) != 0 as libc::c_int {
+    if !s.is_null() && strcmp((*s).ccolour, (*tty).ccolour) != 0i32 {
         tty_force_cursor_colour(tty, (*s).ccolour);
     }
-    if (*tty).flags & 0x1 as libc::c_int != 0 {
-        mode &= !(0x1 as libc::c_int)
+    if (*tty).flags & 0x1i32 != 0 {
+        mode &= !(0x1i32)
     }
     changed = mode ^ (*tty).mode;
-    if changed != 0 as libc::c_int {
+    if changed != 0i32 {
         log_debug(
             b"%s: update mode %x to %x\x00" as *const u8 as *const libc::c_char,
             (*c).name,
@@ -2109,16 +2044,16 @@ pub unsafe extern "C" fn tty_update_mode(
             mode,
         );
     }
-    if changed & 0x80 as libc::c_int != 0 {
+    if changed & 0x80i32 != 0 {
         if tty_term_has((*tty).term, tty_code_code::CVVIS) != 0 {
             tty_putcode(tty, tty_code_code::CVVIS);
         } else {
             tty_putcode(tty, tty_code_code::CNORM);
         }
-        changed |= 0x1 as libc::c_int
+        changed |= 0x1i32
     }
-    if changed & 0x1 as libc::c_int != 0 {
-        if mode & 0x1 as libc::c_int != 0 {
+    if changed & 0x1i32 != 0 {
+        if mode & 0x1i32 != 0 {
             tty_putcode(tty, tty_code_code::CNORM);
         } else {
             tty_putcode(tty, tty_code_code::CIVIS);
@@ -2126,9 +2061,7 @@ pub unsafe extern "C" fn tty_update_mode(
     }
     if !s.is_null() && (*tty).cstyle != (*s).cstyle {
         if tty_term_has((*tty).term, tty_code_code::SS) != 0 {
-            if (*s).cstyle == 0 as libc::c_int as libc::c_uint
-                && tty_term_has((*tty).term, tty_code_code::SE) != 0
-            {
+            if (*s).cstyle == 0u32 && tty_term_has((*tty).term, tty_code_code::SE) != 0 {
                 tty_putcode(tty, tty_code_code::SE);
             } else {
                 tty_putcode1(tty, tty_code_code::SS, (*s).cstyle as libc::c_int);
@@ -2136,38 +2069,36 @@ pub unsafe extern "C" fn tty_update_mode(
         }
         (*tty).cstyle = (*s).cstyle
     }
-    if changed & (0x20 as libc::c_int | 0x40 as libc::c_int | 0x1000 as libc::c_int) != 0
+    if changed & (0x20i32 | 0x40i32 | 0x1000i32) != 0
         && tty_term_has((*tty).term, tty_code_code::KMOUS) != 0
     {
-        if mode & (0x20 as libc::c_int | 0x40 as libc::c_int | 0x1000 as libc::c_int)
-            == 0 as libc::c_int
-        {
+        if mode & (0x20i32 | 0x40i32 | 0x1000i32) == 0i32 {
             tty_puts(tty, b"\x1b[?1006l\x00" as *const u8 as *const libc::c_char);
         }
-        if changed & 0x20 as libc::c_int != 0 && !mode & 0x20 as libc::c_int != 0 {
+        if changed & 0x20i32 != 0 && !mode & 0x20i32 != 0 {
             tty_puts(tty, b"\x1b[?1000l\x00" as *const u8 as *const libc::c_char);
         }
-        if changed & 0x40 as libc::c_int != 0 && !mode & 0x40 as libc::c_int != 0 {
+        if changed & 0x40i32 != 0 && !mode & 0x40i32 != 0 {
             tty_puts(tty, b"\x1b[?1002l\x00" as *const u8 as *const libc::c_char);
         }
-        if changed & 0x1000 as libc::c_int != 0 && !mode & 0x1000 as libc::c_int != 0 {
+        if changed & 0x1000i32 != 0 && !mode & 0x1000i32 != 0 {
             tty_puts(tty, b"\x1b[?1003l\x00" as *const u8 as *const libc::c_char);
         }
-        if mode & (0x20 as libc::c_int | 0x40 as libc::c_int | 0x1000 as libc::c_int) != 0 {
+        if mode & (0x20i32 | 0x40i32 | 0x1000i32) != 0 {
             tty_puts(tty, b"\x1b[?1006h\x00" as *const u8 as *const libc::c_char);
         }
-        if changed & 0x20 as libc::c_int != 0 && mode & 0x20 as libc::c_int != 0 {
+        if changed & 0x20i32 != 0 && mode & 0x20i32 != 0 {
             tty_puts(tty, b"\x1b[?1000h\x00" as *const u8 as *const libc::c_char);
         }
-        if changed & 0x40 as libc::c_int != 0 && mode & 0x40 as libc::c_int != 0 {
+        if changed & 0x40i32 != 0 && mode & 0x40i32 != 0 {
             tty_puts(tty, b"\x1b[?1002h\x00" as *const u8 as *const libc::c_char);
         }
-        if changed & 0x1000 as libc::c_int != 0 && mode & 0x1000 as libc::c_int != 0 {
+        if changed & 0x1000i32 != 0 && mode & 0x1000i32 != 0 {
             tty_puts(tty, b"\x1b[?1003h\x00" as *const u8 as *const libc::c_char);
         }
     }
-    if changed & 0x400 as libc::c_int != 0 {
-        if mode & 0x400 as libc::c_int != 0 {
+    if changed & 0x400i32 != 0 {
+        if mode & 0x400i32 != 0 {
             tty_putcode(tty, tty_code_code::ENBP);
         } else {
             tty_putcode(tty, tty_code_code::DSBP);
@@ -2187,7 +2118,7 @@ unsafe extern "C" fn tty_emulate_repeat(
         loop {
             let fresh0 = n;
             n = n.wrapping_sub(1);
-            if !(fresh0 > 0 as libc::c_int as libc::c_uint) {
+            if !(fresh0 > 0u32) {
                 break;
             }
             tty_putcode(tty, code1);
@@ -2208,13 +2139,13 @@ unsafe extern "C" fn tty_repeat_space(mut tty: *mut tty, mut n: u_int) {
             tty,
             s.as_mut_ptr() as *const libc::c_void,
             ::std::mem::size_of::<[libc::c_char; 500]>() as libc::c_ulong,
-            ::std::mem::size_of::<[libc::c_char; 500]>() as libc::c_ulong as u_int,
+            ::std::mem::size_of::<[libc::c_char; 500]>() as u_int,
         );
         n = (n as libc::c_ulong)
             .wrapping_sub(::std::mem::size_of::<[libc::c_char; 500]>() as libc::c_ulong)
-            as u_int as u_int
+            as u_int
     }
-    if n != 0 as libc::c_int as libc::c_uint {
+    if n != 0u32 {
         tty_putn(tty, s.as_mut_ptr() as *const libc::c_void, n as size_t, n);
     };
 }
@@ -2257,53 +2188,53 @@ unsafe extern "C" fn tty_window_offset1(
     let mut lines: u_int = 0;
     lines = status_line_size(c);
     if (*tty).sx >= (*w).sx && (*tty).sy.wrapping_sub(lines) >= (*w).sy {
-        *ox = 0 as libc::c_int as u_int;
-        *oy = 0 as libc::c_int as u_int;
+        *ox = 0u32;
+        *oy = 0u32;
         *sx = (*w).sx;
         *sy = (*w).sy;
         (*c).pan_window = 0 as *mut libc::c_void;
-        return 0 as libc::c_int;
+        return 0i32;
     }
     *sx = (*tty).sx;
     *sy = (*tty).sy.wrapping_sub(lines);
     if (*c).pan_window == w as *mut libc::c_void {
         if *sx >= (*w).sx {
-            (*c).pan_ox = 0 as libc::c_int as u_int
+            (*c).pan_ox = 0u32
         } else if (*c).pan_ox.wrapping_add(*sx) > (*w).sx {
             (*c).pan_ox = (*w).sx.wrapping_sub(*sx)
         }
         *ox = (*c).pan_ox;
         if *sy >= (*w).sy {
-            (*c).pan_oy = 0 as libc::c_int as u_int
+            (*c).pan_oy = 0u32
         } else if (*c).pan_oy.wrapping_add(*sy) > (*w).sy {
             (*c).pan_oy = (*w).sy.wrapping_sub(*sy)
         }
         *oy = (*c).pan_oy;
-        return 1 as libc::c_int;
+        return 1i32;
     }
-    if !(*(*wp).screen).mode & 0x1 as libc::c_int != 0 {
-        *ox = 0 as libc::c_int as u_int;
-        *oy = 0 as libc::c_int as u_int
+    if !(*(*wp).screen).mode & 0x1i32 != 0 {
+        *ox = 0u32;
+        *oy = 0u32
     } else {
         cx = (*wp).xoff.wrapping_add((*(*wp).screen).cx);
         cy = (*wp).yoff.wrapping_add((*(*wp).screen).cy);
         if cx < *sx {
-            *ox = 0 as libc::c_int as u_int
+            *ox = 0u32
         } else if cx > (*w).sx.wrapping_sub(*sx) {
             *ox = (*w).sx.wrapping_sub(*sx)
         } else {
-            *ox = cx.wrapping_sub((*sx).wrapping_div(2 as libc::c_int as libc::c_uint))
+            *ox = cx.wrapping_sub((*sx).wrapping_div(2u32))
         }
         if cy < *sy {
-            *oy = 0 as libc::c_int as u_int
+            *oy = 0u32
         } else if cy > (*w).sy.wrapping_sub(*sy) {
             *oy = (*w).sy.wrapping_sub(*sy)
         } else {
-            *oy = cy.wrapping_sub((*sy).wrapping_div(2 as libc::c_int as libc::c_uint))
+            *oy = cy.wrapping_sub((*sy).wrapping_div(2u32))
         }
     }
     (*c).pan_window = 0 as *mut libc::c_void;
-    return 1 as libc::c_int;
+    return 1i32;
 }
 /* Update stored offsets for a window and redraw if necessary. */
 #[no_mangle]
@@ -2324,7 +2255,7 @@ pub unsafe extern "C" fn tty_update_client_offset(mut c: *mut client) {
     let mut oy: u_int = 0;
     let mut sx: u_int = 0;
     let mut sy: u_int = 0;
-    if !(*c).flags & 0x1 as libc::c_int as libc::c_ulong != 0 {
+    if !(*c).flags & 0x1u64 != 0 {
         return;
     }
     (*c).tty.oflag = tty_window_offset1(&mut (*c).tty, &mut ox, &mut oy, &mut sx, &mut sy);
@@ -2350,7 +2281,7 @@ pub unsafe extern "C" fn tty_update_client_offset(mut c: *mut client) {
     (*c).tty.ooy = oy;
     (*c).tty.osx = sx;
     (*c).tty.osy = sy;
-    (*c).flags |= (0x8 as libc::c_int | 0x10 as libc::c_int) as libc::c_ulong;
+    (*c).flags |= (0x8i32 | 0x10i32) as libc::c_ulong;
 }
 /* Get a palette entry. */
 unsafe extern "C" fn tty_get_palette(
@@ -2359,18 +2290,18 @@ unsafe extern "C" fn tty_get_palette(
 ) -> libc::c_int {
     let mut new: libc::c_int = 0;
     if palette.is_null() {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
-    new = -(1 as libc::c_int);
-    if c < 8 as libc::c_int {
+    new = -(1i32);
+    if c < 8i32 {
         new = *palette.offset(c as isize)
-    } else if c >= 90 as libc::c_int && c <= 97 as libc::c_int {
-        new = *palette.offset((8 as libc::c_int + c - 90 as libc::c_int) as isize)
-    } else if c & 0x1000000 as libc::c_int != 0 {
-        new = *palette.offset((c & !(0x1000000 as libc::c_int)) as isize)
+    } else if c >= 90i32 && c <= 97i32 {
+        new = *palette.offset((8i32 + c - 90i32) as isize)
+    } else if c & 0x1000000i32 != 0 {
+        new = *palette.offset((c & !(0x1000000i32)) as isize)
     }
-    if new == 0 as libc::c_int {
-        return -(1 as libc::c_int);
+    if new == 0i32 {
+        return -(1i32);
     }
     return new;
 }
@@ -2380,8 +2311,8 @@ unsafe extern "C" fn tty_get_palette(
  * pane.
  */
 unsafe extern "C" fn tty_large_region(mut _tty: *mut tty, mut ctx: *const tty_ctx) -> libc::c_int {
-    return ((*ctx).orlower.wrapping_sub((*ctx).orupper)
-        >= (*ctx).sy.wrapping_div(2 as libc::c_int as libc::c_uint)) as libc::c_int;
+    return ((*ctx).orlower.wrapping_sub((*ctx).orupper) >= (*ctx).sy.wrapping_div(2u32))
+        as libc::c_int;
 }
 /*
  * Return if BCE is needed but the terminal doesn't have it - it'll need to be
@@ -2393,14 +2324,12 @@ unsafe extern "C" fn tty_fake_bce(
     mut bg: u_int,
 ) -> libc::c_int {
     if tty_term_flag((*tty).term, tty_code_code::BCE) != 0 {
-        return 0 as libc::c_int;
+        return 0i32;
     }
-    if !(bg == 8 as libc::c_int as libc::c_uint || bg == 9 as libc::c_int as libc::c_uint)
-        || !((*gc).bg == 8 as libc::c_int || (*gc).bg == 9 as libc::c_int)
-    {
-        return 1 as libc::c_int;
+    if !(bg == 8u32 || bg == 9u32) || !((*gc).bg == 8i32 || (*gc).bg == 9i32) {
+        return 1i32;
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 /*
  * Redraw scroll region using data from screen (already updated). Used when
@@ -2450,16 +2379,16 @@ unsafe extern "C" fn tty_is_visible(
     let mut xoff: u_int = (*ctx).rxoff.wrapping_add(px);
     let mut yoff: u_int = (*ctx).ryoff.wrapping_add(py);
     if (*ctx).bigger == 0 {
-        return 1 as libc::c_int;
+        return 1i32;
     }
     if xoff.wrapping_add(nx) <= (*ctx).wox
         || xoff >= (*ctx).wox.wrapping_add((*ctx).wsx)
         || yoff.wrapping_add(ny) <= (*ctx).woy
         || yoff >= (*ctx).woy.wrapping_add((*ctx).wsy)
     {
-        return 0 as libc::c_int;
+        return 0i32;
     }
-    return 1 as libc::c_int;
+    return 1i32;
 }
 /* Clamp line position to visible part of pane. */
 unsafe extern "C" fn tty_clamp_line(
@@ -2474,28 +2403,28 @@ unsafe extern "C" fn tty_clamp_line(
     mut ry: *mut u_int,
 ) -> libc::c_int {
     let mut xoff: u_int = (*ctx).rxoff.wrapping_add(px);
-    if tty_is_visible(tty, ctx, px, py, nx, 1 as libc::c_int as u_int) == 0 {
-        return 0 as libc::c_int;
+    if tty_is_visible(tty, ctx, px, py, nx, 1u32) == 0 {
+        return 0i32;
     }
     *ry = (*ctx).yoff.wrapping_add(py).wrapping_sub((*ctx).woy);
     if xoff >= (*ctx).wox && xoff.wrapping_add(nx) <= (*ctx).wox.wrapping_add((*ctx).wsx) {
         /* All visible. */
-        *i = 0 as libc::c_int as u_int;
+        *i = 0u32;
         *x = (*ctx).xoff.wrapping_add(px).wrapping_sub((*ctx).wox);
         *rx = nx
     } else if xoff < (*ctx).wox && xoff.wrapping_add(nx) > (*ctx).wox.wrapping_add((*ctx).wsx) {
         /* Both left and right not visible. */
         *i = (*ctx).wox;
-        *x = 0 as libc::c_int as u_int;
+        *x = 0u32;
         *rx = (*ctx).wsx
     } else if xoff < (*ctx).wox {
         /* Left not visible. */
         *i = (*ctx).wox.wrapping_sub((*ctx).xoff.wrapping_add(px));
-        *x = 0 as libc::c_int as u_int;
+        *x = 0u32;
         *rx = nx.wrapping_sub(*i)
     } else {
         /* Right not visible. */
-        *i = 0 as libc::c_int as u_int;
+        *i = 0u32;
         *x = (*ctx).xoff.wrapping_add(px).wrapping_sub((*ctx).wox);
         *rx = (*ctx).wsx.wrapping_sub(*x)
     }
@@ -2508,7 +2437,7 @@ unsafe extern "C" fn tty_clamp_line(
             nx,
         );
     }
-    return 1 as libc::c_int;
+    return 1i32;
 }
 /* Clear a line. */
 unsafe extern "C" fn tty_clear_line(
@@ -2529,7 +2458,7 @@ unsafe extern "C" fn tty_clear_line(
         py,
     );
     /* Nothing to clear. */
-    if nx == 0 as libc::c_int as libc::c_uint {
+    if nx == 0u32 {
         return;
     }
     /* If genuine BCE is available, can try escape sequences. */
@@ -2541,15 +2470,8 @@ unsafe extern "C" fn tty_clear_line(
             return;
         }
         /* At the start of the line. Use EL1. */
-        if px == 0 as libc::c_int as libc::c_uint
-            && tty_term_has((*tty).term, tty_code_code::EL1) != 0
-        {
-            tty_cursor(
-                tty,
-                px.wrapping_add(nx)
-                    .wrapping_sub(1 as libc::c_int as libc::c_uint),
-                py,
-            );
+        if px == 0u32 && tty_term_has((*tty).term, tty_code_code::EL1) != 0 {
+            tty_cursor(tty, px.wrapping_add(nx).wrapping_sub(1u32), py);
             tty_putcode(tty, tty_code_code::EL1);
             return;
         }
@@ -2609,26 +2531,26 @@ unsafe extern "C" fn tty_clamp_area(
     let mut xoff: u_int = (*ctx).rxoff.wrapping_add(px);
     let mut yoff: u_int = (*ctx).ryoff.wrapping_add(py);
     if tty_is_visible(tty, ctx, px, py, nx, ny) == 0 {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     if xoff >= (*ctx).wox && xoff.wrapping_add(nx) <= (*ctx).wox.wrapping_add((*ctx).wsx) {
         /* All visible. */
-        *i = 0 as libc::c_int as u_int;
+        *i = 0u32;
         *x = (*ctx).xoff.wrapping_add(px).wrapping_sub((*ctx).wox);
         *rx = nx
     } else if xoff < (*ctx).wox && xoff.wrapping_add(nx) > (*ctx).wox.wrapping_add((*ctx).wsx) {
         /* Both left and right not visible. */
         *i = (*ctx).wox;
-        *x = 0 as libc::c_int as u_int;
+        *x = 0u32;
         *rx = (*ctx).wsx
     } else if xoff < (*ctx).wox {
         /* Left not visible. */
         *i = (*ctx).wox.wrapping_sub((*ctx).xoff.wrapping_add(px));
-        *x = 0 as libc::c_int as u_int;
+        *x = 0u32;
         *rx = nx.wrapping_sub(*i)
     } else {
         /* Right not visible. */
-        *i = 0 as libc::c_int as u_int;
+        *i = 0u32;
         *x = (*ctx).xoff.wrapping_add(px).wrapping_sub((*ctx).wox);
         *rx = (*ctx).wsx.wrapping_sub(*x)
     }
@@ -2643,22 +2565,22 @@ unsafe extern "C" fn tty_clamp_area(
     }
     if yoff >= (*ctx).woy && yoff.wrapping_add(ny) <= (*ctx).woy.wrapping_add((*ctx).wsy) {
         /* All visible. */
-        *j = 0 as libc::c_int as u_int;
+        *j = 0u32;
         *y = (*ctx).yoff.wrapping_add(py).wrapping_sub((*ctx).woy);
         *ry = ny
     } else if yoff < (*ctx).woy && yoff.wrapping_add(ny) > (*ctx).woy.wrapping_add((*ctx).wsy) {
         /* Both top and bottom not visible. */
         *j = (*ctx).woy;
-        *y = 0 as libc::c_int as u_int;
+        *y = 0u32;
         *ry = (*ctx).wsy
     } else if yoff < (*ctx).woy {
         /* Top not visible. */
         *j = (*ctx).woy.wrapping_sub((*ctx).yoff.wrapping_add(py));
-        *y = 0 as libc::c_int as u_int;
+        *y = 0u32;
         *ry = ny.wrapping_sub(*j)
     } else {
         /* Bottom not visible. */
-        *j = 0 as libc::c_int as u_int;
+        *j = 0u32;
         *y = (*ctx).yoff.wrapping_add(py).wrapping_sub((*ctx).woy);
         *ry = (*ctx).wsy.wrapping_sub(*y)
     }
@@ -2671,7 +2593,7 @@ unsafe extern "C" fn tty_clamp_area(
             ny,
         );
     }
-    return 1 as libc::c_int;
+    return 1i32;
 }
 /* Clear an area, adjusting to visible part of pane. */
 unsafe extern "C" fn tty_clear_area(
@@ -2696,18 +2618,18 @@ unsafe extern "C" fn tty_clear_area(
         py,
     );
     /* Nothing to clear. */
-    if nx == 0 as libc::c_int as libc::c_uint || ny == 0 as libc::c_int as libc::c_uint {
+    if nx == 0u32 || ny == 0u32 {
         return;
     }
     /* If genuine BCE is available, can try escape sequences. */
     if tty_fake_bce(tty, defaults, bg) == 0 {
         /* Use ED if clearing off the bottom of the terminal. */
-        if px == 0 as libc::c_int as libc::c_uint
+        if px == 0u32
             && px.wrapping_add(nx) >= (*tty).sx
             && py.wrapping_add(ny) >= (*tty).sy
             && tty_term_has((*tty).term, tty_code_code::ED) != 0
         {
-            tty_cursor(tty, 0 as libc::c_int as u_int, py);
+            tty_cursor(tty, 0u32, py);
             tty_putcode(tty, tty_code_code::ED);
             return;
         }
@@ -2716,15 +2638,13 @@ unsafe extern "C" fn tty_clear_area(
          * background colour isn't default (because it doesn't work
          * after SGR 0).
          */
-        if (*(*tty).term).flags & 0x8 as libc::c_int != 0
-            && !(bg == 8 as libc::c_int as libc::c_uint || bg == 9 as libc::c_int as libc::c_uint)
-        {
+        if (*(*tty).term).flags & 0x8i32 != 0 && !(bg == 8u32 || bg == 9u32) {
             xsnprintf(
                 tmp.as_mut_ptr(),
                 ::std::mem::size_of::<[libc::c_char; 64]>() as libc::c_ulong,
                 b"\x1b[32;%u;%u;%u;%u$x\x00" as *const u8 as *const libc::c_char,
-                py.wrapping_add(1 as libc::c_int as libc::c_uint),
-                px.wrapping_add(1 as libc::c_int as libc::c_uint),
+                py.wrapping_add(1u32),
+                px.wrapping_add(1u32),
                 py.wrapping_add(ny),
                 px.wrapping_add(nx),
             );
@@ -2732,18 +2652,13 @@ unsafe extern "C" fn tty_clear_area(
             return;
         }
         /* Full lines can be scrolled away to clear them. */
-        if px == 0 as libc::c_int as libc::c_uint
+        if px == 0u32
             && px.wrapping_add(nx) >= (*tty).sx
-            && ny > 2 as libc::c_int as libc::c_uint
+            && ny > 2u32
             && tty_term_has((*tty).term, tty_code_code::CSR) != 0
             && tty_term_has((*tty).term, tty_code_code::INDN) != 0
         {
-            tty_region(
-                tty,
-                py,
-                py.wrapping_add(ny)
-                    .wrapping_sub(1 as libc::c_int as libc::c_uint),
-            );
+            tty_region(tty, py, py.wrapping_add(ny).wrapping_sub(1u32));
             tty_margin_off(tty);
             tty_putcode1(tty, tty_code_code::INDN, ny as libc::c_int);
             return;
@@ -2752,24 +2667,14 @@ unsafe extern "C" fn tty_clear_area(
          * If margins are supported, can just scroll the area off to
          * clear it.
          */
-        if nx > 2 as libc::c_int as libc::c_uint
-            && ny > 2 as libc::c_int as libc::c_uint
+        if nx > 2u32
+            && ny > 2u32
             && tty_term_has((*tty).term, tty_code_code::CSR) != 0
-            && (*(*tty).term).flags & 0x4 as libc::c_int != 0
+            && (*(*tty).term).flags & 0x4i32 != 0
             && tty_term_has((*tty).term, tty_code_code::INDN) != 0
         {
-            tty_region(
-                tty,
-                py,
-                py.wrapping_add(ny)
-                    .wrapping_sub(1 as libc::c_int as libc::c_uint),
-            );
-            tty_margin(
-                tty,
-                px,
-                px.wrapping_add(nx)
-                    .wrapping_sub(1 as libc::c_int as libc::c_uint),
-            );
+            tty_region(tty, py, py.wrapping_add(ny).wrapping_sub(1u32));
+            tty_margin(tty, px, px.wrapping_add(nx).wrapping_sub(1u32));
             tty_putcode1(tty, tty_code_code::INDN, ny as libc::c_int);
             return;
         }
@@ -2822,7 +2727,7 @@ unsafe extern "C" fn tty_draw_pane(mut tty: *mut tty, mut ctx: *const tty_ctx, m
         tty_draw_line(
             tty,
             s,
-            0 as libc::c_int as u_int,
+            0u32,
             py,
             nx,
             (*ctx).xoff,
@@ -2832,18 +2737,7 @@ unsafe extern "C" fn tty_draw_pane(mut tty: *mut tty, mut ctx: *const tty_ctx, m
         );
         return;
     }
-    if tty_clamp_line(
-        tty,
-        ctx,
-        0 as libc::c_int as u_int,
-        py,
-        nx,
-        &mut i,
-        &mut x,
-        &mut rx,
-        &mut ry,
-    ) != 0
-    {
+    if tty_clamp_line(tty, ctx, 0u32, py, nx, &mut i, &mut x, &mut rx, &mut ry) != 0 {
         tty_draw_line(tty, s, i, py, rx, x, ry, &(*ctx).defaults, (*ctx).palette);
     };
 }
@@ -2866,13 +2760,13 @@ unsafe extern "C" fn tty_check_codeset(
     };
     let mut c: libc::c_int = 0;
     /* Characters less than 0x7f are always fine, no matter what. */
-    if (*gc).data.size as libc::c_int == 1 as libc::c_int
-        && (*(*gc).data.data.as_ptr() as libc::c_int) < 0x7f as libc::c_int
+    if (*gc).data.size as libc::c_int == 1i32
+        && (*(*gc).data.data.as_ptr() as libc::c_int) < 0x7fi32
     {
         return gc;
     }
     /* UTF-8 terminal and a UTF-8 character - fine. */
-    if (*(*tty).client).flags & 0x10000 as libc::c_int as libc::c_ulong != 0 {
+    if (*(*tty).client).flags & 0x10000u64 != 0 {
         return gc;
     }
     memcpy(
@@ -2886,15 +2780,15 @@ unsafe extern "C" fn tty_check_codeset(
         (*gc).data.data.as_ptr() as *const libc::c_char,
         (*gc).data.size as size_t,
     );
-    if c != -(1 as libc::c_int) {
+    if c != -(1i32) {
         utf8_set(&mut new.data, c as u_char);
-        new.attr = (new.attr as libc::c_int | 0x80 as libc::c_int) as u_short;
+        new.attr = (new.attr as libc::c_int | 0x80i32) as u_short;
         return &mut new;
     }
     /* Replace by the right number of underscores. */
     new.data.size = (*gc).data.width;
-    if new.data.size as libc::c_int > 21 as libc::c_int {
-        new.data.size = 21 as libc::c_int as u_char
+    if new.data.size as libc::c_int > 21i32 {
+        new.data.size = 21u8
     }
     memset(
         new.data.data.as_mut_ptr() as *mut libc::c_void,
@@ -2910,7 +2804,7 @@ unsafe extern "C" fn tty_check_overlay(
 ) -> libc::c_int {
     let mut c: *mut client = (*tty).client;
     if (*c).overlay_check.is_none() {
-        return 1 as libc::c_int;
+        return 1i32;
     }
     return (*c).overlay_check.expect("non-null function pointer")(c, px, py);
 }
@@ -2961,8 +2855,8 @@ pub unsafe extern "C" fn tty_draw_line(
     let mut sx: u_int = 0;
     let mut width: u_int = 0;
     let mut flags: libc::c_int = 0;
-    let mut cleared: libc::c_int = 0 as libc::c_int;
-    let mut wrapped: libc::c_int = 0 as libc::c_int;
+    let mut cleared: libc::c_int = 0i32;
+    let mut wrapped: libc::c_int = 0i32;
     let mut buf: [libc::c_char; 512] = [0; 512];
     let mut len: size_t = 0;
     let mut cellsize: u_int = 0;
@@ -2980,8 +2874,8 @@ pub unsafe extern "C" fn tty_draw_line(
      * px is the start x and nx is the width to draw.
      * atx,aty is the line on the terminal to draw it.
      */
-    flags = (*tty).flags & 0x1 as libc::c_int;
-    (*tty).flags |= 0x1 as libc::c_int;
+    flags = (*tty).flags & 0x1i32;
+    (*tty).flags |= 0x1i32;
     tty_update_mode(tty, (*tty).mode, s);
     tty_region_off(tty);
     tty_margin_off(tty);
@@ -3003,34 +2897,28 @@ pub unsafe extern "C" fn tty_draw_line(
     if sx > nx {
         sx = nx
     }
-    ux = 0 as libc::c_int as u_int;
-    if py == 0 as libc::c_int as libc::c_uint {
+    ux = 0u32;
+    if py == 0u32 {
         gl = 0 as *mut grid_line
     } else {
-        gl = grid_get_line(
-            gd,
-            (*gd)
-                .hsize
-                .wrapping_add(py)
-                .wrapping_sub(1 as libc::c_int as libc::c_uint),
-        )
+        gl = grid_get_line(gd, (*gd).hsize.wrapping_add(py).wrapping_sub(1u32))
     }
     if gl.is_null()
-        || !(*gl).flags & 0x1 as libc::c_int != 0
-        || atx != 0 as libc::c_int as libc::c_uint
+        || !(*gl).flags & 0x1i32 != 0
+        || atx != 0u32
         || (*tty).cx < (*tty).sx
         || nx < (*tty).sx
     {
         if nx < (*tty).sx
-            && atx == 0 as libc::c_int as libc::c_uint
+            && atx == 0u32
             && px.wrapping_add(sx) != nx
             && tty_term_has((*tty).term, tty_code_code::EL1) != 0
-            && tty_fake_bce(tty, defaults, 8 as libc::c_int as u_int) == 0
+            && tty_fake_bce(tty, defaults, 8u32) == 0
         {
-            tty_default_attributes(tty, defaults, palette, 8 as libc::c_int as u_int);
-            tty_cursor(tty, nx.wrapping_sub(1 as libc::c_int as libc::c_uint), aty);
+            tty_default_attributes(tty, defaults, palette, 8u32);
+            tty_cursor(tty, nx.wrapping_sub(1u32), aty);
             tty_putcode(tty, tty_code_code::EL1);
-            cleared = 1 as libc::c_int
+            cleared = 1i32
         }
     } else {
         log_debug(
@@ -3039,22 +2927,22 @@ pub unsafe extern "C" fn tty_draw_line(
                 .as_ptr(),
             aty,
         );
-        wrapped = 1 as libc::c_int
+        wrapped = 1i32
     }
     memcpy(
         &mut last as *mut GridCell as *mut libc::c_void,
         &grid_default_cell as *const GridCell as *const libc::c_void,
         ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
-    len = 0 as libc::c_int as size_t;
-    width = 0 as libc::c_int as u_int;
-    i = 0 as libc::c_int as u_int;
+    len = 0u64;
+    width = 0u32;
+    i = 0u32;
     while i < sx {
         grid_view_get_cell(gd, px.wrapping_add(i), py, &mut gc);
         gcp = tty_check_codeset(tty, &mut gc);
-        if len != 0 as libc::c_int as libc::c_ulong
+        if len != 0u64
             && (tty_check_overlay(tty, atx.wrapping_add(ux).wrapping_add(width), aty) == 0
-                || (*gcp).attr as libc::c_int & 0x80 as libc::c_int != 0
+                || (*gcp).attr as libc::c_int & 0x80i32 != 0
                 || (*gcp).flags as libc::c_int != last.flags as libc::c_int
                 || (*gcp).attr as libc::c_int != last.attr as libc::c_int
                 || (*gcp).fg != last.fg
@@ -3069,7 +2957,7 @@ pub unsafe extern "C" fn tty_draw_line(
                     < (*gcp).data.size as libc::c_ulong)
         {
             tty_attributes(tty, &mut last, defaults, palette);
-            if last.flags as libc::c_int & 0x40 as libc::c_int != 0 {
+            if last.flags as libc::c_int & 0x40i32 != 0 {
                 log_debug(
                     b"%s: %zu cleared\x00" as *const u8 as *const libc::c_char,
                     (*::std::mem::transmute::<&[u8; 14], &[libc::c_char; 14]>(
@@ -3087,20 +2975,17 @@ pub unsafe extern "C" fn tty_draw_line(
                     last.bg as u_int,
                 );
             } else {
-                if wrapped == 0
-                    || atx != 0 as libc::c_int as libc::c_uint
-                    || ux != 0 as libc::c_int as libc::c_uint
-                {
+                if wrapped == 0 || atx != 0u32 || ux != 0u32 {
                     tty_cursor(tty, atx.wrapping_add(ux), aty);
                 }
                 tty_putn(tty, buf.as_mut_ptr() as *const libc::c_void, len, width);
             }
-            ux = (ux as libc::c_uint).wrapping_add(width) as u_int as u_int;
-            len = 0 as libc::c_int as size_t;
-            width = 0 as libc::c_int as u_int;
-            wrapped = 0 as libc::c_int
+            ux = (ux).wrapping_add(width);
+            len = 0u64;
+            width = 0u32;
+            wrapped = 0i32
         }
-        if (*gcp).flags as libc::c_int & 0x10 as libc::c_int != 0 {
+        if (*gcp).flags as libc::c_int & 0x10i32 != 0 {
             screen_select_cell(s, &mut last, gcp);
         } else {
             memcpy(
@@ -3110,50 +2995,44 @@ pub unsafe extern "C" fn tty_draw_line(
             );
         }
         if tty_check_overlay(tty, atx.wrapping_add(ux), aty) == 0 {
-            if !((*gcp).flags as libc::c_int) & 0x4 as libc::c_int != 0 {
-                ux = (ux as libc::c_uint).wrapping_add((*gcp).data.width as libc::c_uint) as u_int
-                    as u_int
+            if !((*gcp).flags as libc::c_int) & 0x4i32 != 0 {
+                ux = (ux).wrapping_add((*gcp).data.width as libc::c_uint)
             }
         } else if ux.wrapping_add((*gcp).data.width as libc::c_uint) > nx {
             tty_attributes(tty, &mut last, defaults, palette);
             tty_cursor(tty, atx.wrapping_add(ux), aty);
-            j = 0 as libc::c_int as u_int;
+            j = 0u32;
             while j < (*gcp).data.width as libc::c_uint {
                 if ux.wrapping_add(j) > nx {
                     break;
                 }
-                tty_putc(tty, ' ' as i32 as u_char);
+                tty_putc(tty, ' ' as u_char);
                 ux = ux.wrapping_add(1);
                 j = j.wrapping_add(1)
             }
-        } else if (*gcp).attr as libc::c_int & 0x80 as libc::c_int != 0 {
+        } else if (*gcp).attr as libc::c_int & 0x80i32 != 0 {
             tty_attributes(tty, &mut last, defaults, palette);
             tty_cursor(tty, atx.wrapping_add(ux), aty);
-            j = 0 as libc::c_int as u_int;
+            j = 0u32;
             while j < (*gcp).data.size as libc::c_uint {
                 tty_putc(tty, (*gcp).data.data[j as usize]);
                 j = j.wrapping_add(1)
             }
-            ux = (ux as libc::c_uint).wrapping_add((*gcp).data.width as libc::c_uint) as u_int
-                as u_int
-        } else if !((*gcp).flags as libc::c_int) & 0x4 as libc::c_int != 0 {
+            ux = (ux).wrapping_add((*gcp).data.width as libc::c_uint)
+        } else if !((*gcp).flags as libc::c_int) & 0x4i32 != 0 {
             memcpy(
                 buf.as_mut_ptr().offset(len as isize) as *mut libc::c_void,
                 (*gcp).data.data.as_ptr() as *const libc::c_void,
                 (*gcp).data.size as libc::c_ulong,
             );
-            len = (len as libc::c_ulong).wrapping_add((*gcp).data.size as libc::c_ulong) as size_t
-                as size_t;
-            width = (width as libc::c_uint).wrapping_add((*gcp).data.width as libc::c_uint) as u_int
-                as u_int
+            len = (len).wrapping_add((*gcp).data.size as libc::c_ulong);
+            width = (width).wrapping_add((*gcp).data.width as libc::c_uint)
         }
         i = i.wrapping_add(1)
     }
-    if len != 0 as libc::c_int as libc::c_ulong
-        && (!(last.flags as libc::c_int) & 0x40 as libc::c_int != 0 || last.bg != 8 as libc::c_int)
-    {
+    if len != 0u64 && (!(last.flags as libc::c_int) & 0x40i32 != 0 || last.bg != 8i32) {
         tty_attributes(tty, &mut last, defaults, palette);
-        if last.flags as libc::c_int & 0x40 as libc::c_int != 0 {
+        if last.flags as libc::c_int & 0x40i32 != 0 {
             log_debug(
                 b"%s: %zu cleared (end)\x00" as *const u8 as *const libc::c_char,
                 (*::std::mem::transmute::<&[u8; 14], &[libc::c_char; 14]>(b"tty_draw_line\x00"))
@@ -3169,15 +3048,12 @@ pub unsafe extern "C" fn tty_draw_line(
                 last.bg as u_int,
             );
         } else {
-            if wrapped == 0
-                || atx != 0 as libc::c_int as libc::c_uint
-                || ux != 0 as libc::c_int as libc::c_uint
-            {
+            if wrapped == 0 || atx != 0u32 || ux != 0u32 {
                 tty_cursor(tty, atx.wrapping_add(ux), aty);
             }
             tty_putn(tty, buf.as_mut_ptr() as *const libc::c_void, len, width);
         }
-        ux = (ux as libc::c_uint).wrapping_add(width) as u_int as u_int
+        ux = (ux).wrapping_add(width)
     }
     if cleared == 0 && ux < nx {
         log_debug(
@@ -3187,64 +3063,64 @@ pub unsafe extern "C" fn tty_draw_line(
             nx.wrapping_sub(ux),
             len,
         );
-        tty_default_attributes(tty, defaults, palette, 8 as libc::c_int as u_int);
+        tty_default_attributes(tty, defaults, palette, 8u32);
         tty_clear_line(
             tty,
             defaults,
             aty,
             atx.wrapping_add(ux),
             nx.wrapping_sub(ux),
-            8 as libc::c_int as u_int,
+            8u32,
         );
     }
-    (*tty).flags = (*tty).flags & !(0x1 as libc::c_int) | flags;
+    (*tty).flags = (*tty).flags & !(0x1i32) | flags;
     tty_update_mode(tty, (*tty).mode, s);
 }
 #[no_mangle]
 pub unsafe extern "C" fn tty_sync_start(mut tty: *mut tty) {
-    if (*tty).flags & 0x80 as libc::c_int != 0 {
+    if (*tty).flags & 0x80i32 != 0 {
         return;
     }
-    if (*tty).flags & 0x400 as libc::c_int != 0 {
+    if (*tty).flags & 0x400i32 != 0 {
         return;
     }
-    (*tty).flags |= 0x400 as libc::c_int;
+    (*tty).flags |= 0x400i32;
     if tty_term_has((*tty).term, tty_code_code::SYNC) != 0 {
         log_debug(
             b"%s sync start\x00" as *const u8 as *const libc::c_char,
             (*(*tty).client).name,
         );
-        tty_putcode1(tty, tty_code_code::SYNC, 1 as libc::c_int);
+        tty_putcode1(tty, tty_code_code::SYNC, 1i32);
     };
 }
 #[no_mangle]
 pub unsafe extern "C" fn tty_sync_end(mut tty: *mut tty) {
-    if (*tty).flags & 0x80 as libc::c_int != 0 {
+    if (*tty).flags & 0x80i32 != 0 {
         return;
     }
-    if !(*tty).flags & 0x400 as libc::c_int != 0 {
+    if !(*tty).flags & 0x400i32 != 0 {
         return;
     }
-    (*tty).flags &= !(0x400 as libc::c_int);
+    (*tty).flags &= !(0x400i32);
     if tty_term_has((*tty).term, tty_code_code::SYNC) != 0 {
         log_debug(
             b"%s sync end\x00" as *const u8 as *const libc::c_char,
             (*(*tty).client).name,
         );
-        tty_putcode1(tty, tty_code_code::SYNC, 2 as libc::c_int);
+        tty_putcode1(tty, tty_code_code::SYNC, 2i32);
     };
 }
 unsafe extern "C" fn tty_client_ready(mut c: *mut client) -> libc::c_int {
     if (*c).session.is_null() || (*c).tty.term.is_null() {
-        return 0 as libc::c_int;
+        return 0i32;
     }
-    if (*c).flags & (0x8 as libc::c_int | 0x40 as libc::c_int) as libc::c_ulong != 0 {
-        return 0 as libc::c_int;
+    if (*c).flags & (0x8i32 | 0x40i32) as libc::c_ulong != 0 {
+        return 0i32;
     }
-    if (*c).tty.flags & 0x2 as libc::c_int != 0 {
-        return 0 as libc::c_int;
+    if (*c).tty.flags & 0x2i32 != 0 {
+        return 0i32;
     }
-    return 1 as libc::c_int;
+    return 1i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn tty_write(
@@ -3260,10 +3136,10 @@ pub unsafe extern "C" fn tty_write(
     while !c.is_null() {
         if !(tty_client_ready(c) == 0) {
             state = (*ctx).set_client_cb.expect("non-null function pointer")(ctx, c);
-            if state == -(1 as libc::c_int) {
+            if state == -(1i32) {
                 break;
             }
-            if !(state == 0 as libc::c_int) {
+            if !(state == 0i32) {
                 cmdfn.expect("non-null function pointer")(&mut (*c).tty, ctx);
             }
         }
@@ -3273,7 +3149,7 @@ pub unsafe extern "C" fn tty_write(
 #[no_mangle]
 pub unsafe extern "C" fn tty_cmd_insertcharacter(mut tty: *mut tty, mut ctx: *const tty_ctx) {
     if (*ctx).bigger != 0
-        || !((*ctx).xoff == 0 as libc::c_int as libc::c_uint && (*ctx).sx >= (*tty).sx)
+        || !((*ctx).xoff == 0u32 && (*ctx).sx >= (*tty).sx)
         || tty_fake_bce(tty, &(*ctx).defaults, (*ctx).bg) != 0
         || tty_term_has((*tty).term, tty_code_code::ICH) == 0
             && tty_term_has((*tty).term, tty_code_code::ICH1) == 0
@@ -3288,7 +3164,7 @@ pub unsafe extern "C" fn tty_cmd_insertcharacter(mut tty: *mut tty, mut ctx: *co
 #[no_mangle]
 pub unsafe extern "C" fn tty_cmd_deletecharacter(mut tty: *mut tty, mut ctx: *const tty_ctx) {
     if (*ctx).bigger != 0
-        || !((*ctx).xoff == 0 as libc::c_int as libc::c_uint && (*ctx).sx >= (*tty).sx)
+        || !((*ctx).xoff == 0u32 && (*ctx).sx >= (*tty).sx)
         || tty_fake_bce(tty, &(*ctx).defaults, (*ctx).bg) != 0
         || tty_term_has((*tty).term, tty_code_code::DCH) == 0
             && tty_term_has((*tty).term, tty_code_code::DCH1) == 0
@@ -3309,7 +3185,7 @@ pub unsafe extern "C" fn tty_cmd_clearcharacter(mut tty: *mut tty, mut ctx: *con
     tty_default_attributes(tty, &(*ctx).defaults, (*ctx).palette, (*ctx).bg);
     tty_cursor_pane(tty, ctx, (*ctx).ocx, (*ctx).ocy);
     if tty_term_has((*tty).term, tty_code_code::ECH) != 0
-        && tty_fake_bce(tty, &(*ctx).defaults, 8 as libc::c_int as u_int) == 0
+        && tty_fake_bce(tty, &(*ctx).defaults, 8u32) == 0
     {
         tty_putcode1(tty, tty_code_code::ECH, (*ctx).num as libc::c_int);
     } else {
@@ -3319,12 +3195,12 @@ pub unsafe extern "C" fn tty_cmd_clearcharacter(mut tty: *mut tty, mut ctx: *con
 #[no_mangle]
 pub unsafe extern "C" fn tty_cmd_insertline(mut tty: *mut tty, mut ctx: *const tty_ctx) {
     if (*ctx).bigger != 0
-        || !((*ctx).xoff == 0 as libc::c_int as libc::c_uint && (*ctx).sx >= (*tty).sx)
+        || !((*ctx).xoff == 0u32 && (*ctx).sx >= (*tty).sx)
         || tty_fake_bce(tty, &(*ctx).defaults, (*ctx).bg) != 0
         || tty_term_has((*tty).term, tty_code_code::CSR) == 0
         || tty_term_has((*tty).term, tty_code_code::IL1) == 0
-        || (*ctx).sx == 1 as libc::c_int as libc::c_uint
-        || (*ctx).sy == 1 as libc::c_int as libc::c_uint
+        || (*ctx).sx == 1u32
+        || (*ctx).sy == 1u32
     {
         tty_redraw_region(tty, ctx);
         return;
@@ -3334,20 +3210,18 @@ pub unsafe extern "C" fn tty_cmd_insertline(mut tty: *mut tty, mut ctx: *const t
     tty_margin_off(tty);
     tty_cursor_pane(tty, ctx, (*ctx).ocx, (*ctx).ocy);
     tty_emulate_repeat(tty, tty_code_code::IL, tty_code_code::IL1, (*ctx).num);
-    (*tty).cy = (2147483647 as libc::c_int as libc::c_uint)
-        .wrapping_mul(2 as libc::c_uint)
-        .wrapping_add(1 as libc::c_uint);
+    (*tty).cy = (2147483647u32).wrapping_mul(2u32).wrapping_add(1u32);
     (*tty).cx = (*tty).cy;
 }
 #[no_mangle]
 pub unsafe extern "C" fn tty_cmd_deleteline(mut tty: *mut tty, mut ctx: *const tty_ctx) {
     if (*ctx).bigger != 0
-        || !((*ctx).xoff == 0 as libc::c_int as libc::c_uint && (*ctx).sx >= (*tty).sx)
+        || !((*ctx).xoff == 0u32 && (*ctx).sx >= (*tty).sx)
         || tty_fake_bce(tty, &(*ctx).defaults, (*ctx).bg) != 0
         || tty_term_has((*tty).term, tty_code_code::CSR) == 0
         || tty_term_has((*tty).term, tty_code_code::DL1) == 0
-        || (*ctx).sx == 1 as libc::c_int as libc::c_uint
-        || (*ctx).sy == 1 as libc::c_int as libc::c_uint
+        || (*ctx).sx == 1u32
+        || (*ctx).sy == 1u32
     {
         tty_redraw_region(tty, ctx);
         return;
@@ -3357,22 +3231,13 @@ pub unsafe extern "C" fn tty_cmd_deleteline(mut tty: *mut tty, mut ctx: *const t
     tty_margin_off(tty);
     tty_cursor_pane(tty, ctx, (*ctx).ocx, (*ctx).ocy);
     tty_emulate_repeat(tty, tty_code_code::DL, tty_code_code::DL1, (*ctx).num);
-    (*tty).cy = (2147483647 as libc::c_int as libc::c_uint)
-        .wrapping_mul(2 as libc::c_uint)
-        .wrapping_add(1 as libc::c_uint);
+    (*tty).cy = (2147483647u32).wrapping_mul(2u32).wrapping_add(1u32);
     (*tty).cx = (*tty).cy;
 }
 #[no_mangle]
 pub unsafe extern "C" fn tty_cmd_clearline(mut tty: *mut tty, mut ctx: *const tty_ctx) {
     tty_default_attributes(tty, &(*ctx).defaults, (*ctx).palette, (*ctx).bg);
-    tty_clear_pane_line(
-        tty,
-        ctx,
-        (*ctx).ocy,
-        0 as libc::c_int as u_int,
-        (*ctx).sx,
-        (*ctx).bg,
-    );
+    tty_clear_pane_line(tty, ctx, (*ctx).ocy, 0u32, (*ctx).sx, (*ctx).bg);
 }
 #[no_mangle]
 pub unsafe extern "C" fn tty_cmd_clearendofline(mut tty: *mut tty, mut ctx: *const tty_ctx) {
@@ -3387,8 +3252,8 @@ pub unsafe extern "C" fn tty_cmd_clearstartofline(mut tty: *mut tty, mut ctx: *c
         tty,
         ctx,
         (*ctx).ocy,
-        0 as libc::c_int as u_int,
-        (*ctx).ocx.wrapping_add(1 as libc::c_int as libc::c_uint),
+        0u32,
+        (*ctx).ocx.wrapping_add(1u32),
         (*ctx).bg,
     );
 }
@@ -3398,14 +3263,13 @@ pub unsafe extern "C" fn tty_cmd_reverseindex(mut tty: *mut tty, mut ctx: *const
         return;
     }
     if (*ctx).bigger != 0
-        || !((*ctx).xoff == 0 as libc::c_int as libc::c_uint && (*ctx).sx >= (*tty).sx)
-            && (*(*tty).term).flags & 0x4 as libc::c_int == 0
-        || tty_fake_bce(tty, &(*ctx).defaults, 8 as libc::c_int as u_int) != 0
+        || !((*ctx).xoff == 0u32 && (*ctx).sx >= (*tty).sx) && (*(*tty).term).flags & 0x4i32 == 0
+        || tty_fake_bce(tty, &(*ctx).defaults, 8u32) != 0
         || tty_term_has((*tty).term, tty_code_code::CSR) == 0
         || tty_term_has((*tty).term, tty_code_code::RI) == 0
             && tty_term_has((*tty).term, tty_code_code::RIN) == 0
-        || (*ctx).sx == 1 as libc::c_int as libc::c_uint
-        || (*ctx).sy == 1 as libc::c_int as libc::c_uint
+        || (*ctx).sx == 1u32
+        || (*ctx).sy == 1u32
     {
         tty_redraw_region(tty, ctx);
         return;
@@ -3417,7 +3281,7 @@ pub unsafe extern "C" fn tty_cmd_reverseindex(mut tty: *mut tty, mut ctx: *const
     if tty_term_has((*tty).term, tty_code_code::RI) != 0 {
         tty_putcode(tty, tty_code_code::RI);
     } else {
-        tty_putcode1(tty, tty_code_code::RIN, 1 as libc::c_int);
+        tty_putcode1(tty, tty_code_code::RIN, 1i32);
     };
 }
 #[no_mangle]
@@ -3426,12 +3290,11 @@ pub unsafe extern "C" fn tty_cmd_linefeed(mut tty: *mut tty, mut ctx: *const tty
         return;
     }
     if (*ctx).bigger != 0
-        || !((*ctx).xoff == 0 as libc::c_int as libc::c_uint && (*ctx).sx >= (*tty).sx)
-            && (*(*tty).term).flags & 0x4 as libc::c_int == 0
-        || tty_fake_bce(tty, &(*ctx).defaults, 8 as libc::c_int as u_int) != 0
+        || !((*ctx).xoff == 0u32 && (*ctx).sx >= (*tty).sx) && (*(*tty).term).flags & 0x4i32 == 0
+        || tty_fake_bce(tty, &(*ctx).defaults, 8u32) != 0
         || tty_term_has((*tty).term, tty_code_code::CSR) == 0
-        || (*ctx).sx == 1 as libc::c_int as libc::c_uint
-        || (*ctx).sy == 1 as libc::c_int as libc::c_uint
+        || (*ctx).sx == 1u32
+        || (*ctx).sy == 1u32
     {
         tty_redraw_region(tty, ctx);
         return;
@@ -3447,30 +3310,25 @@ pub unsafe extern "C" fn tty_cmd_linefeed(mut tty: *mut tty, mut ctx: *const tty
      * enabled.
      */
     if (*ctx).xoff.wrapping_add((*ctx).ocx) > (*tty).rright {
-        if (*(*tty).term).flags & 0x4 as libc::c_int == 0 {
-            tty_cursor(
-                tty,
-                0 as libc::c_int as u_int,
-                (*ctx).yoff.wrapping_add((*ctx).ocy),
-            ); /* storage for base64 */
+        if (*(*tty).term).flags & 0x4i32 == 0 {
+            tty_cursor(tty, 0u32, (*ctx).yoff.wrapping_add((*ctx).ocy)); /* storage for base64 */
         } else {
             tty_cursor(tty, (*tty).rright, (*ctx).yoff.wrapping_add((*ctx).ocy));
         }
     } else {
         tty_cursor_pane(tty, ctx, (*ctx).ocx, (*ctx).ocy);
     }
-    tty_putc(tty, '\n' as i32 as u_char);
+    tty_putc(tty, '\n' as u_char);
 }
 #[no_mangle]
 pub unsafe extern "C" fn tty_cmd_scrollup(mut tty: *mut tty, mut ctx: *const tty_ctx) {
     let mut i: u_int = 0;
     if (*ctx).bigger != 0
-        || !((*ctx).xoff == 0 as libc::c_int as libc::c_uint && (*ctx).sx >= (*tty).sx)
-            && (*(*tty).term).flags & 0x4 as libc::c_int == 0
-        || tty_fake_bce(tty, &(*ctx).defaults, 8 as libc::c_int as u_int) != 0
+        || !((*ctx).xoff == 0u32 && (*ctx).sx >= (*tty).sx) && (*(*tty).term).flags & 0x4i32 == 0
+        || tty_fake_bce(tty, &(*ctx).defaults, 8u32) != 0
         || tty_term_has((*tty).term, tty_code_code::CSR) == 0
-        || (*ctx).sx == 1 as libc::c_int as libc::c_uint
-        || (*ctx).sy == 1 as libc::c_int as libc::c_uint
+        || (*ctx).sx == 1u32
+        || (*ctx).sy == 1u32
     {
         tty_redraw_region(tty, ctx);
         return;
@@ -3478,28 +3336,22 @@ pub unsafe extern "C" fn tty_cmd_scrollup(mut tty: *mut tty, mut ctx: *const tty
     tty_default_attributes(tty, &(*ctx).defaults, (*ctx).palette, (*ctx).bg);
     tty_region_pane(tty, ctx, (*ctx).orupper, (*ctx).orlower);
     tty_margin_pane(tty, ctx);
-    if (*ctx).num == 1 as libc::c_int as libc::c_uint
-        || tty_term_has((*tty).term, tty_code_code::INDN) == 0
-    {
-        if (*(*tty).term).flags & 0x4 as libc::c_int == 0 {
-            tty_cursor(tty, 0 as libc::c_int as u_int, (*tty).rlower);
+    if (*ctx).num == 1u32 || tty_term_has((*tty).term, tty_code_code::INDN) == 0 {
+        if (*(*tty).term).flags & 0x4i32 == 0 {
+            tty_cursor(tty, 0u32, (*tty).rlower);
         } else {
             tty_cursor(tty, (*tty).rright, (*tty).rlower);
         }
-        i = 0 as libc::c_int as u_int;
+        i = 0u32;
         while i < (*ctx).num {
-            tty_putc(tty, '\n' as i32 as u_char);
+            tty_putc(tty, '\n' as u_char);
             i = i.wrapping_add(1)
         }
     } else {
-        if (*tty).cy
-            == (2147483647 as libc::c_int as libc::c_uint)
-                .wrapping_mul(2 as libc::c_uint)
-                .wrapping_add(1 as libc::c_uint)
-        {
-            tty_cursor(tty, 0 as libc::c_int as u_int, 0 as libc::c_int as u_int);
+        if (*tty).cy == (2147483647u32).wrapping_mul(2u32).wrapping_add(1u32) {
+            tty_cursor(tty, 0u32, 0u32);
         } else {
-            tty_cursor(tty, 0 as libc::c_int as u_int, (*tty).cy);
+            tty_cursor(tty, 0u32, (*tty).cy);
         }
         tty_putcode1(tty, tty_code_code::INDN, (*ctx).num as libc::c_int);
     };
@@ -3508,14 +3360,13 @@ pub unsafe extern "C" fn tty_cmd_scrollup(mut tty: *mut tty, mut ctx: *const tty
 pub unsafe extern "C" fn tty_cmd_scrolldown(mut tty: *mut tty, mut ctx: *const tty_ctx) {
     let mut i: u_int = 0;
     if (*ctx).bigger != 0
-        || !((*ctx).xoff == 0 as libc::c_int as libc::c_uint && (*ctx).sx >= (*tty).sx)
-            && (*(*tty).term).flags & 0x4 as libc::c_int == 0
-        || tty_fake_bce(tty, &(*ctx).defaults, 8 as libc::c_int as u_int) != 0
+        || !((*ctx).xoff == 0u32 && (*ctx).sx >= (*tty).sx) && (*(*tty).term).flags & 0x4i32 == 0
+        || tty_fake_bce(tty, &(*ctx).defaults, 8u32) != 0
         || tty_term_has((*tty).term, tty_code_code::CSR) == 0
         || tty_term_has((*tty).term, tty_code_code::RI) == 0
             && tty_term_has((*tty).term, tty_code_code::RIN) == 0
-        || (*ctx).sx == 1 as libc::c_int as libc::c_uint
-        || (*ctx).sy == 1 as libc::c_int as libc::c_uint
+        || (*ctx).sx == 1u32
+        || (*ctx).sy == 1u32
     {
         tty_redraw_region(tty, ctx);
         return;
@@ -3527,7 +3378,7 @@ pub unsafe extern "C" fn tty_cmd_scrolldown(mut tty: *mut tty, mut ctx: *const t
     if tty_term_has((*tty).term, tty_code_code::RIN) != 0 {
         tty_putcode1(tty, tty_code_code::RIN, (*ctx).num as libc::c_int);
     } else {
-        i = 0 as libc::c_int as u_int;
+        i = 0u32;
         while i < (*ctx).num {
             tty_putcode(tty, tty_code_code::RI);
             i = i.wrapping_add(1)
@@ -3541,20 +3392,12 @@ pub unsafe extern "C" fn tty_cmd_clearendofscreen(mut tty: *mut tty, mut ctx: *c
     let mut nx: u_int = 0;
     let mut ny: u_int = 0;
     tty_default_attributes(tty, &(*ctx).defaults, (*ctx).palette, (*ctx).bg);
-    tty_region_pane(
-        tty,
-        ctx,
-        0 as libc::c_int as u_int,
-        (*ctx).sy.wrapping_sub(1 as libc::c_int as libc::c_uint),
-    );
+    tty_region_pane(tty, ctx, 0u32, (*ctx).sy.wrapping_sub(1u32));
     tty_margin_off(tty);
-    px = 0 as libc::c_int as u_int;
+    px = 0u32;
     nx = (*ctx).sx;
-    py = (*ctx).ocy.wrapping_add(1 as libc::c_int as libc::c_uint);
-    ny = (*ctx)
-        .sy
-        .wrapping_sub((*ctx).ocy)
-        .wrapping_sub(1 as libc::c_int as libc::c_uint);
+    py = (*ctx).ocy.wrapping_add(1u32);
+    ny = (*ctx).sy.wrapping_sub((*ctx).ocy).wrapping_sub(1u32);
     tty_clear_pane_area(tty, ctx, py, ny, px, nx, (*ctx).bg);
     px = (*ctx).ocx;
     nx = (*ctx).sx.wrapping_sub((*ctx).ocx);
@@ -3568,20 +3411,15 @@ pub unsafe extern "C" fn tty_cmd_clearstartofscreen(mut tty: *mut tty, mut ctx: 
     let mut nx: u_int = 0;
     let mut ny: u_int = 0;
     tty_default_attributes(tty, &(*ctx).defaults, (*ctx).palette, (*ctx).bg);
-    tty_region_pane(
-        tty,
-        ctx,
-        0 as libc::c_int as u_int,
-        (*ctx).sy.wrapping_sub(1 as libc::c_int as libc::c_uint),
-    );
+    tty_region_pane(tty, ctx, 0u32, (*ctx).sy.wrapping_sub(1u32));
     tty_margin_off(tty);
-    px = 0 as libc::c_int as u_int;
+    px = 0u32;
     nx = (*ctx).sx;
-    py = 0 as libc::c_int as u_int;
+    py = 0u32;
     ny = (*ctx).ocy;
     tty_clear_pane_area(tty, ctx, py, ny, px, nx, (*ctx).bg);
-    px = 0 as libc::c_int as u_int;
-    nx = (*ctx).ocx.wrapping_add(1 as libc::c_int as libc::c_uint);
+    px = 0u32;
+    nx = (*ctx).ocx.wrapping_add(1u32);
     py = (*ctx).ocy;
     tty_clear_pane_line(tty, ctx, py, px, nx, (*ctx).bg);
 }
@@ -3592,16 +3430,11 @@ pub unsafe extern "C" fn tty_cmd_clearscreen(mut tty: *mut tty, mut ctx: *const 
     let mut nx: u_int = 0;
     let mut ny: u_int = 0;
     tty_default_attributes(tty, &(*ctx).defaults, (*ctx).palette, (*ctx).bg);
-    tty_region_pane(
-        tty,
-        ctx,
-        0 as libc::c_int as u_int,
-        (*ctx).sy.wrapping_sub(1 as libc::c_int as libc::c_uint),
-    );
+    tty_region_pane(tty, ctx, 0u32, (*ctx).sy.wrapping_sub(1u32));
     tty_margin_off(tty);
-    px = 0 as libc::c_int as u_int;
+    px = 0u32;
     nx = (*ctx).sx;
-    py = 0 as libc::c_int as u_int;
+    py = 0u32;
     ny = (*ctx).sy;
     tty_clear_pane_area(tty, ctx, py, ny, px, nx, (*ctx).bg);
 }
@@ -3614,19 +3447,14 @@ pub unsafe extern "C" fn tty_cmd_alignmenttest(mut tty: *mut tty, mut ctx: *cons
         return;
     }
     tty_attributes(tty, &grid_default_cell, &(*ctx).defaults, (*ctx).palette);
-    tty_region_pane(
-        tty,
-        ctx,
-        0 as libc::c_int as u_int,
-        (*ctx).sy.wrapping_sub(1 as libc::c_int as libc::c_uint),
-    );
+    tty_region_pane(tty, ctx, 0u32, (*ctx).sy.wrapping_sub(1u32));
     tty_margin_off(tty);
-    j = 0 as libc::c_int as u_int;
+    j = 0u32;
     while j < (*ctx).sy {
-        tty_cursor_pane(tty, ctx, 0 as libc::c_int as u_int, j);
-        i = 0 as libc::c_int as u_int;
+        tty_cursor_pane(tty, ctx, 0u32, j);
+        i = 0u32;
         while i < (*ctx).sx {
-            tty_putc(tty, 'E' as i32 as u_char);
+            tty_putc(tty, 'E' as u_char);
             i = i.wrapping_add(1)
         }
         j = j.wrapping_add(1)
@@ -3634,24 +3462,16 @@ pub unsafe extern "C" fn tty_cmd_alignmenttest(mut tty: *mut tty, mut ctx: *cons
 }
 #[no_mangle]
 pub unsafe extern "C" fn tty_cmd_cell(mut tty: *mut tty, mut ctx: *const tty_ctx) {
-    if tty_is_visible(
-        tty,
-        ctx,
-        (*ctx).ocx,
-        (*ctx).ocy,
-        1 as libc::c_int as u_int,
-        1 as libc::c_int as u_int,
-    ) == 0
-    {
+    if tty_is_visible(tty, ctx, (*ctx).ocx, (*ctx).ocy, 1u32, 1u32) == 0 {
         return;
     }
     if (*ctx)
         .xoff
         .wrapping_add((*ctx).ocx)
         .wrapping_sub((*ctx).wox)
-        > (*tty).sx.wrapping_sub(1 as libc::c_int as libc::c_uint)
+        > (*tty).sx.wrapping_sub(1u32)
         && (*ctx).ocy == (*ctx).orlower
-        && ((*ctx).xoff == 0 as libc::c_int as libc::c_uint && (*ctx).sx >= (*tty).sx)
+        && ((*ctx).xoff == 0u32 && (*ctx).sx >= (*tty).sx)
     {
         tty_region_pane(tty, ctx, (*ctx).orupper, (*ctx).orlower);
     }
@@ -3661,15 +3481,7 @@ pub unsafe extern "C" fn tty_cmd_cell(mut tty: *mut tty, mut ctx: *const tty_ctx
 }
 #[no_mangle]
 pub unsafe extern "C" fn tty_cmd_cells(mut tty: *mut tty, mut ctx: *const tty_ctx) {
-    if tty_is_visible(
-        tty,
-        ctx,
-        (*ctx).ocx,
-        (*ctx).ocy,
-        (*ctx).num,
-        1 as libc::c_int as u_int,
-    ) == 0
-    {
+    if tty_is_visible(tty, ctx, (*ctx).ocx, (*ctx).ocy, (*ctx).num, 1u32) == 0 {
         return;
     }
     if (*ctx).bigger != 0
@@ -3681,11 +3493,10 @@ pub unsafe extern "C" fn tty_cmd_cells(mut tty: *mut tty, mut ctx: *const tty_ct
                 > (*ctx).wox.wrapping_add((*ctx).wsx))
     {
         if (*ctx).wrapped == 0
-            || !((*ctx).xoff == 0 as libc::c_int as libc::c_uint && (*ctx).sx >= (*tty).sx)
-            || (*(*tty).term).flags & 0x2 as libc::c_int != 0
-            || (*ctx).xoff.wrapping_add((*ctx).ocx) != 0 as libc::c_int as libc::c_uint
-            || (*ctx).yoff.wrapping_add((*ctx).ocy)
-                != (*tty).cy.wrapping_add(1 as libc::c_int as libc::c_uint)
+            || !((*ctx).xoff == 0u32 && (*ctx).sx >= (*tty).sx)
+            || (*(*tty).term).flags & 0x2i32 != 0
+            || (*ctx).xoff.wrapping_add((*ctx).ocx) != 0u32
+            || (*ctx).yoff.wrapping_add((*ctx).ocy) != (*tty).cy.wrapping_add(1u32)
             || (*tty).cx < (*tty).sx
             || (*tty).cy == (*tty).rlower
         {
@@ -3712,24 +3523,21 @@ pub unsafe extern "C" fn tty_set_selection(
 ) {
     let mut encoded: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut size: size_t = 0;
-    if !(*tty).flags & 0x10 as libc::c_int != 0 {
+    if !(*tty).flags & 0x10i32 != 0 {
         return;
     }
     if tty_term_has((*tty).term, tty_code_code::MS) == 0 {
         return;
     }
-    size = (4 as libc::c_int as libc::c_ulong)
-        .wrapping_mul(
-            len.wrapping_add(2 as libc::c_int as libc::c_ulong)
-                .wrapping_div(3 as libc::c_int as libc::c_ulong),
-        )
-        .wrapping_add(1 as libc::c_int as libc::c_ulong);
+    size = (4u64)
+        .wrapping_mul(len.wrapping_add(2u64).wrapping_div(3u64))
+        .wrapping_add(1u64);
     encoded = xmalloc(size) as *mut libc::c_char;
     __b64_ntop(buf as *const libc::c_uchar, len, encoded, size);
     tty_putcode_ptr2(
         tty,
         tty_code_code::MS,
-        b"\x00" as *const u8 as *const libc::c_char as *const libc::c_void,
+        b"\x00" as *const u8 as *const libc::c_void,
         encoded as *const libc::c_void,
     );
     free(encoded as *mut libc::c_void);
@@ -3752,24 +3560,24 @@ pub unsafe extern "C" fn tty_cell(
 ) {
     let mut gcp: *const GridCell = 0 as *const GridCell;
     /* Skip last character if terminal is stupid. */
-    if (*(*tty).term).flags & 0x2 as libc::c_int != 0
-        && (*tty).cy == (*tty).sy.wrapping_sub(1 as libc::c_int as libc::c_uint)
-        && (*tty).cx == (*tty).sx.wrapping_sub(1 as libc::c_int as libc::c_uint)
+    if (*(*tty).term).flags & 0x2i32 != 0
+        && (*tty).cy == (*tty).sy.wrapping_sub(1u32)
+        && (*tty).cx == (*tty).sx.wrapping_sub(1u32)
     {
         return;
     }
     /* If this is a padding character, do nothing. */
-    if (*gc).flags as libc::c_int & 0x4 as libc::c_int != 0 {
+    if (*gc).flags as libc::c_int & 0x4i32 != 0 {
         return;
     }
     /* Check the output codeset and apply attributes. */
     gcp = tty_check_codeset(tty, gc);
     tty_attributes(tty, gcp, defaults, palette);
     /* If it is a single character, write with putc to handle ACS. */
-    if (*gcp).data.size as libc::c_int == 1 as libc::c_int {
+    if (*gcp).data.size as libc::c_int == 1i32 {
         tty_attributes(tty, gcp, defaults, palette);
-        if (*(*gcp).data.data.as_ptr() as libc::c_int) < 0x20 as libc::c_int
-            || *(*gcp).data.data.as_ptr() as libc::c_int == 0x7f as libc::c_int
+        if (*(*gcp).data.data.as_ptr() as libc::c_int) < 0x20i32
+            || *(*gcp).data.data.as_ptr() as libc::c_int == 0x7fi32
         {
             return;
         }
@@ -3788,7 +3596,7 @@ pub unsafe extern "C" fn tty_cell(
 pub unsafe extern "C" fn tty_reset(mut tty: *mut tty) {
     let mut gc: *mut GridCell = &mut (*tty).cell;
     if grid_cells_equal(gc, &grid_default_cell) == 0 {
-        if (*gc).attr as libc::c_int & 0x80 as libc::c_int != 0 && tty_acs_needed(tty) != 0 {
+        if (*gc).attr as libc::c_int & 0x80i32 != 0 && tty_acs_needed(tty) != 0 {
             tty_putcode(tty, tty_code_code::RMACS);
         }
         tty_putcode(tty, tty_code_code::SGR0);
@@ -3815,40 +3623,30 @@ unsafe extern "C" fn tty_invalidate(mut tty: *mut tty) {
         &grid_default_cell as *const GridCell as *const libc::c_void,
         ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
-    (*tty).cy = (2147483647 as libc::c_int as libc::c_uint)
-        .wrapping_mul(2 as libc::c_uint)
-        .wrapping_add(1 as libc::c_uint);
+    (*tty).cy = (2147483647u32).wrapping_mul(2u32).wrapping_add(1u32);
     (*tty).cx = (*tty).cy;
-    (*tty).rleft = (2147483647 as libc::c_int as libc::c_uint)
-        .wrapping_mul(2 as libc::c_uint)
-        .wrapping_add(1 as libc::c_uint);
+    (*tty).rleft = (2147483647u32).wrapping_mul(2u32).wrapping_add(1u32);
     (*tty).rupper = (*tty).rleft;
-    (*tty).rright = (2147483647 as libc::c_int as libc::c_uint)
-        .wrapping_mul(2 as libc::c_uint)
-        .wrapping_add(1 as libc::c_uint);
+    (*tty).rright = (2147483647u32).wrapping_mul(2u32).wrapping_add(1u32);
     (*tty).rlower = (*tty).rright;
-    if (*tty).flags & 0x10 as libc::c_int != 0 {
-        if (*(*tty).term).flags & 0x4 as libc::c_int != 0 {
+    if (*tty).flags & 0x10i32 != 0 {
+        if (*(*tty).term).flags & 0x4i32 != 0 {
             tty_putcode(tty, tty_code_code::ENMG);
         }
         tty_putcode(tty, tty_code_code::SGR0);
-        (*tty).mode = 0xffffff as libc::c_int;
-        tty_update_mode(tty, 0x1 as libc::c_int, 0 as *mut screen);
-        tty_cursor(tty, 0 as libc::c_int as u_int, 0 as libc::c_int as u_int);
+        (*tty).mode = 0xffffffi32;
+        tty_update_mode(tty, 0x1i32, 0 as *mut screen);
+        tty_cursor(tty, 0u32, 0u32);
         tty_region_off(tty);
         tty_margin_off(tty);
     } else {
-        (*tty).mode = 0x1 as libc::c_int
+        (*tty).mode = 0x1i32
     };
 }
 /* Turn off margin. */
 #[no_mangle]
 pub unsafe extern "C" fn tty_region_off(mut tty: *mut tty) {
-    tty_region(
-        tty,
-        0 as libc::c_int as u_int,
-        (*tty).sy.wrapping_sub(1 as libc::c_int as libc::c_uint),
-    );
+    tty_region(tty, 0u32, (*tty).sy.wrapping_sub(1u32));
 }
 /* Set region inside pane. */
 unsafe extern "C" fn tty_region_pane(
@@ -3880,14 +3678,10 @@ unsafe extern "C" fn tty_region(mut tty: *mut tty, mut rupper: u_int, mut rlower
      * explicit move to 0 first.
      */
     if (*tty).cx >= (*tty).sx {
-        if (*tty).cy
-            == (2147483647 as libc::c_int as libc::c_uint)
-                .wrapping_mul(2 as libc::c_uint)
-                .wrapping_add(1 as libc::c_uint)
-        {
-            tty_cursor(tty, 0 as libc::c_int as u_int, 0 as libc::c_int as u_int);
+        if (*tty).cy == (2147483647u32).wrapping_mul(2u32).wrapping_add(1u32) {
+            tty_cursor(tty, 0u32, 0u32);
         } else {
-            tty_cursor(tty, 0 as libc::c_int as u_int, (*tty).cy);
+            tty_cursor(tty, 0u32, (*tty).cy);
         }
     }
     tty_putcode2(
@@ -3896,19 +3690,13 @@ unsafe extern "C" fn tty_region(mut tty: *mut tty, mut rupper: u_int, mut rlower
         (*tty).rupper as libc::c_int,
         (*tty).rlower as libc::c_int,
     );
-    (*tty).cy = (2147483647 as libc::c_int as libc::c_uint)
-        .wrapping_mul(2 as libc::c_uint)
-        .wrapping_add(1 as libc::c_uint);
+    (*tty).cy = (2147483647u32).wrapping_mul(2u32).wrapping_add(1u32);
     (*tty).cx = (*tty).cy;
 }
 /* Turn off margin. */
 #[no_mangle]
 pub unsafe extern "C" fn tty_margin_off(mut tty: *mut tty) {
-    tty_margin(
-        tty,
-        0 as libc::c_int as u_int,
-        (*tty).sx.wrapping_sub(1 as libc::c_int as libc::c_uint),
-    );
+    tty_margin(tty, 0u32, (*tty).sx.wrapping_sub(1u32));
 }
 /* Set margin inside pane. */
 unsafe extern "C" fn tty_margin_pane(mut tty: *mut tty, mut ctx: *const tty_ctx) {
@@ -3918,13 +3706,13 @@ unsafe extern "C" fn tty_margin_pane(mut tty: *mut tty, mut ctx: *const tty_ctx)
         (*ctx)
             .xoff
             .wrapping_add((*ctx).sx)
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
+            .wrapping_sub(1u32)
             .wrapping_sub((*ctx).wox),
     );
 }
 /* Set margin at absolute position. */
 unsafe extern "C" fn tty_margin(mut tty: *mut tty, mut rleft: u_int, mut rright: u_int) {
-    if (*(*tty).term).flags & 0x4 as libc::c_int == 0 {
+    if (*(*tty).term).flags & 0x4i32 == 0 {
         return;
     }
     if (*tty).rleft == rleft && (*tty).rright == rright {
@@ -3938,9 +3726,7 @@ unsafe extern "C" fn tty_margin(mut tty: *mut tty, mut rleft: u_int, mut rright:
     );
     (*tty).rleft = rleft;
     (*tty).rright = rright;
-    if rleft == 0 as libc::c_int as libc::c_uint
-        && rright == (*tty).sx.wrapping_sub(1 as libc::c_int as libc::c_uint)
-    {
+    if rleft == 0u32 && rright == (*tty).sx.wrapping_sub(1u32) {
         tty_putcode(tty, tty_code_code::CLMG);
     } else {
         tty_putcode2(
@@ -3950,9 +3736,7 @@ unsafe extern "C" fn tty_margin(mut tty: *mut tty, mut rleft: u_int, mut rright:
             rright as libc::c_int,
         );
     }
-    (*tty).cy = (2147483647 as libc::c_int as libc::c_uint)
-        .wrapping_mul(2 as libc::c_uint)
-        .wrapping_add(1 as libc::c_uint);
+    (*tty).cy = (2147483647u32).wrapping_mul(2u32).wrapping_add(1u32);
     (*tty).cx = (*tty).cy;
 }
 /*
@@ -3966,10 +3750,10 @@ unsafe extern "C" fn tty_cursor_pane_unless_wrap(
     mut cy: u_int,
 ) {
     if (*ctx).wrapped == 0
-        || !((*ctx).xoff == 0 as libc::c_int as libc::c_uint && (*ctx).sx >= (*tty).sx)
-        || (*(*tty).term).flags & 0x2 as libc::c_int != 0
-        || (*ctx).xoff.wrapping_add(cx) != 0 as libc::c_int as libc::c_uint
-        || (*ctx).yoff.wrapping_add(cy) != (*tty).cy.wrapping_add(1 as libc::c_int as libc::c_uint)
+        || !((*ctx).xoff == 0u32 && (*ctx).sx >= (*tty).sx)
+        || (*(*tty).term).flags & 0x2i32 != 0
+        || (*ctx).xoff.wrapping_add(cx) != 0u32
+        || (*ctx).yoff.wrapping_add(cy) != (*tty).cy.wrapping_add(1u32)
         || (*tty).cx < (*tty).sx
         || (*tty).cy == (*tty).rlower
     {
@@ -4007,11 +3791,11 @@ pub unsafe extern "C" fn tty_cursor(mut tty: *mut tty, mut cx: u_int, mut cy: u_
     let mut thisx: u_int = 0;
     let mut thisy: u_int = 0;
     let mut change: libc::c_int = 0;
-    if (*tty).flags & 0x80 as libc::c_int != 0 {
+    if (*tty).flags & 0x80i32 != 0 {
         return;
     }
-    if cx > (*tty).sx.wrapping_sub(1 as libc::c_int as libc::c_uint) {
-        cx = (*tty).sx.wrapping_sub(1 as libc::c_int as libc::c_uint)
+    if cx > (*tty).sx.wrapping_sub(1u32) {
+        cx = (*tty).sx.wrapping_sub(1u32)
     }
     thisx = (*tty).cx;
     thisy = (*tty).cy;
@@ -4020,22 +3804,18 @@ pub unsafe extern "C" fn tty_cursor(mut tty: *mut tty, mut cx: u_int, mut cy: u_
         return;
     }
     /* Very end of the line, just use absolute movement. */
-    if thisx > (*tty).sx.wrapping_sub(1 as libc::c_int as libc::c_uint) {
+    if thisx > (*tty).sx.wrapping_sub(1u32) {
         current_block = 6863629183173758772;
-    } else if cx == 0 as libc::c_int as libc::c_uint
-        && cy == 0 as libc::c_int as libc::c_uint
-        && tty_term_has(term, tty_code_code::HOME) != 0
-    {
+    } else if cx == 0u32 && cy == 0u32 && tty_term_has(term, tty_code_code::HOME) != 0 {
         tty_putcode(tty, tty_code_code::HOME);
         current_block = 6993536316001430845;
-    } else if cx == 0 as libc::c_int as libc::c_uint
-        && cy == thisy.wrapping_add(1 as libc::c_int as libc::c_uint)
+    } else if cx == 0u32
+        && cy == thisy.wrapping_add(1u32)
         && thisy != (*tty).rlower
-        && ((*(*tty).term).flags & 0x4 as libc::c_int == 0
-            || (*tty).rleft == 0 as libc::c_int as libc::c_uint)
+        && ((*(*tty).term).flags & 0x4i32 == 0 || (*tty).rleft == 0u32)
     {
-        tty_putc(tty, '\r' as i32 as u_char);
-        tty_putc(tty, '\n' as i32 as u_char);
+        tty_putc(tty, '\r' as u_char);
+        tty_putc(tty, '\n' as u_char);
         current_block = 6993536316001430845;
     } else if cy == thisy {
         /* Move to home position (0, 0). */
@@ -4045,20 +3825,13 @@ pub unsafe extern "C" fn tty_cursor(mut tty: *mut tty, mut cx: u_int, mut cy: u_
          * Moving column only, row staying the same.
          */
         /* To left edge. */
-        if cx == 0 as libc::c_int as libc::c_uint
-            && ((*(*tty).term).flags & 0x4 as libc::c_int == 0
-                || (*tty).rleft == 0 as libc::c_int as libc::c_uint)
-        {
-            tty_putc(tty, '\r' as i32 as u_char);
+        if cx == 0u32 && ((*(*tty).term).flags & 0x4i32 == 0 || (*tty).rleft == 0u32) {
+            tty_putc(tty, '\r' as u_char);
             current_block = 6993536316001430845;
-        } else if cx == thisx.wrapping_sub(1 as libc::c_int as libc::c_uint)
-            && tty_term_has(term, tty_code_code::CUB1) != 0
-        {
+        } else if cx == thisx.wrapping_sub(1u32) && tty_term_has(term, tty_code_code::CUB1) != 0 {
             tty_putcode(tty, tty_code_code::CUB1);
             current_block = 6993536316001430845;
-        } else if cx == thisx.wrapping_add(1 as libc::c_int as libc::c_uint)
-            && tty_term_has(term, tty_code_code::CUF1) != 0
-        {
+        } else if cx == thisx.wrapping_add(1u32) && tty_term_has(term, tty_code_code::CUF1) != 0 {
             tty_putcode(tty, tty_code_code::CUF1);
             current_block = 6993536316001430845;
         } else {
@@ -4073,20 +3846,20 @@ pub unsafe extern "C" fn tty_cursor(mut tty: *mut tty, mut cx: u_int, mut cy: u_
             if abs(change) as u_int > cx && tty_term_has(term, tty_code_code::HPA) != 0 {
                 tty_putcode1(tty, tty_code_code::HPA, cx as libc::c_int);
                 current_block = 6993536316001430845;
-            } else if change > 0 as libc::c_int
+            } else if change > 0i32
                 && tty_term_has(term, tty_code_code::CUB) != 0
-                && (*(*tty).term).flags & 0x4 as libc::c_int == 0
+                && (*(*tty).term).flags & 0x4i32 == 0
             {
-                if change == 2 as libc::c_int && tty_term_has(term, tty_code_code::CUB1) != 0 {
+                if change == 2i32 && tty_term_has(term, tty_code_code::CUB1) != 0 {
                     tty_putcode(tty, tty_code_code::CUB1);
                     tty_putcode(tty, tty_code_code::CUB1);
                 } else {
                     tty_putcode1(tty, tty_code_code::CUB, change);
                 }
                 current_block = 6993536316001430845;
-            } else if change < 0 as libc::c_int
+            } else if change < 0i32
                 && tty_term_has(term, tty_code_code::CUF) != 0
-                && (*(*tty).term).flags & 0x4 as libc::c_int == 0
+                && (*(*tty).term).flags & 0x4i32 == 0
             {
                 tty_putcode1(tty, tty_code_code::CUF, -change);
                 current_block = 6993536316001430845;
@@ -4100,13 +3873,13 @@ pub unsafe extern "C" fn tty_cursor(mut tty: *mut tty, mut cx: u_int, mut cy: u_
          */
         /* One above. */
         if thisy != (*tty).rupper
-            && cy == thisy.wrapping_sub(1 as libc::c_int as libc::c_uint)
+            && cy == thisy.wrapping_sub(1u32)
             && tty_term_has(term, tty_code_code::CUU1) != 0
         {
             tty_putcode(tty, tty_code_code::CUU1);
             current_block = 6993536316001430845;
         } else if thisy != (*tty).rlower
-            && cy == thisy.wrapping_add(1 as libc::c_int as libc::c_uint)
+            && cy == thisy.wrapping_add(1u32)
             && tty_term_has(term, tty_code_code::CUD1) != 0
         {
             tty_putcode(tty, tty_code_code::CUD1);
@@ -4120,10 +3893,8 @@ pub unsafe extern "C" fn tty_cursor(mut tty: *mut tty, mut cx: u_int, mut cy: u_
              * change would cross the scroll region, otherwise use CUU/CUD.
              */
             if abs(change) as u_int > cy
-                || change < 0 as libc::c_int
-                    && cy.wrapping_sub(change as libc::c_uint) > (*tty).rlower
-                || change > 0 as libc::c_int
-                    && cy.wrapping_sub(change as libc::c_uint) < (*tty).rupper
+                || change < 0i32 && cy.wrapping_sub(change as libc::c_uint) > (*tty).rlower
+                || change > 0i32 && cy.wrapping_sub(change as libc::c_uint) < (*tty).rupper
             {
                 if tty_term_has(term, tty_code_code::VPA) != 0 {
                     tty_putcode1(tty, tty_code_code::VPA, cy as libc::c_int);
@@ -4131,10 +3902,10 @@ pub unsafe extern "C" fn tty_cursor(mut tty: *mut tty, mut cx: u_int, mut cy: u_
                 } else {
                     current_block = 6863629183173758772;
                 }
-            } else if change > 0 as libc::c_int && tty_term_has(term, tty_code_code::CUU) != 0 {
+            } else if change > 0i32 && tty_term_has(term, tty_code_code::CUU) != 0 {
                 tty_putcode1(tty, tty_code_code::CUU, change);
                 current_block = 6993536316001430845;
-            } else if change < 0 as libc::c_int && tty_term_has(term, tty_code_code::CUD) != 0 {
+            } else if change < 0i32 && tty_term_has(term, tty_code_code::CUD) != 0 {
                 tty_putcode1(tty, tty_code_code::CUD, -change);
                 current_block = 6993536316001430845;
             } else {
@@ -4187,10 +3958,10 @@ pub unsafe extern "C" fn tty_attributes(
         gc as *const libc::c_void,
         ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
-    if gc2.fg == 8 as libc::c_int {
+    if gc2.fg == 8i32 {
         gc2.fg = (*defaults).fg
     }
-    if gc2.bg == 8 as libc::c_int {
+    if gc2.bg == 8i32 {
         gc2.bg = (*defaults).bg
     }
     /* Ignore cell if it is the same as the last one. */
@@ -4207,16 +3978,12 @@ pub unsafe extern "C" fn tty_attributes(
      * any serious harm and makes a couple of applications happier.
      */
     if tty_term_has((*tty).term, tty_code_code::SETAB) == 0 {
-        if gc2.attr as libc::c_int & 0x10 as libc::c_int != 0 {
-            if gc2.fg != 7 as libc::c_int
-                && !(gc2.fg == 8 as libc::c_int || gc2.fg == 9 as libc::c_int)
-            {
-                gc2.attr = (gc2.attr as libc::c_int & !(0x10 as libc::c_int)) as u_short
+        if gc2.attr as libc::c_int & 0x10i32 != 0 {
+            if gc2.fg != 7i32 && !(gc2.fg == 8i32 || gc2.fg == 9i32) {
+                gc2.attr = (gc2.attr as libc::c_int & !(0x10i32)) as u_short
             }
-        } else if gc2.bg != 0 as libc::c_int
-            && !(gc2.bg == 8 as libc::c_int || gc2.bg == 9 as libc::c_int)
-        {
-            gc2.attr = (gc2.attr as libc::c_int | 0x10 as libc::c_int) as u_short
+        } else if gc2.bg != 0i32 && !(gc2.bg == 8i32 || gc2.bg == 9i32) {
+            gc2.attr = (gc2.attr as libc::c_int | 0x10i32) as u_short
         }
     }
     /* Fix up the colours if necessary. */
@@ -4228,7 +3995,7 @@ pub unsafe extern "C" fn tty_attributes(
      * reset everything.
      */
     if (*tc).attr as libc::c_int & !(gc2.attr as libc::c_int) != 0
-        || (*tc).us != gc2.us && gc2.us == 0 as libc::c_int
+        || (*tc).us != gc2.us && gc2.us == 0i32
     {
         tty_reset(tty);
     }
@@ -4241,56 +4008,48 @@ pub unsafe extern "C" fn tty_attributes(
     changed = gc2.attr as libc::c_int & !((*tc).attr as libc::c_int);
     (*tc).attr = gc2.attr;
     /* Set the attributes. */
-    if changed & 0x1 as libc::c_int != 0 {
+    if changed & 0x1i32 != 0 {
         tty_putcode(tty, tty_code_code::BOLD);
     }
-    if changed & 0x2 as libc::c_int != 0 {
+    if changed & 0x2i32 != 0 {
         tty_putcode(tty, tty_code_code::DIM);
     }
-    if changed & 0x40 as libc::c_int != 0 {
+    if changed & 0x40i32 != 0 {
         tty_set_italics(tty);
     }
-    if changed
-        & (0x4 as libc::c_int
-            | 0x200 as libc::c_int
-            | 0x400 as libc::c_int
-            | 0x800 as libc::c_int
-            | 0x1000 as libc::c_int)
-        != 0
-    {
-        if changed & 0x4 as libc::c_int != 0 || tty_term_has((*tty).term, tty_code_code::SMULX) == 0
-        {
+    if changed & (0x4i32 | 0x200i32 | 0x400i32 | 0x800i32 | 0x1000i32) != 0 {
+        if changed & 0x4i32 != 0 || tty_term_has((*tty).term, tty_code_code::SMULX) == 0 {
             tty_putcode(tty, tty_code_code::SMUL);
-        } else if changed & 0x200 as libc::c_int != 0 {
-            tty_putcode1(tty, tty_code_code::SMULX, 2 as libc::c_int);
-        } else if changed & 0x400 as libc::c_int != 0 {
-            tty_putcode1(tty, tty_code_code::SMULX, 3 as libc::c_int);
-        } else if changed & 0x800 as libc::c_int != 0 {
-            tty_putcode1(tty, tty_code_code::SMULX, 4 as libc::c_int);
-        } else if changed & 0x1000 as libc::c_int != 0 {
-            tty_putcode1(tty, tty_code_code::SMULX, 5 as libc::c_int);
+        } else if changed & 0x200i32 != 0 {
+            tty_putcode1(tty, tty_code_code::SMULX, 2i32);
+        } else if changed & 0x400i32 != 0 {
+            tty_putcode1(tty, tty_code_code::SMULX, 3i32);
+        } else if changed & 0x800i32 != 0 {
+            tty_putcode1(tty, tty_code_code::SMULX, 4i32);
+        } else if changed & 0x1000i32 != 0 {
+            tty_putcode1(tty, tty_code_code::SMULX, 5i32);
         }
     }
-    if changed & 0x8 as libc::c_int != 0 {
+    if changed & 0x8i32 != 0 {
         tty_putcode(tty, tty_code_code::BLINK);
     }
-    if changed & 0x10 as libc::c_int != 0 {
+    if changed & 0x10i32 != 0 {
         if tty_term_has((*tty).term, tty_code_code::REV) != 0 {
             tty_putcode(tty, tty_code_code::REV);
         } else if tty_term_has((*tty).term, tty_code_code::SMSO) != 0 {
             tty_putcode(tty, tty_code_code::SMSO);
         }
     }
-    if changed & 0x20 as libc::c_int != 0 {
+    if changed & 0x20i32 != 0 {
         tty_putcode(tty, tty_code_code::INVIS);
     }
-    if changed & 0x100 as libc::c_int != 0 {
+    if changed & 0x100i32 != 0 {
         tty_putcode(tty, tty_code_code::SMXX);
     }
-    if changed & 0x2000 as libc::c_int != 0 {
+    if changed & 0x2000i32 != 0 {
         tty_putcode(tty, tty_code_code::SMOL);
     }
-    if changed & 0x80 as libc::c_int != 0 && tty_acs_needed(tty) != 0 {
+    if changed & 0x80i32 != 0 && tty_acs_needed(tty) != 0 {
         tty_putcode(tty, tty_code_code::SMACS);
     }
     memcpy(
@@ -4312,10 +4071,7 @@ unsafe extern "C" fn tty_colours(mut tty: *mut tty, mut gc: *const GridCell) {
      * case if only one is default need to fall onward to set the other
      * colour.
      */
-    if (*gc).fg == 8 as libc::c_int
-        || (*gc).fg == 9 as libc::c_int
-        || ((*gc).bg == 8 as libc::c_int || (*gc).bg == 9 as libc::c_int)
-    {
+    if (*gc).fg == 8i32 || (*gc).fg == 9i32 || ((*gc).bg == 8i32 || (*gc).bg == 9i32) {
         /*
          * If don't have AX but do have op, send sgr0 (op can't
          * actually be used because it is sometimes the same as sgr0
@@ -4327,37 +4083,33 @@ unsafe extern "C" fn tty_colours(mut tty: *mut tty, mut gc: *const GridCell) {
         if have_ax == 0 && tty_term_has((*tty).term, tty_code_code::OP) != 0 {
             tty_reset(tty);
         } else {
-            if ((*gc).fg == 8 as libc::c_int || (*gc).fg == 9 as libc::c_int)
-                && !((*tc).fg == 8 as libc::c_int || (*tc).fg == 9 as libc::c_int)
-            {
+            if ((*gc).fg == 8i32 || (*gc).fg == 9i32) && !((*tc).fg == 8i32 || (*tc).fg == 9i32) {
                 if have_ax != 0 {
                     tty_puts(tty, b"\x1b[39m\x00" as *const u8 as *const libc::c_char);
-                } else if (*tc).fg != 7 as libc::c_int {
-                    tty_putcode1(tty, tty_code_code::SETAF, 7 as libc::c_int);
+                } else if (*tc).fg != 7i32 {
+                    tty_putcode1(tty, tty_code_code::SETAF, 7i32);
                 }
                 (*tc).fg = (*gc).fg
             }
-            if ((*gc).bg == 8 as libc::c_int || (*gc).bg == 9 as libc::c_int)
-                && !((*tc).bg == 8 as libc::c_int || (*tc).bg == 9 as libc::c_int)
-            {
+            if ((*gc).bg == 8i32 || (*gc).bg == 9i32) && !((*tc).bg == 8i32 || (*tc).bg == 9i32) {
                 if have_ax != 0 {
                     tty_puts(tty, b"\x1b[49m\x00" as *const u8 as *const libc::c_char);
-                } else if (*tc).bg != 0 as libc::c_int {
-                    tty_putcode1(tty, tty_code_code::SETAB, 0 as libc::c_int);
+                } else if (*tc).bg != 0i32 {
+                    tty_putcode1(tty, tty_code_code::SETAB, 0i32);
                 }
                 (*tc).bg = (*gc).bg
             }
         }
     }
     /* Set the foreground colour. */
-    if !((*gc).fg == 8 as libc::c_int || (*gc).fg == 9 as libc::c_int) && (*gc).fg != (*tc).fg {
+    if !((*gc).fg == 8i32 || (*gc).fg == 9i32) && (*gc).fg != (*tc).fg {
         tty_colours_fg(tty, gc);
     }
     /*
      * Set the background colour. This must come after the foreground as
      * tty_colour_fg() can call tty_reset().
      */
-    if !((*gc).bg == 8 as libc::c_int || (*gc).bg == 9 as libc::c_int) && (*gc).bg != (*tc).bg {
+    if !((*gc).bg == 8i32 || (*gc).bg == 9i32) && (*gc).bg != (*tc).bg {
         tty_colours_bg(tty, gc);
     }
     /* Set the underscore color. */
@@ -4380,52 +4132,49 @@ unsafe extern "C" fn tty_check_fg(
      * attribute is set, use the bright entry in the palette by changing to
      * the aixterm colour.
      */
-    if !((*gc).flags as libc::c_int) & 0x20 as libc::c_int != 0 {
+    if !((*gc).flags as libc::c_int) & 0x20i32 != 0 {
         c = (*gc).fg;
-        if c < 8 as libc::c_int && (*gc).attr as libc::c_int & 0x1 as libc::c_int != 0 {
-            c += 90 as libc::c_int
+        if c < 8i32 && (*gc).attr as libc::c_int & 0x1i32 != 0 {
+            c += 90i32
         }
         c = tty_get_palette(palette, c);
-        if c != -(1 as libc::c_int) {
+        if c != -(1i32) {
             (*gc).fg = c
         }
     }
     /* Is this a 24-bit colour? */
-    if (*gc).fg & 0x2000000 as libc::c_int != 0 {
+    if (*gc).fg & 0x2000000i32 != 0 {
         /* Not a 24-bit terminal? Translate to 256-colour palette. */
-        if (*(*tty).term).flags & 0x10 as libc::c_int != 0 {
+        if (*(*tty).term).flags & 0x10i32 != 0 {
             return;
         }
         colour_split_rgb((*gc).fg, &mut r, &mut g, &mut b);
         (*gc).fg = colour_find_rgb(r, g, b)
     }
     /* How many colours does this terminal have? */
-    if (*(*tty).term).flags & 0x1 as libc::c_int != 0 {
-        colours = 256 as libc::c_int as u_int
+    if (*(*tty).term).flags & 0x1i32 != 0 {
+        colours = 256u32
     } else {
         colours = tty_term_number((*tty).term, tty_code_code::COLORS) as u_int
     }
     /* Is this a 256-colour colour? */
-    if (*gc).fg & 0x1000000 as libc::c_int != 0 {
+    if (*gc).fg & 0x1000000i32 != 0 {
         /* And not a 256 colour mode? */
-        if colours != 256 as libc::c_int as libc::c_uint {
+        if colours != 256u32 {
             (*gc).fg = colour_256to16((*gc).fg);
-            if (*gc).fg & 8 as libc::c_int != 0 {
-                (*gc).fg &= 7 as libc::c_int;
-                if colours >= 16 as libc::c_int as libc::c_uint {
-                    (*gc).fg += 90 as libc::c_int
+            if (*gc).fg & 8i32 != 0 {
+                (*gc).fg &= 7i32;
+                if colours >= 16u32 {
+                    (*gc).fg += 90i32
                 }
             }
         }
         return;
     }
     /* Is this an aixterm colour? */
-    if (*gc).fg >= 90 as libc::c_int
-        && (*gc).fg <= 97 as libc::c_int
-        && colours < 16 as libc::c_int as libc::c_uint
-    {
-        (*gc).fg -= 90 as libc::c_int;
-        (*gc).attr = ((*gc).attr as libc::c_int | 0x1 as libc::c_int) as u_short
+    if (*gc).fg >= 90i32 && (*gc).fg <= 97i32 && colours < 16u32 {
+        (*gc).fg -= 90i32;
+        (*gc).attr = ((*gc).attr as libc::c_int | 0x1i32) as u_short
     };
 }
 unsafe extern "C" fn tty_check_bg(
@@ -4439,51 +4188,48 @@ unsafe extern "C" fn tty_check_bg(
     let mut colours: u_int = 0;
     let mut c: libc::c_int = 0;
     /* Perform substitution if this pane has a palette. */
-    if !((*gc).flags as libc::c_int) & 0x20 as libc::c_int != 0 {
+    if !((*gc).flags as libc::c_int) & 0x20i32 != 0 {
         c = tty_get_palette(palette, (*gc).bg);
-        if c != -(1 as libc::c_int) {
+        if c != -(1i32) {
             (*gc).bg = c
         }
     }
     /* Is this a 24-bit colour? */
-    if (*gc).bg & 0x2000000 as libc::c_int != 0 {
+    if (*gc).bg & 0x2000000i32 != 0 {
         /* Not a 24-bit terminal? Translate to 256-colour palette. */
-        if (*(*tty).term).flags & 0x10 as libc::c_int != 0 {
+        if (*(*tty).term).flags & 0x10i32 != 0 {
             return;
         }
         colour_split_rgb((*gc).bg, &mut r, &mut g, &mut b);
         (*gc).bg = colour_find_rgb(r, g, b)
     }
     /* How many colours does this terminal have? */
-    if (*(*tty).term).flags & 0x1 as libc::c_int != 0 {
-        colours = 256 as libc::c_int as u_int
+    if (*(*tty).term).flags & 0x1i32 != 0 {
+        colours = 256u32
     } else {
         colours = tty_term_number((*tty).term, tty_code_code::COLORS) as u_int
     }
     /* Is this a 256-colour colour? */
-    if (*gc).bg & 0x1000000 as libc::c_int != 0 {
+    if (*gc).bg & 0x1000000i32 != 0 {
         /*
          * And not a 256 colour mode? Translate to 16-colour
          * palette. Bold background doesn't exist portably, so just
          * discard the bold bit if set.
          */
-        if colours != 256 as libc::c_int as libc::c_uint {
+        if colours != 256u32 {
             (*gc).bg = colour_256to16((*gc).bg);
-            if (*gc).bg & 8 as libc::c_int != 0 {
-                (*gc).bg &= 7 as libc::c_int;
-                if colours >= 16 as libc::c_int as libc::c_uint {
-                    (*gc).bg += 90 as libc::c_int
+            if (*gc).bg & 8i32 != 0 {
+                (*gc).bg &= 7i32;
+                if colours >= 16u32 {
+                    (*gc).bg += 90i32
                 }
             }
         }
         return;
     }
     /* Is this an aixterm colour? */
-    if (*gc).bg >= 90 as libc::c_int
-        && (*gc).bg <= 97 as libc::c_int
-        && colours < 16 as libc::c_int as libc::c_uint
-    {
-        (*gc).bg -= 90 as libc::c_int
+    if (*gc).bg >= 90i32 && (*gc).bg <= 97i32 && colours < 16u32 {
+        (*gc).bg -= 90i32
     };
 }
 unsafe extern "C" fn tty_check_us(
@@ -4493,14 +4239,14 @@ unsafe extern "C" fn tty_check_us(
 ) {
     let mut c: libc::c_int = 0;
     /* Perform substitution if this pane has a palette. */
-    if !((*gc).flags as libc::c_int) & 0x20 as libc::c_int != 0 {
+    if !((*gc).flags as libc::c_int) & 0x20i32 != 0 {
         c = tty_get_palette(palette, (*gc).us);
-        if c != -(1 as libc::c_int) {
+        if c != -(1i32) {
             (*gc).us = c
         }
     }
     /* Underscore colour is set as RGB so convert a 256 colour to RGB. */
-    if (*gc).us & 0x1000000 as libc::c_int != 0 {
+    if (*gc).us & 0x1000000i32 != 0 {
         (*gc).us = colour_256toRGB((*gc).us)
     };
 }
@@ -4508,15 +4254,13 @@ unsafe extern "C" fn tty_colours_fg(mut tty: *mut tty, mut gc: *const GridCell) 
     let mut tc: *mut GridCell = &mut (*tty).cell;
     let mut s: [libc::c_char; 32] = [0; 32];
     /* Is this a 24-bit or 256-colour colour? */
-    if (*gc).fg & 0x2000000 as libc::c_int != 0 || (*gc).fg & 0x1000000 as libc::c_int != 0 {
-        if !(tty_try_colour(tty, (*gc).fg, b"38\x00" as *const u8 as *const libc::c_char)
-            == 0 as libc::c_int)
-        {
+    if (*gc).fg & 0x2000000i32 != 0 || (*gc).fg & 0x1000000i32 != 0 {
+        if !(tty_try_colour(tty, (*gc).fg, b"38\x00" as *const u8 as *const libc::c_char) == 0i32) {
             /* Should not get here, already converted in tty_check_fg. */
             return;
         }
-    } else if (*gc).fg >= 90 as libc::c_int && (*gc).fg <= 97 as libc::c_int {
-        if (*(*tty).term).flags & 0x1 as libc::c_int != 0 {
+    } else if (*gc).fg >= 90i32 && (*gc).fg <= 97i32 {
+        if (*(*tty).term).flags & 0x1i32 != 0 {
             xsnprintf(
                 s.as_mut_ptr(),
                 ::std::mem::size_of::<[libc::c_char; 32]>() as libc::c_ulong,
@@ -4525,11 +4269,7 @@ unsafe extern "C" fn tty_colours_fg(mut tty: *mut tty, mut gc: *const GridCell) 
             );
             tty_puts(tty, s.as_mut_ptr());
         } else {
-            tty_putcode1(
-                tty,
-                tty_code_code::SETAF,
-                (*gc).fg - 90 as libc::c_int + 8 as libc::c_int,
-            );
+            tty_putcode1(tty, tty_code_code::SETAF, (*gc).fg - 90i32 + 8i32);
         }
     } else {
         /* Is this an aixterm bright colour? */
@@ -4543,28 +4283,22 @@ unsafe extern "C" fn tty_colours_bg(mut tty: *mut tty, mut gc: *const GridCell) 
     let mut tc: *mut GridCell = &mut (*tty).cell;
     let mut s: [libc::c_char; 32] = [0; 32];
     /* Is this a 24-bit or 256-colour colour? */
-    if (*gc).bg & 0x2000000 as libc::c_int != 0 || (*gc).bg & 0x1000000 as libc::c_int != 0 {
-        if !(tty_try_colour(tty, (*gc).bg, b"48\x00" as *const u8 as *const libc::c_char)
-            == 0 as libc::c_int)
-        {
+    if (*gc).bg & 0x2000000i32 != 0 || (*gc).bg & 0x1000000i32 != 0 {
+        if !(tty_try_colour(tty, (*gc).bg, b"48\x00" as *const u8 as *const libc::c_char) == 0i32) {
             /* Should not get here, already converted in tty_check_bg. */
             return;
         }
-    } else if (*gc).bg >= 90 as libc::c_int && (*gc).bg <= 97 as libc::c_int {
-        if (*(*tty).term).flags & 0x1 as libc::c_int != 0 {
+    } else if (*gc).bg >= 90i32 && (*gc).bg <= 97i32 {
+        if (*(*tty).term).flags & 0x1i32 != 0 {
             xsnprintf(
                 s.as_mut_ptr(),
                 ::std::mem::size_of::<[libc::c_char; 32]>() as libc::c_ulong,
                 b"\x1b[%dm\x00" as *const u8 as *const libc::c_char,
-                (*gc).bg + 10 as libc::c_int,
+                (*gc).bg + 10i32,
             );
             tty_puts(tty, s.as_mut_ptr());
         } else {
-            tty_putcode1(
-                tty,
-                tty_code_code::SETAB,
-                (*gc).bg - 90 as libc::c_int + 8 as libc::c_int,
-            );
+            tty_putcode1(tty, tty_code_code::SETAB, (*gc).bg - 90i32 + 8i32);
         }
     } else {
         /* Is this an aixterm bright colour? */
@@ -4581,11 +4315,11 @@ unsafe extern "C" fn tty_colours_us(mut tty: *mut tty, mut gc: *const GridCell) 
     let mut g: u_char = 0;
     let mut b: u_char = 0;
     /* Clear underline colour. */
-    if (*gc).us == 0 as libc::c_int {
+    if (*gc).us == 0i32 {
         tty_putcode(tty, tty_code_code::OL);
     } else {
         /* Must be an RGB colour - this should never happen. */
-        if !(*gc).us & 0x2000000 as libc::c_int != 0 {
+        if !(*gc).us & 0x2000000i32 != 0 {
             return;
         }
         /*
@@ -4593,9 +4327,7 @@ unsafe extern "C" fn tty_colours_us(mut tty: *mut tty, mut gc: *const GridCell) 
          * capability format. Calculate the colour value.
          */
         colour_split_rgb((*gc).us, &mut r, &mut g, &mut b);
-        c = (65536 as libc::c_int * r as libc::c_int
-            + 256 as libc::c_int * g as libc::c_int
-            + b as libc::c_int) as u_int;
+        c = (65536i32 * r as libc::c_int + 256i32 * g as libc::c_int + b as libc::c_int) as u_int;
         /*
          * Write the colour. Only use setal if the RGB flag is set because the
          * non-RGB version may be wrong.
@@ -4619,18 +4351,18 @@ unsafe extern "C" fn tty_try_colour(
     let mut r: u_char = 0;
     let mut g: u_char = 0;
     let mut b: u_char = 0;
-    if colour & 0x1000000 as libc::c_int != 0 {
+    if colour & 0x1000000i32 != 0 {
         if *type_0 as libc::c_int == '3' as i32
             && tty_term_has((*tty).term, tty_code_code::SETAF) != 0
         {
-            tty_putcode1(tty, tty_code_code::SETAF, colour & 0xff as libc::c_int);
+            tty_putcode1(tty, tty_code_code::SETAF, colour & 0xffi32);
         } else if tty_term_has((*tty).term, tty_code_code::SETAB) != 0 {
-            tty_putcode1(tty, tty_code_code::SETAB, colour & 0xff as libc::c_int);
+            tty_putcode1(tty, tty_code_code::SETAB, colour & 0xffi32);
         }
-        return 0 as libc::c_int;
+        return 0i32;
     }
-    if colour & 0x2000000 as libc::c_int != 0 {
-        colour_split_rgb(colour & 0xffffff as libc::c_int, &mut r, &mut g, &mut b);
+    if colour & 0x2000000i32 != 0 {
+        colour_split_rgb(colour & 0xffffffi32, &mut r, &mut g, &mut b);
         if *type_0 as libc::c_int == '3' as i32
             && tty_term_has((*tty).term, tty_code_code::SETRGBF) != 0
         {
@@ -4650,9 +4382,9 @@ unsafe extern "C" fn tty_try_colour(
                 b as libc::c_int,
             );
         }
-        return 0 as libc::c_int;
+        return 0i32;
     }
-    return -(1 as libc::c_int);
+    return -(1i32);
 }
 unsafe extern "C" fn tty_window_default_style(mut gc: *mut GridCell, mut wp: *mut window_pane) {
     memcpy(
@@ -4671,8 +4403,8 @@ pub unsafe extern "C" fn tty_default_colours(mut gc: *mut GridCell, mut wp: *mut
         &grid_default_cell as *const GridCell as *const libc::c_void,
         ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
-    if (*wp).flags & 0x1000 as libc::c_int != 0 {
-        (*wp).flags &= !(0x1000 as libc::c_int);
+    if (*wp).flags & 0x1000i32 != 0 {
+        (*wp).flags &= !(0x1000i32);
         tty_window_default_style(&mut (*wp).cached_active_gc, wp);
         style_add(
             &mut (*wp).cached_active_gc,
@@ -4688,15 +4420,15 @@ pub unsafe extern "C" fn tty_default_colours(mut gc: *mut GridCell, mut wp: *mut
             0 as *mut crate::format::format_tree,
         );
     }
-    if (*gc).fg == 8 as libc::c_int {
-        if wp == (*(*wp).window).active && (*wp).cached_active_gc.fg != 8 as libc::c_int {
+    if (*gc).fg == 8i32 {
+        if wp == (*(*wp).window).active && (*wp).cached_active_gc.fg != 8i32 {
             (*gc).fg = (*wp).cached_active_gc.fg
         } else {
             (*gc).fg = (*wp).cached_gc.fg
         }
     }
-    if (*gc).bg == 8 as libc::c_int {
-        if wp == (*(*wp).window).active && (*wp).cached_active_gc.bg != 8 as libc::c_int {
+    if (*gc).bg == 8i32 {
+        if wp == (*(*wp).window).active && (*wp).cached_active_gc.bg != 8i32 {
             (*gc).bg = (*wp).cached_active_gc.bg
         } else {
             (*gc).bg = (*wp).cached_gc.bg

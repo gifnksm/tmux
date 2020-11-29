@@ -1177,522 +1177,102 @@ pub static mut window_clock_mode: window_mode = {
 #[no_mangle]
 pub static mut window_clock_table: [[[libc::c_char; 5]; 5]; 14] = [
     [
-        [
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
+        [1i8, 1i8, 1i8, 1i8, 1i8],
+        [1i8, 0i8, 0i8, 0i8, 1i8],
+        [1i8, 0i8, 0i8, 0i8, 1i8],
+        [1i8, 0i8, 0i8, 0i8, 1i8],
+        [1i8, 1i8, 1i8, 1i8, 1i8],
     ],
     [
-        [
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
+        [0i8, 0i8, 0i8, 0i8, 1i8],
+        [0i8, 0i8, 0i8, 0i8, 1i8],
+        [0i8, 0i8, 0i8, 0i8, 1i8],
+        [0i8, 0i8, 0i8, 0i8, 1i8],
+        [0i8, 0i8, 0i8, 0i8, 1i8],
     ],
     [
-        [
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
+        [1i8, 1i8, 1i8, 1i8, 1i8],
+        [0i8, 0i8, 0i8, 0i8, 1i8],
+        [1i8, 1i8, 1i8, 1i8, 1i8],
+        [1i8, 0i8, 0i8, 0i8, 0i8],
+        [1i8, 1i8, 1i8, 1i8, 1i8],
     ],
     [
-        [
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
+        [1i8, 1i8, 1i8, 1i8, 1i8],
+        [0i8, 0i8, 0i8, 0i8, 1i8],
+        [1i8, 1i8, 1i8, 1i8, 1i8],
+        [0i8, 0i8, 0i8, 0i8, 1i8],
+        [1i8, 1i8, 1i8, 1i8, 1i8],
     ],
     [
-        [
-            1 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
+        [1i8, 0i8, 0i8, 0i8, 1i8],
+        [1i8, 0i8, 0i8, 0i8, 1i8],
+        [1i8, 1i8, 1i8, 1i8, 1i8],
+        [0i8, 0i8, 0i8, 0i8, 1i8],
+        [0i8, 0i8, 0i8, 0i8, 1i8],
     ],
     [
-        [
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
+        [1i8, 1i8, 1i8, 1i8, 1i8],
+        [1i8, 0i8, 0i8, 0i8, 0i8],
+        [1i8, 1i8, 1i8, 1i8, 1i8],
+        [0i8, 0i8, 0i8, 0i8, 1i8],
+        [1i8, 1i8, 1i8, 1i8, 1i8],
     ],
     [
-        [
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
+        [1i8, 1i8, 1i8, 1i8, 1i8],
+        [1i8, 0i8, 0i8, 0i8, 0i8],
+        [1i8, 1i8, 1i8, 1i8, 1i8],
+        [1i8, 0i8, 0i8, 0i8, 1i8],
+        [1i8, 1i8, 1i8, 1i8, 1i8],
     ],
     [
-        [
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
+        [1i8, 1i8, 1i8, 1i8, 1i8],
+        [0i8, 0i8, 0i8, 0i8, 1i8],
+        [0i8, 0i8, 0i8, 0i8, 1i8],
+        [0i8, 0i8, 0i8, 0i8, 1i8],
+        [0i8, 0i8, 0i8, 0i8, 1i8],
     ],
     [
-        [
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
+        [1i8, 1i8, 1i8, 1i8, 1i8],
+        [1i8, 0i8, 0i8, 0i8, 1i8],
+        [1i8, 1i8, 1i8, 1i8, 1i8],
+        [1i8, 0i8, 0i8, 0i8, 1i8],
+        [1i8, 1i8, 1i8, 1i8, 1i8],
     ],
     [
-        [
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
+        [1i8, 1i8, 1i8, 1i8, 1i8],
+        [1i8, 0i8, 0i8, 0i8, 1i8],
+        [1i8, 1i8, 1i8, 1i8, 1i8],
+        [0i8, 0i8, 0i8, 0i8, 1i8],
+        [1i8, 1i8, 1i8, 1i8, 1i8],
     ],
     [
-        [
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-        ],
-        [
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-        ],
-        [
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-        ],
-        [
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-        ],
-        [
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-        ],
+        [0i8, 0i8, 0i8, 0i8, 0i8],
+        [0i8, 0i8, 1i8, 0i8, 0i8],
+        [0i8, 0i8, 0i8, 0i8, 0i8],
+        [0i8, 0i8, 1i8, 0i8, 0i8],
+        [0i8, 0i8, 0i8, 0i8, 0i8],
     ],
     [
-        [
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
+        [1i8, 1i8, 1i8, 1i8, 1i8],
+        [1i8, 0i8, 0i8, 0i8, 1i8],
+        [1i8, 1i8, 1i8, 1i8, 1i8],
+        [1i8, 0i8, 0i8, 0i8, 1i8],
+        [1i8, 0i8, 0i8, 0i8, 1i8],
     ],
     [
-        [
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-        ],
+        [1i8, 1i8, 1i8, 1i8, 1i8],
+        [1i8, 0i8, 0i8, 0i8, 1i8],
+        [1i8, 1i8, 1i8, 1i8, 1i8],
+        [1i8, 0i8, 0i8, 0i8, 0i8],
+        [1i8, 0i8, 0i8, 0i8, 0i8],
     ],
     [
-        [
-            1 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
-        [
-            1 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            0 as libc::c_int as libc::c_char,
-            1 as libc::c_int as libc::c_char,
-        ],
+        [1i8, 0i8, 0i8, 0i8, 1i8],
+        [1i8, 1i8, 0i8, 1i8, 1i8],
+        [1i8, 0i8, 1i8, 0i8, 1i8],
+        [1i8, 0i8, 0i8, 0i8, 1i8],
+        [1i8, 0i8, 0i8, 0i8, 1i8],
     ],
 ];
 unsafe extern "C" fn window_clock_timer_callback(
@@ -1732,7 +1312,7 @@ unsafe extern "C" fn window_clock_timer_callback(
     let mut t: time_t = 0;
     let mut tv: timeval = {
         let mut init = timeval {
-            tv_sec: 1 as libc::c_int as __time_t,
+            tv_sec: 1i64,
             tv_usec: 0,
         };
         init
@@ -1750,7 +1330,7 @@ unsafe extern "C" fn window_clock_timer_callback(
     }
     (*data).tim = t;
     window_clock_draw_screen(wme);
-    (*wp).flags |= 0x1 as libc::c_int;
+    (*wp).flags |= 0x1i32;
 }
 /* $OpenBSD$ */
 /*
@@ -1778,7 +1358,7 @@ unsafe extern "C" fn window_clock_init(
     let mut s: *mut screen = 0 as *mut screen;
     let mut tv: timeval = {
         let mut init = timeval {
-            tv_sec: 1 as libc::c_int as __time_t,
+            tv_sec: 1i64,
             tv_usec: 0,
         };
         init
@@ -1789,8 +1369,8 @@ unsafe extern "C" fn window_clock_init(
     (*data).tim = time(0 as *mut time_t);
     event_set(
         &mut (*data).timer,
-        -(1 as libc::c_int),
-        0 as libc::c_int as libc::c_short,
+        -(1i32),
+        0i16,
         Some(
             window_clock_timer_callback
                 as unsafe extern "C" fn(
@@ -1803,13 +1383,8 @@ unsafe extern "C" fn window_clock_init(
     );
     event_add(&mut (*data).timer, &mut tv);
     s = &mut (*data).screen;
-    screen_init(
-        s,
-        (*(*wp).base.grid).sx,
-        (*(*wp).base.grid).sy,
-        0 as libc::c_int as u_int,
-    );
-    (*s).mode &= !(0x1 as libc::c_int);
+    screen_init(s, (*(*wp).base.grid).sx, (*(*wp).base.grid).sy, 0u32);
+    (*s).mode &= !(0x1i32);
     window_clock_draw_screen(wme);
     return s;
 }
@@ -1826,7 +1401,7 @@ unsafe extern "C" fn window_clock_resize(
 ) {
     let mut data: *mut window_clock_mode_data = (*wme).data as *mut window_clock_mode_data;
     let mut s: *mut screen = &mut (*data).screen;
-    screen_resize(s, sx, sy, 0 as libc::c_int);
+    screen_resize(s, sx, sy, 0i32);
     window_clock_draw_screen(wme);
 }
 unsafe extern "C" fn window_clock_key(
@@ -1891,14 +1466,14 @@ unsafe extern "C" fn window_clock_draw_screen(mut wme: *mut window_mode_entry) {
     screen_write_start(&mut ctx, s);
     t = time(0 as *mut time_t);
     tm = localtime(&mut t);
-    if style == 0 as libc::c_int {
+    if style == 0i32 {
         strftime(
             tim.as_mut_ptr(),
             ::std::mem::size_of::<[libc::c_char; 64]>() as libc::c_ulong,
             b"%l:%M \x00" as *const u8 as *const libc::c_char,
             localtime(&mut t),
         );
-        if (*tm).tm_hour >= 12 as libc::c_int {
+        if (*tm).tm_hour >= 12i32 {
             strlcat(
                 tim.as_mut_ptr(),
                 b"PM\x00" as *const u8 as *const libc::c_char,
@@ -1919,35 +1494,21 @@ unsafe extern "C" fn window_clock_draw_screen(mut wme: *mut window_mode_entry) {
             tm,
         );
     }
-    screen_write_clearscreen(&mut ctx, 8 as libc::c_int as u_int);
-    if ((*(*s).grid).sx as libc::c_ulong)
-        < (6 as libc::c_int as libc::c_ulong).wrapping_mul(strlen(tim.as_mut_ptr()))
-        || (*(*s).grid).sy < 6 as libc::c_int as libc::c_uint
+    screen_write_clearscreen(&mut ctx, 8u32);
+    if ((*(*s).grid).sx as libc::c_ulong) < (6u64).wrapping_mul(strlen(tim.as_mut_ptr()))
+        || (*(*s).grid).sy < 6u32
     {
-        if (*(*s).grid).sx as libc::c_ulong >= strlen(tim.as_mut_ptr())
-            && (*(*s).grid).sy != 0 as libc::c_int as libc::c_uint
-        {
-            x = ((*(*s).grid)
-                .sx
-                .wrapping_div(2 as libc::c_int as libc::c_uint) as libc::c_ulong)
-                .wrapping_sub(
-                    strlen(tim.as_mut_ptr()).wrapping_div(2 as libc::c_int as libc::c_ulong),
-                ) as u_int;
-            y = (*(*s).grid)
-                .sy
-                .wrapping_div(2 as libc::c_int as libc::c_uint);
-            screen_write_cursormove(
-                &mut ctx,
-                x as libc::c_int,
-                y as libc::c_int,
-                0 as libc::c_int,
-            );
+        if (*(*s).grid).sx as libc::c_ulong >= strlen(tim.as_mut_ptr()) && (*(*s).grid).sy != 0u32 {
+            x = ((*(*s).grid).sx.wrapping_div(2u32) as libc::c_ulong)
+                .wrapping_sub(strlen(tim.as_mut_ptr()).wrapping_div(2u64)) as u_int;
+            y = (*(*s).grid).sy.wrapping_div(2u32);
+            screen_write_cursormove(&mut ctx, x as libc::c_int, y as libc::c_int, 0i32);
             memcpy(
                 &mut gc as *mut GridCell as *mut libc::c_void,
                 &grid_default_cell as *const GridCell as *const libc::c_void,
                 ::std::mem::size_of::<GridCell>() as libc::c_ulong,
             );
-            gc.flags = (gc.flags as libc::c_int | 0x20 as libc::c_int) as u_char;
+            gc.flags = (gc.flags as libc::c_int | 0x20i32) as u_char;
             gc.fg = colour;
             screen_write_puts(
                 &mut ctx as *mut screen_write_ctx,
@@ -1959,21 +1520,15 @@ unsafe extern "C" fn window_clock_draw_screen(mut wme: *mut window_mode_entry) {
         screen_write_stop(&mut ctx);
         return;
     }
-    x = ((*(*s).grid)
-        .sx
-        .wrapping_div(2 as libc::c_int as libc::c_uint) as libc::c_ulong)
-        .wrapping_sub((3 as libc::c_int as libc::c_ulong).wrapping_mul(strlen(tim.as_mut_ptr())))
-        as u_int;
-    y = (*(*s).grid)
-        .sy
-        .wrapping_div(2 as libc::c_int as libc::c_uint)
-        .wrapping_sub(3 as libc::c_int as libc::c_uint);
+    x = ((*(*s).grid).sx.wrapping_div(2u32) as libc::c_ulong)
+        .wrapping_sub((3u64).wrapping_mul(strlen(tim.as_mut_ptr()))) as u_int;
+    y = (*(*s).grid).sy.wrapping_div(2u32).wrapping_sub(3u32);
     memcpy(
         &mut gc as *mut GridCell as *mut libc::c_void,
         &grid_default_cell as *const GridCell as *const libc::c_void,
         ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
-    gc.flags = (gc.flags as libc::c_int | 0x20 as libc::c_int) as u_char;
+    gc.flags = (gc.flags as libc::c_int | 0x20i32) as u_char;
     gc.bg = colour;
     let mut current_block_47: u64;
     ptr = tim.as_mut_ptr();
@@ -1982,43 +1537,41 @@ unsafe extern "C" fn window_clock_draw_screen(mut wme: *mut window_mode_entry) {
             idx = (*ptr as libc::c_int - '0' as i32) as u_int;
             current_block_47 = 12997042908615822766;
         } else if *ptr as libc::c_int == ':' as i32 {
-            idx = 10 as libc::c_int as u_int;
+            idx = 10u32;
             current_block_47 = 12997042908615822766;
         } else if *ptr as libc::c_int == 'A' as i32 {
-            idx = 11 as libc::c_int as u_int;
+            idx = 11u32;
             current_block_47 = 12997042908615822766;
         } else if *ptr as libc::c_int == 'P' as i32 {
-            idx = 12 as libc::c_int as u_int;
+            idx = 12u32;
             current_block_47 = 12997042908615822766;
         } else if *ptr as libc::c_int == 'M' as i32 {
-            idx = 13 as libc::c_int as u_int;
+            idx = 13u32;
             current_block_47 = 12997042908615822766;
         } else {
-            x = (x as libc::c_uint).wrapping_add(6 as libc::c_int as libc::c_uint) as u_int
-                as u_int;
+            x = (x).wrapping_add(6u32);
             current_block_47 = 18377268871191777778;
         }
         match current_block_47 {
             12997042908615822766 => {
-                j = 0 as libc::c_int as u_int;
-                while j < 5 as libc::c_int as libc::c_uint {
-                    i = 0 as libc::c_int as u_int;
-                    while i < 5 as libc::c_int as libc::c_uint {
+                j = 0u32;
+                while j < 5u32 {
+                    i = 0u32;
+                    while i < 5u32 {
                         screen_write_cursormove(
                             &mut ctx,
                             x.wrapping_add(i) as libc::c_int,
                             y.wrapping_add(j) as libc::c_int,
-                            0 as libc::c_int,
+                            0i32,
                         );
                         if window_clock_table[idx as usize][j as usize][i as usize] != 0 {
-                            screen_write_putc(&mut ctx, &mut gc, ' ' as i32 as u_char);
+                            screen_write_putc(&mut ctx, &mut gc, ' ' as u_char);
                         }
                         i = i.wrapping_add(1)
                     }
                     j = j.wrapping_add(1)
                 }
-                x = (x as libc::c_uint).wrapping_add(6 as libc::c_int as libc::c_uint) as u_int
-                    as u_int
+                x = (x).wrapping_add(6u32)
             }
             _ => {}
         }

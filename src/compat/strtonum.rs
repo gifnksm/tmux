@@ -23,57 +23,53 @@ pub unsafe extern "C" fn strtonum(
     mut maxval: libc::c_longlong,
     mut errstrp: *mut *const libc::c_char,
 ) -> libc::c_longlong {
-    let mut ll: libc::c_longlong = 0 as libc::c_int as libc::c_longlong;
+    let mut ll: libc::c_longlong = 0i64;
     let mut ep: *mut libc::c_char = 0 as *mut libc::c_char;
-    let mut error: libc::c_int = 0 as libc::c_int;
+    let mut error: libc::c_int = 0i32;
     let mut ev: [errval; 4] = [
         {
             let mut init = errval {
                 errstr: 0 as *const libc::c_char,
-                err: 0 as libc::c_int,
+                err: 0i32,
             };
             init
         },
         {
             let mut init = errval {
                 errstr: b"invalid\x00" as *const u8 as *const libc::c_char,
-                err: 22 as libc::c_int,
+                err: 22i32,
             };
             init
         },
         {
             let mut init = errval {
                 errstr: b"too small\x00" as *const u8 as *const libc::c_char,
-                err: 34 as libc::c_int,
+                err: 34i32,
             };
             init
         },
         {
             let mut init = errval {
                 errstr: b"too large\x00" as *const u8 as *const libc::c_char,
-                err: 34 as libc::c_int,
+                err: 34i32,
             };
             init
         },
     ];
-    ev[0 as libc::c_int as usize].err = *__errno_location();
-    *__errno_location() = 0 as libc::c_int;
+    ev[0usize].err = *__errno_location();
+    *__errno_location() = 0i32;
     if minval > maxval {
-        error = 1 as libc::c_int
+        error = 1i32
     } else {
-        ll = strtoll(numstr, &mut ep, 10 as libc::c_int);
+        ll = strtoll(numstr, &mut ep, 10i32);
         if numstr == ep as *const libc::c_char || *ep as libc::c_int != '\u{0}' as i32 {
-            error = 1 as libc::c_int
-        } else if ll == -(9223372036854775807 as libc::c_longlong) - 1 as libc::c_longlong
-            && *__errno_location() == 34 as libc::c_int
+            error = 1i32
+        } else if ll == -(9223372036854775807i64) - 1i64 && *__errno_location() == 34i32
             || ll < minval
         {
-            error = 2 as libc::c_int
-        } else if ll == 9223372036854775807 as libc::c_longlong
-            && *__errno_location() == 34 as libc::c_int
-            || ll > maxval
-        {
-            error = 3 as libc::c_int
+            error = 2i32
+        } else if ll == 9223372036854775807i64 && *__errno_location() == 34i32 || ll > maxval {
+            error = 3i32
         }
     }
     if !errstrp.is_null() {
@@ -81,7 +77,7 @@ pub unsafe extern "C" fn strtonum(
     }
     *__errno_location() = ev[error as usize].err;
     if error != 0 {
-        ll = 0 as libc::c_int as libc::c_longlong
+        ll = 0i64
     }
     return ll;
 }

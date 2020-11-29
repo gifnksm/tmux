@@ -1165,8 +1165,8 @@ pub static mut cmd_if_shell_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"bFt:\x00" as *const u8 as *const libc::c_char,
-                    lower: 2 as libc::c_int,
-                    upper: 3 as libc::c_int,
+                    lower: 2i32,
+                    upper: 3i32,
                 };
                 init
             },
@@ -1179,13 +1179,13 @@ pub static mut cmd_if_shell_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_PANE,
-                    flags: 0x40 as libc::c_int,
+                    flags: 0x40i32,
                 };
                 init
             },
-            flags: 0 as libc::c_int,
+            flags: 0i32,
             exec: Some(
                 cmd_if_shell_exec
                     as unsafe extern "C" fn(
@@ -1248,12 +1248,12 @@ unsafe extern "C" fn cmd_if_shell_exec(
         },
     };
     let mut status: cmd_parse_status = CMD_PARSE_EMPTY;
-    shellcmd = format_single_from_target(item, *(*args).argv.offset(0 as libc::c_int as isize));
-    if args_has(args, 'F' as i32 as u_char) != 0 {
+    shellcmd = format_single_from_target(item, *(*args).argv.offset(0isize));
+    if args_has(args, 'F' as u_char) != 0 {
         if *shellcmd as libc::c_int != '0' as i32 && *shellcmd as libc::c_int != '\u{0}' as i32 {
-            cmd = *(*args).argv.offset(1 as libc::c_int as isize)
-        } else if (*args).argc == 3 as libc::c_int {
-            cmd = *(*args).argv.offset(2 as libc::c_int as isize)
+            cmd = *(*args).argv.offset(1isize)
+        } else if (*args).argc == 3i32 {
+            cmd = *(*args).argv.offset(2isize)
         } else {
             cmd = 0 as *mut libc::c_char
         }
@@ -1263,7 +1263,7 @@ unsafe extern "C" fn cmd_if_shell_exec(
         }
         memset(
             &mut pi as *mut cmd_parse_input as *mut libc::c_void,
-            0 as libc::c_int,
+            0i32,
             ::std::mem::size_of::<cmd_parse_input>() as libc::c_ulong,
         );
         cmd_get_source(self_0, &mut pi.file, &mut pi.line);
@@ -1271,7 +1271,7 @@ unsafe extern "C" fn cmd_if_shell_exec(
         pi.c = tc;
         cmd_find_copy_state(&mut pi.fs, target);
         status = cmd_parse_and_insert(cmd, &mut pi, item, state, &mut error);
-        if status as libc::c_uint == CMD_PARSE_ERROR as libc::c_int as libc::c_uint {
+        if status == CMD_PARSE_ERROR {
             cmdq_error(item, b"%s\x00" as *const u8 as *const libc::c_char, error);
             free(error as *mut libc::c_void);
             return CMD_RETURN_ERROR;
@@ -1279,16 +1279,16 @@ unsafe extern "C" fn cmd_if_shell_exec(
         return CMD_RETURN_NORMAL;
     }
     cdata = xcalloc(
-        1 as libc::c_int as size_t,
+        1u64,
         ::std::mem::size_of::<cmd_if_shell_data>() as libc::c_ulong,
     ) as *mut cmd_if_shell_data;
-    (*cdata).cmd_if = xstrdup(*(*args).argv.offset(1 as libc::c_int as isize));
-    if (*args).argc == 3 as libc::c_int {
-        (*cdata).cmd_else = xstrdup(*(*args).argv.offset(2 as libc::c_int as isize))
+    (*cdata).cmd_if = xstrdup(*(*args).argv.offset(1isize));
+    if (*args).argc == 3i32 {
+        (*cdata).cmd_else = xstrdup(*(*args).argv.offset(2isize))
     } else {
         (*cdata).cmd_else = 0 as *mut libc::c_char
     }
-    if args_has(args, 'b' as i32 as u_char) == 0 {
+    if args_has(args, 'b' as u_char) == 0 {
         (*cdata).client = cmdq_get_client(item)
     } else {
         (*cdata).client = tc
@@ -1296,14 +1296,14 @@ unsafe extern "C" fn cmd_if_shell_exec(
     if !(*cdata).client.is_null() {
         (*(*cdata).client).references += 1
     }
-    if args_has(args, 'b' as i32 as u_char) == 0 {
+    if args_has(args, 'b' as u_char) == 0 {
         (*cdata).item = item
     } else {
         (*cdata).item = 0 as *mut crate::cmd_queue::cmdq_item
     }
     memset(
         &mut (*cdata).input as *mut cmd_parse_input as *mut libc::c_void,
-        0 as libc::c_int,
+        0i32,
         ::std::mem::size_of::<cmd_parse_input>() as libc::c_ulong,
     );
     cmd_get_source(self_0, &mut file, &mut (*cdata).input.line);
@@ -1323,9 +1323,9 @@ unsafe extern "C" fn cmd_if_shell_exec(
         Some(cmd_if_shell_callback as unsafe extern "C" fn(_: *mut crate::job::job) -> ()),
         Some(cmd_if_shell_free as unsafe extern "C" fn(_: *mut libc::c_void) -> ()),
         cdata as *mut libc::c_void,
-        0 as libc::c_int,
-        -(1 as libc::c_int),
-        -(1 as libc::c_int),
+        0i32,
+        -(1i32),
+        -(1i32),
     )
     .is_null()
     {
@@ -1339,7 +1339,7 @@ unsafe extern "C" fn cmd_if_shell_exec(
         return CMD_RETURN_ERROR;
     }
     free(shellcmd as *mut libc::c_void);
-    if args_has(args, 'b' as i32 as u_char) != 0 {
+    if args_has(args, 'b' as u_char) != 0 {
         return CMD_RETURN_NORMAL;
     }
     return CMD_RETURN_WAIT;
@@ -1353,16 +1353,14 @@ unsafe extern "C" fn cmd_if_shell_callback(mut job: *mut crate::job::job) {
     let mut status: libc::c_int = 0;
     let mut pr: *mut cmd_parse_result = 0 as *mut cmd_parse_result;
     status = job_get_status(job);
-    if !(status & 0x7f as libc::c_int == 0 as libc::c_int)
-        || (status & 0xff00 as libc::c_int) >> 8 as libc::c_int != 0 as libc::c_int
-    {
+    if !(status & 0x7fi32 == 0i32) || (status & 0xff00i32) >> 8i32 != 0i32 {
         cmd = (*cdata).cmd_else
     } else {
         cmd = (*cdata).cmd_if
     }
     if !cmd.is_null() {
         pr = cmd_parse_from_string(cmd, &mut (*cdata).input);
-        match (*pr).status as libc::c_uint {
+        match (*pr).status {
             1 => {
                 if !(*cdata).item.is_null() {
                     cmdq_error(
@@ -1375,11 +1373,7 @@ unsafe extern "C" fn cmd_if_shell_callback(mut job: *mut crate::job::job) {
             }
             2 => {
                 if (*cdata).item.is_null() {
-                    new_state = cmdq_new_state(
-                        0 as *mut cmd_find_state,
-                        0 as *mut key_event,
-                        0 as libc::c_int,
-                    )
+                    new_state = cmdq_new_state(0 as *mut cmd_find_state, 0 as *mut key_event, 0i32)
                 } else {
                     new_state = cmdq_get_state((*cdata).item)
                 }

@@ -1146,13 +1146,13 @@ pub struct sessions {
  */
 #[no_mangle]
 pub static mut sessions: sessions = sessions {
-    rbh_root: 0 as *const session as *mut session,
+    rbh_root: 0 as *mut session,
 };
 static mut next_session_id: u_int = 0;
 #[no_mangle]
 pub static mut session_groups: session_groups = {
     let mut init = session_groups {
-        rbh_root: 0 as *const session_group as *mut session_group,
+        rbh_root: 0 as *mut session_group,
     };
     init
 };
@@ -1187,12 +1187,12 @@ pub unsafe extern "C" fn sessions_RB_REMOVE_COLOR(
     mut elm: *mut session,
 ) {
     let mut tmp: *mut session = 0 as *mut session;
-    while (elm.is_null() || (*elm).entry.rbe_color == 0 as libc::c_int) && elm != (*head).rbh_root {
+    while (elm.is_null() || (*elm).entry.rbe_color == 0i32) && elm != (*head).rbh_root {
         if (*parent).entry.rbe_left == elm {
             tmp = (*parent).entry.rbe_right;
-            if (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 1 as libc::c_int;
+            if (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 1i32;
                 tmp = (*parent).entry.rbe_right;
                 (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
                 if !(*parent).entry.rbe_right.is_null() {
@@ -1213,24 +1213,23 @@ pub unsafe extern "C" fn sessions_RB_REMOVE_COLOR(
                 !(*tmp).entry.rbe_parent.is_null();
                 tmp = (*parent).entry.rbe_right
             }
-            if ((*tmp).entry.rbe_left.is_null()
-                || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int)
+            if ((*tmp).entry.rbe_left.is_null() || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32)
                 && ((*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int)
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32)
             {
-                (*tmp).entry.rbe_color = 1 as libc::c_int;
+                (*tmp).entry.rbe_color = 1i32;
                 elm = parent;
                 parent = (*elm).entry.rbe_parent
             } else {
                 if (*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32
                 {
                     let mut oleft: *mut session = 0 as *mut session;
                     oleft = (*tmp).entry.rbe_left;
                     if !oleft.is_null() {
-                        (*oleft).entry.rbe_color = 0 as libc::c_int
+                        (*oleft).entry.rbe_color = 0i32
                     }
-                    (*tmp).entry.rbe_color = 1 as libc::c_int;
+                    (*tmp).entry.rbe_color = 1i32;
                     oleft = (*tmp).entry.rbe_left;
                     (*tmp).entry.rbe_left = (*oleft).entry.rbe_right;
                     if !(*tmp).entry.rbe_left.is_null() {
@@ -1252,9 +1251,9 @@ pub unsafe extern "C" fn sessions_RB_REMOVE_COLOR(
                     tmp = (*parent).entry.rbe_right
                 }
                 (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
                 if !(*tmp).entry.rbe_right.is_null() {
-                    (*(*tmp).entry.rbe_right).entry.rbe_color = 0 as libc::c_int
+                    (*(*tmp).entry.rbe_right).entry.rbe_color = 0i32
                 }
                 tmp = (*parent).entry.rbe_right;
                 (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
@@ -1279,9 +1278,9 @@ pub unsafe extern "C" fn sessions_RB_REMOVE_COLOR(
             }
         } else {
             tmp = (*parent).entry.rbe_left;
-            if (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 1 as libc::c_int;
+            if (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 1i32;
                 tmp = (*parent).entry.rbe_left;
                 (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
                 if !(*parent).entry.rbe_left.is_null() {
@@ -1302,24 +1301,23 @@ pub unsafe extern "C" fn sessions_RB_REMOVE_COLOR(
                 !(*tmp).entry.rbe_parent.is_null();
                 tmp = (*parent).entry.rbe_left
             }
-            if ((*tmp).entry.rbe_left.is_null()
-                || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int)
+            if ((*tmp).entry.rbe_left.is_null() || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32)
                 && ((*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int)
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32)
             {
-                (*tmp).entry.rbe_color = 1 as libc::c_int;
+                (*tmp).entry.rbe_color = 1i32;
                 elm = parent;
                 parent = (*elm).entry.rbe_parent
             } else {
                 if (*tmp).entry.rbe_left.is_null()
-                    || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int
+                    || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32
                 {
                     let mut oright: *mut session = 0 as *mut session;
                     oright = (*tmp).entry.rbe_right;
                     if !oright.is_null() {
-                        (*oright).entry.rbe_color = 0 as libc::c_int
+                        (*oright).entry.rbe_color = 0i32
                     }
-                    (*tmp).entry.rbe_color = 1 as libc::c_int;
+                    (*tmp).entry.rbe_color = 1i32;
                     oright = (*tmp).entry.rbe_right;
                     (*tmp).entry.rbe_right = (*oright).entry.rbe_left;
                     if !(*tmp).entry.rbe_right.is_null() {
@@ -1341,9 +1339,9 @@ pub unsafe extern "C" fn sessions_RB_REMOVE_COLOR(
                     tmp = (*parent).entry.rbe_left
                 }
                 (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
                 if !(*tmp).entry.rbe_left.is_null() {
-                    (*(*tmp).entry.rbe_left).entry.rbe_color = 0 as libc::c_int
+                    (*(*tmp).entry.rbe_left).entry.rbe_color = 0i32
                 }
                 tmp = (*parent).entry.rbe_left;
                 (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
@@ -1369,7 +1367,7 @@ pub unsafe extern "C" fn sessions_RB_REMOVE_COLOR(
         }
     }
     if !elm.is_null() {
-        (*elm).entry.rbe_color = 0 as libc::c_int
+        (*elm).entry.rbe_color = 0i32
     };
 }
 #[no_mangle]
@@ -1460,7 +1458,7 @@ pub unsafe extern "C" fn sessions_RB_REMOVE(
         }
         _ => {}
     }
-    if color == 0 as libc::c_int {
+    if color == 0i32 {
         sessions_RB_REMOVE_COLOR(head, parent, child);
     }
     return old;
@@ -1472,14 +1470,14 @@ pub unsafe extern "C" fn sessions_RB_INSERT(
 ) -> *mut session {
     let mut tmp: *mut session = 0 as *mut session;
     let mut parent: *mut session = 0 as *mut session;
-    let mut comp: libc::c_int = 0 as libc::c_int;
+    let mut comp: libc::c_int = 0i32;
     tmp = (*head).rbh_root;
     while !tmp.is_null() {
         parent = tmp;
         comp = session_cmp(elm, parent);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).entry.rbe_right
         } else {
             return tmp;
@@ -1488,9 +1486,9 @@ pub unsafe extern "C" fn sessions_RB_INSERT(
     (*elm).entry.rbe_parent = parent;
     (*elm).entry.rbe_right = 0 as *mut session;
     (*elm).entry.rbe_left = (*elm).entry.rbe_right;
-    (*elm).entry.rbe_color = 1 as libc::c_int;
+    (*elm).entry.rbe_color = 1i32;
     if !parent.is_null() {
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             (*parent).entry.rbe_left = elm
         } else {
             (*parent).entry.rbe_right = elm
@@ -1510,9 +1508,9 @@ pub unsafe extern "C" fn sessions_RB_FIND(
     let mut comp: libc::c_int = 0;
     while !tmp.is_null() {
         comp = session_cmp(elm, tmp);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).entry.rbe_right
         } else {
             return tmp;
@@ -1527,16 +1525,16 @@ pub unsafe extern "C" fn sessions_RB_INSERT_COLOR(mut head: *mut sessions, mut e
     let mut tmp: *mut session = 0 as *mut session;
     loop {
         parent = (*elm).entry.rbe_parent;
-        if !(!parent.is_null() && (*parent).entry.rbe_color == 1 as libc::c_int) {
+        if !(!parent.is_null() && (*parent).entry.rbe_color == 1i32) {
             break;
         }
         gparent = (*parent).entry.rbe_parent;
         if parent == (*gparent).entry.rbe_left {
             tmp = (*gparent).entry.rbe_right;
-            if !tmp.is_null() && (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).entry.rbe_right == elm {
@@ -1562,8 +1560,8 @@ pub unsafe extern "C" fn sessions_RB_INSERT_COLOR(mut head: *mut sessions, mut e
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 tmp = (*gparent).entry.rbe_left;
                 (*gparent).entry.rbe_left = (*tmp).entry.rbe_right;
                 if !(*gparent).entry.rbe_left.is_null() {
@@ -1585,10 +1583,10 @@ pub unsafe extern "C" fn sessions_RB_INSERT_COLOR(mut head: *mut sessions, mut e
             }
         } else {
             tmp = (*gparent).entry.rbe_left;
-            if !tmp.is_null() && (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).entry.rbe_left == elm {
@@ -1614,8 +1612,8 @@ pub unsafe extern "C" fn sessions_RB_INSERT_COLOR(mut head: *mut sessions, mut e
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 tmp = (*gparent).entry.rbe_right;
                 (*gparent).entry.rbe_right = (*tmp).entry.rbe_left;
                 if !(*gparent).entry.rbe_right.is_null() {
@@ -1637,7 +1635,7 @@ pub unsafe extern "C" fn sessions_RB_INSERT_COLOR(mut head: *mut sessions, mut e
             }
         }
     }
-    (*(*head).rbh_root).entry.rbe_color = 0 as libc::c_int;
+    (*(*head).rbh_root).entry.rbe_color = 0i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn sessions_RB_PREV(mut elm: *mut session) -> *mut session {
@@ -1669,10 +1667,10 @@ pub unsafe extern "C" fn sessions_RB_NFIND(
     let mut comp: libc::c_int = 0;
     while !tmp.is_null() {
         comp = session_cmp(elm, tmp);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             res = tmp;
             tmp = (*tmp).entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).entry.rbe_right
         } else {
             return tmp;
@@ -1689,7 +1687,7 @@ pub unsafe extern "C" fn sessions_RB_MINMAX(
     let mut parent: *mut session = 0 as *mut session;
     while !tmp.is_null() {
         parent = tmp;
-        if val < 0 as libc::c_int {
+        if val < 0i32 {
             tmp = (*tmp).entry.rbe_left
         } else {
             tmp = (*tmp).entry.rbe_right
@@ -1712,16 +1710,16 @@ unsafe extern "C" fn session_groups_RB_INSERT_COLOR(
     let mut tmp: *mut session_group = 0 as *mut session_group;
     loop {
         parent = (*elm).entry.rbe_parent;
-        if !(!parent.is_null() && (*parent).entry.rbe_color == 1 as libc::c_int) {
+        if !(!parent.is_null() && (*parent).entry.rbe_color == 1i32) {
             break;
         }
         gparent = (*parent).entry.rbe_parent;
         if parent == (*gparent).entry.rbe_left {
             tmp = (*gparent).entry.rbe_right;
-            if !tmp.is_null() && (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).entry.rbe_right == elm {
@@ -1747,8 +1745,8 @@ unsafe extern "C" fn session_groups_RB_INSERT_COLOR(
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 tmp = (*gparent).entry.rbe_left;
                 (*gparent).entry.rbe_left = (*tmp).entry.rbe_right;
                 if !(*gparent).entry.rbe_left.is_null() {
@@ -1770,10 +1768,10 @@ unsafe extern "C" fn session_groups_RB_INSERT_COLOR(
             }
         } else {
             tmp = (*gparent).entry.rbe_left;
-            if !tmp.is_null() && (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).entry.rbe_left == elm {
@@ -1799,8 +1797,8 @@ unsafe extern "C" fn session_groups_RB_INSERT_COLOR(
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 tmp = (*gparent).entry.rbe_right;
                 (*gparent).entry.rbe_right = (*tmp).entry.rbe_left;
                 if !(*gparent).entry.rbe_right.is_null() {
@@ -1822,7 +1820,7 @@ unsafe extern "C" fn session_groups_RB_INSERT_COLOR(
             }
         }
     }
-    (*(*head).rbh_root).entry.rbe_color = 0 as libc::c_int;
+    (*(*head).rbh_root).entry.rbe_color = 0i32;
 }
 unsafe extern "C" fn session_groups_RB_INSERT(
     mut head: *mut session_groups,
@@ -1830,14 +1828,14 @@ unsafe extern "C" fn session_groups_RB_INSERT(
 ) -> *mut session_group {
     let mut tmp: *mut session_group = 0 as *mut session_group;
     let mut parent: *mut session_group = 0 as *mut session_group;
-    let mut comp: libc::c_int = 0 as libc::c_int;
+    let mut comp: libc::c_int = 0i32;
     tmp = (*head).rbh_root;
     while !tmp.is_null() {
         parent = tmp;
         comp = session_group_cmp(elm, parent);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).entry.rbe_right
         } else {
             return tmp;
@@ -1846,9 +1844,9 @@ unsafe extern "C" fn session_groups_RB_INSERT(
     (*elm).entry.rbe_parent = parent;
     (*elm).entry.rbe_right = 0 as *mut session_group;
     (*elm).entry.rbe_left = (*elm).entry.rbe_right;
-    (*elm).entry.rbe_color = 1 as libc::c_int;
+    (*elm).entry.rbe_color = 1i32;
     if !parent.is_null() {
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             (*parent).entry.rbe_left = elm
         } else {
             (*parent).entry.rbe_right = elm
@@ -1867,9 +1865,9 @@ unsafe extern "C" fn session_groups_RB_FIND(
     let mut comp: libc::c_int = 0;
     while !tmp.is_null() {
         comp = session_group_cmp(elm, tmp);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).entry.rbe_right
         } else {
             return tmp;
@@ -1883,12 +1881,12 @@ unsafe extern "C" fn session_groups_RB_REMOVE_COLOR(
     mut elm: *mut session_group,
 ) {
     let mut tmp: *mut session_group = 0 as *mut session_group;
-    while (elm.is_null() || (*elm).entry.rbe_color == 0 as libc::c_int) && elm != (*head).rbh_root {
+    while (elm.is_null() || (*elm).entry.rbe_color == 0i32) && elm != (*head).rbh_root {
         if (*parent).entry.rbe_left == elm {
             tmp = (*parent).entry.rbe_right;
-            if (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 1 as libc::c_int;
+            if (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 1i32;
                 tmp = (*parent).entry.rbe_right;
                 (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
                 if !(*parent).entry.rbe_right.is_null() {
@@ -1909,24 +1907,23 @@ unsafe extern "C" fn session_groups_RB_REMOVE_COLOR(
                 !(*tmp).entry.rbe_parent.is_null();
                 tmp = (*parent).entry.rbe_right
             }
-            if ((*tmp).entry.rbe_left.is_null()
-                || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int)
+            if ((*tmp).entry.rbe_left.is_null() || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32)
                 && ((*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int)
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32)
             {
-                (*tmp).entry.rbe_color = 1 as libc::c_int;
+                (*tmp).entry.rbe_color = 1i32;
                 elm = parent;
                 parent = (*elm).entry.rbe_parent
             } else {
                 if (*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32
                 {
                     let mut oleft: *mut session_group = 0 as *mut session_group;
                     oleft = (*tmp).entry.rbe_left;
                     if !oleft.is_null() {
-                        (*oleft).entry.rbe_color = 0 as libc::c_int
+                        (*oleft).entry.rbe_color = 0i32
                     }
-                    (*tmp).entry.rbe_color = 1 as libc::c_int;
+                    (*tmp).entry.rbe_color = 1i32;
                     oleft = (*tmp).entry.rbe_left;
                     (*tmp).entry.rbe_left = (*oleft).entry.rbe_right;
                     if !(*tmp).entry.rbe_left.is_null() {
@@ -1948,9 +1945,9 @@ unsafe extern "C" fn session_groups_RB_REMOVE_COLOR(
                     tmp = (*parent).entry.rbe_right
                 }
                 (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
                 if !(*tmp).entry.rbe_right.is_null() {
-                    (*(*tmp).entry.rbe_right).entry.rbe_color = 0 as libc::c_int
+                    (*(*tmp).entry.rbe_right).entry.rbe_color = 0i32
                 }
                 tmp = (*parent).entry.rbe_right;
                 (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
@@ -1975,9 +1972,9 @@ unsafe extern "C" fn session_groups_RB_REMOVE_COLOR(
             }
         } else {
             tmp = (*parent).entry.rbe_left;
-            if (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 1 as libc::c_int;
+            if (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 1i32;
                 tmp = (*parent).entry.rbe_left;
                 (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
                 if !(*parent).entry.rbe_left.is_null() {
@@ -1998,24 +1995,23 @@ unsafe extern "C" fn session_groups_RB_REMOVE_COLOR(
                 !(*tmp).entry.rbe_parent.is_null();
                 tmp = (*parent).entry.rbe_left
             }
-            if ((*tmp).entry.rbe_left.is_null()
-                || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int)
+            if ((*tmp).entry.rbe_left.is_null() || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32)
                 && ((*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int)
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32)
             {
-                (*tmp).entry.rbe_color = 1 as libc::c_int;
+                (*tmp).entry.rbe_color = 1i32;
                 elm = parent;
                 parent = (*elm).entry.rbe_parent
             } else {
                 if (*tmp).entry.rbe_left.is_null()
-                    || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int
+                    || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32
                 {
                     let mut oright: *mut session_group = 0 as *mut session_group;
                     oright = (*tmp).entry.rbe_right;
                     if !oright.is_null() {
-                        (*oright).entry.rbe_color = 0 as libc::c_int
+                        (*oright).entry.rbe_color = 0i32
                     }
-                    (*tmp).entry.rbe_color = 1 as libc::c_int;
+                    (*tmp).entry.rbe_color = 1i32;
                     oright = (*tmp).entry.rbe_right;
                     (*tmp).entry.rbe_right = (*oright).entry.rbe_left;
                     if !(*tmp).entry.rbe_right.is_null() {
@@ -2037,9 +2033,9 @@ unsafe extern "C" fn session_groups_RB_REMOVE_COLOR(
                     tmp = (*parent).entry.rbe_left
                 }
                 (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
                 if !(*tmp).entry.rbe_left.is_null() {
-                    (*(*tmp).entry.rbe_left).entry.rbe_color = 0 as libc::c_int
+                    (*(*tmp).entry.rbe_left).entry.rbe_color = 0i32
                 }
                 tmp = (*parent).entry.rbe_left;
                 (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
@@ -2065,7 +2061,7 @@ unsafe extern "C" fn session_groups_RB_REMOVE_COLOR(
         }
     }
     if !elm.is_null() {
-        (*elm).entry.rbe_color = 0 as libc::c_int
+        (*elm).entry.rbe_color = 0i32
     };
 }
 unsafe extern "C" fn session_groups_RB_NEXT(mut elm: *mut session_group) -> *mut session_group {
@@ -2095,7 +2091,7 @@ unsafe extern "C" fn session_groups_RB_MINMAX(
     let mut parent: *mut session_group = 0 as *mut session_group;
     while !tmp.is_null() {
         parent = tmp;
-        if val < 0 as libc::c_int {
+        if val < 0i32 {
             tmp = (*tmp).entry.rbe_left
         } else {
             tmp = (*tmp).entry.rbe_right
@@ -2190,7 +2186,7 @@ unsafe extern "C" fn session_groups_RB_REMOVE(
         }
         _ => {}
     }
-    if color == 0 as libc::c_int {
+    if color == 0i32 {
         session_groups_RB_REMOVE_COLOR(head, parent, child);
     }
     return old;
@@ -2202,14 +2198,14 @@ unsafe extern "C" fn session_groups_RB_REMOVE(
 #[no_mangle]
 pub unsafe extern "C" fn session_alive(mut s: *mut session) -> libc::c_int {
     let mut s_loop: *mut session = 0 as *mut session;
-    s_loop = sessions_RB_MINMAX(&mut sessions, -(1 as libc::c_int));
+    s_loop = sessions_RB_MINMAX(&mut sessions, -(1i32));
     while !s_loop.is_null() {
         if s_loop == s {
-            return 1 as libc::c_int;
+            return 1i32;
         }
         s_loop = sessions_RB_NEXT(s_loop)
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 /* Find session by name. */
 #[no_mangle]
@@ -2314,11 +2310,9 @@ pub unsafe extern "C" fn session_find_by_id_str(mut s: *const libc::c_char) -> *
         return 0 as *mut session;
     }
     id = strtonum(
-        s.offset(1 as libc::c_int as isize),
-        0 as libc::c_int as libc::c_longlong,
-        (2147483647 as libc::c_int as libc::c_uint)
-            .wrapping_mul(2 as libc::c_uint)
-            .wrapping_add(1 as libc::c_uint) as libc::c_longlong,
+        s.offset(1isize),
+        0i64,
+        (2147483647u32).wrapping_mul(2u32).wrapping_add(1u32) as libc::c_longlong,
         &mut errstr,
     ) as u_int;
     if !errstr.is_null() {
@@ -2330,7 +2324,7 @@ pub unsafe extern "C" fn session_find_by_id_str(mut s: *const libc::c_char) -> *
 #[no_mangle]
 pub unsafe extern "C" fn session_find_by_id(mut id: u_int) -> *mut session {
     let mut s: *mut session = 0 as *mut session;
-    s = sessions_RB_MINMAX(&mut sessions, -(1 as libc::c_int));
+    s = sessions_RB_MINMAX(&mut sessions, -(1i32));
     while !s.is_null() {
         if (*s).id == id {
             return s;
@@ -2350,12 +2344,9 @@ pub unsafe extern "C" fn session_create(
     mut tio: *mut termios,
 ) -> *mut session {
     let mut s: *mut session = 0 as *mut session;
-    s = xcalloc(
-        1 as libc::c_int as size_t,
-        ::std::mem::size_of::<session>() as libc::c_ulong,
-    ) as *mut session;
-    (*s).references = 1 as libc::c_int;
-    (*s).flags = 0 as libc::c_int;
+    s = xcalloc(1u64, ::std::mem::size_of::<session>() as libc::c_ulong) as *mut session;
+    (*s).references = 1i32;
+    (*s).flags = 0i32;
     (*s).cwd = xstrdup(cwd);
     (*s).lastw.tqh_first = 0 as *mut winlink;
     (*s).lastw.tqh_last = &mut (*s).lastw.tqh_first;
@@ -2408,7 +2399,7 @@ pub unsafe extern "C" fn session_create(
         (*s).name,
         (*s).id,
     );
-    if gettimeofday(&mut (*s).creation_time, 0 as *mut libc::c_void) != 0 as libc::c_int {
+    if gettimeofday(&mut (*s).creation_time, 0 as *mut libc::c_void) != 0i32 {
         fatal(b"gettimeofday failed\x00" as *const u8 as *const libc::c_char);
     }
     session_update_activity(s, &mut (*s).creation_time);
@@ -2438,10 +2429,10 @@ pub unsafe extern "C" fn session_remove_ref(mut s: *mut session, mut from: *cons
         from,
         (*s).references,
     );
-    if (*s).references == 0 as libc::c_int {
+    if (*s).references == 0i32 {
         event_once(
-            -(1 as libc::c_int),
-            0x1 as libc::c_int as libc::c_short,
+            -(1i32),
+            0x1i16,
             Some(
                 session_free
                     as unsafe extern "C" fn(
@@ -2467,7 +2458,7 @@ unsafe extern "C" fn session_free(
         (*s).name,
         (*s).references,
     );
-    if (*s).references == 0 as libc::c_int {
+    if (*s).references == 0i32 {
         environ_free((*s).environ);
         options_free((*s).options);
         free((*s).name as *mut libc::c_void);
@@ -2525,15 +2516,11 @@ pub unsafe extern "C" fn session_check_name(mut name: *const libc::c_char) -> *m
     cp = copy;
     while *cp as libc::c_int != '\u{0}' as i32 {
         if *cp as libc::c_int == ':' as i32 || *cp as libc::c_int == '.' as i32 {
-            *cp = '_' as i32 as libc::c_char
+            *cp = '_' as libc::c_char
         }
         cp = cp.offset(1)
     }
-    utf8_stravis(
-        &mut new_name,
-        copy,
-        0x1 as libc::c_int | 0x2 as libc::c_int | 0x8 as libc::c_int | 0x10 as libc::c_int,
-    );
+    utf8_stravis(&mut new_name, copy, 0x1i32 | 0x2i32 | 0x8i32 | 0x10i32);
     free(copy as *mut libc::c_void);
     return new_name;
 }
@@ -2544,13 +2531,13 @@ unsafe extern "C" fn session_lock_timer(
     mut arg: *mut libc::c_void,
 ) {
     let mut s: *mut session = arg as *mut session;
-    if (*s).attached == 0 as libc::c_int as libc::c_uint {
+    if (*s).attached == 0u32 {
         return;
     }
     log_debug(
         b"session %s locked, activity time %lld\x00" as *const u8 as *const libc::c_char,
         (*s).name,
-        (*s).activity_time.tv_sec as libc::c_longlong,
+        (*s).activity_time.tv_sec,
     );
     server_lock_session(s);
     recalculate_sizes();
@@ -2582,9 +2569,9 @@ pub unsafe extern "C" fn session_update_activity(mut s: *mut session, mut from: 
             as *const libc::c_char,
         (*s).id,
         (*s).name,
-        (*s).activity_time.tv_sec as libc::c_longlong,
+        (*s).activity_time.tv_sec,
         (*s).activity_time.tv_usec as libc::c_int,
-        (*last).tv_sec as libc::c_longlong,
+        (*last).tv_sec,
         (*last).tv_usec as libc::c_int,
     );
     if event_initialized(&mut (*s).lock_timer) != 0 {
@@ -2592,8 +2579,8 @@ pub unsafe extern "C" fn session_update_activity(mut s: *mut session, mut from: 
     } else {
         event_set(
             &mut (*s).lock_timer,
-            -(1 as libc::c_int),
-            0 as libc::c_int as libc::c_short,
+            -(1i32),
+            0i16,
             Some(
                 session_lock_timer
                     as unsafe extern "C" fn(
@@ -2605,14 +2592,14 @@ pub unsafe extern "C" fn session_update_activity(mut s: *mut session, mut from: 
             s as *mut libc::c_void,
         );
     }
-    if (*s).attached != 0 as libc::c_int as libc::c_uint {
-        tv.tv_usec = 0 as libc::c_int as __suseconds_t;
+    if (*s).attached != 0u32 {
+        tv.tv_usec = 0i64;
         tv.tv_sec = tv.tv_usec;
         tv.tv_sec = options_get_number(
             (*s).options,
             b"lock-after-time\x00" as *const u8 as *const libc::c_char,
-        ) as __time_t;
-        if tv.tv_sec != 0 as libc::c_int as libc::c_long {
+        );
+        if tv.tv_sec != 0i64 {
             event_add(&mut (*s).lock_timer, &mut tv);
         }
     };
@@ -2626,7 +2613,7 @@ pub unsafe extern "C" fn session_next_session(mut s: *mut session) -> *mut sessi
     }
     s2 = sessions_RB_NEXT(s);
     if s2.is_null() {
-        s2 = sessions_RB_MINMAX(&mut sessions, -(1 as libc::c_int))
+        s2 = sessions_RB_MINMAX(&mut sessions, -(1i32))
     }
     if s2 == s {
         return 0 as *mut session;
@@ -2642,7 +2629,7 @@ pub unsafe extern "C" fn session_previous_session(mut s: *mut session) -> *mut s
     }
     s2 = sessions_RB_PREV(s);
     if s2.is_null() {
-        s2 = sessions_RB_MINMAX(&mut sessions, 1 as libc::c_int)
+        s2 = sessions_RB_MINMAX(&mut sessions, 1i32)
     }
     if s2 == s {
         return 0 as *mut session;
@@ -2680,13 +2667,10 @@ pub unsafe extern "C" fn session_attach(
 /* Detach a window from a session. */
 #[no_mangle]
 pub unsafe extern "C" fn session_detach(mut s: *mut session, mut wl: *mut winlink) -> libc::c_int {
-    if (*s).curw == wl
-        && session_last(s) != 0 as libc::c_int
-        && session_previous(s, 0 as libc::c_int) != 0 as libc::c_int
-    {
-        session_next(s, 0 as libc::c_int);
+    if (*s).curw == wl && session_last(s) != 0i32 && session_previous(s, 0i32) != 0i32 {
+        session_next(s, 0i32);
     }
-    (*wl).flags &= !(0x1 as libc::c_int | 0x2 as libc::c_int | 0x4 as libc::c_int);
+    (*wl).flags &= !(0x1i32 | 0x2i32 | 0x4i32);
     notify_session_window(
         b"window-unlinked\x00" as *const u8 as *const libc::c_char,
         s,
@@ -2698,13 +2682,13 @@ pub unsafe extern "C" fn session_detach(mut s: *mut session, mut wl: *mut winlin
     if (*s).windows.rbh_root.is_null() {
         session_destroy(
             s,
-            1 as libc::c_int,
+            1i32,
             (*::std::mem::transmute::<&[u8; 15], &[libc::c_char; 15]>(b"session_detach\x00"))
                 .as_ptr(),
         );
-        return 1 as libc::c_int;
+        return 1i32;
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 /* Return if session has window. */
 #[no_mangle]
@@ -2713,11 +2697,11 @@ pub unsafe extern "C" fn session_has(mut s: *mut session, mut w: *mut window) ->
     wl = (*w).winlinks.tqh_first;
     while !wl.is_null() {
         if (*wl).session == s {
-            return 1 as libc::c_int;
+            return 1i32;
         }
         wl = (*wl).wentry.tqe_next
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 /*
  * Return 1 if a window is linked outside this session (not including session
@@ -2730,11 +2714,11 @@ pub unsafe extern "C" fn session_is_linked(mut s: *mut session, mut w: *mut wind
     if !sg.is_null() {
         return ((*w).references != session_group_count(sg)) as libc::c_int;
     }
-    return ((*w).references != 1 as libc::c_int as libc::c_uint) as libc::c_int;
+    return ((*w).references != 1u32) as libc::c_int;
 }
 unsafe extern "C" fn session_next_alert(mut wl: *mut winlink) -> *mut winlink {
     while !wl.is_null() {
-        if (*wl).flags & (0x1 as libc::c_int | 0x2 as libc::c_int | 0x4 as libc::c_int) != 0 {
+        if (*wl).flags & (0x1i32 | 0x2i32 | 0x4i32) != 0 {
             break;
         }
         wl = winlink_next(wl)
@@ -2746,26 +2730,26 @@ unsafe extern "C" fn session_next_alert(mut wl: *mut winlink) -> *mut winlink {
 pub unsafe extern "C" fn session_next(mut s: *mut session, mut alert: libc::c_int) -> libc::c_int {
     let mut wl: *mut winlink = 0 as *mut winlink;
     if (*s).curw.is_null() {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     wl = winlink_next((*s).curw);
     if alert != 0 {
         wl = session_next_alert(wl)
     }
     if wl.is_null() {
-        wl = winlinks_RB_MINMAX(&mut (*s).windows, -(1 as libc::c_int));
+        wl = winlinks_RB_MINMAX(&mut (*s).windows, -(1i32));
         if alert != 0 && {
             wl = session_next_alert(wl);
             wl.is_null()
         } {
-            return -(1 as libc::c_int);
+            return -(1i32);
         }
     }
     return session_set_current(s, wl);
 }
 unsafe extern "C" fn session_previous_alert(mut wl: *mut winlink) -> *mut winlink {
     while !wl.is_null() {
-        if (*wl).flags & (0x1 as libc::c_int | 0x2 as libc::c_int | 0x4 as libc::c_int) != 0 {
+        if (*wl).flags & (0x1i32 | 0x2i32 | 0x4i32) != 0 {
             break;
         }
         wl = winlink_previous(wl)
@@ -2780,19 +2764,19 @@ pub unsafe extern "C" fn session_previous(
 ) -> libc::c_int {
     let mut wl: *mut winlink = 0 as *mut winlink;
     if (*s).curw.is_null() {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     wl = winlink_previous((*s).curw);
     if alert != 0 {
         wl = session_previous_alert(wl)
     }
     if wl.is_null() {
-        wl = winlinks_RB_MINMAX(&mut (*s).windows, 1 as libc::c_int);
+        wl = winlinks_RB_MINMAX(&mut (*s).windows, 1i32);
         if alert != 0 && {
             wl = session_previous_alert(wl);
             wl.is_null()
         } {
-            return -(1 as libc::c_int);
+            return -(1i32);
         }
     }
     return session_set_current(s, wl);
@@ -2810,10 +2794,10 @@ pub unsafe extern "C" fn session_last(mut s: *mut session) -> libc::c_int {
     let mut wl: *mut winlink = 0 as *mut winlink;
     wl = (*s).lastw.tqh_first;
     if wl.is_null() {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     if wl == (*s).curw {
-        return 1 as libc::c_int;
+        return 1i32;
     }
     return session_set_current(s, wl);
 }
@@ -2824,10 +2808,10 @@ pub unsafe extern "C" fn session_set_current(
     mut wl: *mut winlink,
 ) -> libc::c_int {
     if wl.is_null() {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     if wl == (*s).curw {
-        return 1 as libc::c_int;
+        return 1i32;
     }
     winlink_stack_remove(&mut (*s).lastw, wl);
     winlink_stack_push(&mut (*s).lastw, (*s).curw);
@@ -2839,14 +2823,14 @@ pub unsafe extern "C" fn session_set_current(
         b"session-window-changed\x00" as *const u8 as *const libc::c_char,
         s,
     );
-    return 0 as libc::c_int;
+    return 0i32;
 }
 /* Find the session group containing a session. */
 #[no_mangle]
 pub unsafe extern "C" fn session_group_contains(mut target: *mut session) -> *mut session_group {
     let mut sg: *mut session_group = 0 as *mut session_group;
     let mut s: *mut session = 0 as *mut session;
-    sg = session_groups_RB_MINMAX(&mut session_groups, -(1 as libc::c_int));
+    sg = session_groups_RB_MINMAX(&mut session_groups, -(1i32));
     while !sg.is_null() {
         s = (*sg).sessions.tqh_first;
         while !s.is_null() {
@@ -2887,7 +2871,7 @@ pub unsafe extern "C" fn session_group_new(mut name: *const libc::c_char) -> *mu
         return sg;
     }
     sg = xcalloc(
-        1 as libc::c_int as size_t,
+        1u64,
         ::std::mem::size_of::<session_group>() as libc::c_ulong,
     ) as *mut session_group;
     (*sg).name = xstrdup(name);
@@ -2930,7 +2914,7 @@ unsafe extern "C" fn session_group_remove(mut s: *mut session) {
 pub unsafe extern "C" fn session_group_count(mut sg: *mut session_group) -> u_int {
     let mut s: *mut session = 0 as *mut session;
     let mut n: u_int = 0;
-    n = 0 as libc::c_int as u_int;
+    n = 0u32;
     s = (*sg).sessions.tqh_first;
     while !s.is_null() {
         n = n.wrapping_add(1);
@@ -2943,10 +2927,10 @@ pub unsafe extern "C" fn session_group_count(mut sg: *mut session_group) -> u_in
 pub unsafe extern "C" fn session_group_attached_count(mut sg: *mut session_group) -> u_int {
     let mut s: *mut session = 0 as *mut session;
     let mut n: u_int = 0;
-    n = 0 as libc::c_int as u_int;
+    n = 0u32;
     s = (*sg).sessions.tqh_first;
     while !s.is_null() {
-        n = (n as libc::c_uint).wrapping_add((*s).attached) as u_int as u_int;
+        n = (n).wrapping_add((*s).attached);
         s = (*s).gentry.tqe_next
     }
     return n;
@@ -3013,10 +2997,10 @@ unsafe extern "C" fn session_group_synchronize1(mut target: *mut session, mut s:
     /* If the current window has vanished, move to the next now. */
     if !(*s).curw.is_null()
         && winlink_find_by_index(ww, (*(*s).curw).idx).is_null()
-        && session_last(s) != 0 as libc::c_int
-        && session_previous(s, 0 as libc::c_int) != 0 as libc::c_int
+        && session_last(s) != 0i32
+        && session_previous(s, 0i32) != 0i32
     {
-        session_next(s, 0 as libc::c_int);
+        session_next(s, 0i32);
     }
     /* Save the old pointer and reset it. */
     memcpy(
@@ -3026,7 +3010,7 @@ unsafe extern "C" fn session_group_synchronize1(mut target: *mut session, mut s:
     );
     (*s).windows.rbh_root = 0 as *mut winlink;
     /* Link all the windows from the target. */
-    wl = winlinks_RB_MINMAX(ww, -(1 as libc::c_int));
+    wl = winlinks_RB_MINMAX(ww, -(1i32));
     while !wl.is_null() {
         wl2 = winlink_add(&mut (*s).windows, (*wl).idx);
         (*wl2).session = s;
@@ -3036,8 +3020,7 @@ unsafe extern "C" fn session_group_synchronize1(mut target: *mut session, mut s:
             s,
             (*wl2).window,
         );
-        (*wl2).flags |=
-            (*wl).flags & (0x1 as libc::c_int | 0x2 as libc::c_int | 0x4 as libc::c_int);
+        (*wl2).flags |= (*wl).flags & (0x1i32 | 0x2i32 | 0x4i32);
         wl = winlinks_RB_NEXT(wl)
     }
     /* Fix up the current window. */
@@ -3106,15 +3089,14 @@ pub unsafe extern "C" fn session_renumber_windows(mut s: *mut session) {
         (*s).options,
         b"base-index\x00" as *const u8 as *const libc::c_char,
     ) as libc::c_int;
-    new_curw_idx = 0 as libc::c_int;
+    new_curw_idx = 0i32;
     /* Go through the winlinks and assign new indexes. */
-    wl = winlinks_RB_MINMAX(&mut old_wins, -(1 as libc::c_int));
+    wl = winlinks_RB_MINMAX(&mut old_wins, -(1i32));
     while !wl.is_null() {
         wl_new = winlink_add(&mut (*s).windows, new_idx);
         (*wl_new).session = s;
         winlink_set_window(wl_new, (*wl).window);
-        (*wl_new).flags |=
-            (*wl).flags & (0x1 as libc::c_int | 0x2 as libc::c_int | 0x4 as libc::c_int);
+        (*wl_new).flags |= (*wl).flags & (0x1i32 | 0x2i32 | 0x4i32);
         if wl == (*s).curw {
             new_curw_idx = (*wl_new).idx
         }
@@ -3143,10 +3125,10 @@ pub unsafe extern "C" fn session_renumber_windows(mut s: *mut session) {
     /* Set the current window. */
     (*s).curw = winlink_find_by_index(&mut (*s).windows, new_curw_idx);
     /* Free the old winlinks (reducing window references too). */
-    wl = winlinks_RB_MINMAX(&mut old_wins, -(1 as libc::c_int));
+    wl = winlinks_RB_MINMAX(&mut old_wins, -(1i32));
     while !wl.is_null() && {
         wl1 = winlinks_RB_NEXT(wl);
-        (1 as libc::c_int) != 0
+        (1i32) != 0
     } {
         winlink_remove(&mut old_wins, wl);
         wl = wl1

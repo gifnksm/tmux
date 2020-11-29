@@ -1206,8 +1206,8 @@ pub static mut cmd_set_option_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"aFgopqst:uw\x00" as *const u8 as *const libc::c_char,
-                    lower: 1 as libc::c_int,
-                    upper: 2 as libc::c_int,
+                    lower: 1i32,
+                    upper: 2i32,
                 };
                 init
             },
@@ -1220,13 +1220,13 @@ pub static mut cmd_set_option_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_PANE,
-                    flags: 0x40 as libc::c_int,
+                    flags: 0x40i32,
                 };
                 init
             },
-            flags: 0x4 as libc::c_int,
+            flags: 0x4i32,
             exec: Some(
                 cmd_set_option_exec
                     as unsafe extern "C" fn(
@@ -1247,8 +1247,8 @@ pub static mut cmd_set_window_option_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"aFgoqt:u\x00" as *const u8 as *const libc::c_char,
-                    lower: 1 as libc::c_int,
-                    upper: 2 as libc::c_int,
+                    lower: 1i32,
+                    upper: 2i32,
                 };
                 init
             },
@@ -1261,13 +1261,13 @@ pub static mut cmd_set_window_option_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_WINDOW,
-                    flags: 0x40 as libc::c_int,
+                    flags: 0x40i32,
                 };
                 init
             },
-            flags: 0x4 as libc::c_int,
+            flags: 0x4i32,
             exec: Some(
                 cmd_set_option_exec
                     as unsafe extern "C" fn(
@@ -1288,8 +1288,8 @@ pub static mut cmd_set_hook_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"agpRt:uw\x00" as *const u8 as *const libc::c_char,
-                    lower: 1 as libc::c_int,
-                    upper: 2 as libc::c_int,
+                    lower: 1i32,
+                    upper: 2i32,
                 };
                 init
             },
@@ -1302,13 +1302,13 @@ pub static mut cmd_set_hook_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_PANE,
-                    flags: 0x40 as libc::c_int,
+                    flags: 0x40i32,
                 };
                 init
             },
-            flags: 0x4 as libc::c_int,
+            flags: 0x4i32,
             exec: Some(
                 cmd_set_option_exec
                     as unsafe extern "C" fn(
@@ -1345,7 +1345,7 @@ unsafe extern "C" fn cmd_set_option_exec(
 ) -> cmd_retval {
     let mut current_block: u64;
     let mut args: *mut args = cmd_get_args(self_0);
-    let mut append: libc::c_int = args_has(args, 'a' as i32 as u_char);
+    let mut append: libc::c_int = args_has(args, 'a' as u_char);
     let mut target: *mut cmd_find_state = cmdq_get_target(item);
     let mut oo: *mut crate::options::options = 0 as *mut crate::options::options;
     let mut parent: *mut crate::options::options_entry = 0 as *mut crate::options::options_entry;
@@ -1363,10 +1363,10 @@ unsafe extern "C" fn cmd_set_option_exec(
     window =
         (cmd_get_entry(self_0) == &cmd_set_window_option_entry as *const cmd_entry) as libc::c_int;
     /* Expand argument. */
-    argument = format_single_from_target(item, *(*args).argv.offset(0 as libc::c_int as isize));
+    argument = format_single_from_target(item, *(*args).argv.offset(0isize));
     /* If set-hook -R, fire the hook straight away. */
     if cmd_get_entry(self_0) == &cmd_set_hook_entry as *const cmd_entry
-        && args_has(args, 'R' as i32 as u_char) != 0
+        && args_has(args, 'R' as u_char) != 0
     {
         notify_hook(item, argument);
         free(argument as *mut libc::c_void);
@@ -1375,7 +1375,7 @@ unsafe extern "C" fn cmd_set_option_exec(
     /* Parse option name and index. */
     name = options_match(argument, &mut idx, &mut ambiguous);
     if name.is_null() {
-        if args_has(args, 'q' as i32 as u_char) != 0 {
+        if args_has(args, 'q' as u_char) != 0 {
             current_block = 12655716798986455333;
         } else {
             if ambiguous != 0 {
@@ -1394,17 +1394,17 @@ unsafe extern "C" fn cmd_set_option_exec(
             current_block = 2465518546904993161;
         }
     } else {
-        if (*args).argc < 2 as libc::c_int {
+        if (*args).argc < 2i32 {
             value = 0 as *mut libc::c_char
-        } else if args_has(args, 'F' as i32 as u_char) != 0 {
-            value = format_single_from_target(item, *(*args).argv.offset(1 as libc::c_int as isize))
+        } else if args_has(args, 'F' as u_char) != 0 {
+            value = format_single_from_target(item, *(*args).argv.offset(1isize))
         } else {
-            value = xstrdup(*(*args).argv.offset(1 as libc::c_int as isize))
+            value = xstrdup(*(*args).argv.offset(1isize))
         }
         /* Get the scope and table for the option .*/
         scope = options_scope_from_name(args, window, name, target, &mut oo, &mut cause);
-        if scope == 0 as libc::c_int {
-            if args_has(args, 'q' as i32 as u_char) != 0 {
+        if scope == 0i32 {
+            if args_has(args, 'q' as u_char) != 0 {
                 current_block = 12655716798986455333;
             } else {
                 cmdq_error(item, b"%s\x00" as *const u8 as *const libc::c_char, cause);
@@ -1415,7 +1415,7 @@ unsafe extern "C" fn cmd_set_option_exec(
             o = options_get_only(oo, name);
             parent = options_get(oo, name);
             /* Check that array options and indexes match up. */
-            if idx != -(1 as libc::c_int)
+            if idx != -(1i32)
                 && (*name as libc::c_int == '@' as i32 || options_is_array(parent) == 0)
             {
                 cmdq_error(
@@ -1426,22 +1426,17 @@ unsafe extern "C" fn cmd_set_option_exec(
                 current_block = 2465518546904993161;
             } else {
                 /* With -o, check this option is not already set. */
-                if args_has(args, 'u' as i32 as u_char) == 0
-                    && args_has(args, 'o' as i32 as u_char) != 0
-                {
-                    if idx == -(1 as libc::c_int) {
-                        already = (o
-                            != 0 as *mut libc::c_void as *mut crate::options::options_entry)
-                            as libc::c_int
+                if args_has(args, 'u' as u_char) == 0 && args_has(args, 'o' as u_char) != 0 {
+                    if idx == -(1i32) {
+                        already = (o != 0 as *mut crate::options::options_entry) as libc::c_int
                     } else if o.is_null() {
-                        already = 0 as libc::c_int
+                        already = 0i32
                     } else {
-                        already = (options_array_get(o, idx as u_int)
-                            != 0 as *mut libc::c_void as *mut options_value)
+                        already = (options_array_get(o, idx as u_int) != 0 as *mut options_value)
                             as libc::c_int
                     }
                     if already != 0 {
-                        if args_has(args, 'q' as i32 as u_char) != 0 {
+                        if args_has(args, 'q' as u_char) != 0 {
                             current_block = 12655716798986455333;
                         } else {
                             cmdq_error(
@@ -1463,12 +1458,10 @@ unsafe extern "C" fn cmd_set_option_exec(
                     _ =>
                     /* Change the option. */
                     {
-                        if args_has(args, 'u' as i32 as u_char) != 0 {
+                        if args_has(args, 'u' as u_char) != 0 {
                             if o.is_null() {
                                 current_block = 12655716798986455333;
-                            } else if options_remove_or_default(o, idx, &mut cause)
-                                != 0 as libc::c_int
-                            {
+                            } else if options_remove_or_default(o, idx, &mut cause) != 0i32 {
                                 cmdq_error(
                                     item,
                                     b"%s\x00" as *const u8 as *const libc::c_char,
@@ -1496,16 +1489,16 @@ unsafe extern "C" fn cmd_set_option_exec(
                                 );
                                 current_block = 9437375157805982253;
                             }
-                        } else if idx == -(1 as libc::c_int) && options_is_array(parent) == 0 {
+                        } else if idx == -(1i32) && options_is_array(parent) == 0 {
                             error = options_from_string(
                                 oo,
                                 options_table_entry(parent),
                                 (*options_table_entry(parent)).name,
                                 value,
-                                args_has(args, 'a' as i32 as u_char),
+                                args_has(args, 'a' as u_char),
                                 &mut cause,
                             );
-                            if error != 0 as libc::c_int {
+                            if error != 0i32 {
                                 cmdq_error(
                                     item,
                                     b"%s\x00" as *const u8 as *const libc::c_char,
@@ -1526,11 +1519,11 @@ unsafe extern "C" fn cmd_set_option_exec(
                             if o.is_null() {
                                 o = options_empty(oo, options_table_entry(parent))
                             }
-                            if idx == -(1 as libc::c_int) {
+                            if idx == -(1i32) {
                                 if append == 0 {
                                     options_array_clear(o);
                                 }
-                                if options_array_assign(o, value, &mut cause) != 0 as libc::c_int {
+                                if options_array_assign(o, value, &mut cause) != 0i32 {
                                     cmdq_error(
                                         item,
                                         b"%s\x00" as *const u8 as *const libc::c_char,
@@ -1542,7 +1535,7 @@ unsafe extern "C" fn cmd_set_option_exec(
                                     current_block = 9437375157805982253;
                                 }
                             } else if options_array_set(o, idx as u_int, value, append, &mut cause)
-                                != 0 as libc::c_int
+                                != 0i32
                             {
                                 cmdq_error(
                                     item,

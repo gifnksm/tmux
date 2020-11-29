@@ -1065,8 +1065,8 @@ pub static mut cmd_detach_client_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"aE:s:t:P\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -1074,9 +1074,9 @@ pub static mut cmd_detach_client_entry: cmd_entry = {
                 as *const u8 as *const libc::c_char,
             source: {
                 let mut init = cmd_entry_flag {
-                    flag: 's' as i32 as libc::c_char,
+                    flag: 's' as libc::c_char,
                     type_0: CMD_FIND_SESSION,
-                    flags: 0x40 as libc::c_int,
+                    flags: 0x40i32,
                 };
                 init
             },
@@ -1085,7 +1085,7 @@ pub static mut cmd_detach_client_entry: cmd_entry = {
                 type_0: CMD_FIND_PANE,
                 flags: 0,
             },
-            flags: 0x2 as libc::c_int | 0x10 as libc::c_int,
+            flags: 0x2i32 | 0x10i32,
             exec: Some(
                 cmd_detach_client_exec
                     as unsafe extern "C" fn(
@@ -1106,8 +1106,8 @@ pub static mut cmd_suspend_client_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"t:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -1122,7 +1122,7 @@ pub static mut cmd_suspend_client_entry: cmd_entry = {
                 type_0: CMD_FIND_PANE,
                 flags: 0,
             },
-            flags: 0x10 as libc::c_int,
+            flags: 0x10i32,
             exec: Some(
                 cmd_detach_client_exec
                     as unsafe extern "C" fn(
@@ -1162,18 +1162,18 @@ unsafe extern "C" fn cmd_detach_client_exec(
     let mut tc: *mut client = cmdq_get_target_client(item);
     let mut loop_0: *mut client = 0 as *mut client;
     let mut s: *mut session = 0 as *mut session;
-    let mut msgtype: Msgtype = 0 as Msgtype;
-    let mut cmd: *const libc::c_char = args_get(args, 'E' as i32 as u_char);
+    let mut msgtype: Msgtype = 0u32;
+    let mut cmd: *const libc::c_char = args_get(args, 'E' as u_char);
     if cmd_get_entry(self_0) == &cmd_suspend_client_entry as *const cmd_entry {
         server_client_suspend(tc);
         return CMD_RETURN_NORMAL;
     }
-    if args_has(args, 'P' as i32 as u_char) != 0 {
+    if args_has(args, 'P' as u_char) != 0 {
         msgtype = msgtype_code::DETACHKILL
     } else {
         msgtype = msgtype_code::DETACH
     }
-    if args_has(args, 's' as i32 as u_char) != 0 {
+    if args_has(args, 's' as u_char) != 0 {
         s = (*source).s;
         if s.is_null() {
             return CMD_RETURN_NORMAL;
@@ -1191,7 +1191,7 @@ unsafe extern "C" fn cmd_detach_client_exec(
         }
         return CMD_RETURN_STOP;
     }
-    if args_has(args, 'a' as i32 as u_char) != 0 {
+    if args_has(args, 'a' as u_char) != 0 {
         loop_0 = clients.tqh_first;
         while !loop_0.is_null() {
             if !(*loop_0).session.is_null() && loop_0 != tc {

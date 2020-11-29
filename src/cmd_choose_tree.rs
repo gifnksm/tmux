@@ -1062,8 +1062,8 @@ pub static mut cmd_choose_tree_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"F:Gf:NO:rst:wZ\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 1 as libc::c_int,
+                    lower: 0i32,
+                    upper: 1i32,
                 };
                 init
             },
@@ -1077,13 +1077,13 @@ pub static mut cmd_choose_tree_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_PANE,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0 as libc::c_int,
+            flags: 0i32,
             exec: Some(
                 cmd_choose_tree_exec
                     as unsafe extern "C" fn(
@@ -1104,8 +1104,8 @@ pub static mut cmd_choose_client_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"F:f:NO:rt:Z\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 1 as libc::c_int,
+                    lower: 0i32,
+                    upper: 1i32,
                 };
                 init
             },
@@ -1118,13 +1118,13 @@ pub static mut cmd_choose_client_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_PANE,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0 as libc::c_int,
+            flags: 0i32,
             exec: Some(
                 cmd_choose_tree_exec
                     as unsafe extern "C" fn(
@@ -1145,8 +1145,8 @@ pub static mut cmd_choose_buffer_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"F:f:NO:rt:Z\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 1 as libc::c_int,
+                    lower: 0i32,
+                    upper: 1i32,
                 };
                 init
             },
@@ -1159,13 +1159,13 @@ pub static mut cmd_choose_buffer_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_PANE,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0 as libc::c_int,
+            flags: 0i32,
             exec: Some(
                 cmd_choose_tree_exec
                     as unsafe extern "C" fn(
@@ -1186,8 +1186,8 @@ pub static mut cmd_customize_mode_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"F:f:Nt:Z\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -1200,13 +1200,13 @@ pub static mut cmd_customize_mode_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_PANE,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0 as libc::c_int,
+            flags: 0i32,
             exec: Some(
                 cmd_choose_tree_exec
                     as unsafe extern "C" fn(
@@ -1251,7 +1251,7 @@ unsafe extern "C" fn cmd_choose_tree_exec(
         }
         mode = &window_buffer_mode
     } else if cmd_get_entry(self_0) == &cmd_choose_client_entry as *const cmd_entry {
-        if server_client_how_many() == 0 as libc::c_int as libc::c_uint {
+        if server_client_how_many() == 0u32 {
             return CMD_RETURN_NORMAL;
         }
         mode = &window_client_mode

@@ -1266,7 +1266,7 @@ static mut window_client_menu_items: [menu_item; 9] = [
     {
         let mut init = menu_item {
             name: b"\x00" as *const u8 as *const libc::c_char,
-            key: 0xff000000000 as libc::c_ulonglong,
+            key: 0xff000000000u64,
             command: 0 as *const libc::c_char,
         };
         init
@@ -1298,7 +1298,7 @@ static mut window_client_menu_items: [menu_item; 9] = [
     {
         let mut init = menu_item {
             name: b"\x00" as *const u8 as *const libc::c_char,
-            key: 0xff000000000 as libc::c_ulonglong,
+            key: 0xff000000000u64,
             command: 0 as *const libc::c_char,
         };
         init
@@ -1314,7 +1314,7 @@ static mut window_client_menu_items: [menu_item; 9] = [
     {
         let mut init = menu_item {
             name: 0 as *const libc::c_char,
-            key: 0xff000000000 as libc::c_ulonglong,
+            key: 0xff000000000u64,
             command: 0 as *const libc::c_char,
         };
         init
@@ -1364,24 +1364,21 @@ static mut window_client_sort_list: [*const libc::c_char; 4] = [
     b"creation\x00" as *const u8 as *const libc::c_char,
     b"activity\x00" as *const u8 as *const libc::c_char,
 ];
-static mut window_client_sort: *mut mode_tree_sort_criteria =
-    0 as *const mode_tree_sort_criteria as *mut mode_tree_sort_criteria;
+static mut window_client_sort: *mut mode_tree_sort_criteria = 0 as *mut mode_tree_sort_criteria;
 unsafe extern "C" fn window_client_add_item(
     mut data: *mut window_client_modedata,
 ) -> *mut window_client_itemdata {
     let mut item: *mut window_client_itemdata = 0 as *mut window_client_itemdata;
     (*data).item_list = xreallocarray(
         (*data).item_list as *mut libc::c_void,
-        (*data)
-            .item_size
-            .wrapping_add(1 as libc::c_int as libc::c_uint) as size_t,
+        (*data).item_size.wrapping_add(1u32) as size_t,
         ::std::mem::size_of::<*mut window_client_itemdata>() as libc::c_ulong,
     ) as *mut *mut window_client_itemdata;
     let fresh0 = (*data).item_size;
     (*data).item_size = (*data).item_size.wrapping_add(1);
     let ref mut fresh1 = *(*data).item_list.offset(fresh0 as isize);
     *fresh1 = xcalloc(
-        1 as libc::c_int as size_t,
+        1u64,
         ::std::mem::size_of::<window_client_itemdata>() as libc::c_ulong,
     ) as *mut window_client_itemdata;
     item = *fresh1;
@@ -1401,11 +1398,11 @@ unsafe extern "C" fn window_client_cmp(
     let mut itemb: *const window_client_itemdata = *b;
     let mut ca: *mut client = (*itema).c;
     let mut cb: *mut client = (*itemb).c;
-    let mut result: libc::c_int = 0 as libc::c_int;
+    let mut result: libc::c_int = 0i32;
     match (*window_client_sort).field {
         1 => {
             result = (*ca).tty.sx.wrapping_sub((*cb).tty.sx) as libc::c_int;
-            if result == 0 as libc::c_int {
+            if result == 0i32 {
                 result = (*ca).tty.sy.wrapping_sub((*cb).tty.sy) as libc::c_int
             }
         }
@@ -1416,14 +1413,14 @@ unsafe extern "C" fn window_client_cmp(
                 ((*ca).creation_time.tv_sec > (*cb).creation_time.tv_sec) as libc::c_int
             } != 0
             {
-                result = -(1 as libc::c_int)
+                result = -(1i32)
             } else if if (*ca).creation_time.tv_sec == (*cb).creation_time.tv_sec {
                 ((*ca).creation_time.tv_usec < (*cb).creation_time.tv_usec) as libc::c_int
             } else {
                 ((*ca).creation_time.tv_sec < (*cb).creation_time.tv_sec) as libc::c_int
             } != 0
             {
-                result = 1 as libc::c_int
+                result = 1i32
             }
         }
         3 => {
@@ -1433,20 +1430,20 @@ unsafe extern "C" fn window_client_cmp(
                 ((*ca).activity_time.tv_sec > (*cb).activity_time.tv_sec) as libc::c_int
             } != 0
             {
-                result = -(1 as libc::c_int)
+                result = -(1i32)
             } else if if (*ca).activity_time.tv_sec == (*cb).activity_time.tv_sec {
                 ((*ca).activity_time.tv_usec < (*cb).activity_time.tv_usec) as libc::c_int
             } else {
                 ((*ca).activity_time.tv_sec < (*cb).activity_time.tv_sec) as libc::c_int
             } != 0
             {
-                result = 1 as libc::c_int
+                result = 1i32
             }
         }
         _ => {}
     }
     /* Use WINDOW_CLIENT_BY_NAME as default order and tie breaker. */
-    if result == 0 as libc::c_int {
+    if result == 0i32 {
         result = strcmp((*ca).name, (*cb).name)
     }
     if (*window_client_sort).reversed != 0 {
@@ -1466,21 +1463,18 @@ unsafe extern "C" fn window_client_build(
     let mut c: *mut client = 0 as *mut client;
     let mut text: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut cp: *mut libc::c_char = 0 as *mut libc::c_char;
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < (*data).item_size {
         window_client_free_item(*(*data).item_list.offset(i as isize));
         i = i.wrapping_add(1)
     }
     free((*data).item_list as *mut libc::c_void);
     (*data).item_list = 0 as *mut *mut window_client_itemdata;
-    (*data).item_size = 0 as libc::c_int as u_int;
+    (*data).item_size = 0u32;
     c = clients.tqh_first;
     while !c.is_null() {
         if !((*c).session.is_null()
-            || (*c).flags
-                & (0x200 as libc::c_int | 0x40 as libc::c_int | 0x4 as libc::c_int)
-                    as libc::c_ulong
-                != 0)
+            || (*c).flags & (0x200i32 | 0x40i32 | 0x4i32) as libc::c_ulong != 0)
         {
             item = window_client_add_item(data);
             (*item).c = c;
@@ -1502,7 +1496,7 @@ unsafe extern "C" fn window_client_build(
         ),
     );
     let mut current_block_21: u64;
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < (*data).item_size {
         item = *(*data).item_list.offset(i as isize);
         c = (*item).c;
@@ -1542,7 +1536,7 @@ unsafe extern "C" fn window_client_build(
                     c as uint64_t,
                     (*c).name,
                     text,
-                    -(1 as libc::c_int),
+                    -(1i32),
                 );
                 free(text as *mut libc::c_void);
             }
@@ -1566,72 +1560,58 @@ unsafe extern "C" fn window_client_draw(
     let mut cy: u_int = (*s).cy;
     let mut lines: u_int = 0;
     let mut at: u_int = 0;
-    if (*c).session.is_null()
-        || (*c).flags
-            & (0x200 as libc::c_int | 0x40 as libc::c_int | 0x4 as libc::c_int) as libc::c_ulong
-            != 0
-    {
+    if (*c).session.is_null() || (*c).flags & (0x200i32 | 0x40i32 | 0x4i32) as libc::c_ulong != 0 {
         return;
     }
     wp = (*(*(*(*c).session).curw).window).active;
     lines = status_line_size(c);
     if lines >= sy {
-        lines = 0 as libc::c_int as u_int
+        lines = 0u32
     }
-    if status_at_line(c) == 0 as libc::c_int {
+    if status_at_line(c) == 0i32 {
         at = lines
     } else {
-        at = 0 as libc::c_int as u_int
+        at = 0u32
     }
     screen_write_cursormove(
         ctx,
         cx as libc::c_int,
         cy.wrapping_add(at) as libc::c_int,
-        0 as libc::c_int,
+        0i32,
     );
     screen_write_preview(
         ctx,
         &mut (*wp).base,
         sx,
-        sy.wrapping_sub(2 as libc::c_int as libc::c_uint)
-            .wrapping_sub(lines),
+        sy.wrapping_sub(2u32).wrapping_sub(lines),
     );
-    if at != 0 as libc::c_int as libc::c_uint {
+    if at != 0u32 {
         screen_write_cursormove(
             ctx,
             cx as libc::c_int,
-            cy.wrapping_add(2 as libc::c_int as libc::c_uint) as libc::c_int,
-            0 as libc::c_int,
+            cy.wrapping_add(2u32) as libc::c_int,
+            0i32,
         );
     } else {
         screen_write_cursormove(
             ctx,
             cx as libc::c_int,
-            cy.wrapping_add(sy)
-                .wrapping_sub(1 as libc::c_int as libc::c_uint)
-                .wrapping_sub(lines) as libc::c_int,
-            0 as libc::c_int,
+            cy.wrapping_add(sy).wrapping_sub(1u32).wrapping_sub(lines) as libc::c_int,
+            0i32,
         );
     }
-    screen_write_hline(ctx, sx, 0 as libc::c_int, 0 as libc::c_int);
-    if at != 0 as libc::c_int as libc::c_uint {
-        screen_write_cursormove(ctx, cx as libc::c_int, cy as libc::c_int, 0 as libc::c_int);
+    screen_write_hline(ctx, sx, 0i32, 0i32);
+    if at != 0u32 {
+        screen_write_cursormove(ctx, cx as libc::c_int, cy as libc::c_int, 0i32);
     } else {
         screen_write_cursormove(
             ctx,
             cx as libc::c_int,
             cy.wrapping_add(sy).wrapping_sub(lines) as libc::c_int,
-            0 as libc::c_int,
+            0i32,
         );
     }
-    screen_write_fast_copy(
-        ctx,
-        &mut (*c).status.screen,
-        0 as libc::c_int as u_int,
-        0 as libc::c_int as u_int,
-        sx,
-        lines,
-    );
+    screen_write_fast_copy(ctx, &mut (*c).status.screen, 0u32, 0u32, sx, lines);
 }
 unsafe extern "C" fn window_client_menu(
     mut modedata: *mut libc::c_void,
@@ -1679,24 +1659,24 @@ unsafe extern "C" fn window_client_init(
     let mut data: *mut window_client_modedata = 0 as *mut window_client_modedata;
     let mut s: *mut screen = 0 as *mut screen;
     data = xcalloc(
-        1 as libc::c_int as size_t,
+        1u64,
         ::std::mem::size_of::<window_client_modedata>() as libc::c_ulong,
     ) as *mut window_client_modedata;
     (*wme).data = data as *mut libc::c_void;
     (*data).wp = wp;
-    if args.is_null() || args_has(args, 'F' as i32 as u_char) == 0 {
+    if args.is_null() || args_has(args, 'F' as u_char) == 0 {
         (*data).format = xstrdup(
             b"#{t/p:client_activity}: session #{session_name}\x00" as *const u8
                 as *const libc::c_char,
         )
     } else {
-        (*data).format = xstrdup(args_get(args, 'F' as i32 as u_char))
+        (*data).format = xstrdup(args_get(args, 'F' as u_char))
     }
-    if args.is_null() || (*args).argc == 0 as libc::c_int {
+    if args.is_null() || (*args).argc == 0i32 {
         (*data).command =
             xstrdup(b"detach-client -t \'%%\'\x00" as *const u8 as *const libc::c_char)
     } else {
-        (*data).command = xstrdup(*(*args).argv.offset(0 as libc::c_int as isize))
+        (*data).command = xstrdup(*(*args).argv.offset(0isize))
     }
     (*data).data = mode_tree_start(
         wp,
@@ -1746,7 +1726,7 @@ unsafe extern "C" fn window_client_free(mut wme: *mut window_mode_entry) {
         return;
     }
     mode_tree_free((*data).data);
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < (*data).item_size {
         window_client_free_item(*(*data).item_list.offset(i as isize));
         i = i.wrapping_add(1)
@@ -1773,7 +1753,7 @@ unsafe extern "C" fn window_client_do_detach(
     let mut data: *mut window_client_modedata = modedata as *mut window_client_modedata;
     let mut item: *mut window_client_itemdata = itemdata as *mut window_client_itemdata;
     if item == mode_tree_get_current((*data).data) as *mut window_client_itemdata {
-        mode_tree_down((*data).data, 0 as libc::c_int);
+        mode_tree_down((*data).data, 0i32);
     }
     if key == 'd' as i32 as libc::c_ulonglong || key == 'D' as i32 as libc::c_ulonglong {
         server_client_detach((*item).c, msgtype_code::DETACH);
@@ -1817,7 +1797,7 @@ unsafe extern "C" fn window_client_key(
                 ),
                 c,
                 key,
-                0 as libc::c_int,
+                0i32,
             );
             mode_tree_build(mtd);
         }
@@ -1829,14 +1809,14 @@ unsafe extern "C" fn window_client_key(
                 (*data).command,
                 (*(*item).c).ttyname,
             );
-            finished = 1 as libc::c_int
+            finished = 1i32
         }
         _ => {}
     }
-    if finished != 0 || server_client_how_many() == 0 as libc::c_int as libc::c_uint {
+    if finished != 0 || server_client_how_many() == 0u32 {
         window_pane_reset_mode(wp);
     } else {
         mode_tree_draw(mtd);
-        (*wp).flags |= 0x1 as libc::c_int
+        (*wp).flags |= 0x1i32
     };
 }

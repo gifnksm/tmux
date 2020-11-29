@@ -1092,7 +1092,7 @@ unsafe extern "C" fn key_bindings_RB_MINMAX(
     let mut parent: *mut key_binding = 0 as *mut key_binding;
     while !tmp.is_null() {
         parent = tmp;
-        if val < 0 as libc::c_int {
+        if val < 0i32 {
             tmp = (*tmp).entry.rbe_left
         } else {
             tmp = (*tmp).entry.rbe_right
@@ -1108,9 +1108,9 @@ unsafe extern "C" fn key_bindings_RB_FIND(
     let mut comp: libc::c_int = 0;
     while !tmp.is_null() {
         comp = key_bindings_cmp(elm, tmp);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).entry.rbe_right
         } else {
             return tmp;
@@ -1124,14 +1124,14 @@ unsafe extern "C" fn key_bindings_RB_INSERT(
 ) -> *mut key_binding {
     let mut tmp: *mut key_binding = 0 as *mut key_binding;
     let mut parent: *mut key_binding = 0 as *mut key_binding;
-    let mut comp: libc::c_int = 0 as libc::c_int;
+    let mut comp: libc::c_int = 0i32;
     tmp = (*head).rbh_root;
     while !tmp.is_null() {
         parent = tmp;
         comp = key_bindings_cmp(elm, parent);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).entry.rbe_right
         } else {
             return tmp;
@@ -1140,9 +1140,9 @@ unsafe extern "C" fn key_bindings_RB_INSERT(
     (*elm).entry.rbe_parent = parent;
     (*elm).entry.rbe_right = 0 as *mut key_binding;
     (*elm).entry.rbe_left = (*elm).entry.rbe_right;
-    (*elm).entry.rbe_color = 1 as libc::c_int;
+    (*elm).entry.rbe_color = 1i32;
     if !parent.is_null() {
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             (*parent).entry.rbe_left = elm
         } else {
             (*parent).entry.rbe_right = elm
@@ -1162,16 +1162,16 @@ unsafe extern "C" fn key_bindings_RB_INSERT_COLOR(
     let mut tmp: *mut key_binding = 0 as *mut key_binding;
     loop {
         parent = (*elm).entry.rbe_parent;
-        if !(!parent.is_null() && (*parent).entry.rbe_color == 1 as libc::c_int) {
+        if !(!parent.is_null() && (*parent).entry.rbe_color == 1i32) {
             break;
         }
         gparent = (*parent).entry.rbe_parent;
         if parent == (*gparent).entry.rbe_left {
             tmp = (*gparent).entry.rbe_right;
-            if !tmp.is_null() && (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).entry.rbe_right == elm {
@@ -1197,8 +1197,8 @@ unsafe extern "C" fn key_bindings_RB_INSERT_COLOR(
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 tmp = (*gparent).entry.rbe_left;
                 (*gparent).entry.rbe_left = (*tmp).entry.rbe_right;
                 if !(*gparent).entry.rbe_left.is_null() {
@@ -1220,10 +1220,10 @@ unsafe extern "C" fn key_bindings_RB_INSERT_COLOR(
             }
         } else {
             tmp = (*gparent).entry.rbe_left;
-            if !tmp.is_null() && (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).entry.rbe_left == elm {
@@ -1249,8 +1249,8 @@ unsafe extern "C" fn key_bindings_RB_INSERT_COLOR(
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 tmp = (*gparent).entry.rbe_right;
                 (*gparent).entry.rbe_right = (*tmp).entry.rbe_left;
                 if !(*gparent).entry.rbe_right.is_null() {
@@ -1272,7 +1272,7 @@ unsafe extern "C" fn key_bindings_RB_INSERT_COLOR(
             }
         }
     }
-    (*(*head).rbh_root).entry.rbe_color = 0 as libc::c_int;
+    (*(*head).rbh_root).entry.rbe_color = 0i32;
 }
 unsafe extern "C" fn key_bindings_RB_NEXT(mut elm: *mut key_binding) -> *mut key_binding {
     if !(*elm).entry.rbe_right.is_null() {
@@ -1299,12 +1299,12 @@ unsafe extern "C" fn key_bindings_RB_REMOVE_COLOR(
     mut elm: *mut key_binding,
 ) {
     let mut tmp: *mut key_binding = 0 as *mut key_binding;
-    while (elm.is_null() || (*elm).entry.rbe_color == 0 as libc::c_int) && elm != (*head).rbh_root {
+    while (elm.is_null() || (*elm).entry.rbe_color == 0i32) && elm != (*head).rbh_root {
         if (*parent).entry.rbe_left == elm {
             tmp = (*parent).entry.rbe_right;
-            if (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 1 as libc::c_int;
+            if (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 1i32;
                 tmp = (*parent).entry.rbe_right;
                 (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
                 if !(*parent).entry.rbe_right.is_null() {
@@ -1325,24 +1325,23 @@ unsafe extern "C" fn key_bindings_RB_REMOVE_COLOR(
                 !(*tmp).entry.rbe_parent.is_null();
                 tmp = (*parent).entry.rbe_right
             }
-            if ((*tmp).entry.rbe_left.is_null()
-                || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int)
+            if ((*tmp).entry.rbe_left.is_null() || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32)
                 && ((*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int)
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32)
             {
-                (*tmp).entry.rbe_color = 1 as libc::c_int;
+                (*tmp).entry.rbe_color = 1i32;
                 elm = parent;
                 parent = (*elm).entry.rbe_parent
             } else {
                 if (*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32
                 {
                     let mut oleft: *mut key_binding = 0 as *mut key_binding;
                     oleft = (*tmp).entry.rbe_left;
                     if !oleft.is_null() {
-                        (*oleft).entry.rbe_color = 0 as libc::c_int
+                        (*oleft).entry.rbe_color = 0i32
                     }
-                    (*tmp).entry.rbe_color = 1 as libc::c_int;
+                    (*tmp).entry.rbe_color = 1i32;
                     oleft = (*tmp).entry.rbe_left;
                     (*tmp).entry.rbe_left = (*oleft).entry.rbe_right;
                     if !(*tmp).entry.rbe_left.is_null() {
@@ -1364,9 +1363,9 @@ unsafe extern "C" fn key_bindings_RB_REMOVE_COLOR(
                     tmp = (*parent).entry.rbe_right
                 }
                 (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
                 if !(*tmp).entry.rbe_right.is_null() {
-                    (*(*tmp).entry.rbe_right).entry.rbe_color = 0 as libc::c_int
+                    (*(*tmp).entry.rbe_right).entry.rbe_color = 0i32
                 }
                 tmp = (*parent).entry.rbe_right;
                 (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
@@ -1391,9 +1390,9 @@ unsafe extern "C" fn key_bindings_RB_REMOVE_COLOR(
             }
         } else {
             tmp = (*parent).entry.rbe_left;
-            if (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 1 as libc::c_int;
+            if (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 1i32;
                 tmp = (*parent).entry.rbe_left;
                 (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
                 if !(*parent).entry.rbe_left.is_null() {
@@ -1414,24 +1413,23 @@ unsafe extern "C" fn key_bindings_RB_REMOVE_COLOR(
                 !(*tmp).entry.rbe_parent.is_null();
                 tmp = (*parent).entry.rbe_left
             }
-            if ((*tmp).entry.rbe_left.is_null()
-                || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int)
+            if ((*tmp).entry.rbe_left.is_null() || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32)
                 && ((*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int)
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32)
             {
-                (*tmp).entry.rbe_color = 1 as libc::c_int;
+                (*tmp).entry.rbe_color = 1i32;
                 elm = parent;
                 parent = (*elm).entry.rbe_parent
             } else {
                 if (*tmp).entry.rbe_left.is_null()
-                    || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int
+                    || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32
                 {
                     let mut oright: *mut key_binding = 0 as *mut key_binding;
                     oright = (*tmp).entry.rbe_right;
                     if !oright.is_null() {
-                        (*oright).entry.rbe_color = 0 as libc::c_int
+                        (*oright).entry.rbe_color = 0i32
                     }
-                    (*tmp).entry.rbe_color = 1 as libc::c_int;
+                    (*tmp).entry.rbe_color = 1i32;
                     oright = (*tmp).entry.rbe_right;
                     (*tmp).entry.rbe_right = (*oright).entry.rbe_left;
                     if !(*tmp).entry.rbe_right.is_null() {
@@ -1453,9 +1451,9 @@ unsafe extern "C" fn key_bindings_RB_REMOVE_COLOR(
                     tmp = (*parent).entry.rbe_left
                 }
                 (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
                 if !(*tmp).entry.rbe_left.is_null() {
-                    (*(*tmp).entry.rbe_left).entry.rbe_color = 0 as libc::c_int
+                    (*(*tmp).entry.rbe_left).entry.rbe_color = 0i32
                 }
                 tmp = (*parent).entry.rbe_left;
                 (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
@@ -1481,7 +1479,7 @@ unsafe extern "C" fn key_bindings_RB_REMOVE_COLOR(
         }
     }
     if !elm.is_null() {
-        (*elm).entry.rbe_color = 0 as libc::c_int
+        (*elm).entry.rbe_color = 0i32
     };
 }
 unsafe extern "C" fn key_bindings_RB_REMOVE(
@@ -1571,7 +1569,7 @@ unsafe extern "C" fn key_bindings_RB_REMOVE(
         }
         _ => {}
     }
-    if color == 0 as libc::c_int {
+    if color == 0i32 {
         key_bindings_RB_REMOVE_COLOR(head, parent, child);
     }
     return old;
@@ -1663,7 +1661,7 @@ unsafe extern "C" fn key_tables_RB_REMOVE(
         }
         _ => {}
     }
-    if color == 0 as libc::c_int {
+    if color == 0i32 {
         key_tables_RB_REMOVE_COLOR(head, parent, child);
     }
     return old;
@@ -1695,9 +1693,9 @@ unsafe extern "C" fn key_tables_RB_FIND(
     let mut comp: libc::c_int = 0;
     while !tmp.is_null() {
         comp = key_table_cmp(elm, tmp);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).entry.rbe_right
         } else {
             return tmp;
@@ -1714,16 +1712,16 @@ unsafe extern "C" fn key_tables_RB_INSERT_COLOR(
     let mut tmp: *mut key_table = 0 as *mut key_table;
     loop {
         parent = (*elm).entry.rbe_parent;
-        if !(!parent.is_null() && (*parent).entry.rbe_color == 1 as libc::c_int) {
+        if !(!parent.is_null() && (*parent).entry.rbe_color == 1i32) {
             break;
         }
         gparent = (*parent).entry.rbe_parent;
         if parent == (*gparent).entry.rbe_left {
             tmp = (*gparent).entry.rbe_right;
-            if !tmp.is_null() && (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).entry.rbe_right == elm {
@@ -1749,8 +1747,8 @@ unsafe extern "C" fn key_tables_RB_INSERT_COLOR(
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 tmp = (*gparent).entry.rbe_left;
                 (*gparent).entry.rbe_left = (*tmp).entry.rbe_right;
                 if !(*gparent).entry.rbe_left.is_null() {
@@ -1772,10 +1770,10 @@ unsafe extern "C" fn key_tables_RB_INSERT_COLOR(
             }
         } else {
             tmp = (*gparent).entry.rbe_left;
-            if !tmp.is_null() && (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).entry.rbe_left == elm {
@@ -1801,8 +1799,8 @@ unsafe extern "C" fn key_tables_RB_INSERT_COLOR(
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 tmp = (*gparent).entry.rbe_right;
                 (*gparent).entry.rbe_right = (*tmp).entry.rbe_left;
                 if !(*gparent).entry.rbe_right.is_null() {
@@ -1824,7 +1822,7 @@ unsafe extern "C" fn key_tables_RB_INSERT_COLOR(
             }
         }
     }
-    (*(*head).rbh_root).entry.rbe_color = 0 as libc::c_int;
+    (*(*head).rbh_root).entry.rbe_color = 0i32;
 }
 unsafe extern "C" fn key_tables_RB_INSERT(
     mut head: *mut key_tables,
@@ -1832,14 +1830,14 @@ unsafe extern "C" fn key_tables_RB_INSERT(
 ) -> *mut key_table {
     let mut tmp: *mut key_table = 0 as *mut key_table;
     let mut parent: *mut key_table = 0 as *mut key_table;
-    let mut comp: libc::c_int = 0 as libc::c_int;
+    let mut comp: libc::c_int = 0i32;
     tmp = (*head).rbh_root;
     while !tmp.is_null() {
         parent = tmp;
         comp = key_table_cmp(elm, parent);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).entry.rbe_right
         } else {
             return tmp;
@@ -1848,9 +1846,9 @@ unsafe extern "C" fn key_tables_RB_INSERT(
     (*elm).entry.rbe_parent = parent;
     (*elm).entry.rbe_right = 0 as *mut key_table;
     (*elm).entry.rbe_left = (*elm).entry.rbe_right;
-    (*elm).entry.rbe_color = 1 as libc::c_int;
+    (*elm).entry.rbe_color = 1i32;
     if !parent.is_null() {
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             (*parent).entry.rbe_left = elm
         } else {
             (*parent).entry.rbe_right = elm
@@ -1869,7 +1867,7 @@ unsafe extern "C" fn key_tables_RB_MINMAX(
     let mut parent: *mut key_table = 0 as *mut key_table;
     while !tmp.is_null() {
         parent = tmp;
-        if val < 0 as libc::c_int {
+        if val < 0i32 {
             tmp = (*tmp).entry.rbe_left
         } else {
             tmp = (*tmp).entry.rbe_right
@@ -1883,12 +1881,12 @@ unsafe extern "C" fn key_tables_RB_REMOVE_COLOR(
     mut elm: *mut key_table,
 ) {
     let mut tmp: *mut key_table = 0 as *mut key_table;
-    while (elm.is_null() || (*elm).entry.rbe_color == 0 as libc::c_int) && elm != (*head).rbh_root {
+    while (elm.is_null() || (*elm).entry.rbe_color == 0i32) && elm != (*head).rbh_root {
         if (*parent).entry.rbe_left == elm {
             tmp = (*parent).entry.rbe_right;
-            if (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 1 as libc::c_int;
+            if (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 1i32;
                 tmp = (*parent).entry.rbe_right;
                 (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
                 if !(*parent).entry.rbe_right.is_null() {
@@ -1909,24 +1907,23 @@ unsafe extern "C" fn key_tables_RB_REMOVE_COLOR(
                 !(*tmp).entry.rbe_parent.is_null();
                 tmp = (*parent).entry.rbe_right
             }
-            if ((*tmp).entry.rbe_left.is_null()
-                || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int)
+            if ((*tmp).entry.rbe_left.is_null() || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32)
                 && ((*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int)
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32)
             {
-                (*tmp).entry.rbe_color = 1 as libc::c_int;
+                (*tmp).entry.rbe_color = 1i32;
                 elm = parent;
                 parent = (*elm).entry.rbe_parent
             } else {
                 if (*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32
                 {
                     let mut oleft: *mut key_table = 0 as *mut key_table;
                     oleft = (*tmp).entry.rbe_left;
                     if !oleft.is_null() {
-                        (*oleft).entry.rbe_color = 0 as libc::c_int
+                        (*oleft).entry.rbe_color = 0i32
                     }
-                    (*tmp).entry.rbe_color = 1 as libc::c_int;
+                    (*tmp).entry.rbe_color = 1i32;
                     oleft = (*tmp).entry.rbe_left;
                     (*tmp).entry.rbe_left = (*oleft).entry.rbe_right;
                     if !(*tmp).entry.rbe_left.is_null() {
@@ -1948,9 +1945,9 @@ unsafe extern "C" fn key_tables_RB_REMOVE_COLOR(
                     tmp = (*parent).entry.rbe_right
                 }
                 (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
                 if !(*tmp).entry.rbe_right.is_null() {
-                    (*(*tmp).entry.rbe_right).entry.rbe_color = 0 as libc::c_int
+                    (*(*tmp).entry.rbe_right).entry.rbe_color = 0i32
                 }
                 tmp = (*parent).entry.rbe_right;
                 (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
@@ -1975,9 +1972,9 @@ unsafe extern "C" fn key_tables_RB_REMOVE_COLOR(
             }
         } else {
             tmp = (*parent).entry.rbe_left;
-            if (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 1 as libc::c_int;
+            if (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 1i32;
                 tmp = (*parent).entry.rbe_left;
                 (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
                 if !(*parent).entry.rbe_left.is_null() {
@@ -1998,24 +1995,23 @@ unsafe extern "C" fn key_tables_RB_REMOVE_COLOR(
                 !(*tmp).entry.rbe_parent.is_null();
                 tmp = (*parent).entry.rbe_left
             }
-            if ((*tmp).entry.rbe_left.is_null()
-                || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int)
+            if ((*tmp).entry.rbe_left.is_null() || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32)
                 && ((*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int)
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32)
             {
-                (*tmp).entry.rbe_color = 1 as libc::c_int;
+                (*tmp).entry.rbe_color = 1i32;
                 elm = parent;
                 parent = (*elm).entry.rbe_parent
             } else {
                 if (*tmp).entry.rbe_left.is_null()
-                    || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int
+                    || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32
                 {
                     let mut oright: *mut key_table = 0 as *mut key_table;
                     oright = (*tmp).entry.rbe_right;
                     if !oright.is_null() {
-                        (*oright).entry.rbe_color = 0 as libc::c_int
+                        (*oright).entry.rbe_color = 0i32
                     }
-                    (*tmp).entry.rbe_color = 1 as libc::c_int;
+                    (*tmp).entry.rbe_color = 1i32;
                     oright = (*tmp).entry.rbe_right;
                     (*tmp).entry.rbe_right = (*oright).entry.rbe_left;
                     if !(*tmp).entry.rbe_right.is_null() {
@@ -2037,9 +2033,9 @@ unsafe extern "C" fn key_tables_RB_REMOVE_COLOR(
                     tmp = (*parent).entry.rbe_left
                 }
                 (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
                 if !(*tmp).entry.rbe_left.is_null() {
-                    (*(*tmp).entry.rbe_left).entry.rbe_color = 0 as libc::c_int
+                    (*(*tmp).entry.rbe_left).entry.rbe_color = 0i32
                 }
                 tmp = (*parent).entry.rbe_left;
                 (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
@@ -2065,12 +2061,12 @@ unsafe extern "C" fn key_tables_RB_REMOVE_COLOR(
         }
     }
     if !elm.is_null() {
-        (*elm).entry.rbe_color = 0 as libc::c_int
+        (*elm).entry.rbe_color = 0i32
     };
 }
 static mut key_tables: key_tables = {
     let mut init = key_tables {
-        rbh_root: 0 as *const key_table as *mut key_table,
+        rbh_root: 0 as *mut key_table,
     };
     init
 };
@@ -2101,12 +2097,12 @@ unsafe extern "C" fn key_bindings_cmp(
     mut bd2: *mut key_binding,
 ) -> libc::c_int {
     if (*bd1).key < (*bd2).key {
-        return -(1 as libc::c_int);
+        return -(1i32);
     } /* one reference in key_tables */
     if (*bd1).key > (*bd2).key {
-        return 1 as libc::c_int;
+        return 1i32;
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 unsafe extern "C" fn key_bindings_free(mut bd: *mut key_binding) {
     cmd_list_free((*bd).cmdlist);
@@ -2144,13 +2140,13 @@ pub unsafe extern "C" fn key_bindings_get_table(
     (*table).name = xstrdup(name);
     (*table).key_bindings.rbh_root = 0 as *mut key_binding;
     (*table).default_key_bindings.rbh_root = 0 as *mut key_binding;
-    (*table).references = 1 as libc::c_int as u_int;
+    (*table).references = 1u32;
     key_tables_RB_INSERT(&mut key_tables, table);
     return table;
 }
 #[no_mangle]
 pub unsafe extern "C" fn key_bindings_first_table() -> *mut key_table {
-    return key_tables_RB_MINMAX(&mut key_tables, -(1 as libc::c_int));
+    return key_tables_RB_MINMAX(&mut key_tables, -(1i32));
 }
 #[no_mangle]
 pub unsafe extern "C" fn key_bindings_next_table(mut table: *mut key_table) -> *mut key_table {
@@ -2161,22 +2157,22 @@ pub unsafe extern "C" fn key_bindings_unref_table(mut table: *mut key_table) {
     let mut bd: *mut key_binding = 0 as *mut key_binding;
     let mut bd1: *mut key_binding = 0 as *mut key_binding;
     (*table).references = (*table).references.wrapping_sub(1);
-    if (*table).references != 0 as libc::c_int as libc::c_uint {
+    if (*table).references != 0u32 {
         return;
     }
-    bd = key_bindings_RB_MINMAX(&mut (*table).key_bindings, -(1 as libc::c_int));
+    bd = key_bindings_RB_MINMAX(&mut (*table).key_bindings, -(1i32));
     while !bd.is_null() && {
         bd1 = key_bindings_RB_NEXT(bd);
-        (1 as libc::c_int) != 0
+        (1i32) != 0
     } {
         key_bindings_RB_REMOVE(&mut (*table).key_bindings, bd);
         key_bindings_free(bd);
         bd = bd1
     }
-    bd = key_bindings_RB_MINMAX(&mut (*table).default_key_bindings, -(1 as libc::c_int));
+    bd = key_bindings_RB_MINMAX(&mut (*table).default_key_bindings, -(1i32));
     while !bd.is_null() && {
         bd1 = key_bindings_RB_NEXT(bd);
-        (1 as libc::c_int) != 0
+        (1i32) != 0
     } {
         key_bindings_RB_REMOVE(&mut (*table).default_key_bindings, bd);
         key_bindings_free(bd);
@@ -2227,7 +2223,7 @@ pub unsafe extern "C" fn key_bindings_get_default(
 }
 #[no_mangle]
 pub unsafe extern "C" fn key_bindings_first(mut table: *mut key_table) -> *mut key_binding {
-    return key_bindings_RB_MINMAX(&mut (*table).key_bindings, -(1 as libc::c_int));
+    return key_bindings_RB_MINMAX(&mut (*table).key_bindings, -(1i32));
 }
 #[no_mangle]
 pub unsafe extern "C" fn key_bindings_next(
@@ -2246,8 +2242,8 @@ pub unsafe extern "C" fn key_bindings_add(
 ) {
     let mut table: *mut key_table = 0 as *mut key_table;
     let mut bd: *mut key_binding = 0 as *mut key_binding;
-    table = key_bindings_get_table(name, 1 as libc::c_int);
-    bd = key_bindings_get(table, key & !(0xff000000000000 as libc::c_ulonglong));
+    table = key_bindings_get_table(name, 1i32);
+    bd = key_bindings_get(table, key & !(0xff000000000000u64));
     if cmdlist.is_null() {
         if !bd.is_null() {
             free((*bd).note as *mut libc::c_void);
@@ -2263,17 +2259,14 @@ pub unsafe extern "C" fn key_bindings_add(
         key_bindings_RB_REMOVE(&mut (*table).key_bindings, bd);
         key_bindings_free(bd);
     }
-    bd = xcalloc(
-        1 as libc::c_int as size_t,
-        ::std::mem::size_of::<key_binding>() as libc::c_ulong,
-    ) as *mut key_binding;
-    (*bd).key = key & !(0xff000000000000 as libc::c_ulonglong);
+    bd = xcalloc(1u64, ::std::mem::size_of::<key_binding>() as libc::c_ulong) as *mut key_binding;
+    (*bd).key = key & !(0xff000000000000u64);
     if !note.is_null() {
         (*bd).note = xstrdup(note)
     }
     key_bindings_RB_INSERT(&mut (*table).key_bindings, bd);
     if repeat != 0 {
-        (*bd).flags |= 0x1 as libc::c_int
+        (*bd).flags |= 0x1i32
     }
     (*bd).cmdlist = cmdlist;
 }
@@ -2281,11 +2274,11 @@ pub unsafe extern "C" fn key_bindings_add(
 pub unsafe extern "C" fn key_bindings_remove(mut name: *const libc::c_char, mut key: key_code) {
     let mut table: *mut key_table = 0 as *mut key_table;
     let mut bd: *mut key_binding = 0 as *mut key_binding;
-    table = key_bindings_get_table(name, 0 as libc::c_int);
+    table = key_bindings_get_table(name, 0i32);
     if table.is_null() {
         return;
     }
-    bd = key_bindings_get(table, key & !(0xff000000000000 as libc::c_ulonglong));
+    bd = key_bindings_get(table, key & !(0xff000000000000u64));
     if bd.is_null() {
         return;
     }
@@ -2302,11 +2295,11 @@ pub unsafe extern "C" fn key_bindings_reset(mut name: *const libc::c_char, mut k
     let mut table: *mut key_table = 0 as *mut key_table;
     let mut bd: *mut key_binding = 0 as *mut key_binding;
     let mut dd: *mut key_binding = 0 as *mut key_binding;
-    table = key_bindings_get_table(name, 0 as libc::c_int);
+    table = key_bindings_get_table(name, 0i32);
     if table.is_null() {
         return;
     }
-    bd = key_bindings_get(table, key & !(0xff000000000000 as libc::c_ulonglong));
+    bd = key_bindings_get(table, key & !(0xff000000000000u64));
     if bd.is_null() {
         return;
     }
@@ -2330,7 +2323,7 @@ pub unsafe extern "C" fn key_bindings_reset(mut name: *const libc::c_char, mut k
 pub unsafe extern "C" fn key_bindings_remove_table(mut name: *const libc::c_char) {
     let mut table: *mut key_table = 0 as *mut key_table;
     let mut c: *mut client = 0 as *mut client;
-    table = key_bindings_get_table(name, 0 as libc::c_int);
+    table = key_bindings_get_table(name, 0i32);
     if !table.is_null() {
         key_tables_RB_REMOVE(&mut key_tables, table);
         key_bindings_unref_table(table);
@@ -2348,7 +2341,7 @@ pub unsafe extern "C" fn key_bindings_reset_table(mut name: *const libc::c_char)
     let mut table: *mut key_table = 0 as *mut key_table;
     let mut bd: *mut key_binding = 0 as *mut key_binding;
     let mut bd1: *mut key_binding = 0 as *mut key_binding;
-    table = key_bindings_get_table(name, 0 as libc::c_int);
+    table = key_bindings_get_table(name, 0i32);
     if table.is_null() {
         return;
     }
@@ -2356,10 +2349,10 @@ pub unsafe extern "C" fn key_bindings_reset_table(mut name: *const libc::c_char)
         key_bindings_remove_table(name);
         return;
     }
-    bd = key_bindings_RB_MINMAX(&mut (*table).key_bindings, -(1 as libc::c_int));
+    bd = key_bindings_RB_MINMAX(&mut (*table).key_bindings, -(1i32));
     while !bd.is_null() && {
         bd1 = key_bindings_RB_NEXT(bd);
-        (1 as libc::c_int) != 0
+        (1i32) != 0
     } {
         key_bindings_reset(name, (*bd).key);
         bd = bd1
@@ -2372,14 +2365,12 @@ unsafe extern "C" fn key_bindings_init_done(
     let mut table: *mut key_table = 0 as *mut key_table;
     let mut bd: *mut key_binding = 0 as *mut key_binding;
     let mut new_bd: *mut key_binding = 0 as *mut key_binding;
-    table = key_tables_RB_MINMAX(&mut key_tables, -(1 as libc::c_int));
+    table = key_tables_RB_MINMAX(&mut key_tables, -(1i32));
     while !table.is_null() {
-        bd = key_bindings_RB_MINMAX(&mut (*table).key_bindings, -(1 as libc::c_int));
+        bd = key_bindings_RB_MINMAX(&mut (*table).key_bindings, -(1i32));
         while !bd.is_null() {
-            new_bd = xcalloc(
-                1 as libc::c_int as size_t,
-                ::std::mem::size_of::<key_binding>() as libc::c_ulong,
-            ) as *mut key_binding;
+            new_bd = xcalloc(1u64, ::std::mem::size_of::<key_binding>() as libc::c_ulong)
+                as *mut key_binding;
             (*new_bd).key = (*bd).key;
             if !(*bd).note.is_null() {
                 (*new_bd).note = xstrdup((*bd).note)
@@ -2905,13 +2896,13 @@ pub unsafe extern "C" fn key_bindings_init() {
              *const libc::c_char];
     let mut i: u_int = 0;
     let mut pr: *mut cmd_parse_result = 0 as *mut cmd_parse_result;
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while (i as libc::c_ulong)
         < (::std::mem::size_of::<[*const libc::c_char; 253]>() as libc::c_ulong)
             .wrapping_div(::std::mem::size_of::<*const libc::c_char>() as libc::c_ulong)
     {
         pr = cmd_parse_from_string(defaults[i as usize], 0 as *mut cmd_parse_input);
-        if (*pr).status as libc::c_uint != CMD_PARSE_SUCCESS as libc::c_int as libc::c_uint {
+        if (*pr).status != CMD_PARSE_SUCCESS {
             fatalx(
                 b"bad default key: %s\x00" as *const u8 as *const libc::c_char,
                 defaults[i as usize],
@@ -2960,11 +2951,11 @@ pub unsafe extern "C" fn key_bindings_dispatch(
     let mut new_item: *mut crate::cmd_queue::cmdq_item = 0 as *mut crate::cmd_queue::cmdq_item;
     let mut new_state: *mut crate::cmd_queue::cmdq_state = 0 as *mut crate::cmd_queue::cmdq_state;
     let mut readonly: libc::c_int = 0;
-    let mut flags: libc::c_int = 0 as libc::c_int;
-    if c.is_null() || !(*c).flags & 0x800 as libc::c_int as libc::c_ulong != 0 {
-        readonly = 1 as libc::c_int
+    let mut flags: libc::c_int = 0i32;
+    if c.is_null() || !(*c).flags & 0x800u64 != 0 {
+        readonly = 1i32
     } else {
-        readonly = cmd_list_all_have((*bd).cmdlist, 0x2 as libc::c_int)
+        readonly = cmd_list_all_have((*bd).cmdlist, 0x2i32)
     }
     if readonly == 0 {
         new_item = cmdq_get_callback1(
@@ -2979,8 +2970,8 @@ pub unsafe extern "C" fn key_bindings_dispatch(
             0 as *mut libc::c_void,
         )
     } else {
-        if (*bd).flags & 0x1 as libc::c_int != 0 {
-            flags |= 0x1 as libc::c_int
+        if (*bd).flags & 0x1i32 != 0 {
+            flags |= 0x1i32
         }
         new_state = cmdq_new_state(fs, event, flags);
         new_item = cmdq_get_command((*bd).cmdlist, new_state);

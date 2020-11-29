@@ -1072,8 +1072,8 @@ pub static mut cmd_select_window_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"lnpTt:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -1085,13 +1085,13 @@ pub static mut cmd_select_window_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_WINDOW,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0 as libc::c_int,
+            flags: 0i32,
             exec: Some(
                 cmd_select_window_exec
                     as unsafe extern "C" fn(
@@ -1112,8 +1112,8 @@ pub static mut cmd_next_window_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"at:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -1125,13 +1125,13 @@ pub static mut cmd_next_window_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_SESSION,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0 as libc::c_int,
+            flags: 0i32,
             exec: Some(
                 cmd_select_window_exec
                     as unsafe extern "C" fn(
@@ -1152,8 +1152,8 @@ pub static mut cmd_previous_window_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"at:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -1165,13 +1165,13 @@ pub static mut cmd_previous_window_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_SESSION,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0 as libc::c_int,
+            flags: 0i32,
             exec: Some(
                 cmd_select_window_exec
                     as unsafe extern "C" fn(
@@ -1192,8 +1192,8 @@ pub static mut cmd_last_window_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"t:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -1205,13 +1205,13 @@ pub static mut cmd_last_window_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_SESSION,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0 as libc::c_int,
+            flags: 0i32,
             exec: Some(
                 cmd_select_window_exec
                     as unsafe extern "C" fn(
@@ -1257,22 +1257,22 @@ unsafe extern "C" fn cmd_select_window_exec(
     let mut last: libc::c_int = 0;
     let mut activity: libc::c_int = 0;
     next = (cmd_get_entry(self_0) == &cmd_next_window_entry as *const cmd_entry) as libc::c_int;
-    if args_has(args, 'n' as i32 as u_char) != 0 {
-        next = 1 as libc::c_int
+    if args_has(args, 'n' as u_char) != 0 {
+        next = 1i32
     }
     previous =
         (cmd_get_entry(self_0) == &cmd_previous_window_entry as *const cmd_entry) as libc::c_int;
-    if args_has(args, 'p' as i32 as u_char) != 0 {
-        previous = 1 as libc::c_int
+    if args_has(args, 'p' as u_char) != 0 {
+        previous = 1i32
     }
     last = (cmd_get_entry(self_0) == &cmd_last_window_entry as *const cmd_entry) as libc::c_int;
-    if args_has(args, 'l' as i32 as u_char) != 0 {
-        last = 1 as libc::c_int
+    if args_has(args, 'l' as u_char) != 0 {
+        last = 1i32
     }
     if next != 0 || previous != 0 || last != 0 {
-        activity = args_has(args, 'a' as i32 as u_char);
+        activity = args_has(args, 'a' as u_char);
         if next != 0 {
-            if session_next(s, activity) != 0 as libc::c_int {
+            if session_next(s, activity) != 0i32 {
                 cmdq_error(
                     item,
                     b"no next window\x00" as *const u8 as *const libc::c_char,
@@ -1280,21 +1280,21 @@ unsafe extern "C" fn cmd_select_window_exec(
                 return CMD_RETURN_ERROR;
             }
         } else if previous != 0 {
-            if session_previous(s, activity) != 0 as libc::c_int {
+            if session_previous(s, activity) != 0i32 {
                 cmdq_error(
                     item,
                     b"no previous window\x00" as *const u8 as *const libc::c_char,
                 );
                 return CMD_RETURN_ERROR;
             }
-        } else if session_last(s) != 0 as libc::c_int {
+        } else if session_last(s) != 0i32 {
             cmdq_error(
                 item,
                 b"no last window\x00" as *const u8 as *const libc::c_char,
             );
             return CMD_RETURN_ERROR;
         }
-        cmd_find_from_session(current, s, 0 as libc::c_int);
+        cmd_find_from_session(current, s, 0i32);
         server_redraw_session(s);
         cmdq_insert_hook(
             s,
@@ -1307,8 +1307,8 @@ unsafe extern "C" fn cmd_select_window_exec(
          * If -T and select-window is invoked on same window as
          * current, switch to previous window.
          */
-        if args_has(args, 'T' as i32 as u_char) != 0 && wl == (*s).curw {
-            if session_last(s) != 0 as libc::c_int {
+        if args_has(args, 'T' as u_char) != 0 && wl == (*s).curw {
+            if session_last(s) != 0i32 {
                 cmdq_error(
                     item,
                     b"no last window\x00" as *const u8 as *const libc::c_char,
@@ -1316,11 +1316,11 @@ unsafe extern "C" fn cmd_select_window_exec(
                 return CMD_RETURN_ERROR;
             }
             if (*current).s == s {
-                cmd_find_from_session(current, s, 0 as libc::c_int);
+                cmd_find_from_session(current, s, 0i32);
             }
             server_redraw_session(s);
-        } else if session_select(s, (*wl).idx) == 0 as libc::c_int {
-            cmd_find_from_session(current, s, 0 as libc::c_int);
+        } else if session_select(s, (*wl).idx) == 0i32 {
+            cmd_find_from_session(current, s, 0i32);
             server_redraw_session(s);
         }
         cmdq_insert_hook(

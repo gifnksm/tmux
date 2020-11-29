@@ -1149,7 +1149,7 @@ pub struct tty_term_code_entry {
 #[no_mangle]
 pub static mut tty_terms: tty_terms = {
     let mut init = tty_terms {
-        lh_first: 0 as *const tty_term as *mut tty_term,
+        lh_first: 0 as *mut tty_term,
     };
     init
 };
@@ -2760,12 +2760,10 @@ unsafe extern "C" fn tty_term_strip(mut s: *const libc::c_char) -> *mut libc::c_
     if strchr(s, '$' as i32).is_null() {
         return xstrdup(s);
     }
-    len = 0 as libc::c_int as size_t;
+    len = 0u64;
     ptr = s;
     while *ptr as libc::c_int != '\u{0}' as i32 {
-        if *ptr as libc::c_int == '$' as i32
-            && *ptr.offset(1 as libc::c_int as isize) as libc::c_int == '<' as i32
-        {
+        if *ptr as libc::c_int == '$' as i32 && *ptr.offset(1isize) as libc::c_int == '<' as i32 {
             while *ptr as libc::c_int != '\u{0}' as i32 && *ptr as libc::c_int != '>' as i32 {
                 ptr = ptr.offset(1)
             }
@@ -2780,14 +2778,13 @@ unsafe extern "C" fn tty_term_strip(mut s: *const libc::c_char) -> *mut libc::c_
         len = len.wrapping_add(1);
         buf[fresh0 as usize] = *ptr;
         if len
-            == (::std::mem::size_of::<[libc::c_char; 8192]>() as libc::c_ulong)
-                .wrapping_sub(1 as libc::c_int as libc::c_ulong)
+            == (::std::mem::size_of::<[libc::c_char; 8192]>() as libc::c_ulong).wrapping_sub(1u64)
         {
             break;
         }
         ptr = ptr.offset(1)
     }
-    buf[len as usize] = '\u{0}' as i32 as libc::c_char;
+    buf[len as usize] = '\u{0}' as libc::c_char;
     return xstrdup(buf.as_mut_ptr());
 }
 unsafe extern "C" fn tty_term_override_next(
@@ -2795,42 +2792,37 @@ unsafe extern "C" fn tty_term_override_next(
     mut offset: *mut size_t,
 ) -> *mut libc::c_char {
     static mut value: [libc::c_char; 8192] = [0; 8192];
-    let mut n: size_t = 0 as libc::c_int as size_t;
+    let mut n: size_t = 0u64;
     let mut at: size_t = *offset;
     if *s.offset(at as isize) as libc::c_int == '\u{0}' as i32 {
         return 0 as *mut libc::c_char;
     }
     while *s.offset(at as isize) as libc::c_int != '\u{0}' as i32 {
         if *s.offset(at as isize) as libc::c_int == ':' as i32 {
-            if !(*s.offset(at.wrapping_add(1 as libc::c_int as libc::c_ulong) as isize)
-                as libc::c_int
-                == ':' as i32)
-            {
+            if !(*s.offset(at.wrapping_add(1u64) as isize) as libc::c_int == ':' as i32) {
                 break;
             }
             let fresh1 = n;
             n = n.wrapping_add(1);
-            value[fresh1 as usize] = ':' as i32 as libc::c_char;
-            at = (at as libc::c_ulong).wrapping_add(2 as libc::c_int as libc::c_ulong) as size_t
-                as size_t
+            value[fresh1 as usize] = ':' as libc::c_char;
+            at = (at).wrapping_add(2u64)
         } else {
             let fresh2 = n;
             n = n.wrapping_add(1);
             value[fresh2 as usize] = *s.offset(at as isize);
             at = at.wrapping_add(1)
         }
-        if n == (::std::mem::size_of::<[libc::c_char; 8192]>() as libc::c_ulong)
-            .wrapping_sub(1 as libc::c_int as libc::c_ulong)
+        if n == (::std::mem::size_of::<[libc::c_char; 8192]>() as libc::c_ulong).wrapping_sub(1u64)
         {
             return 0 as *mut libc::c_char;
         }
     }
     if *s.offset(at as isize) as libc::c_int != '\u{0}' as i32 {
-        *offset = at.wrapping_add(1 as libc::c_int as libc::c_ulong)
+        *offset = at.wrapping_add(1u64)
     } else {
         *offset = at
     }
-    value[n as usize] = '\u{0}' as i32 as libc::c_char;
+    value[n as usize] = '\u{0}' as libc::c_char;
     return value.as_mut_ptr();
 }
 #[no_mangle]
@@ -2841,7 +2833,7 @@ pub unsafe extern "C" fn tty_term_apply(
 ) {
     let mut ent: *const tty_term_code_entry = 0 as *const tty_term_code_entry;
     let mut code: *mut tty_code = 0 as *mut tty_code;
-    let mut offset: size_t = 0 as libc::c_int as size_t;
+    let mut offset: size_t = 0u64;
     let mut cp: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut value: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut s: *mut libc::c_char = 0 as *mut libc::c_char;
@@ -2859,24 +2851,20 @@ pub unsafe extern "C" fn tty_term_apply(
             continue;
         }
         value = 0 as *mut libc::c_char;
-        remove = 0 as libc::c_int;
+        remove = 0i32;
         cp = strchr(s, '=' as i32);
         if !cp.is_null() {
             let fresh3 = cp;
             cp = cp.offset(1);
-            *fresh3 = '\u{0}' as i32 as libc::c_char;
+            *fresh3 = '\u{0}' as libc::c_char;
             value = xstrdup(cp);
-            if strunvis(value, cp) == -(1 as libc::c_int) {
+            if strunvis(value, cp) == -(1i32) {
                 free(value as *mut libc::c_void);
                 value = xstrdup(cp)
             }
-        } else if *s.offset(strlen(s).wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize)
-            as libc::c_int
-            == '@' as i32
-        {
-            *s.offset(strlen(s).wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize) =
-                '\u{0}' as i32 as libc::c_char;
-            remove = 1 as libc::c_int
+        } else if *s.offset(strlen(s).wrapping_sub(1u64) as isize) as libc::c_int == '@' as i32 {
+            *s.offset(strlen(s).wrapping_sub(1u64) as isize) = '\u{0}' as libc::c_char;
+            remove = 1i32
         } else {
             value = xstrdup(b"\x00" as *const u8 as *const libc::c_char)
         }
@@ -2902,38 +2890,31 @@ pub unsafe extern "C" fn tty_term_apply(
                 );
             }
         }
-        i = 0 as libc::c_int as u_int;
+        i = 0u32;
         while i < tty_term_ncodes() {
             ent = &*tty_term_codes.as_ptr().offset(i as isize) as *const tty_term_code_entry;
-            if !(strcmp(s, (*ent).name) != 0 as libc::c_int) {
+            if !(strcmp(s, (*ent).name) != 0i32) {
                 code = &mut *(*term).codes.offset(i as isize) as *mut tty_code;
                 if remove != 0 {
                     (*code).type_0 = TTYCODE_NONE
                 } else {
-                    match (*ent).type_0 as libc::c_uint {
+                    match (*ent).type_0 {
                         1 => {
-                            if (*code).type_0 as libc::c_uint
-                                == TTYCODE_STRING as libc::c_int as libc::c_uint
-                            {
+                            if (*code).type_0 == TTYCODE_STRING {
                                 free((*code).value.string as *mut libc::c_void);
                             }
                             (*code).value.string = xstrdup(value);
                             (*code).type_0 = (*ent).type_0
                         }
                         2 => {
-                            n = strtonum(
-                                value,
-                                0 as libc::c_int as libc::c_longlong,
-                                2147483647 as libc::c_int as libc::c_longlong,
-                                &mut errstr,
-                            ) as libc::c_int;
+                            n = strtonum(value, 0i64, 2147483647i64, &mut errstr) as libc::c_int;
                             if errstr.is_null() {
                                 (*code).value.number = n;
                                 (*code).type_0 = (*ent).type_0
                             }
                         }
                         3 => {
-                            (*code).value.flag = 1 as libc::c_int;
+                            (*code).value.flag = 1i32;
                             (*code).type_0 = (*ent).type_0
                         }
                         0 | _ => {}
@@ -2962,10 +2943,10 @@ pub unsafe extern "C" fn tty_term_apply_overrides(mut term: *mut tty_term) {
     while !a.is_null() {
         ov = options_array_item_value(a);
         s = (*ov).string;
-        offset = 0 as libc::c_int as size_t;
+        offset = 0u64;
         first = tty_term_override_next(s, &mut offset);
-        if !first.is_null() && fnmatch(first, (*term).name, 0 as libc::c_int) == 0 as libc::c_int {
-            tty_term_apply(term, s.offset(offset as isize), 0 as libc::c_int);
+        if !first.is_null() && fnmatch(first, (*term).name, 0i32) == 0i32 {
+            tty_term_apply(term, s.offset(offset as isize), 0i32);
         }
         a = options_array_next(a)
     }
@@ -2996,10 +2977,7 @@ pub unsafe extern "C" fn tty_term_create(
         b"adding term %s\x00" as *const u8 as *const libc::c_char,
         name,
     );
-    term = xcalloc(
-        1 as libc::c_int as size_t,
-        ::std::mem::size_of::<tty_term>() as libc::c_ulong,
-    ) as *mut tty_term;
+    term = xcalloc(1u64, ::std::mem::size_of::<tty_term>() as libc::c_ulong) as *mut tty_term;
     (*term).tty = tty;
     (*term).name = xstrdup(name);
     (*term).codes = xcalloc(
@@ -3013,7 +2991,7 @@ pub unsafe extern "C" fn tty_term_create(
     tty_terms.lh_first = term;
     (*term).entry.le_prev = &mut tty_terms.lh_first;
     /* Set up curses terminal. */
-    if setupterm(name, fd, &mut error) != 0 as libc::c_int {
+    if setupterm(name, fd, &mut error) != 0i32 {
         match error {
             1 => {
                 xasprintf(
@@ -3044,31 +3022,29 @@ pub unsafe extern "C" fn tty_term_create(
         }
     } else {
         /* Fill in codes. */
-        i = 0 as libc::c_int as u_int;
+        i = 0u32;
         while i < tty_term_ncodes() {
             ent = &*tty_term_codes.as_ptr().offset(i as isize) as *const tty_term_code_entry;
             code = &mut *(*term).codes.offset(i as isize) as *mut tty_code;
             (*code).type_0 = TTYCODE_NONE;
-            match (*ent).type_0 as libc::c_uint {
+            match (*ent).type_0 {
                 1 => {
                     s = tigetstr((*ent).name as *mut libc::c_char);
-                    if !(s.is_null()
-                        || s == -(1 as libc::c_int) as *mut libc::c_char as *const libc::c_char)
-                    {
+                    if !(s.is_null() || s == -(1i32) as *const libc::c_char) {
                         (*code).type_0 = TTYCODE_STRING;
                         (*code).value.string = tty_term_strip(s)
                     }
                 }
                 2 => {
                     n = tigetnum((*ent).name as *mut libc::c_char);
-                    if !(n == -(1 as libc::c_int) || n == -(2 as libc::c_int)) {
+                    if !(n == -(1i32) || n == -(2i32)) {
                         (*code).type_0 = TTYCODE_NUMBER;
                         (*code).value.number = n
                     }
                 }
                 3 => {
                     n = tigetflag((*ent).name as *mut libc::c_char);
-                    if !(n == -(1 as libc::c_int)) {
+                    if !(n == -(1i32)) {
                         (*code).type_0 = TTYCODE_FLAG;
                         (*code).value.flag = n
                     }
@@ -3086,11 +3062,9 @@ pub unsafe extern "C" fn tty_term_create(
         while !a.is_null() {
             ov = options_array_item_value(a);
             s = (*ov).string;
-            offset = 0 as libc::c_int as size_t;
+            offset = 0u64;
             first = tty_term_override_next(s, &mut offset);
-            if !first.is_null()
-                && fnmatch(first, (*term).name, 0 as libc::c_int) == 0 as libc::c_int
-            {
+            if !first.is_null() && fnmatch(first, (*term).name, 0i32) == 0i32 {
                 tty_add_features(
                     feat,
                     s.offset(offset as isize),
@@ -3129,13 +3103,9 @@ pub unsafe extern "C" fn tty_term_create(
              */
             s = tty_term_string(term, tty_code_code::CLEAR);
             if tty_term_flag(term, tty_code_code::XT) != 0
-                || strncmp(
-                    s,
-                    b"\x1b[\x00" as *const u8 as *const libc::c_char,
-                    2 as libc::c_int as libc::c_ulong,
-                ) == 0 as libc::c_int
+                || strncmp(s, b"\x1b[\x00" as *const u8 as *const libc::c_char, 2u64) == 0i32
             {
-                (*term).flags |= 0x20 as libc::c_int;
+                (*term).flags |= 0x20i32;
                 tty_add_features(
                     feat,
                     b"bpaste,focus,title\x00" as *const u8 as *const libc::c_char,
@@ -3157,7 +3127,7 @@ pub unsafe extern "C" fn tty_term_create(
             if tty_term_has(term, tty_code_code::SETRGBF) != 0
                 && tty_term_has(term, tty_code_code::SETRGBB) != 0
             {
-                (*term).flags |= 0x10 as libc::c_int
+                (*term).flags |= 0x10i32
             }
             /* Apply the features and overrides again. */
             tty_apply_features(term, *feat);
@@ -3178,12 +3148,12 @@ pub unsafe extern "C" fn tty_term_create(
              * do the best possible.
              */
             if tty_term_flag(term, tty_code_code::AM) == 0 {
-                (*term).flags |= 0x2 as libc::c_int
+                (*term).flags |= 0x2i32
             }
             /* Generate ACS table. If none is present, use nearest ASCII. */
             memset(
                 (*term).acs.as_mut_ptr() as *mut libc::c_void,
-                0 as libc::c_int,
+                0i32,
                 ::std::mem::size_of::<[[libc::c_char; 2]; 256]>() as libc::c_ulong,
             );
             if tty_term_has(term, tty_code_code::ACSC) != 0 {
@@ -3192,20 +3162,19 @@ pub unsafe extern "C" fn tty_term_create(
                 acs = b"a#j+k+l+m+n+o-p-q-r-s-t+u+v+w+x|y<z>~.\x00" as *const u8
                     as *const libc::c_char
             }
-            while *acs.offset(0 as libc::c_int as isize) as libc::c_int != '\u{0}' as i32
-                && *acs.offset(1 as libc::c_int as isize) as libc::c_int != '\u{0}' as i32
+            while *acs.offset(0isize) as libc::c_int != '\u{0}' as i32
+                && *acs.offset(1isize) as libc::c_int != '\u{0}' as i32
             {
-                (*term).acs[*acs.offset(0 as libc::c_int as isize) as u_char as usize]
-                    [0 as libc::c_int as usize] = *acs.offset(1 as libc::c_int as isize);
-                acs = acs.offset(2 as libc::c_int as isize)
+                (*term).acs[*acs.offset(0isize) as u_char as usize][0usize] = *acs.offset(1isize);
+                acs = acs.offset(2isize)
             }
             /* Log the capabilities. */
-            i = 0 as libc::c_int as u_int;
+            i = 0u32;
             while i < tty_term_ncodes() {
                 log_debug(
                     b"%s%s\x00" as *const u8 as *const libc::c_char,
                     name,
-                    tty_term_describe(term, i as TtyCode),
+                    tty_term_describe(term, i),
                 );
                 i = i.wrapping_add(1)
             }
@@ -3222,11 +3191,9 @@ pub unsafe extern "C" fn tty_term_free(mut term: *mut tty_term) {
         b"removing term %s\x00" as *const u8 as *const libc::c_char,
         (*term).name,
     );
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < tty_term_ncodes() {
-        if (*(*term).codes.offset(i as isize)).type_0 as libc::c_uint
-            == TTYCODE_STRING as libc::c_int as libc::c_uint
-        {
+        if (*(*term).codes.offset(i as isize)).type_0 == TTYCODE_STRING {
             free((*(*term).codes.offset(i as isize)).value.string as *mut libc::c_void);
         }
         i = i.wrapping_add(1)
@@ -3241,8 +3208,7 @@ pub unsafe extern "C" fn tty_term_free(mut term: *mut tty_term) {
 }
 #[no_mangle]
 pub unsafe extern "C" fn tty_term_has(mut term: *mut tty_term, mut code: TtyCode) -> libc::c_int {
-    return ((*(*term).codes.offset(code as isize)).type_0 as libc::c_uint
-        != TTYCODE_NONE as libc::c_int as libc::c_uint) as libc::c_int;
+    return ((*(*term).codes.offset(code as isize)).type_0 != TTYCODE_NONE) as libc::c_int;
 }
 #[no_mangle]
 pub unsafe extern "C" fn tty_term_string(
@@ -3252,12 +3218,10 @@ pub unsafe extern "C" fn tty_term_string(
     if tty_term_has(term, code) == 0 {
         return b"\x00" as *const u8 as *const libc::c_char;
     }
-    if (*(*term).codes.offset(code as isize)).type_0 as libc::c_uint
-        != TTYCODE_STRING as libc::c_int as libc::c_uint
-    {
+    if (*(*term).codes.offset(code as isize)).type_0 != TTYCODE_STRING {
         fatalx(
             b"not a string: %d\x00" as *const u8 as *const libc::c_char,
-            code as libc::c_uint,
+            code,
         );
     }
     return (*(*term).codes.offset(code as isize)).value.string;
@@ -3271,14 +3235,14 @@ pub unsafe extern "C" fn tty_term_string1(
     return tparm(
         tty_term_string(term, code) as *mut libc::c_char,
         a,
-        0 as libc::c_int,
-        0 as libc::c_int,
-        0 as libc::c_int,
-        0 as libc::c_int,
-        0 as libc::c_int,
-        0 as libc::c_int,
-        0 as libc::c_int,
-        0 as libc::c_int,
+        0i32,
+        0i32,
+        0i32,
+        0i32,
+        0i32,
+        0i32,
+        0i32,
+        0i32,
     );
 }
 #[no_mangle]
@@ -3292,13 +3256,13 @@ pub unsafe extern "C" fn tty_term_string2(
         tty_term_string(term, code) as *mut libc::c_char,
         a,
         b,
-        0 as libc::c_int,
-        0 as libc::c_int,
-        0 as libc::c_int,
-        0 as libc::c_int,
-        0 as libc::c_int,
-        0 as libc::c_int,
-        0 as libc::c_int,
+        0i32,
+        0i32,
+        0i32,
+        0i32,
+        0i32,
+        0i32,
+        0i32,
     );
 }
 #[no_mangle]
@@ -3314,12 +3278,12 @@ pub unsafe extern "C" fn tty_term_string3(
         a,
         b,
         c,
-        0 as libc::c_int,
-        0 as libc::c_int,
-        0 as libc::c_int,
-        0 as libc::c_int,
-        0 as libc::c_int,
-        0 as libc::c_int,
+        0i32,
+        0i32,
+        0i32,
+        0i32,
+        0i32,
+        0i32,
     );
 }
 #[no_mangle]
@@ -3331,14 +3295,14 @@ pub unsafe extern "C" fn tty_term_ptr1(
     return tparm(
         tty_term_string(term, code) as *mut libc::c_char,
         a as libc::c_long,
-        0 as libc::c_int,
-        0 as libc::c_int,
-        0 as libc::c_int,
-        0 as libc::c_int,
-        0 as libc::c_int,
-        0 as libc::c_int,
-        0 as libc::c_int,
-        0 as libc::c_int,
+        0i32,
+        0i32,
+        0i32,
+        0i32,
+        0i32,
+        0i32,
+        0i32,
+        0i32,
     );
 }
 #[no_mangle]
@@ -3352,13 +3316,13 @@ pub unsafe extern "C" fn tty_term_ptr2(
         tty_term_string(term, code) as *mut libc::c_char,
         a as libc::c_long,
         b as libc::c_long,
-        0 as libc::c_int,
-        0 as libc::c_int,
-        0 as libc::c_int,
-        0 as libc::c_int,
-        0 as libc::c_int,
-        0 as libc::c_int,
-        0 as libc::c_int,
+        0i32,
+        0i32,
+        0i32,
+        0i32,
+        0i32,
+        0i32,
+        0i32,
     );
 }
 #[no_mangle]
@@ -3367,14 +3331,12 @@ pub unsafe extern "C" fn tty_term_number(
     mut code: TtyCode,
 ) -> libc::c_int {
     if tty_term_has(term, code) == 0 {
-        return 0 as libc::c_int;
+        return 0i32;
     }
-    if (*(*term).codes.offset(code as isize)).type_0 as libc::c_uint
-        != TTYCODE_NUMBER as libc::c_int as libc::c_uint
-    {
+    if (*(*term).codes.offset(code as isize)).type_0 != TTYCODE_NUMBER {
         fatalx(
             b"not a number: %d\x00" as *const u8 as *const libc::c_char,
-            code as libc::c_uint,
+            code,
         );
     }
     return (*(*term).codes.offset(code as isize)).value.number;
@@ -3382,14 +3344,12 @@ pub unsafe extern "C" fn tty_term_number(
 #[no_mangle]
 pub unsafe extern "C" fn tty_term_flag(mut term: *mut tty_term, mut code: TtyCode) -> libc::c_int {
     if tty_term_has(term, code) == 0 {
-        return 0 as libc::c_int;
+        return 0i32;
     }
-    if (*(*term).codes.offset(code as isize)).type_0 as libc::c_uint
-        != TTYCODE_FLAG as libc::c_int as libc::c_uint
-    {
+    if (*(*term).codes.offset(code as isize)).type_0 != TTYCODE_FLAG {
         fatalx(
             b"not a flag: %d\x00" as *const u8 as *const libc::c_char,
-            code as libc::c_uint,
+            code,
         );
     }
     return (*(*term).codes.offset(code as isize)).value.flag;
@@ -3401,13 +3361,13 @@ pub unsafe extern "C" fn tty_term_describe(
 ) -> *const libc::c_char {
     static mut s: [libc::c_char; 256] = [0; 256];
     let mut out: [libc::c_char; 128] = [0; 128];
-    match (*(*term).codes.offset(code as isize)).type_0 as libc::c_uint {
+    match (*(*term).codes.offset(code as isize)).type_0 {
         0 => {
             xsnprintf(
                 s.as_mut_ptr(),
                 ::std::mem::size_of::<[libc::c_char; 256]>() as libc::c_ulong,
                 b"%4u: %s: [missing]\x00" as *const u8 as *const libc::c_char,
-                code as libc::c_uint,
+                code,
                 tty_term_codes[code as usize].name,
             );
         }
@@ -3416,13 +3376,13 @@ pub unsafe extern "C" fn tty_term_describe(
                 out.as_mut_ptr(),
                 (*(*term).codes.offset(code as isize)).value.string,
                 ::std::mem::size_of::<[libc::c_char; 128]>() as libc::c_ulong,
-                0x1 as libc::c_int | 0x2 as libc::c_int | 0x8 as libc::c_int | 0x10 as libc::c_int,
+                0x1i32 | 0x2i32 | 0x8i32 | 0x10i32,
             );
             xsnprintf(
                 s.as_mut_ptr(),
                 ::std::mem::size_of::<[libc::c_char; 256]>() as libc::c_ulong,
                 b"%4u: %s: (string) %s\x00" as *const u8 as *const libc::c_char,
-                code as libc::c_uint,
+                code,
                 tty_term_codes[code as usize].name,
                 out.as_mut_ptr(),
             );
@@ -3432,7 +3392,7 @@ pub unsafe extern "C" fn tty_term_describe(
                 s.as_mut_ptr(),
                 ::std::mem::size_of::<[libc::c_char; 256]>() as libc::c_ulong,
                 b"%4u: %s: (number) %d\x00" as *const u8 as *const libc::c_char,
-                code as libc::c_uint,
+                code,
                 tty_term_codes[code as usize].name,
                 (*(*term).codes.offset(code as isize)).value.number,
             );
@@ -3442,7 +3402,7 @@ pub unsafe extern "C" fn tty_term_describe(
                 s.as_mut_ptr(),
                 ::std::mem::size_of::<[libc::c_char; 256]>() as libc::c_ulong,
                 b"%4u: %s: (flag) %s\x00" as *const u8 as *const libc::c_char,
-                code as libc::c_uint,
+                code,
                 tty_term_codes[code as usize].name,
                 if (*(*term).codes.offset(code as isize)).value.flag != 0 {
                     b"true\x00" as *const u8 as *const libc::c_char

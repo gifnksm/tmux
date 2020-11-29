@@ -140,8 +140,8 @@ pub static mut cmd_unbind_key_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_1 {
                     template: b"anqT:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 1 as libc::c_int,
+                    lower: 0i32,
+                    upper: 1i32,
                 };
                 init
             },
@@ -156,7 +156,7 @@ pub static mut cmd_unbind_key_entry: cmd_entry = {
                 type_0: CMD_FIND_PANE,
                 flags: 0,
             },
-            flags: 0x4 as libc::c_int,
+            flags: 0x4i32,
             exec: Some(
                 cmd_unbind_key_exec
                     as unsafe extern "C" fn(
@@ -194,9 +194,9 @@ unsafe extern "C" fn cmd_unbind_key_exec(
     let mut args: *mut args = cmd_get_args(self_0);
     let mut key: key_code = 0;
     let mut tablename: *const libc::c_char = 0 as *const libc::c_char;
-    let mut quiet: libc::c_int = args_has(args, 'q' as i32 as u_char);
-    if args_has(args, 'a' as i32 as u_char) != 0 {
-        if (*args).argc != 0 as libc::c_int {
+    let mut quiet: libc::c_int = args_has(args, 'q' as u_char);
+    if args_has(args, 'a' as u_char) != 0 {
+        if (*args).argc != 0i32 {
             if quiet == 0 {
                 cmdq_error(
                     item,
@@ -205,15 +205,15 @@ unsafe extern "C" fn cmd_unbind_key_exec(
             }
             return CMD_RETURN_ERROR;
         }
-        tablename = args_get(args, 'T' as i32 as u_char);
+        tablename = args_get(args, 'T' as u_char);
         if tablename.is_null() {
-            if args_has(args, 'n' as i32 as u_char) != 0 {
+            if args_has(args, 'n' as u_char) != 0 {
                 tablename = b"root\x00" as *const u8 as *const libc::c_char
             } else {
                 tablename = b"prefix\x00" as *const u8 as *const libc::c_char
             }
         }
-        if key_bindings_get_table(tablename, 0 as libc::c_int).is_null() {
+        if key_bindings_get_table(tablename, 0i32).is_null() {
             if quiet == 0 {
                 cmdq_error(
                     item,
@@ -226,26 +226,26 @@ unsafe extern "C" fn cmd_unbind_key_exec(
         key_bindings_remove_table(tablename);
         return CMD_RETURN_NORMAL;
     }
-    if (*args).argc != 1 as libc::c_int {
+    if (*args).argc != 1i32 {
         if quiet == 0 {
             cmdq_error(item, b"missing key\x00" as *const u8 as *const libc::c_char);
         }
         return CMD_RETURN_ERROR;
     }
-    key = key_string_lookup_string(*(*args).argv.offset(0 as libc::c_int as isize));
-    if key == 0xff000000000 as libc::c_ulonglong || key == 0xfe000000000 as libc::c_ulonglong {
+    key = key_string_lookup_string(*(*args).argv.offset(0isize));
+    if key == 0xff000000000u64 || key == 0xfe000000000u64 {
         if quiet == 0 {
             cmdq_error(
                 item,
                 b"unknown key: %s\x00" as *const u8 as *const libc::c_char,
-                *(*args).argv.offset(0 as libc::c_int as isize),
+                *(*args).argv.offset(0isize),
             );
         }
         return CMD_RETURN_ERROR;
     }
-    if args_has(args, 'T' as i32 as u_char) != 0 {
-        tablename = args_get(args, 'T' as i32 as u_char);
-        if key_bindings_get_table(tablename, 0 as libc::c_int).is_null() {
+    if args_has(args, 'T' as u_char) != 0 {
+        tablename = args_get(args, 'T' as u_char);
+        if key_bindings_get_table(tablename, 0i32).is_null() {
             if quiet == 0 {
                 cmdq_error(
                     item,
@@ -255,7 +255,7 @@ unsafe extern "C" fn cmd_unbind_key_exec(
             }
             return CMD_RETURN_ERROR;
         }
-    } else if args_has(args, 'n' as i32 as u_char) != 0 {
+    } else if args_has(args, 'n' as u_char) != 0 {
         tablename = b"root\x00" as *const u8 as *const libc::c_char
     } else {
         tablename = b"prefix\x00" as *const u8 as *const libc::c_char

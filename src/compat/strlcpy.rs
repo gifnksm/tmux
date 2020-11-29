@@ -31,9 +31,9 @@ pub unsafe extern "C" fn strlcpy(
     let mut s: *const libc::c_char = src;
     let mut n: size_t = siz;
     /* Copy as many bytes as will fit */
-    if n != 0 as libc::c_int as libc::c_ulong && {
+    if n != 0u64 && {
         n = n.wrapping_sub(1);
-        (n) != 0 as libc::c_int as libc::c_ulong
+        (n) != 0u64
     } {
         loop {
             let fresh0 = s;
@@ -41,19 +41,19 @@ pub unsafe extern "C" fn strlcpy(
             let fresh1 = d;
             d = d.offset(1);
             *fresh1 = *fresh0;
-            if *fresh1 as libc::c_int == 0 as libc::c_int {
+            if *fresh1 as libc::c_int == 0i32 {
                 break;
             }
             n = n.wrapping_sub(1);
-            if !(n != 0 as libc::c_int as libc::c_ulong) {
+            if !(n != 0u64) {
                 break;
             }
         }
     }
     /* Not enough room in dst, add NUL and traverse rest of src */
-    if n == 0 as libc::c_int as libc::c_ulong {
-        if siz != 0 as libc::c_int as libc::c_ulong {
-            *d = '\u{0}' as i32 as libc::c_char
+    if n == 0u64 {
+        if siz != 0u64 {
+            *d = '\u{0}' as libc::c_char
         } /* NUL-terminate dst */
         loop {
             let fresh2 = s;
@@ -63,7 +63,6 @@ pub unsafe extern "C" fn strlcpy(
             }
         }
     }
-    return (s.wrapping_offset_from(src) as libc::c_long - 1 as libc::c_int as libc::c_long)
-        as libc::c_ulong;
+    return (s.wrapping_offset_from(src) as libc::c_long - 1i64) as libc::c_ulong;
     /* count does not include NUL */
 }

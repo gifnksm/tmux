@@ -1461,7 +1461,7 @@ pub static mut cmd_table: [*const cmd_entry; 88] = unsafe {
     ]
 };
 /* Next group number for new command list. */
-static mut cmd_list_next_group: u_int = 1 as libc::c_int as u_int;
+static mut cmd_list_next_group: u_int = 1u32;
 /* Log an argument vector. */
 #[no_mangle]
 pub unsafe extern "C" fn cmd_log_argv(
@@ -1475,7 +1475,7 @@ pub unsafe extern "C" fn cmd_log_argv(
     let mut i: libc::c_int = 0;
     ap = args.clone();
     xvasprintf(&mut prefix, fmt, ap.as_va_list());
-    i = 0 as libc::c_int;
+    i = 0i32;
     while i < argc {
         log_debug(
             b"%s: argv[%d]=%s\x00" as *const u8 as *const libc::c_char,
@@ -1498,14 +1498,14 @@ pub unsafe extern "C" fn cmd_prepend_argv(
     let mut i: libc::c_int = 0;
     new_argv = xreallocarray(
         0 as *mut libc::c_void,
-        (*argc + 1 as libc::c_int) as size_t,
+        (*argc + 1i32) as size_t,
         ::std::mem::size_of::<*mut libc::c_char>() as libc::c_ulong,
     ) as *mut *mut libc::c_char;
-    let ref mut fresh0 = *new_argv.offset(0 as libc::c_int as isize);
+    let ref mut fresh0 = *new_argv.offset(0isize);
     *fresh0 = xstrdup(arg);
-    i = 0 as libc::c_int;
+    i = 0i32;
     while i < *argc {
-        let ref mut fresh1 = *new_argv.offset((1 as libc::c_int + i) as isize);
+        let ref mut fresh1 = *new_argv.offset((1i32 + i) as isize);
         *fresh1 = *(*argv).offset(i as isize);
         i += 1
     }
@@ -1522,7 +1522,7 @@ pub unsafe extern "C" fn cmd_append_argv(
 ) {
     *argv = xreallocarray(
         *argv as *mut libc::c_void,
-        (*argc + 1 as libc::c_int) as size_t,
+        (*argc + 1i32) as size_t,
         ::std::mem::size_of::<*mut libc::c_char>() as libc::c_ulong,
     ) as *mut *mut libc::c_char;
     let fresh2 = *argc;
@@ -1540,8 +1540,8 @@ pub unsafe extern "C" fn cmd_pack_argv(
 ) -> libc::c_int {
     let mut arglen: size_t = 0;
     let mut i: libc::c_int = 0;
-    if argc == 0 as libc::c_int {
-        return 0 as libc::c_int;
+    if argc == 0i32 {
+        return 0i32;
     }
     cmd_log_argv(
         argc,
@@ -1549,18 +1549,18 @@ pub unsafe extern "C" fn cmd_pack_argv(
         b"%s\x00" as *const u8 as *const libc::c_char,
         (*::std::mem::transmute::<&[u8; 14], &[libc::c_char; 14]>(b"cmd_pack_argv\x00")).as_ptr(),
     );
-    *buf = '\u{0}' as i32 as libc::c_char;
-    i = 0 as libc::c_int;
+    *buf = '\u{0}' as libc::c_char;
+    i = 0i32;
     while i < argc {
         if strlcpy(buf, *argv.offset(i as isize), len) >= len {
-            return -(1 as libc::c_int);
+            return -(1i32);
         }
-        arglen = strlen(*argv.offset(i as isize)).wrapping_add(1 as libc::c_int as libc::c_ulong);
+        arglen = strlen(*argv.offset(i as isize)).wrapping_add(1u64);
         buf = buf.offset(arglen as isize);
-        len = (len as libc::c_ulong).wrapping_sub(arglen) as size_t as size_t;
+        len = (len).wrapping_sub(arglen);
         i += 1
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 /* Unpack an argument vector from a packed buffer. */
 #[no_mangle]
@@ -1572,26 +1572,25 @@ pub unsafe extern "C" fn cmd_unpack_argv(
 ) -> libc::c_int {
     let mut i: libc::c_int = 0;
     let mut arglen: size_t = 0;
-    if argc == 0 as libc::c_int {
-        return 0 as libc::c_int;
+    if argc == 0i32 {
+        return 0i32;
     }
     *argv = xcalloc(
         argc as size_t,
         ::std::mem::size_of::<*mut libc::c_char>() as libc::c_ulong,
     ) as *mut *mut libc::c_char;
-    *buf.offset(len.wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize) =
-        '\u{0}' as i32 as libc::c_char;
-    i = 0 as libc::c_int;
+    *buf.offset(len.wrapping_sub(1u64) as isize) = '\u{0}' as libc::c_char;
+    i = 0i32;
     while i < argc {
-        if len == 0 as libc::c_int as libc::c_ulong {
+        if len == 0u64 {
             cmd_free_argv(argc, *argv);
-            return -(1 as libc::c_int);
+            return -(1i32);
         }
-        arglen = strlen(buf).wrapping_add(1 as libc::c_int as libc::c_ulong);
+        arglen = strlen(buf).wrapping_add(1u64);
         let ref mut fresh4 = *(*argv).offset(i as isize);
         *fresh4 = xstrdup(buf);
         buf = buf.offset(arglen as isize);
-        len = (len as libc::c_ulong).wrapping_sub(arglen) as size_t as size_t;
+        len = (len).wrapping_sub(arglen);
         i += 1
     }
     cmd_log_argv(
@@ -1600,7 +1599,7 @@ pub unsafe extern "C" fn cmd_unpack_argv(
         b"%s\x00" as *const u8 as *const libc::c_char,
         (*::std::mem::transmute::<&[u8; 16], &[libc::c_char; 16]>(b"cmd_unpack_argv\x00")).as_ptr(),
     );
-    return 0 as libc::c_int;
+    return 0i32;
 }
 /* Copy an argument vector, ensuring it is terminated by NULL. */
 #[no_mangle]
@@ -1610,14 +1609,14 @@ pub unsafe extern "C" fn cmd_copy_argv(
 ) -> *mut *mut libc::c_char {
     let mut new_argv: *mut *mut libc::c_char = 0 as *mut *mut libc::c_char;
     let mut i: libc::c_int = 0;
-    if argc == 0 as libc::c_int {
+    if argc == 0i32 {
         return 0 as *mut *mut libc::c_char;
     }
     new_argv = xcalloc(
-        (argc + 1 as libc::c_int) as size_t,
+        (argc + 1i32) as size_t,
         ::std::mem::size_of::<*mut libc::c_char>() as libc::c_ulong,
     ) as *mut *mut libc::c_char;
-    i = 0 as libc::c_int;
+    i = 0i32;
     while i < argc {
         if !(*argv.offset(i as isize)).is_null() {
             let ref mut fresh5 = *new_argv.offset(i as isize);
@@ -1631,10 +1630,10 @@ pub unsafe extern "C" fn cmd_copy_argv(
 #[no_mangle]
 pub unsafe extern "C" fn cmd_free_argv(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) {
     let mut i: libc::c_int = 0;
-    if argc == 0 as libc::c_int {
+    if argc == 0i32 {
         return;
     }
-    i = 0 as libc::c_int;
+    i = 0i32;
     while i < argc {
         free(*argv.offset(i as isize) as *mut libc::c_void);
         i += 1
@@ -1649,12 +1648,12 @@ pub unsafe extern "C" fn cmd_stringify_argv(
 ) -> *mut libc::c_char {
     let mut buf: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut s: *mut libc::c_char = 0 as *mut libc::c_char;
-    let mut len: size_t = 0 as libc::c_int as size_t;
+    let mut len: size_t = 0u64;
     let mut i: libc::c_int = 0;
-    if argc == 0 as libc::c_int {
+    if argc == 0i32 {
         return xstrdup(b"\x00" as *const u8 as *const libc::c_char);
     }
-    i = 0 as libc::c_int;
+    i = 0i32;
     while i < argc {
         s = args_escape(*argv.offset(i as isize));
         log_debug(
@@ -1665,12 +1664,10 @@ pub unsafe extern "C" fn cmd_stringify_argv(
             *argv.offset(i as isize),
             s,
         );
-        len = (len as libc::c_ulong)
-            .wrapping_add(strlen(s).wrapping_add(1 as libc::c_int as libc::c_ulong))
-            as size_t as size_t;
+        len = (len).wrapping_add(strlen(s).wrapping_add(1u64));
         buf = xrealloc(buf as *mut libc::c_void, len) as *mut libc::c_char;
-        if i == 0 as libc::c_int {
-            *buf = '\u{0}' as i32 as libc::c_char
+        if i == 0i32 {
+            *buf = '\u{0}' as libc::c_char
         } else {
             strlcat(buf, b" \x00" as *const u8 as *const libc::c_char, len);
         }
@@ -1732,9 +1729,9 @@ pub unsafe extern "C" fn cmd_get_alias(mut name: *const libc::c_char) -> *mut li
         ov = options_array_item_value(a);
         equals = strchr((*ov).string, '=' as i32);
         if !equals.is_null() {
-            n = equals.wrapping_offset_from((*ov).string) as libc::c_long as size_t;
-            if n == wanted && strncmp(name, (*ov).string, n) == 0 as libc::c_int {
-                return xstrdup(equals.offset(1 as libc::c_int as isize));
+            n = equals.wrapping_offset_from((*ov).string) as size_t;
+            if n == wanted && strncmp(name, (*ov).string, n) == 0i32 {
+                return xstrdup(equals.offset(1isize));
             }
         }
         a = options_array_next(a)
@@ -1751,21 +1748,21 @@ unsafe extern "C" fn cmd_find(
     let mut found: *const cmd_entry = 0 as *const cmd_entry;
     let mut ambiguous: libc::c_int = 0;
     let mut s: [libc::c_char; 8192] = [0; 8192];
-    ambiguous = 0 as libc::c_int;
+    ambiguous = 0i32;
     loop_0 = cmd_table.as_mut_ptr();
     while !(*loop_0).is_null() {
         entry = *loop_0;
-        if !(*entry).alias.is_null() && strcmp((*entry).alias, name) == 0 as libc::c_int {
-            ambiguous = 0 as libc::c_int;
+        if !(*entry).alias.is_null() && strcmp((*entry).alias, name) == 0i32 {
+            ambiguous = 0i32;
             found = entry;
             break;
         } else {
-            if !(strncmp((*entry).name, name, strlen(name)) != 0 as libc::c_int) {
+            if !(strncmp((*entry).name, name, strlen(name)) != 0i32) {
                 if !found.is_null() {
-                    ambiguous = 1 as libc::c_int
+                    ambiguous = 1i32
                 }
                 found = entry;
-                if strcmp((*entry).name, name) == 0 as libc::c_int {
+                if strcmp((*entry).name, name) == 0i32 {
                     break;
                 }
             }
@@ -1773,11 +1770,11 @@ unsafe extern "C" fn cmd_find(
         }
     }
     if ambiguous != 0 {
-        *s.as_mut_ptr() = '\u{0}' as i32 as libc::c_char;
+        *s.as_mut_ptr() = '\u{0}' as libc::c_char;
         loop_0 = cmd_table.as_mut_ptr();
         while !(*loop_0).is_null() {
             entry = *loop_0;
-            if !(strncmp((*entry).name, name, strlen(name)) != 0 as libc::c_int) {
+            if !(strncmp((*entry).name, name, strlen(name)) != 0i32) {
                 if strlcat(
                     s.as_mut_ptr(),
                     (*entry).name,
@@ -1797,8 +1794,7 @@ unsafe extern "C" fn cmd_find(
             }
             loop_0 = loop_0.offset(1)
         }
-        s[strlen(s.as_mut_ptr()).wrapping_sub(2 as libc::c_int as libc::c_ulong) as usize] =
-            '\u{0}' as i32 as libc::c_char;
+        s[strlen(s.as_mut_ptr()).wrapping_sub(2u64) as usize] = '\u{0}' as libc::c_char;
         xasprintf(
             cause,
             b"ambiguous command: %s, could be: %s\x00" as *const u8 as *const libc::c_char,
@@ -1831,11 +1827,11 @@ pub unsafe extern "C" fn cmd_parse(
     let mut name: *const libc::c_char = 0 as *const libc::c_char;
     let mut cmd: *mut cmd = 0 as *mut cmd;
     let mut args: *mut args = 0 as *mut args;
-    if argc == 0 as libc::c_int {
+    if argc == 0i32 {
         xasprintf(cause, b"no command\x00" as *const u8 as *const libc::c_char);
         return 0 as *mut cmd;
     }
-    name = *argv.offset(0 as libc::c_int as isize);
+    name = *argv.offset(0isize);
     entry = cmd_find(name, cause);
     if entry.is_null() {
         return 0 as *mut cmd;
@@ -1849,12 +1845,9 @@ pub unsafe extern "C" fn cmd_parse(
     );
     args = args_parse((*entry).args.template, argc, argv);
     if !args.is_null() {
-        if !((*entry).args.lower != -(1 as libc::c_int) && (*args).argc < (*entry).args.lower) {
-            if !((*entry).args.upper != -(1 as libc::c_int) && (*args).argc > (*entry).args.upper) {
-                cmd = xcalloc(
-                    1 as libc::c_int as size_t,
-                    ::std::mem::size_of::<cmd>() as libc::c_ulong,
-                ) as *mut cmd;
+        if !((*entry).args.lower != -(1i32) && (*args).argc < (*entry).args.lower) {
+            if !((*entry).args.upper != -(1i32) && (*args).argc > (*entry).args.upper) {
+                cmd = xcalloc(1u64, ::std::mem::size_of::<cmd>() as libc::c_ulong) as *mut cmd;
                 (*cmd).entry = entry;
                 (*cmd).args = args;
                 if !file.is_null() {
@@ -1911,18 +1904,12 @@ pub unsafe extern "C" fn cmd_print(mut cmd: *mut cmd) -> *mut libc::c_char {
 #[no_mangle]
 pub unsafe extern "C" fn cmd_list_new() -> *mut cmd_list {
     let mut cmdlist: *mut cmd_list = 0 as *mut cmd_list;
-    cmdlist = xcalloc(
-        1 as libc::c_int as size_t,
-        ::std::mem::size_of::<cmd_list>() as libc::c_ulong,
-    ) as *mut cmd_list;
-    (*cmdlist).references = 1 as libc::c_int;
+    cmdlist = xcalloc(1u64, ::std::mem::size_of::<cmd_list>() as libc::c_ulong) as *mut cmd_list;
+    (*cmdlist).references = 1i32;
     let fresh6 = cmd_list_next_group;
     cmd_list_next_group = cmd_list_next_group.wrapping_add(1);
     (*cmdlist).group = fresh6;
-    (*cmdlist).list = xcalloc(
-        1 as libc::c_int as size_t,
-        ::std::mem::size_of::<cmds>() as libc::c_ulong,
-    ) as *mut cmds;
+    (*cmdlist).list = xcalloc(1u64, ::std::mem::size_of::<cmds>() as libc::c_ulong) as *mut cmds;
     (*(*cmdlist).list).tqh_first = 0 as *mut cmd;
     (*(*cmdlist).list).tqh_last = &mut (*(*cmdlist).list).tqh_first;
     return cmdlist;
@@ -1956,13 +1943,13 @@ pub unsafe extern "C" fn cmd_list_free(mut cmdlist: *mut cmd_list) {
     let mut cmd: *mut cmd = 0 as *mut cmd;
     let mut cmd1: *mut cmd = 0 as *mut cmd;
     (*cmdlist).references -= 1;
-    if (*cmdlist).references != 0 as libc::c_int {
+    if (*cmdlist).references != 0i32 {
         return;
     }
     cmd = (*(*cmdlist).list).tqh_first;
     while !cmd.is_null() && {
         cmd1 = (*cmd).qentry.tqe_next;
-        (1 as libc::c_int) != 0
+        (1i32) != 0
     } {
         if !(*cmd).qentry.tqe_next.is_null() {
             (*(*cmd).qentry.tqe_next).qentry.tqe_prev = (*cmd).qentry.tqe_prev
@@ -1987,14 +1974,12 @@ pub unsafe extern "C" fn cmd_list_print(
     let mut buf: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut this: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut len: size_t = 0;
-    len = 1 as libc::c_int as size_t;
-    buf = xcalloc(1 as libc::c_int as size_t, len) as *mut libc::c_char;
+    len = 1u64;
+    buf = xcalloc(1u64, len) as *mut libc::c_char;
     cmd = (*(*cmdlist).list).tqh_first;
     while !cmd.is_null() {
         this = cmd_print(cmd);
-        len = (len as libc::c_ulong)
-            .wrapping_add(strlen(this).wrapping_add(6 as libc::c_int as libc::c_ulong))
-            as size_t as size_t;
+        len = (len).wrapping_add(strlen(this).wrapping_add(6u64));
         buf = xrealloc(buf as *mut libc::c_void, len) as *mut libc::c_char;
         strlcat(buf, this, len);
         next = (*cmd).qentry.tqe_next;
@@ -2040,11 +2025,11 @@ pub unsafe extern "C" fn cmd_list_all_have(
     cmd = (*(*cmdlist).list).tqh_first;
     while !cmd.is_null() {
         if !(*(*cmd).entry).flags & flag != 0 {
-            return 0 as libc::c_int;
+            return 0i32;
         }
         cmd = (*cmd).qentry.tqe_next
     }
-    return 1 as libc::c_int;
+    return 1i32;
 }
 /* Do any of the commands in this command list have this flag? */
 #[no_mangle]
@@ -2056,11 +2041,11 @@ pub unsafe extern "C" fn cmd_list_any_have(
     cmd = (*(*cmdlist).list).tqh_first;
     while !cmd.is_null() {
         if (*(*cmd).entry).flags & flag != 0 {
-            return 1 as libc::c_int;
+            return 1i32;
         }
         cmd = (*cmd).qentry.tqe_next
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 /* Adjust current mouse position for a pane. */
 #[no_mangle]
@@ -2091,14 +2076,14 @@ pub unsafe extern "C" fn cmd_mouse_at(
             b"\x00" as *const u8 as *const libc::c_char
         },
     );
-    if (*m).statusat == 0 as libc::c_int && y >= (*m).statuslines {
-        y = (y as libc::c_uint).wrapping_sub((*m).statuslines) as u_int as u_int
+    if (*m).statusat == 0i32 && y >= (*m).statuslines {
+        y = (y).wrapping_sub((*m).statuslines)
     }
     if x < (*wp).xoff || x >= (*wp).xoff.wrapping_add((*wp).sx) {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     if y < (*wp).yoff || y >= (*wp).yoff.wrapping_add((*wp).sy) {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     if !xp.is_null() {
         *xp = x.wrapping_sub((*wp).xoff)
@@ -2106,7 +2091,7 @@ pub unsafe extern "C" fn cmd_mouse_at(
     if !yp.is_null() {
         *yp = y.wrapping_sub((*wp).yoff)
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 /* Get current mouse window if any. */
 #[no_mangle]
@@ -2120,13 +2105,13 @@ pub unsafe extern "C" fn cmd_mouse_window(
     if (*m).valid == 0 {
         return 0 as *mut winlink;
     }
-    if (*m).s == -(1 as libc::c_int) || {
+    if (*m).s == -(1i32) || {
         s = session_find_by_id((*m).s as u_int);
         s.is_null()
     } {
         return 0 as *mut winlink;
     }
-    if (*m).w == -(1 as libc::c_int) {
+    if (*m).w == -(1i32) {
         wl = (*s).curw
     } else {
         w = window_find_by_id((*m).w as u_int);
@@ -2184,10 +2169,10 @@ pub unsafe extern "C" fn cmd_template_replace(
     if strchr(template, '%' as i32).is_null() {
         return xstrdup(template);
     }
-    buf = xmalloc(1 as libc::c_int as size_t) as *mut libc::c_char;
-    *buf = '\u{0}' as i32 as libc::c_char;
-    len = 0 as libc::c_int as size_t;
-    replaced = 0 as libc::c_int;
+    buf = xmalloc(1u64) as *mut libc::c_char;
+    *buf = '\u{0}' as libc::c_char;
+    len = 0u64;
+    replaced = 0i32;
     ptr = template;
     let mut current_block_22: u64;
     while *ptr as libc::c_int != '\u{0}' as i32 {
@@ -2203,7 +2188,7 @@ pub unsafe extern "C" fn cmd_template_replace(
                     if *ptr as libc::c_int != '%' as i32 || replaced != 0 {
                         current_block_22 = 16203760046146113240;
                     } else {
-                        replaced = 1 as libc::c_int;
+                        replaced = 1i32;
                         current_block_22 = 10599921512955367680;
                     }
                 } else {
@@ -2219,10 +2204,8 @@ pub unsafe extern "C" fn cmd_template_replace(
                         }
                         buf = xrealloc(
                             buf as *mut libc::c_void,
-                            len.wrapping_add(
-                                strlen(s).wrapping_mul(3 as libc::c_int as libc::c_ulong),
-                            )
-                            .wrapping_add(1 as libc::c_int as libc::c_ulong),
+                            len.wrapping_add(strlen(s).wrapping_mul(3u64))
+                                .wrapping_add(1u64),
                         ) as *mut libc::c_char;
                         cp = s;
                         while *cp as libc::c_int != '\u{0}' as i32 {
@@ -2230,28 +2213,25 @@ pub unsafe extern "C" fn cmd_template_replace(
                             {
                                 let fresh9 = len;
                                 len = len.wrapping_add(1);
-                                *buf.offset(fresh9 as isize) = '\\' as i32 as libc::c_char
+                                *buf.offset(fresh9 as isize) = '\\' as libc::c_char
                             }
                             let fresh10 = len;
                             len = len.wrapping_add(1);
                             *buf.offset(fresh10 as isize) = *cp;
                             cp = cp.offset(1)
                         }
-                        *buf.offset(len as isize) = '\u{0}' as i32 as libc::c_char;
+                        *buf.offset(len as isize) = '\u{0}' as libc::c_char;
                         continue;
                     }
                 }
             }
             _ => {}
         }
-        buf = xrealloc(
-            buf as *mut libc::c_void,
-            len.wrapping_add(2 as libc::c_int as libc::c_ulong),
-        ) as *mut libc::c_char;
+        buf = xrealloc(buf as *mut libc::c_void, len.wrapping_add(2u64)) as *mut libc::c_char;
         let fresh11 = len;
         len = len.wrapping_add(1);
         *buf.offset(fresh11 as isize) = ch;
-        *buf.offset(len as isize) = '\u{0}' as i32 as libc::c_char
+        *buf.offset(len as isize) = '\u{0}' as libc::c_char
     }
     return buf;
 }

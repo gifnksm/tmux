@@ -91,16 +91,14 @@ unsafe extern "C" fn regsub_copy(
     let mut add: size_t = end.wrapping_sub(start);
     *buf = xrealloc(
         *buf as *mut libc::c_void,
-        (*len)
-            .wrapping_add(add)
-            .wrapping_add(1 as libc::c_int as libc::c_ulong),
+        (*len).wrapping_add(add).wrapping_add(1u64),
     ) as *mut libc::c_char;
     memcpy(
         (*buf).offset(*len as isize) as *mut libc::c_void,
         text.offset(start as isize) as *const libc::c_void,
         add,
     );
-    *len = (*len as libc::c_ulong).wrapping_add(add) as size_t as size_t;
+    *len = (*len).wrapping_add(add);
 }
 unsafe extern "C" fn regsub_expand(
     mut buf: *mut *mut libc::c_char,
@@ -139,10 +137,8 @@ unsafe extern "C" fn regsub_expand(
         }
         match current_block_5 {
             13109137661213826276 => {
-                *buf = xrealloc(
-                    *buf as *mut libc::c_void,
-                    (*len).wrapping_add(2 as libc::c_int as libc::c_ulong),
-                ) as *mut libc::c_char;
+                *buf = xrealloc(*buf as *mut libc::c_void, (*len).wrapping_add(2u64))
+                    as *mut libc::c_char;
                 let fresh0 = *len;
                 *len = (*len).wrapping_add(1);
                 *(*buf).offset(fresh0 as isize) = *cp
@@ -174,17 +170,17 @@ pub unsafe extern "C" fn regsub(
     let mut start: ssize_t = 0;
     let mut end: ssize_t = 0;
     let mut last: ssize_t = 0;
-    let mut len: ssize_t = 0 as libc::c_int as ssize_t;
-    let mut empty: libc::c_int = 0 as libc::c_int;
+    let mut len: ssize_t = 0i64;
+    let mut empty: libc::c_int = 0i32;
     let mut buf: *mut libc::c_char = 0 as *mut libc::c_char;
     if *text as libc::c_int == '\u{0}' as i32 {
         return xstrdup(b"\x00" as *const u8 as *const libc::c_char);
     }
-    if regcomp(&mut r, pattern, flags) != 0 as libc::c_int {
+    if regcomp(&mut r, pattern, flags) != 0i32 {
         return 0 as *mut libc::c_char;
     }
-    start = 0 as libc::c_int as ssize_t;
-    last = 0 as libc::c_int as ssize_t;
+    start = 0i64;
+    last = 0i64;
     end = strlen(text) as ssize_t;
     while start <= end {
         if regexec(
@@ -193,8 +189,8 @@ pub unsafe extern "C" fn regsub(
             (::std::mem::size_of::<[regmatch_t; 10]>() as libc::c_ulong)
                 .wrapping_div(::std::mem::size_of::<regmatch_t>() as libc::c_ulong),
             m.as_mut_ptr(),
-            0 as libc::c_int,
-        ) != 0 as libc::c_int
+            0i32,
+        ) != 0i32
         {
             regsub_copy(
                 &mut buf,
@@ -214,7 +210,7 @@ pub unsafe extern "C" fn regsub(
                 &mut len as *mut ssize_t as *mut size_t,
                 text,
                 last as size_t,
-                (m[0 as libc::c_int as usize].rm_so as libc::c_long + start) as size_t,
+                (m[0usize].rm_so as libc::c_long + start) as size_t,
             );
             /*
              * If the last match was empty and this one isn't (it is either
@@ -222,8 +218,8 @@ pub unsafe extern "C" fn regsub(
              * empty, move on one character and try again from there.
              */
             if empty != 0
-                || start + m[0 as libc::c_int as usize].rm_so as libc::c_long != last
-                || m[0 as libc::c_int as usize].rm_so != m[0 as libc::c_int as usize].rm_eo
+                || start + m[0usize].rm_so as libc::c_long != last
+                || m[0usize].rm_so != m[0usize].rm_eo
             {
                 regsub_expand(
                     &mut buf,
@@ -235,13 +231,13 @@ pub unsafe extern "C" fn regsub(
                         .wrapping_div(::std::mem::size_of::<regmatch_t>() as libc::c_ulong)
                         as u_int,
                 );
-                last = start + m[0 as libc::c_int as usize].rm_eo as libc::c_long;
-                start += m[0 as libc::c_int as usize].rm_eo as libc::c_long;
-                empty = 0 as libc::c_int
+                last = start + m[0usize].rm_eo as libc::c_long;
+                start += m[0usize].rm_eo as libc::c_long;
+                empty = 0i32
             } else {
-                last = start + m[0 as libc::c_int as usize].rm_eo as libc::c_long;
-                start += (m[0 as libc::c_int as usize].rm_eo + 1 as libc::c_int) as libc::c_long;
-                empty = 1 as libc::c_int
+                last = start + m[0usize].rm_eo as libc::c_long;
+                start += (m[0usize].rm_eo + 1i32) as libc::c_long;
+                empty = 1i32
             }
             /* Stop now if anchored to start. */
             if !(*pattern as libc::c_int == '^' as i32) {
@@ -257,7 +253,7 @@ pub unsafe extern "C" fn regsub(
             break;
         }
     }
-    *buf.offset(len as isize) = '\u{0}' as i32 as libc::c_char;
+    *buf.offset(len as isize) = '\u{0}' as libc::c_char;
     regfree(&mut r);
     return buf;
 }

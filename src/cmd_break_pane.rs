@@ -1128,8 +1128,8 @@ pub static mut cmd_break_pane_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"abdPF:n:s:t:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 }; /* can't fail */
                 init
             },
@@ -1137,21 +1137,21 @@ pub static mut cmd_break_pane_entry: cmd_entry = {
                 as *const u8 as *const libc::c_char,
             source: {
                 let mut init = cmd_entry_flag {
-                    flag: 's' as i32 as libc::c_char,
+                    flag: 's' as libc::c_char,
                     type_0: CMD_FIND_PANE,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_WINDOW,
-                    flags: 0x4 as libc::c_int,
+                    flags: 0x4i32,
                 };
                 init
             },
-            flags: 0 as libc::c_int,
+            flags: 0i32,
             exec: Some(
                 cmd_break_pane_exec
                     as unsafe extern "C" fn(
@@ -1183,45 +1183,45 @@ unsafe extern "C" fn cmd_break_pane_exec(
     let mut idx: libc::c_int = (*target).idx;
     let mut before: libc::c_int = 0;
     let mut template: *const libc::c_char = 0 as *const libc::c_char;
-    before = args_has(args, 'b' as i32 as u_char);
-    if args_has(args, 'a' as i32 as u_char) != 0 || before != 0 {
+    before = args_has(args, 'b' as u_char);
+    if args_has(args, 'a' as u_char) != 0 || before != 0 {
         if !(*target).wl.is_null() {
             idx = winlink_shuffle_up(dst_s, (*target).wl, before)
         } else {
             idx = winlink_shuffle_up(dst_s, (*dst_s).curw, before)
         }
-        if idx == -(1 as libc::c_int) {
+        if idx == -(1i32) {
             return CMD_RETURN_ERROR;
         }
     }
     server_unzoom_window(w);
-    if window_count_panes(w) == 1 as libc::c_int as libc::c_uint {
+    if window_count_panes(w) == 1u32 {
         if server_link_window(
             src_s,
             wl,
             dst_s,
             idx,
-            0 as libc::c_int,
-            (args_has(args, 'd' as i32 as u_char) == 0) as libc::c_int,
+            0i32,
+            (args_has(args, 'd' as u_char) == 0) as libc::c_int,
             &mut cause,
-        ) != 0 as libc::c_int
+        ) != 0i32
         {
             cmdq_error(item, b"%s\x00" as *const u8 as *const libc::c_char, cause);
             free(cause as *mut libc::c_void);
             return CMD_RETURN_ERROR;
         }
-        if args_has(args, 'n' as i32 as u_char) != 0 {
-            window_set_name(w, args_get(args, 'n' as i32 as u_char));
+        if args_has(args, 'n' as u_char) != 0 {
+            window_set_name(w, args_get(args, 'n' as u_char));
             options_set_number(
                 (*w).options,
                 b"automatic-rename\x00" as *const u8 as *const libc::c_char,
-                0 as libc::c_int as libc::c_longlong,
+                0i64,
             );
         }
         server_unlink_window(src_s, wl);
         return CMD_RETURN_NORMAL;
     }
-    if idx != -(1 as libc::c_int) && !winlink_find_by_index(&mut (*dst_s).windows, idx).is_null() {
+    if idx != -(1i32) && !winlink_find_by_index(&mut (*dst_s).windows, idx).is_null() {
         cmdq_error(
             item,
             b"index in use: %d\x00" as *const u8 as *const libc::c_char,
@@ -1241,7 +1241,7 @@ unsafe extern "C" fn cmd_break_pane_exec(
     (*wp).window = window_create((*w).sx, (*w).sy, (*w).xpixel, (*w).ypixel);
     w = (*wp).window;
     options_set_parent((*wp).options, (*w).options);
-    (*wp).flags |= 0x1000 as libc::c_int;
+    (*wp).flags |= 0x1000i32;
     (*wp).entry.tqe_next = (*w).panes.tqh_first;
     if !(*wp).entry.tqe_next.is_null() {
         (*(*w).panes.tqh_first).entry.tqe_prev = &mut (*wp).entry.tqe_next
@@ -1252,31 +1252,31 @@ unsafe extern "C" fn cmd_break_pane_exec(
     (*wp).entry.tqe_prev = &mut (*w).panes.tqh_first;
     (*w).active = wp;
     (*w).latest = tc as *mut libc::c_void;
-    if args_has(args, 'n' as i32 as u_char) == 0 {
+    if args_has(args, 'n' as u_char) == 0 {
         name = default_window_name(w);
         window_set_name(w, name);
         free(name as *mut libc::c_void);
     } else {
-        window_set_name(w, args_get(args, 'n' as i32 as u_char));
+        window_set_name(w, args_get(args, 'n' as u_char));
         options_set_number(
             (*w).options,
             b"automatic-rename\x00" as *const u8 as *const libc::c_char,
-            0 as libc::c_int as libc::c_longlong,
+            0i64,
         );
     }
     layout_init(w, wp);
-    (*wp).flags |= 0x80 as libc::c_int;
-    if idx == -(1 as libc::c_int) {
-        idx = (-(1 as libc::c_int) as libc::c_longlong
+    (*wp).flags |= 0x80i32;
+    if idx == -(1i32) {
+        idx = (-1i64
             - options_get_number(
                 (*dst_s).options,
                 b"base-index\x00" as *const u8 as *const libc::c_char,
             )) as libc::c_int
     }
     wl = session_attach(dst_s, w, idx, &mut cause);
-    if args_has(args, 'd' as i32 as u_char) == 0 {
+    if args_has(args, 'd' as u_char) == 0 {
         session_select(dst_s, (*wl).idx);
-        cmd_find_from_session(current, dst_s, 0 as libc::c_int);
+        cmd_find_from_session(current, dst_s, 0i32);
     }
     server_redraw_session(src_s);
     if src_s != dst_s {
@@ -1286,8 +1286,8 @@ unsafe extern "C" fn cmd_break_pane_exec(
     if src_s != dst_s {
         server_status_session_group(dst_s);
     }
-    if args_has(args, 'P' as i32 as u_char) != 0 {
-        template = args_get(args, 'F' as i32 as u_char);
+    if args_has(args, 'P' as u_char) != 0 {
+        template = args_get(args, 'F' as u_char);
         if template.is_null() {
             template = b"#{session_name}:#{window_index}.#{pane_index}\x00" as *const u8
                 as *const libc::c_char

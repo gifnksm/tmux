@@ -1235,7 +1235,7 @@ unsafe extern "C" fn notify_hook_formats(
             (*w).name,
         );
     }
-    if pane != -(1 as libc::c_int) {
+    if pane != -(1i32) {
         cmdq_add_format(
             state,
             b"hook_pane\x00" as *const u8 as *const libc::c_char,
@@ -1272,9 +1272,9 @@ unsafe extern "C" fn notify_insert_hook(
             .as_ptr(),
         (*ne).name,
     );
-    cmd_find_clear_state(&mut fs, 0 as libc::c_int);
+    cmd_find_clear_state(&mut fs, 0i32);
     if cmd_find_empty_state(&mut (*ne).fs) != 0 || cmd_find_valid_state(&mut (*ne).fs) == 0 {
-        cmd_find_from_nothing(&mut fs, 0 as libc::c_int);
+        cmd_find_from_nothing(&mut fs, 0i32);
     } else {
         cmd_find_copy_state(&mut fs, &mut (*ne).fs);
     }
@@ -1295,7 +1295,7 @@ unsafe extern "C" fn notify_insert_hook(
     if o.is_null() {
         return;
     }
-    new_state = cmdq_new_state(&mut fs, 0 as *mut key_event, 0x4 as libc::c_int);
+    new_state = cmdq_new_state(&mut fs, 0 as *mut key_event, 0x4i32);
     cmdq_add_format(
         new_state,
         b"hook\x00" as *const u8 as *const libc::c_char,
@@ -1327,77 +1327,77 @@ unsafe extern "C" fn notify_callback(
     if strcmp(
         (*ne).name,
         b"pane-mode-changed\x00" as *const u8 as *const libc::c_char,
-    ) == 0 as libc::c_int
+    ) == 0i32
     {
         control_notify_pane_mode_changed((*ne).pane);
     }
     if strcmp(
         (*ne).name,
         b"window-layout-changed\x00" as *const u8 as *const libc::c_char,
-    ) == 0 as libc::c_int
+    ) == 0i32
     {
         control_notify_window_layout_changed((*ne).window);
     }
     if strcmp(
         (*ne).name,
         b"window-pane-changed\x00" as *const u8 as *const libc::c_char,
-    ) == 0 as libc::c_int
+    ) == 0i32
     {
         control_notify_window_pane_changed((*ne).window);
     }
     if strcmp(
         (*ne).name,
         b"window-unlinked\x00" as *const u8 as *const libc::c_char,
-    ) == 0 as libc::c_int
+    ) == 0i32
     {
         control_notify_window_unlinked((*ne).session, (*ne).window);
     }
     if strcmp(
         (*ne).name,
         b"window-linked\x00" as *const u8 as *const libc::c_char,
-    ) == 0 as libc::c_int
+    ) == 0i32
     {
         control_notify_window_linked((*ne).session, (*ne).window);
     }
     if strcmp(
         (*ne).name,
         b"window-renamed\x00" as *const u8 as *const libc::c_char,
-    ) == 0 as libc::c_int
+    ) == 0i32
     {
         control_notify_window_renamed((*ne).window);
     }
     if strcmp(
         (*ne).name,
         b"client-session-changed\x00" as *const u8 as *const libc::c_char,
-    ) == 0 as libc::c_int
+    ) == 0i32
     {
         control_notify_client_session_changed((*ne).client);
     }
     if strcmp(
         (*ne).name,
         b"session-renamed\x00" as *const u8 as *const libc::c_char,
-    ) == 0 as libc::c_int
+    ) == 0i32
     {
         control_notify_session_renamed((*ne).session);
     }
     if strcmp(
         (*ne).name,
         b"session-created\x00" as *const u8 as *const libc::c_char,
-    ) == 0 as libc::c_int
+    ) == 0i32
     {
         control_notify_session_created((*ne).session);
     }
     if strcmp(
         (*ne).name,
         b"session-closed\x00" as *const u8 as *const libc::c_char,
-    ) == 0 as libc::c_int
+    ) == 0i32
     {
         control_notify_session_closed((*ne).session);
     }
     if strcmp(
         (*ne).name,
         b"session-window-changed\x00" as *const u8 as *const libc::c_char,
-    ) == 0 as libc::c_int
+    ) == 0i32
     {
         control_notify_session_window_changed((*ne).session);
     }
@@ -1441,13 +1441,10 @@ unsafe extern "C" fn notify_add(
     let mut ne: *mut notify_entry = 0 as *mut notify_entry;
     let mut item: *mut crate::cmd_queue::cmdq_item = 0 as *mut crate::cmd_queue::cmdq_item;
     item = cmdq_running(0 as *mut client);
-    if !item.is_null() && cmdq_get_flags(item) & 0x4 as libc::c_int != 0 {
+    if !item.is_null() && cmdq_get_flags(item) & 0x4i32 != 0 {
         return;
     }
-    ne = xcalloc(
-        1 as libc::c_int as size_t,
-        ::std::mem::size_of::<notify_entry>() as libc::c_ulong,
-    ) as *mut notify_entry;
+    ne = xcalloc(1u64, ::std::mem::size_of::<notify_entry>() as libc::c_ulong) as *mut notify_entry;
     (*ne).name = xstrdup(name);
     (*ne).client = c;
     (*ne).session = s;
@@ -1455,7 +1452,7 @@ unsafe extern "C" fn notify_add(
     if !wp.is_null() {
         (*ne).pane = (*wp).id as libc::c_int
     } else {
-        (*ne).pane = -(1 as libc::c_int)
+        (*ne).pane = -(1i32)
     }
     if !c.is_null() {
         (*c).references += 1
@@ -1519,7 +1516,7 @@ pub unsafe extern "C" fn notify_hook(
     };
     memset(
         &mut ne as *mut notify_entry as *mut libc::c_void,
-        0 as libc::c_int,
+        0i32,
         ::std::mem::size_of::<notify_entry>() as libc::c_ulong,
     );
     ne.name = name;
@@ -1541,7 +1538,7 @@ pub unsafe extern "C" fn notify_client(mut name: *const libc::c_char, mut c: *mu
         wp: 0 as *mut window_pane,
         idx: 0,
     };
-    cmd_find_from_client(&mut fs, c, 0 as libc::c_int);
+    cmd_find_from_client(&mut fs, c, 0i32);
     notify_add(
         name,
         &mut fs,
@@ -1563,9 +1560,9 @@ pub unsafe extern "C" fn notify_session(mut name: *const libc::c_char, mut s: *m
         idx: 0,
     };
     if session_alive(s) != 0 {
-        cmd_find_from_session(&mut fs, s, 0 as libc::c_int);
+        cmd_find_from_session(&mut fs, s, 0i32);
     } else {
-        cmd_find_from_nothing(&mut fs, 0 as libc::c_int);
+        cmd_find_from_nothing(&mut fs, 0i32);
     }
     notify_add(
         name,
@@ -1587,7 +1584,7 @@ pub unsafe extern "C" fn notify_winlink(mut name: *const libc::c_char, mut wl: *
         wp: 0 as *mut window_pane,
         idx: 0,
     };
-    cmd_find_from_winlink(&mut fs, wl, 0 as libc::c_int);
+    cmd_find_from_winlink(&mut fs, wl, 0i32);
     notify_add(
         name,
         &mut fs,
@@ -1612,7 +1609,7 @@ pub unsafe extern "C" fn notify_session_window(
         wp: 0 as *mut window_pane,
         idx: 0,
     };
-    cmd_find_from_session_window(&mut fs, s, w, 0 as libc::c_int);
+    cmd_find_from_session_window(&mut fs, s, w, 0i32);
     notify_add(name, &mut fs, 0 as *mut client, s, w, 0 as *mut window_pane);
 }
 #[no_mangle]
@@ -1626,7 +1623,7 @@ pub unsafe extern "C" fn notify_window(mut name: *const libc::c_char, mut w: *mu
         wp: 0 as *mut window_pane,
         idx: 0,
     };
-    cmd_find_from_window(&mut fs, w, 0 as libc::c_int);
+    cmd_find_from_window(&mut fs, w, 0i32);
     notify_add(
         name,
         &mut fs,
@@ -1647,7 +1644,7 @@ pub unsafe extern "C" fn notify_pane(mut name: *const libc::c_char, mut wp: *mut
         wp: 0 as *mut window_pane,
         idx: 0,
     };
-    cmd_find_from_pane(&mut fs, wp, 0 as libc::c_int);
+    cmd_find_from_pane(&mut fs, wp, 0i32);
     notify_add(
         name,
         &mut fs,

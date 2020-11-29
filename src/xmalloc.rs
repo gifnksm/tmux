@@ -62,7 +62,7 @@ pub type va_list = __builtin_va_list;
 #[no_mangle]
 pub unsafe extern "C" fn xmalloc(mut size: size_t) -> *mut libc::c_void {
     let mut ptr: *mut libc::c_void = 0 as *mut libc::c_void;
-    if size == 0 as libc::c_int as libc::c_ulong {
+    if size == 0u64 {
         fatalx(b"xmalloc: zero size\x00" as *const u8 as *const libc::c_char);
     }
     ptr = malloc(size);
@@ -78,7 +78,7 @@ pub unsafe extern "C" fn xmalloc(mut size: size_t) -> *mut libc::c_void {
 #[no_mangle]
 pub unsafe extern "C" fn xcalloc(mut nmemb: size_t, mut size: size_t) -> *mut libc::c_void {
     let mut ptr: *mut libc::c_void = 0 as *mut libc::c_void;
-    if size == 0 as libc::c_int as libc::c_ulong || nmemb == 0 as libc::c_int as libc::c_ulong {
+    if size == 0u64 || nmemb == 0u64 {
         fatalx(b"xcalloc: zero size\x00" as *const u8 as *const libc::c_char);
     }
     ptr = calloc(nmemb, size);
@@ -97,7 +97,7 @@ pub unsafe extern "C" fn xrealloc(
     mut ptr: *mut libc::c_void,
     mut size: size_t,
 ) -> *mut libc::c_void {
-    return xreallocarray(ptr, 1 as libc::c_int as size_t, size);
+    return xreallocarray(ptr, 1u64, size);
 }
 #[no_mangle]
 pub unsafe extern "C" fn xreallocarray(
@@ -106,7 +106,7 @@ pub unsafe extern "C" fn xreallocarray(
     mut size: size_t,
 ) -> *mut libc::c_void {
     let mut new_ptr: *mut libc::c_void = 0 as *mut libc::c_void;
-    if nmemb == 0 as libc::c_int as libc::c_ulong || size == 0 as libc::c_int as libc::c_ulong {
+    if nmemb == 0u64 || size == 0u64 {
         fatalx(b"xreallocarray: zero size\x00" as *const u8 as *const libc::c_char);
     }
     new_ptr = reallocarray(ptr, nmemb, size);
@@ -129,7 +129,7 @@ pub unsafe extern "C" fn xrecallocarray(
     mut size: size_t,
 ) -> *mut libc::c_void {
     let mut new_ptr: *mut libc::c_void = 0 as *mut libc::c_void;
-    if nmemb == 0 as libc::c_int as libc::c_ulong || size == 0 as libc::c_int as libc::c_ulong {
+    if nmemb == 0u64 || size == 0u64 {
         fatalx(b"xrecallocarray: zero size\x00" as *const u8 as *const libc::c_char);
     }
     new_ptr = recallocarray(ptr, oldnmemb, nmemb, size);
@@ -191,7 +191,7 @@ pub unsafe extern "C" fn xvasprintf(
 ) -> libc::c_int {
     let mut i: libc::c_int = 0;
     i = vasprintf(ret, fmt, ap.as_va_list());
-    if i == -(1 as libc::c_int) {
+    if i == -(1i32) {
         fatalx(
             b"xasprintf: %s\x00" as *const u8 as *const libc::c_char,
             strerror(*__errno_location()),
@@ -220,11 +220,11 @@ pub unsafe extern "C" fn xvsnprintf(
     mut ap: ::std::ffi::VaList,
 ) -> libc::c_int {
     let mut i: libc::c_int = 0;
-    if len > 2147483647 as libc::c_int as libc::c_ulong {
+    if len > 2147483647u64 {
         fatalx(b"xsnprintf: len > INT_MAX\x00" as *const u8 as *const libc::c_char);
     }
     i = vsnprintf(str, len, fmt, ap.as_va_list());
-    if i < 0 as libc::c_int || i >= len as libc::c_int {
+    if i < 0i32 || i >= len as libc::c_int {
         fatalx(b"xsnprintf: overflow\x00" as *const u8 as *const libc::c_char);
     }
     return i;

@@ -24,7 +24,7 @@ pub type size_t = libc::c_ulong;
 #[no_mangle]
 pub unsafe extern "C" fn freezero(mut ptr: *mut libc::c_void, mut size: size_t) {
     if !ptr.is_null() {
-        memset(ptr, 0 as libc::c_int, size);
+        memset(ptr, 0i32, size);
         free(ptr);
     };
 }

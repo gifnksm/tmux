@@ -1080,16 +1080,16 @@ static mut layout_sets: [C2RustUnnamed_32; 5] = {
 #[no_mangle]
 pub unsafe extern "C" fn layout_set_lookup(mut name: *const libc::c_char) -> libc::c_int {
     let mut i: u_int = 0;
-    let mut matched: libc::c_int = -(1 as libc::c_int);
-    i = 0 as libc::c_int as u_int;
+    let mut matched: libc::c_int = -(1i32);
+    i = 0u32;
     while (i as libc::c_ulong)
         < (::std::mem::size_of::<[C2RustUnnamed_32; 5]>() as libc::c_ulong)
             .wrapping_div(::std::mem::size_of::<C2RustUnnamed_32>() as libc::c_ulong)
     {
-        if strncmp(layout_sets[i as usize].name, name, strlen(name)) == 0 as libc::c_int {
-            if matched != -(1 as libc::c_int) {
+        if strncmp(layout_sets[i as usize].name, name, strlen(name)) == 0i32 {
+            if matched != -(1i32) {
                 /* ambiguous */
-                return -(1 as libc::c_int);
+                return -(1i32);
             }
             matched = i as libc::c_int
         }
@@ -1102,11 +1102,11 @@ pub unsafe extern "C" fn layout_set_select(mut w: *mut window, mut layout: u_int
     if layout as libc::c_ulong
         > (::std::mem::size_of::<[C2RustUnnamed_32; 5]>() as libc::c_ulong)
             .wrapping_div(::std::mem::size_of::<C2RustUnnamed_32>() as libc::c_ulong)
-            .wrapping_sub(1 as libc::c_int as libc::c_ulong)
+            .wrapping_sub(1u64)
     {
         layout = (::std::mem::size_of::<[C2RustUnnamed_32; 5]>() as libc::c_ulong)
             .wrapping_div(::std::mem::size_of::<C2RustUnnamed_32>() as libc::c_ulong)
-            .wrapping_sub(1 as libc::c_int as libc::c_ulong) as u_int
+            .wrapping_sub(1u64) as u_int
     }
     if layout_sets[layout as usize].arrange.is_some() {
         layout_sets[layout as usize]
@@ -1119,16 +1119,16 @@ pub unsafe extern "C" fn layout_set_select(mut w: *mut window, mut layout: u_int
 #[no_mangle]
 pub unsafe extern "C" fn layout_set_next(mut w: *mut window) -> u_int {
     let mut layout: u_int = 0;
-    if (*w).lastlayout == -(1 as libc::c_int) {
-        layout = 0 as libc::c_int as u_int
+    if (*w).lastlayout == -(1i32) {
+        layout = 0u32
     } else {
-        layout = ((*w).lastlayout + 1 as libc::c_int) as u_int;
+        layout = ((*w).lastlayout + 1i32) as u_int;
         if layout as libc::c_ulong
             > (::std::mem::size_of::<[C2RustUnnamed_32; 5]>() as libc::c_ulong)
                 .wrapping_div(::std::mem::size_of::<C2RustUnnamed_32>() as libc::c_ulong)
-                .wrapping_sub(1 as libc::c_int as libc::c_ulong)
+                .wrapping_sub(1u64)
         {
-            layout = 0 as libc::c_int as u_int
+            layout = 0u32
         }
     }
     if layout_sets[layout as usize].arrange.is_some() {
@@ -1142,16 +1142,16 @@ pub unsafe extern "C" fn layout_set_next(mut w: *mut window) -> u_int {
 #[no_mangle]
 pub unsafe extern "C" fn layout_set_previous(mut w: *mut window) -> u_int {
     let mut layout: u_int = 0;
-    if (*w).lastlayout == -(1 as libc::c_int) {
+    if (*w).lastlayout == -(1i32) {
         layout = (::std::mem::size_of::<[C2RustUnnamed_32; 5]>() as libc::c_ulong)
             .wrapping_div(::std::mem::size_of::<C2RustUnnamed_32>() as libc::c_ulong)
-            .wrapping_sub(1 as libc::c_int as libc::c_ulong) as u_int
+            .wrapping_sub(1u64) as u_int
     } else {
         layout = (*w).lastlayout as u_int;
-        if layout == 0 as libc::c_int as libc::c_uint {
+        if layout == 0u32 {
             layout = (::std::mem::size_of::<[C2RustUnnamed_32; 5]>() as libc::c_ulong)
                 .wrapping_div(::std::mem::size_of::<C2RustUnnamed_32>() as libc::c_ulong)
-                .wrapping_sub(1 as libc::c_int as libc::c_ulong) as u_int
+                .wrapping_sub(1u64) as u_int
         } else {
             layout = layout.wrapping_sub(1)
         }
@@ -1174,41 +1174,35 @@ unsafe extern "C" fn layout_set_even(mut w: *mut window, mut type_0: layout_type
     layout_print_cell(
         (*w).layout_root,
         (*::std::mem::transmute::<&[u8; 16], &[libc::c_char; 16]>(b"layout_set_even\x00")).as_ptr(),
-        1 as libc::c_int as u_int,
+        1u32,
     );
     /* Get number of panes. */
     n = window_count_panes(w);
-    if n <= 1 as libc::c_int as libc::c_uint {
+    if n <= 1u32 {
         return;
     }
     /* Free the old root and construct a new. */
     layout_free(w);
     (*w).layout_root = layout_create_cell(0 as *mut layout_cell);
     lc = (*w).layout_root;
-    if type_0 as libc::c_uint == LAYOUT_LEFTRIGHT as libc::c_int as libc::c_uint {
+    if type_0 == LAYOUT_LEFTRIGHT {
         sx = n
-            .wrapping_mul((1 as libc::c_int + 1 as libc::c_int) as libc::c_uint)
-            .wrapping_sub(1 as libc::c_int as libc::c_uint);
+            .wrapping_mul((1i32 + 1i32) as libc::c_uint)
+            .wrapping_sub(1u32);
         if sx < (*w).sx {
             sx = (*w).sx
         }
         sy = (*w).sy
     } else {
         sy = n
-            .wrapping_mul((1 as libc::c_int + 1 as libc::c_int) as libc::c_uint)
-            .wrapping_sub(1 as libc::c_int as libc::c_uint);
+            .wrapping_mul((1i32 + 1i32) as libc::c_uint)
+            .wrapping_sub(1u32);
         if sy < (*w).sy {
             sy = (*w).sy
         }
         sx = (*w).sx
     }
-    layout_set_size(
-        lc,
-        sx,
-        sy,
-        0 as libc::c_int as u_int,
-        0 as libc::c_int as u_int,
-    );
+    layout_set_size(lc, sx, sy, 0u32, 0u32);
     layout_make_node(lc, type_0);
     /* Build new leaf cells. */
     wp = (*w).panes.tqh_first;
@@ -1231,15 +1225,9 @@ unsafe extern "C" fn layout_set_even(mut w: *mut window, mut type_0: layout_type
     layout_print_cell(
         (*w).layout_root,
         (*::std::mem::transmute::<&[u8; 16], &[libc::c_char; 16]>(b"layout_set_even\x00")).as_ptr(),
-        1 as libc::c_int as u_int,
+        1u32,
     );
-    window_resize(
-        w,
-        (*lc).sx,
-        (*lc).sy,
-        -(1 as libc::c_int),
-        -(1 as libc::c_int),
-    );
+    window_resize(w, (*lc).sx, (*lc).sy, -(1i32), -(1i32));
     notify_window(
         b"window-layout-changed\x00" as *const u8 as *const libc::c_char,
         w,
@@ -1289,16 +1277,16 @@ unsafe extern "C" fn layout_set_main_h(mut w: *mut window) {
         (*w).layout_root,
         (*::std::mem::transmute::<&[u8; 18], &[libc::c_char; 18]>(b"layout_set_main_h\x00"))
             .as_ptr(),
-        1 as libc::c_int as u_int,
+        1u32,
     );
     /* Get number of panes. */
     n = window_count_panes(w); /* take off main pane */
-    if n <= 1 as libc::c_int as libc::c_uint {
+    if n <= 1u32 {
         return;
     }
     n = n.wrapping_sub(1);
     /* Find available height - take off one line for the border. */
-    sy = (*w).sy.wrapping_sub(1 as libc::c_int as libc::c_uint);
+    sy = (*w).sy.wrapping_sub(1u32);
     /* Get the main pane height. */
     s = options_get_string(
         (*w).options,
@@ -1306,23 +1294,23 @@ unsafe extern "C" fn layout_set_main_h(mut w: *mut window) {
     );
     mainh = args_string_percentage(
         s,
-        0 as libc::c_int as libc::c_longlong,
+        0i64,
         sy as libc::c_longlong,
         sy as libc::c_longlong,
         &mut cause,
     ) as u_int;
     if !cause.is_null() {
-        mainh = 24 as libc::c_int as u_int;
+        mainh = 24u32;
         free(cause as *mut libc::c_void);
     }
     /* Work out the other pane height. */
-    if mainh.wrapping_add(1 as libc::c_int as libc::c_uint) >= sy {
-        if sy <= (1 as libc::c_int + 1 as libc::c_int) as libc::c_uint {
-            mainh = 1 as libc::c_int as u_int
+    if mainh.wrapping_add(1u32) >= sy {
+        if sy <= (1i32 + 1i32) as libc::c_uint {
+            mainh = 1u32
         } else {
-            mainh = sy.wrapping_sub(1 as libc::c_int as libc::c_uint)
+            mainh = sy.wrapping_sub(1u32)
         }
-        otherh = 1 as libc::c_int as u_int
+        otherh = 1u32
     } else {
         s = options_get_string(
             (*w).options,
@@ -1330,12 +1318,12 @@ unsafe extern "C" fn layout_set_main_h(mut w: *mut window) {
         );
         otherh = args_string_percentage(
             s,
-            0 as libc::c_int as libc::c_longlong,
+            0i64,
             sy as libc::c_longlong,
             sy as libc::c_longlong,
             &mut cause,
         ) as u_int;
-        if !cause.is_null() || otherh == 0 as libc::c_int as libc::c_uint {
+        if !cause.is_null() || otherh == 0u32 {
             otherh = sy.wrapping_sub(mainh);
             free(cause as *mut libc::c_void);
         } else if otherh > sy || sy.wrapping_sub(otherh) < mainh {
@@ -1346,8 +1334,8 @@ unsafe extern "C" fn layout_set_main_h(mut w: *mut window) {
     }
     /* Work out what width is needed. */
     sx = n
-        .wrapping_mul((1 as libc::c_int + 1 as libc::c_int) as libc::c_uint)
-        .wrapping_sub(1 as libc::c_int as libc::c_uint);
+        .wrapping_mul((1i32 + 1i32) as libc::c_uint)
+        .wrapping_sub(1u32);
     if sx < (*w).sx {
         sx = (*w).sx
     }
@@ -1358,22 +1346,14 @@ unsafe extern "C" fn layout_set_main_h(mut w: *mut window) {
     layout_set_size(
         lc,
         sx,
-        mainh
-            .wrapping_add(otherh)
-            .wrapping_add(1 as libc::c_int as libc::c_uint),
-        0 as libc::c_int as u_int,
-        0 as libc::c_int as u_int,
+        mainh.wrapping_add(otherh).wrapping_add(1u32),
+        0u32,
+        0u32,
     );
     layout_make_node(lc, LAYOUT_TOPBOTTOM);
     /* Create the main pane. */
     lcmain = layout_create_cell(lc);
-    layout_set_size(
-        lcmain,
-        sx,
-        mainh,
-        0 as libc::c_int as u_int,
-        0 as libc::c_int as u_int,
-    );
+    layout_set_size(lcmain, sx, mainh, 0u32, 0u32);
     layout_make_leaf(lcmain, (*w).panes.tqh_first);
     (*lcmain).entry.tqe_next = 0 as *mut layout_cell;
     (*lcmain).entry.tqe_prev = (*lc).cells.tqh_last;
@@ -1381,14 +1361,8 @@ unsafe extern "C" fn layout_set_main_h(mut w: *mut window) {
     (*lc).cells.tqh_last = &mut (*lcmain).entry.tqe_next;
     /* Create the other pane. */
     lcother = layout_create_cell(lc);
-    layout_set_size(
-        lcother,
-        sx,
-        otherh,
-        0 as libc::c_int as u_int,
-        0 as libc::c_int as u_int,
-    );
-    if n == 1 as libc::c_int as libc::c_uint {
+    layout_set_size(lcother, sx, otherh, 0u32, 0u32);
+    if n == 1u32 {
         wp = (*(*w).panes.tqh_first).entry.tqe_next;
         layout_make_leaf(lcother, wp);
         (*lcother).entry.tqe_next = 0 as *mut layout_cell;
@@ -1406,13 +1380,7 @@ unsafe extern "C" fn layout_set_main_h(mut w: *mut window) {
         while !wp.is_null() {
             if !(wp == (*w).panes.tqh_first) {
                 lcchild = layout_create_cell(lcother);
-                layout_set_size(
-                    lcchild,
-                    1 as libc::c_int as u_int,
-                    otherh,
-                    0 as libc::c_int as u_int,
-                    0 as libc::c_int as u_int,
-                );
+                layout_set_size(lcchild, 1u32, otherh, 0u32, 0u32);
                 layout_make_leaf(lcchild, wp);
                 (*lcchild).entry.tqe_next = 0 as *mut layout_cell;
                 (*lcchild).entry.tqe_prev = (*lcother).cells.tqh_last;
@@ -1430,15 +1398,9 @@ unsafe extern "C" fn layout_set_main_h(mut w: *mut window) {
         (*w).layout_root,
         (*::std::mem::transmute::<&[u8; 18], &[libc::c_char; 18]>(b"layout_set_main_h\x00"))
             .as_ptr(),
-        1 as libc::c_int as u_int,
+        1u32,
     );
-    window_resize(
-        w,
-        (*lc).sx,
-        (*lc).sy,
-        -(1 as libc::c_int),
-        -(1 as libc::c_int),
-    );
+    window_resize(w, (*lc).sx, (*lc).sy, -(1i32), -(1i32));
     notify_window(
         b"window-layout-changed\x00" as *const u8 as *const libc::c_char,
         w,
@@ -1462,16 +1424,16 @@ unsafe extern "C" fn layout_set_main_v(mut w: *mut window) {
         (*w).layout_root,
         (*::std::mem::transmute::<&[u8; 18], &[libc::c_char; 18]>(b"layout_set_main_v\x00"))
             .as_ptr(),
-        1 as libc::c_int as u_int,
+        1u32,
     );
     /* Get number of panes. */
     n = window_count_panes(w); /* take off main pane */
-    if n <= 1 as libc::c_int as libc::c_uint {
+    if n <= 1u32 {
         return;
     }
     n = n.wrapping_sub(1);
     /* Find available width - take off one line for the border. */
-    sx = (*w).sx.wrapping_sub(1 as libc::c_int as libc::c_uint);
+    sx = (*w).sx.wrapping_sub(1u32);
     /* Get the main pane width. */
     s = options_get_string(
         (*w).options,
@@ -1479,23 +1441,23 @@ unsafe extern "C" fn layout_set_main_v(mut w: *mut window) {
     );
     mainw = args_string_percentage(
         s,
-        0 as libc::c_int as libc::c_longlong,
+        0i64,
         sx as libc::c_longlong,
         sx as libc::c_longlong,
         &mut cause,
     ) as u_int;
     if !cause.is_null() {
-        mainw = 80 as libc::c_int as u_int;
+        mainw = 80u32;
         free(cause as *mut libc::c_void);
     }
     /* Work out the other pane width. */
-    if mainw.wrapping_add(1 as libc::c_int as libc::c_uint) >= sx {
-        if sx <= (1 as libc::c_int + 1 as libc::c_int) as libc::c_uint {
-            mainw = 1 as libc::c_int as u_int
+    if mainw.wrapping_add(1u32) >= sx {
+        if sx <= (1i32 + 1i32) as libc::c_uint {
+            mainw = 1u32
         } else {
-            mainw = sx.wrapping_sub(1 as libc::c_int as libc::c_uint)
+            mainw = sx.wrapping_sub(1u32)
         }
-        otherw = 1 as libc::c_int as u_int
+        otherw = 1u32
     } else {
         s = options_get_string(
             (*w).options,
@@ -1503,12 +1465,12 @@ unsafe extern "C" fn layout_set_main_v(mut w: *mut window) {
         );
         otherw = args_string_percentage(
             s,
-            0 as libc::c_int as libc::c_longlong,
+            0i64,
             sx as libc::c_longlong,
             sx as libc::c_longlong,
             &mut cause,
         ) as u_int;
-        if !cause.is_null() || otherw == 0 as libc::c_int as libc::c_uint {
+        if !cause.is_null() || otherw == 0u32 {
             otherw = sx.wrapping_sub(mainw);
             free(cause as *mut libc::c_void);
         } else if otherw > sx || sx.wrapping_sub(otherw) < mainw {
@@ -1519,8 +1481,8 @@ unsafe extern "C" fn layout_set_main_v(mut w: *mut window) {
     }
     /* Work out what height is needed. */
     sy = n
-        .wrapping_mul((1 as libc::c_int + 1 as libc::c_int) as libc::c_uint)
-        .wrapping_sub(1 as libc::c_int as libc::c_uint);
+        .wrapping_mul((1i32 + 1i32) as libc::c_uint)
+        .wrapping_sub(1u32);
     if sy < (*w).sy {
         sy = (*w).sy
     }
@@ -1530,23 +1492,15 @@ unsafe extern "C" fn layout_set_main_v(mut w: *mut window) {
     lc = (*w).layout_root;
     layout_set_size(
         lc,
-        mainw
-            .wrapping_add(otherw)
-            .wrapping_add(1 as libc::c_int as libc::c_uint),
+        mainw.wrapping_add(otherw).wrapping_add(1u32),
         sy,
-        0 as libc::c_int as u_int,
-        0 as libc::c_int as u_int,
+        0u32,
+        0u32,
     );
     layout_make_node(lc, LAYOUT_LEFTRIGHT);
     /* Create the main pane. */
     lcmain = layout_create_cell(lc);
-    layout_set_size(
-        lcmain,
-        mainw,
-        sy,
-        0 as libc::c_int as u_int,
-        0 as libc::c_int as u_int,
-    );
+    layout_set_size(lcmain, mainw, sy, 0u32, 0u32);
     layout_make_leaf(lcmain, (*w).panes.tqh_first);
     (*lcmain).entry.tqe_next = 0 as *mut layout_cell;
     (*lcmain).entry.tqe_prev = (*lc).cells.tqh_last;
@@ -1554,14 +1508,8 @@ unsafe extern "C" fn layout_set_main_v(mut w: *mut window) {
     (*lc).cells.tqh_last = &mut (*lcmain).entry.tqe_next;
     /* Create the other pane. */
     lcother = layout_create_cell(lc);
-    layout_set_size(
-        lcother,
-        otherw,
-        sy,
-        0 as libc::c_int as u_int,
-        0 as libc::c_int as u_int,
-    );
-    if n == 1 as libc::c_int as libc::c_uint {
+    layout_set_size(lcother, otherw, sy, 0u32, 0u32);
+    if n == 1u32 {
         wp = (*(*w).panes.tqh_first).entry.tqe_next;
         layout_make_leaf(lcother, wp);
         (*lcother).entry.tqe_next = 0 as *mut layout_cell;
@@ -1579,13 +1527,7 @@ unsafe extern "C" fn layout_set_main_v(mut w: *mut window) {
         while !wp.is_null() {
             if !(wp == (*w).panes.tqh_first) {
                 lcchild = layout_create_cell(lcother);
-                layout_set_size(
-                    lcchild,
-                    otherw,
-                    1 as libc::c_int as u_int,
-                    0 as libc::c_int as u_int,
-                    0 as libc::c_int as u_int,
-                );
+                layout_set_size(lcchild, otherw, 1u32, 0u32, 0u32);
                 layout_make_leaf(lcchild, wp);
                 (*lcchild).entry.tqe_next = 0 as *mut layout_cell;
                 (*lcchild).entry.tqe_prev = (*lcother).cells.tqh_last;
@@ -1603,15 +1545,9 @@ unsafe extern "C" fn layout_set_main_v(mut w: *mut window) {
         (*w).layout_root,
         (*::std::mem::transmute::<&[u8; 18], &[libc::c_char; 18]>(b"layout_set_main_v\x00"))
             .as_ptr(),
-        1 as libc::c_int as u_int,
+        1u32,
     );
-    window_resize(
-        w,
-        (*lc).sx,
-        (*lc).sy,
-        -(1 as libc::c_int),
-        -(1 as libc::c_int),
-    );
+    window_resize(w, (*lc).sx, (*lc).sy, -(1i32), -(1i32));
     notify_window(
         b"window-layout-changed\x00" as *const u8 as *const libc::c_char,
         w,
@@ -1637,15 +1573,15 @@ unsafe extern "C" fn layout_set_tiled(mut w: *mut window) {
         (*w).layout_root,
         (*::std::mem::transmute::<&[u8; 17], &[libc::c_char; 17]>(b"layout_set_tiled\x00"))
             .as_ptr(),
-        1 as libc::c_int as u_int,
+        1u32,
     );
     /* Get number of panes. */
     n = window_count_panes(w);
-    if n <= 1 as libc::c_int as libc::c_uint {
+    if n <= 1u32 {
         return;
     }
     /* How many rows and columns are wanted? */
-    columns = 1 as libc::c_int as u_int;
+    columns = 1u32;
     rows = columns;
     while rows.wrapping_mul(columns) < n {
         rows = rows.wrapping_add(1);
@@ -1656,47 +1592,41 @@ unsafe extern "C" fn layout_set_tiled(mut w: *mut window) {
     /* What width and height should they be? */
     width = (*w)
         .sx
-        .wrapping_sub(columns.wrapping_sub(1 as libc::c_int as libc::c_uint))
+        .wrapping_sub(columns.wrapping_sub(1u32))
         .wrapping_div(columns);
-    if width < 1 as libc::c_int as libc::c_uint {
-        width = 1 as libc::c_int as u_int
+    if width < 1u32 {
+        width = 1u32
     }
     height = (*w)
         .sy
-        .wrapping_sub(rows.wrapping_sub(1 as libc::c_int as libc::c_uint))
+        .wrapping_sub(rows.wrapping_sub(1u32))
         .wrapping_div(rows);
-    if height < 1 as libc::c_int as libc::c_uint {
-        height = 1 as libc::c_int as u_int
+    if height < 1u32 {
+        height = 1u32
     }
     /* Free old tree and create a new root. */
     layout_free(w);
     (*w).layout_root = layout_create_cell(0 as *mut layout_cell);
     lc = (*w).layout_root;
     sx = width
-        .wrapping_add(1 as libc::c_int as libc::c_uint)
+        .wrapping_add(1u32)
         .wrapping_mul(columns)
-        .wrapping_sub(1 as libc::c_int as libc::c_uint);
+        .wrapping_sub(1u32);
     if sx < (*w).sx {
         sx = (*w).sx
     }
     sy = height
-        .wrapping_add(1 as libc::c_int as libc::c_uint)
+        .wrapping_add(1u32)
         .wrapping_mul(rows)
-        .wrapping_sub(1 as libc::c_int as libc::c_uint);
+        .wrapping_sub(1u32);
     if sy < (*w).sy {
         sy = (*w).sy
     }
-    layout_set_size(
-        lc,
-        sx,
-        sy,
-        0 as libc::c_int as u_int,
-        0 as libc::c_int as u_int,
-    );
+    layout_set_size(lc, sx, sy, 0u32, 0u32);
     layout_make_node(lc, LAYOUT_TOPBOTTOM);
     /* Create a grid of the cells. */
     wp = (*w).panes.tqh_first;
-    j = 0 as libc::c_int as u_int;
+    j = 0u32;
     while j < rows {
         /* If this is the last cell, all done. */
         if wp.is_null() {
@@ -1704,37 +1634,23 @@ unsafe extern "C" fn layout_set_tiled(mut w: *mut window) {
         }
         /* Create the new row. */
         lcrow = layout_create_cell(lc);
-        layout_set_size(
-            lcrow,
-            (*w).sx,
-            height,
-            0 as libc::c_int as u_int,
-            0 as libc::c_int as u_int,
-        );
+        layout_set_size(lcrow, (*w).sx, height, 0u32, 0u32);
         (*lcrow).entry.tqe_next = 0 as *mut layout_cell;
         (*lcrow).entry.tqe_prev = (*lc).cells.tqh_last;
         *(*lc).cells.tqh_last = lcrow;
         (*lc).cells.tqh_last = &mut (*lcrow).entry.tqe_next;
         /* If only one column, just use the row directly. */
-        if n.wrapping_sub(j.wrapping_mul(columns)) == 1 as libc::c_int as libc::c_uint
-            || columns == 1 as libc::c_int as libc::c_uint
-        {
+        if n.wrapping_sub(j.wrapping_mul(columns)) == 1u32 || columns == 1u32 {
             layout_make_leaf(lcrow, wp);
             wp = (*wp).entry.tqe_next
         } else {
             /* Add in the columns. */
             layout_make_node(lcrow, LAYOUT_LEFTRIGHT);
-            i = 0 as libc::c_int as u_int;
+            i = 0u32;
             while i < columns {
                 /* Create and add a pane cell. */
                 lcchild = layout_create_cell(lcrow);
-                layout_set_size(
-                    lcchild,
-                    width,
-                    height,
-                    0 as libc::c_int as u_int,
-                    0 as libc::c_int as u_int,
-                );
+                layout_set_size(lcchild, width, height, 0u32, 0u32);
                 layout_make_leaf(lcchild, wp);
                 (*lcchild).entry.tqe_next = 0 as *mut layout_cell;
                 (*lcchild).entry.tqe_prev = (*lcrow).cells.tqh_last;
@@ -1755,9 +1671,9 @@ unsafe extern "C" fn layout_set_tiled(mut w: *mut window) {
                 i = i.wrapping_sub(1)
             }
             used = i
-                .wrapping_add(1 as libc::c_int as libc::c_uint)
-                .wrapping_mul(width.wrapping_add(1 as libc::c_int as libc::c_uint))
-                .wrapping_sub(1 as libc::c_int as libc::c_uint);
+                .wrapping_add(1u32)
+                .wrapping_mul(width.wrapping_add(1u32))
+                .wrapping_sub(1u32);
             if !((*w).sx <= used) {
                 lcchild = *(*((*lcrow).cells.tqh_last as *mut layout_cells)).tqh_last;
                 layout_resize_adjust(
@@ -1774,7 +1690,7 @@ unsafe extern "C" fn layout_set_tiled(mut w: *mut window) {
     used = rows
         .wrapping_mul(height)
         .wrapping_add(rows)
-        .wrapping_sub(1 as libc::c_int as libc::c_uint);
+        .wrapping_sub(1u32);
     if (*w).sy > used {
         lcrow = *(*((*lc).cells.tqh_last as *mut layout_cells)).tqh_last;
         layout_resize_adjust(
@@ -1791,15 +1707,9 @@ unsafe extern "C" fn layout_set_tiled(mut w: *mut window) {
         (*w).layout_root,
         (*::std::mem::transmute::<&[u8; 17], &[libc::c_char; 17]>(b"layout_set_tiled\x00"))
             .as_ptr(),
-        1 as libc::c_int as u_int,
+        1u32,
     );
-    window_resize(
-        w,
-        (*lc).sx,
-        (*lc).sy,
-        -(1 as libc::c_int),
-        -(1 as libc::c_int),
-    );
+    window_resize(w, (*lc).sx, (*lc).sy, -(1i32), -(1i32));
     notify_window(
         b"window-layout-changed\x00" as *const u8 as *const libc::c_char,
         w,

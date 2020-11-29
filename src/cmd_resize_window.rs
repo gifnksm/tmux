@@ -1081,8 +1081,8 @@ pub static mut cmd_resize_window_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"aADLRt:Ux:y:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 1 as libc::c_int,
+                    lower: 0i32,
+                    upper: 1i32,
                 };
                 init
             },
@@ -1095,13 +1095,13 @@ pub static mut cmd_resize_window_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_WINDOW,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0x4 as libc::c_int,
+            flags: 0x4i32,
             exec: Some(
                 cmd_resize_window_exec
                     as unsafe extern "C" fn(
@@ -1146,15 +1146,15 @@ unsafe extern "C" fn cmd_resize_window_exec(
     let mut adjust: u_int = 0;
     let mut sx: u_int = 0;
     let mut sy: u_int = 0;
-    let mut xpixel: libc::c_int = -(1 as libc::c_int);
-    let mut ypixel: libc::c_int = -(1 as libc::c_int);
-    if (*args).argc == 0 as libc::c_int {
-        adjust = 1 as libc::c_int as u_int
+    let mut xpixel: libc::c_int = -(1i32);
+    let mut ypixel: libc::c_int = -(1i32);
+    if (*args).argc == 0i32 {
+        adjust = 1u32
     } else {
         adjust = strtonum(
-            *(*args).argv.offset(0 as libc::c_int as isize),
-            1 as libc::c_int as libc::c_longlong,
-            2147483647 as libc::c_int as libc::c_longlong,
+            *(*args).argv.offset(0isize),
+            1i64,
+            2147483647i64,
             &mut errstr,
         ) as u_int;
         if !errstr.is_null() {
@@ -1168,14 +1168,8 @@ unsafe extern "C" fn cmd_resize_window_exec(
     }
     sx = (*w).sx;
     sy = (*w).sy;
-    if args_has(args, 'x' as i32 as u_char) != 0 {
-        sx = args_strtonum(
-            args,
-            'x' as i32 as u_char,
-            1 as libc::c_int as libc::c_longlong,
-            10000 as libc::c_int as libc::c_longlong,
-            &mut cause,
-        ) as u_int;
+    if args_has(args, 'x' as u_char) != 0 {
+        sx = args_strtonum(args, 'x' as u_char, 1i64, 10000i64, &mut cause) as u_int;
         if !cause.is_null() {
             cmdq_error(
                 item,
@@ -1186,14 +1180,8 @@ unsafe extern "C" fn cmd_resize_window_exec(
             return CMD_RETURN_ERROR;
         }
     }
-    if args_has(args, 'y' as i32 as u_char) != 0 {
-        sy = args_strtonum(
-            args,
-            'y' as i32 as u_char,
-            1 as libc::c_int as libc::c_longlong,
-            10000 as libc::c_int as libc::c_longlong,
-            &mut cause,
-        ) as u_int;
+    if args_has(args, 'y' as u_char) != 0 {
+        sy = args_strtonum(args, 'y' as u_char, 1i64, 10000i64, &mut cause) as u_int;
         if !cause.is_null() {
             cmdq_error(
                 item,
@@ -1204,20 +1192,20 @@ unsafe extern "C" fn cmd_resize_window_exec(
             return CMD_RETURN_ERROR;
         }
     }
-    if args_has(args, 'L' as i32 as u_char) != 0 {
+    if args_has(args, 'L' as u_char) != 0 {
         if sx >= adjust {
-            sx = (sx as libc::c_uint).wrapping_sub(adjust) as u_int as u_int
+            sx = (sx).wrapping_sub(adjust)
         }
-    } else if args_has(args, 'R' as i32 as u_char) != 0 {
-        sx = (sx as libc::c_uint).wrapping_add(adjust) as u_int as u_int
-    } else if args_has(args, 'U' as i32 as u_char) != 0 {
+    } else if args_has(args, 'R' as u_char) != 0 {
+        sx = (sx).wrapping_add(adjust)
+    } else if args_has(args, 'U' as u_char) != 0 {
         if sy >= adjust {
-            sy = (sy as libc::c_uint).wrapping_sub(adjust) as u_int as u_int
+            sy = (sy).wrapping_sub(adjust)
         }
-    } else if args_has(args, 'D' as i32 as u_char) != 0 {
-        sy = (sy as libc::c_uint).wrapping_add(adjust) as u_int as u_int
+    } else if args_has(args, 'D' as u_char) != 0 {
+        sy = (sy).wrapping_add(adjust)
     }
-    if args_has(args, 'A' as i32 as u_char) != 0 {
+    if args_has(args, 'A' as u_char) != 0 {
         default_window_size(
             0 as *mut client,
             s,
@@ -1226,9 +1214,9 @@ unsafe extern "C" fn cmd_resize_window_exec(
             &mut sy,
             &mut xpixel as *mut libc::c_int as *mut u_int,
             &mut ypixel as *mut libc::c_int as *mut u_int,
-            0 as libc::c_int,
+            0i32,
         );
-    } else if args_has(args, 'a' as i32 as u_char) != 0 {
+    } else if args_has(args, 'a' as u_char) != 0 {
         default_window_size(
             0 as *mut client,
             s,
@@ -1237,13 +1225,13 @@ unsafe extern "C" fn cmd_resize_window_exec(
             &mut sy,
             &mut xpixel as *mut libc::c_int as *mut u_int,
             &mut ypixel as *mut libc::c_int as *mut u_int,
-            1 as libc::c_int,
+            1i32,
         );
     }
     options_set_number(
         (*w).options,
         b"window-size\x00" as *const u8 as *const libc::c_char,
-        2 as libc::c_int as libc::c_longlong,
+        2i64,
     );
     resize_window(w, sx, sy, xpixel, ypixel);
     return CMD_RETURN_NORMAL;

@@ -1062,8 +1062,8 @@ pub static mut cmd_kill_window_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"at:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -1075,13 +1075,13 @@ pub static mut cmd_kill_window_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_WINDOW,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0 as libc::c_int,
+            flags: 0i32,
             exec: Some(
                 cmd_kill_window_exec
                     as unsafe extern "C" fn(
@@ -1102,8 +1102,8 @@ pub static mut cmd_unlink_window_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"kt:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -1115,13 +1115,13 @@ pub static mut cmd_unlink_window_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_WINDOW,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0 as libc::c_int,
+            flags: 0i32,
             exec: Some(
                 cmd_kill_window_exec
                     as unsafe extern "C" fn(
@@ -1164,7 +1164,7 @@ unsafe extern "C" fn cmd_kill_window_exec(
     let mut s: *mut session = (*target).s;
     let mut found: u_int = 0;
     if cmd_get_entry(self_0) == &cmd_unlink_window_entry as *const cmd_entry {
-        if args_has(args, 'k' as i32 as u_char) == 0 && session_is_linked(s, w) == 0 {
+        if args_has(args, 'k' as u_char) == 0 && session_is_linked(s, w) == 0 {
             cmdq_error(
                 item,
                 b"window only linked to one session\x00" as *const u8 as *const libc::c_char,
@@ -1175,25 +1175,25 @@ unsafe extern "C" fn cmd_kill_window_exec(
         recalculate_sizes();
         return CMD_RETURN_NORMAL;
     }
-    if args_has(args, 'a' as i32 as u_char) != 0 {
+    if args_has(args, 'a' as u_char) != 0 {
         if winlinks_RB_PREV(wl).is_null() && winlinks_RB_NEXT(wl).is_null() {
             return CMD_RETURN_NORMAL;
         }
         loop
         /* Kill all windows except the current one. */
         {
-            found = 0 as libc::c_int as u_int;
-            loop_0 = winlinks_RB_MINMAX(&mut (*s).windows, -(1 as libc::c_int));
+            found = 0u32;
+            loop_0 = winlinks_RB_MINMAX(&mut (*s).windows, -(1i32));
             while !loop_0.is_null() {
                 if (*loop_0).window != (*wl).window {
-                    server_kill_window((*loop_0).window, 0 as libc::c_int);
+                    server_kill_window((*loop_0).window, 0i32);
                     found = found.wrapping_add(1);
                     break;
                 } else {
                     loop_0 = winlinks_RB_NEXT(loop_0)
                 }
             }
-            if !(found != 0 as libc::c_int as libc::c_uint) {
+            if !(found != 0u32) {
                 break;
             }
         }
@@ -1201,20 +1201,20 @@ unsafe extern "C" fn cmd_kill_window_exec(
          * If the current window appears in the session more than once,
          * kill it as well.
          */
-        found = 0 as libc::c_int as u_int;
-        loop_0 = winlinks_RB_MINMAX(&mut (*s).windows, -(1 as libc::c_int));
+        found = 0u32;
+        loop_0 = winlinks_RB_MINMAX(&mut (*s).windows, -(1i32));
         while !loop_0.is_null() {
             if (*loop_0).window == (*wl).window {
                 found = found.wrapping_add(1)
             }
             loop_0 = winlinks_RB_NEXT(loop_0)
         }
-        if found > 1 as libc::c_int as libc::c_uint {
-            server_kill_window((*wl).window, 0 as libc::c_int);
+        if found > 1u32 {
+            server_kill_window((*wl).window, 0i32);
         }
         server_renumber_all();
         return CMD_RETURN_NORMAL;
     }
-    server_kill_window((*wl).window, 1 as libc::c_int);
+    server_kill_window((*wl).window, 1i32);
     return CMD_RETURN_NORMAL;
 }

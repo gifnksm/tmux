@@ -14,136 +14,132 @@ pub unsafe extern "C" fn unvis(
     mut astate: *mut libc::c_int,
     mut flag: libc::c_int,
 ) -> libc::c_int {
-    if flag & 1 as libc::c_int != 0 {
-        if *astate == 5 as libc::c_int || *astate == 6 as libc::c_int {
-            *astate = 0 as libc::c_int;
-            return 1 as libc::c_int;
+    if flag & 1i32 != 0 {
+        if *astate == 5i32 || *astate == 6i32 {
+            *astate = 0i32;
+            return 1i32;
         }
-        return if *astate == 0 as libc::c_int {
-            3 as libc::c_int
-        } else {
-            -(1 as libc::c_int)
-        };
+        return if *astate == 0i32 { 3i32 } else { -(1i32) };
     }
     match *astate {
         0 => {
-            *cp = 0 as libc::c_int as libc::c_char;
+            *cp = 0i8;
             if c as libc::c_int == '\\' as i32 {
-                *astate = 1 as libc::c_int;
-                return 0 as libc::c_int;
+                *astate = 1i32;
+                return 0i32;
             }
             *cp = c;
-            return 1 as libc::c_int;
+            return 1i32;
         }
         1 => {
             match c as libc::c_int {
                 92 => {
                     *cp = c;
-                    *astate = 0 as libc::c_int;
-                    return 1 as libc::c_int;
+                    *astate = 0i32;
+                    return 1i32;
                 }
                 48 | 49 | 50 | 51 | 52 | 53 | 54 | 55 => {
                     *cp = (c as libc::c_int - '0' as i32) as libc::c_char;
-                    *astate = 5 as libc::c_int;
-                    return 0 as libc::c_int;
+                    *astate = 5i32;
+                    return 0i32;
                 }
                 77 => {
-                    *cp = 0o200 as libc::c_int as libc::c_char;
-                    *astate = 2 as libc::c_int;
-                    return 0 as libc::c_int;
+                    *cp = 0o200i32 as libc::c_char;
+                    *astate = 2i32;
+                    return 0i32;
                 }
                 94 => {
-                    *astate = 4 as libc::c_int;
-                    return 0 as libc::c_int;
+                    *astate = 4i32;
+                    return 0i32;
                 }
                 110 => {
-                    *cp = '\n' as i32 as libc::c_char;
-                    *astate = 0 as libc::c_int;
-                    return 1 as libc::c_int;
+                    *cp = '\n' as libc::c_char;
+                    *astate = 0i32;
+                    return 1i32;
                 }
                 114 => {
-                    *cp = '\r' as i32 as libc::c_char;
-                    *astate = 0 as libc::c_int;
-                    return 1 as libc::c_int;
+                    *cp = '\r' as libc::c_char;
+                    *astate = 0i32;
+                    return 1i32;
                 }
                 98 => {
-                    *cp = '\u{8}' as i32 as libc::c_char;
-                    *astate = 0 as libc::c_int;
-                    return 1 as libc::c_int;
+                    *cp = '\u{8}' as libc::c_char;
+                    *astate = 0i32;
+                    return 1i32;
                 }
                 97 => {
-                    *cp = '\u{7}' as i32 as libc::c_char;
-                    *astate = 0 as libc::c_int;
-                    return 1 as libc::c_int;
+                    *cp = '\u{7}' as libc::c_char;
+                    *astate = 0i32;
+                    return 1i32;
                 }
                 118 => {
-                    *cp = '\u{b}' as i32 as libc::c_char;
-                    *astate = 0 as libc::c_int;
-                    return 1 as libc::c_int;
+                    *cp = '\u{b}' as libc::c_char;
+                    *astate = 0i32;
+                    return 1i32;
                 }
                 116 => {
-                    *cp = '\t' as i32 as libc::c_char;
-                    *astate = 0 as libc::c_int;
-                    return 1 as libc::c_int;
+                    *cp = '\t' as libc::c_char;
+                    *astate = 0i32;
+                    return 1i32;
                 }
                 102 => {
-                    *cp = '\u{c}' as i32 as libc::c_char;
-                    *astate = 0 as libc::c_int;
-                    return 1 as libc::c_int;
+                    *cp = '\u{c}' as libc::c_char;
+                    *astate = 0i32;
+                    return 1i32;
                 }
                 115 => {
-                    *cp = ' ' as i32 as libc::c_char;
-                    *astate = 0 as libc::c_int;
-                    return 1 as libc::c_int;
+                    *cp = ' ' as libc::c_char;
+                    *astate = 0i32;
+                    return 1i32;
                 }
                 69 => {
-                    *cp = '\u{1b}' as i32 as libc::c_char;
-                    *astate = 0 as libc::c_int;
-                    return 1 as libc::c_int;
+                    *cp = '\u{1b}' as libc::c_char;
+                    *astate = 0i32;
+                    return 1i32;
                 }
                 10 => {
                     /*
                      * hidden newline
                      */
-                    *astate = 0 as libc::c_int;
-                    return 3 as libc::c_int;
+                    *astate = 0i32;
+                    return 3i32;
                 }
                 36 => {
                     /*
                      * hidden marker
                      */
-                    *astate = 0 as libc::c_int;
-                    return 3 as libc::c_int;
+                    *astate = 0i32;
+                    return 3i32;
                 }
                 _ => {}
             }
-            *astate = 0 as libc::c_int;
-            return -(1 as libc::c_int);
+            *astate = 0i32;
+            return -(1i32);
         }
         2 => {
             if c as libc::c_int == '-' as i32 {
-                *astate = 3 as libc::c_int
+                *astate = 3i32
             } else if c as libc::c_int == '^' as i32 {
-                *astate = 4 as libc::c_int
+                *astate = 4i32
             } else {
-                *astate = 0 as libc::c_int;
-                return -(1 as libc::c_int);
+                *astate = 0i32;
+                return -(1i32);
             }
-            return 0 as libc::c_int;
+            return 0i32;
         }
         3 => {
-            *astate = 0 as libc::c_int;
+            *astate = 0i32;
             *cp = (*cp as libc::c_int | c as libc::c_int) as libc::c_char;
-            return 1 as libc::c_int;
+            return 1i32;
         }
         4 => {
             if c as libc::c_int == '?' as i32 {
-                *cp = (*cp as libc::c_int | 0o177 as libc::c_int) as libc::c_char
+                *cp = (*cp as libc::c_int | 0o177i32) as libc::c_char
             } else {
-                *cp = (*cp as libc::c_int | c as libc::c_int & 0o37 as libc::c_int) as libc::c_char
+                *cp = (*cp as libc::c_int | c as libc::c_int & 0o37i32) as libc::c_char
             }
-            *astate = 0 as libc::c_int;
-            return 1 as libc::c_int;
+            *astate = 0i32;
+            return 1i32;
         }
         5 => {
             /* second possible octal digit */
@@ -152,37 +148,37 @@ pub unsafe extern "C" fn unvis(
                 /*
                  * yes - and maybe a third
                  */
-                *cp = (((*cp as libc::c_int) << 3 as libc::c_int) + (c as libc::c_int - '0' as i32))
+                *cp = (((*cp as libc::c_int) << 3i32) + (c as libc::c_int - '0' as i32))
                     as libc::c_char;
-                *astate = 6 as libc::c_int;
-                return 0 as libc::c_int;
+                *astate = 6i32;
+                return 0i32;
             }
             /*
              * no - done with current sequence, push back passed char
              */
-            *astate = 0 as libc::c_int;
-            return 2 as libc::c_int;
+            *astate = 0i32;
+            return 2i32;
         }
         6 => {
             /* third possible octal digit */
-            *astate = 0 as libc::c_int;
+            *astate = 0i32;
             if c as u_char as libc::c_int >= '0' as i32 && c as u_char as libc::c_int <= '7' as i32
             {
-                *cp = (((*cp as libc::c_int) << 3 as libc::c_int) + (c as libc::c_int - '0' as i32))
+                *cp = (((*cp as libc::c_int) << 3i32) + (c as libc::c_int - '0' as i32))
                     as libc::c_char;
-                return 1 as libc::c_int;
+                return 1i32;
             }
             /*
              * we were done, push back passed char
              */
-            return 2 as libc::c_int;
+            return 2i32;
         }
         _ => {
             /*
              * decoder in unknown state - (probably uninitialized)
              */
-            *astate = 0 as libc::c_int;
-            return -(1 as libc::c_int);
+            *astate = 0i32;
+            return -(1i32);
         }
     };
 }
@@ -199,7 +195,7 @@ pub unsafe extern "C" fn strunvis(
 ) -> libc::c_int {
     let mut c: libc::c_char = 0;
     let mut start: *mut libc::c_char = dst;
-    let mut state: libc::c_int = 0 as libc::c_int;
+    let mut state: libc::c_int = 0i32;
     loop {
         let fresh0 = src;
         src = src.offset(1);
@@ -208,7 +204,7 @@ pub unsafe extern "C" fn strunvis(
             break;
         }
         loop {
-            match unvis(dst, c, &mut state, 0 as libc::c_int) {
+            match unvis(dst, c, &mut state, 0i32) {
                 1 => {
                     dst = dst.offset(1);
                     break;
@@ -218,17 +214,17 @@ pub unsafe extern "C" fn strunvis(
                     break;
                 }
                 _ => {
-                    *dst = '\u{0}' as i32 as libc::c_char;
-                    return -(1 as libc::c_int);
+                    *dst = '\u{0}' as libc::c_char;
+                    return -(1i32);
                 }
             }
         }
     }
-    if unvis(dst, c, &mut state, 1 as libc::c_int) == 1 as libc::c_int {
+    if unvis(dst, c, &mut state, 1i32) == 1i32 {
         dst = dst.offset(1)
     }
-    *dst = '\u{0}' as i32 as libc::c_char;
-    return dst.wrapping_offset_from(start) as libc::c_long as libc::c_int;
+    *dst = '\u{0}' as libc::c_char;
+    return dst.wrapping_offset_from(start) as libc::c_int;
 }
 #[no_mangle]
 pub unsafe extern "C" fn strnunvis(
@@ -239,10 +235,10 @@ pub unsafe extern "C" fn strnunvis(
     let mut c: libc::c_char = 0;
     let mut p: libc::c_char = 0;
     let mut start: *mut libc::c_char = dst;
-    let mut end: *mut libc::c_char = dst.offset(sz as isize).offset(-(1 as libc::c_int as isize));
-    let mut state: libc::c_int = 0 as libc::c_int;
-    if sz > 0 as libc::c_int as libc::c_ulong {
-        *end = '\u{0}' as i32 as libc::c_char
+    let mut end: *mut libc::c_char = dst.offset(sz as isize).offset(-(1isize));
+    let mut state: libc::c_int = 0i32;
+    if sz > 0u64 {
+        *end = '\u{0}' as libc::c_char
     }
     loop {
         let fresh1 = src;
@@ -252,7 +248,7 @@ pub unsafe extern "C" fn strnunvis(
             break;
         }
         loop {
-            match unvis(&mut p, c, &mut state, 0 as libc::c_int) {
+            match unvis(&mut p, c, &mut state, 0i32) {
                 1 => {
                     if dst < end {
                         *dst = p
@@ -271,21 +267,21 @@ pub unsafe extern "C" fn strnunvis(
                 }
                 _ => {
                     if dst <= end {
-                        *dst = '\u{0}' as i32 as libc::c_char
+                        *dst = '\u{0}' as libc::c_char
                     }
-                    return -(1 as libc::c_int) as ssize_t;
+                    return -1i64;
                 }
             }
         }
     }
-    if unvis(&mut p, c, &mut state, 1 as libc::c_int) == 1 as libc::c_int {
+    if unvis(&mut p, c, &mut state, 1i32) == 1i32 {
         if dst < end {
             *dst = p
         }
         dst = dst.offset(1)
     }
     if dst <= end {
-        *dst = '\u{0}' as i32 as libc::c_char
+        *dst = '\u{0}' as libc::c_char
     }
     return dst.wrapping_offset_from(start) as libc::c_long;
 }

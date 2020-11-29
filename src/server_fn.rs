@@ -1231,16 +1231,12 @@ pub struct clients {
 }
 #[no_mangle]
 pub unsafe extern "C" fn server_redraw_client(mut c: *mut client) {
-    (*c).flags |= (0x8 as libc::c_int
-        | 0x10 as libc::c_int
-        | 0x1000000 as libc::c_int
-        | 0x400 as libc::c_int
-        | 0x2000000 as libc::c_int
-        | 0x20000000 as libc::c_int) as libc::c_ulong;
+    (*c).flags |= (0x8i32 | 0x10i32 | 0x1000000i32 | 0x400i32 | 0x2000000i32 | 0x20000000i32)
+        as libc::c_ulong;
 }
 #[no_mangle]
 pub unsafe extern "C" fn server_status_client(mut c: *mut client) {
-    (*c).flags |= 0x10 as libc::c_int as libc::c_ulong;
+    (*c).flags |= 0x10u64;
 }
 #[no_mangle]
 pub unsafe extern "C" fn server_redraw_session(mut s: *mut session) {
@@ -1309,7 +1305,7 @@ pub unsafe extern "C" fn server_redraw_window_borders(mut w: *mut window) {
     c = clients.tqh_first;
     while !c.is_null() {
         if !(*c).session.is_null() && (*(*(*c).session).curw).window == w {
-            (*c).flags |= 0x400 as libc::c_int as libc::c_ulong
+            (*c).flags |= 0x400u64
         }
         c = (*c).entry.tqe_next
     }
@@ -1322,7 +1318,7 @@ pub unsafe extern "C" fn server_status_window(mut w: *mut window) {
      * clients containing this window rather than anywhere it is the
      * current window.
      */
-    s = sessions_RB_MINMAX(&mut sessions, -(1 as libc::c_int));
+    s = sessions_RB_MINMAX(&mut sessions, -(1i32));
     while !s.is_null() {
         if session_has(s, w) != 0 {
             server_status_session(s);
@@ -1355,10 +1351,10 @@ pub unsafe extern "C" fn server_lock_session(mut s: *mut session) {
 #[no_mangle]
 pub unsafe extern "C" fn server_lock_client(mut c: *mut client) {
     let mut cmd: *const libc::c_char = 0 as *const libc::c_char;
-    if (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
+    if (*c).flags & 0x2000u64 != 0 {
         return;
     }
-    if (*c).flags & 0x40 as libc::c_int as libc::c_ulong != 0 {
+    if (*c).flags & 0x40u64 != 0 {
         return;
     }
     cmd = options_get_string(
@@ -1366,9 +1362,8 @@ pub unsafe extern "C" fn server_lock_client(mut c: *mut client) {
         b"lock-command\x00" as *const u8 as *const libc::c_char,
     );
     if *cmd as libc::c_int == '\u{0}' as i32
-        || strlen(cmd).wrapping_add(1 as libc::c_int as libc::c_ulong)
-            > (16384 as libc::c_int as libc::c_ulong)
-                .wrapping_sub(::std::mem::size_of::<imsg_hdr>() as libc::c_ulong)
+        || strlen(cmd).wrapping_add(1u64)
+            > (16384u64).wrapping_sub(::std::mem::size_of::<imsg_hdr>() as libc::c_ulong)
     {
         return;
     }
@@ -1385,20 +1380,20 @@ pub unsafe extern "C" fn server_lock_client(mut c: *mut client) {
         &mut (*c).tty,
         tty_term_string((*c).tty.term, tty_code_code::E3),
     );
-    (*c).flags |= 0x40 as libc::c_int as libc::c_ulong;
+    (*c).flags |= 0x40u64;
     proc_send(
         (*c).peer,
         msgtype_code::LOCK,
-        -(1 as libc::c_int),
+        -(1i32),
         cmd as *const libc::c_void,
-        strlen(cmd).wrapping_add(1 as libc::c_int as libc::c_ulong),
+        strlen(cmd).wrapping_add(1u64),
     );
 }
 #[no_mangle]
 pub unsafe extern "C" fn server_kill_pane(mut wp: *mut window_pane) {
     let mut w: *mut window = (*wp).window;
-    if window_count_panes(w) == 1 as libc::c_int as libc::c_uint {
-        server_kill_window(w, 1 as libc::c_int);
+    if window_count_panes(w) == 1u32 {
+        server_kill_window(w, 1i32);
         recalculate_sizes();
     } else {
         server_unzoom_window(w);
@@ -1413,10 +1408,10 @@ pub unsafe extern "C" fn server_kill_window(mut w: *mut window, mut renumber: li
     let mut s: *mut session = 0 as *mut session;
     let mut s1: *mut session = 0 as *mut session;
     let mut wl: *mut winlink = 0 as *mut winlink;
-    s = sessions_RB_MINMAX(&mut sessions, -(1 as libc::c_int));
+    s = sessions_RB_MINMAX(&mut sessions, -(1i32));
     while !s.is_null() && {
         s1 = sessions_RB_NEXT(s);
-        (1 as libc::c_int) != 0
+        (1i32) != 0
     } {
         if !(session_has(s, w) == 0) {
             server_unzoom_window(w);
@@ -1463,7 +1458,7 @@ pub unsafe extern "C" fn server_renumber_session(mut s: *mut session) {
 #[no_mangle]
 pub unsafe extern "C" fn server_renumber_all() {
     let mut s: *mut session = 0 as *mut session;
-    s = sessions_RB_MINMAX(&mut sessions, -(1 as libc::c_int));
+    s = sessions_RB_MINMAX(&mut sessions, -(1i32));
     while !s.is_null() {
         server_renumber_session(s);
         s = sessions_RB_NEXT(s)
@@ -1489,10 +1484,10 @@ pub unsafe extern "C" fn server_link_window(
             cause,
             b"sessions are grouped\x00" as *const u8 as *const libc::c_char,
         );
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     dstwl = 0 as *mut winlink;
-    if dstidx != -(1 as libc::c_int) {
+    if dstidx != -(1i32) {
         dstwl = winlink_find_by_index(&mut (*dst).windows, dstidx)
     }
     if !dstwl.is_null() {
@@ -1502,7 +1497,7 @@ pub unsafe extern "C" fn server_link_window(
                 b"same index: %d\x00" as *const u8 as *const libc::c_char,
                 dstidx,
             );
-            return -(1 as libc::c_int);
+            return -(1i32);
         }
         if killflag != 0 {
             /*
@@ -1514,18 +1509,18 @@ pub unsafe extern "C" fn server_link_window(
                 dst,
                 (*dstwl).window,
             );
-            (*dstwl).flags &= !(0x1 as libc::c_int | 0x2 as libc::c_int | 0x4 as libc::c_int);
+            (*dstwl).flags &= !(0x1i32 | 0x2i32 | 0x4i32);
             winlink_stack_remove(&mut (*dst).lastw, dstwl);
             winlink_remove(&mut (*dst).windows, dstwl);
             /* Force select/redraw if current. */
             if dstwl == (*dst).curw {
-                selectflag = 1 as libc::c_int;
+                selectflag = 1i32;
                 (*dst).curw = 0 as *mut winlink
             }
         }
     }
-    if dstidx == -(1 as libc::c_int) {
-        dstidx = (-(1 as libc::c_int) as libc::c_longlong
+    if dstidx == -(1i32) {
+        dstidx = (-1i64
             - options_get_number(
                 (*dst).options,
                 b"base-index\x00" as *const u8 as *const libc::c_char,
@@ -1533,13 +1528,13 @@ pub unsafe extern "C" fn server_link_window(
     }
     dstwl = session_attach(dst, (*srcwl).window, dstidx, cause);
     if dstwl.is_null() {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     if selectflag != 0 {
         session_select(dst, (*dstwl).idx);
     }
     server_redraw_session_group(dst);
-    return 0 as libc::c_int;
+    return 0i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn server_unlink_window(mut s: *mut session, mut wl: *mut winlink) {
@@ -1580,44 +1575,36 @@ pub unsafe extern "C" fn server_destroy_pane(mut wp: *mut window_pane, mut notif
     };
     let mut t: time_t = 0;
     let mut tim: [libc::c_char; 26] = [0; 26];
-    if (*wp).fd != -(1 as libc::c_int) {
+    if (*wp).fd != -(1i32) {
         bufferevent_free((*wp).event);
         (*wp).event = 0 as *mut bufferevent;
         close((*wp).fd);
-        (*wp).fd = -(1 as libc::c_int)
+        (*wp).fd = -(1i32)
     }
     if options_get_number(
         (*wp).options,
         b"remain-on-exit\x00" as *const u8 as *const libc::c_char,
     ) != 0
     {
-        if !(*wp).flags & 0x200 as libc::c_int != 0 {
+        if !(*wp).flags & 0x200i32 != 0 {
             return;
         }
-        if (*wp).flags & 0x400 as libc::c_int != 0 {
+        if (*wp).flags & 0x400i32 != 0 {
             return;
         }
-        (*wp).flags |= 0x400 as libc::c_int;
+        (*wp).flags |= 0x400i32;
         if notify != 0 {
             notify_pane(b"pane-died\x00" as *const u8 as *const libc::c_char, wp);
         }
         screen_write_start_pane(&mut ctx, wp, &mut (*wp).base);
-        screen_write_scrollregion(
-            &mut ctx,
-            0 as libc::c_int as u_int,
-            (*(*ctx.s).grid)
-                .sy
-                .wrapping_sub(1 as libc::c_int as libc::c_uint),
-        );
+        screen_write_scrollregion(&mut ctx, 0u32, (*(*ctx.s).grid).sy.wrapping_sub(1u32));
         screen_write_cursormove(
             &mut ctx,
-            0 as libc::c_int,
-            (*(*ctx.s).grid)
-                .sy
-                .wrapping_sub(1 as libc::c_int as libc::c_uint) as libc::c_int,
-            0 as libc::c_int,
+            0i32,
+            (*(*ctx.s).grid).sy.wrapping_sub(1u32) as libc::c_int,
+            0i32,
         );
-        screen_write_linefeed(&mut ctx, 1 as libc::c_int, 8 as libc::c_int as u_int);
+        screen_write_linefeed(&mut ctx, 1i32, 8u32);
         memcpy(
             &mut gc as *mut GridCell as *mut libc::c_void,
             &grid_default_cell as *const GridCell as *const libc::c_void,
@@ -1628,32 +1615,28 @@ pub unsafe extern "C" fn server_destroy_pane(mut wp: *mut window_pane, mut notif
         tim[strcspn(
             tim.as_mut_ptr(),
             b"\n\x00" as *const u8 as *const libc::c_char,
-        ) as usize] = '\u{0}' as i32 as libc::c_char;
-        if (*wp).status & 0x7f as libc::c_int == 0 as libc::c_int {
+        ) as usize] = '\u{0}' as libc::c_char;
+        if (*wp).status & 0x7fi32 == 0i32 {
             screen_write_nputs(
                 &mut ctx as *mut screen_write_ctx,
-                -(1 as libc::c_int) as ssize_t,
+                -1i64,
                 &mut gc as *mut GridCell,
                 b"Pane is dead (status %d, %s)\x00" as *const u8 as *const libc::c_char,
-                ((*wp).status & 0xff00 as libc::c_int) >> 8 as libc::c_int,
+                ((*wp).status & 0xff00i32) >> 8i32,
                 tim.as_mut_ptr(),
             );
-        } else if (((*wp).status & 0x7f as libc::c_int) + 1 as libc::c_int) as libc::c_schar
-            as libc::c_int
-            >> 1 as libc::c_int
-            > 0 as libc::c_int
-        {
+        } else if (((*wp).status & 0x7fi32) + 1i32) as libc::c_schar as libc::c_int >> 1i32 > 0i32 {
             screen_write_nputs(
                 &mut ctx as *mut screen_write_ctx,
-                -(1 as libc::c_int) as ssize_t,
+                -1i64,
                 &mut gc as *mut GridCell,
                 b"Pane is dead (signal %s, %s)\x00" as *const u8 as *const libc::c_char,
-                sig2name((*wp).status & 0x7f as libc::c_int),
+                sig2name((*wp).status & 0x7fi32),
                 tim.as_mut_ptr(),
             );
         }
         screen_write_stop(&mut ctx);
-        (*wp).flags |= 0x1 as libc::c_int;
+        (*wp).flags |= 0x1i32;
         return;
     }
     if notify != 0 {
@@ -1664,7 +1647,7 @@ pub unsafe extern "C" fn server_destroy_pane(mut wp: *mut window_pane, mut notif
     layout_close_pane(wp);
     window_remove_pane(w, wp);
     if (*w).panes.tqh_first.is_null() {
-        server_kill_window(w, 1 as libc::c_int);
+        server_kill_window(w, 1i32);
     } else {
         server_redraw_window(w);
     };
@@ -1679,12 +1662,12 @@ unsafe extern "C" fn server_destroy_session_group(mut s: *mut session) {
         s = (*sg).sessions.tqh_first;
         while !s.is_null() && {
             s1 = (*s).gentry.tqe_next;
-            (1 as libc::c_int) != 0
+            (1i32) != 0
         } {
             server_destroy_session(s);
             session_destroy(
                 s,
-                1 as libc::c_int,
+                1i32,
                 (*::std::mem::transmute::<&[u8; 29], &[libc::c_char; 29]>(
                     b"server_destroy_session_group\x00",
                 ))
@@ -1714,7 +1697,7 @@ unsafe extern "C" fn server_next_session(mut s: *mut session) -> *mut session {
     let mut s_loop: *mut session = 0 as *mut session;
     let mut s_out: *mut session = 0 as *mut session;
     s_out = 0 as *mut session;
-    s_loop = sessions_RB_MINMAX(&mut sessions, -(1 as libc::c_int));
+    s_loop = sessions_RB_MINMAX(&mut sessions, -(1i32));
     while !s_loop.is_null() {
         if !(s_loop == s) {
             if s_out.is_null()
@@ -1750,7 +1733,7 @@ pub unsafe extern "C" fn server_destroy_session(mut s: *mut session) {
         if !((*c).session != s) {
             if s_new.is_null() {
                 (*c).session = 0 as *mut session;
-                (*c).flags |= 0x4 as libc::c_int as libc::c_ulong
+                (*c).flags |= 0x4u64
             } else {
                 (*c).last_session = 0 as *mut session;
                 (*c).session = s_new;
@@ -1778,9 +1761,9 @@ pub unsafe extern "C" fn server_check_unattached() {
      * If any sessions are no longer attached and have destroy-unattached
      * set, collect them.
      */
-    s = sessions_RB_MINMAX(&mut sessions, -(1 as libc::c_int));
+    s = sessions_RB_MINMAX(&mut sessions, -(1i32));
     while !s.is_null() {
-        if !((*s).attached != 0 as libc::c_int as libc::c_uint) {
+        if !((*s).attached != 0u32) {
             if options_get_number(
                 (*s).options,
                 b"destroy-unattached\x00" as *const u8 as *const libc::c_char,
@@ -1788,7 +1771,7 @@ pub unsafe extern "C" fn server_check_unattached() {
             {
                 session_destroy(
                     s,
-                    1 as libc::c_int,
+                    1i32,
                     (*::std::mem::transmute::<&[u8; 24], &[libc::c_char; 24]>(
                         b"server_check_unattached\x00",
                     ))
@@ -1801,7 +1784,7 @@ pub unsafe extern "C" fn server_check_unattached() {
 }
 #[no_mangle]
 pub unsafe extern "C" fn server_unzoom_window(mut w: *mut window) {
-    if window_unzoom(w) == 0 as libc::c_int {
+    if window_unzoom(w) == 0i32 {
         server_redraw_window(w);
     };
 }

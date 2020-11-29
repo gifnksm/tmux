@@ -42,18 +42,18 @@ pub unsafe extern "C" fn strlcat(
     {
         let fresh0 = n;
         n = n.wrapping_sub(1);
-        if !(fresh0 != 0 as libc::c_int as libc::c_ulong && *d as libc::c_int != '\u{0}' as i32) {
+        if !(fresh0 != 0u64 && *d as libc::c_int != '\u{0}' as i32) {
             break;
         }
         d = d.offset(1)
     }
-    dlen = d.wrapping_offset_from(dst) as libc::c_long as size_t;
+    dlen = d.wrapping_offset_from(dst) as size_t;
     n = siz.wrapping_sub(dlen);
-    if n == 0 as libc::c_int as libc::c_ulong {
+    if n == 0u64 {
         return dlen.wrapping_add(strlen(s));
     }
     while *s as libc::c_int != '\u{0}' as i32 {
-        if n != 1 as libc::c_int as libc::c_ulong {
+        if n != 1u64 {
             let fresh1 = d;
             d = d.offset(1);
             *fresh1 = *s;
@@ -61,7 +61,7 @@ pub unsafe extern "C" fn strlcat(
         }
         s = s.offset(1)
     }
-    *d = '\u{0}' as i32 as libc::c_char;
-    return dlen.wrapping_add(s.wrapping_offset_from(src) as libc::c_long as libc::c_ulong);
+    *d = '\u{0}' as libc::c_char;
+    return dlen.wrapping_add(s.wrapping_offset_from(src) as libc::c_ulong);
     /* count does not include NUL */
 }

@@ -1521,20 +1521,18 @@ unsafe extern "C" fn bsearch(
     let mut __idx: size_t = 0;
     let mut __p: *const libc::c_void = 0 as *const libc::c_void;
     let mut __comparison: libc::c_int = 0;
-    __l = 0 as libc::c_int as size_t;
+    __l = 0u64;
     __u = __nmemb;
     while __l < __u {
-        __idx = __l
-            .wrapping_add(__u)
-            .wrapping_div(2 as libc::c_int as libc::c_ulong);
+        __idx = __l.wrapping_add(__u).wrapping_div(2u64);
         __p = (__base as *const libc::c_char).offset(__idx.wrapping_mul(__size) as isize)
             as *mut libc::c_void;
         __comparison = Some(__compar.expect("non-null function pointer"))
             .expect("non-null function pointer")(__key, __p);
-        if __comparison < 0 as libc::c_int {
+        if __comparison < 0i32 {
             __u = __idx
-        } else if __comparison > 0 as libc::c_int {
-            __l = __idx.wrapping_add(1 as libc::c_int as libc::c_ulong)
+        } else if __comparison > 0i32 {
+            __l = __idx.wrapping_add(1u64)
         } else {
             return __p as *mut libc::c_void;
         }
@@ -2190,8 +2188,8 @@ static mut input_state_ground_table: [input_transition; 10] = unsafe {
     [
         {
             let mut init = input_transition {
-                first: 0x18 as libc::c_int,
-                last: 0x18 as libc::c_int,
+                first: 0x18i32,
+                last: 0x18i32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2201,8 +2199,8 @@ static mut input_state_ground_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1a as libc::c_int,
-                last: 0x1a as libc::c_int,
+                first: 0x1ai32,
+                last: 0x1ai32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2212,8 +2210,8 @@ static mut input_state_ground_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1b as libc::c_int,
-                last: 0x1b as libc::c_int,
+                first: 0x1bi32,
+                last: 0x1bi32,
                 handler: None,
                 state: &input_state_esc_enter as *const input_state,
             };
@@ -2221,8 +2219,8 @@ static mut input_state_ground_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0 as libc::c_int,
-                last: 0x17 as libc::c_int,
+                first: 0i32,
+                last: 0x17i32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2232,8 +2230,8 @@ static mut input_state_ground_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x19 as libc::c_int,
-                last: 0x19 as libc::c_int,
+                first: 0x19i32,
+                last: 0x19i32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2243,8 +2241,8 @@ static mut input_state_ground_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1c as libc::c_int,
-                last: 0x1f as libc::c_int,
+                first: 0x1ci32,
+                last: 0x1fi32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2254,8 +2252,8 @@ static mut input_state_ground_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x20 as libc::c_int,
-                last: 0x7e as libc::c_int,
+                first: 0x20i32,
+                last: 0x7ei32,
                 handler: Some(
                     input_print as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2265,8 +2263,8 @@ static mut input_state_ground_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x7f as libc::c_int,
-                last: 0x7f as libc::c_int,
+                first: 0x7fi32,
+                last: 0x7fi32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -2274,8 +2272,8 @@ static mut input_state_ground_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x80 as libc::c_int,
-                last: 0xff as libc::c_int,
+                first: 0x80i32,
+                last: 0xffi32,
                 handler: Some(
                     input_top_bit_set as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2285,8 +2283,8 @@ static mut input_state_ground_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: -(1 as libc::c_int),
-                last: -(1 as libc::c_int),
+                first: -(1i32),
+                last: -(1i32),
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -2299,8 +2297,8 @@ static mut input_state_esc_enter_table: [input_transition; 23] = unsafe {
     [
         {
             let mut init = input_transition {
-                first: 0x18 as libc::c_int,
-                last: 0x18 as libc::c_int,
+                first: 0x18i32,
+                last: 0x18i32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2310,8 +2308,8 @@ static mut input_state_esc_enter_table: [input_transition; 23] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1a as libc::c_int,
-                last: 0x1a as libc::c_int,
+                first: 0x1ai32,
+                last: 0x1ai32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2321,8 +2319,8 @@ static mut input_state_esc_enter_table: [input_transition; 23] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1b as libc::c_int,
-                last: 0x1b as libc::c_int,
+                first: 0x1bi32,
+                last: 0x1bi32,
                 handler: None,
                 state: &input_state_esc_enter as *const input_state,
             };
@@ -2330,8 +2328,8 @@ static mut input_state_esc_enter_table: [input_transition; 23] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0 as libc::c_int,
-                last: 0x17 as libc::c_int,
+                first: 0i32,
+                last: 0x17i32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2341,8 +2339,8 @@ static mut input_state_esc_enter_table: [input_transition; 23] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x19 as libc::c_int,
-                last: 0x19 as libc::c_int,
+                first: 0x19i32,
+                last: 0x19i32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2352,8 +2350,8 @@ static mut input_state_esc_enter_table: [input_transition; 23] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1c as libc::c_int,
-                last: 0x1f as libc::c_int,
+                first: 0x1ci32,
+                last: 0x1fi32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2363,8 +2361,8 @@ static mut input_state_esc_enter_table: [input_transition; 23] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x20 as libc::c_int,
-                last: 0x2f as libc::c_int,
+                first: 0x20i32,
+                last: 0x2fi32,
                 handler: Some(
                     input_intermediate as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2374,8 +2372,8 @@ static mut input_state_esc_enter_table: [input_transition; 23] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x30 as libc::c_int,
-                last: 0x4f as libc::c_int,
+                first: 0x30i32,
+                last: 0x4fi32,
                 handler: Some(
                     input_esc_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2385,8 +2383,8 @@ static mut input_state_esc_enter_table: [input_transition; 23] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x50 as libc::c_int,
-                last: 0x50 as libc::c_int,
+                first: 0x50i32,
+                last: 0x50i32,
                 handler: None,
                 state: &input_state_dcs_enter as *const input_state,
             };
@@ -2394,8 +2392,8 @@ static mut input_state_esc_enter_table: [input_transition; 23] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x51 as libc::c_int,
-                last: 0x57 as libc::c_int,
+                first: 0x51i32,
+                last: 0x57i32,
                 handler: Some(
                     input_esc_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2405,8 +2403,8 @@ static mut input_state_esc_enter_table: [input_transition; 23] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x58 as libc::c_int,
-                last: 0x58 as libc::c_int,
+                first: 0x58i32,
+                last: 0x58i32,
                 handler: None,
                 state: &input_state_consume_st as *const input_state,
             };
@@ -2414,8 +2412,8 @@ static mut input_state_esc_enter_table: [input_transition; 23] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x59 as libc::c_int,
-                last: 0x59 as libc::c_int,
+                first: 0x59i32,
+                last: 0x59i32,
                 handler: Some(
                     input_esc_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2425,8 +2423,8 @@ static mut input_state_esc_enter_table: [input_transition; 23] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x5a as libc::c_int,
-                last: 0x5a as libc::c_int,
+                first: 0x5ai32,
+                last: 0x5ai32,
                 handler: Some(
                     input_esc_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2436,8 +2434,8 @@ static mut input_state_esc_enter_table: [input_transition; 23] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x5b as libc::c_int,
-                last: 0x5b as libc::c_int,
+                first: 0x5bi32,
+                last: 0x5bi32,
                 handler: None,
                 state: &input_state_csi_enter as *const input_state,
             };
@@ -2445,8 +2443,8 @@ static mut input_state_esc_enter_table: [input_transition; 23] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x5c as libc::c_int,
-                last: 0x5c as libc::c_int,
+                first: 0x5ci32,
+                last: 0x5ci32,
                 handler: Some(
                     input_esc_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2456,8 +2454,8 @@ static mut input_state_esc_enter_table: [input_transition; 23] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x5d as libc::c_int,
-                last: 0x5d as libc::c_int,
+                first: 0x5di32,
+                last: 0x5di32,
                 handler: None,
                 state: &input_state_osc_string as *const input_state,
             };
@@ -2465,8 +2463,8 @@ static mut input_state_esc_enter_table: [input_transition; 23] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x5e as libc::c_int,
-                last: 0x5e as libc::c_int,
+                first: 0x5ei32,
+                last: 0x5ei32,
                 handler: None,
                 state: &input_state_consume_st as *const input_state,
             };
@@ -2474,8 +2472,8 @@ static mut input_state_esc_enter_table: [input_transition; 23] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x5f as libc::c_int,
-                last: 0x5f as libc::c_int,
+                first: 0x5fi32,
+                last: 0x5fi32,
                 handler: None,
                 state: &input_state_apc_string as *const input_state,
             };
@@ -2483,8 +2481,8 @@ static mut input_state_esc_enter_table: [input_transition; 23] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x60 as libc::c_int,
-                last: 0x6a as libc::c_int,
+                first: 0x60i32,
+                last: 0x6ai32,
                 handler: Some(
                     input_esc_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2494,8 +2492,8 @@ static mut input_state_esc_enter_table: [input_transition; 23] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x6b as libc::c_int,
-                last: 0x6b as libc::c_int,
+                first: 0x6bi32,
+                last: 0x6bi32,
                 handler: None,
                 state: &input_state_rename_string as *const input_state,
             };
@@ -2503,8 +2501,8 @@ static mut input_state_esc_enter_table: [input_transition; 23] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x6c as libc::c_int,
-                last: 0x7e as libc::c_int,
+                first: 0x6ci32,
+                last: 0x7ei32,
                 handler: Some(
                     input_esc_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2514,8 +2512,8 @@ static mut input_state_esc_enter_table: [input_transition; 23] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x7f as libc::c_int,
-                last: 0xff as libc::c_int,
+                first: 0x7fi32,
+                last: 0xffi32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -2523,8 +2521,8 @@ static mut input_state_esc_enter_table: [input_transition; 23] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: -(1 as libc::c_int),
-                last: -(1 as libc::c_int),
+                first: -(1i32),
+                last: -(1i32),
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -2537,8 +2535,8 @@ static mut input_state_esc_intermediate_table: [input_transition; 10] = unsafe {
     [
         {
             let mut init = input_transition {
-                first: 0x18 as libc::c_int,
-                last: 0x18 as libc::c_int,
+                first: 0x18i32,
+                last: 0x18i32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2548,8 +2546,8 @@ static mut input_state_esc_intermediate_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1a as libc::c_int,
-                last: 0x1a as libc::c_int,
+                first: 0x1ai32,
+                last: 0x1ai32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2559,8 +2557,8 @@ static mut input_state_esc_intermediate_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1b as libc::c_int,
-                last: 0x1b as libc::c_int,
+                first: 0x1bi32,
+                last: 0x1bi32,
                 handler: None,
                 state: &input_state_esc_enter as *const input_state,
             };
@@ -2568,8 +2566,8 @@ static mut input_state_esc_intermediate_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0 as libc::c_int,
-                last: 0x17 as libc::c_int,
+                first: 0i32,
+                last: 0x17i32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2579,8 +2577,8 @@ static mut input_state_esc_intermediate_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x19 as libc::c_int,
-                last: 0x19 as libc::c_int,
+                first: 0x19i32,
+                last: 0x19i32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2590,8 +2588,8 @@ static mut input_state_esc_intermediate_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1c as libc::c_int,
-                last: 0x1f as libc::c_int,
+                first: 0x1ci32,
+                last: 0x1fi32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2601,8 +2599,8 @@ static mut input_state_esc_intermediate_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x20 as libc::c_int,
-                last: 0x2f as libc::c_int,
+                first: 0x20i32,
+                last: 0x2fi32,
                 handler: Some(
                     input_intermediate as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2612,8 +2610,8 @@ static mut input_state_esc_intermediate_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x30 as libc::c_int,
-                last: 0x7e as libc::c_int,
+                first: 0x30i32,
+                last: 0x7ei32,
                 handler: Some(
                     input_esc_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2623,8 +2621,8 @@ static mut input_state_esc_intermediate_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x7f as libc::c_int,
-                last: 0xff as libc::c_int,
+                first: 0x7fi32,
+                last: 0xffi32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -2632,8 +2630,8 @@ static mut input_state_esc_intermediate_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: -(1 as libc::c_int),
-                last: -(1 as libc::c_int),
+                first: -(1i32),
+                last: -(1i32),
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -2646,8 +2644,8 @@ static mut input_state_csi_enter_table: [input_transition; 14] = unsafe {
     [
         {
             let mut init = input_transition {
-                first: 0x18 as libc::c_int,
-                last: 0x18 as libc::c_int,
+                first: 0x18i32,
+                last: 0x18i32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2657,8 +2655,8 @@ static mut input_state_csi_enter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1a as libc::c_int,
-                last: 0x1a as libc::c_int,
+                first: 0x1ai32,
+                last: 0x1ai32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2668,8 +2666,8 @@ static mut input_state_csi_enter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1b as libc::c_int,
-                last: 0x1b as libc::c_int,
+                first: 0x1bi32,
+                last: 0x1bi32,
                 handler: None,
                 state: &input_state_esc_enter as *const input_state,
             };
@@ -2677,8 +2675,8 @@ static mut input_state_csi_enter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0 as libc::c_int,
-                last: 0x17 as libc::c_int,
+                first: 0i32,
+                last: 0x17i32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2688,8 +2686,8 @@ static mut input_state_csi_enter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x19 as libc::c_int,
-                last: 0x19 as libc::c_int,
+                first: 0x19i32,
+                last: 0x19i32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2699,8 +2697,8 @@ static mut input_state_csi_enter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1c as libc::c_int,
-                last: 0x1f as libc::c_int,
+                first: 0x1ci32,
+                last: 0x1fi32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2710,8 +2708,8 @@ static mut input_state_csi_enter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x20 as libc::c_int,
-                last: 0x2f as libc::c_int,
+                first: 0x20i32,
+                last: 0x2fi32,
                 handler: Some(
                     input_intermediate as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2721,8 +2719,8 @@ static mut input_state_csi_enter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x30 as libc::c_int,
-                last: 0x39 as libc::c_int,
+                first: 0x30i32,
+                last: 0x39i32,
                 handler: Some(
                     input_parameter as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2732,8 +2730,8 @@ static mut input_state_csi_enter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x3a as libc::c_int,
-                last: 0x3a as libc::c_int,
+                first: 0x3ai32,
+                last: 0x3ai32,
                 handler: Some(
                     input_parameter as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2743,8 +2741,8 @@ static mut input_state_csi_enter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x3b as libc::c_int,
-                last: 0x3b as libc::c_int,
+                first: 0x3bi32,
+                last: 0x3bi32,
                 handler: Some(
                     input_parameter as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2754,8 +2752,8 @@ static mut input_state_csi_enter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x3c as libc::c_int,
-                last: 0x3f as libc::c_int,
+                first: 0x3ci32,
+                last: 0x3fi32,
                 handler: Some(
                     input_intermediate as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2765,8 +2763,8 @@ static mut input_state_csi_enter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x40 as libc::c_int,
-                last: 0x7e as libc::c_int,
+                first: 0x40i32,
+                last: 0x7ei32,
                 handler: Some(
                     input_csi_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2776,8 +2774,8 @@ static mut input_state_csi_enter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x7f as libc::c_int,
-                last: 0xff as libc::c_int,
+                first: 0x7fi32,
+                last: 0xffi32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -2785,8 +2783,8 @@ static mut input_state_csi_enter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: -(1 as libc::c_int),
-                last: -(1 as libc::c_int),
+                first: -(1i32),
+                last: -(1i32),
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -2799,8 +2797,8 @@ static mut input_state_csi_parameter_table: [input_transition; 14] = unsafe {
     [
         {
             let mut init = input_transition {
-                first: 0x18 as libc::c_int,
-                last: 0x18 as libc::c_int,
+                first: 0x18i32,
+                last: 0x18i32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2810,8 +2808,8 @@ static mut input_state_csi_parameter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1a as libc::c_int,
-                last: 0x1a as libc::c_int,
+                first: 0x1ai32,
+                last: 0x1ai32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2821,8 +2819,8 @@ static mut input_state_csi_parameter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1b as libc::c_int,
-                last: 0x1b as libc::c_int,
+                first: 0x1bi32,
+                last: 0x1bi32,
                 handler: None,
                 state: &input_state_esc_enter as *const input_state,
             };
@@ -2830,8 +2828,8 @@ static mut input_state_csi_parameter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0 as libc::c_int,
-                last: 0x17 as libc::c_int,
+                first: 0i32,
+                last: 0x17i32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2841,8 +2839,8 @@ static mut input_state_csi_parameter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x19 as libc::c_int,
-                last: 0x19 as libc::c_int,
+                first: 0x19i32,
+                last: 0x19i32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2852,8 +2850,8 @@ static mut input_state_csi_parameter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1c as libc::c_int,
-                last: 0x1f as libc::c_int,
+                first: 0x1ci32,
+                last: 0x1fi32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2863,8 +2861,8 @@ static mut input_state_csi_parameter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x20 as libc::c_int,
-                last: 0x2f as libc::c_int,
+                first: 0x20i32,
+                last: 0x2fi32,
                 handler: Some(
                     input_intermediate as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2874,8 +2872,8 @@ static mut input_state_csi_parameter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x30 as libc::c_int,
-                last: 0x39 as libc::c_int,
+                first: 0x30i32,
+                last: 0x39i32,
                 handler: Some(
                     input_parameter as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2885,8 +2883,8 @@ static mut input_state_csi_parameter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x3a as libc::c_int,
-                last: 0x3a as libc::c_int,
+                first: 0x3ai32,
+                last: 0x3ai32,
                 handler: Some(
                     input_parameter as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2896,8 +2894,8 @@ static mut input_state_csi_parameter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x3b as libc::c_int,
-                last: 0x3b as libc::c_int,
+                first: 0x3bi32,
+                last: 0x3bi32,
                 handler: Some(
                     input_parameter as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2907,8 +2905,8 @@ static mut input_state_csi_parameter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x3c as libc::c_int,
-                last: 0x3f as libc::c_int,
+                first: 0x3ci32,
+                last: 0x3fi32,
                 handler: None,
                 state: &input_state_csi_ignore as *const input_state,
             };
@@ -2916,8 +2914,8 @@ static mut input_state_csi_parameter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x40 as libc::c_int,
-                last: 0x7e as libc::c_int,
+                first: 0x40i32,
+                last: 0x7ei32,
                 handler: Some(
                     input_csi_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2927,8 +2925,8 @@ static mut input_state_csi_parameter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x7f as libc::c_int,
-                last: 0xff as libc::c_int,
+                first: 0x7fi32,
+                last: 0xffi32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -2936,8 +2934,8 @@ static mut input_state_csi_parameter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: -(1 as libc::c_int),
-                last: -(1 as libc::c_int),
+                first: -(1i32),
+                last: -(1i32),
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -2950,8 +2948,8 @@ static mut input_state_csi_intermediate_table: [input_transition; 11] = unsafe {
     [
         {
             let mut init = input_transition {
-                first: 0x18 as libc::c_int,
-                last: 0x18 as libc::c_int,
+                first: 0x18i32,
+                last: 0x18i32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2961,8 +2959,8 @@ static mut input_state_csi_intermediate_table: [input_transition; 11] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1a as libc::c_int,
-                last: 0x1a as libc::c_int,
+                first: 0x1ai32,
+                last: 0x1ai32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2972,8 +2970,8 @@ static mut input_state_csi_intermediate_table: [input_transition; 11] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1b as libc::c_int,
-                last: 0x1b as libc::c_int,
+                first: 0x1bi32,
+                last: 0x1bi32,
                 handler: None,
                 state: &input_state_esc_enter as *const input_state,
             };
@@ -2981,8 +2979,8 @@ static mut input_state_csi_intermediate_table: [input_transition; 11] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0 as libc::c_int,
-                last: 0x17 as libc::c_int,
+                first: 0i32,
+                last: 0x17i32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -2992,8 +2990,8 @@ static mut input_state_csi_intermediate_table: [input_transition; 11] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x19 as libc::c_int,
-                last: 0x19 as libc::c_int,
+                first: 0x19i32,
+                last: 0x19i32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3003,8 +3001,8 @@ static mut input_state_csi_intermediate_table: [input_transition; 11] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1c as libc::c_int,
-                last: 0x1f as libc::c_int,
+                first: 0x1ci32,
+                last: 0x1fi32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3014,8 +3012,8 @@ static mut input_state_csi_intermediate_table: [input_transition; 11] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x20 as libc::c_int,
-                last: 0x2f as libc::c_int,
+                first: 0x20i32,
+                last: 0x2fi32,
                 handler: Some(
                     input_intermediate as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3025,8 +3023,8 @@ static mut input_state_csi_intermediate_table: [input_transition; 11] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x30 as libc::c_int,
-                last: 0x3f as libc::c_int,
+                first: 0x30i32,
+                last: 0x3fi32,
                 handler: None,
                 state: &input_state_csi_ignore as *const input_state,
             };
@@ -3034,8 +3032,8 @@ static mut input_state_csi_intermediate_table: [input_transition; 11] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x40 as libc::c_int,
-                last: 0x7e as libc::c_int,
+                first: 0x40i32,
+                last: 0x7ei32,
                 handler: Some(
                     input_csi_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3045,8 +3043,8 @@ static mut input_state_csi_intermediate_table: [input_transition; 11] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x7f as libc::c_int,
-                last: 0xff as libc::c_int,
+                first: 0x7fi32,
+                last: 0xffi32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3054,8 +3052,8 @@ static mut input_state_csi_intermediate_table: [input_transition; 11] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: -(1 as libc::c_int),
-                last: -(1 as libc::c_int),
+                first: -(1i32),
+                last: -(1i32),
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3068,8 +3066,8 @@ static mut input_state_csi_ignore_table: [input_transition; 10] = unsafe {
     [
         {
             let mut init = input_transition {
-                first: 0x18 as libc::c_int,
-                last: 0x18 as libc::c_int,
+                first: 0x18i32,
+                last: 0x18i32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3079,8 +3077,8 @@ static mut input_state_csi_ignore_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1a as libc::c_int,
-                last: 0x1a as libc::c_int,
+                first: 0x1ai32,
+                last: 0x1ai32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3090,8 +3088,8 @@ static mut input_state_csi_ignore_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1b as libc::c_int,
-                last: 0x1b as libc::c_int,
+                first: 0x1bi32,
+                last: 0x1bi32,
                 handler: None,
                 state: &input_state_esc_enter as *const input_state,
             };
@@ -3099,8 +3097,8 @@ static mut input_state_csi_ignore_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0 as libc::c_int,
-                last: 0x17 as libc::c_int,
+                first: 0i32,
+                last: 0x17i32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3110,8 +3108,8 @@ static mut input_state_csi_ignore_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x19 as libc::c_int,
-                last: 0x19 as libc::c_int,
+                first: 0x19i32,
+                last: 0x19i32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3121,8 +3119,8 @@ static mut input_state_csi_ignore_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1c as libc::c_int,
-                last: 0x1f as libc::c_int,
+                first: 0x1ci32,
+                last: 0x1fi32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3132,8 +3130,8 @@ static mut input_state_csi_ignore_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x20 as libc::c_int,
-                last: 0x3f as libc::c_int,
+                first: 0x20i32,
+                last: 0x3fi32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3141,8 +3139,8 @@ static mut input_state_csi_ignore_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x40 as libc::c_int,
-                last: 0x7e as libc::c_int,
+                first: 0x40i32,
+                last: 0x7ei32,
                 handler: None,
                 state: &input_state_ground as *const input_state,
             };
@@ -3150,8 +3148,8 @@ static mut input_state_csi_ignore_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x7f as libc::c_int,
-                last: 0xff as libc::c_int,
+                first: 0x7fi32,
+                last: 0xffi32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3159,8 +3157,8 @@ static mut input_state_csi_ignore_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: -(1 as libc::c_int),
-                last: -(1 as libc::c_int),
+                first: -(1i32),
+                last: -(1i32),
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3173,8 +3171,8 @@ static mut input_state_dcs_enter_table: [input_transition; 14] = unsafe {
     [
         {
             let mut init = input_transition {
-                first: 0x18 as libc::c_int,
-                last: 0x18 as libc::c_int,
+                first: 0x18i32,
+                last: 0x18i32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3184,8 +3182,8 @@ static mut input_state_dcs_enter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1a as libc::c_int,
-                last: 0x1a as libc::c_int,
+                first: 0x1ai32,
+                last: 0x1ai32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3195,8 +3193,8 @@ static mut input_state_dcs_enter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1b as libc::c_int,
-                last: 0x1b as libc::c_int,
+                first: 0x1bi32,
+                last: 0x1bi32,
                 handler: None,
                 state: &input_state_esc_enter as *const input_state,
             };
@@ -3204,8 +3202,8 @@ static mut input_state_dcs_enter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0 as libc::c_int,
-                last: 0x17 as libc::c_int,
+                first: 0i32,
+                last: 0x17i32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3213,8 +3211,8 @@ static mut input_state_dcs_enter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x19 as libc::c_int,
-                last: 0x19 as libc::c_int,
+                first: 0x19i32,
+                last: 0x19i32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3222,8 +3220,8 @@ static mut input_state_dcs_enter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1c as libc::c_int,
-                last: 0x1f as libc::c_int,
+                first: 0x1ci32,
+                last: 0x1fi32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3231,8 +3229,8 @@ static mut input_state_dcs_enter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x20 as libc::c_int,
-                last: 0x2f as libc::c_int,
+                first: 0x20i32,
+                last: 0x2fi32,
                 handler: Some(
                     input_intermediate as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3242,8 +3240,8 @@ static mut input_state_dcs_enter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x30 as libc::c_int,
-                last: 0x39 as libc::c_int,
+                first: 0x30i32,
+                last: 0x39i32,
                 handler: Some(
                     input_parameter as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3253,8 +3251,8 @@ static mut input_state_dcs_enter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x3a as libc::c_int,
-                last: 0x3a as libc::c_int,
+                first: 0x3ai32,
+                last: 0x3ai32,
                 handler: None,
                 state: &input_state_dcs_ignore as *const input_state,
             };
@@ -3262,8 +3260,8 @@ static mut input_state_dcs_enter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x3b as libc::c_int,
-                last: 0x3b as libc::c_int,
+                first: 0x3bi32,
+                last: 0x3bi32,
                 handler: Some(
                     input_parameter as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3273,8 +3271,8 @@ static mut input_state_dcs_enter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x3c as libc::c_int,
-                last: 0x3f as libc::c_int,
+                first: 0x3ci32,
+                last: 0x3fi32,
                 handler: Some(
                     input_intermediate as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3284,8 +3282,8 @@ static mut input_state_dcs_enter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x40 as libc::c_int,
-                last: 0x7e as libc::c_int,
+                first: 0x40i32,
+                last: 0x7ei32,
                 handler: Some(
                     input_input as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3295,8 +3293,8 @@ static mut input_state_dcs_enter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x7f as libc::c_int,
-                last: 0xff as libc::c_int,
+                first: 0x7fi32,
+                last: 0xffi32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3304,8 +3302,8 @@ static mut input_state_dcs_enter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: -(1 as libc::c_int),
-                last: -(1 as libc::c_int),
+                first: -(1i32),
+                last: -(1i32),
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3318,8 +3316,8 @@ static mut input_state_dcs_parameter_table: [input_transition; 14] = unsafe {
     [
         {
             let mut init = input_transition {
-                first: 0x18 as libc::c_int,
-                last: 0x18 as libc::c_int,
+                first: 0x18i32,
+                last: 0x18i32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3329,8 +3327,8 @@ static mut input_state_dcs_parameter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1a as libc::c_int,
-                last: 0x1a as libc::c_int,
+                first: 0x1ai32,
+                last: 0x1ai32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3340,8 +3338,8 @@ static mut input_state_dcs_parameter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1b as libc::c_int,
-                last: 0x1b as libc::c_int,
+                first: 0x1bi32,
+                last: 0x1bi32,
                 handler: None,
                 state: &input_state_esc_enter as *const input_state,
             };
@@ -3349,8 +3347,8 @@ static mut input_state_dcs_parameter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0 as libc::c_int,
-                last: 0x17 as libc::c_int,
+                first: 0i32,
+                last: 0x17i32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3358,8 +3356,8 @@ static mut input_state_dcs_parameter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x19 as libc::c_int,
-                last: 0x19 as libc::c_int,
+                first: 0x19i32,
+                last: 0x19i32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3367,8 +3365,8 @@ static mut input_state_dcs_parameter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1c as libc::c_int,
-                last: 0x1f as libc::c_int,
+                first: 0x1ci32,
+                last: 0x1fi32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3376,8 +3374,8 @@ static mut input_state_dcs_parameter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x20 as libc::c_int,
-                last: 0x2f as libc::c_int,
+                first: 0x20i32,
+                last: 0x2fi32,
                 handler: Some(
                     input_intermediate as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3387,8 +3385,8 @@ static mut input_state_dcs_parameter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x30 as libc::c_int,
-                last: 0x39 as libc::c_int,
+                first: 0x30i32,
+                last: 0x39i32,
                 handler: Some(
                     input_parameter as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3398,8 +3396,8 @@ static mut input_state_dcs_parameter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x3a as libc::c_int,
-                last: 0x3a as libc::c_int,
+                first: 0x3ai32,
+                last: 0x3ai32,
                 handler: None,
                 state: &input_state_dcs_ignore as *const input_state,
             };
@@ -3407,8 +3405,8 @@ static mut input_state_dcs_parameter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x3b as libc::c_int,
-                last: 0x3b as libc::c_int,
+                first: 0x3bi32,
+                last: 0x3bi32,
                 handler: Some(
                     input_parameter as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3418,8 +3416,8 @@ static mut input_state_dcs_parameter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x3c as libc::c_int,
-                last: 0x3f as libc::c_int,
+                first: 0x3ci32,
+                last: 0x3fi32,
                 handler: None,
                 state: &input_state_dcs_ignore as *const input_state,
             };
@@ -3427,8 +3425,8 @@ static mut input_state_dcs_parameter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x40 as libc::c_int,
-                last: 0x7e as libc::c_int,
+                first: 0x40i32,
+                last: 0x7ei32,
                 handler: Some(
                     input_input as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3438,8 +3436,8 @@ static mut input_state_dcs_parameter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x7f as libc::c_int,
-                last: 0xff as libc::c_int,
+                first: 0x7fi32,
+                last: 0xffi32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3447,8 +3445,8 @@ static mut input_state_dcs_parameter_table: [input_transition; 14] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: -(1 as libc::c_int),
-                last: -(1 as libc::c_int),
+                first: -(1i32),
+                last: -(1i32),
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3461,8 +3459,8 @@ static mut input_state_dcs_intermediate_table: [input_transition; 11] = unsafe {
     [
         {
             let mut init = input_transition {
-                first: 0x18 as libc::c_int,
-                last: 0x18 as libc::c_int,
+                first: 0x18i32,
+                last: 0x18i32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3472,8 +3470,8 @@ static mut input_state_dcs_intermediate_table: [input_transition; 11] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1a as libc::c_int,
-                last: 0x1a as libc::c_int,
+                first: 0x1ai32,
+                last: 0x1ai32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3483,8 +3481,8 @@ static mut input_state_dcs_intermediate_table: [input_transition; 11] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1b as libc::c_int,
-                last: 0x1b as libc::c_int,
+                first: 0x1bi32,
+                last: 0x1bi32,
                 handler: None,
                 state: &input_state_esc_enter as *const input_state,
             };
@@ -3492,8 +3490,8 @@ static mut input_state_dcs_intermediate_table: [input_transition; 11] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0 as libc::c_int,
-                last: 0x17 as libc::c_int,
+                first: 0i32,
+                last: 0x17i32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3501,8 +3499,8 @@ static mut input_state_dcs_intermediate_table: [input_transition; 11] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x19 as libc::c_int,
-                last: 0x19 as libc::c_int,
+                first: 0x19i32,
+                last: 0x19i32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3510,8 +3508,8 @@ static mut input_state_dcs_intermediate_table: [input_transition; 11] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1c as libc::c_int,
-                last: 0x1f as libc::c_int,
+                first: 0x1ci32,
+                last: 0x1fi32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3519,8 +3517,8 @@ static mut input_state_dcs_intermediate_table: [input_transition; 11] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x20 as libc::c_int,
-                last: 0x2f as libc::c_int,
+                first: 0x20i32,
+                last: 0x2fi32,
                 handler: Some(
                     input_intermediate as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3530,8 +3528,8 @@ static mut input_state_dcs_intermediate_table: [input_transition; 11] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x30 as libc::c_int,
-                last: 0x3f as libc::c_int,
+                first: 0x30i32,
+                last: 0x3fi32,
                 handler: None,
                 state: &input_state_dcs_ignore as *const input_state,
             };
@@ -3539,8 +3537,8 @@ static mut input_state_dcs_intermediate_table: [input_transition; 11] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x40 as libc::c_int,
-                last: 0x7e as libc::c_int,
+                first: 0x40i32,
+                last: 0x7ei32,
                 handler: Some(
                     input_input as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3550,8 +3548,8 @@ static mut input_state_dcs_intermediate_table: [input_transition; 11] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x7f as libc::c_int,
-                last: 0xff as libc::c_int,
+                first: 0x7fi32,
+                last: 0xffi32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3559,8 +3557,8 @@ static mut input_state_dcs_intermediate_table: [input_transition; 11] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: -(1 as libc::c_int),
-                last: -(1 as libc::c_int),
+                first: -(1i32),
+                last: -(1i32),
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3573,8 +3571,8 @@ static mut input_state_dcs_handler_table: [input_transition; 4] = unsafe {
     [
         {
             let mut init = input_transition {
-                first: 0 as libc::c_int,
-                last: 0x1a as libc::c_int,
+                first: 0i32,
+                last: 0x1ai32,
                 handler: Some(
                     input_input as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3584,8 +3582,8 @@ static mut input_state_dcs_handler_table: [input_transition; 4] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1b as libc::c_int,
-                last: 0x1b as libc::c_int,
+                first: 0x1bi32,
+                last: 0x1bi32,
                 handler: None,
                 state: &input_state_dcs_escape as *const input_state,
             };
@@ -3593,8 +3591,8 @@ static mut input_state_dcs_handler_table: [input_transition; 4] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1c as libc::c_int,
-                last: 0xff as libc::c_int,
+                first: 0x1ci32,
+                last: 0xffi32,
                 handler: Some(
                     input_input as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3604,8 +3602,8 @@ static mut input_state_dcs_handler_table: [input_transition; 4] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: -(1 as libc::c_int),
-                last: -(1 as libc::c_int),
+                first: -(1i32),
+                last: -(1i32),
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3618,8 +3616,8 @@ static mut input_state_dcs_escape_table: [input_transition; 4] = unsafe {
     [
         {
             let mut init = input_transition {
-                first: 0 as libc::c_int,
-                last: 0x5b as libc::c_int,
+                first: 0i32,
+                last: 0x5bi32,
                 handler: Some(
                     input_input as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3629,8 +3627,8 @@ static mut input_state_dcs_escape_table: [input_transition; 4] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x5c as libc::c_int,
-                last: 0x5c as libc::c_int,
+                first: 0x5ci32,
+                last: 0x5ci32,
                 handler: Some(
                     input_dcs_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3640,8 +3638,8 @@ static mut input_state_dcs_escape_table: [input_transition; 4] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x5d as libc::c_int,
-                last: 0xff as libc::c_int,
+                first: 0x5di32,
+                last: 0xffi32,
                 handler: Some(
                     input_input as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3651,8 +3649,8 @@ static mut input_state_dcs_escape_table: [input_transition; 4] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: -(1 as libc::c_int),
-                last: -(1 as libc::c_int),
+                first: -(1i32),
+                last: -(1i32),
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3665,8 +3663,8 @@ static mut input_state_dcs_ignore_table: [input_transition; 8] = unsafe {
     [
         {
             let mut init = input_transition {
-                first: 0x18 as libc::c_int,
-                last: 0x18 as libc::c_int,
+                first: 0x18i32,
+                last: 0x18i32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3676,8 +3674,8 @@ static mut input_state_dcs_ignore_table: [input_transition; 8] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1a as libc::c_int,
-                last: 0x1a as libc::c_int,
+                first: 0x1ai32,
+                last: 0x1ai32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3687,8 +3685,8 @@ static mut input_state_dcs_ignore_table: [input_transition; 8] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1b as libc::c_int,
-                last: 0x1b as libc::c_int,
+                first: 0x1bi32,
+                last: 0x1bi32,
                 handler: None,
                 state: &input_state_esc_enter as *const input_state,
             };
@@ -3696,8 +3694,8 @@ static mut input_state_dcs_ignore_table: [input_transition; 8] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0 as libc::c_int,
-                last: 0x17 as libc::c_int,
+                first: 0i32,
+                last: 0x17i32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3705,8 +3703,8 @@ static mut input_state_dcs_ignore_table: [input_transition; 8] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x19 as libc::c_int,
-                last: 0x19 as libc::c_int,
+                first: 0x19i32,
+                last: 0x19i32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3714,8 +3712,8 @@ static mut input_state_dcs_ignore_table: [input_transition; 8] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1c as libc::c_int,
-                last: 0x1f as libc::c_int,
+                first: 0x1ci32,
+                last: 0x1fi32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3723,8 +3721,8 @@ static mut input_state_dcs_ignore_table: [input_transition; 8] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x20 as libc::c_int,
-                last: 0xff as libc::c_int,
+                first: 0x20i32,
+                last: 0xffi32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3732,8 +3730,8 @@ static mut input_state_dcs_ignore_table: [input_transition; 8] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: -(1 as libc::c_int),
-                last: -(1 as libc::c_int),
+                first: -(1i32),
+                last: -(1i32),
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3746,8 +3744,8 @@ static mut input_state_osc_string_table: [input_transition; 10] = unsafe {
     [
         {
             let mut init = input_transition {
-                first: 0x18 as libc::c_int,
-                last: 0x18 as libc::c_int,
+                first: 0x18i32,
+                last: 0x18i32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3757,8 +3755,8 @@ static mut input_state_osc_string_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1a as libc::c_int,
-                last: 0x1a as libc::c_int,
+                first: 0x1ai32,
+                last: 0x1ai32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3768,8 +3766,8 @@ static mut input_state_osc_string_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1b as libc::c_int,
-                last: 0x1b as libc::c_int,
+                first: 0x1bi32,
+                last: 0x1bi32,
                 handler: None,
                 state: &input_state_esc_enter as *const input_state,
             };
@@ -3777,8 +3775,8 @@ static mut input_state_osc_string_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0 as libc::c_int,
-                last: 0x6 as libc::c_int,
+                first: 0i32,
+                last: 0x6i32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3786,8 +3784,8 @@ static mut input_state_osc_string_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x7 as libc::c_int,
-                last: 0x7 as libc::c_int,
+                first: 0x7i32,
+                last: 0x7i32,
                 handler: Some(
                     input_end_bel as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3797,8 +3795,8 @@ static mut input_state_osc_string_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x8 as libc::c_int,
-                last: 0x17 as libc::c_int,
+                first: 0x8i32,
+                last: 0x17i32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3806,8 +3804,8 @@ static mut input_state_osc_string_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x19 as libc::c_int,
-                last: 0x19 as libc::c_int,
+                first: 0x19i32,
+                last: 0x19i32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3815,8 +3813,8 @@ static mut input_state_osc_string_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1c as libc::c_int,
-                last: 0x1f as libc::c_int,
+                first: 0x1ci32,
+                last: 0x1fi32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3824,8 +3822,8 @@ static mut input_state_osc_string_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x20 as libc::c_int,
-                last: 0xff as libc::c_int,
+                first: 0x20i32,
+                last: 0xffi32,
                 handler: Some(
                     input_input as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3835,8 +3833,8 @@ static mut input_state_osc_string_table: [input_transition; 10] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: -(1 as libc::c_int),
-                last: -(1 as libc::c_int),
+                first: -(1i32),
+                last: -(1i32),
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3849,8 +3847,8 @@ static mut input_state_apc_string_table: [input_transition; 8] = unsafe {
     [
         {
             let mut init = input_transition {
-                first: 0x18 as libc::c_int,
-                last: 0x18 as libc::c_int,
+                first: 0x18i32,
+                last: 0x18i32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3860,8 +3858,8 @@ static mut input_state_apc_string_table: [input_transition; 8] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1a as libc::c_int,
-                last: 0x1a as libc::c_int,
+                first: 0x1ai32,
+                last: 0x1ai32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3871,8 +3869,8 @@ static mut input_state_apc_string_table: [input_transition; 8] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1b as libc::c_int,
-                last: 0x1b as libc::c_int,
+                first: 0x1bi32,
+                last: 0x1bi32,
                 handler: None,
                 state: &input_state_esc_enter as *const input_state,
             };
@@ -3880,8 +3878,8 @@ static mut input_state_apc_string_table: [input_transition; 8] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0 as libc::c_int,
-                last: 0x17 as libc::c_int,
+                first: 0i32,
+                last: 0x17i32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3889,8 +3887,8 @@ static mut input_state_apc_string_table: [input_transition; 8] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x19 as libc::c_int,
-                last: 0x19 as libc::c_int,
+                first: 0x19i32,
+                last: 0x19i32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3898,8 +3896,8 @@ static mut input_state_apc_string_table: [input_transition; 8] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1c as libc::c_int,
-                last: 0x1f as libc::c_int,
+                first: 0x1ci32,
+                last: 0x1fi32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3907,8 +3905,8 @@ static mut input_state_apc_string_table: [input_transition; 8] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x20 as libc::c_int,
-                last: 0xff as libc::c_int,
+                first: 0x20i32,
+                last: 0xffi32,
                 handler: Some(
                     input_input as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3918,8 +3916,8 @@ static mut input_state_apc_string_table: [input_transition; 8] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: -(1 as libc::c_int),
-                last: -(1 as libc::c_int),
+                first: -(1i32),
+                last: -(1i32),
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3932,8 +3930,8 @@ static mut input_state_rename_string_table: [input_transition; 8] = unsafe {
     [
         {
             let mut init = input_transition {
-                first: 0x18 as libc::c_int,
-                last: 0x18 as libc::c_int,
+                first: 0x18i32,
+                last: 0x18i32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3943,8 +3941,8 @@ static mut input_state_rename_string_table: [input_transition; 8] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1a as libc::c_int,
-                last: 0x1a as libc::c_int,
+                first: 0x1ai32,
+                last: 0x1ai32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -3954,8 +3952,8 @@ static mut input_state_rename_string_table: [input_transition; 8] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1b as libc::c_int,
-                last: 0x1b as libc::c_int,
+                first: 0x1bi32,
+                last: 0x1bi32,
                 handler: None,
                 state: &input_state_esc_enter as *const input_state,
             };
@@ -3963,8 +3961,8 @@ static mut input_state_rename_string_table: [input_transition; 8] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0 as libc::c_int,
-                last: 0x17 as libc::c_int,
+                first: 0i32,
+                last: 0x17i32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3972,8 +3970,8 @@ static mut input_state_rename_string_table: [input_transition; 8] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x19 as libc::c_int,
-                last: 0x19 as libc::c_int,
+                first: 0x19i32,
+                last: 0x19i32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3981,8 +3979,8 @@ static mut input_state_rename_string_table: [input_transition; 8] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1c as libc::c_int,
-                last: 0x1f as libc::c_int,
+                first: 0x1ci32,
+                last: 0x1fi32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -3990,8 +3988,8 @@ static mut input_state_rename_string_table: [input_transition; 8] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x20 as libc::c_int,
-                last: 0xff as libc::c_int,
+                first: 0x20i32,
+                last: 0xffi32,
                 handler: Some(
                     input_input as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -4001,8 +3999,8 @@ static mut input_state_rename_string_table: [input_transition; 8] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: -(1 as libc::c_int),
-                last: -(1 as libc::c_int),
+                first: -(1i32),
+                last: -(1i32),
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -4015,8 +4013,8 @@ static mut input_state_consume_st_table: [input_transition; 8] = unsafe {
     [
         {
             let mut init = input_transition {
-                first: 0x18 as libc::c_int,
-                last: 0x18 as libc::c_int,
+                first: 0x18i32,
+                last: 0x18i32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -4026,8 +4024,8 @@ static mut input_state_consume_st_table: [input_transition; 8] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1a as libc::c_int,
-                last: 0x1a as libc::c_int,
+                first: 0x1ai32,
+                last: 0x1ai32,
                 handler: Some(
                     input_c0_dispatch as unsafe extern "C" fn(_: *mut input_ctx) -> libc::c_int,
                 ),
@@ -4037,8 +4035,8 @@ static mut input_state_consume_st_table: [input_transition; 8] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1b as libc::c_int,
-                last: 0x1b as libc::c_int,
+                first: 0x1bi32,
+                last: 0x1bi32,
                 handler: None,
                 state: &input_state_esc_enter as *const input_state,
             };
@@ -4046,8 +4044,8 @@ static mut input_state_consume_st_table: [input_transition; 8] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0 as libc::c_int,
-                last: 0x17 as libc::c_int,
+                first: 0i32,
+                last: 0x17i32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -4055,8 +4053,8 @@ static mut input_state_consume_st_table: [input_transition; 8] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x19 as libc::c_int,
-                last: 0x19 as libc::c_int,
+                first: 0x19i32,
+                last: 0x19i32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -4064,8 +4062,8 @@ static mut input_state_consume_st_table: [input_transition; 8] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x1c as libc::c_int,
-                last: 0x1f as libc::c_int,
+                first: 0x1ci32,
+                last: 0x1fi32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -4073,8 +4071,8 @@ static mut input_state_consume_st_table: [input_transition; 8] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: 0x20 as libc::c_int,
-                last: 0xff as libc::c_int,
+                first: 0x20i32,
+                last: 0xffi32,
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -4082,8 +4080,8 @@ static mut input_state_consume_st_table: [input_transition; 8] = unsafe {
         },
         {
             let mut init = input_transition {
-                first: -(1 as libc::c_int),
-                last: -(1 as libc::c_int),
+                first: -(1i32),
+                last: -(1i32),
                 handler: None,
                 state: 0 as *const input_state,
             };
@@ -4123,14 +4121,14 @@ unsafe extern "C" fn input_timer_callback(
             .as_ptr(),
         (*(*ictx).state).name,
     );
-    input_reset(ictx, 0 as libc::c_int);
+    input_reset(ictx, 0i32);
 }
 /* Start the timer. */
 unsafe extern "C" fn input_start_timer(mut ictx: *mut input_ctx) {
     let mut tv: timeval = {
         let mut init = timeval {
-            tv_sec: 5 as libc::c_int as __time_t,
-            tv_usec: 0 as libc::c_int as __suseconds_t,
+            tv_sec: 5i64,
+            tv_usec: 0i64,
         };
         init
     };
@@ -4144,16 +4142,16 @@ unsafe extern "C" fn input_reset_cell(mut ictx: *mut input_ctx) {
         &grid_default_cell as *const GridCell as *const libc::c_void,
         ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
-    (*ictx).cell.set = 0 as libc::c_int;
-    (*ictx).cell.g1set = 0 as libc::c_int;
+    (*ictx).cell.set = 0i32;
+    (*ictx).cell.g1set = 0i32;
     (*ictx).cell.g0set = (*ictx).cell.g1set;
     memcpy(
         &mut (*ictx).old_cell as *mut input_cell as *mut libc::c_void,
         &mut (*ictx).cell as *mut input_cell as *const libc::c_void,
         ::std::mem::size_of::<input_cell>() as libc::c_ulong,
     );
-    (*ictx).old_cx = 0 as libc::c_int as u_int;
-    (*ictx).old_cy = 0 as libc::c_int as u_int;
+    (*ictx).old_cx = 0u32;
+    (*ictx).old_cy = 0u32;
 }
 /* Save screen state. */
 unsafe extern "C" fn input_save_state(mut ictx: *mut input_ctx) {
@@ -4176,16 +4174,16 @@ unsafe extern "C" fn input_restore_state(mut ictx: *mut input_ctx) {
         &mut (*ictx).old_cell as *mut input_cell as *const libc::c_void,
         ::std::mem::size_of::<input_cell>() as libc::c_ulong,
     );
-    if (*ictx).old_mode & 0x2000 as libc::c_int != 0 {
-        screen_write_mode_set(sctx, 0x2000 as libc::c_int);
+    if (*ictx).old_mode & 0x2000i32 != 0 {
+        screen_write_mode_set(sctx, 0x2000i32);
     } else {
-        screen_write_mode_clear(sctx, 0x2000 as libc::c_int);
+        screen_write_mode_clear(sctx, 0x2000i32);
     }
     screen_write_cursormove(
         sctx,
         (*ictx).old_cx as libc::c_int,
         (*ictx).old_cy as libc::c_int,
-        0 as libc::c_int,
+        0i32,
     );
 }
 /* Initialise input parser. */
@@ -4195,22 +4193,19 @@ pub unsafe extern "C" fn input_init(
     mut bev: *mut bufferevent,
 ) -> *mut input_ctx {
     let mut ictx: *mut input_ctx = 0 as *mut input_ctx;
-    ictx = xcalloc(
-        1 as libc::c_int as size_t,
-        ::std::mem::size_of::<input_ctx>() as libc::c_ulong,
-    ) as *mut input_ctx;
+    ictx = xcalloc(1u64, ::std::mem::size_of::<input_ctx>() as libc::c_ulong) as *mut input_ctx;
     (*ictx).wp = wp;
     (*ictx).event = bev;
-    (*ictx).input_space = 32 as libc::c_int as size_t;
-    (*ictx).input_buf = xmalloc(32 as libc::c_int as size_t) as *mut u_char;
+    (*ictx).input_space = 32u64;
+    (*ictx).input_buf = xmalloc(32u64) as *mut u_char;
     (*ictx).since_ground = evbuffer_new();
     if (*ictx).since_ground.is_null() {
         fatalx(b"out of memory\x00" as *const u8 as *const libc::c_char);
     }
     event_set(
         &mut (*ictx).timer,
-        -(1 as libc::c_int),
-        0 as libc::c_int as libc::c_short,
+        -(1i32),
+        0i16,
         Some(
             input_timer_callback
                 as unsafe extern "C" fn(
@@ -4221,18 +4216,16 @@ pub unsafe extern "C" fn input_init(
         ),
         ictx as *mut libc::c_void,
     );
-    input_reset(ictx, 0 as libc::c_int);
+    input_reset(ictx, 0i32);
     return ictx;
 }
 /* Destroy input parser. */
 #[no_mangle]
 pub unsafe extern "C" fn input_free(mut ictx: *mut input_ctx) {
     let mut i: u_int = 0;
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < (*ictx).param_list_len {
-        if (*ictx).param_list[i as usize].type_0 as libc::c_uint
-            == INPUT_STRING as libc::c_int as libc::c_uint
-        {
+        if (*ictx).param_list[i as usize].type_0 == INPUT_STRING {
             free((*ictx).param_list[i as usize].c2rust_unnamed.str_0 as *mut libc::c_void);
         }
         i = i.wrapping_add(1)
@@ -4258,9 +4251,9 @@ pub unsafe extern "C" fn input_reset(mut ictx: *mut input_ctx, mut clear: libc::
         screen_write_stop(sctx);
     }
     input_clear(ictx);
-    (*ictx).last = -(1 as libc::c_int);
+    (*ictx).last = -(1i32);
     (*ictx).state = &input_state_ground;
-    (*ictx).flags = 0 as libc::c_int;
+    (*ictx).flags = 0i32;
 }
 /* Return pending data. */
 #[no_mangle]
@@ -4282,7 +4275,7 @@ unsafe extern "C" fn input_parse(mut ictx: *mut input_ctx, mut buf: *mut u_char,
     let mut sctx: *mut screen_write_ctx = &mut (*ictx).ctx;
     let mut state: *const input_state = 0 as *const input_state;
     let mut itr: *const input_transition = 0 as *const input_transition;
-    let mut off: size_t = 0 as libc::c_int as size_t;
+    let mut off: size_t = 0u64;
     /* Parse the input. */
     while off < len {
         let fresh0 = off;
@@ -4295,13 +4288,13 @@ unsafe extern "C" fn input_parse(mut ictx: *mut input_ctx, mut buf: *mut u_char,
             || (*ictx).ch > (*itr).last
         {
             itr = (*(*ictx).state).transitions;
-            while (*itr).first != -(1 as libc::c_int) && (*itr).last != -(1 as libc::c_int) {
+            while (*itr).first != -(1i32) && (*itr).last != -(1i32) {
                 if (*ictx).ch >= (*itr).first && (*ictx).ch <= (*itr).last {
                     break;
                 }
                 itr = itr.offset(1)
             }
-            if (*itr).first == -(1 as libc::c_int) || (*itr).last == -(1 as libc::c_int) {
+            if (*itr).first == -(1i32) || (*itr).last == -(1i32) {
                 /* No transition? Eh? */
                 fatalx(b"no transition from state\x00" as *const u8 as *const libc::c_char);
             }
@@ -4324,7 +4317,7 @@ unsafe extern "C" fn input_parse(mut ictx: *mut input_ctx, mut buf: *mut u_char,
          * returns non-zero.
          */
         if (*itr).handler.is_some()
-            && (*itr).handler.expect("non-null function pointer")(ictx) != 0 as libc::c_int
+            && (*itr).handler.expect("non-null function pointer")(ictx) != 0i32
         {
             continue;
         }
@@ -4337,7 +4330,7 @@ unsafe extern "C" fn input_parse(mut ictx: *mut input_ctx, mut buf: *mut u_char,
             evbuffer_add(
                 (*ictx).since_ground,
                 &mut (*ictx).ch as *mut libc::c_int as *const libc::c_void,
-                1 as libc::c_int as size_t,
+                1u64,
             );
         }
     }
@@ -4360,11 +4353,11 @@ pub unsafe extern "C" fn input_parse_buffer(
 ) {
     let mut ictx: *mut input_ctx = (*wp).ictx;
     let mut sctx: *mut screen_write_ctx = &mut (*ictx).ctx;
-    if len == 0 as libc::c_int as libc::c_ulong {
+    if len == 0u64 {
         return;
     }
     window_update_activity((*wp).window);
-    (*wp).flags |= 0x80 as libc::c_int;
+    (*wp).flags |= 0x80i32;
     /* NULL wp if there is a mode set as don't want to update the tty. */
     if (*wp).modes.tqh_first.is_null() {
         screen_write_start_pane(sctx, wp, &mut (*wp).base);
@@ -4395,7 +4388,7 @@ pub unsafe extern "C" fn input_parse_screen(
     mut len: size_t,
 ) {
     let mut sctx: *mut screen_write_ctx = &mut (*ictx).ctx;
-    if len == 0 as libc::c_int as libc::c_ulong {
+    if len == 0u64 {
         return;
     }
     screen_write_start_callback(sctx, s, cb, arg);
@@ -4410,23 +4403,18 @@ unsafe extern "C" fn input_split(mut ictx: *mut input_ctx) -> libc::c_int {
     let mut out: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut ip: *mut input_param = 0 as *mut input_param;
     let mut i: u_int = 0;
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < (*ictx).param_list_len {
-        if (*ictx).param_list[i as usize].type_0 as libc::c_uint
-            == INPUT_STRING as libc::c_int as libc::c_uint
-        {
+        if (*ictx).param_list[i as usize].type_0 == INPUT_STRING {
             free((*ictx).param_list[i as usize].c2rust_unnamed.str_0 as *mut libc::c_void);
         }
         i = i.wrapping_add(1)
     }
-    (*ictx).param_list_len = 0 as libc::c_int as u_int;
-    if (*ictx).param_len == 0 as libc::c_int as libc::c_ulong {
-        return 0 as libc::c_int;
+    (*ictx).param_list_len = 0u32;
+    if (*ictx).param_len == 0u64 {
+        return 0i32;
     }
-    ip = &mut *(*ictx)
-        .param_list
-        .as_mut_ptr()
-        .offset(0 as libc::c_int as isize) as *mut input_param;
+    ip = &mut *(*ictx).param_list.as_mut_ptr().offset(0isize) as *mut input_param;
     ptr = (*ictx).param_buf.as_mut_ptr() as *mut libc::c_char;
     loop {
         out = strsep(&mut ptr, b";\x00" as *const u8 as *const libc::c_char);
@@ -4440,14 +4428,10 @@ unsafe extern "C" fn input_split(mut ictx: *mut input_ctx) -> libc::c_int {
             (*ip).c2rust_unnamed.str_0 = xstrdup(out)
         } else {
             (*ip).type_0 = INPUT_NUMBER;
-            (*ip).c2rust_unnamed.num = strtonum(
-                out,
-                0 as libc::c_int as libc::c_longlong,
-                2147483647 as libc::c_int as libc::c_longlong,
-                &mut errstr,
-            ) as libc::c_int;
+            (*ip).c2rust_unnamed.num =
+                strtonum(out, 0i64, 2147483647i64, &mut errstr) as libc::c_int;
             if !errstr.is_null() {
-                return -(1 as libc::c_int);
+                return -(1i32);
             }
         }
         (*ictx).param_list_len = (*ictx).param_list_len.wrapping_add(1);
@@ -4459,24 +4443,24 @@ unsafe extern "C" fn input_split(mut ictx: *mut input_ctx) -> libc::c_int {
             == (::std::mem::size_of::<[input_param; 24]>() as libc::c_ulong)
                 .wrapping_div(::std::mem::size_of::<input_param>() as libc::c_ulong)
         {
-            return -(1 as libc::c_int);
+            return -(1i32);
         }
     }
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < (*ictx).param_list_len {
         ip = &mut *(*ictx).param_list.as_mut_ptr().offset(i as isize) as *mut input_param;
-        if (*ip).type_0 as libc::c_uint == INPUT_MISSING as libc::c_int as libc::c_uint {
+        if (*ip).type_0 == INPUT_MISSING {
             log_debug(
                 b"parameter %u: missing\x00" as *const u8 as *const libc::c_char,
                 i,
             );
-        } else if (*ip).type_0 as libc::c_uint == INPUT_STRING as libc::c_int as libc::c_uint {
+        } else if (*ip).type_0 == INPUT_STRING {
             log_debug(
                 b"parameter %u: string %s\x00" as *const u8 as *const libc::c_char,
                 i,
                 (*ip).c2rust_unnamed.str_0,
             );
-        } else if (*ip).type_0 as libc::c_uint == INPUT_NUMBER as libc::c_int as libc::c_uint {
+        } else if (*ip).type_0 == INPUT_NUMBER {
             log_debug(
                 b"parameter %u: number %d\x00" as *const u8 as *const libc::c_char,
                 i,
@@ -4485,7 +4469,7 @@ unsafe extern "C" fn input_split(mut ictx: *mut input_ctx) -> libc::c_int {
         }
         i = i.wrapping_add(1)
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 /* Get an argument or return default value. */
 unsafe extern "C" fn input_get(
@@ -4500,11 +4484,11 @@ unsafe extern "C" fn input_get(
         return defval;
     }
     ip = &mut *(*ictx).param_list.as_mut_ptr().offset(validx as isize) as *mut input_param;
-    if (*ip).type_0 as libc::c_uint == INPUT_MISSING as libc::c_int as libc::c_uint {
+    if (*ip).type_0 == INPUT_MISSING {
         return defval;
     }
-    if (*ip).type_0 as libc::c_uint == INPUT_STRING as libc::c_int as libc::c_uint {
-        return -(1 as libc::c_int);
+    if (*ip).type_0 == INPUT_STRING {
+        return -(1i32);
     }
     retval = (*ip).c2rust_unnamed.num;
     if retval < minval {
@@ -4530,14 +4514,14 @@ unsafe extern "C" fn input_reply(
 /* Clear saved state. */
 unsafe extern "C" fn input_clear(mut ictx: *mut input_ctx) {
     event_del(&mut (*ictx).timer);
-    *(*ictx).interm_buf.as_mut_ptr() = '\u{0}' as i32 as u_char;
-    (*ictx).interm_len = 0 as libc::c_int as size_t;
-    *(*ictx).param_buf.as_mut_ptr() = '\u{0}' as i32 as u_char;
-    (*ictx).param_len = 0 as libc::c_int as size_t;
-    *(*ictx).input_buf = '\u{0}' as i32 as u_char;
-    (*ictx).input_len = 0 as libc::c_int as size_t;
+    *(*ictx).interm_buf.as_mut_ptr() = '\u{0}' as u_char;
+    (*ictx).interm_len = 0u64;
+    *(*ictx).param_buf.as_mut_ptr() = '\u{0}' as u_char;
+    (*ictx).param_len = 0u64;
+    *(*ictx).input_buf = '\u{0}' as u_char;
+    (*ictx).input_len = 0u64;
     (*ictx).input_end = INPUT_END_ST;
-    (*ictx).flags &= !(0x1 as libc::c_int);
+    (*ictx).flags &= !(0x1i32);
 }
 /* Reset for ground state. */
 unsafe extern "C" fn input_ground(mut ictx: *mut input_ctx) {
@@ -4546,12 +4530,9 @@ unsafe extern "C" fn input_ground(mut ictx: *mut input_ctx) {
         (*ictx).since_ground,
         evbuffer_get_length((*ictx).since_ground),
     );
-    if (*ictx).input_space > 32 as libc::c_int as libc::c_ulong {
-        (*ictx).input_space = 32 as libc::c_int as size_t;
-        (*ictx).input_buf = xrealloc(
-            (*ictx).input_buf as *mut libc::c_void,
-            32 as libc::c_int as size_t,
-        ) as *mut u_char
+    if (*ictx).input_space > 32u64 {
+        (*ictx).input_space = 32u64;
+        (*ictx).input_buf = xrealloc((*ictx).input_buf as *mut libc::c_void, 32u64) as *mut u_char
     };
 }
 /* Input state handlers. */
@@ -4559,70 +4540,60 @@ unsafe extern "C" fn input_ground(mut ictx: *mut input_ctx) {
 unsafe extern "C" fn input_print(mut ictx: *mut input_ctx) -> libc::c_int {
     let mut sctx: *mut screen_write_ctx = &mut (*ictx).ctx; /* can't be valid UTF-8 */
     let mut set: libc::c_int = 0;
-    (*ictx).utf8started = 0 as libc::c_int;
-    set = if (*ictx).cell.set == 0 as libc::c_int {
+    (*ictx).utf8started = 0i32;
+    set = if (*ictx).cell.set == 0i32 {
         (*ictx).cell.g0set
     } else {
         (*ictx).cell.g1set
     };
-    if set == 1 as libc::c_int {
-        (*ictx).cell.cell.attr =
-            ((*ictx).cell.cell.attr as libc::c_int | 0x80 as libc::c_int) as u_short
+    if set == 1i32 {
+        (*ictx).cell.cell.attr = ((*ictx).cell.cell.attr as libc::c_int | 0x80i32) as u_short
     } else {
-        (*ictx).cell.cell.attr =
-            ((*ictx).cell.cell.attr as libc::c_int & !(0x80 as libc::c_int)) as u_short
+        (*ictx).cell.cell.attr = ((*ictx).cell.cell.attr as libc::c_int & !(0x80i32)) as u_short
     }
     utf8_set(&mut (*ictx).cell.cell.data, (*ictx).ch as u_char);
     screen_write_collect_add(sctx, &mut (*ictx).cell.cell);
     (*ictx).last = (*ictx).ch;
-    (*ictx).cell.cell.attr =
-        ((*ictx).cell.cell.attr as libc::c_int & !(0x80 as libc::c_int)) as u_short;
-    return 0 as libc::c_int;
+    (*ictx).cell.cell.attr = ((*ictx).cell.cell.attr as libc::c_int & !(0x80i32)) as u_short;
+    return 0i32;
 }
 /* Collect intermediate string. */
 unsafe extern "C" fn input_intermediate(mut ictx: *mut input_ctx) -> libc::c_int {
     if (*ictx).interm_len
-        == (::std::mem::size_of::<[u_char; 4]>() as libc::c_ulong)
-            .wrapping_sub(1 as libc::c_int as libc::c_ulong)
+        == (::std::mem::size_of::<[u_char; 4]>() as libc::c_ulong).wrapping_sub(1u64)
     {
-        (*ictx).flags |= 0x1 as libc::c_int
+        (*ictx).flags |= 0x1i32
     } else {
         let fresh1 = (*ictx).interm_len;
         (*ictx).interm_len = (*ictx).interm_len.wrapping_add(1);
         (*ictx).interm_buf[fresh1 as usize] = (*ictx).ch as u_char;
-        (*ictx).interm_buf[(*ictx).interm_len as usize] = '\u{0}' as i32 as u_char
+        (*ictx).interm_buf[(*ictx).interm_len as usize] = '\u{0}' as u_char
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 /* Collect parameter string. */
 unsafe extern "C" fn input_parameter(mut ictx: *mut input_ctx) -> libc::c_int {
     if (*ictx).param_len
-        == (::std::mem::size_of::<[u_char; 64]>() as libc::c_ulong)
-            .wrapping_sub(1 as libc::c_int as libc::c_ulong)
+        == (::std::mem::size_of::<[u_char; 64]>() as libc::c_ulong).wrapping_sub(1u64)
     {
-        (*ictx).flags |= 0x1 as libc::c_int
+        (*ictx).flags |= 0x1i32
     } else {
         let fresh2 = (*ictx).param_len;
         (*ictx).param_len = (*ictx).param_len.wrapping_add(1);
         (*ictx).param_buf[fresh2 as usize] = (*ictx).ch as u_char;
-        (*ictx).param_buf[(*ictx).param_len as usize] = '\u{0}' as i32 as u_char
+        (*ictx).param_buf[(*ictx).param_len as usize] = '\u{0}' as u_char
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 /* Collect input string. */
 unsafe extern "C" fn input_input(mut ictx: *mut input_ctx) -> libc::c_int {
     let mut available: size_t = 0;
     available = (*ictx).input_space;
-    while (*ictx)
-        .input_len
-        .wrapping_add(1 as libc::c_int as libc::c_ulong)
-        >= available
-    {
-        available = (available as libc::c_ulong).wrapping_mul(2 as libc::c_int as libc::c_ulong)
-            as size_t as size_t;
-        if available > 1048576 as libc::c_int as libc::c_ulong {
-            (*ictx).flags |= 0x1 as libc::c_int;
-            return 0 as libc::c_int;
+    while (*ictx).input_len.wrapping_add(1u64) >= available {
+        available = (available).wrapping_mul(2u64);
+        if available > 1048576u64 {
+            (*ictx).flags |= 0x1i32;
+            return 0i32;
         }
         (*ictx).input_buf =
             xrealloc((*ictx).input_buf as *mut libc::c_void, available) as *mut u_char;
@@ -4631,15 +4602,15 @@ unsafe extern "C" fn input_input(mut ictx: *mut input_ctx) -> libc::c_int {
     let fresh3 = (*ictx).input_len;
     (*ictx).input_len = (*ictx).input_len.wrapping_add(1);
     *(*ictx).input_buf.offset(fresh3 as isize) = (*ictx).ch as u_char;
-    *(*ictx).input_buf.offset((*ictx).input_len as isize) = '\u{0}' as i32 as u_char;
-    return 0 as libc::c_int;
+    *(*ictx).input_buf.offset((*ictx).input_len as isize) = '\u{0}' as u_char;
+    return 0i32;
 }
 /* Execute C0 control sequence. */
 unsafe extern "C" fn input_c0_dispatch(mut ictx: *mut input_ctx) -> libc::c_int {
     let mut sctx: *mut screen_write_ctx = &mut (*ictx).ctx; /* can't be valid UTF-8 */
     let mut wp: *mut window_pane = (*ictx).wp;
     let mut s: *mut screen = (*sctx).s;
-    (*ictx).utf8started = 0 as libc::c_int;
+    (*ictx).utf8started = 0i32;
     log_debug(
         b"%s: \'%c\'\x00" as *const u8 as *const libc::c_char,
         (*::std::mem::transmute::<&[u8; 18], &[libc::c_char; 18]>(b"input_c0_dispatch\x00"))
@@ -4654,7 +4625,7 @@ unsafe extern "C" fn input_c0_dispatch(mut ictx: *mut input_ctx) -> libc::c_int 
         7 => {
             /* BEL */
             if !wp.is_null() {
-                alerts_queue((*wp).window, 0x1 as libc::c_int);
+                alerts_queue((*wp).window, 0x1i32);
             }
             current_block_13 = 18386322304582297246;
         }
@@ -4666,28 +4637,20 @@ unsafe extern "C" fn input_c0_dispatch(mut ictx: *mut input_ctx) -> libc::c_int 
         9 => {
             /* HT */
             /* Don't tab beyond the end of the line. */
-            if (*s).cx
-                >= (*(*s).grid)
-                    .sx
-                    .wrapping_sub(1 as libc::c_int as libc::c_uint)
-            {
+            if (*s).cx >= (*(*s).grid).sx.wrapping_sub(1u32) {
                 current_block_13 = 18386322304582297246;
             } else {
                 loop
                 /* Find the next tab point, or use the last column if none. */
                 {
                     (*s).cx = (*s).cx.wrapping_add(1);
-                    if *(*s).tabs.offset(((*s).cx >> 3 as libc::c_int) as isize) as libc::c_int
-                        & (1 as libc::c_int) << ((*s).cx & 0x7 as libc::c_int as libc::c_uint)
+                    if *(*s).tabs.offset(((*s).cx >> 3i32) as isize) as libc::c_int
+                        & (1i32) << ((*s).cx & 0x7u32)
                         != 0
                     {
                         break;
                     }
-                    if !((*s).cx
-                        < (*(*s).grid)
-                            .sx
-                            .wrapping_sub(1 as libc::c_int as libc::c_uint))
-                    {
+                    if !((*s).cx < (*(*s).grid).sx.wrapping_sub(1u32)) {
                         break;
                     }
                 }
@@ -4708,12 +4671,12 @@ unsafe extern "C" fn input_c0_dispatch(mut ictx: *mut input_ctx) -> libc::c_int 
         }
         14 => {
             /* SO */
-            (*ictx).cell.set = 1 as libc::c_int;
+            (*ictx).cell.set = 1i32;
             current_block_13 = 18386322304582297246;
         }
         15 => {
             /* SI */
-            (*ictx).cell.set = 0 as libc::c_int;
+            (*ictx).cell.set = 0i32;
             current_block_13 = 18386322304582297246;
         }
         _ => {
@@ -4733,15 +4696,15 @@ unsafe extern "C" fn input_c0_dispatch(mut ictx: *mut input_ctx) -> libc::c_int 
         /* LF */
         /* FF */
         {
-            screen_write_linefeed(sctx, 0 as libc::c_int, (*ictx).cell.cell.bg as u_int);
-            if (*s).mode & 0x4000 as libc::c_int != 0 {
+            screen_write_linefeed(sctx, 0i32, (*ictx).cell.cell.bg as u_int);
+            if (*s).mode & 0x4000i32 != 0 {
                 screen_write_carriagereturn(sctx);
             }
         }
         _ => {}
     }
-    (*ictx).last = -(1 as libc::c_int);
-    return 0 as libc::c_int;
+    (*ictx).last = -(1i32);
+    return 0i32;
 }
 /* Execute escape sequence. */
 unsafe extern "C" fn input_esc_dispatch(mut ictx: *mut input_ctx) -> libc::c_int {
@@ -4749,8 +4712,8 @@ unsafe extern "C" fn input_esc_dispatch(mut ictx: *mut input_ctx) -> libc::c_int
     let mut wp: *mut window_pane = (*ictx).wp;
     let mut s: *mut screen = (*sctx).s;
     let mut entry: *mut input_table_entry = 0 as *mut input_table_entry;
-    if (*ictx).flags & 0x1 as libc::c_int != 0 {
-        return 0 as libc::c_int;
+    if (*ictx).flags & 0x1i32 != 0 {
+        return 0i32;
     }
     log_debug(
         b"%s: \'%c\', %s\x00" as *const u8 as *const libc::c_char,
@@ -4780,7 +4743,7 @@ unsafe extern "C" fn input_esc_dispatch(mut ictx: *mut input_ctx) -> libc::c_int
                 .as_ptr(),
             (*ictx).ch,
         );
-        return 0 as libc::c_int;
+        return 0i32;
     }
     match (*entry).type_0 {
         9 => {
@@ -4791,28 +4754,26 @@ unsafe extern "C" fn input_esc_dispatch(mut ictx: *mut input_ctx) -> libc::c_int
             screen_write_reset(sctx);
         }
         6 => {
-            screen_write_linefeed(sctx, 0 as libc::c_int, (*ictx).cell.cell.bg as u_int);
+            screen_write_linefeed(sctx, 0i32, (*ictx).cell.cell.bg as u_int);
         }
         7 => {
             screen_write_carriagereturn(sctx);
-            screen_write_linefeed(sctx, 0 as libc::c_int, (*ictx).cell.cell.bg as u_int);
+            screen_write_linefeed(sctx, 0i32, (*ictx).cell.cell.bg as u_int);
         }
         5 => {
             if (*s).cx < (*(*s).grid).sx {
-                let ref mut fresh4 = *(*s).tabs.offset(((*s).cx >> 3 as libc::c_int) as isize);
-                *fresh4 = (*fresh4 as libc::c_int
-                    | (1 as libc::c_int) << ((*s).cx & 0x7 as libc::c_int as libc::c_uint))
-                    as bitstr_t
+                let ref mut fresh4 = *(*s).tabs.offset(((*s).cx >> 3i32) as isize);
+                *fresh4 = (*fresh4 as libc::c_int | (1i32) << ((*s).cx & 0x7u32)) as bitstr_t
             }
         }
         8 => {
             screen_write_reverseindex(sctx, (*ictx).cell.cell.bg as u_int);
         }
         1 => {
-            screen_write_mode_set(sctx, 0x8 as libc::c_int);
+            screen_write_mode_set(sctx, 0x8i32);
         }
         2 => {
-            screen_write_mode_clear(sctx, 0x8 as libc::c_int);
+            screen_write_mode_clear(sctx, 0x8i32);
         }
         4 => {
             input_save_state(ictx);
@@ -4823,14 +4784,14 @@ unsafe extern "C" fn input_esc_dispatch(mut ictx: *mut input_ctx) -> libc::c_int
         0 => {
             screen_write_alignmenttest(sctx);
         }
-        11 => (*ictx).cell.g0set = 1 as libc::c_int,
-        10 => (*ictx).cell.g0set = 0 as libc::c_int,
-        13 => (*ictx).cell.g1set = 1 as libc::c_int,
-        12 => (*ictx).cell.g1set = 0 as libc::c_int,
+        11 => (*ictx).cell.g0set = 1i32,
+        10 => (*ictx).cell.g0set = 0i32,
+        13 => (*ictx).cell.g1set = 1i32,
+        12 => (*ictx).cell.g1set = 0i32,
         14 | _ => {}
     }
-    (*ictx).last = -(1 as libc::c_int);
-    return 0 as libc::c_int;
+    (*ictx).last = -(1i32);
+    return 0i32;
 }
 /* Execute control sequence. */
 unsafe extern "C" fn input_csi_dispatch(mut ictx: *mut input_ctx) -> libc::c_int {
@@ -4842,8 +4803,8 @@ unsafe extern "C" fn input_csi_dispatch(mut ictx: *mut input_ctx) -> libc::c_int
     let mut m: libc::c_int = 0;
     let mut cx: u_int = 0;
     let mut bg: u_int = (*ictx).cell.cell.bg as u_int;
-    if (*ictx).flags & 0x1 as libc::c_int != 0 {
-        return 0 as libc::c_int;
+    if (*ictx).flags & 0x1i32 != 0 {
+        return 0i32;
     }
     log_debug(
         b"%s: \'%c\' \"%s\" \"%s\"\x00" as *const u8 as *const libc::c_char,
@@ -4853,8 +4814,8 @@ unsafe extern "C" fn input_csi_dispatch(mut ictx: *mut input_ctx) -> libc::c_int
         (*ictx).interm_buf.as_mut_ptr(),
         (*ictx).param_buf.as_mut_ptr(),
     );
-    if input_split(ictx) != 0 as libc::c_int {
-        return 0 as libc::c_int;
+    if input_split(ictx) != 0i32 {
+        return 0i32;
     }
     entry = bsearch(
         ictx as *const libc::c_void,
@@ -4877,38 +4838,27 @@ unsafe extern "C" fn input_csi_dispatch(mut ictx: *mut input_ctx) -> libc::c_int
                 .as_ptr(),
             (*ictx).ch,
         );
-        return 0 as libc::c_int;
+        return 0i32;
     }
     match (*entry).type_0 {
         0 => {
             /* Find the previous tab point, n times. */
             cx = (*s).cx;
-            if cx
-                > (*(*s).grid)
-                    .sx
-                    .wrapping_sub(1 as libc::c_int as libc::c_uint)
-            {
-                cx = (*(*s).grid)
-                    .sx
-                    .wrapping_sub(1 as libc::c_int as libc::c_uint)
+            if cx > (*(*s).grid).sx.wrapping_sub(1u32) {
+                cx = (*(*s).grid).sx.wrapping_sub(1u32)
             }
-            n = input_get(
-                ictx,
-                0 as libc::c_int as u_int,
-                1 as libc::c_int,
-                1 as libc::c_int,
-            );
-            if !(n == -(1 as libc::c_int)) {
-                while cx > 0 as libc::c_int as libc::c_uint && {
+            n = input_get(ictx, 0u32, 1i32, 1i32);
+            if !(n == -(1i32)) {
+                while cx > 0u32 && {
                     let fresh5 = n;
                     n = n - 1;
-                    (fresh5) > 0 as libc::c_int
+                    (fresh5) > 0i32
                 } {
                     loop {
                         cx = cx.wrapping_sub(1);
-                        if !(cx > 0 as libc::c_int as libc::c_uint
-                            && *(*s).tabs.offset((cx >> 3 as libc::c_int) as isize) as libc::c_int
-                                & (1 as libc::c_int) << (cx & 0x7 as libc::c_int as libc::c_uint)
+                        if !(cx > 0u32
+                            && *(*s).tabs.offset((cx >> 3i32) as isize) as libc::c_int
+                                & (1i32) << (cx & 0x7u32)
                                 == 0)
                         {
                             break;
@@ -4919,269 +4869,154 @@ unsafe extern "C" fn input_csi_dispatch(mut ictx: *mut input_ctx) -> libc::c_int
             }
         }
         3 => {
-            n = input_get(
-                ictx,
-                0 as libc::c_int as u_int,
-                1 as libc::c_int,
-                1 as libc::c_int,
-            );
-            if n != -(1 as libc::c_int) {
+            n = input_get(ictx, 0u32, 1i32, 1i32);
+            if n != -(1i32) {
                 screen_write_cursorleft(sctx, n as u_int);
             }
         }
         4 => {
-            n = input_get(
-                ictx,
-                0 as libc::c_int as u_int,
-                1 as libc::c_int,
-                1 as libc::c_int,
-            );
-            if n != -(1 as libc::c_int) {
+            n = input_get(ictx, 0u32, 1i32, 1i32);
+            if n != -(1i32) {
                 screen_write_cursordown(sctx, n as u_int);
             }
         }
         5 => {
-            n = input_get(
-                ictx,
-                0 as libc::c_int as u_int,
-                1 as libc::c_int,
-                1 as libc::c_int,
-            );
-            if n != -(1 as libc::c_int) {
+            n = input_get(ictx, 0u32, 1i32, 1i32);
+            if n != -(1i32) {
                 screen_write_cursorright(sctx, n as u_int);
             }
         }
         6 => {
-            n = input_get(
-                ictx,
-                0 as libc::c_int as u_int,
-                1 as libc::c_int,
-                1 as libc::c_int,
-            );
-            m = input_get(
-                ictx,
-                1 as libc::c_int as u_int,
-                1 as libc::c_int,
-                1 as libc::c_int,
-            );
-            if n != -(1 as libc::c_int) && m != -(1 as libc::c_int) {
-                screen_write_cursormove(
-                    sctx,
-                    m - 1 as libc::c_int,
-                    n - 1 as libc::c_int,
-                    1 as libc::c_int,
-                );
+            n = input_get(ictx, 0u32, 1i32, 1i32);
+            m = input_get(ictx, 1u32, 1i32, 1i32);
+            if n != -(1i32) && m != -(1i32) {
+                screen_write_cursormove(sctx, m - 1i32, n - 1i32, 1i32);
             }
         }
         22 => {
-            n = input_get(
-                ictx,
-                0 as libc::c_int as u_int,
-                0 as libc::c_int,
-                0 as libc::c_int,
-            );
-            m = input_get(
-                ictx,
-                1 as libc::c_int as u_int,
-                0 as libc::c_int,
-                0 as libc::c_int,
-            );
-            if n == 0 as libc::c_int || n == 4 as libc::c_int && m == 0 as libc::c_int {
-                screen_write_mode_clear(sctx, 0x8000 as libc::c_int);
-            } else if n == 4 as libc::c_int && (m == 1 as libc::c_int || m == 2 as libc::c_int) {
-                screen_write_mode_set(sctx, 0x8000 as libc::c_int);
+            n = input_get(ictx, 0u32, 0i32, 0i32);
+            m = input_get(ictx, 1u32, 0i32, 0i32);
+            if n == 0i32 || n == 4i32 && m == 0i32 {
+                screen_write_mode_clear(sctx, 0x8000i32);
+            } else if n == 4i32 && (m == 1i32 || m == 2i32) {
+                screen_write_mode_set(sctx, 0x8000i32);
             }
         }
         21 => {
-            n = input_get(
-                ictx,
-                0 as libc::c_int as u_int,
-                0 as libc::c_int,
-                0 as libc::c_int,
-            );
-            if n == 4 as libc::c_int {
-                screen_write_mode_clear(sctx, 0x8000 as libc::c_int);
+            n = input_get(ictx, 0u32, 0i32, 0i32);
+            if n == 4i32 {
+                screen_write_mode_clear(sctx, 0x8000i32);
             }
         }
         35 => {
             input_csi_dispatch_winops(ictx);
         }
         7 => {
-            n = input_get(
-                ictx,
-                0 as libc::c_int as u_int,
-                1 as libc::c_int,
-                1 as libc::c_int,
-            );
-            if n != -(1 as libc::c_int) {
+            n = input_get(ictx, 0u32, 1i32, 1i32);
+            if n != -(1i32) {
                 screen_write_cursorup(sctx, n as u_int);
             }
         }
         1 => {
-            n = input_get(
-                ictx,
-                0 as libc::c_int as u_int,
-                1 as libc::c_int,
-                1 as libc::c_int,
-            );
-            if n != -(1 as libc::c_int) {
+            n = input_get(ictx, 0u32, 1i32, 1i32);
+            if n != -(1i32) {
                 screen_write_carriagereturn(sctx);
                 screen_write_cursordown(sctx, n as u_int);
             }
         }
         2 => {
-            n = input_get(
-                ictx,
-                0 as libc::c_int as u_int,
-                1 as libc::c_int,
-                1 as libc::c_int,
-            );
-            if n != -(1 as libc::c_int) {
+            n = input_get(ictx, 0u32, 1i32, 1i32);
+            if n != -(1i32) {
                 screen_write_carriagereturn(sctx);
                 screen_write_cursorup(sctx, n as u_int);
             }
         }
-        8 => {
-            match input_get(
-                ictx,
-                0 as libc::c_int as u_int,
-                0 as libc::c_int,
-                0 as libc::c_int,
-            ) {
-                -1 => {}
-                0 => {
-                    input_reply(ictx, b"\x1b[?1;2c\x00" as *const u8 as *const libc::c_char);
-                }
-                _ => {
-                    log_debug(
-                        b"%s: unknown \'%c\'\x00" as *const u8 as *const libc::c_char,
-                        (*::std::mem::transmute::<&[u8; 19], &[libc::c_char; 19]>(
-                            b"input_csi_dispatch\x00",
-                        ))
-                        .as_ptr(),
-                        (*ictx).ch,
-                    );
-                }
+        8 => match input_get(ictx, 0u32, 0i32, 0i32) {
+            -1 => {}
+            0 => {
+                input_reply(ictx, b"\x1b[?1;2c\x00" as *const u8 as *const libc::c_char);
             }
-        }
-        9 => {
-            match input_get(
-                ictx,
-                0 as libc::c_int as u_int,
-                0 as libc::c_int,
-                0 as libc::c_int,
-            ) {
-                -1 => {}
-                0 => {
-                    input_reply(
-                        ictx,
-                        b"\x1b[>84;0;0c\x00" as *const u8 as *const libc::c_char,
-                    );
-                }
-                _ => {
-                    log_debug(
-                        b"%s: unknown \'%c\'\x00" as *const u8 as *const libc::c_char,
-                        (*::std::mem::transmute::<&[u8; 19], &[libc::c_char; 19]>(
-                            b"input_csi_dispatch\x00",
-                        ))
-                        .as_ptr(),
-                        (*ictx).ch,
-                    );
-                }
+            _ => {
+                log_debug(
+                    b"%s: unknown \'%c\'\x00" as *const u8 as *const libc::c_char,
+                    (*::std::mem::transmute::<&[u8; 19], &[libc::c_char; 19]>(
+                        b"input_csi_dispatch\x00",
+                    ))
+                    .as_ptr(),
+                    (*ictx).ch,
+                );
             }
-        }
+        },
+        9 => match input_get(ictx, 0u32, 0i32, 0i32) {
+            -1 => {}
+            0 => {
+                input_reply(
+                    ictx,
+                    b"\x1b[>84;0;0c\x00" as *const u8 as *const libc::c_char,
+                );
+            }
+            _ => {
+                log_debug(
+                    b"%s: unknown \'%c\'\x00" as *const u8 as *const libc::c_char,
+                    (*::std::mem::transmute::<&[u8; 19], &[libc::c_char; 19]>(
+                        b"input_csi_dispatch\x00",
+                    ))
+                    .as_ptr(),
+                    (*ictx).ch,
+                );
+            }
+        },
         15 => {
-            n = input_get(
-                ictx,
-                0 as libc::c_int as u_int,
-                1 as libc::c_int,
-                1 as libc::c_int,
-            );
-            if n != -(1 as libc::c_int) {
+            n = input_get(ictx, 0u32, 1i32, 1i32);
+            if n != -(1i32) {
                 screen_write_clearcharacter(sctx, n as u_int, bg);
             }
         }
         10 => {
-            n = input_get(
-                ictx,
-                0 as libc::c_int as u_int,
-                1 as libc::c_int,
-                1 as libc::c_int,
-            );
-            if n != -(1 as libc::c_int) {
+            n = input_get(ictx, 0u32, 1i32, 1i32);
+            if n != -(1i32) {
                 screen_write_deletecharacter(sctx, n as u_int, bg);
             }
         }
         12 => {
-            n = input_get(
-                ictx,
-                0 as libc::c_int as u_int,
-                1 as libc::c_int,
-                1 as libc::c_int,
-            );
-            m = input_get(
-                ictx,
-                1 as libc::c_int as u_int,
-                1 as libc::c_int,
-                (*(*s).grid).sy as libc::c_int,
-            );
-            if n != -(1 as libc::c_int) && m != -(1 as libc::c_int) {
-                screen_write_scrollregion(
-                    sctx,
-                    (n - 1 as libc::c_int) as u_int,
-                    (m - 1 as libc::c_int) as u_int,
-                );
+            n = input_get(ictx, 0u32, 1i32, 1i32);
+            m = input_get(ictx, 1u32, 1i32, (*(*s).grid).sy as libc::c_int);
+            if n != -(1i32) && m != -(1i32) {
+                screen_write_scrollregion(sctx, (n - 1i32) as u_int, (m - 1i32) as u_int);
             }
         }
         13 => {
-            n = input_get(
-                ictx,
-                0 as libc::c_int as u_int,
-                1 as libc::c_int,
-                1 as libc::c_int,
-            );
-            if n != -(1 as libc::c_int) {
+            n = input_get(ictx, 0u32, 1i32, 1i32);
+            if n != -(1i32) {
                 screen_write_deleteline(sctx, n as u_int, bg);
             }
         }
-        14 => {
-            match input_get(
-                ictx,
-                0 as libc::c_int as u_int,
-                0 as libc::c_int,
-                0 as libc::c_int,
-            ) {
-                -1 => {}
-                5 => {
-                    input_reply(ictx, b"\x1b[0n\x00" as *const u8 as *const libc::c_char);
-                }
-                6 => {
-                    input_reply(
-                        ictx,
-                        b"\x1b[%u;%uR\x00" as *const u8 as *const libc::c_char,
-                        (*s).cy.wrapping_add(1 as libc::c_int as libc::c_uint),
-                        (*s).cx.wrapping_add(1 as libc::c_int as libc::c_uint),
-                    );
-                }
-                _ => {
-                    log_debug(
-                        b"%s: unknown \'%c\'\x00" as *const u8 as *const libc::c_char,
-                        (*::std::mem::transmute::<&[u8; 19], &[libc::c_char; 19]>(
-                            b"input_csi_dispatch\x00",
-                        ))
-                        .as_ptr(),
-                        (*ictx).ch,
-                    );
-                }
+        14 => match input_get(ictx, 0u32, 0i32, 0i32) {
+            -1 => {}
+            5 => {
+                input_reply(ictx, b"\x1b[0n\x00" as *const u8 as *const libc::c_char);
             }
-        }
+            6 => {
+                input_reply(
+                    ictx,
+                    b"\x1b[%u;%uR\x00" as *const u8 as *const libc::c_char,
+                    (*s).cy.wrapping_add(1u32),
+                    (*s).cx.wrapping_add(1u32),
+                );
+            }
+            _ => {
+                log_debug(
+                    b"%s: unknown \'%c\'\x00" as *const u8 as *const libc::c_char,
+                    (*::std::mem::transmute::<&[u8; 19], &[libc::c_char; 19]>(
+                        b"input_csi_dispatch\x00",
+                    ))
+                    .as_ptr(),
+                    (*ictx).ch,
+                );
+            }
+        },
         16 => {
-            match input_get(
-                ictx,
-                0 as libc::c_int as u_int,
-                0 as libc::c_int,
-                0 as libc::c_int,
-            ) {
+            match input_get(ictx, 0u32, 0i32, 0i32) {
                 -1 => {}
                 0 => {
                     screen_write_clearendofscreen(sctx, bg);
@@ -5193,13 +5028,7 @@ unsafe extern "C" fn input_csi_dispatch(mut ictx: *mut input_ctx) -> libc::c_int
                     screen_write_clearscreen(sctx, bg);
                 }
                 3 => {
-                    if input_get(
-                        ictx,
-                        1 as libc::c_int as u_int,
-                        0 as libc::c_int,
-                        0 as libc::c_int,
-                    ) == 0 as libc::c_int
-                    {
+                    if input_get(ictx, 1u32, 0i32, 0i32) == 0i32 {
                         /*
                          * Linux console extension to clear history
                          * (for example before locking the screen).
@@ -5219,88 +5048,56 @@ unsafe extern "C" fn input_csi_dispatch(mut ictx: *mut input_ctx) -> libc::c_int
                 }
             }
         }
-        17 => {
-            match input_get(
-                ictx,
-                0 as libc::c_int as u_int,
-                0 as libc::c_int,
-                0 as libc::c_int,
-            ) {
-                -1 => {}
-                0 => {
-                    screen_write_clearendofline(sctx, bg);
-                }
-                1 => {
-                    screen_write_clearstartofline(sctx, bg);
-                }
-                2 => {
-                    screen_write_clearline(sctx, bg);
-                }
-                _ => {
-                    log_debug(
-                        b"%s: unknown \'%c\'\x00" as *const u8 as *const libc::c_char,
-                        (*::std::mem::transmute::<&[u8; 19], &[libc::c_char; 19]>(
-                            b"input_csi_dispatch\x00",
-                        ))
-                        .as_ptr(),
-                        (*ictx).ch,
-                    );
-                }
+        17 => match input_get(ictx, 0u32, 0i32, 0i32) {
+            -1 => {}
+            0 => {
+                screen_write_clearendofline(sctx, bg);
             }
-        }
-        18 => {
-            n = input_get(
-                ictx,
-                0 as libc::c_int as u_int,
-                1 as libc::c_int,
-                1 as libc::c_int,
-            );
-            if n != -(1 as libc::c_int) {
-                screen_write_cursormove(
-                    sctx,
-                    n - 1 as libc::c_int,
-                    -(1 as libc::c_int),
-                    1 as libc::c_int,
+            1 => {
+                screen_write_clearstartofline(sctx, bg);
+            }
+            2 => {
+                screen_write_clearline(sctx, bg);
+            }
+            _ => {
+                log_debug(
+                    b"%s: unknown \'%c\'\x00" as *const u8 as *const libc::c_char,
+                    (*::std::mem::transmute::<&[u8; 19], &[libc::c_char; 19]>(
+                        b"input_csi_dispatch\x00",
+                    ))
+                    .as_ptr(),
+                    (*ictx).ch,
                 );
+            }
+        },
+        18 => {
+            n = input_get(ictx, 0u32, 1i32, 1i32);
+            if n != -(1i32) {
+                screen_write_cursormove(sctx, n - 1i32, -(1i32), 1i32);
             }
         }
         19 => {
-            n = input_get(
-                ictx,
-                0 as libc::c_int as u_int,
-                1 as libc::c_int,
-                1 as libc::c_int,
-            );
-            if n != -(1 as libc::c_int) {
+            n = input_get(ictx, 0u32, 1i32, 1i32);
+            if n != -(1i32) {
                 screen_write_insertcharacter(sctx, n as u_int, bg);
             }
         }
         20 => {
-            n = input_get(
-                ictx,
-                0 as libc::c_int as u_int,
-                1 as libc::c_int,
-                1 as libc::c_int,
-            );
-            if n != -(1 as libc::c_int) {
+            n = input_get(ictx, 0u32, 1i32, 1i32);
+            if n != -(1i32) {
                 screen_write_insertline(sctx, n as u_int, bg);
             }
         }
         24 => {
-            n = input_get(
-                ictx,
-                0 as libc::c_int as u_int,
-                1 as libc::c_int,
-                1 as libc::c_int,
-            );
-            if !(n == -(1 as libc::c_int)) {
+            n = input_get(ictx, 0u32, 1i32, 1i32);
+            if !(n == -(1i32)) {
                 m = (*(*s).grid).sx.wrapping_sub((*s).cx) as libc::c_int;
                 if n > m {
                     n = m
                 }
-                if !((*ictx).last == -(1 as libc::c_int)) {
+                if !((*ictx).last == -(1i32)) {
                     (*ictx).ch = (*ictx).last;
-                    i = 0 as libc::c_int;
+                    i = 0i32;
                     while i < n {
                         input_print(ictx);
                         i += 1
@@ -5330,107 +5127,61 @@ unsafe extern "C" fn input_csi_dispatch(mut ictx: *mut input_ctx) -> libc::c_int
             input_csi_dispatch_sm_private(ictx);
         }
         32 => {
-            n = input_get(
-                ictx,
-                0 as libc::c_int as u_int,
-                1 as libc::c_int,
-                1 as libc::c_int,
-            );
-            if n != -(1 as libc::c_int) {
+            n = input_get(ictx, 0u32, 1i32, 1i32);
+            if n != -(1i32) {
                 screen_write_scrollup(sctx, n as u_int, bg);
             }
         }
         28 => {
-            n = input_get(
-                ictx,
-                0 as libc::c_int as u_int,
-                1 as libc::c_int,
-                1 as libc::c_int,
-            );
-            if n != -(1 as libc::c_int) {
+            n = input_get(ictx, 0u32, 1i32, 1i32);
+            if n != -(1i32) {
                 screen_write_scrolldown(sctx, n as u_int, bg);
             }
         }
-        33 => {
-            match input_get(
-                ictx,
-                0 as libc::c_int as u_int,
-                0 as libc::c_int,
-                0 as libc::c_int,
-            ) {
-                -1 => {}
-                0 => {
-                    if (*s).cx < (*(*s).grid).sx {
-                        let ref mut fresh6 =
-                            *(*s).tabs.offset(((*s).cx >> 3 as libc::c_int) as isize);
-                        *fresh6 = (*fresh6 as libc::c_int
-                            & !((1 as libc::c_int)
-                                << ((*s).cx & 0x7 as libc::c_int as libc::c_uint)))
-                            as bitstr_t
-                    }
-                }
-                3 => {
-                    let mut _name: *mut bitstr_t = (*s).tabs;
-                    let mut _start: libc::c_int = 0 as libc::c_int;
-                    let mut _stop: libc::c_int = (*(*s).grid)
-                        .sx
-                        .wrapping_sub(1 as libc::c_int as libc::c_uint)
-                        as libc::c_int;
-                    while _start <= _stop {
-                        let ref mut fresh7 = *_name.offset((_start >> 3 as libc::c_int) as isize);
-                        *fresh7 = (*fresh7 as libc::c_int
-                            & !((1 as libc::c_int) << (_start & 0x7 as libc::c_int)))
-                            as bitstr_t;
-                        _start += 1
-                    }
-                }
-                _ => {
-                    log_debug(
-                        b"%s: unknown \'%c\'\x00" as *const u8 as *const libc::c_char,
-                        (*::std::mem::transmute::<&[u8; 19], &[libc::c_char; 19]>(
-                            b"input_csi_dispatch\x00",
-                        ))
-                        .as_ptr(),
-                        (*ictx).ch,
-                    );
+        33 => match input_get(ictx, 0u32, 0i32, 0i32) {
+            -1 => {}
+            0 => {
+                if (*s).cx < (*(*s).grid).sx {
+                    let ref mut fresh6 = *(*s).tabs.offset(((*s).cx >> 3i32) as isize);
+                    *fresh6 = (*fresh6 as libc::c_int & !((1i32) << ((*s).cx & 0x7u32))) as bitstr_t
                 }
             }
-        }
-        34 => {
-            n = input_get(
-                ictx,
-                0 as libc::c_int as u_int,
-                1 as libc::c_int,
-                1 as libc::c_int,
-            );
-            if n != -(1 as libc::c_int) {
-                screen_write_cursormove(
-                    sctx,
-                    -(1 as libc::c_int),
-                    n - 1 as libc::c_int,
-                    1 as libc::c_int,
+            3 => {
+                let mut _name: *mut bitstr_t = (*s).tabs;
+                let mut _start: libc::c_int = 0i32;
+                let mut _stop: libc::c_int = (*(*s).grid).sx.wrapping_sub(1u32) as libc::c_int;
+                while _start <= _stop {
+                    let ref mut fresh7 = *_name.offset((_start >> 3i32) as isize);
+                    *fresh7 = (*fresh7 as libc::c_int & !((1i32) << (_start & 0x7i32))) as bitstr_t;
+                    _start += 1
+                }
+            }
+            _ => {
+                log_debug(
+                    b"%s: unknown \'%c\'\x00" as *const u8 as *const libc::c_char,
+                    (*::std::mem::transmute::<&[u8; 19], &[libc::c_char; 19]>(
+                        b"input_csi_dispatch\x00",
+                    ))
+                    .as_ptr(),
+                    (*ictx).ch,
                 );
+            }
+        },
+        34 => {
+            n = input_get(ictx, 0u32, 1i32, 1i32);
+            if n != -(1i32) {
+                screen_write_cursormove(sctx, -(1i32), n - 1i32, 1i32);
             }
         }
         11 => {
-            n = input_get(
-                ictx,
-                0 as libc::c_int as u_int,
-                0 as libc::c_int,
-                0 as libc::c_int,
-            );
-            if n != -(1 as libc::c_int) {
+            n = input_get(ictx, 0u32, 0i32, 0i32);
+            if n != -(1i32) {
                 screen_set_cursor_style(s, n as u_int);
             }
         }
         36 => {
-            n = input_get(
-                ictx,
-                0 as libc::c_int as u_int,
-                0 as libc::c_int,
-                0 as libc::c_int,
-            );
-            if n == 0 as libc::c_int {
+            n = input_get(ictx, 0u32, 0i32, 0i32);
+            if n == 0i32 {
                 input_reply(
                     ictx,
                     b"\x1bP>|tmux %s\x1b\\\x00" as *const u8 as *const libc::c_char,
@@ -5440,23 +5191,23 @@ unsafe extern "C" fn input_csi_dispatch(mut ictx: *mut input_ctx) -> libc::c_int
         }
         _ => {}
     }
-    (*ictx).last = -(1 as libc::c_int);
-    return 0 as libc::c_int;
+    (*ictx).last = -(1i32);
+    return 0i32;
 }
 /* Handle CSI RM. */
 unsafe extern "C" fn input_csi_dispatch_rm(mut ictx: *mut input_ctx) {
     let mut sctx: *mut screen_write_ctx = &mut (*ictx).ctx;
     let mut i: u_int = 0;
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < (*ictx).param_list_len {
-        match input_get(ictx, i, 0 as libc::c_int, -(1 as libc::c_int)) {
+        match input_get(ictx, i, 0i32, -(1i32)) {
             -1 => {}
             4 => {
                 /* IRM */
-                screen_write_mode_clear(sctx, 0x2 as libc::c_int);
+                screen_write_mode_clear(sctx, 0x2i32);
             }
             34 => {
-                screen_write_mode_set(sctx, 0x80 as libc::c_int);
+                screen_write_mode_set(sctx, 0x80i32);
             }
             _ => {
                 log_debug(
@@ -5477,58 +5228,55 @@ unsafe extern "C" fn input_csi_dispatch_rm_private(mut ictx: *mut input_ctx) {
     let mut sctx: *mut screen_write_ctx = &mut (*ictx).ctx;
     let mut gc: *mut GridCell = &mut (*ictx).cell.cell;
     let mut i: u_int = 0;
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < (*ictx).param_list_len {
-        match input_get(ictx, i, 0 as libc::c_int, -(1 as libc::c_int)) {
+        match input_get(ictx, i, 0i32, -(1i32)) {
             -1 => {}
             1 => {
                 /* DECCKM */
-                screen_write_mode_clear(sctx, 0x4 as libc::c_int);
+                screen_write_mode_clear(sctx, 0x4i32);
             }
             3 => {
                 /* DECCOLM */
-                screen_write_cursormove(sctx, 0 as libc::c_int, 0 as libc::c_int, 1 as libc::c_int);
+                screen_write_cursormove(sctx, 0i32, 0i32, 1i32);
                 screen_write_clearscreen(sctx, (*gc).bg as u_int);
             }
             6 => {
                 /* DECOM */
-                screen_write_mode_clear(sctx, 0x2000 as libc::c_int);
-                screen_write_cursormove(sctx, 0 as libc::c_int, 0 as libc::c_int, 1 as libc::c_int);
+                screen_write_mode_clear(sctx, 0x2000i32);
+                screen_write_cursormove(sctx, 0i32, 0i32, 1i32);
             }
             7 => {
                 /* DECAWM */
-                screen_write_mode_clear(sctx, 0x10 as libc::c_int);
+                screen_write_mode_clear(sctx, 0x10i32);
             }
             12 => {
-                screen_write_mode_clear(sctx, 0x80 as libc::c_int);
+                screen_write_mode_clear(sctx, 0x80i32);
             }
             25 => {
                 /* TCEM */
-                screen_write_mode_clear(sctx, 0x1 as libc::c_int);
+                screen_write_mode_clear(sctx, 0x1i32);
             }
             1000 | 1001 | 1002 | 1003 => {
-                screen_write_mode_clear(
-                    sctx,
-                    0x20 as libc::c_int | 0x40 as libc::c_int | 0x1000 as libc::c_int,
-                );
+                screen_write_mode_clear(sctx, 0x20i32 | 0x40i32 | 0x1000i32);
             }
             1004 => {
-                screen_write_mode_clear(sctx, 0x800 as libc::c_int);
+                screen_write_mode_clear(sctx, 0x800i32);
             }
             1005 => {
-                screen_write_mode_clear(sctx, 0x100 as libc::c_int);
+                screen_write_mode_clear(sctx, 0x100i32);
             }
             1006 => {
-                screen_write_mode_clear(sctx, 0x200 as libc::c_int);
+                screen_write_mode_clear(sctx, 0x200i32);
             }
             47 | 1047 => {
-                screen_write_alternateoff(sctx, gc, 0 as libc::c_int);
+                screen_write_alternateoff(sctx, gc, 0i32);
             }
             1049 => {
-                screen_write_alternateoff(sctx, gc, 1 as libc::c_int);
+                screen_write_alternateoff(sctx, gc, 1i32);
             }
             2004 => {
-                screen_write_mode_clear(sctx, 0x400 as libc::c_int);
+                screen_write_mode_clear(sctx, 0x400i32);
             }
             _ => {
                 log_debug(
@@ -5548,16 +5296,16 @@ unsafe extern "C" fn input_csi_dispatch_rm_private(mut ictx: *mut input_ctx) {
 unsafe extern "C" fn input_csi_dispatch_sm(mut ictx: *mut input_ctx) {
     let mut sctx: *mut screen_write_ctx = &mut (*ictx).ctx;
     let mut i: u_int = 0;
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < (*ictx).param_list_len {
-        match input_get(ictx, i, 0 as libc::c_int, -(1 as libc::c_int)) {
+        match input_get(ictx, i, 0i32, -(1i32)) {
             -1 => {}
             4 => {
                 /* IRM */
-                screen_write_mode_set(sctx, 0x2 as libc::c_int);
+                screen_write_mode_set(sctx, 0x2i32);
             }
             34 => {
-                screen_write_mode_clear(sctx, 0x80 as libc::c_int);
+                screen_write_mode_clear(sctx, 0x80i32);
             }
             _ => {
                 log_debug(
@@ -5579,78 +5327,69 @@ unsafe extern "C" fn input_csi_dispatch_sm_private(mut ictx: *mut input_ctx) {
     let mut wp: *mut window_pane = (*ictx).wp;
     let mut gc: *mut GridCell = &mut (*ictx).cell.cell;
     let mut i: u_int = 0;
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < (*ictx).param_list_len {
-        match input_get(ictx, i, 0 as libc::c_int, -(1 as libc::c_int)) {
+        match input_get(ictx, i, 0i32, -(1i32)) {
             -1 => {}
             1 => {
                 /* DECCKM */
-                screen_write_mode_set(sctx, 0x4 as libc::c_int);
+                screen_write_mode_set(sctx, 0x4i32);
             }
             3 => {
                 /* DECCOLM */
-                screen_write_cursormove(sctx, 0 as libc::c_int, 0 as libc::c_int, 1 as libc::c_int);
+                screen_write_cursormove(sctx, 0i32, 0i32, 1i32);
                 screen_write_clearscreen(sctx, (*ictx).cell.cell.bg as u_int);
             }
             6 => {
                 /* DECOM */
-                screen_write_mode_set(sctx, 0x2000 as libc::c_int);
-                screen_write_cursormove(sctx, 0 as libc::c_int, 0 as libc::c_int, 1 as libc::c_int);
+                screen_write_mode_set(sctx, 0x2000i32);
+                screen_write_cursormove(sctx, 0i32, 0i32, 1i32);
             }
             7 => {
                 /* DECAWM */
-                screen_write_mode_set(sctx, 0x10 as libc::c_int);
+                screen_write_mode_set(sctx, 0x10i32);
             }
             12 => {
-                screen_write_mode_set(sctx, 0x80 as libc::c_int);
+                screen_write_mode_set(sctx, 0x80i32);
             }
             25 => {
                 /* TCEM */
-                screen_write_mode_set(sctx, 0x1 as libc::c_int); /* force update */
+                screen_write_mode_set(sctx, 0x1i32); /* force update */
             }
             1000 => {
-                screen_write_mode_clear(
-                    sctx,
-                    0x20 as libc::c_int | 0x40 as libc::c_int | 0x1000 as libc::c_int,
-                );
-                screen_write_mode_set(sctx, 0x20 as libc::c_int);
+                screen_write_mode_clear(sctx, 0x20i32 | 0x40i32 | 0x1000i32);
+                screen_write_mode_set(sctx, 0x20i32);
             }
             1002 => {
-                screen_write_mode_clear(
-                    sctx,
-                    0x20 as libc::c_int | 0x40 as libc::c_int | 0x1000 as libc::c_int,
-                );
-                screen_write_mode_set(sctx, 0x40 as libc::c_int);
+                screen_write_mode_clear(sctx, 0x20i32 | 0x40i32 | 0x1000i32);
+                screen_write_mode_set(sctx, 0x40i32);
             }
             1003 => {
-                screen_write_mode_clear(
-                    sctx,
-                    0x20 as libc::c_int | 0x40 as libc::c_int | 0x1000 as libc::c_int,
-                );
-                screen_write_mode_set(sctx, 0x1000 as libc::c_int);
+                screen_write_mode_clear(sctx, 0x20i32 | 0x40i32 | 0x1000i32);
+                screen_write_mode_set(sctx, 0x1000i32);
             }
             1004 => {
-                if !((*(*sctx).s).mode & 0x800 as libc::c_int != 0) {
-                    screen_write_mode_set(sctx, 0x800 as libc::c_int);
+                if !((*(*sctx).s).mode & 0x800i32 != 0) {
+                    screen_write_mode_set(sctx, 0x800i32);
                     if !wp.is_null() {
-                        (*wp).flags |= 0x20 as libc::c_int
+                        (*wp).flags |= 0x20i32
                     }
                 }
             }
             1005 => {
-                screen_write_mode_set(sctx, 0x100 as libc::c_int);
+                screen_write_mode_set(sctx, 0x100i32);
             }
             1006 => {
-                screen_write_mode_set(sctx, 0x200 as libc::c_int);
+                screen_write_mode_set(sctx, 0x200i32);
             }
             47 | 1047 => {
-                screen_write_alternateon(sctx, gc, 0 as libc::c_int);
+                screen_write_alternateon(sctx, gc, 0i32);
             }
             1049 => {
-                screen_write_alternateon(sctx, gc, 1 as libc::c_int);
+                screen_write_alternateon(sctx, gc, 1i32);
             }
             2004 => {
-                screen_write_mode_set(sctx, 0x400 as libc::c_int);
+                screen_write_mode_set(sctx, 0x400i32);
             }
             _ => {
                 log_debug(
@@ -5675,10 +5414,10 @@ unsafe extern "C" fn input_csi_dispatch_winops(mut ictx: *mut input_ctx) {
     let mut y: u_int = (*(*s).grid).sy;
     let mut n: libc::c_int = 0;
     let mut m: libc::c_int = 0;
-    m = 0 as libc::c_int;
+    m = 0i32;
     loop {
-        n = input_get(ictx, m as u_int, 0 as libc::c_int, -(1 as libc::c_int));
-        if !(n != -(1 as libc::c_int)) {
+        n = input_get(ictx, m as u_int, 0i32, -(1i32));
+        if !(n != -(1i32)) {
             break;
         }
         let mut current_block_21: u64;
@@ -5688,9 +5427,7 @@ unsafe extern "C" fn input_csi_dispatch_winops(mut ictx: *mut input_ctx) {
             }
             3 | 4 | 8 => {
                 m += 1;
-                if input_get(ictx, m as u_int, 0 as libc::c_int, -(1 as libc::c_int))
-                    == -(1 as libc::c_int)
-                {
+                if input_get(ictx, m as u_int, 0i32, -(1i32)) == -(1i32) {
                     return;
                 }
                 current_block_21 = 5991938557911941140;
@@ -5700,7 +5437,7 @@ unsafe extern "C" fn input_csi_dispatch_winops(mut ictx: *mut input_ctx) {
             }
             22 => {
                 m += 1;
-                match input_get(ictx, m as u_int, 0 as libc::c_int, -(1 as libc::c_int)) {
+                match input_get(ictx, m as u_int, 0i32, -(1i32)) {
                     -1 => return,
                     0 | 2 => {
                         screen_push_title((*sctx).s);
@@ -5711,7 +5448,7 @@ unsafe extern "C" fn input_csi_dispatch_winops(mut ictx: *mut input_ctx) {
             }
             23 => {
                 m += 1;
-                match input_get(ictx, m as u_int, 0 as libc::c_int, -(1 as libc::c_int)) {
+                match input_get(ictx, m as u_int, 0i32, -(1i32)) {
                     -1 => return,
                     0 | 2 => {
                         screen_pop_title((*sctx).s);
@@ -5754,9 +5491,7 @@ unsafe extern "C" fn input_csi_dispatch_winops(mut ictx: *mut input_ctx) {
             /* FALLTHROUGH */
             {
                 m += 1;
-                if input_get(ictx, m as u_int, 0 as libc::c_int, -(1 as libc::c_int))
-                    == -(1 as libc::c_int)
-                {
+                if input_get(ictx, m as u_int, 0i32, -(1i32)) == -(1i32) {
                     return;
                 }
             }
@@ -5772,20 +5507,20 @@ unsafe extern "C" fn input_csi_dispatch_sgr_256_do(
     mut c: libc::c_int,
 ) -> libc::c_int {
     let mut gc: *mut GridCell = &mut (*ictx).cell.cell;
-    if c == -(1 as libc::c_int) || c > 255 as libc::c_int {
-        if fgbg == 38 as libc::c_int {
-            (*gc).fg = 8 as libc::c_int
-        } else if fgbg == 48 as libc::c_int {
-            (*gc).bg = 8 as libc::c_int
+    if c == -(1i32) || c > 255i32 {
+        if fgbg == 38i32 {
+            (*gc).fg = 8i32
+        } else if fgbg == 48i32 {
+            (*gc).bg = 8i32
         }
-    } else if fgbg == 38 as libc::c_int {
-        (*gc).fg = c | 0x1000000 as libc::c_int
-    } else if fgbg == 48 as libc::c_int {
-        (*gc).bg = c | 0x1000000 as libc::c_int
-    } else if fgbg == 58 as libc::c_int {
-        (*gc).us = c | 0x1000000 as libc::c_int
+    } else if fgbg == 38i32 {
+        (*gc).fg = c | 0x1000000i32
+    } else if fgbg == 48i32 {
+        (*gc).bg = c | 0x1000000i32
+    } else if fgbg == 58i32 {
+        (*gc).us = c | 0x1000000i32
     }
-    return 1 as libc::c_int;
+    return 1i32;
 }
 /* Handle CSI SGR for 256 colours. */
 unsafe extern "C" fn input_csi_dispatch_sgr_256(
@@ -5794,12 +5529,7 @@ unsafe extern "C" fn input_csi_dispatch_sgr_256(
     mut i: *mut u_int,
 ) {
     let mut c: libc::c_int = 0;
-    c = input_get(
-        ictx,
-        (*i).wrapping_add(1 as libc::c_int as libc::c_uint),
-        0 as libc::c_int,
-        -(1 as libc::c_int),
-    );
+    c = input_get(ictx, (*i).wrapping_add(1u32), 0i32, -(1i32));
     if input_csi_dispatch_sgr_256_do(ictx, fgbg, c) != 0 {
         *i = (*i).wrapping_add(1)
     };
@@ -5813,23 +5543,23 @@ unsafe extern "C" fn input_csi_dispatch_sgr_rgb_do(
     mut b: libc::c_int,
 ) -> libc::c_int {
     let mut gc: *mut GridCell = &mut (*ictx).cell.cell;
-    if r == -(1 as libc::c_int) || r > 255 as libc::c_int {
-        return 0 as libc::c_int;
+    if r == -(1i32) || r > 255i32 {
+        return 0i32;
     }
-    if g == -(1 as libc::c_int) || g > 255 as libc::c_int {
-        return 0 as libc::c_int;
+    if g == -(1i32) || g > 255i32 {
+        return 0i32;
     }
-    if b == -(1 as libc::c_int) || b > 255 as libc::c_int {
-        return 0 as libc::c_int;
+    if b == -(1i32) || b > 255i32 {
+        return 0i32;
     }
-    if fgbg == 38 as libc::c_int {
+    if fgbg == 38i32 {
         (*gc).fg = colour_join_rgb(r as u_char, g as u_char, b as u_char)
-    } else if fgbg == 48 as libc::c_int {
+    } else if fgbg == 48i32 {
         (*gc).bg = colour_join_rgb(r as u_char, g as u_char, b as u_char)
-    } else if fgbg == 58 as libc::c_int {
+    } else if fgbg == 58i32 {
         (*gc).us = colour_join_rgb(r as u_char, g as u_char, b as u_char)
     }
-    return 1 as libc::c_int;
+    return 1i32;
 }
 /* Handle CSI SGR for RGB colours. */
 unsafe extern "C" fn input_csi_dispatch_sgr_rgb(
@@ -5840,26 +5570,11 @@ unsafe extern "C" fn input_csi_dispatch_sgr_rgb(
     let mut r: libc::c_int = 0;
     let mut g: libc::c_int = 0;
     let mut b: libc::c_int = 0;
-    r = input_get(
-        ictx,
-        (*i).wrapping_add(1 as libc::c_int as libc::c_uint),
-        0 as libc::c_int,
-        -(1 as libc::c_int),
-    );
-    g = input_get(
-        ictx,
-        (*i).wrapping_add(2 as libc::c_int as libc::c_uint),
-        0 as libc::c_int,
-        -(1 as libc::c_int),
-    );
-    b = input_get(
-        ictx,
-        (*i).wrapping_add(3 as libc::c_int as libc::c_uint),
-        0 as libc::c_int,
-        -(1 as libc::c_int),
-    );
+    r = input_get(ictx, (*i).wrapping_add(1u32), 0i32, -(1i32));
+    g = input_get(ictx, (*i).wrapping_add(2u32), 0i32, -(1i32));
+    b = input_get(ictx, (*i).wrapping_add(3u32), 0i32, -(1i32));
     if input_csi_dispatch_sgr_rgb_do(ictx, fgbg, r, g, b) != 0 {
-        *i = (*i as libc::c_uint).wrapping_add(3 as libc::c_int as libc::c_uint) as u_int as u_int
+        *i = (*i).wrapping_add(3u32)
     };
 }
 /* Handle CSI SGR with a ISO parameter. */
@@ -5872,15 +5587,15 @@ unsafe extern "C" fn input_csi_dispatch_sgr_colon(mut ictx: *mut input_ctx, mut 
     let mut p: [libc::c_int; 8] = [0; 8];
     let mut n: u_int = 0;
     let mut errstr: *const libc::c_char = 0 as *const libc::c_char;
-    n = 0 as libc::c_int as u_int;
+    n = 0u32;
     while (n as libc::c_ulong)
         < (::std::mem::size_of::<[libc::c_int; 8]>() as libc::c_ulong)
             .wrapping_div(::std::mem::size_of::<libc::c_int>() as libc::c_ulong)
     {
-        p[n as usize] = -(1 as libc::c_int);
+        p[n as usize] = -(1i32);
         n = n.wrapping_add(1)
     }
-    n = 0 as libc::c_int as u_int;
+    n = 0u32;
     copy = xstrdup(s);
     ptr = copy;
     loop {
@@ -5891,12 +5606,7 @@ unsafe extern "C" fn input_csi_dispatch_sgr_colon(mut ictx: *mut input_ctx, mut 
         if *out as libc::c_int != '\u{0}' as i32 {
             let fresh8 = n;
             n = n.wrapping_add(1);
-            p[fresh8 as usize] = strtonum(
-                out,
-                0 as libc::c_int as libc::c_longlong,
-                2147483647 as libc::c_int as libc::c_longlong,
-                &mut errstr,
-            ) as libc::c_int;
+            p[fresh8 as usize] = strtonum(out, 0i64, 2147483647i64, &mut errstr) as libc::c_int;
             if !errstr.is_null()
                 || n as libc::c_ulong
                     == (::std::mem::size_of::<[libc::c_int; 8]>() as libc::c_ulong)
@@ -5921,109 +5631,83 @@ unsafe extern "C" fn input_csi_dispatch_sgr_colon(mut ictx: *mut input_ctx, mut 
                 b"input_csi_dispatch_sgr_colon\x00",
             ))
             .as_ptr(),
-            n.wrapping_sub(1 as libc::c_int as libc::c_uint),
-            p[n.wrapping_sub(1 as libc::c_int as libc::c_uint) as usize],
+            n.wrapping_sub(1u32),
+            p[n.wrapping_sub(1u32) as usize],
         );
     }
     free(copy as *mut libc::c_void);
-    if n == 0 as libc::c_int as libc::c_uint {
+    if n == 0u32 {
         return;
     }
-    if p[0 as libc::c_int as usize] == 4 as libc::c_int {
-        if n != 2 as libc::c_int as libc::c_uint {
+    if p[0usize] == 4i32 {
+        if n != 2u32 {
             return;
         }
-        match p[1 as libc::c_int as usize] {
+        match p[1usize] {
             0 => {
                 (*gc).attr = ((*gc).attr as libc::c_int
-                    & !(0x4 as libc::c_int
-                        | 0x200 as libc::c_int
-                        | 0x400 as libc::c_int
-                        | 0x800 as libc::c_int
-                        | 0x1000 as libc::c_int)) as u_short
+                    & !(0x4i32 | 0x200i32 | 0x400i32 | 0x800i32 | 0x1000i32))
+                    as u_short
             }
             1 => {
                 (*gc).attr = ((*gc).attr as libc::c_int
-                    & !(0x4 as libc::c_int
-                        | 0x200 as libc::c_int
-                        | 0x400 as libc::c_int
-                        | 0x800 as libc::c_int
-                        | 0x1000 as libc::c_int)) as u_short;
-                (*gc).attr = ((*gc).attr as libc::c_int | 0x4 as libc::c_int) as u_short
+                    & !(0x4i32 | 0x200i32 | 0x400i32 | 0x800i32 | 0x1000i32))
+                    as u_short;
+                (*gc).attr = ((*gc).attr as libc::c_int | 0x4i32) as u_short
             }
             2 => {
                 (*gc).attr = ((*gc).attr as libc::c_int
-                    & !(0x4 as libc::c_int
-                        | 0x200 as libc::c_int
-                        | 0x400 as libc::c_int
-                        | 0x800 as libc::c_int
-                        | 0x1000 as libc::c_int)) as u_short;
-                (*gc).attr = ((*gc).attr as libc::c_int | 0x200 as libc::c_int) as u_short
+                    & !(0x4i32 | 0x200i32 | 0x400i32 | 0x800i32 | 0x1000i32))
+                    as u_short;
+                (*gc).attr = ((*gc).attr as libc::c_int | 0x200i32) as u_short
             }
             3 => {
                 (*gc).attr = ((*gc).attr as libc::c_int
-                    & !(0x4 as libc::c_int
-                        | 0x200 as libc::c_int
-                        | 0x400 as libc::c_int
-                        | 0x800 as libc::c_int
-                        | 0x1000 as libc::c_int)) as u_short;
-                (*gc).attr = ((*gc).attr as libc::c_int | 0x400 as libc::c_int) as u_short
+                    & !(0x4i32 | 0x200i32 | 0x400i32 | 0x800i32 | 0x1000i32))
+                    as u_short;
+                (*gc).attr = ((*gc).attr as libc::c_int | 0x400i32) as u_short
             }
             4 => {
                 (*gc).attr = ((*gc).attr as libc::c_int
-                    & !(0x4 as libc::c_int
-                        | 0x200 as libc::c_int
-                        | 0x400 as libc::c_int
-                        | 0x800 as libc::c_int
-                        | 0x1000 as libc::c_int)) as u_short;
-                (*gc).attr = ((*gc).attr as libc::c_int | 0x800 as libc::c_int) as u_short
+                    & !(0x4i32 | 0x200i32 | 0x400i32 | 0x800i32 | 0x1000i32))
+                    as u_short;
+                (*gc).attr = ((*gc).attr as libc::c_int | 0x800i32) as u_short
             }
             5 => {
                 (*gc).attr = ((*gc).attr as libc::c_int
-                    & !(0x4 as libc::c_int
-                        | 0x200 as libc::c_int
-                        | 0x400 as libc::c_int
-                        | 0x800 as libc::c_int
-                        | 0x1000 as libc::c_int)) as u_short;
-                (*gc).attr = ((*gc).attr as libc::c_int | 0x1000 as libc::c_int) as u_short
+                    & !(0x4i32 | 0x200i32 | 0x400i32 | 0x800i32 | 0x1000i32))
+                    as u_short;
+                (*gc).attr = ((*gc).attr as libc::c_int | 0x1000i32) as u_short
             }
             _ => {}
         }
         return;
     }
-    if n < 2 as libc::c_int as libc::c_uint
-        || p[0 as libc::c_int as usize] != 38 as libc::c_int
-            && p[0 as libc::c_int as usize] != 48 as libc::c_int
-            && p[0 as libc::c_int as usize] != 58 as libc::c_int
-    {
+    if n < 2u32 || p[0usize] != 38i32 && p[0usize] != 48i32 && p[0usize] != 58i32 {
         return;
     }
-    match p[1 as libc::c_int as usize] {
+    match p[1usize] {
         2 => {
-            if !(n < 3 as libc::c_int as libc::c_uint) {
-                if n == 5 as libc::c_int as libc::c_uint {
-                    i = 2 as libc::c_int as u_int
+            if !(n < 3u32) {
+                if n == 5u32 {
+                    i = 2u32
                 } else {
-                    i = 3 as libc::c_int as u_int
+                    i = 3u32
                 }
-                if !(n < i.wrapping_add(3 as libc::c_int as libc::c_uint)) {
+                if !(n < i.wrapping_add(3u32)) {
                     input_csi_dispatch_sgr_rgb_do(
                         ictx,
-                        p[0 as libc::c_int as usize],
+                        p[0usize],
                         p[i as usize],
-                        p[i.wrapping_add(1 as libc::c_int as libc::c_uint) as usize],
-                        p[i.wrapping_add(2 as libc::c_int as libc::c_uint) as usize],
+                        p[i.wrapping_add(1u32) as usize],
+                        p[i.wrapping_add(2u32) as usize],
                     );
                 }
             }
         }
         5 => {
-            if !(n < 3 as libc::c_int as libc::c_uint) {
-                input_csi_dispatch_sgr_256_do(
-                    ictx,
-                    p[0 as libc::c_int as usize],
-                    p[2 as libc::c_int as usize],
-                );
+            if !(n < 3u32) {
+                input_csi_dispatch_sgr_256_do(ictx, p[0usize], p[2usize]);
             }
         }
         _ => {}
@@ -6034,7 +5718,7 @@ unsafe extern "C" fn input_csi_dispatch_sgr(mut ictx: *mut input_ctx) {
     let mut gc: *mut GridCell = &mut (*ictx).cell.cell;
     let mut i: u_int = 0;
     let mut n: libc::c_int = 0;
-    if (*ictx).param_list_len == 0 as libc::c_int as libc::c_uint {
+    if (*ictx).param_list_len == 0u32 {
         memcpy(
             gc as *mut libc::c_void,
             &grid_default_cell as *const GridCell as *const libc::c_void,
@@ -6042,18 +5726,16 @@ unsafe extern "C" fn input_csi_dispatch_sgr(mut ictx: *mut input_ctx) {
         );
         return;
     }
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < (*ictx).param_list_len {
-        if (*ictx).param_list[i as usize].type_0 as libc::c_uint
-            == INPUT_STRING as libc::c_int as libc::c_uint
-        {
+        if (*ictx).param_list[i as usize].type_0 == INPUT_STRING {
             input_csi_dispatch_sgr_colon(ictx, i);
         } else {
-            n = input_get(ictx, i, 0 as libc::c_int, 0 as libc::c_int);
-            if !(n == -(1 as libc::c_int)) {
-                if n == 38 as libc::c_int || n == 48 as libc::c_int || n == 58 as libc::c_int {
+            n = input_get(ictx, i, 0i32, 0i32);
+            if !(n == -(1i32)) {
+                if n == 38i32 || n == 48i32 || n == 58i32 {
                     i = i.wrapping_add(1);
-                    match input_get(ictx, i, 0 as libc::c_int, -(1 as libc::c_int)) {
+                    match input_get(ictx, i, 0i32, -(1i32)) {
                         2 => {
                             input_csi_dispatch_sgr_rgb(ictx, n, &mut i);
                         }
@@ -6071,92 +5753,41 @@ unsafe extern "C" fn input_csi_dispatch_sgr(mut ictx: *mut input_ctx) {
                                 ::std::mem::size_of::<GridCell>() as libc::c_ulong,
                             );
                         }
-                        1 => {
-                            (*gc).attr = ((*gc).attr as libc::c_int | 0x1 as libc::c_int) as u_short
-                        }
-                        2 => {
-                            (*gc).attr = ((*gc).attr as libc::c_int | 0x2 as libc::c_int) as u_short
-                        }
-                        3 => {
-                            (*gc).attr =
-                                ((*gc).attr as libc::c_int | 0x40 as libc::c_int) as u_short
-                        }
+                        1 => (*gc).attr = ((*gc).attr as libc::c_int | 0x1i32) as u_short,
+                        2 => (*gc).attr = ((*gc).attr as libc::c_int | 0x2i32) as u_short,
+                        3 => (*gc).attr = ((*gc).attr as libc::c_int | 0x40i32) as u_short,
                         4 => {
                             (*gc).attr = ((*gc).attr as libc::c_int
-                                & !(0x4 as libc::c_int
-                                    | 0x200 as libc::c_int
-                                    | 0x400 as libc::c_int
-                                    | 0x800 as libc::c_int
-                                    | 0x1000 as libc::c_int))
+                                & !(0x4i32 | 0x200i32 | 0x400i32 | 0x800i32 | 0x1000i32))
                                 as u_short;
-                            (*gc).attr = ((*gc).attr as libc::c_int | 0x4 as libc::c_int) as u_short
+                            (*gc).attr = ((*gc).attr as libc::c_int | 0x4i32) as u_short
                         }
-                        5 => {
-                            (*gc).attr = ((*gc).attr as libc::c_int | 0x8 as libc::c_int) as u_short
-                        }
-                        7 => {
-                            (*gc).attr =
-                                ((*gc).attr as libc::c_int | 0x10 as libc::c_int) as u_short
-                        }
-                        8 => {
-                            (*gc).attr =
-                                ((*gc).attr as libc::c_int | 0x20 as libc::c_int) as u_short
-                        }
-                        9 => {
-                            (*gc).attr =
-                                ((*gc).attr as libc::c_int | 0x100 as libc::c_int) as u_short
-                        }
+                        5 => (*gc).attr = ((*gc).attr as libc::c_int | 0x8i32) as u_short,
+                        7 => (*gc).attr = ((*gc).attr as libc::c_int | 0x10i32) as u_short,
+                        8 => (*gc).attr = ((*gc).attr as libc::c_int | 0x20i32) as u_short,
+                        9 => (*gc).attr = ((*gc).attr as libc::c_int | 0x100i32) as u_short,
                         22 => {
-                            (*gc).attr = ((*gc).attr as libc::c_int
-                                & !(0x1 as libc::c_int | 0x2 as libc::c_int))
-                                as u_short
+                            (*gc).attr = ((*gc).attr as libc::c_int & !(0x1i32 | 0x2i32)) as u_short
                         }
-                        23 => {
-                            (*gc).attr =
-                                ((*gc).attr as libc::c_int & !(0x40 as libc::c_int)) as u_short
-                        }
+                        23 => (*gc).attr = ((*gc).attr as libc::c_int & !(0x40i32)) as u_short,
                         24 => {
                             (*gc).attr = ((*gc).attr as libc::c_int
-                                & !(0x4 as libc::c_int
-                                    | 0x200 as libc::c_int
-                                    | 0x400 as libc::c_int
-                                    | 0x800 as libc::c_int
-                                    | 0x1000 as libc::c_int))
+                                & !(0x4i32 | 0x200i32 | 0x400i32 | 0x800i32 | 0x1000i32))
                                 as u_short
                         }
-                        25 => {
-                            (*gc).attr =
-                                ((*gc).attr as libc::c_int & !(0x8 as libc::c_int)) as u_short
-                        }
-                        27 => {
-                            (*gc).attr =
-                                ((*gc).attr as libc::c_int & !(0x10 as libc::c_int)) as u_short
-                        }
-                        28 => {
-                            (*gc).attr =
-                                ((*gc).attr as libc::c_int & !(0x20 as libc::c_int)) as u_short
-                        }
-                        29 => {
-                            (*gc).attr =
-                                ((*gc).attr as libc::c_int & !(0x100 as libc::c_int)) as u_short
-                        }
-                        30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 => (*gc).fg = n - 30 as libc::c_int,
-                        39 => (*gc).fg = 8 as libc::c_int,
-                        40 | 41 | 42 | 43 | 44 | 45 | 46 | 47 => (*gc).bg = n - 40 as libc::c_int,
-                        49 => (*gc).bg = 8 as libc::c_int,
-                        53 => {
-                            (*gc).attr =
-                                ((*gc).attr as libc::c_int | 0x2000 as libc::c_int) as u_short
-                        }
-                        55 => {
-                            (*gc).attr =
-                                ((*gc).attr as libc::c_int & !(0x2000 as libc::c_int)) as u_short
-                        }
-                        59 => (*gc).us = 0 as libc::c_int,
+                        25 => (*gc).attr = ((*gc).attr as libc::c_int & !(0x8i32)) as u_short,
+                        27 => (*gc).attr = ((*gc).attr as libc::c_int & !(0x10i32)) as u_short,
+                        28 => (*gc).attr = ((*gc).attr as libc::c_int & !(0x20i32)) as u_short,
+                        29 => (*gc).attr = ((*gc).attr as libc::c_int & !(0x100i32)) as u_short,
+                        30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 => (*gc).fg = n - 30i32,
+                        39 => (*gc).fg = 8i32,
+                        40 | 41 | 42 | 43 | 44 | 45 | 46 | 47 => (*gc).bg = n - 40i32,
+                        49 => (*gc).bg = 8i32,
+                        53 => (*gc).attr = ((*gc).attr as libc::c_int | 0x2000i32) as u_short,
+                        55 => (*gc).attr = ((*gc).attr as libc::c_int & !(0x2000i32)) as u_short,
+                        59 => (*gc).us = 0i32,
                         90 | 91 | 92 | 93 | 94 | 95 | 96 | 97 => (*gc).fg = n,
-                        100 | 101 | 102 | 103 | 104 | 105 | 106 | 107 => {
-                            (*gc).bg = n - 10 as libc::c_int
-                        }
+                        100 | 101 | 102 | 103 | 104 | 105 | 106 | 107 => (*gc).bg = n - 10i32,
                         _ => {}
                     }
                 }
@@ -6172,7 +5803,7 @@ unsafe extern "C" fn input_end_bel(mut ictx: *mut input_ctx) -> libc::c_int {
         (*::std::mem::transmute::<&[u8; 14], &[libc::c_char; 14]>(b"input_end_bel\x00")).as_ptr(),
     );
     (*ictx).input_end = INPUT_END_BEL;
-    return 0 as libc::c_int;
+    return 0i32;
 }
 /* DCS string started. */
 unsafe extern "C" fn input_enter_dcs(mut ictx: *mut input_ctx) {
@@ -6182,7 +5813,7 @@ unsafe extern "C" fn input_enter_dcs(mut ictx: *mut input_ctx) {
     );
     input_clear(ictx);
     input_start_timer(ictx);
-    (*ictx).last = -(1 as libc::c_int);
+    (*ictx).last = -(1i32);
 }
 /* DCS terminator (ST) received. */
 unsafe extern "C" fn input_dcs_dispatch(mut ictx: *mut input_ctx) -> libc::c_int {
@@ -6191,10 +5822,10 @@ unsafe extern "C" fn input_dcs_dispatch(mut ictx: *mut input_ctx) -> libc::c_int
     let mut len: size_t = (*ictx).input_len;
     let prefix: [libc::c_char; 6] =
         *::std::mem::transmute::<&[u8; 6], &[libc::c_char; 6]>(b"tmux;\x00");
-    let prefixlen: u_int = (::std::mem::size_of::<[libc::c_char; 6]>() as libc::c_ulong)
-        .wrapping_sub(1 as libc::c_int as libc::c_ulong) as u_int;
-    if (*ictx).flags & 0x1 as libc::c_int != 0 {
-        return 0 as libc::c_int;
+    let prefixlen: u_int =
+        (::std::mem::size_of::<[libc::c_char; 6]>() as libc::c_ulong).wrapping_sub(1u64) as u_int;
+    if (*ictx).flags & 0x1i32 != 0 {
+        return 0i32;
     }
     log_debug(
         b"%s: \"%s\"\x00" as *const u8 as *const libc::c_char,
@@ -6207,7 +5838,7 @@ unsafe extern "C" fn input_dcs_dispatch(mut ictx: *mut input_ctx) -> libc::c_int
             buf as *const libc::c_char,
             prefix.as_ptr(),
             prefixlen as libc::c_ulong,
-        ) == 0 as libc::c_int
+        ) == 0i32
     {
         screen_write_rawstring(
             sctx,
@@ -6215,7 +5846,7 @@ unsafe extern "C" fn input_dcs_dispatch(mut ictx: *mut input_ctx) -> libc::c_int
             len.wrapping_sub(prefixlen as libc::c_ulong) as u_int,
         );
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 /* OSC string started. */
 unsafe extern "C" fn input_enter_osc(mut ictx: *mut input_ctx) {
@@ -6225,7 +5856,7 @@ unsafe extern "C" fn input_enter_osc(mut ictx: *mut input_ctx) {
     );
     input_clear(ictx);
     input_start_timer(ictx);
-    (*ictx).last = -(1 as libc::c_int);
+    (*ictx).last = -(1i32);
 }
 /* OSC terminator (ST) received. */
 unsafe extern "C" fn input_exit_osc(mut ictx: *mut input_ctx) {
@@ -6233,10 +5864,10 @@ unsafe extern "C" fn input_exit_osc(mut ictx: *mut input_ctx) {
     let mut wp: *mut window_pane = (*ictx).wp;
     let mut p: *mut u_char = (*ictx).input_buf;
     let mut option: u_int = 0;
-    if (*ictx).flags & 0x1 as libc::c_int != 0 {
+    if (*ictx).flags & 0x1i32 != 0 {
         return;
     }
-    if (*ictx).input_len < 1 as libc::c_int as libc::c_ulong
+    if (*ictx).input_len < 1u64
         || (*p as libc::c_int) < '0' as i32
         || *p as libc::c_int > '9' as i32
     {
@@ -6246,20 +5877,20 @@ unsafe extern "C" fn input_exit_osc(mut ictx: *mut input_ctx) {
         b"%s: \"%s\" (end %s)\x00" as *const u8 as *const libc::c_char,
         (*::std::mem::transmute::<&[u8; 15], &[libc::c_char; 15]>(b"input_exit_osc\x00")).as_ptr(),
         p,
-        if (*ictx).input_end as libc::c_uint == INPUT_END_ST as libc::c_int as libc::c_uint {
+        if (*ictx).input_end == INPUT_END_ST {
             b"ST\x00" as *const u8 as *const libc::c_char
         } else {
             b"BEL\x00" as *const u8 as *const libc::c_char
         },
     );
-    option = 0 as libc::c_int as u_int;
+    option = 0u32;
     while *p as libc::c_int >= '0' as i32 && *p as libc::c_int <= '9' as i32 {
         let fresh9 = p;
         p = p.offset(1);
         option = option
-            .wrapping_mul(10 as libc::c_int as libc::c_uint)
+            .wrapping_mul(10u32)
             .wrapping_add(*fresh9 as libc::c_uint)
-            .wrapping_sub('0' as i32 as libc::c_uint)
+            .wrapping_sub('0' as libc::c_uint)
     }
     if *p as libc::c_int == ';' as i32 {
         p = p.offset(1)
@@ -6329,13 +5960,13 @@ unsafe extern "C" fn input_enter_apc(mut ictx: *mut input_ctx) {
     );
     input_clear(ictx);
     input_start_timer(ictx);
-    (*ictx).last = -(1 as libc::c_int);
+    (*ictx).last = -(1i32);
 }
 /* APC terminator (ST) received. */
 unsafe extern "C" fn input_exit_apc(mut ictx: *mut input_ctx) {
     let mut sctx: *mut screen_write_ctx = &mut (*ictx).ctx;
     let mut wp: *mut window_pane = (*ictx).wp;
-    if (*ictx).flags & 0x1 as libc::c_int != 0 {
+    if (*ictx).flags & 0x1i32 != 0 {
         return;
     }
     log_debug(
@@ -6361,7 +5992,7 @@ unsafe extern "C" fn input_enter_rename(mut ictx: *mut input_ctx) {
     );
     input_clear(ictx);
     input_start_timer(ictx);
-    (*ictx).last = -(1 as libc::c_int);
+    (*ictx).last = -(1i32);
 }
 /* Rename terminator (ST) received. */
 unsafe extern "C" fn input_exit_rename(mut ictx: *mut input_ctx) {
@@ -6370,7 +6001,7 @@ unsafe extern "C" fn input_exit_rename(mut ictx: *mut input_ctx) {
     if wp.is_null() {
         return;
     }
-    if (*ictx).flags & 0x1 as libc::c_int != 0 {
+    if (*ictx).flags & 0x1i32 != 0 {
         return;
     }
     if options_get_number(
@@ -6389,13 +6020,13 @@ unsafe extern "C" fn input_exit_rename(mut ictx: *mut input_ctx) {
     if utf8_isvalid((*ictx).input_buf as *const libc::c_char) == 0 {
         return;
     }
-    if (*ictx).input_len == 0 as libc::c_int as libc::c_ulong {
+    if (*ictx).input_len == 0u64 {
         o = options_get_only(
             (*(*wp).window).options,
             b"automatic-rename\x00" as *const u8 as *const libc::c_char,
         );
         if !o.is_null() {
-            options_remove_or_default(o, -(1 as libc::c_int), 0 as *mut *mut libc::c_char);
+            options_remove_or_default(o, -(1i32), 0 as *mut *mut libc::c_char);
         }
         return;
     }
@@ -6403,7 +6034,7 @@ unsafe extern "C" fn input_exit_rename(mut ictx: *mut input_ctx) {
     options_set_number(
         (*(*wp).window).options,
         b"automatic-rename\x00" as *const u8 as *const libc::c_char,
-        0 as libc::c_int as libc::c_longlong,
+        0i64,
     );
     server_redraw_window_borders((*wp).window);
     server_status_window((*wp).window);
@@ -6412,25 +6043,23 @@ unsafe extern "C" fn input_exit_rename(mut ictx: *mut input_ctx) {
 unsafe extern "C" fn input_top_bit_set(mut ictx: *mut input_ctx) -> libc::c_int {
     let mut sctx: *mut screen_write_ctx = &mut (*ictx).ctx;
     let mut ud: *mut Utf8Data = &mut (*ictx).utf8data;
-    (*ictx).last = -(1 as libc::c_int);
+    (*ictx).last = -(1i32);
     if (*ictx).utf8started == 0 {
-        if utf8_open(ud, (*ictx).ch as u_char) as libc::c_uint
-            != utf8_state::MORE as libc::c_int as libc::c_uint
-        {
-            return 0 as libc::c_int;
+        if utf8_open(ud, (*ictx).ch as u_char) != utf8_state::MORE {
+            return 0i32;
         }
-        (*ictx).utf8started = 1 as libc::c_int;
-        return 0 as libc::c_int;
+        (*ictx).utf8started = 1i32;
+        return 0i32;
     }
-    match utf8_append(ud, (*ictx).ch as u_char) as libc::c_uint {
-        0 => return 0 as libc::c_int,
+    match utf8_append(ud, (*ictx).ch as u_char) {
+        0 => return 0i32,
         2 => {
-            (*ictx).utf8started = 0 as libc::c_int;
-            return 0 as libc::c_int;
+            (*ictx).utf8started = 0i32;
+            return 0i32;
         }
         1 | _ => {}
     }
-    (*ictx).utf8started = 0 as libc::c_int;
+    (*ictx).utf8started = 0i32;
     log_debug(
         b"%s %hhu \'%*s\' (width %hhu)\x00" as *const u8 as *const libc::c_char,
         (*::std::mem::transmute::<&[u8; 18], &[libc::c_char; 18]>(b"input_top_bit_set\x00"))
@@ -6442,7 +6071,7 @@ unsafe extern "C" fn input_top_bit_set(mut ictx: *mut input_ctx) -> libc::c_int 
     );
     utf8_copy(&mut (*ictx).cell.cell.data, ud);
     screen_write_collect_add(sctx, &mut (*ictx).cell.cell);
-    return 0 as libc::c_int;
+    return 0i32;
 }
 /* Parse colour from OSC. */
 unsafe extern "C" fn input_osc_parse_colour(
@@ -6462,43 +6091,43 @@ unsafe extern "C" fn input_osc_parse_colour(
         r,
         g,
         b,
-    ) != 3 as libc::c_int
+    ) != 3i32
     {
-        return 0 as libc::c_int;
+        return 0i32;
     }
-    p = p.offset(4 as libc::c_int as isize);
+    p = p.offset(4isize);
     cp = strchr(p, '/' as i32);
-    rsize = cp.wrapping_offset_from(p) as libc::c_long as u_int;
-    if rsize == 1 as libc::c_int as libc::c_uint {
-        *r = *r | *r << 4 as libc::c_int
-    } else if rsize == 3 as libc::c_int as libc::c_uint {
-        *r >>= 4 as libc::c_int
-    } else if rsize == 4 as libc::c_int as libc::c_uint {
-        *r >>= 8 as libc::c_int
-    } else if rsize != 2 as libc::c_int as libc::c_uint {
-        return 0 as libc::c_int;
+    rsize = cp.wrapping_offset_from(p) as u_int;
+    if rsize == 1u32 {
+        *r = *r | *r << 4i32
+    } else if rsize == 3u32 {
+        *r >>= 4i32
+    } else if rsize == 4u32 {
+        *r >>= 8i32
+    } else if rsize != 2u32 {
+        return 0i32;
     }
-    p = cp.offset(1 as libc::c_int as isize);
+    p = cp.offset(1isize);
     cp = strchr(p, '/' as i32);
-    gsize = cp.wrapping_offset_from(p) as libc::c_long as u_int;
-    if gsize == 1 as libc::c_int as libc::c_uint {
-        *g = *g | *g << 4 as libc::c_int
-    } else if gsize == 3 as libc::c_int as libc::c_uint {
-        *g >>= 4 as libc::c_int
-    } else if gsize == 4 as libc::c_int as libc::c_uint {
-        *g >>= 8 as libc::c_int
-    } else if gsize != 2 as libc::c_int as libc::c_uint {
-        return 0 as libc::c_int;
+    gsize = cp.wrapping_offset_from(p) as u_int;
+    if gsize == 1u32 {
+        *g = *g | *g << 4i32
+    } else if gsize == 3u32 {
+        *g >>= 4i32
+    } else if gsize == 4u32 {
+        *g >>= 8i32
+    } else if gsize != 2u32 {
+        return 0i32;
     }
-    bsize = strlen(cp.offset(1 as libc::c_int as isize)) as u_int;
-    if bsize == 1 as libc::c_int as libc::c_uint {
-        *b = *b | *b << 4 as libc::c_int
-    } else if bsize == 3 as libc::c_int as libc::c_uint {
-        *b >>= 4 as libc::c_int
-    } else if bsize == 4 as libc::c_int as libc::c_uint {
-        *b >>= 8 as libc::c_int
-    } else if bsize != 2 as libc::c_int as libc::c_uint {
-        return 0 as libc::c_int;
+    bsize = strlen(cp.offset(1isize)) as u_int;
+    if bsize == 1u32 {
+        *b = *b | *b << 4i32
+    } else if bsize == 3u32 {
+        *b >>= 4i32
+    } else if bsize == 4u32 {
+        *b >>= 8i32
+    } else if bsize != 2u32 {
+        return 0i32;
     }
     log_debug(
         b"%s: %s = %02x%02x%02x\x00" as *const u8 as *const libc::c_char,
@@ -6509,7 +6138,7 @@ unsafe extern "C" fn input_osc_parse_colour(
         *g,
         *b,
     );
-    return 1 as libc::c_int;
+    return 1i32;
 }
 /* Reply to a colour request. */
 unsafe extern "C" fn input_osc_colour_reply(
@@ -6521,11 +6150,11 @@ unsafe extern "C" fn input_osc_colour_reply(
     let mut g: u_char = 0;
     let mut b: u_char = 0;
     let mut end: *const libc::c_char = 0 as *const libc::c_char;
-    if c == 8 as libc::c_int || !c & 0x2000000 as libc::c_int != 0 {
+    if c == 8i32 || !c & 0x2000000i32 != 0 {
         return;
     }
     colour_split_rgb(c, &mut r, &mut g, &mut b);
-    if (*ictx).input_end as libc::c_uint == INPUT_END_BEL as libc::c_int as libc::c_uint {
+    if (*ictx).input_end == INPUT_END_BEL {
         end = b"\x07\x00" as *const u8 as *const libc::c_char
     } else {
         end = b"\x1b\\\x00" as *const u8 as *const libc::c_char
@@ -6561,14 +6190,14 @@ unsafe extern "C" fn input_osc_4(mut ictx: *mut input_ctx, mut p: *const libc::c
             current_block = 10048703153582371463;
             break;
         }
-        idx = strtol(s, &mut next, 10 as libc::c_int);
+        idx = strtol(s, &mut next, 10i32);
         let fresh10 = next;
         next = next.offset(1);
         if *fresh10 as libc::c_int != ';' as i32 {
             current_block = 12820755034573918988;
             break;
         }
-        if idx < 0 as libc::c_int as libc::c_long || idx >= 0x100 as libc::c_int as libc::c_long {
+        if idx < 0i64 || idx >= 0x100i64 {
             current_block = 12820755034573918988;
             break;
         }
@@ -6618,9 +6247,9 @@ unsafe extern "C" fn input_osc_10(mut ictx: *mut input_ctx, mut p: *const libc::
     if wp.is_null() {
         return;
     }
-    if strcmp(p, b"?\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
+    if strcmp(p, b"?\x00" as *const u8 as *const libc::c_char) == 0i32 {
         tty_default_colours(&mut defaults, wp);
-        input_osc_colour_reply(ictx, 10 as libc::c_int as u_int, defaults.fg);
+        input_osc_colour_reply(ictx, 10u32, defaults.fg);
         return;
     }
     if input_osc_parse_colour(p, &mut r, &mut g, &mut b) == 0 {
@@ -6628,7 +6257,7 @@ unsafe extern "C" fn input_osc_10(mut ictx: *mut input_ctx, mut p: *const libc::
         return;
     } else {
         (*wp).fg = colour_join_rgb(r as u_char, g as u_char, b as u_char);
-        (*wp).flags |= 0x1 as libc::c_int | 0x1000 as libc::c_int;
+        (*wp).flags |= 0x1i32 | 0x1000i32;
         return;
     };
 }
@@ -6654,9 +6283,9 @@ unsafe extern "C" fn input_osc_11(mut ictx: *mut input_ctx, mut p: *const libc::
     if wp.is_null() {
         return;
     }
-    if strcmp(p, b"?\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
+    if strcmp(p, b"?\x00" as *const u8 as *const libc::c_char) == 0i32 {
         tty_default_colours(&mut defaults, wp);
-        input_osc_colour_reply(ictx, 11 as libc::c_int as u_int, defaults.bg);
+        input_osc_colour_reply(ictx, 11u32, defaults.bg);
         return;
     }
     if input_osc_parse_colour(p, &mut r, &mut g, &mut b) == 0 {
@@ -6664,7 +6293,7 @@ unsafe extern "C" fn input_osc_11(mut ictx: *mut input_ctx, mut p: *const libc::
         return;
     } else {
         (*wp).bg = colour_join_rgb(r as u_char, g as u_char, b as u_char);
-        (*wp).flags |= 0x1 as libc::c_int | 0x1000 as libc::c_int;
+        (*wp).flags |= 0x1i32 | 0x1000i32;
         return;
     };
 }
@@ -6698,7 +6327,7 @@ unsafe extern "C" fn input_osc_52(mut ictx: *mut input_ctx, mut p: *const libc::
         global_options,
         b"set-clipboard\x00" as *const u8 as *const libc::c_char,
     ) as libc::c_int;
-    if state != 2 as libc::c_int {
+    if state != 2i32 {
         return;
     }
     end = strchr(p, ';' as i32);
@@ -6714,17 +6343,13 @@ unsafe extern "C" fn input_osc_52(mut ictx: *mut input_ctx, mut p: *const libc::
         (*::std::mem::transmute::<&[u8; 13], &[libc::c_char; 13]>(b"input_osc_52\x00")).as_ptr(),
         end,
     );
-    if strcmp(end, b"?\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
+    if strcmp(end, b"?\x00" as *const u8 as *const libc::c_char) == 0i32 {
         pb = paste_get_top(0 as *mut *const libc::c_char);
         if !pb.is_null() {
             buf = paste_buffer_data(pb, &mut len);
-            outlen = (4 as libc::c_int as libc::c_ulong)
-                .wrapping_mul(
-                    len.wrapping_add(2 as libc::c_int as libc::c_ulong)
-                        .wrapping_div(3 as libc::c_int as libc::c_ulong),
-                )
-                .wrapping_add(1 as libc::c_int as libc::c_ulong)
-                as libc::c_int;
+            outlen = (4u64)
+                .wrapping_mul(len.wrapping_add(2u64).wrapping_div(3u64))
+                .wrapping_add(1u64) as libc::c_int;
             out = xmalloc(outlen as size_t) as *mut u_char;
             outlen = __b64_ntop(
                 buf as *const libc::c_uchar,
@@ -6732,47 +6357,45 @@ unsafe extern "C" fn input_osc_52(mut ictx: *mut input_ctx, mut p: *const libc::
                 out as *mut libc::c_char,
                 outlen as size_t,
             );
-            if outlen == -(1 as libc::c_int) {
+            if outlen == -(1i32) {
                 free(out as *mut libc::c_void);
                 return;
             }
         } else {
-            outlen = 0 as libc::c_int;
+            outlen = 0i32;
             out = 0 as *mut u_char
         }
         bufferevent_write(
             (*ictx).event,
-            b"\x1b]52;;\x00" as *const u8 as *const libc::c_char as *const libc::c_void,
-            6 as libc::c_int as size_t,
+            b"\x1b]52;;\x00" as *const u8 as *const libc::c_void,
+            6u64,
         );
-        if outlen != 0 as libc::c_int {
+        if outlen != 0i32 {
             bufferevent_write((*ictx).event, out as *const libc::c_void, outlen as size_t);
         }
-        if (*ictx).input_end as libc::c_uint == INPUT_END_BEL as libc::c_int as libc::c_uint {
+        if (*ictx).input_end == INPUT_END_BEL {
             bufferevent_write(
                 (*ictx).event,
-                b"\x07\x00" as *const u8 as *const libc::c_char as *const libc::c_void,
-                1 as libc::c_int as size_t,
+                b"\x07\x00" as *const u8 as *const libc::c_void,
+                1u64,
             );
         } else {
             bufferevent_write(
                 (*ictx).event,
-                b"\x1b\\\x00" as *const u8 as *const libc::c_char as *const libc::c_void,
-                2 as libc::c_int as size_t,
+                b"\x1b\\\x00" as *const u8 as *const libc::c_void,
+                2u64,
             );
         }
         free(out as *mut libc::c_void);
         return;
     }
-    len = strlen(end)
-        .wrapping_div(4 as libc::c_int as libc::c_ulong)
-        .wrapping_mul(3 as libc::c_int as libc::c_ulong);
-    if len == 0 as libc::c_int as libc::c_ulong {
+    len = strlen(end).wrapping_div(4u64).wrapping_mul(3u64);
+    if len == 0u64 {
         return;
     }
     out = xmalloc(len) as *mut u_char;
     outlen = __b64_pton(end, out, len);
-    if outlen == -(1 as libc::c_int) {
+    if outlen == -(1i32) {
         free(out as *mut libc::c_void);
         return;
     }
@@ -6810,12 +6433,12 @@ unsafe extern "C" fn input_osc_104(mut ictx: *mut input_ctx, mut p: *const libc:
             current_block = 8236137900636309791;
             break;
         }
-        idx = strtol(s, &mut s, 10 as libc::c_int);
+        idx = strtol(s, &mut s, 10i32);
         if *s as libc::c_int != '\u{0}' as i32 && *s as libc::c_int != ';' as i32 {
             current_block = 13905477316042032337;
             break;
         }
-        if idx < 0 as libc::c_int as libc::c_long || idx >= 0x100 as libc::c_int as libc::c_long {
+        if idx < 0i64 || idx >= 0x100i64 {
             current_block = 13905477316042032337;
             break;
         }

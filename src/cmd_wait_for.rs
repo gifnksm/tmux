@@ -1112,8 +1112,8 @@ pub static mut cmd_wait_for_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"LSU\x00" as *const u8 as *const libc::c_char,
-                    lower: 1 as libc::c_int,
-                    upper: 1 as libc::c_int,
+                    lower: 1i32,
+                    upper: 1i32,
                 };
                 init
             },
@@ -1128,7 +1128,7 @@ pub static mut cmd_wait_for_entry: cmd_entry = {
                 type_0: CMD_FIND_PANE,
                 flags: 0,
             },
-            flags: 0 as libc::c_int,
+            flags: 0i32,
             exec: Some(
                 cmd_wait_for_exec
                     as unsafe extern "C" fn(
@@ -1142,7 +1142,7 @@ pub static mut cmd_wait_for_entry: cmd_entry = {
 };
 static mut wait_channels: wait_channels = {
     let mut init = wait_channels {
-        rbh_root: 0 as *const wait_channel as *mut wait_channel,
+        rbh_root: 0 as *mut wait_channel,
     };
     init
 };
@@ -1154,7 +1154,7 @@ unsafe extern "C" fn wait_channels_RB_MINMAX(
     let mut parent: *mut wait_channel = 0 as *mut wait_channel;
     while !tmp.is_null() {
         parent = tmp;
-        if val < 0 as libc::c_int {
+        if val < 0i32 {
             tmp = (*tmp).entry.rbe_left
         } else {
             tmp = (*tmp).entry.rbe_right
@@ -1170,9 +1170,9 @@ unsafe extern "C" fn wait_channels_RB_FIND(
     let mut comp: libc::c_int = 0;
     while !tmp.is_null() {
         comp = wait_channel_cmp(elm, tmp);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).entry.rbe_right
         } else {
             return tmp;
@@ -1267,7 +1267,7 @@ unsafe extern "C" fn wait_channels_RB_REMOVE(
         }
         _ => {}
     }
-    if color == 0 as libc::c_int {
+    if color == 0i32 {
         wait_channels_RB_REMOVE_COLOR(head, parent, child);
     }
     return old;
@@ -1278,12 +1278,12 @@ unsafe extern "C" fn wait_channels_RB_REMOVE_COLOR(
     mut elm: *mut wait_channel,
 ) {
     let mut tmp: *mut wait_channel = 0 as *mut wait_channel;
-    while (elm.is_null() || (*elm).entry.rbe_color == 0 as libc::c_int) && elm != (*head).rbh_root {
+    while (elm.is_null() || (*elm).entry.rbe_color == 0i32) && elm != (*head).rbh_root {
         if (*parent).entry.rbe_left == elm {
             tmp = (*parent).entry.rbe_right;
-            if (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 1 as libc::c_int;
+            if (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 1i32;
                 tmp = (*parent).entry.rbe_right;
                 (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
                 if !(*parent).entry.rbe_right.is_null() {
@@ -1304,24 +1304,23 @@ unsafe extern "C" fn wait_channels_RB_REMOVE_COLOR(
                 !(*tmp).entry.rbe_parent.is_null();
                 tmp = (*parent).entry.rbe_right
             }
-            if ((*tmp).entry.rbe_left.is_null()
-                || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int)
+            if ((*tmp).entry.rbe_left.is_null() || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32)
                 && ((*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int)
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32)
             {
-                (*tmp).entry.rbe_color = 1 as libc::c_int;
+                (*tmp).entry.rbe_color = 1i32;
                 elm = parent;
                 parent = (*elm).entry.rbe_parent
             } else {
                 if (*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32
                 {
                     let mut oleft: *mut wait_channel = 0 as *mut wait_channel;
                     oleft = (*tmp).entry.rbe_left;
                     if !oleft.is_null() {
-                        (*oleft).entry.rbe_color = 0 as libc::c_int
+                        (*oleft).entry.rbe_color = 0i32
                     }
-                    (*tmp).entry.rbe_color = 1 as libc::c_int;
+                    (*tmp).entry.rbe_color = 1i32;
                     oleft = (*tmp).entry.rbe_left;
                     (*tmp).entry.rbe_left = (*oleft).entry.rbe_right;
                     if !(*tmp).entry.rbe_left.is_null() {
@@ -1343,9 +1342,9 @@ unsafe extern "C" fn wait_channels_RB_REMOVE_COLOR(
                     tmp = (*parent).entry.rbe_right
                 }
                 (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
                 if !(*tmp).entry.rbe_right.is_null() {
-                    (*(*tmp).entry.rbe_right).entry.rbe_color = 0 as libc::c_int
+                    (*(*tmp).entry.rbe_right).entry.rbe_color = 0i32
                 }
                 tmp = (*parent).entry.rbe_right;
                 (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
@@ -1370,9 +1369,9 @@ unsafe extern "C" fn wait_channels_RB_REMOVE_COLOR(
             }
         } else {
             tmp = (*parent).entry.rbe_left;
-            if (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 1 as libc::c_int;
+            if (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 1i32;
                 tmp = (*parent).entry.rbe_left;
                 (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
                 if !(*parent).entry.rbe_left.is_null() {
@@ -1393,24 +1392,23 @@ unsafe extern "C" fn wait_channels_RB_REMOVE_COLOR(
                 !(*tmp).entry.rbe_parent.is_null();
                 tmp = (*parent).entry.rbe_left
             }
-            if ((*tmp).entry.rbe_left.is_null()
-                || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int)
+            if ((*tmp).entry.rbe_left.is_null() || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32)
                 && ((*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int)
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32)
             {
-                (*tmp).entry.rbe_color = 1 as libc::c_int;
+                (*tmp).entry.rbe_color = 1i32;
                 elm = parent;
                 parent = (*elm).entry.rbe_parent
             } else {
                 if (*tmp).entry.rbe_left.is_null()
-                    || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int
+                    || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32
                 {
                     let mut oright: *mut wait_channel = 0 as *mut wait_channel;
                     oright = (*tmp).entry.rbe_right;
                     if !oright.is_null() {
-                        (*oright).entry.rbe_color = 0 as libc::c_int
+                        (*oright).entry.rbe_color = 0i32
                     }
-                    (*tmp).entry.rbe_color = 1 as libc::c_int;
+                    (*tmp).entry.rbe_color = 1i32;
                     oright = (*tmp).entry.rbe_right;
                     (*tmp).entry.rbe_right = (*oright).entry.rbe_left;
                     if !(*tmp).entry.rbe_right.is_null() {
@@ -1432,9 +1430,9 @@ unsafe extern "C" fn wait_channels_RB_REMOVE_COLOR(
                     tmp = (*parent).entry.rbe_left
                 }
                 (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
                 if !(*tmp).entry.rbe_left.is_null() {
-                    (*(*tmp).entry.rbe_left).entry.rbe_color = 0 as libc::c_int
+                    (*(*tmp).entry.rbe_left).entry.rbe_color = 0i32
                 }
                 tmp = (*parent).entry.rbe_left;
                 (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
@@ -1460,7 +1458,7 @@ unsafe extern "C" fn wait_channels_RB_REMOVE_COLOR(
         }
     }
     if !elm.is_null() {
-        (*elm).entry.rbe_color = 0 as libc::c_int
+        (*elm).entry.rbe_color = 0i32
     };
 }
 unsafe extern "C" fn wait_channels_RB_INSERT(
@@ -1469,14 +1467,14 @@ unsafe extern "C" fn wait_channels_RB_INSERT(
 ) -> *mut wait_channel {
     let mut tmp: *mut wait_channel = 0 as *mut wait_channel;
     let mut parent: *mut wait_channel = 0 as *mut wait_channel;
-    let mut comp: libc::c_int = 0 as libc::c_int;
+    let mut comp: libc::c_int = 0i32;
     tmp = (*head).rbh_root;
     while !tmp.is_null() {
         parent = tmp;
         comp = wait_channel_cmp(elm, parent);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).entry.rbe_right
         } else {
             return tmp;
@@ -1485,9 +1483,9 @@ unsafe extern "C" fn wait_channels_RB_INSERT(
     (*elm).entry.rbe_parent = parent;
     (*elm).entry.rbe_right = 0 as *mut wait_channel;
     (*elm).entry.rbe_left = (*elm).entry.rbe_right;
-    (*elm).entry.rbe_color = 1 as libc::c_int;
+    (*elm).entry.rbe_color = 1i32;
     if !parent.is_null() {
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             (*parent).entry.rbe_left = elm
         } else {
             (*parent).entry.rbe_right = elm
@@ -1507,16 +1505,16 @@ unsafe extern "C" fn wait_channels_RB_INSERT_COLOR(
     let mut tmp: *mut wait_channel = 0 as *mut wait_channel;
     loop {
         parent = (*elm).entry.rbe_parent;
-        if !(!parent.is_null() && (*parent).entry.rbe_color == 1 as libc::c_int) {
+        if !(!parent.is_null() && (*parent).entry.rbe_color == 1i32) {
             break;
         }
         gparent = (*parent).entry.rbe_parent;
         if parent == (*gparent).entry.rbe_left {
             tmp = (*gparent).entry.rbe_right;
-            if !tmp.is_null() && (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).entry.rbe_right == elm {
@@ -1542,8 +1540,8 @@ unsafe extern "C" fn wait_channels_RB_INSERT_COLOR(
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 tmp = (*gparent).entry.rbe_left;
                 (*gparent).entry.rbe_left = (*tmp).entry.rbe_right;
                 if !(*gparent).entry.rbe_left.is_null() {
@@ -1565,10 +1563,10 @@ unsafe extern "C" fn wait_channels_RB_INSERT_COLOR(
             }
         } else {
             tmp = (*gparent).entry.rbe_left;
-            if !tmp.is_null() && (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).entry.rbe_left == elm {
@@ -1594,8 +1592,8 @@ unsafe extern "C" fn wait_channels_RB_INSERT_COLOR(
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 tmp = (*gparent).entry.rbe_right;
                 (*gparent).entry.rbe_right = (*tmp).entry.rbe_left;
                 if !(*gparent).entry.rbe_right.is_null() {
@@ -1617,7 +1615,7 @@ unsafe extern "C" fn wait_channels_RB_INSERT_COLOR(
             }
         }
     }
-    (*(*head).rbh_root).entry.rbe_color = 0 as libc::c_int;
+    (*(*head).rbh_root).entry.rbe_color = 0i32;
 }
 unsafe extern "C" fn wait_channels_RB_NEXT(mut elm: *mut wait_channel) -> *mut wait_channel {
     if !(*elm).entry.rbe_right.is_null() {
@@ -1648,8 +1646,8 @@ unsafe extern "C" fn cmd_wait_for_add(mut name: *const libc::c_char) -> *mut wai
     let mut wc: *mut wait_channel = 0 as *mut wait_channel;
     wc = xmalloc(::std::mem::size_of::<wait_channel>() as libc::c_ulong) as *mut wait_channel;
     (*wc).name = xstrdup(name);
-    (*wc).locked = 0 as libc::c_int;
-    (*wc).woken = 0 as libc::c_int;
+    (*wc).locked = 0i32;
+    (*wc).woken = 0i32;
     (*wc).waiters.tqh_first = 0 as *mut wait_item;
     (*wc).waiters.tqh_last = &mut (*wc).waiters.tqh_first;
     (*wc).lockers.tqh_first = 0 as *mut wait_item;
@@ -1701,7 +1699,7 @@ unsafe extern "C" fn cmd_wait_for_exec(
     mut item: *mut crate::cmd_queue::cmdq_item,
 ) -> cmd_retval {
     let mut args: *mut args = cmd_get_args(self_0);
-    let mut name: *const libc::c_char = *(*args).argv.offset(0 as libc::c_int as isize);
+    let mut name: *const libc::c_char = *(*args).argv.offset(0isize);
     let mut wc: *mut wait_channel = 0 as *mut wait_channel;
     let mut wc0: wait_channel = wait_channel {
         name: 0 as *const libc::c_char,
@@ -1724,13 +1722,13 @@ unsafe extern "C" fn cmd_wait_for_exec(
     };
     wc0.name = name;
     wc = wait_channels_RB_FIND(&mut wait_channels, &mut wc0);
-    if args_has(args, 'S' as i32 as u_char) != 0 {
+    if args_has(args, 'S' as u_char) != 0 {
         return cmd_wait_for_signal(item, name, wc);
     }
-    if args_has(args, 'L' as i32 as u_char) != 0 {
+    if args_has(args, 'L' as u_char) != 0 {
         return cmd_wait_for_lock(item, name, wc);
     }
-    if args_has(args, 'U' as i32 as u_char) != 0 {
+    if args_has(args, 'U' as u_char) != 0 {
         return cmd_wait_for_unlock(item, name, wc);
     }
     return cmd_wait_for_wait(item, name, wc);
@@ -1750,7 +1748,7 @@ unsafe extern "C" fn cmd_wait_for_signal(
             b"signal wait channel %s, no waiters\x00" as *const u8 as *const libc::c_char,
             (*wc).name,
         );
-        (*wc).woken = 1 as libc::c_int;
+        (*wc).woken = 1i32;
         return CMD_RETURN_NORMAL;
     }
     log_debug(
@@ -1760,7 +1758,7 @@ unsafe extern "C" fn cmd_wait_for_signal(
     wi = (*wc).waiters.tqh_first;
     while !wi.is_null() && {
         wi1 = (*wi).entry.tqe_next;
-        (1 as libc::c_int) != 0
+        (1i32) != 0
     } {
         cmdq_continue((*wi).item);
         if !(*wi).entry.tqe_next.is_null() {
@@ -1806,10 +1804,7 @@ unsafe extern "C" fn cmd_wait_for_wait(
         (*wc).name,
         c,
     );
-    wi = xcalloc(
-        1 as libc::c_int as size_t,
-        ::std::mem::size_of::<wait_item>() as libc::c_ulong,
-    ) as *mut wait_item;
+    wi = xcalloc(1u64, ::std::mem::size_of::<wait_item>() as libc::c_ulong) as *mut wait_item;
     (*wi).item = item;
     (*wi).entry.tqe_next = 0 as *mut wait_item;
     (*wi).entry.tqe_prev = (*wc).waiters.tqh_last;
@@ -1834,10 +1829,7 @@ unsafe extern "C" fn cmd_wait_for_lock(
         wc = cmd_wait_for_add(name)
     }
     if (*wc).locked != 0 {
-        wi = xcalloc(
-            1 as libc::c_int as size_t,
-            ::std::mem::size_of::<wait_item>() as libc::c_ulong,
-        ) as *mut wait_item;
+        wi = xcalloc(1u64, ::std::mem::size_of::<wait_item>() as libc::c_ulong) as *mut wait_item;
         (*wi).item = item;
         (*wi).entry.tqe_next = 0 as *mut wait_item;
         (*wi).entry.tqe_prev = (*wc).lockers.tqh_last;
@@ -1845,7 +1837,7 @@ unsafe extern "C" fn cmd_wait_for_lock(
         (*wc).lockers.tqh_last = &mut (*wi).entry.tqe_next;
         return CMD_RETURN_WAIT;
     }
-    (*wc).locked = 1 as libc::c_int;
+    (*wc).locked = 1i32;
     return CMD_RETURN_NORMAL;
 }
 unsafe extern "C" fn cmd_wait_for_unlock(
@@ -1873,7 +1865,7 @@ unsafe extern "C" fn cmd_wait_for_unlock(
         *(*wi).entry.tqe_prev = (*wi).entry.tqe_next;
         free(wi as *mut libc::c_void);
     } else {
-        (*wc).locked = 0 as libc::c_int;
+        (*wc).locked = 0i32;
         cmd_wait_for_remove(wc);
     }
     return CMD_RETURN_NORMAL;
@@ -1884,15 +1876,15 @@ pub unsafe extern "C" fn cmd_wait_for_flush() {
     let mut wc1: *mut wait_channel = 0 as *mut wait_channel;
     let mut wi: *mut wait_item = 0 as *mut wait_item;
     let mut wi1: *mut wait_item = 0 as *mut wait_item;
-    wc = wait_channels_RB_MINMAX(&mut wait_channels, -(1 as libc::c_int));
+    wc = wait_channels_RB_MINMAX(&mut wait_channels, -(1i32));
     while !wc.is_null() && {
         wc1 = wait_channels_RB_NEXT(wc);
-        (1 as libc::c_int) != 0
+        (1i32) != 0
     } {
         wi = (*wc).waiters.tqh_first;
         while !wi.is_null() && {
             wi1 = (*wi).entry.tqe_next;
-            (1 as libc::c_int) != 0
+            (1i32) != 0
         } {
             cmdq_continue((*wi).item);
             if !(*wi).entry.tqe_next.is_null() {
@@ -1904,11 +1896,11 @@ pub unsafe extern "C" fn cmd_wait_for_flush() {
             free(wi as *mut libc::c_void);
             wi = wi1
         }
-        (*wc).woken = 1 as libc::c_int;
+        (*wc).woken = 1i32;
         wi = (*wc).lockers.tqh_first;
         while !wi.is_null() && {
             wi1 = (*wi).entry.tqe_next;
-            (1 as libc::c_int) != 0
+            (1i32) != 0
         } {
             cmdq_continue((*wi).item);
             if !(*wi).entry.tqe_next.is_null() {
@@ -1920,7 +1912,7 @@ pub unsafe extern "C" fn cmd_wait_for_flush() {
             free(wi as *mut libc::c_void);
             wi = wi1
         }
-        (*wc).locked = 0 as libc::c_int;
+        (*wc).locked = 0i32;
         cmd_wait_for_remove(wc);
         wc = wc1
     }

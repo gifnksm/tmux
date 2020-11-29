@@ -1058,29 +1058,29 @@ pub static mut cmd_swap_pane_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"dDs:t:UZ\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
             usage: b"[-dDUZ] [-s src-pane] [-t dst-pane]\x00" as *const u8 as *const libc::c_char,
             source: {
                 let mut init = cmd_entry_flag {
-                    flag: 's' as i32 as libc::c_char,
+                    flag: 's' as libc::c_char,
                     type_0: CMD_FIND_PANE,
-                    flags: 0x8 as libc::c_int,
+                    flags: 0x8i32,
                 };
                 init
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_PANE,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0 as libc::c_int,
+            flags: 0i32,
             exec: Some(
                 cmd_swap_pane_exec
                     as unsafe extern "C" fn(
@@ -1133,23 +1133,23 @@ unsafe extern "C" fn cmd_swap_pane_exec(
     dst_wp = (*target).wp;
     src_w = (*(*source).wl).window;
     src_wp = (*source).wp;
-    if window_push_zoom(dst_w, args_has(args, 'Z' as i32 as u_char)) != 0 {
+    if window_push_zoom(dst_w, args_has(args, 'Z' as u_char)) != 0 {
         server_redraw_window(dst_w);
     }
-    if args_has(args, 'D' as i32 as u_char) != 0 {
+    if args_has(args, 'D' as u_char) != 0 {
         src_w = dst_w;
         src_wp = (*dst_wp).entry.tqe_next;
         if src_wp.is_null() {
             src_wp = (*dst_w).panes.tqh_first
         }
-    } else if args_has(args, 'U' as i32 as u_char) != 0 {
+    } else if args_has(args, 'U' as u_char) != 0 {
         src_w = dst_w;
         src_wp = *(*((*dst_wp).entry.tqe_prev as *mut window_panes)).tqh_last;
         if src_wp.is_null() {
             src_wp = *(*((*dst_w).panes.tqh_last as *mut window_panes)).tqh_last
         }
     }
-    if src_w != dst_w && window_push_zoom(src_w, args_has(args, 'Z' as i32 as u_char)) != 0 {
+    if src_w != dst_w && window_push_zoom(src_w, args_has(args, 'Z' as u_char)) != 0 {
         server_redraw_window(src_w);
     }
     if !(src_wp == dst_wp) {
@@ -1200,10 +1200,10 @@ unsafe extern "C" fn cmd_swap_pane_exec(
         (*src_wp).layout_cell = dst_lc;
         (*src_wp).window = dst_w;
         options_set_parent((*src_wp).options, (*dst_w).options);
-        (*src_wp).flags |= 0x1000 as libc::c_int;
+        (*src_wp).flags |= 0x1000i32;
         (*dst_wp).window = src_w;
         options_set_parent((*dst_wp).options, (*src_w).options);
-        (*dst_wp).flags |= 0x1000 as libc::c_int;
+        (*dst_wp).flags |= 0x1000i32;
         sx = (*src_wp).sx;
         sy = (*src_wp).sy;
         xoff = (*src_wp).xoff;
@@ -1214,20 +1214,20 @@ unsafe extern "C" fn cmd_swap_pane_exec(
         (*dst_wp).xoff = xoff;
         (*dst_wp).yoff = yoff;
         window_pane_resize(dst_wp, sx, sy);
-        if args_has(args, 'd' as i32 as u_char) == 0 {
+        if args_has(args, 'd' as u_char) == 0 {
             if src_w != dst_w {
-                window_set_active_pane(src_w, dst_wp, 1 as libc::c_int);
-                window_set_active_pane(dst_w, src_wp, 1 as libc::c_int);
+                window_set_active_pane(src_w, dst_wp, 1i32);
+                window_set_active_pane(dst_w, src_wp, 1i32);
             } else {
                 tmp_wp = dst_wp;
-                window_set_active_pane(src_w, tmp_wp, 1 as libc::c_int);
+                window_set_active_pane(src_w, tmp_wp, 1i32);
             }
         } else {
             if (*src_w).active == src_wp {
-                window_set_active_pane(src_w, dst_wp, 1 as libc::c_int);
+                window_set_active_pane(src_w, dst_wp, 1i32);
             }
             if (*dst_w).active == dst_wp {
-                window_set_active_pane(dst_w, src_wp, 1 as libc::c_int);
+                window_set_active_pane(dst_w, src_wp, 1i32);
             }
         }
         if src_w != dst_w {

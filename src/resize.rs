@@ -1079,20 +1079,20 @@ pub unsafe extern "C" fn resize_window(
 ) {
     let mut zoomed: libc::c_int = 0;
     /* Check size limits. */
-    if sx < 1 as libc::c_int as libc::c_uint {
-        sx = 1 as libc::c_int as u_int
+    if sx < 1u32 {
+        sx = 1u32
     }
-    if sx > 10000 as libc::c_int as libc::c_uint {
-        sx = 10000 as libc::c_int as u_int
+    if sx > 10000u32 {
+        sx = 10000u32
     }
-    if sy < 1 as libc::c_int as libc::c_uint {
-        sy = 1 as libc::c_int as u_int
+    if sy < 1u32 {
+        sy = 1u32
     }
-    if sy > 10000 as libc::c_int as libc::c_uint {
-        sy = 10000 as libc::c_int as u_int
+    if sy > 10000u32 {
+        sy = 10000u32
     }
     /* If the window is zoomed, unzoom. */
-    zoomed = (*w).flags & 0x8 as libc::c_int;
+    zoomed = (*w).flags & 0x8i32;
     if zoomed != 0 {
         window_unzoom(w);
     }
@@ -1125,20 +1125,17 @@ pub unsafe extern "C" fn resize_window(
         b"window-layout-changed\x00" as *const u8 as *const libc::c_char,
         w,
     );
-    (*w).flags &= !(0x20 as libc::c_int);
+    (*w).flags &= !(0x20i32);
 }
 unsafe extern "C" fn ignore_client_size(mut c: *mut client) -> libc::c_int {
     let mut loop_0: *mut client = 0 as *mut client;
     if (*c).session.is_null() {
-        return 1 as libc::c_int;
+        return 1i32;
     }
-    if (*c).flags
-        & (0x200 as libc::c_int | 0x40 as libc::c_int | 0x4 as libc::c_int) as libc::c_ulong
-        != 0
-    {
-        return 1 as libc::c_int;
+    if (*c).flags & (0x200i32 | 0x40i32 | 0x4i32) as libc::c_ulong != 0 {
+        return 1i32;
     }
-    if (*c).flags & 0x20000 as libc::c_int as libc::c_ulong != 0 {
+    if (*c).flags & 0x20000u64 != 0 {
         /*
          * Ignore flagged clients if there are any attached clients
          * that aren't flagged.
@@ -1146,34 +1143,28 @@ unsafe extern "C" fn ignore_client_size(mut c: *mut client) -> libc::c_int {
         loop_0 = clients.tqh_first;
         while !loop_0.is_null() {
             if !(*loop_0).session.is_null() {
-                if !((*loop_0).flags
-                    & (0x200 as libc::c_int | 0x40 as libc::c_int | 0x4 as libc::c_int)
-                        as libc::c_ulong
-                    != 0)
-                {
-                    if !(*loop_0).flags & 0x20000 as libc::c_int as libc::c_ulong != 0 {
-                        return 1 as libc::c_int;
+                if !((*loop_0).flags & (0x200i32 | 0x40i32 | 0x4i32) as libc::c_ulong != 0) {
+                    if !(*loop_0).flags & 0x20000u64 != 0 {
+                        return 1i32;
                     }
                 }
             }
             loop_0 = (*loop_0).entry.tqe_next
         }
     }
-    if (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0
-        && !(*c).flags & 0x400000 as libc::c_int as libc::c_ulong != 0
-    {
-        return 1 as libc::c_int;
+    if (*c).flags & 0x2000u64 != 0 && !(*c).flags & 0x400000u64 != 0 {
+        return 1i32;
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 unsafe extern "C" fn clients_with_window(mut w: *mut window) -> u_int {
     let mut loop_0: *mut client = 0 as *mut client;
-    let mut n: u_int = 0 as libc::c_int as u_int;
+    let mut n: u_int = 0u32;
     loop_0 = clients.tqh_first;
     while !loop_0.is_null() {
         if !(ignore_client_size(loop_0) != 0 || session_has((*loop_0).session, w) == 0) {
             n = n.wrapping_add(1);
-            if n > 1 as libc::c_int as libc::c_uint {
+            if n > 1u32 {
                 break;
             }
         }
@@ -1203,31 +1194,29 @@ unsafe extern "C" fn clients_calculate_size(
     let mut loop_0: *mut client = 0 as *mut client;
     let mut cx: u_int = 0;
     let mut cy: u_int = 0;
-    let mut n: u_int = 0 as libc::c_int as u_int;
+    let mut n: u_int = 0u32;
     /* Manual windows do not have their size changed based on a client. */
-    if type_0 == 2 as libc::c_int {
-        return 0 as libc::c_int;
+    if type_0 == 2i32 {
+        return 0i32;
     }
     /*
      * Start comparing with 0 for largest and UINT_MAX for smallest or
      * latest.
      */
-    if type_0 == 0 as libc::c_int {
-        *sy = 0 as libc::c_int as u_int;
+    if type_0 == 0i32 {
+        *sy = 0u32;
         *sx = *sy
     } else {
-        *sy = (2147483647 as libc::c_int as libc::c_uint)
-            .wrapping_mul(2 as libc::c_uint)
-            .wrapping_add(1 as libc::c_uint);
+        *sy = (2147483647u32).wrapping_mul(2u32).wrapping_add(1u32);
         *sx = *sy
     }
-    *ypixel = 0 as libc::c_int as u_int;
+    *ypixel = 0u32;
     *xpixel = *ypixel;
     /*
      * For latest, count the number of clients with this window. We only
      * care if there is more than one.
      */
-    if type_0 == 3 as libc::c_int {
+    if type_0 == 3i32 {
         n = clients_with_window(w)
     }
     /* Loop over the clients and work out the size. */
@@ -1242,10 +1231,7 @@ unsafe extern "C" fn clients_calculate_size(
                  * latest client; otherwise let the only client be chosen as
                  * for smallest.
                  */
-                if !(type_0 == 3 as libc::c_int
-                    && n > 1 as libc::c_int as libc::c_uint
-                    && loop_0 != (*w).latest as *mut client)
-                {
+                if !(type_0 == 3i32 && n > 1u32 && loop_0 != (*w).latest as *mut client) {
                     /* Work out this client's size. */
                     cx = (*loop_0).tty.sx;
                     cy = (*loop_0).tty.sy.wrapping_sub(status_line_size(loop_0));
@@ -1253,7 +1239,7 @@ unsafe extern "C" fn clients_calculate_size(
                      * If it is larger or smaller than the best so far, update the
                      * new size.
                      */
-                    if type_0 == 0 as libc::c_int {
+                    if type_0 == 0i32 {
                         if cx > *sx {
                             *sx = cx
                         }
@@ -1278,18 +1264,11 @@ unsafe extern "C" fn clients_calculate_size(
         loop_0 = (*loop_0).entry.tqe_next
     }
     /* Return whether a suitable size was found. */
-    if type_0 == 0 as libc::c_int {
-        return (*sx != 0 as libc::c_int as libc::c_uint && *sy != 0 as libc::c_int as libc::c_uint)
-            as libc::c_int;
+    if type_0 == 0i32 {
+        return (*sx != 0u32 && *sy != 0u32) as libc::c_int;
     }
-    return (*sx
-        != (2147483647 as libc::c_int as libc::c_uint)
-            .wrapping_mul(2 as libc::c_uint)
-            .wrapping_add(1 as libc::c_uint)
-        && *sy
-            != (2147483647 as libc::c_int as libc::c_uint)
-                .wrapping_mul(2 as libc::c_uint)
-                .wrapping_add(1 as libc::c_uint)) as libc::c_int;
+    return (*sx != (2147483647u32).wrapping_mul(2u32).wrapping_add(1u32)
+        && *sy != (2147483647u32).wrapping_mul(2u32).wrapping_add(1u32)) as libc::c_int;
 }
 unsafe extern "C" fn default_window_size_skip_client(
     mut loop_0: *mut client,
@@ -1303,16 +1282,16 @@ unsafe extern "C" fn default_window_size_skip_client(
      * include clients where the session contains the window or where the
      * session is the given session.
      */
-    if type_0 == 3 as libc::c_int {
-        return 0 as libc::c_int;
+    if type_0 == 3i32 {
+        return 0i32;
     }
     if !w.is_null() && session_has((*loop_0).session, w) == 0 {
-        return 1 as libc::c_int;
+        return 1i32;
     }
     if w.is_null() && (*loop_0).session != s {
-        return 1 as libc::c_int;
+        return 1i32;
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn default_window_size(
@@ -1328,7 +1307,7 @@ pub unsafe extern "C" fn default_window_size(
     let mut current_block: u64;
     let mut value: *const libc::c_char = 0 as *const libc::c_char;
     /* Get type if not provided. */
-    if type_0 == -(1 as libc::c_int) {
+    if type_0 == -(1i32) {
         type_0 = options_get_number(
             global_w_options,
             b"window-size\x00" as *const u8 as *const libc::c_char,
@@ -1338,7 +1317,7 @@ pub unsafe extern "C" fn default_window_size(
      * Latest clients can use the given client if suitable. If there is no
      * client and no window, use the default size as for manual type.
      */
-    if type_0 == 3 as libc::c_int {
+    if type_0 == 3i32 {
         if !c.is_null() && ignore_client_size(c) == 0 {
             *sx = (*c).tty.sx;
             *sy = (*c).tty.sy.wrapping_sub(status_line_size(c));
@@ -1347,7 +1326,7 @@ pub unsafe extern "C" fn default_window_size(
             current_block = 8381394993143607130;
         } else {
             if w.is_null() {
-                type_0 = 2 as libc::c_int
+                type_0 = 2i32
             }
             current_block = 2868539653012386629;
         }
@@ -1362,7 +1341,7 @@ pub unsafe extern "C" fn default_window_size(
              */
             if clients_calculate_size(
                 type_0,
-                0 as libc::c_int,
+                0i32,
                 s,
                 w,
                 Some(
@@ -1390,27 +1369,27 @@ pub unsafe extern "C" fn default_window_size(
                     b"%ux%u\x00" as *const u8 as *const libc::c_char,
                     sx,
                     sy,
-                ) != 2 as libc::c_int
+                ) != 2i32
                 {
-                    *sx = 80 as libc::c_int as u_int;
-                    *sy = 24 as libc::c_int as u_int
+                    *sx = 80u32;
+                    *sy = 24u32
                 }
             }
         }
         _ => {}
     }
     /* Make sure the limits are enforced. */
-    if *sx < 1 as libc::c_int as libc::c_uint {
-        *sx = 1 as libc::c_int as u_int
+    if *sx < 1u32 {
+        *sx = 1u32
     }
-    if *sx > 10000 as libc::c_int as libc::c_uint {
-        *sx = 10000 as libc::c_int as u_int
+    if *sx > 10000u32 {
+        *sx = 10000u32
     }
-    if *sy < 1 as libc::c_int as libc::c_uint {
-        *sy = 1 as libc::c_int as u_int
+    if *sy < 1u32 {
+        *sy = 1u32
     }
-    if *sy > 10000 as libc::c_int as libc::c_uint {
-        *sy = 10000 as libc::c_int as u_int
+    if *sy > 10000u32 {
+        *sy = 10000u32
     };
 }
 unsafe extern "C" fn recalculate_size_skip_client(
@@ -1428,14 +1407,14 @@ unsafe extern "C" fn recalculate_size_skip_client(
     if current != 0 {
         return ((*(*(*loop_0).session).curw).window != w) as libc::c_int;
     }
-    return (session_has((*loop_0).session, w) == 0 as libc::c_int) as libc::c_int;
+    return (session_has((*loop_0).session, w) == 0i32) as libc::c_int;
 }
 #[no_mangle]
 pub unsafe extern "C" fn recalculate_size(mut w: *mut window, mut now: libc::c_int) {
     let mut sx: u_int = 0;
     let mut sy: u_int = 0;
-    let mut xpixel: u_int = 0 as libc::c_int as u_int;
-    let mut ypixel: u_int = 0 as libc::c_int as u_int;
+    let mut xpixel: u_int = 0u32;
+    let mut ypixel: u_int = 0u32;
     let mut type_0: libc::c_int = 0;
     let mut current: libc::c_int = 0;
     let mut changed: libc::c_int = 0;
@@ -1492,12 +1471,12 @@ pub unsafe extern "C" fn recalculate_size(mut w: *mut window, mut now: libc::c_i
      * Make sure the size has actually changed. If the window has already
      * got a resize scheduled, then use the new size; otherwise the old.
      */
-    if (*w).flags & 0x20 as libc::c_int != 0 {
+    if (*w).flags & 0x20i32 != 0 {
         if now == 0 && changed != 0 && (*w).new_sx == sx && (*w).new_sy == sy {
-            changed = 0 as libc::c_int
+            changed = 0i32
         }
     } else if now == 0 && changed != 0 && (*w).sx == sx && (*w).sy == sy {
-        changed = 0 as libc::c_int
+        changed = 0i32
     }
     /*
      * If the size hasn't changed, update the window offset but not the
@@ -1520,20 +1499,20 @@ pub unsafe extern "C" fn recalculate_size(mut w: *mut window, mut now: libc::c_i
         sx,
         sy,
     );
-    if now != 0 || type_0 == 2 as libc::c_int {
+    if now != 0 || type_0 == 2i32 {
         resize_window(w, sx, sy, xpixel as libc::c_int, ypixel as libc::c_int);
     } else {
         (*w).new_sx = sx;
         (*w).new_sy = sy;
         (*w).new_xpixel = xpixel;
         (*w).new_ypixel = ypixel;
-        (*w).flags |= 0x20 as libc::c_int;
+        (*w).flags |= 0x20i32;
         tty_update_window_offset(w);
     };
 }
 #[no_mangle]
 pub unsafe extern "C" fn recalculate_sizes() {
-    recalculate_sizes_now(0 as libc::c_int);
+    recalculate_sizes_now(0i32);
 }
 #[no_mangle]
 pub unsafe extern "C" fn recalculate_sizes_now(mut now: libc::c_int) {
@@ -1544,9 +1523,9 @@ pub unsafe extern "C" fn recalculate_sizes_now(mut now: libc::c_int) {
      * Clear attached count and update saved status line information for
      * each session.
      */
-    s = sessions_RB_MINMAX(&mut sessions, -(1 as libc::c_int));
+    s = sessions_RB_MINMAX(&mut sessions, -(1i32));
     while !s.is_null() {
-        (*s).attached = 0 as libc::c_int as u_int;
+        (*s).attached = 0u32;
         status_update_cache(s);
         s = sessions_RB_NEXT(s)
     }
@@ -1557,26 +1536,20 @@ pub unsafe extern "C" fn recalculate_sizes_now(mut now: libc::c_int) {
     c = clients.tqh_first;
     while !c.is_null() {
         s = (*c).session;
-        if !s.is_null()
-            && (*c).flags
-                & (0x200 as libc::c_int | 0x40 as libc::c_int | 0x4 as libc::c_int) as libc::c_ulong
-                == 0
-        {
+        if !s.is_null() && (*c).flags & (0x200i32 | 0x40i32 | 0x4i32) as libc::c_ulong == 0 {
             (*s).attached = (*s).attached.wrapping_add(1)
         }
         if !(ignore_client_size(c) != 0) {
-            if (*c).tty.sy <= (*s).statuslines
-                || (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0
-            {
-                (*c).flags |= 0x800000 as libc::c_int as libc::c_ulong
+            if (*c).tty.sy <= (*s).statuslines || (*c).flags & 0x2000u64 != 0 {
+                (*c).flags |= 0x800000u64
             } else {
-                (*c).flags &= !(0x800000 as libc::c_int) as libc::c_ulong
+                (*c).flags &= !(0x800000i32) as libc::c_ulong
             }
         }
         c = (*c).entry.tqe_next
     }
     /* Walk each window and adjust the size. */
-    w = windows_RB_MINMAX(&mut windows, -(1 as libc::c_int));
+    w = windows_RB_MINMAX(&mut windows, -(1i32));
     while !w.is_null() {
         recalculate_size(w, now);
         w = windows_RB_NEXT(w)

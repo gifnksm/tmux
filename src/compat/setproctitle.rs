@@ -68,11 +68,11 @@ pub unsafe extern "C" fn setproctitle(mut fmt: *const libc::c_char, mut args: ..
         getprogname(),
         title.as_mut_ptr(),
     );
-    if used >= ::std::mem::size_of::<[libc::c_char; 16]>() as libc::c_ulong as libc::c_int {
+    if used >= ::std::mem::size_of::<[libc::c_char; 16]>() as libc::c_int {
         cp = strrchr(name.as_mut_ptr(), ' ' as i32);
         if !cp.is_null() {
-            *cp = '\u{0}' as i32 as libc::c_char
+            *cp = '\u{0}' as libc::c_char
         }
     }
-    prctl(15 as libc::c_int, name.as_mut_ptr());
+    prctl(15i32, name.as_mut_ptr());
 }

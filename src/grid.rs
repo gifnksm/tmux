@@ -159,7 +159,7 @@ pub static mut grid_default_cell: Cell = {
         data: {
             let mut init = Utf8Data {
                 data: [
-                    ' ' as i32 as u_char,
+                    ' ' as u_char,
                     0,
                     0,
                     0,
@@ -181,17 +181,17 @@ pub static mut grid_default_cell: Cell = {
                     0,
                     0,
                 ],
-                have: 0 as libc::c_int as u_char,
-                size: 1 as libc::c_int as u_char,
-                width: 1 as libc::c_int as u_char,
+                have: 0u8,
+                size: 1u8,
+                width: 1u8,
             };
             init
         },
-        attr: 0 as libc::c_int as u_short,
-        flags: 0 as libc::c_int as u_char,
-        fg: 8 as libc::c_int,
-        bg: 8 as libc::c_int,
-        us: 0 as libc::c_int,
+        attr: 0u16,
+        flags: 0u8,
+        fg: 8i32,
+        bg: 8i32,
+        us: 0i32,
     };
     init
 };
@@ -204,7 +204,7 @@ static mut grid_padding_cell: Cell = {
         data: {
             let mut init = Utf8Data {
                 data: [
-                    '!' as i32 as u_char,
+                    '!' as u_char,
                     0,
                     0,
                     0,
@@ -226,17 +226,17 @@ static mut grid_padding_cell: Cell = {
                     0,
                     0,
                 ],
-                have: 0 as libc::c_int as u_char,
-                size: 0 as libc::c_int as u_char,
-                width: 0 as libc::c_int as u_char,
+                have: 0u8,
+                size: 0u8,
+                width: 0u8,
             };
             init
         },
-        attr: 0 as libc::c_int as u_short,
-        flags: 0x4 as libc::c_int as u_char,
-        fg: 8 as libc::c_int,
-        bg: 8 as libc::c_int,
-        us: 0 as libc::c_int,
+        attr: 0u16,
+        flags: 0x4u8,
+        fg: 8i32,
+        bg: 8i32,
+        us: 0i32,
     };
     init
 };
@@ -246,7 +246,7 @@ static mut grid_cleared_cell: Cell = {
         data: {
             let mut init = Utf8Data {
                 data: [
-                    ' ' as i32 as u_char,
+                    ' ' as u_char,
                     0,
                     0,
                     0,
@@ -268,30 +268,30 @@ static mut grid_cleared_cell: Cell = {
                     0,
                     0,
                 ],
-                have: 0 as libc::c_int as u_char,
-                size: 1 as libc::c_int as u_char,
-                width: 1 as libc::c_int as u_char,
+                have: 0u8,
+                size: 1u8,
+                width: 1u8,
             };
             init
         },
-        attr: 0 as libc::c_int as u_short,
-        flags: 0x40 as libc::c_int as u_char,
-        fg: 8 as libc::c_int,
-        bg: 8 as libc::c_int,
-        us: 0 as libc::c_int,
+        attr: 0u16,
+        flags: 0x40u8,
+        fg: 8i32,
+        bg: 8i32,
+        us: 0i32,
     };
     init
 };
 static mut grid_cleared_entry: grid_cell_entry = {
     let mut init = grid_cell_entry {
-        flags: 0x40 as libc::c_int as u_char,
+        flags: 0x40u8,
         c2rust_unnamed: C2RustUnnamed {
             data: {
                 let mut init = C2RustUnnamed_0 {
-                    attr: 0 as libc::c_int as u_char,
-                    fg: 8 as libc::c_int as u_char,
-                    bg: 8 as libc::c_int as u_char,
-                    data: ' ' as i32 as u_char,
+                    attr: 0u8,
+                    fg: 8u8,
+                    bg: 8u8,
+                    data: ' ' as u_char,
                 };
                 init
             },
@@ -305,14 +305,14 @@ unsafe extern "C" fn grid_store_cell(
     mut gc: *const Cell,
     mut c: u_char,
 ) {
-    (*gce).flags = ((*gc).flags as libc::c_int & !(0x40 as libc::c_int)) as u_char;
-    (*gce).c2rust_unnamed.data.fg = ((*gc).fg & 0xff as libc::c_int) as u_char;
-    if (*gc).fg & 0x1000000 as libc::c_int != 0 {
-        (*gce).flags = ((*gce).flags as libc::c_int | 0x1 as libc::c_int) as u_char
+    (*gce).flags = ((*gc).flags as libc::c_int & !(0x40i32)) as u_char;
+    (*gce).c2rust_unnamed.data.fg = ((*gc).fg & 0xffi32) as u_char;
+    if (*gc).fg & 0x1000000i32 != 0 {
+        (*gce).flags = ((*gce).flags as libc::c_int | 0x1i32) as u_char
     }
-    (*gce).c2rust_unnamed.data.bg = ((*gc).bg & 0xff as libc::c_int) as u_char;
-    if (*gc).bg & 0x1000000 as libc::c_int != 0 {
-        (*gce).flags = ((*gce).flags as libc::c_int | 0x2 as libc::c_int) as u_char
+    (*gce).c2rust_unnamed.data.bg = ((*gc).bg & 0xffi32) as u_char;
+    if (*gc).bg & 0x1000000i32 != 0 {
+        (*gce).flags = ((*gce).flags as libc::c_int | 0x2i32) as u_char
     }
     (*gce).c2rust_unnamed.data.attr = (*gc).attr as u_char;
     (*gce).c2rust_unnamed.data.data = c;
@@ -322,25 +322,23 @@ unsafe extern "C" fn grid_need_extended_cell(
     mut gce: *const grid_cell_entry,
     mut gc: *const Cell,
 ) -> libc::c_int {
-    if (*gce).flags as libc::c_int & 0x8 as libc::c_int != 0 {
-        return 1 as libc::c_int;
+    if (*gce).flags as libc::c_int & 0x8i32 != 0 {
+        return 1i32;
     }
-    if (*gc).attr as libc::c_int > 0xff as libc::c_int {
-        return 1 as libc::c_int;
+    if (*gc).attr as libc::c_int > 0xffi32 {
+        return 1i32;
     }
-    if (*gc).data.size as libc::c_int != 1 as libc::c_int
-        || (*gc).data.width as libc::c_int != 1 as libc::c_int
-    {
-        return 1 as libc::c_int;
+    if (*gc).data.size as libc::c_int != 1i32 || (*gc).data.width as libc::c_int != 1i32 {
+        return 1i32;
     }
-    if (*gc).fg & 0x2000000 as libc::c_int != 0 || (*gc).bg & 0x2000000 as libc::c_int != 0 {
-        return 1 as libc::c_int;
+    if (*gc).fg & 0x2000000i32 != 0 || (*gc).bg & 0x2000000i32 != 0 {
+        return 1i32;
     }
-    if (*gc).us != 0 as libc::c_int {
+    if (*gc).us != 0i32 {
         /* only supports 256 or RGB */
-        return 1 as libc::c_int;
+        return 1i32;
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 /* Get an extended cell. */
 unsafe extern "C" fn grid_get_extended_cell(
@@ -348,17 +346,15 @@ unsafe extern "C" fn grid_get_extended_cell(
     mut gce: *mut grid_cell_entry,
     mut flags: libc::c_int,
 ) {
-    let mut at: u_int = (*gl)
-        .extdsize
-        .wrapping_add(1 as libc::c_int as libc::c_uint);
+    let mut at: u_int = (*gl).extdsize.wrapping_add(1u32);
     (*gl).extddata = xreallocarray(
         (*gl).extddata as *mut libc::c_void,
         at as size_t,
         ::std::mem::size_of::<grid_extd_entry>() as libc::c_ulong,
     ) as *mut grid_extd_entry;
     (*gl).extdsize = at;
-    (*gce).c2rust_unnamed.offset = at.wrapping_sub(1 as libc::c_int as libc::c_uint);
-    (*gce).flags = (flags | 0x8 as libc::c_int) as u_char;
+    (*gce).c2rust_unnamed.offset = at.wrapping_sub(1u32);
+    (*gce).flags = (flags | 0x8i32) as u_char;
 }
 /* Set cell as extended. */
 unsafe extern "C" fn grid_extended_cell(
@@ -367,14 +363,14 @@ unsafe extern "C" fn grid_extended_cell(
     mut gc: *const Cell,
 ) -> *mut grid_extd_entry {
     let mut gee: *mut grid_extd_entry = 0 as *mut grid_extd_entry;
-    let mut flags: libc::c_int = (*gc).flags as libc::c_int & !(0x40 as libc::c_int);
+    let mut flags: libc::c_int = (*gc).flags as libc::c_int & !(0x40i32);
     let mut uc: Utf8Char = 0;
-    if !((*gce).flags as libc::c_int) & 0x8 as libc::c_int != 0 {
+    if !((*gce).flags as libc::c_int) & 0x8i32 != 0 {
         grid_get_extended_cell(gl, gce, flags);
     } else if (*gce).c2rust_unnamed.offset >= (*gl).extdsize {
         fatalx(b"offset too big\x00" as *const u8 as *const libc::c_char);
     }
-    (*gl).flags |= 0x2 as libc::c_int;
+    (*gl).flags |= 0x2i32;
     utf8_from_data(&(*gc).data, &mut uc);
     gee =
         &mut *(*gl).extddata.offset((*gce).c2rust_unnamed.offset as isize) as *mut grid_extd_entry;
@@ -388,27 +384,27 @@ unsafe extern "C" fn grid_extended_cell(
 }
 /* Free up unused extended cells. */
 unsafe extern "C" fn grid_compact_line(mut gl: *mut grid_line) {
-    let mut new_extdsize: libc::c_int = 0 as libc::c_int;
+    let mut new_extdsize: libc::c_int = 0i32;
     let mut new_extddata: *mut grid_extd_entry = 0 as *mut grid_extd_entry;
     let mut gce: *mut grid_cell_entry = 0 as *mut grid_cell_entry;
     let mut gee: *mut grid_extd_entry = 0 as *mut grid_extd_entry;
     let mut px: u_int = 0;
     let mut idx: u_int = 0;
-    if (*gl).extdsize == 0 as libc::c_int as libc::c_uint {
+    if (*gl).extdsize == 0u32 {
         return;
     }
-    px = 0 as libc::c_int as u_int;
+    px = 0u32;
     while px < (*gl).cellsize {
         gce = &mut *(*gl).celldata.offset(px as isize) as *mut grid_cell_entry;
-        if (*gce).flags as libc::c_int & 0x8 as libc::c_int != 0 {
+        if (*gce).flags as libc::c_int & 0x8i32 != 0 {
             new_extdsize += 1
         }
         px = px.wrapping_add(1)
     }
-    if new_extdsize == 0 as libc::c_int {
+    if new_extdsize == 0i32 {
         free((*gl).extddata as *mut libc::c_void);
         (*gl).extddata = 0 as *mut grid_extd_entry;
-        (*gl).extdsize = 0 as libc::c_int as u_int;
+        (*gl).extdsize = 0u32;
         return;
     }
     new_extddata = xreallocarray(
@@ -416,11 +412,11 @@ unsafe extern "C" fn grid_compact_line(mut gl: *mut grid_line) {
         new_extdsize as size_t,
         ::std::mem::size_of::<grid_extd_entry>() as libc::c_ulong,
     ) as *mut grid_extd_entry;
-    idx = 0 as libc::c_int as u_int;
-    px = 0 as libc::c_int as u_int;
+    idx = 0u32;
+    px = 0u32;
     while px < (*gl).cellsize {
         gce = &mut *(*gl).celldata.offset(px as isize) as *mut grid_cell_entry;
-        if (*gce).flags as libc::c_int & 0x8 as libc::c_int != 0 {
+        if (*gce).flags as libc::c_int & 0x8i32 != 0 {
             gee = &mut *(*gl).extddata.offset((*gce).c2rust_unnamed.offset as isize)
                 as *mut grid_extd_entry;
             memcpy(
@@ -469,14 +465,14 @@ unsafe extern "C" fn grid_clear_cell(
         &grid_cleared_entry as *const grid_cell_entry as *const libc::c_void,
         ::std::mem::size_of::<grid_cell_entry>() as libc::c_ulong,
     );
-    if bg != 8 as libc::c_int as libc::c_uint {
-        if bg & 0x2000000 as libc::c_int as libc::c_uint != 0 {
+    if bg != 8u32 {
+        if bg & 0x2000000u32 != 0 {
             grid_get_extended_cell(gl, gce, (*gce).flags as libc::c_int);
             gee = grid_extended_cell(gl, gce, &grid_cleared_cell);
             (*gee).bg = bg as libc::c_int
         } else {
-            if bg & 0x1000000 as libc::c_int as libc::c_uint != 0 {
-                (*gce).flags = ((*gce).flags as libc::c_int | 0x2 as libc::c_int) as u_char
+            if bg & 0x1000000u32 != 0 {
+                (*gce).flags = ((*gce).flags as libc::c_int | 0x2i32) as u_char
             }
             (*gce).c2rust_unnamed.data.bg = bg as u_char
         }
@@ -494,9 +490,9 @@ unsafe extern "C" fn grid_check_y(
             from,
             py,
         );
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 /* Check if two styles are (visibly) the same. */
 #[no_mangle]
@@ -505,14 +501,14 @@ pub unsafe extern "C" fn grid_cells_look_equal(
     mut gc2: *const Cell,
 ) -> libc::c_int {
     if (*gc1).fg != (*gc2).fg || (*gc1).bg != (*gc2).bg {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     if (*gc1).attr as libc::c_int != (*gc2).attr as libc::c_int
         || (*gc1).flags as libc::c_int != (*gc2).flags as libc::c_int
     {
-        return 0 as libc::c_int;
+        return 0i32;
     }
-    return 1 as libc::c_int;
+    return 1i32;
 }
 /* Compare grid cells. Return 1 if equal, 0 if not. */
 #[no_mangle]
@@ -521,19 +517,19 @@ pub unsafe extern "C" fn grid_cells_equal(
     mut gc2: *const Cell,
 ) -> libc::c_int {
     if grid_cells_look_equal(gc1, gc2) == 0 {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     if (*gc1).data.width as libc::c_int != (*gc2).data.width as libc::c_int {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     if (*gc1).data.size as libc::c_int != (*gc2).data.size as libc::c_int {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     return (memcmp(
         (*gc1).data.data.as_ptr() as *const libc::c_void,
         (*gc2).data.data.as_ptr() as *const libc::c_void,
         (*gc1).data.size as libc::c_ulong,
-    ) == 0 as libc::c_int) as libc::c_int;
+    ) == 0i32) as libc::c_int;
 }
 /* Free one line. */
 unsafe extern "C" fn grid_free_line(mut gd: *mut grid, mut py: u_int) {
@@ -552,7 +548,7 @@ unsafe extern "C" fn grid_free_lines(mut gd: *mut grid, mut py: u_int, mut ny: u
         grid_free_line(gd, yy);
         yy = yy.wrapping_add(1)
     }
-    malloc_trim(0 as libc::c_int as size_t);
+    malloc_trim(0u64);
 }
 /* Create a new grid. */
 #[no_mangle]
@@ -561,15 +557,15 @@ pub unsafe extern "C" fn grid_create(mut sx: u_int, mut sy: u_int, mut hlimit: u
     gd = xmalloc(::std::mem::size_of::<grid>() as libc::c_ulong) as *mut grid;
     (*gd).sx = sx;
     (*gd).sy = sy;
-    if hlimit != 0 as libc::c_int as libc::c_uint {
-        (*gd).flags = 0x1 as libc::c_int
+    if hlimit != 0u32 {
+        (*gd).flags = 0x1i32
     } else {
-        (*gd).flags = 0 as libc::c_int
+        (*gd).flags = 0i32
     }
-    (*gd).hscrolled = 0 as libc::c_int as u_int;
-    (*gd).hsize = 0 as libc::c_int as u_int;
+    (*gd).hscrolled = 0u32;
+    (*gd).hsize = 0u32;
     (*gd).hlimit = hlimit;
-    if (*gd).sy != 0 as libc::c_int as libc::c_uint {
+    if (*gd).sy != 0u32 {
         (*gd).linedata = xcalloc(
             (*gd).sy as size_t,
             ::std::mem::size_of::<grid_line>() as libc::c_ulong,
@@ -582,11 +578,7 @@ pub unsafe extern "C" fn grid_create(mut sx: u_int, mut sy: u_int, mut hlimit: u
 /* Destroy grid. */
 #[no_mangle]
 pub unsafe extern "C" fn grid_destroy(mut gd: *mut grid) {
-    grid_free_lines(
-        gd,
-        0 as libc::c_int as u_int,
-        (*gd).hsize.wrapping_add((*gd).sy),
-    );
+    grid_free_lines(gd, 0u32, (*gd).hsize.wrapping_add((*gd).sy));
     free((*gd).linedata as *mut libc::c_void);
     free(gd as *mut libc::c_void);
 }
@@ -624,34 +616,33 @@ pub unsafe extern "C" fn grid_compare(mut ga: *mut grid, mut gb: *mut grid) -> l
     let mut xx: u_int = 0;
     let mut yy: u_int = 0;
     if (*ga).sx != (*gb).sx || (*ga).sy != (*gb).sy {
-        return 1 as libc::c_int;
+        return 1i32;
     }
-    yy = 0 as libc::c_int as u_int;
+    yy = 0u32;
     while yy < (*ga).sy {
         gla = &mut *(*ga).linedata.offset(yy as isize) as *mut grid_line;
         glb = &mut *(*gb).linedata.offset(yy as isize) as *mut grid_line;
         if (*gla).cellsize != (*glb).cellsize {
-            return 1 as libc::c_int;
+            return 1i32;
         }
-        xx = 0 as libc::c_int as u_int;
+        xx = 0u32;
         while xx < (*gla).cellsize {
             grid_get_cell(ga, xx, yy, &mut gca);
             grid_get_cell(gb, xx, yy, &mut gcb);
             if grid_cells_equal(&mut gca, &mut gcb) == 0 {
-                return 1 as libc::c_int;
+                return 1i32;
             }
             xx = xx.wrapping_add(1)
         }
         yy = yy.wrapping_add(1)
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 /* Trim lines from the history. */
 unsafe extern "C" fn grid_trim_history(mut gd: *mut grid, mut ny: u_int) {
-    grid_free_lines(gd, 0 as libc::c_int as u_int, ny);
+    grid_free_lines(gd, 0u32, ny);
     memmove(
-        &mut *(*gd).linedata.offset(0 as libc::c_int as isize) as *mut grid_line
-            as *mut libc::c_void,
+        &mut *(*gd).linedata.offset(0isize) as *mut grid_line as *mut libc::c_void,
         &mut *(*gd).linedata.offset(ny as isize) as *mut grid_line as *const libc::c_void,
         ((*gd).hsize.wrapping_add((*gd).sy).wrapping_sub(ny) as libc::c_ulong)
             .wrapping_mul(::std::mem::size_of::<grid_line>() as libc::c_ulong),
@@ -664,12 +655,12 @@ unsafe extern "C" fn grid_trim_history(mut gd: *mut grid, mut ny: u_int) {
 #[no_mangle]
 pub unsafe extern "C" fn grid_collect_history(mut gd: *mut grid) {
     let mut ny: u_int = 0;
-    if (*gd).hsize == 0 as libc::c_int as libc::c_uint || (*gd).hsize < (*gd).hlimit {
+    if (*gd).hsize == 0u32 || (*gd).hsize < (*gd).hlimit {
         return;
     }
-    ny = (*gd).hlimit.wrapping_div(10 as libc::c_int as libc::c_uint);
-    if ny < 1 as libc::c_int as libc::c_uint {
-        ny = 1 as libc::c_int as u_int
+    ny = (*gd).hlimit.wrapping_div(10u32);
+    if ny < 1u32 {
+        ny = 1u32
     }
     if ny > (*gd).hsize {
         ny = (*gd).hsize
@@ -679,7 +670,7 @@ pub unsafe extern "C" fn grid_collect_history(mut gd: *mut grid) {
      * them.
      */
     grid_trim_history(gd, ny);
-    (*gd).hsize = ((*gd).hsize as libc::c_uint).wrapping_sub(ny) as u_int as u_int;
+    (*gd).hsize = ((*gd).hsize).wrapping_sub(ny);
     if (*gd).hscrolled > (*gd).hsize {
         (*gd).hscrolled = (*gd).hsize
     };
@@ -691,19 +682,19 @@ pub unsafe extern "C" fn grid_remove_history(mut gd: *mut grid, mut ny: u_int) {
     if ny > (*gd).hsize {
         return;
     }
-    yy = 0 as libc::c_int as u_int;
+    yy = 0u32;
     while yy < ny {
         grid_free_line(
             gd,
             (*gd)
                 .hsize
                 .wrapping_add((*gd).sy)
-                .wrapping_sub(1 as libc::c_int as libc::c_uint)
+                .wrapping_sub(1u32)
                 .wrapping_sub(yy),
         );
         yy = yy.wrapping_add(1)
     }
-    (*gd).hsize = ((*gd).hsize as libc::c_uint).wrapping_sub(ny) as u_int as u_int;
+    (*gd).hsize = ((*gd).hsize).wrapping_sub(ny);
 }
 /*
  * Scroll the entire visible screen, moving one line into the history. Just
@@ -715,7 +706,7 @@ pub unsafe extern "C" fn grid_scroll_history(mut gd: *mut grid, mut bg: u_int) {
     yy = (*gd).hsize.wrapping_add((*gd).sy);
     (*gd).linedata = xreallocarray(
         (*gd).linedata as *mut libc::c_void,
-        yy.wrapping_add(1 as libc::c_int as libc::c_uint) as size_t,
+        yy.wrapping_add(1u32) as size_t,
         ::std::mem::size_of::<grid_line>() as libc::c_ulong,
     ) as *mut grid_line;
     grid_empty_line(gd, yy, bg);
@@ -727,8 +718,8 @@ pub unsafe extern "C" fn grid_scroll_history(mut gd: *mut grid, mut bg: u_int) {
 #[no_mangle]
 pub unsafe extern "C" fn grid_clear_history(mut gd: *mut grid) {
     grid_trim_history(gd, (*gd).hsize);
-    (*gd).hscrolled = 0 as libc::c_int as u_int;
-    (*gd).hsize = 0 as libc::c_int as u_int;
+    (*gd).hscrolled = 0u32;
+    (*gd).hsize = 0u32;
     (*gd).linedata = xreallocarray(
         (*gd).linedata as *mut libc::c_void,
         (*gd).sy as size_t,
@@ -750,13 +741,13 @@ pub unsafe extern "C" fn grid_scroll_history_region(
     yy = (*gd).hsize.wrapping_add((*gd).sy);
     (*gd).linedata = xreallocarray(
         (*gd).linedata as *mut libc::c_void,
-        yy.wrapping_add(1 as libc::c_int as libc::c_uint) as size_t,
+        yy.wrapping_add(1u32) as size_t,
         ::std::mem::size_of::<grid_line>() as libc::c_ulong,
     ) as *mut grid_line;
     /* Move the entire screen down to free a space for this line. */
     gl_history = &mut *(*gd).linedata.offset((*gd).hsize as isize) as *mut grid_line;
     memmove(
-        gl_history.offset(1 as libc::c_int as isize) as *mut libc::c_void,
+        gl_history.offset(1isize) as *mut libc::c_void,
         gl_history as *const libc::c_void,
         ((*gd).sy as libc::c_ulong)
             .wrapping_mul(::std::mem::size_of::<grid_line>() as libc::c_ulong),
@@ -774,7 +765,7 @@ pub unsafe extern "C" fn grid_scroll_history_region(
     /* Then move the region up and clear the bottom line. */
     memmove(
         gl_upper as *mut libc::c_void,
-        gl_upper.offset(1 as libc::c_int as isize) as *const libc::c_void,
+        gl_upper.offset(1isize) as *const libc::c_void,
         (lower.wrapping_sub(upper) as libc::c_ulong)
             .wrapping_mul(::std::mem::size_of::<grid_line>() as libc::c_ulong),
     );
@@ -796,10 +787,10 @@ unsafe extern "C" fn grid_expand_line(
     if sx <= (*gl).cellsize {
         return;
     }
-    if sx < (*gd).sx.wrapping_div(4 as libc::c_int as libc::c_uint) {
-        sx = (*gd).sx.wrapping_div(4 as libc::c_int as libc::c_uint)
-    } else if sx < (*gd).sx.wrapping_div(2 as libc::c_int as libc::c_uint) {
-        sx = (*gd).sx.wrapping_div(2 as libc::c_int as libc::c_uint)
+    if sx < (*gd).sx.wrapping_div(4u32) {
+        sx = (*gd).sx.wrapping_div(4u32)
+    } else if sx < (*gd).sx.wrapping_div(2u32) {
+        sx = (*gd).sx.wrapping_div(2u32)
     } else if (*gd).sx > sx {
         sx = (*gd).sx
     }
@@ -820,10 +811,10 @@ unsafe extern "C" fn grid_expand_line(
 pub unsafe extern "C" fn grid_empty_line(mut gd: *mut grid, mut py: u_int, mut bg: u_int) {
     memset(
         &mut *(*gd).linedata.offset(py as isize) as *mut grid_line as *mut libc::c_void,
-        0 as libc::c_int,
+        0i32,
         ::std::mem::size_of::<grid_line>() as libc::c_ulong,
     );
-    if !(bg == 8 as libc::c_int as libc::c_uint || bg == 9 as libc::c_int as libc::c_uint) {
+    if !(bg == 8u32 || bg == 9u32) {
         grid_expand_line(gd, py, (*gd).sx, bg);
     };
 }
@@ -834,7 +825,7 @@ pub unsafe extern "C" fn grid_peek_line(mut gd: *mut grid, mut py: u_int) -> *co
         gd,
         (*::std::mem::transmute::<&[u8; 15], &[libc::c_char; 15]>(b"grid_peek_line\x00")).as_ptr(),
         py,
-    ) != 0 as libc::c_int
+    ) != 0i32
     {
         return 0 as *const grid_line;
     }
@@ -845,7 +836,7 @@ unsafe extern "C" fn grid_get_cell1(mut gl: *mut grid_line, mut px: u_int, mut g
     let mut gce: *mut grid_cell_entry =
         &mut *(*gl).celldata.offset(px as isize) as *mut grid_cell_entry;
     let mut gee: *mut grid_extd_entry = 0 as *mut grid_extd_entry;
-    if (*gce).flags as libc::c_int & 0x8 as libc::c_int != 0 {
+    if (*gce).flags as libc::c_int & 0x8i32 != 0 {
         if (*gce).c2rust_unnamed.offset >= (*gl).extdsize {
             memcpy(
                 gc as *mut libc::c_void,
@@ -864,18 +855,17 @@ unsafe extern "C" fn grid_get_cell1(mut gl: *mut grid_line, mut px: u_int, mut g
         }
         return;
     }
-    (*gc).flags =
-        ((*gce).flags as libc::c_int & !(0x1 as libc::c_int | 0x2 as libc::c_int)) as u_char;
+    (*gc).flags = ((*gce).flags as libc::c_int & !(0x1i32 | 0x2i32)) as u_char;
     (*gc).attr = (*gce).c2rust_unnamed.data.attr as u_short;
     (*gc).fg = (*gce).c2rust_unnamed.data.fg as libc::c_int;
-    if (*gce).flags as libc::c_int & 0x1 as libc::c_int != 0 {
-        (*gc).fg |= 0x1000000 as libc::c_int
+    if (*gce).flags as libc::c_int & 0x1i32 != 0 {
+        (*gc).fg |= 0x1000000i32
     }
     (*gc).bg = (*gce).c2rust_unnamed.data.bg as libc::c_int;
-    if (*gce).flags as libc::c_int & 0x2 as libc::c_int != 0 {
-        (*gc).bg |= 0x1000000 as libc::c_int
+    if (*gce).flags as libc::c_int & 0x2i32 != 0 {
+        (*gc).bg |= 0x1000000i32
     }
-    (*gc).us = 0 as libc::c_int;
+    (*gc).us = 0i32;
     utf8_set(&mut (*gc).data, (*gce).c2rust_unnamed.data.data);
 }
 /* Get cell for reading. */
@@ -890,7 +880,7 @@ pub unsafe extern "C" fn grid_get_cell(
         gd,
         (*::std::mem::transmute::<&[u8; 14], &[libc::c_char; 14]>(b"grid_get_cell\x00")).as_ptr(),
         py,
-    ) != 0 as libc::c_int
+    ) != 0i32
         || px >= (*(*gd).linedata.offset(py as isize)).cellsize
     {
         memcpy(
@@ -916,25 +906,20 @@ pub unsafe extern "C" fn grid_set_cell(
         gd,
         (*::std::mem::transmute::<&[u8; 14], &[libc::c_char; 14]>(b"grid_set_cell\x00")).as_ptr(),
         py,
-    ) != 0 as libc::c_int
+    ) != 0i32
     {
         return;
     }
-    grid_expand_line(
-        gd,
-        py,
-        px.wrapping_add(1 as libc::c_int as libc::c_uint),
-        8 as libc::c_int as u_int,
-    );
+    grid_expand_line(gd, py, px.wrapping_add(1u32), 8u32);
     gl = &mut *(*gd).linedata.offset(py as isize) as *mut grid_line;
-    if px.wrapping_add(1 as libc::c_int as libc::c_uint) > (*gl).cellused {
-        (*gl).cellused = px.wrapping_add(1 as libc::c_int as libc::c_uint)
+    if px.wrapping_add(1u32) > (*gl).cellused {
+        (*gl).cellused = px.wrapping_add(1u32)
     }
     gce = &mut *(*gl).celldata.offset(px as isize) as *mut grid_cell_entry;
     if grid_need_extended_cell(gce, gc) != 0 {
         grid_extended_cell(gl, gce, gc);
     } else {
-        grid_store_cell(gce, gc, (*gc).data.data[0 as libc::c_int as usize]);
+        grid_store_cell(gce, gc, (*gc).data.data[0usize]);
     };
 }
 /* Set padding at position. */
@@ -960,7 +945,7 @@ pub unsafe extern "C" fn grid_set_cells(
         gd,
         (*::std::mem::transmute::<&[u8; 15], &[libc::c_char; 15]>(b"grid_set_cells\x00")).as_ptr(),
         py,
-    ) != 0 as libc::c_int
+    ) != 0i32
     {
         return;
     }
@@ -968,13 +953,13 @@ pub unsafe extern "C" fn grid_set_cells(
         gd,
         py,
         (px as libc::c_ulong).wrapping_add(slen) as u_int,
-        8 as libc::c_int as u_int,
+        8u32,
     );
     gl = &mut *(*gd).linedata.offset(py as isize) as *mut grid_line;
     if (px as libc::c_ulong).wrapping_add(slen) > (*gl).cellused as libc::c_ulong {
         (*gl).cellused = (px as libc::c_ulong).wrapping_add(slen) as u_int
     }
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while (i as libc::c_ulong) < slen {
         gce = &mut *(*gl).celldata.offset(px.wrapping_add(i) as isize) as *mut grid_cell_entry;
         if grid_need_extended_cell(gce, gc) != 0 {
@@ -1001,10 +986,10 @@ pub unsafe extern "C" fn grid_clear(
     let mut yy: u_int = 0;
     let mut ox: u_int = 0;
     let mut sx: u_int = 0;
-    if nx == 0 as libc::c_int as libc::c_uint || ny == 0 as libc::c_int as libc::c_uint {
+    if nx == 0u32 || ny == 0u32 {
         return;
     }
-    if px == 0 as libc::c_int as libc::c_uint && nx == (*gd).sx {
+    if px == 0u32 && nx == (*gd).sx {
         grid_clear_lines(gd, py, ny, bg);
         return;
     }
@@ -1012,16 +997,15 @@ pub unsafe extern "C" fn grid_clear(
         gd,
         (*::std::mem::transmute::<&[u8; 11], &[libc::c_char; 11]>(b"grid_clear\x00")).as_ptr(),
         py,
-    ) != 0 as libc::c_int
+    ) != 0i32
     {
         return;
     }
     if grid_check_y(
         gd,
         (*::std::mem::transmute::<&[u8; 11], &[libc::c_char; 11]>(b"grid_clear\x00")).as_ptr(),
-        py.wrapping_add(ny)
-            .wrapping_sub(1 as libc::c_int as libc::c_uint),
-    ) != 0 as libc::c_int
+        py.wrapping_add(ny).wrapping_sub(1u32),
+    ) != 0i32
     {
         return;
     }
@@ -1034,7 +1018,7 @@ pub unsafe extern "C" fn grid_clear(
             sx = (*gl).cellsize
         }
         ox = nx;
-        if bg == 8 as libc::c_int as libc::c_uint || bg == 9 as libc::c_int as libc::c_uint {
+        if bg == 8u32 || bg == 9u32 {
             if px > sx {
                 current_block_21 = 11812396948646013369;
             } else {
@@ -1048,7 +1032,7 @@ pub unsafe extern "C" fn grid_clear(
         }
         match current_block_21 {
             2838571290723028321 => {
-                grid_expand_line(gd, yy, px.wrapping_add(ox), 8 as libc::c_int as u_int);
+                grid_expand_line(gd, yy, px.wrapping_add(ox), 8u32);
                 xx = px;
                 while xx < px.wrapping_add(ox) {
                     grid_clear_cell(gd, xx, yy, bg);
@@ -1069,7 +1053,7 @@ pub unsafe extern "C" fn grid_clear_lines(
     mut bg: u_int,
 ) {
     let mut yy: u_int = 0;
-    if ny == 0 as libc::c_int as libc::c_uint {
+    if ny == 0u32 {
         return;
     }
     if grid_check_y(
@@ -1077,7 +1061,7 @@ pub unsafe extern "C" fn grid_clear_lines(
         (*::std::mem::transmute::<&[u8; 17], &[libc::c_char; 17]>(b"grid_clear_lines\x00"))
             .as_ptr(),
         py,
-    ) != 0 as libc::c_int
+    ) != 0i32
     {
         return;
     }
@@ -1085,9 +1069,8 @@ pub unsafe extern "C" fn grid_clear_lines(
         gd,
         (*::std::mem::transmute::<&[u8; 17], &[libc::c_char; 17]>(b"grid_clear_lines\x00"))
             .as_ptr(),
-        py.wrapping_add(ny)
-            .wrapping_sub(1 as libc::c_int as libc::c_uint),
-    ) != 0 as libc::c_int
+        py.wrapping_add(ny).wrapping_sub(1u32),
+    ) != 0i32
     {
         return;
     }
@@ -1097,11 +1080,8 @@ pub unsafe extern "C" fn grid_clear_lines(
         grid_empty_line(gd, yy, bg);
         yy = yy.wrapping_add(1)
     }
-    if py != 0 as libc::c_int as libc::c_uint {
-        (*(*gd)
-            .linedata
-            .offset(py.wrapping_sub(1 as libc::c_int as libc::c_uint) as isize))
-        .flags &= !(0x1 as libc::c_int)
+    if py != 0u32 {
+        (*(*gd).linedata.offset(py.wrapping_sub(1u32) as isize)).flags &= !(0x1i32)
     };
 }
 /* Move a group of lines. */
@@ -1114,23 +1094,22 @@ pub unsafe extern "C" fn grid_move_lines(
     mut bg: u_int,
 ) {
     let mut yy: u_int = 0;
-    if ny == 0 as libc::c_int as libc::c_uint || py == dy {
+    if ny == 0u32 || py == dy {
         return;
     }
     if grid_check_y(
         gd,
         (*::std::mem::transmute::<&[u8; 16], &[libc::c_char; 16]>(b"grid_move_lines\x00")).as_ptr(),
         py,
-    ) != 0 as libc::c_int
+    ) != 0i32
     {
         return;
     }
     if grid_check_y(
         gd,
         (*::std::mem::transmute::<&[u8; 16], &[libc::c_char; 16]>(b"grid_move_lines\x00")).as_ptr(),
-        py.wrapping_add(ny)
-            .wrapping_sub(1 as libc::c_int as libc::c_uint),
-    ) != 0 as libc::c_int
+        py.wrapping_add(ny).wrapping_sub(1u32),
+    ) != 0i32
     {
         return;
     }
@@ -1138,16 +1117,15 @@ pub unsafe extern "C" fn grid_move_lines(
         gd,
         (*::std::mem::transmute::<&[u8; 16], &[libc::c_char; 16]>(b"grid_move_lines\x00")).as_ptr(),
         dy,
-    ) != 0 as libc::c_int
+    ) != 0i32
     {
         return;
     }
     if grid_check_y(
         gd,
         (*::std::mem::transmute::<&[u8; 16], &[libc::c_char; 16]>(b"grid_move_lines\x00")).as_ptr(),
-        dy.wrapping_add(ny)
-            .wrapping_sub(1 as libc::c_int as libc::c_uint),
-    ) != 0 as libc::c_int
+        dy.wrapping_add(ny).wrapping_sub(1u32),
+    ) != 0i32
     {
         return;
     }
@@ -1159,11 +1137,8 @@ pub unsafe extern "C" fn grid_move_lines(
         }
         yy = yy.wrapping_add(1)
     }
-    if dy != 0 as libc::c_int as libc::c_uint {
-        (*(*gd)
-            .linedata
-            .offset(dy.wrapping_sub(1 as libc::c_int as libc::c_uint) as isize))
-        .flags &= !(0x1 as libc::c_int)
+    if dy != 0u32 {
+        (*(*gd).linedata.offset(dy.wrapping_sub(1u32) as isize)).flags &= !(0x1i32)
     }
     memmove(
         &mut *(*gd).linedata.offset(dy as isize) as *mut grid_line as *mut libc::c_void,
@@ -1181,11 +1156,8 @@ pub unsafe extern "C" fn grid_move_lines(
         }
         yy = yy.wrapping_add(1)
     }
-    if py != 0 as libc::c_int as libc::c_uint && (py < dy || py >= dy.wrapping_add(ny)) {
-        (*(*gd)
-            .linedata
-            .offset(py.wrapping_sub(1 as libc::c_int as libc::c_uint) as isize))
-        .flags &= !(0x1 as libc::c_int)
+    if py != 0u32 && (py < dy || py >= dy.wrapping_add(ny)) {
+        (*(*gd).linedata.offset(py.wrapping_sub(1u32) as isize)).flags &= !(0x1i32)
     };
 }
 /* Move a group of cells. */
@@ -1200,20 +1172,20 @@ pub unsafe extern "C" fn grid_move_cells(
 ) {
     let mut gl: *mut grid_line = 0 as *mut grid_line;
     let mut xx: u_int = 0;
-    if nx == 0 as libc::c_int as libc::c_uint || px == dx {
+    if nx == 0u32 || px == dx {
         return;
     }
     if grid_check_y(
         gd,
         (*::std::mem::transmute::<&[u8; 16], &[libc::c_char; 16]>(b"grid_move_cells\x00")).as_ptr(),
         py,
-    ) != 0 as libc::c_int
+    ) != 0i32
     {
         return;
     }
     gl = &mut *(*gd).linedata.offset(py as isize) as *mut grid_line;
-    grid_expand_line(gd, py, px.wrapping_add(nx), 8 as libc::c_int as u_int);
-    grid_expand_line(gd, py, dx.wrapping_add(nx), 8 as libc::c_int as u_int);
+    grid_expand_line(gd, py, px.wrapping_add(nx), 8u32);
+    grid_expand_line(gd, py, dx.wrapping_add(nx), 8u32);
     memmove(
         &mut *(*gl).celldata.offset(dx as isize) as *mut grid_cell_entry as *mut libc::c_void,
         &mut *(*gl).celldata.offset(px as isize) as *mut grid_cell_entry as *const libc::c_void,
@@ -1241,24 +1213,24 @@ unsafe extern "C" fn grid_string_cells_fg(
     let mut r: u_char = 0;
     let mut g: u_char = 0;
     let mut b: u_char = 0;
-    n = 0 as libc::c_int as size_t;
-    if (*gc).fg & 0x1000000 as libc::c_int != 0 {
+    n = 0u64;
+    if (*gc).fg & 0x1000000i32 != 0 {
         let fresh3 = n;
         n = n.wrapping_add(1);
-        *values.offset(fresh3 as isize) = 38 as libc::c_int;
+        *values.offset(fresh3 as isize) = 38i32;
         let fresh4 = n;
         n = n.wrapping_add(1);
-        *values.offset(fresh4 as isize) = 5 as libc::c_int;
+        *values.offset(fresh4 as isize) = 5i32;
         let fresh5 = n;
         n = n.wrapping_add(1);
-        *values.offset(fresh5 as isize) = (*gc).fg & 0xff as libc::c_int
-    } else if (*gc).fg & 0x2000000 as libc::c_int != 0 {
+        *values.offset(fresh5 as isize) = (*gc).fg & 0xffi32
+    } else if (*gc).fg & 0x2000000i32 != 0 {
         let fresh6 = n;
         n = n.wrapping_add(1);
-        *values.offset(fresh6 as isize) = 38 as libc::c_int;
+        *values.offset(fresh6 as isize) = 38i32;
         let fresh7 = n;
         n = n.wrapping_add(1);
-        *values.offset(fresh7 as isize) = 2 as libc::c_int;
+        *values.offset(fresh7 as isize) = 2i32;
         colour_split_rgb((*gc).fg, &mut r, &mut g, &mut b);
         let fresh8 = n;
         n = n.wrapping_add(1);
@@ -1274,12 +1246,12 @@ unsafe extern "C" fn grid_string_cells_fg(
             0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 => {
                 let fresh11 = n;
                 n = n.wrapping_add(1);
-                *values.offset(fresh11 as isize) = (*gc).fg + 30 as libc::c_int
+                *values.offset(fresh11 as isize) = (*gc).fg + 30i32
             }
             8 => {
                 let fresh12 = n;
                 n = n.wrapping_add(1);
-                *values.offset(fresh12 as isize) = 39 as libc::c_int
+                *values.offset(fresh12 as isize) = 39i32
             }
             90 | 91 | 92 | 93 | 94 | 95 | 96 | 97 => {
                 let fresh13 = n;
@@ -1300,24 +1272,24 @@ unsafe extern "C" fn grid_string_cells_bg(
     let mut r: u_char = 0;
     let mut g: u_char = 0;
     let mut b: u_char = 0;
-    n = 0 as libc::c_int as size_t;
-    if (*gc).bg & 0x1000000 as libc::c_int != 0 {
+    n = 0u64;
+    if (*gc).bg & 0x1000000i32 != 0 {
         let fresh14 = n;
         n = n.wrapping_add(1);
-        *values.offset(fresh14 as isize) = 48 as libc::c_int;
+        *values.offset(fresh14 as isize) = 48i32;
         let fresh15 = n;
         n = n.wrapping_add(1);
-        *values.offset(fresh15 as isize) = 5 as libc::c_int;
+        *values.offset(fresh15 as isize) = 5i32;
         let fresh16 = n;
         n = n.wrapping_add(1);
-        *values.offset(fresh16 as isize) = (*gc).bg & 0xff as libc::c_int
-    } else if (*gc).bg & 0x2000000 as libc::c_int != 0 {
+        *values.offset(fresh16 as isize) = (*gc).bg & 0xffi32
+    } else if (*gc).bg & 0x2000000i32 != 0 {
         let fresh17 = n;
         n = n.wrapping_add(1);
-        *values.offset(fresh17 as isize) = 48 as libc::c_int;
+        *values.offset(fresh17 as isize) = 48i32;
         let fresh18 = n;
         n = n.wrapping_add(1);
-        *values.offset(fresh18 as isize) = 2 as libc::c_int;
+        *values.offset(fresh18 as isize) = 2i32;
         colour_split_rgb((*gc).bg, &mut r, &mut g, &mut b);
         let fresh19 = n;
         n = n.wrapping_add(1);
@@ -1333,17 +1305,17 @@ unsafe extern "C" fn grid_string_cells_bg(
             0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 => {
                 let fresh22 = n;
                 n = n.wrapping_add(1);
-                *values.offset(fresh22 as isize) = (*gc).bg + 40 as libc::c_int
+                *values.offset(fresh22 as isize) = (*gc).bg + 40i32
             }
             8 => {
                 let fresh23 = n;
                 n = n.wrapping_add(1);
-                *values.offset(fresh23 as isize) = 49 as libc::c_int
+                *values.offset(fresh23 as isize) = 49i32
             }
             90 | 91 | 92 | 93 | 94 | 95 | 96 | 97 => {
                 let fresh24 = n;
                 n = n.wrapping_add(1);
-                *values.offset(fresh24 as isize) = (*gc).bg + 10 as libc::c_int
+                *values.offset(fresh24 as isize) = (*gc).bg + 10i32
             }
             _ => {}
         }
@@ -1374,99 +1346,99 @@ unsafe extern "C" fn grid_string_cells_code(
     let mut attrs: [C2RustUnnamed_1; 13] = [
         {
             let mut init = C2RustUnnamed_1 {
-                mask: 0x1 as libc::c_int as u_int,
-                code: 1 as libc::c_int as u_int,
+                mask: 0x1u32,
+                code: 1u32,
             };
             init
         },
         {
             let mut init = C2RustUnnamed_1 {
-                mask: 0x2 as libc::c_int as u_int,
-                code: 2 as libc::c_int as u_int,
+                mask: 0x2u32,
+                code: 2u32,
             };
             init
         },
         {
             let mut init = C2RustUnnamed_1 {
-                mask: 0x40 as libc::c_int as u_int,
-                code: 3 as libc::c_int as u_int,
+                mask: 0x40u32,
+                code: 3u32,
             };
             init
         },
         {
             let mut init = C2RustUnnamed_1 {
-                mask: 0x4 as libc::c_int as u_int,
-                code: 4 as libc::c_int as u_int,
+                mask: 0x4u32,
+                code: 4u32,
             };
             init
         },
         {
             let mut init = C2RustUnnamed_1 {
-                mask: 0x8 as libc::c_int as u_int,
-                code: 5 as libc::c_int as u_int,
+                mask: 0x8u32,
+                code: 5u32,
             };
             init
         },
         {
             let mut init = C2RustUnnamed_1 {
-                mask: 0x10 as libc::c_int as u_int,
-                code: 7 as libc::c_int as u_int,
+                mask: 0x10u32,
+                code: 7u32,
             };
             init
         },
         {
             let mut init = C2RustUnnamed_1 {
-                mask: 0x20 as libc::c_int as u_int,
-                code: 8 as libc::c_int as u_int,
+                mask: 0x20u32,
+                code: 8u32,
             };
             init
         },
         {
             let mut init = C2RustUnnamed_1 {
-                mask: 0x100 as libc::c_int as u_int,
-                code: 9 as libc::c_int as u_int,
+                mask: 0x100u32,
+                code: 9u32,
             };
             init
         },
         {
             let mut init = C2RustUnnamed_1 {
-                mask: 0x200 as libc::c_int as u_int,
-                code: 42 as libc::c_int as u_int,
+                mask: 0x200u32,
+                code: 42u32,
             };
             init
         },
         {
             let mut init = C2RustUnnamed_1 {
-                mask: 0x400 as libc::c_int as u_int,
-                code: 43 as libc::c_int as u_int,
+                mask: 0x400u32,
+                code: 43u32,
             };
             init
         },
         {
             let mut init = C2RustUnnamed_1 {
-                mask: 0x800 as libc::c_int as u_int,
-                code: 44 as libc::c_int as u_int,
+                mask: 0x800u32,
+                code: 44u32,
             };
             init
         },
         {
             let mut init = C2RustUnnamed_1 {
-                mask: 0x1000 as libc::c_int as u_int,
-                code: 45 as libc::c_int as u_int,
+                mask: 0x1000u32,
+                code: 45u32,
             };
             init
         },
         {
             let mut init = C2RustUnnamed_1 {
-                mask: 0x2000 as libc::c_int as u_int,
-                code: 53 as libc::c_int as u_int,
+                mask: 0x2000u32,
+                code: 53u32,
             };
             init
         },
     ];
-    n = 0 as libc::c_int as size_t;
+    n = 0u64;
     /* If any attribute is removed, begin with 0. */
-    i = 0 as libc::c_int as size_t;
+    i = 0u64;
     while i
         < (::std::mem::size_of::<[C2RustUnnamed_1; 13]>() as libc::c_ulong)
             .wrapping_div(::std::mem::size_of::<C2RustUnnamed_1>() as libc::c_ulong)
@@ -1474,15 +1446,15 @@ unsafe extern "C" fn grid_string_cells_code(
         if attr & attrs[i as usize].mask == 0 && lastattr & attrs[i as usize].mask != 0 {
             let fresh25 = n;
             n = n.wrapping_add(1);
-            s[fresh25 as usize] = 0 as libc::c_int;
-            lastattr &= 0x80 as libc::c_int as libc::c_uint;
+            s[fresh25 as usize] = 0i32;
+            lastattr &= 0x80u32;
             break;
         } else {
             i = i.wrapping_add(1)
         }
     }
     /* For each attribute that is newly set, add its code. */
-    i = 0 as libc::c_int as size_t;
+    i = 0u64;
     while i
         < (::std::mem::size_of::<[C2RustUnnamed_1; 13]>() as libc::c_ulong)
             .wrapping_div(::std::mem::size_of::<C2RustUnnamed_1>() as libc::c_ulong)
@@ -1495,16 +1467,16 @@ unsafe extern "C" fn grid_string_cells_code(
         i = i.wrapping_add(1)
     }
     /* Write the attributes. */
-    *buf = '\u{0}' as i32 as libc::c_char;
-    if n > 0 as libc::c_int as libc::c_ulong {
+    *buf = '\u{0}' as libc::c_char;
+    if n > 0u64 {
         if escape_c0 != 0 {
             strlcat(buf, b"\\033[\x00" as *const u8 as *const libc::c_char, len);
         } else {
             strlcat(buf, b"\x1b[\x00" as *const u8 as *const libc::c_char, len);
         }
-        i = 0 as libc::c_int as size_t;
+        i = 0u64;
         while i < n {
-            if s[i as usize] < 10 as libc::c_int {
+            if s[i as usize] < 10i32 {
                 xsnprintf(
                     tmp.as_mut_ptr(),
                     ::std::mem::size_of::<[libc::c_char; 64]>() as libc::c_ulong,
@@ -1516,12 +1488,12 @@ unsafe extern "C" fn grid_string_cells_code(
                     tmp.as_mut_ptr(),
                     ::std::mem::size_of::<[libc::c_char; 64]>() as libc::c_ulong,
                     b"%d:%d\x00" as *const u8 as *const libc::c_char,
-                    s[i as usize] / 10 as libc::c_int,
-                    s[i as usize] % 10 as libc::c_int,
+                    s[i as usize] / 10i32,
+                    s[i as usize] % 10i32,
                 );
             }
             strlcat(buf, tmp.as_mut_ptr(), len);
-            if i.wrapping_add(1 as libc::c_int as libc::c_ulong) < n {
+            if i.wrapping_add(1u64) < n {
                 strlcat(buf, b";\x00" as *const u8 as *const libc::c_char, len);
             }
             i = i.wrapping_add(1)
@@ -1536,18 +1508,17 @@ unsafe extern "C" fn grid_string_cells_code(
             newc.as_mut_ptr() as *const libc::c_void,
             oldc.as_mut_ptr() as *const libc::c_void,
             nnewc.wrapping_mul(::std::mem::size_of::<libc::c_int>() as libc::c_ulong),
-        ) != 0 as libc::c_int
-        || n != 0 as libc::c_int as libc::c_ulong
-            && s[0 as libc::c_int as usize] == 0 as libc::c_int
+        ) != 0i32
+        || n != 0u64 && s[0usize] == 0i32
     {
         if escape_c0 != 0 {
             strlcat(buf, b"\\033[\x00" as *const u8 as *const libc::c_char, len);
         } else {
             strlcat(buf, b"\x1b[\x00" as *const u8 as *const libc::c_char, len);
         }
-        i = 0 as libc::c_int as size_t;
+        i = 0u64;
         while i < nnewc {
-            if i.wrapping_add(1 as libc::c_int as libc::c_ulong) < nnewc {
+            if i.wrapping_add(1u64) < nnewc {
                 xsnprintf(
                     tmp.as_mut_ptr(),
                     ::std::mem::size_of::<[libc::c_char; 64]>() as libc::c_ulong,
@@ -1575,18 +1546,17 @@ unsafe extern "C" fn grid_string_cells_code(
             newc.as_mut_ptr() as *const libc::c_void,
             oldc.as_mut_ptr() as *const libc::c_void,
             nnewc.wrapping_mul(::std::mem::size_of::<libc::c_int>() as libc::c_ulong),
-        ) != 0 as libc::c_int
-        || n != 0 as libc::c_int as libc::c_ulong
-            && s[0 as libc::c_int as usize] == 0 as libc::c_int
+        ) != 0i32
+        || n != 0u64 && s[0usize] == 0i32
     {
         if escape_c0 != 0 {
             strlcat(buf, b"\\033[\x00" as *const u8 as *const libc::c_char, len);
         } else {
             strlcat(buf, b"\x1b[\x00" as *const u8 as *const libc::c_char, len);
         }
-        i = 0 as libc::c_int as size_t;
+        i = 0u64;
         while i < nnewc {
-            if i.wrapping_add(1 as libc::c_int as libc::c_ulong) < nnewc {
+            if i.wrapping_add(1u64) < nnewc {
                 xsnprintf(
                     tmp.as_mut_ptr(),
                     ::std::mem::size_of::<[libc::c_char; 64]>() as libc::c_ulong,
@@ -1607,9 +1577,7 @@ unsafe extern "C" fn grid_string_cells_code(
         strlcat(buf, b"m\x00" as *const u8 as *const libc::c_char, len);
     }
     /* Append shift in/shift out if needed. */
-    if attr & 0x80 as libc::c_int as libc::c_uint != 0
-        && lastattr & 0x80 as libc::c_int as libc::c_uint == 0
-    {
+    if attr & 0x80u32 != 0 && lastattr & 0x80u32 == 0 {
         if escape_c0 != 0 {
             strlcat(buf, b"\\016\x00" as *const u8 as *const libc::c_char, len);
         /* SO */
@@ -1618,9 +1586,7 @@ unsafe extern "C" fn grid_string_cells_code(
         }
         /* SO */
     } /* SI */
-    if attr & 0x80 as libc::c_int as libc::c_uint == 0
-        && lastattr & 0x80 as libc::c_int as libc::c_uint != 0
-    {
+    if attr & 0x80u32 == 0 && lastattr & 0x80u32 != 0 {
         if escape_c0 != 0 {
             strlcat(buf, b"\\017\x00" as *const u8 as *const libc::c_char, len);
         } else {
@@ -1684,9 +1650,9 @@ pub unsafe extern "C" fn grid_string_cells(
         );
         *lastgc = &mut lastgc1
     }
-    len = 128 as libc::c_int as size_t;
+    len = 128u64;
     buf = xmalloc(len) as *mut libc::c_char;
-    off = 0 as libc::c_int as size_t;
+    off = 0u64;
     gl = grid_peek_line(gd, py);
     xx = px;
     while xx < px.wrapping_add(nx) {
@@ -1694,7 +1660,7 @@ pub unsafe extern "C" fn grid_string_cells(
             break;
         }
         grid_get_cell(gd, xx, py, &mut gc);
-        if !(gc.flags as libc::c_int & 0x4 as libc::c_int != 0) {
+        if !(gc.flags as libc::c_int & 0x4i32 != 0) {
             if with_codes != 0 {
                 grid_string_cells_code(
                     *lastgc,
@@ -1710,55 +1676,48 @@ pub unsafe extern "C" fn grid_string_cells(
                     ::std::mem::size_of::<Cell>() as libc::c_ulong,
                 );
             } else {
-                codelen = 0 as libc::c_int as size_t
+                codelen = 0u64
             }
             data = gc.data.data.as_mut_ptr() as *const libc::c_char;
             size = gc.data.size as size_t;
-            if escape_c0 != 0
-                && size == 1 as libc::c_int as libc::c_ulong
-                && *data as libc::c_int == '\\' as i32
-            {
+            if escape_c0 != 0 && size == 1u64 && *data as libc::c_int == '\\' as i32 {
                 data = b"\\\\\x00" as *const u8 as *const libc::c_char;
-                size = 2 as libc::c_int as size_t
+                size = 2u64
             }
             while len
                 < off
                     .wrapping_add(size)
                     .wrapping_add(codelen)
-                    .wrapping_add(1 as libc::c_int as libc::c_ulong)
+                    .wrapping_add(1u64)
             {
-                buf = xreallocarray(buf as *mut libc::c_void, 2 as libc::c_int as size_t, len)
-                    as *mut libc::c_char;
-                len = (len as libc::c_ulong).wrapping_mul(2 as libc::c_int as libc::c_ulong)
-                    as size_t as size_t
+                buf = xreallocarray(buf as *mut libc::c_void, 2u64, len) as *mut libc::c_char;
+                len = (len).wrapping_mul(2u64)
             }
-            if codelen != 0 as libc::c_int as libc::c_ulong {
+            if codelen != 0u64 {
                 memcpy(
                     buf.offset(off as isize) as *mut libc::c_void,
                     code.as_mut_ptr() as *const libc::c_void,
                     codelen,
                 );
-                off = (off as libc::c_ulong).wrapping_add(codelen) as size_t as size_t
+                off = (off).wrapping_add(codelen)
             }
             memcpy(
                 buf.offset(off as isize) as *mut libc::c_void,
                 data as *const libc::c_void,
                 size,
             );
-            off = (off as libc::c_ulong).wrapping_add(size) as size_t as size_t
+            off = (off).wrapping_add(size)
         }
         xx = xx.wrapping_add(1)
     }
     if trim != 0 {
-        while off > 0 as libc::c_int as libc::c_ulong
-            && *buf.offset(off.wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize)
-                as libc::c_int
-                == ' ' as i32
+        while off > 0u64
+            && *buf.offset(off.wrapping_sub(1u64) as isize) as libc::c_int == ' ' as i32
         {
             off = off.wrapping_sub(1)
         }
     }
-    *buf.offset(off as isize) = '\u{0}' as i32 as libc::c_char;
+    *buf.offset(off as isize) = '\u{0}' as libc::c_char;
     return buf;
 }
 /*
@@ -1783,7 +1742,7 @@ pub unsafe extern "C" fn grid_duplicate_lines(
         ny = (*src).hsize.wrapping_add((*src).sy).wrapping_sub(sy)
     }
     grid_free_lines(dst, dy, ny);
-    yy = 0 as libc::c_int as u_int;
+    yy = 0u32;
     while yy < ny {
         srcl = &mut *(*src).linedata.offset(sy as isize) as *mut grid_line;
         dstl = &mut *(*dst).linedata.offset(dy as isize) as *mut grid_line;
@@ -1792,7 +1751,7 @@ pub unsafe extern "C" fn grid_duplicate_lines(
             srcl as *const libc::c_void,
             ::std::mem::size_of::<grid_line>() as libc::c_ulong,
         );
-        if (*srcl).cellsize != 0 as libc::c_int as libc::c_uint {
+        if (*srcl).cellsize != 0u32 {
             (*dstl).celldata = xreallocarray(
                 0 as *mut libc::c_void,
                 (*srcl).cellsize as size_t,
@@ -1807,7 +1766,7 @@ pub unsafe extern "C" fn grid_duplicate_lines(
         } else {
             (*dstl).celldata = 0 as *mut grid_cell_entry
         }
-        if (*srcl).extdsize != 0 as libc::c_int as libc::c_uint {
+        if (*srcl).extdsize != 0u32 {
             (*dstl).extdsize = (*srcl).extdsize;
             (*dstl).extddata = xreallocarray(
                 0 as *mut libc::c_void,
@@ -1830,10 +1789,10 @@ pub unsafe extern "C" fn grid_duplicate_lines(
 unsafe extern "C" fn grid_reflow_dead(mut gl: *mut grid_line) {
     memset(
         gl as *mut libc::c_void,
-        0 as libc::c_int,
+        0i32,
         ::std::mem::size_of::<grid_line>() as libc::c_ulong,
     );
-    (*gl).flags = 0x4 as libc::c_int;
+    (*gl).flags = 0x4i32;
 }
 /* Add lines, return the first new one. */
 unsafe extern "C" fn grid_reflow_add(mut gd: *mut grid, mut n: u_int) -> *mut grid_line {
@@ -1847,7 +1806,7 @@ unsafe extern "C" fn grid_reflow_add(mut gd: *mut grid, mut n: u_int) -> *mut gr
     gl = &mut *(*gd).linedata.offset((*gd).sy as isize) as *mut grid_line;
     memset(
         gl as *mut libc::c_void,
-        0 as libc::c_int,
+        0i32,
         (n as libc::c_ulong).wrapping_mul(::std::mem::size_of::<grid_line>() as libc::c_ulong),
     );
     (*gd).sy = sy;
@@ -1859,7 +1818,7 @@ unsafe extern "C" fn grid_reflow_move(
     mut from: *mut grid_line,
 ) -> *mut grid_line {
     let mut to: *mut grid_line = 0 as *mut grid_line;
-    to = grid_reflow_add(gd, 1 as libc::c_int as u_int);
+    to = grid_reflow_add(gd, 1u32);
     memcpy(
         to as *mut libc::c_void,
         from as *const libc::c_void,
@@ -1897,9 +1856,9 @@ unsafe extern "C" fn grid_reflow_join(
     let mut i: u_int = 0;
     let mut to: u_int = 0;
     let mut line: u_int = 0;
-    let mut want: u_int = 0 as libc::c_int as u_int;
+    let mut want: u_int = 0u32;
     let mut at: u_int = 0;
-    let mut wrapped: libc::c_int = 1 as libc::c_int;
+    let mut wrapped: libc::c_int = 1i32;
     /*
      * Add a new target line.
      */
@@ -1907,31 +1866,25 @@ unsafe extern "C" fn grid_reflow_join(
         to = (*target).sy;
         gl = grid_reflow_move(target, &mut *(*gd).linedata.offset(yy as isize))
     } else {
-        to = (*target).sy.wrapping_sub(1 as libc::c_int as libc::c_uint);
+        to = (*target).sy.wrapping_sub(1u32);
         gl = &mut *(*target).linedata.offset(to as isize) as *mut grid_line
     }
     at = (*gl).cellused;
     /*
      * Loop until no more to consume or the target line is full.
      */
-    lines = 0 as libc::c_int as u_int;
+    lines = 0u32;
     /*
      * If this is now the last line, there is nothing more to be
      * done.
      */
-    while !(yy
-        .wrapping_add(1 as libc::c_int as libc::c_uint)
-        .wrapping_add(lines)
-        == (*gd).hsize.wrapping_add((*gd).sy))
-    {
-        line = yy
-            .wrapping_add(1 as libc::c_int as libc::c_uint)
-            .wrapping_add(lines);
+    while !(yy.wrapping_add(1u32).wrapping_add(lines) == (*gd).hsize.wrapping_add((*gd).sy)) {
+        line = yy.wrapping_add(1u32).wrapping_add(lines);
         /* If the next line is empty, skip it. */
-        if !(*(*gd).linedata.offset(line as isize)).flags & 0x1 as libc::c_int != 0 {
-            wrapped = 0 as libc::c_int
+        if !(*(*gd).linedata.offset(line as isize)).flags & 0x1i32 != 0 {
+            wrapped = 0i32
         }
-        if (*(*gd).linedata.offset(line as isize)).cellused == 0 as libc::c_int as libc::c_uint {
+        if (*(*gd).linedata.offset(line as isize)).cellused == 0u32 {
             if wrapped == 0 {
                 break;
             }
@@ -1942,28 +1895,22 @@ unsafe extern "C" fn grid_reflow_join(
              * separately because we need to leave "from" set to the last
              * line if this line is full.
              */
-            grid_get_cell1(
-                &mut *(*gd).linedata.offset(line as isize),
-                0 as libc::c_int as u_int,
-                &mut gc,
-            );
+            grid_get_cell1(&mut *(*gd).linedata.offset(line as isize), 0u32, &mut gc);
             if width.wrapping_add(gc.data.width as libc::c_uint) > sx {
                 break;
             }
-            width = (width as libc::c_uint).wrapping_add(gc.data.width as libc::c_uint) as u_int
-                as u_int;
+            width = (width).wrapping_add(gc.data.width as libc::c_uint);
             grid_set_cell(target, at, to, &mut gc);
             at = at.wrapping_add(1);
             /* Join as much more as possible onto the current line. */
             from = &mut *(*gd).linedata.offset(line as isize) as *mut grid_line;
-            want = 1 as libc::c_int as u_int;
+            want = 1u32;
             while want < (*from).cellused {
                 grid_get_cell1(from, want, &mut gc);
                 if width.wrapping_add(gc.data.width as libc::c_uint) > sx {
                     break;
                 }
-                width = (width as libc::c_uint).wrapping_add(gc.data.width as libc::c_uint) as u_int
-                    as u_int;
+                width = (width).wrapping_add(gc.data.width as libc::c_uint);
                 grid_set_cell(target, at, to, &mut gc);
                 at = at.wrapping_add(1);
                 want = want.wrapping_add(1)
@@ -1978,7 +1925,7 @@ unsafe extern "C" fn grid_reflow_join(
             }
         }
     }
-    if lines == 0 as libc::c_int as libc::c_uint {
+    if lines == 0u32 {
         return;
     }
     /*
@@ -1987,27 +1934,17 @@ unsafe extern "C" fn grid_reflow_join(
      * remove the wrap flag from this line.
      */
     left = (*from).cellused.wrapping_sub(want);
-    if left != 0 as libc::c_int as libc::c_uint {
-        grid_move_cells(
-            gd,
-            0 as libc::c_int as u_int,
-            want,
-            yy.wrapping_add(lines),
-            left,
-            8 as libc::c_int as u_int,
-        );
+    if left != 0u32 {
+        grid_move_cells(gd, 0u32, want, yy.wrapping_add(lines), left, 8u32);
         (*from).cellused = left;
         (*from).cellsize = (*from).cellused;
         lines = lines.wrapping_sub(1)
     } else if wrapped == 0 {
-        (*gl).flags &= !(0x1 as libc::c_int)
+        (*gl).flags &= !(0x1i32)
     }
     /* Remove the lines that were completely consumed. */
-    i = yy.wrapping_add(1 as libc::c_int as libc::c_uint);
-    while i < yy
-        .wrapping_add(1 as libc::c_int as libc::c_uint)
-        .wrapping_add(lines)
-    {
+    i = yy.wrapping_add(1u32);
+    while i < yy.wrapping_add(1u32).wrapping_add(lines) {
         free((*(*gd).linedata.offset(i as isize)).celldata as *mut libc::c_void);
         free((*(*gd).linedata.offset(i as isize)).extddata as *mut libc::c_void);
         grid_reflow_dead(&mut *(*gd).linedata.offset(i as isize));
@@ -2015,7 +1952,7 @@ unsafe extern "C" fn grid_reflow_join(
     }
     /* Adjust scroll position. */
     if (*gd).hscrolled > to.wrapping_add(lines) {
-        (*gd).hscrolled = ((*gd).hscrolled as libc::c_uint).wrapping_sub(lines) as u_int as u_int
+        (*gd).hscrolled = ((*gd).hscrolled).wrapping_sub(lines)
     } else if (*gd).hscrolled > to {
         (*gd).hscrolled = to
     };
@@ -2051,56 +1988,49 @@ unsafe extern "C" fn grid_reflow_split(
     let mut used: u_int = (*gl).cellused;
     let mut flags: libc::c_int = (*gl).flags;
     /* How many lines do we need to insert? We know we need at least two. */
-    if !(*gl).flags & 0x2 as libc::c_int != 0 {
-        lines = (1 as libc::c_int as libc::c_uint).wrapping_add(
-            (*gl)
-                .cellused
-                .wrapping_sub(1 as libc::c_int as libc::c_uint)
-                .wrapping_div(sx),
-        )
+    if !(*gl).flags & 0x2i32 != 0 {
+        lines = (1u32).wrapping_add((*gl).cellused.wrapping_sub(1u32).wrapping_div(sx))
     } else {
-        lines = 2 as libc::c_int as u_int;
-        width = 0 as libc::c_int as u_int;
+        lines = 2u32;
+        width = 0u32;
         i = at;
         while i < used {
             grid_get_cell1(gl, i, &mut gc);
             if width.wrapping_add(gc.data.width as libc::c_uint) > sx {
                 lines = lines.wrapping_add(1);
-                width = 0 as libc::c_int as u_int
+                width = 0u32
             }
-            width = (width as libc::c_uint).wrapping_add(gc.data.width as libc::c_uint) as u_int
-                as u_int;
+            width = (width).wrapping_add(gc.data.width as libc::c_uint);
             i = i.wrapping_add(1)
         }
     }
     /* Insert new lines. */
-    line = (*target).sy.wrapping_add(1 as libc::c_int as libc::c_uint);
+    line = (*target).sy.wrapping_add(1u32);
     first = grid_reflow_add(target, lines);
     /* Copy sections from the original line. */
-    width = 0 as libc::c_int as u_int;
-    xx = 0 as libc::c_int as u_int;
+    width = 0u32;
+    xx = 0u32;
     i = at;
     while i < used {
         grid_get_cell1(gl, i, &mut gc);
         if width.wrapping_add(gc.data.width as libc::c_uint) > sx {
-            (*(*target).linedata.offset(line as isize)).flags |= 0x1 as libc::c_int;
+            (*(*target).linedata.offset(line as isize)).flags |= 0x1i32;
             line = line.wrapping_add(1);
-            width = 0 as libc::c_int as u_int;
-            xx = 0 as libc::c_int as u_int
+            width = 0u32;
+            xx = 0u32
         }
-        width =
-            (width as libc::c_uint).wrapping_add(gc.data.width as libc::c_uint) as u_int as u_int;
+        width = (width).wrapping_add(gc.data.width as libc::c_uint);
         grid_set_cell(target, xx, line, &mut gc);
         xx = xx.wrapping_add(1);
         i = i.wrapping_add(1)
     }
-    if flags & 0x1 as libc::c_int != 0 {
-        (*(*target).linedata.offset(line as isize)).flags |= 0x1 as libc::c_int
+    if flags & 0x1i32 != 0 {
+        (*(*target).linedata.offset(line as isize)).flags |= 0x1i32
     }
     /* Move the remainder of the original line. */
     (*gl).cellused = at;
     (*gl).cellsize = (*gl).cellused;
-    (*gl).flags |= 0x1 as libc::c_int;
+    (*gl).flags |= 0x1i32;
     memcpy(
         first as *mut libc::c_void,
         gl as *const libc::c_void,
@@ -2109,16 +2039,14 @@ unsafe extern "C" fn grid_reflow_split(
     grid_reflow_dead(gl);
     /* Adjust the scroll position. */
     if yy <= (*gd).hscrolled {
-        (*gd).hscrolled = ((*gd).hscrolled as libc::c_uint)
-            .wrapping_add(lines.wrapping_sub(1 as libc::c_int as libc::c_uint))
-            as u_int as u_int
+        (*gd).hscrolled = ((*gd).hscrolled).wrapping_add(lines.wrapping_sub(1u32))
     }
     /*
      * If the original line had the wrapped flag and there is still space
      * in the last new line, try to join with the next lines.
      */
-    if width < sx && flags & 0x1 as libc::c_int != 0 {
-        grid_reflow_join(target, gd, sx, yy, width, 1 as libc::c_int);
+    if width < sx && flags & 0x1i32 != 0 {
+        grid_reflow_join(target, gd, sx, yy, width, 1i32);
     };
 }
 /* Reflow lines on grid to new width. */
@@ -2147,26 +2075,22 @@ pub unsafe extern "C" fn grid_reflow(mut gd: *mut grid, mut sx: u_int) {
      * Create a destination grid. This is just used as a container for the
      * line data and may not be fully valid.
      */
-    target = grid_create(
-        (*gd).sx,
-        0 as libc::c_int as u_int,
-        0 as libc::c_int as u_int,
-    );
+    target = grid_create((*gd).sx, 0u32, 0u32);
     /*
      * Loop over each source line.
      */
-    yy = 0 as libc::c_int as u_int;
+    yy = 0u32;
     while yy < (*gd).hsize.wrapping_add((*gd).sy) {
         gl = &mut *(*gd).linedata.offset(yy as isize) as *mut grid_line;
-        if !((*gl).flags & 0x4 as libc::c_int != 0) {
+        if !((*gl).flags & 0x4i32 != 0) {
             /*
              * Work out the width of this line. at is the point at which
              * the available width is hit, and width is the full line
              * width.
              */
-            width = 0 as libc::c_int as u_int;
+            width = 0u32;
             at = width;
-            if !(*gl).flags & 0x2 as libc::c_int != 0 {
+            if !(*gl).flags & 0x2i32 != 0 {
                 width = (*gl).cellused;
                 if width > sx {
                     at = sx
@@ -2174,16 +2098,13 @@ pub unsafe extern "C" fn grid_reflow(mut gd: *mut grid, mut sx: u_int) {
                     at = width
                 }
             } else {
-                i = 0 as libc::c_int as u_int;
+                i = 0u32;
                 while i < (*gl).cellused {
                     grid_get_cell1(gl, i, &mut gc);
-                    if at == 0 as libc::c_int as libc::c_uint
-                        && width.wrapping_add(gc.data.width as libc::c_uint) > sx
-                    {
+                    if at == 0u32 && width.wrapping_add(gc.data.width as libc::c_uint) > sx {
                         at = i
                     }
-                    width = (width as libc::c_uint).wrapping_add(gc.data.width as libc::c_uint)
-                        as u_int as u_int;
+                    width = (width).wrapping_add(gc.data.width as libc::c_uint);
                     i = i.wrapping_add(1)
                 }
             }
@@ -2195,8 +2116,8 @@ pub unsafe extern "C" fn grid_reflow(mut gd: *mut grid, mut sx: u_int) {
                 grid_reflow_move(target, gl);
             } else if width > sx {
                 grid_reflow_split(target, gd, sx, yy, at);
-            } else if (*gl).flags & 0x1 as libc::c_int != 0 {
-                grid_reflow_join(target, gd, sx, yy, width, 0 as libc::c_int);
+            } else if (*gl).flags & 0x1i32 != 0 {
+                grid_reflow_join(target, gd, sx, yy, width, 0i32);
             } else {
                 grid_reflow_move(target, gl);
             }
@@ -2234,26 +2155,23 @@ pub unsafe extern "C" fn grid_wrap_position(
     mut wx: *mut u_int,
     mut wy: *mut u_int,
 ) {
-    let mut ax: u_int = 0 as libc::c_int as u_int;
-    let mut ay: u_int = 0 as libc::c_int as u_int;
+    let mut ax: u_int = 0u32;
+    let mut ay: u_int = 0u32;
     let mut yy: u_int = 0;
-    yy = 0 as libc::c_int as u_int;
+    yy = 0u32;
     while yy < py {
-        if (*(*gd).linedata.offset(yy as isize)).flags & 0x1 as libc::c_int != 0 {
-            ax = (ax as libc::c_uint).wrapping_add((*(*gd).linedata.offset(yy as isize)).cellused)
-                as u_int as u_int
+        if (*(*gd).linedata.offset(yy as isize)).flags & 0x1i32 != 0 {
+            ax = (ax).wrapping_add((*(*gd).linedata.offset(yy as isize)).cellused)
         } else {
-            ax = 0 as libc::c_int as u_int;
+            ax = 0u32;
             ay = ay.wrapping_add(1)
         }
         yy = yy.wrapping_add(1)
     }
     if px >= (*(*gd).linedata.offset(yy as isize)).cellused {
-        ax = (2147483647 as libc::c_int as libc::c_uint)
-            .wrapping_mul(2 as libc::c_uint)
-            .wrapping_add(1 as libc::c_uint)
+        ax = (2147483647u32).wrapping_mul(2u32).wrapping_add(1u32)
     } else {
-        ax = (ax as libc::c_uint).wrapping_add(px) as u_int as u_int
+        ax = (ax).wrapping_add(px)
     }
     *wx = ax;
     *wy = ay;
@@ -2268,18 +2186,13 @@ pub unsafe extern "C" fn grid_unwrap_position(
     mut wy: u_int,
 ) {
     let mut yy: u_int = 0;
-    let mut ay: u_int = 0 as libc::c_int as u_int;
-    yy = 0 as libc::c_int as u_int;
-    while yy
-        < (*gd)
-            .hsize
-            .wrapping_add((*gd).sy)
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
-    {
+    let mut ay: u_int = 0u32;
+    yy = 0u32;
+    while yy < (*gd).hsize.wrapping_add((*gd).sy).wrapping_sub(1u32) {
         if ay == wy {
             break;
         }
-        if !(*(*gd).linedata.offset(yy as isize)).flags & 0x1 as libc::c_int != 0 {
+        if !(*(*gd).linedata.offset(yy as isize)).flags & 0x1i32 != 0 {
             ay = ay.wrapping_add(1)
         }
         yy = yy.wrapping_add(1)
@@ -2288,22 +2201,17 @@ pub unsafe extern "C" fn grid_unwrap_position(
      * yy is now 0 on the unwrapped line which contains wx. Walk forwards
      * until we find the end or the line now containing wx.
      */
-    if wx
-        == (2147483647 as libc::c_int as libc::c_uint)
-            .wrapping_mul(2 as libc::c_uint)
-            .wrapping_add(1 as libc::c_uint)
-    {
-        while (*(*gd).linedata.offset(yy as isize)).flags & 0x1 as libc::c_int != 0 {
+    if wx == (2147483647u32).wrapping_mul(2u32).wrapping_add(1u32) {
+        while (*(*gd).linedata.offset(yy as isize)).flags & 0x1i32 != 0 {
             yy = yy.wrapping_add(1)
         }
         wx = (*(*gd).linedata.offset(yy as isize)).cellused
     } else {
-        while (*(*gd).linedata.offset(yy as isize)).flags & 0x1 as libc::c_int != 0 {
+        while (*(*gd).linedata.offset(yy as isize)).flags & 0x1i32 != 0 {
             if wx < (*(*gd).linedata.offset(yy as isize)).cellused {
                 break;
             }
-            wx = (wx as libc::c_uint).wrapping_sub((*(*gd).linedata.offset(yy as isize)).cellused)
-                as u_int as u_int;
+            wx = (wx).wrapping_sub((*(*gd).linedata.offset(yy as isize)).cellused);
             yy = yy.wrapping_add(1)
         }
     }
@@ -2331,15 +2239,10 @@ pub unsafe extern "C" fn grid_line_length(mut gd: *mut grid, mut py: u_int) -> u
     if px > (*gd).sx {
         px = (*gd).sx
     }
-    while px > 0 as libc::c_int as libc::c_uint {
-        grid_get_cell(
-            gd,
-            px.wrapping_sub(1 as libc::c_int as libc::c_uint),
-            py,
-            &mut gc,
-        );
-        if gc.flags as libc::c_int & 0x4 as libc::c_int != 0
-            || gc.data.size as libc::c_int != 1 as libc::c_int
+    while px > 0u32 {
+        grid_get_cell(gd, px.wrapping_sub(1u32), py, &mut gc);
+        if gc.flags as libc::c_int & 0x4i32 != 0
+            || gc.data.size as libc::c_int != 1i32
             || *gc.data.data.as_mut_ptr() as libc::c_int != ' ' as i32
         {
             break;

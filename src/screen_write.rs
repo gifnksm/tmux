@@ -1309,35 +1309,23 @@ unsafe extern "C" fn screen_write_set_cursor(
     let mut tv: timeval = {
         let mut init = timeval {
             tv_sec: 0,
-            tv_usec: 10000 as libc::c_int as __suseconds_t,
+            tv_usec: 10000i64,
         };
         init
     };
-    if cx != -(1 as libc::c_int)
-        && cx as u_int == (*s).cx
-        && cy != -(1 as libc::c_int)
-        && cy as u_int == (*s).cy
-    {
+    if cx != -(1i32) && cx as u_int == (*s).cx && cy != -(1i32) && cy as u_int == (*s).cy {
         return;
     }
-    if cx != -(1 as libc::c_int) {
+    if cx != -(1i32) {
         if cx as u_int > (*(*s).grid).sx {
             /* allow last column */
-            cx = (*(*s).grid)
-                .sx
-                .wrapping_sub(1 as libc::c_int as libc::c_uint) as libc::c_int
+            cx = (*(*s).grid).sx.wrapping_sub(1u32) as libc::c_int
         }
         (*s).cx = cx as u_int
     }
-    if cy != -(1 as libc::c_int) {
-        if cy as u_int
-            > (*(*s).grid)
-                .sy
-                .wrapping_sub(1 as libc::c_int as libc::c_uint)
-        {
-            cy = (*(*s).grid)
-                .sy
-                .wrapping_sub(1 as libc::c_int as libc::c_uint) as libc::c_int
+    if cy != -(1i32) {
+        if cy as u_int > (*(*s).grid).sy.wrapping_sub(1u32) {
+            cy = (*(*s).grid).sy.wrapping_sub(1u32) as libc::c_int
         }
         (*s).cy = cy as u_int
     }
@@ -1348,8 +1336,8 @@ unsafe extern "C" fn screen_write_set_cursor(
     if event_initialized(&mut (*w).offset_timer) == 0 {
         event_set(
             &mut (*w).offset_timer,
-            -(1 as libc::c_int),
-            0 as libc::c_int as libc::c_short,
+            -(1i32),
+            0i16,
             Some(
                 screen_write_offset_timer
                     as unsafe extern "C" fn(
@@ -1361,12 +1349,7 @@ unsafe extern "C" fn screen_write_set_cursor(
             w as *mut libc::c_void,
         );
     }
-    if event_pending(
-        &mut (*w).offset_timer,
-        0x1 as libc::c_int as libc::c_short,
-        0 as *mut timeval,
-    ) == 0
-    {
+    if event_pending(&mut (*w).offset_timer, 0x1i16, 0 as *mut timeval) == 0 {
         event_add(&mut (*w).offset_timer, &mut tv);
     };
 }
@@ -1374,7 +1357,7 @@ unsafe extern "C" fn screen_write_set_cursor(
 unsafe extern "C" fn screen_write_redraw_cb(mut ttyctx: *const tty_ctx) {
     let mut wp: *mut window_pane = (*ttyctx).arg as *mut window_pane;
     if !wp.is_null() {
-        (*wp).flags |= 0x1 as libc::c_int
+        (*wp).flags |= 0x1i32
     };
 }
 /* Update context for client. */
@@ -1384,15 +1367,15 @@ unsafe extern "C" fn screen_write_set_client_cb(
 ) -> libc::c_int {
     let mut wp: *mut window_pane = (*ttyctx).arg as *mut window_pane;
     if (*(*(*c).session).curw).window != (*wp).window {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     if (*wp).layout_cell.is_null() {
-        return 0 as libc::c_int;
+        return 0i32;
     }
-    if (*wp).flags & (0x1 as libc::c_int | 0x2 as libc::c_int) != 0 {
-        return -(1 as libc::c_int);
+    if (*wp).flags & (0x1i32 | 0x2i32) != 0 {
+        return -(1i32);
     }
-    if (*c).flags & 0x20000000 as libc::c_int as libc::c_ulong != 0 {
+    if (*c).flags & 0x20000000u64 != 0 {
         /*
          * Redraw is already deferred to redraw another pane - redraw
          * this one also when that happens.
@@ -1401,8 +1384,8 @@ unsafe extern "C" fn screen_write_set_client_cb(
             b"adding %%%u to deferred redraw\x00" as *const u8 as *const libc::c_char,
             (*wp).id,
         );
-        (*wp).flags |= 0x1 as libc::c_int;
-        return -(1 as libc::c_int);
+        (*wp).flags |= 0x1i32;
+        return -(1i32);
     }
     (*ttyctx).bigger = tty_window_offset(
         &mut (*c).tty,
@@ -1415,11 +1398,10 @@ unsafe extern "C" fn screen_write_set_client_cb(
     (*ttyctx).xoff = (*ttyctx).rxoff;
     (*ttyctx).ryoff = (*wp).yoff;
     (*ttyctx).yoff = (*ttyctx).ryoff;
-    if status_at_line(c) == 0 as libc::c_int {
-        (*ttyctx).yoff =
-            ((*ttyctx).yoff as libc::c_uint).wrapping_add(status_line_size(c)) as u_int as u_int
+    if status_at_line(c) == 0i32 {
+        (*ttyctx).yoff = ((*ttyctx).yoff).wrapping_add(status_line_size(c))
     }
-    return 1 as libc::c_int;
+    return 1i32;
 }
 /* Set up context for TTY command. */
 unsafe extern "C" fn screen_write_initctx(
@@ -1430,7 +1412,7 @@ unsafe extern "C" fn screen_write_initctx(
     let mut s: *mut screen = (*ctx).s;
     memset(
         ttyctx as *mut libc::c_void,
-        0 as libc::c_int,
+        0i32,
         ::std::mem::size_of::<tty_ctx>() as libc::c_ulong,
     );
     if !(*ctx).wp.is_null() {
@@ -1467,14 +1449,14 @@ unsafe extern "C" fn screen_write_initctx(
         (*ttyctx).arg = (*ctx).wp as *mut libc::c_void
     }
     if !(*ctx).wp.is_null()
-        && !(*ctx).flags & 0x1 as libc::c_int != 0
+        && !(*ctx).flags & 0x1i32 != 0
         && (sync != 0 || (*ctx).wp != (*(*(*ctx).wp).window).active)
     {
         tty_write(
             Some(tty_cmd_syncstart as unsafe extern "C" fn(_: *mut tty, _: *const tty_ctx) -> ()),
             ttyctx,
         );
-        (*ctx).flags |= 0x1 as libc::c_int
+        (*ctx).flags |= 0x1i32
     };
 }
 /* Make write list. */
@@ -1485,7 +1467,7 @@ pub unsafe extern "C" fn screen_write_make_list(mut s: *mut screen) {
         (*(*s).grid).sy as size_t,
         ::std::mem::size_of::<screen_write_collect_line>() as libc::c_ulong,
     ) as *mut screen_write_collect_line;
-    y = 0 as libc::c_int as u_int;
+    y = 0u32;
     while y < (*(*s).grid).sy {
         let ref mut fresh0 = (*(*s).write_list.offset(y as isize)).items.tqh_first;
         *fresh0 = 0 as *mut screen_write_collect_item;
@@ -1498,7 +1480,7 @@ pub unsafe extern "C" fn screen_write_make_list(mut s: *mut screen) {
 #[no_mangle]
 pub unsafe extern "C" fn screen_write_free_list(mut s: *mut screen) {
     let mut y: u_int = 0;
-    y = 0 as libc::c_int as u_int;
+    y = 0u32;
     while y < (*(*s).grid).sy {
         free((*(*s).write_list.offset(y as isize)).data as *mut libc::c_void);
         y = y.wrapping_add(1)
@@ -1509,7 +1491,7 @@ pub unsafe extern "C" fn screen_write_free_list(mut s: *mut screen) {
 unsafe extern "C" fn screen_write_init(mut ctx: *mut screen_write_ctx, mut s: *mut screen) {
     memset(
         ctx as *mut libc::c_void,
-        0 as libc::c_int,
+        0i32,
         ::std::mem::size_of::<screen_write_ctx>() as libc::c_ulong,
     );
     (*ctx).s = s;
@@ -1517,11 +1499,11 @@ unsafe extern "C" fn screen_write_init(mut ctx: *mut screen_write_ctx, mut s: *m
         screen_write_make_list((*ctx).s);
     }
     (*ctx).item = xcalloc(
-        1 as libc::c_int as size_t,
+        1u64,
         ::std::mem::size_of::<screen_write_collect_item>() as libc::c_ulong,
     ) as *mut screen_write_collect_item;
-    (*ctx).scrolled = 0 as libc::c_int as u_int;
-    (*ctx).bg = 8 as libc::c_int as u_int;
+    (*ctx).scrolled = 0u32;
+    (*ctx).bg = 8u32;
 }
 /* Initialize writing with a pane. */
 #[no_mangle]
@@ -1535,7 +1517,7 @@ pub unsafe extern "C" fn screen_write_start_pane(
     }
     screen_write_init(ctx, s);
     (*ctx).wp = wp;
-    if log_get_level() != 0 as libc::c_int {
+    if log_get_level() != 0i32 {
         log_debug(
             b"%s: size %ux%u, pane %%%u (at %u,%u)\x00" as *const u8 as *const libc::c_char,
             (*::std::mem::transmute::<&[u8; 24], &[libc::c_char; 24]>(
@@ -1561,7 +1543,7 @@ pub unsafe extern "C" fn screen_write_start_callback(
     screen_write_init(ctx, s);
     (*ctx).init_ctx_cb = cb;
     (*ctx).arg = arg;
-    if log_get_level() != 0 as libc::c_int {
+    if log_get_level() != 0i32 {
         log_debug(
             b"%s: size %ux%u, with callback\x00" as *const u8 as *const libc::c_char,
             (*::std::mem::transmute::<&[u8; 28], &[libc::c_char; 28]>(
@@ -1577,7 +1559,7 @@ pub unsafe extern "C" fn screen_write_start_callback(
 #[no_mangle]
 pub unsafe extern "C" fn screen_write_start(mut ctx: *mut screen_write_ctx, mut s: *mut screen) {
     screen_write_init(ctx, s);
-    if log_get_level() != 0 as libc::c_int {
+    if log_get_level() != 0i32 {
         log_debug(
             b"%s: size %ux%u, no pane\x00" as *const u8 as *const libc::c_char,
             (*::std::mem::transmute::<&[u8; 19], &[libc::c_char; 19]>(b"screen_write_start\x00"))
@@ -1593,7 +1575,7 @@ pub unsafe extern "C" fn screen_write_stop(mut ctx: *mut screen_write_ctx) {
     screen_write_collect_end(ctx);
     screen_write_collect_flush(
         ctx,
-        0 as libc::c_int,
+        0i32,
         (*::std::mem::transmute::<&[u8; 18], &[libc::c_char; 18]>(b"screen_write_stop\x00"))
             .as_ptr(),
     );
@@ -1606,12 +1588,8 @@ pub unsafe extern "C" fn screen_write_stop(mut ctx: *mut screen_write_ctx) {
         (*ctx).skipped,
     );
     if !(*ctx).wp.is_null() {
-        (*(*ctx).wp).written = ((*(*ctx).wp).written as libc::c_ulong)
-            .wrapping_add((*ctx).written as libc::c_ulong) as size_t
-            as size_t;
-        (*(*ctx).wp).skipped = ((*(*ctx).wp).skipped as libc::c_ulong)
-            .wrapping_add((*ctx).skipped as libc::c_ulong) as size_t
-            as size_t
+        (*(*ctx).wp).written = ((*(*ctx).wp).written).wrapping_add((*ctx).written as libc::c_ulong);
+        (*(*ctx).wp).skipped = ((*(*ctx).wp).skipped).wrapping_add((*ctx).skipped as libc::c_ulong)
     }
     free((*ctx).item as *mut libc::c_void);
 }
@@ -1620,16 +1598,10 @@ pub unsafe extern "C" fn screen_write_stop(mut ctx: *mut screen_write_ctx) {
 pub unsafe extern "C" fn screen_write_reset(mut ctx: *mut screen_write_ctx) {
     let mut s: *mut screen = (*ctx).s;
     screen_reset_tabs(s);
-    screen_write_scrollregion(
-        ctx,
-        0 as libc::c_int as u_int,
-        (*(*s).grid)
-            .sy
-            .wrapping_sub(1 as libc::c_int as libc::c_uint),
-    );
-    (*s).mode = 0x1 as libc::c_int | 0x10 as libc::c_int;
-    screen_write_clearscreen(ctx, 8 as libc::c_int as u_int);
-    screen_write_set_cursor(ctx, 0 as libc::c_int, 0 as libc::c_int);
+    screen_write_scrollregion(ctx, 0u32, (*(*s).grid).sy.wrapping_sub(1u32));
+    (*s).mode = 0x1i32 | 0x10i32;
+    screen_write_clearscreen(ctx, 8u32);
+    screen_write_set_cursor(ctx, 0i32, 0i32);
 }
 /* Write character. */
 #[no_mangle]
@@ -1675,37 +1647,31 @@ pub unsafe extern "C" fn screen_write_strlen(
     };
     let mut ptr: *mut u_char = 0 as *mut u_char;
     let mut left: size_t = 0;
-    let mut size: size_t = 0 as libc::c_int as size_t;
+    let mut size: size_t = 0u64;
     let mut more: Utf8State = utf8_state::MORE;
     ap = args.clone();
     xvasprintf(&mut msg, fmt, ap.as_va_list());
     ptr = msg as *mut u_char;
     while *ptr as libc::c_int != '\u{0}' as i32 {
-        if *ptr as libc::c_int > 0x7f as libc::c_int
-            && utf8_open(&mut ud, *ptr) as libc::c_uint
-                == utf8_state::MORE as libc::c_int as libc::c_uint
-        {
+        if *ptr as libc::c_int > 0x7fi32 && utf8_open(&mut ud, *ptr) == utf8_state::MORE {
             ptr = ptr.offset(1);
             left = strlen(ptr as *const libc::c_char);
-            if left < (ud.size as size_t).wrapping_sub(1 as libc::c_int as libc::c_ulong) {
+            if left < (ud.size as size_t).wrapping_sub(1u64) {
                 break;
             }
             loop {
                 more = utf8_append(&mut ud, *ptr);
-                if !(more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint) {
+                if !(more == utf8_state::MORE) {
                     break;
                 }
                 ptr = ptr.offset(1)
             }
             ptr = ptr.offset(1);
-            if more as libc::c_uint == utf8_state::DONE as libc::c_int as libc::c_uint {
-                size = (size as libc::c_ulong).wrapping_add(ud.width as libc::c_ulong) as size_t
-                    as size_t
+            if more == utf8_state::DONE {
+                size = (size).wrapping_add(ud.width as libc::c_ulong)
             }
         } else {
-            if *ptr as libc::c_int > 0x1f as libc::c_int
-                && (*ptr as libc::c_int) < 0x7f as libc::c_int
-            {
+            if *ptr as libc::c_int > 0x1fi32 && (*ptr as libc::c_int) < 0x7fi32 {
                 size = size.wrapping_add(1)
             }
             ptr = ptr.offset(1)
@@ -1733,7 +1699,7 @@ pub unsafe extern "C" fn screen_write_text(
     let mut i: u_int = 0;
     let mut end: u_int = 0;
     let mut next: u_int = 0;
-    let mut idx: u_int = 0 as libc::c_int as u_int;
+    let mut idx: u_int = 0u32;
     let mut at: u_int = 0;
     let mut left: u_int = 0;
     let mut text: *mut Utf8Data = 0 as *mut Utf8Data;
@@ -1762,52 +1728,46 @@ pub unsafe extern "C" fn screen_write_text(
     left = cx.wrapping_add(width).wrapping_sub((*s).cx);
     loop {
         /* Find the end of what can fit on the line. */
-        at = 0 as libc::c_int as u_int;
+        at = 0u32;
         end = idx;
-        while (*text.offset(end as isize)).size as libc::c_int != 0 as libc::c_int {
-            if (*text.offset(end as isize)).size as libc::c_int == 1 as libc::c_int
-                && (*text.offset(end as isize)).data[0 as libc::c_int as usize] as libc::c_int
-                    == '\n' as i32
+        while (*text.offset(end as isize)).size as libc::c_int != 0i32 {
+            if (*text.offset(end as isize)).size as libc::c_int == 1i32
+                && (*text.offset(end as isize)).data[0usize] as libc::c_int == '\n' as i32
             {
                 break;
             }
             if at.wrapping_add((*text.offset(end as isize)).width as libc::c_uint) > left {
                 break;
             }
-            at = (at as libc::c_uint)
-                .wrapping_add((*text.offset(end as isize)).width as libc::c_uint)
-                as u_int as u_int;
+            at = (at).wrapping_add((*text.offset(end as isize)).width as libc::c_uint);
             end = end.wrapping_add(1)
         }
         /*
          * If we're on a space, that's the end. If not, walk back to
          * try and find one.
          */
-        if (*text.offset(end as isize)).size as libc::c_int == 0 as libc::c_int {
+        if (*text.offset(end as isize)).size as libc::c_int == 0i32 {
             next = end
-        } else if (*text.offset(end as isize)).size as libc::c_int == 1 as libc::c_int
-            && (*text.offset(end as isize)).data[0 as libc::c_int as usize] as libc::c_int
-                == '\n' as i32
+        } else if (*text.offset(end as isize)).size as libc::c_int == 1i32
+            && (*text.offset(end as isize)).data[0usize] as libc::c_int == '\n' as i32
         {
-            next = end.wrapping_add(1 as libc::c_int as libc::c_uint)
-        } else if (*text.offset(end as isize)).size as libc::c_int == 1 as libc::c_int
-            && (*text.offset(end as isize)).data[0 as libc::c_int as usize] as libc::c_int
-                == ' ' as i32
+            next = end.wrapping_add(1u32)
+        } else if (*text.offset(end as isize)).size as libc::c_int == 1i32
+            && (*text.offset(end as isize)).data[0usize] as libc::c_int == ' ' as i32
         {
-            next = end.wrapping_add(1 as libc::c_int as libc::c_uint)
+            next = end.wrapping_add(1u32)
         } else {
             i = end;
             while i > idx {
-                if (*text.offset(i as isize)).size as libc::c_int == 1 as libc::c_int
-                    && (*text.offset(i as isize)).data[0 as libc::c_int as usize] as libc::c_int
-                        == ' ' as i32
+                if (*text.offset(i as isize)).size as libc::c_int == 1i32
+                    && (*text.offset(i as isize)).data[0usize] as libc::c_int == ' ' as i32
                 {
                     break;
                 }
                 i = i.wrapping_sub(1)
             }
             if i != idx {
-                next = i.wrapping_add(1 as libc::c_int as libc::c_uint);
+                next = i.wrapping_add(1u32);
                 end = i
             } else {
                 next = end
@@ -1822,19 +1782,16 @@ pub unsafe extern "C" fn screen_write_text(
         }
         /* If at the bottom, stop. */
         idx = next;
-        if (*s).cy
-            == cy
-                .wrapping_add(lines)
-                .wrapping_sub(1 as libc::c_int as libc::c_uint)
-            || (*text.offset(idx as isize)).size as libc::c_int == 0 as libc::c_int
+        if (*s).cy == cy.wrapping_add(lines).wrapping_sub(1u32)
+            || (*text.offset(idx as isize)).size as libc::c_int == 0i32
         {
             break;
         }
         screen_write_cursormove(
             ctx,
             cx as libc::c_int,
-            (*s).cy.wrapping_add(1 as libc::c_int as libc::c_uint) as libc::c_int,
-            0 as libc::c_int,
+            (*s).cy.wrapping_add(1u32) as libc::c_int,
+            0i32,
         );
         left = width
     }
@@ -1842,15 +1799,12 @@ pub unsafe extern "C" fn screen_write_text(
      * Fail if on the last line and there is more to come or at the end, or
      * if the text was not entirely consumed.
      */
-    if (*s).cy
-        == cy
-            .wrapping_add(lines)
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
+    if (*s).cy == cy.wrapping_add(lines).wrapping_sub(1u32)
         && (more == 0 || (*s).cx == cx.wrapping_add(width))
-        || (*text.offset(idx as isize)).size as libc::c_int != 0 as libc::c_int
+        || (*text.offset(idx as isize)).size as libc::c_int != 0i32
     {
         free(text as *mut libc::c_void);
-        return 0 as libc::c_int;
+        return 0i32;
     }
     free(text as *mut libc::c_void);
     /*
@@ -1861,11 +1815,11 @@ pub unsafe extern "C" fn screen_write_text(
         screen_write_cursormove(
             ctx,
             cx as libc::c_int,
-            (*s).cy.wrapping_add(1 as libc::c_int as libc::c_uint) as libc::c_int,
-            0 as libc::c_int,
+            (*s).cy.wrapping_add(1u32) as libc::c_int,
+            0i32,
         );
     }
-    return 1 as libc::c_int;
+    return 1i32;
 }
 /* Write simple string (no maximum length). */
 #[no_mangle]
@@ -1877,13 +1831,7 @@ pub unsafe extern "C" fn screen_write_puts(
 ) {
     let mut ap: ::std::ffi::VaListImpl;
     ap = args.clone();
-    screen_write_vnputs(
-        ctx,
-        -(1 as libc::c_int) as ssize_t,
-        gcp,
-        fmt,
-        ap.as_va_list(),
-    );
+    screen_write_vnputs(ctx, -1i64, gcp, fmt, ap.as_va_list());
 }
 /* Write string with length limit (-1 for unlimited). */
 #[no_mangle]
@@ -1923,7 +1871,7 @@ pub unsafe extern "C" fn screen_write_vnputs(
     let mut msg: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut ptr: *mut u_char = 0 as *mut u_char;
     let mut left: size_t = 0;
-    let mut size: size_t = 0 as libc::c_int as size_t;
+    let mut size: size_t = 0u64;
     let mut more: Utf8State = utf8_state::MORE;
     memcpy(
         &mut gc as *mut GridCell as *mut libc::c_void,
@@ -1933,53 +1881,43 @@ pub unsafe extern "C" fn screen_write_vnputs(
     xvasprintf(&mut msg, fmt, ap.as_va_list());
     ptr = msg as *mut u_char;
     while *ptr as libc::c_int != '\u{0}' as i32 {
-        if *ptr as libc::c_int > 0x7f as libc::c_int
-            && utf8_open(ud, *ptr) as libc::c_uint
-                == utf8_state::MORE as libc::c_int as libc::c_uint
-        {
+        if *ptr as libc::c_int > 0x7fi32 && utf8_open(ud, *ptr) == utf8_state::MORE {
             ptr = ptr.offset(1);
             left = strlen(ptr as *const libc::c_char);
-            if left < ((*ud).size as size_t).wrapping_sub(1 as libc::c_int as libc::c_ulong) {
+            if left < ((*ud).size as size_t).wrapping_sub(1u64) {
                 break;
             }
             loop {
                 more = utf8_append(ud, *ptr);
-                if !(more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint) {
+                if !(more == utf8_state::MORE) {
                     break;
                 }
                 ptr = ptr.offset(1)
             }
             ptr = ptr.offset(1);
-            if more as libc::c_uint != utf8_state::DONE as libc::c_int as libc::c_uint {
+            if more != utf8_state::DONE {
                 continue;
             }
-            if maxlen > 0 as libc::c_int as libc::c_long
-                && size.wrapping_add((*ud).width as libc::c_ulong) > maxlen as size_t
-            {
+            if maxlen > 0i64 && size.wrapping_add((*ud).width as libc::c_ulong) > maxlen as size_t {
                 while size < maxlen as size_t {
-                    screen_write_putc(ctx, &mut gc, ' ' as i32 as u_char);
+                    screen_write_putc(ctx, &mut gc, ' ' as u_char);
                     size = size.wrapping_add(1)
                 }
                 break;
             } else {
-                size = (size as libc::c_ulong).wrapping_add((*ud).width as libc::c_ulong) as size_t
-                    as size_t;
+                size = (size).wrapping_add((*ud).width as libc::c_ulong);
                 screen_write_cell(ctx, &mut gc);
             }
         } else {
-            if maxlen > 0 as libc::c_int as libc::c_long
-                && size.wrapping_add(1 as libc::c_int as libc::c_ulong) > maxlen as size_t
-            {
+            if maxlen > 0i64 && size.wrapping_add(1u64) > maxlen as size_t {
                 break;
             }
             if *ptr as libc::c_int == '\u{1}' as i32 {
-                gc.attr = (gc.attr as libc::c_int ^ 0x80 as libc::c_int) as u_short
+                gc.attr = (gc.attr as libc::c_int ^ 0x80i32) as u_short
             } else if *ptr as libc::c_int == '\n' as i32 {
-                screen_write_linefeed(ctx, 0 as libc::c_int, 8 as libc::c_int as u_int);
+                screen_write_linefeed(ctx, 0i32, 8u32);
                 screen_write_carriagereturn(ctx);
-            } else if *ptr as libc::c_int > 0x1f as libc::c_int
-                && (*ptr as libc::c_int) < 0x7f as libc::c_int
-            {
+            } else if *ptr as libc::c_int > 0x1fi32 && (*ptr as libc::c_int) < 0x7fi32 {
                 size = size.wrapping_add(1);
                 screen_write_putc(ctx, &mut gc, *ptr);
             }
@@ -2020,7 +1958,7 @@ pub unsafe extern "C" fn screen_write_fast_copy(
     let mut yy: u_int = 0;
     let mut cx: u_int = 0;
     let mut cy: u_int = 0;
-    if nx == 0 as libc::c_int as libc::c_uint || ny == 0 as libc::c_int as libc::c_uint {
+    if nx == 0u32 || ny == 0u32 {
         return;
     }
     cy = (*s).cy;
@@ -2079,15 +2017,15 @@ pub unsafe extern "C" fn screen_write_hline(
         &grid_default_cell as *const GridCell as *const libc::c_void,
         ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
-    gc.attr = (gc.attr as libc::c_int | 0x80 as libc::c_int) as u_short;
+    gc.attr = (gc.attr as libc::c_int | 0x80i32) as u_short;
     screen_write_putc(
         ctx,
         &mut gc,
         if left != 0 { 't' as i32 } else { 'q' as i32 } as u_char,
     );
-    i = 1 as libc::c_int as u_int;
-    while i < nx.wrapping_sub(1 as libc::c_int as libc::c_uint) {
-        screen_write_putc(ctx, &mut gc, 'q' as i32 as u_char);
+    i = 1u32;
+    while i < nx.wrapping_sub(1u32) {
+        screen_write_putc(ctx, &mut gc, 'q' as u_char);
         i = i.wrapping_add(1)
     }
     screen_write_putc(
@@ -2129,23 +2067,22 @@ pub unsafe extern "C" fn screen_write_vline(
         &grid_default_cell as *const GridCell as *const libc::c_void,
         ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
-    gc.attr = (gc.attr as libc::c_int | 0x80 as libc::c_int) as u_short;
+    gc.attr = (gc.attr as libc::c_int | 0x80i32) as u_short;
     screen_write_putc(
         ctx,
         &mut gc,
         if top != 0 { 'w' as i32 } else { 'x' as i32 } as u_char,
     );
-    i = 1 as libc::c_int as u_int;
-    while i < ny.wrapping_sub(1 as libc::c_int as libc::c_uint) {
+    i = 1u32;
+    while i < ny.wrapping_sub(1u32) {
         screen_write_set_cursor(ctx, cx as libc::c_int, cy.wrapping_add(i) as libc::c_int);
-        screen_write_putc(ctx, &mut gc, 'x' as i32 as u_char);
+        screen_write_putc(ctx, &mut gc, 'x' as u_char);
         i = i.wrapping_add(1)
     }
     screen_write_set_cursor(
         ctx,
         cx as libc::c_int,
-        cy.wrapping_add(ny)
-            .wrapping_sub(1 as libc::c_int as libc::c_uint) as libc::c_int,
+        cy.wrapping_add(ny).wrapping_sub(1u32) as libc::c_int,
     );
     screen_write_putc(
         ctx,
@@ -2191,14 +2128,14 @@ pub unsafe extern "C" fn screen_write_menu(
     );
     screen_write_box(
         ctx,
-        (*menu).width.wrapping_add(4 as libc::c_int as libc::c_uint),
-        (*menu).count.wrapping_add(2 as libc::c_int as libc::c_uint),
+        (*menu).width.wrapping_add(4u32),
+        (*menu).count.wrapping_add(2u32),
     );
     screen_write_cursormove(
         ctx,
-        cx.wrapping_add(2 as libc::c_int as libc::c_uint) as libc::c_int,
+        cx.wrapping_add(2u32) as libc::c_int,
         cy as libc::c_int,
-        0 as libc::c_int,
+        0i32,
     );
     format_draw(
         ctx,
@@ -2207,55 +2144,43 @@ pub unsafe extern "C" fn screen_write_menu(
         (*menu).title,
         0 as *mut style_ranges,
     );
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < (*menu).count {
         name = (*(*menu).items.offset(i as isize)).name;
         if name.is_null() {
             screen_write_cursormove(
                 ctx,
                 cx as libc::c_int,
-                cy.wrapping_add(1 as libc::c_int as libc::c_uint)
-                    .wrapping_add(i) as libc::c_int,
-                0 as libc::c_int,
+                cy.wrapping_add(1u32).wrapping_add(i) as libc::c_int,
+                0i32,
             );
-            screen_write_hline(
-                ctx,
-                (*menu).width.wrapping_add(4 as libc::c_int as libc::c_uint),
-                1 as libc::c_int,
-                1 as libc::c_int,
-            );
+            screen_write_hline(ctx, (*menu).width.wrapping_add(4u32), 1i32, 1i32);
         } else {
-            if choice >= 0 as libc::c_int
-                && i == choice as u_int
-                && *name as libc::c_int != '-' as i32
-            {
+            if choice >= 0i32 && i == choice as u_int && *name as libc::c_int != '-' as i32 {
                 gc = choice_gc
             }
             screen_write_cursormove(
                 ctx,
-                cx.wrapping_add(2 as libc::c_int as libc::c_uint) as libc::c_int,
-                cy.wrapping_add(1 as libc::c_int as libc::c_uint)
-                    .wrapping_add(i) as libc::c_int,
-                0 as libc::c_int,
+                cx.wrapping_add(2u32) as libc::c_int,
+                cy.wrapping_add(1u32).wrapping_add(i) as libc::c_int,
+                0i32,
             );
-            j = 0 as libc::c_int as u_int;
+            j = 0u32;
             while j < (*menu).width {
-                screen_write_putc(ctx, gc, ' ' as i32 as u_char);
+                screen_write_putc(ctx, gc, ' ' as u_char);
                 j = j.wrapping_add(1)
             }
             screen_write_cursormove(
                 ctx,
-                cx.wrapping_add(2 as libc::c_int as libc::c_uint) as libc::c_int,
-                cy.wrapping_add(1 as libc::c_int as libc::c_uint)
-                    .wrapping_add(i) as libc::c_int,
-                0 as libc::c_int,
+                cx.wrapping_add(2u32) as libc::c_int,
+                cy.wrapping_add(1u32).wrapping_add(i) as libc::c_int,
+                0i32,
             );
             if *name as libc::c_int == '-' as i32 {
                 name = name.offset(1);
-                default_gc.attr = (default_gc.attr as libc::c_int | 0x2 as libc::c_int) as u_short;
+                default_gc.attr = (default_gc.attr as libc::c_int | 0x2i32) as u_short;
                 format_draw(ctx, gc, (*menu).width, name, 0 as *mut style_ranges);
-                default_gc.attr =
-                    (default_gc.attr as libc::c_int & !(0x2 as libc::c_int)) as u_short
+                default_gc.attr = (default_gc.attr as libc::c_int & !(0x2i32)) as u_short
             } else {
                 format_draw(ctx, gc, (*menu).width, name, 0 as *mut style_ranges);
             }
@@ -2296,42 +2221,40 @@ pub unsafe extern "C" fn screen_write_box(
         &grid_default_cell as *const GridCell as *const libc::c_void,
         ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
-    gc.attr = (gc.attr as libc::c_int | 0x80 as libc::c_int) as u_short;
-    screen_write_putc(ctx, &mut gc, 'l' as i32 as u_char);
-    i = 1 as libc::c_int as u_int;
-    while i < nx.wrapping_sub(1 as libc::c_int as libc::c_uint) {
-        screen_write_putc(ctx, &mut gc, 'q' as i32 as u_char);
+    gc.attr = (gc.attr as libc::c_int | 0x80i32) as u_short;
+    screen_write_putc(ctx, &mut gc, 'l' as u_char);
+    i = 1u32;
+    while i < nx.wrapping_sub(1u32) {
+        screen_write_putc(ctx, &mut gc, 'q' as u_char);
         i = i.wrapping_add(1)
     }
-    screen_write_putc(ctx, &mut gc, 'k' as i32 as u_char);
+    screen_write_putc(ctx, &mut gc, 'k' as u_char);
     screen_write_set_cursor(
         ctx,
         cx as libc::c_int,
-        cy.wrapping_add(ny)
-            .wrapping_sub(1 as libc::c_int as libc::c_uint) as libc::c_int,
+        cy.wrapping_add(ny).wrapping_sub(1u32) as libc::c_int,
     );
-    screen_write_putc(ctx, &mut gc, 'm' as i32 as u_char);
-    i = 1 as libc::c_int as u_int;
-    while i < nx.wrapping_sub(1 as libc::c_int as libc::c_uint) {
-        screen_write_putc(ctx, &mut gc, 'q' as i32 as u_char);
+    screen_write_putc(ctx, &mut gc, 'm' as u_char);
+    i = 1u32;
+    while i < nx.wrapping_sub(1u32) {
+        screen_write_putc(ctx, &mut gc, 'q' as u_char);
         i = i.wrapping_add(1)
     }
-    screen_write_putc(ctx, &mut gc, 'j' as i32 as u_char);
-    i = 1 as libc::c_int as u_int;
-    while i < ny.wrapping_sub(1 as libc::c_int as libc::c_uint) {
+    screen_write_putc(ctx, &mut gc, 'j' as u_char);
+    i = 1u32;
+    while i < ny.wrapping_sub(1u32) {
         screen_write_set_cursor(ctx, cx as libc::c_int, cy.wrapping_add(i) as libc::c_int);
-        screen_write_putc(ctx, &mut gc, 'x' as i32 as u_char);
+        screen_write_putc(ctx, &mut gc, 'x' as u_char);
         i = i.wrapping_add(1)
     }
-    i = 1 as libc::c_int as u_int;
-    while i < ny.wrapping_sub(1 as libc::c_int as libc::c_uint) {
+    i = 1u32;
+    while i < ny.wrapping_sub(1u32) {
         screen_write_set_cursor(
             ctx,
-            cx.wrapping_add(nx)
-                .wrapping_sub(1 as libc::c_int as libc::c_uint) as libc::c_int,
+            cx.wrapping_add(nx).wrapping_sub(1u32) as libc::c_int,
             cy.wrapping_add(i) as libc::c_int,
         );
-        screen_write_putc(ctx, &mut gc, 'x' as i32 as u_char);
+        screen_write_putc(ctx, &mut gc, 'x' as u_char);
         i = i.wrapping_add(1)
     }
     screen_write_set_cursor(ctx, cx as libc::c_int, cy as libc::c_int);
@@ -2371,41 +2294,41 @@ pub unsafe extern "C" fn screen_write_preview(
      * If the cursor is on, pick the area around the cursor, otherwise use
      * the top left.
      */
-    if (*src).mode & 0x1 as libc::c_int != 0 {
+    if (*src).mode & 0x1i32 != 0 {
         px = (*src).cx;
-        if px < nx.wrapping_div(3 as libc::c_int as libc::c_uint) {
-            px = 0 as libc::c_int as u_int
+        if px < nx.wrapping_div(3u32) {
+            px = 0u32
         } else {
-            px = px.wrapping_sub(nx.wrapping_div(3 as libc::c_int as libc::c_uint))
+            px = px.wrapping_sub(nx.wrapping_div(3u32))
         }
         if px.wrapping_add(nx) > (*(*src).grid).sx {
             if nx > (*(*src).grid).sx {
-                px = 0 as libc::c_int as u_int
+                px = 0u32
             } else {
                 px = (*(*src).grid).sx.wrapping_sub(nx)
             }
         }
         py = (*src).cy;
-        if py < ny.wrapping_div(3 as libc::c_int as libc::c_uint) {
-            py = 0 as libc::c_int as u_int
+        if py < ny.wrapping_div(3u32) {
+            py = 0u32
         } else {
-            py = py.wrapping_sub(ny.wrapping_div(3 as libc::c_int as libc::c_uint))
+            py = py.wrapping_sub(ny.wrapping_div(3u32))
         }
         if py.wrapping_add(ny) > (*(*src).grid).sy {
             if ny > (*(*src).grid).sy {
-                py = 0 as libc::c_int as u_int
+                py = 0u32
             } else {
                 py = (*(*src).grid).sy.wrapping_sub(ny)
             }
         }
     } else {
-        px = 0 as libc::c_int as u_int;
-        py = 0 as libc::c_int as u_int
+        px = 0u32;
+        py = 0u32
     }
     screen_write_fast_copy(ctx, src, px, (*(*src).grid).hsize.wrapping_add(py), nx, ny);
-    if (*src).mode & 0x1 as libc::c_int != 0 {
+    if (*src).mode & 0x1i32 != 0 {
         grid_view_get_cell((*src).grid, (*src).cx, (*src).cy, &mut gc);
-        gc.attr = (gc.attr as libc::c_int | 0x10 as libc::c_int) as u_short;
+        gc.attr = (gc.attr as libc::c_int | 0x10i32) as u_short;
         screen_write_set_cursor(
             ctx,
             cx.wrapping_add((*src).cx.wrapping_sub(px)) as libc::c_int,
@@ -2438,8 +2361,8 @@ pub unsafe extern "C" fn screen_write_cursorup(mut ctx: *mut screen_write_ctx, m
     let mut s: *mut screen = (*ctx).s;
     let mut cx: u_int = (*s).cx;
     let mut cy: u_int = (*s).cy;
-    if ny == 0 as libc::c_int as libc::c_uint {
-        ny = 1 as libc::c_int as u_int
+    if ny == 0u32 {
+        ny = 1u32
     }
     if cy < (*s).rupper {
         /* Above region. */
@@ -2452,7 +2375,7 @@ pub unsafe extern "C" fn screen_write_cursorup(mut ctx: *mut screen_write_ctx, m
     if cx == (*(*s).grid).sx {
         cx = cx.wrapping_sub(1)
     }
-    cy = (cy as libc::c_uint).wrapping_sub(ny) as u_int as u_int;
+    cy = (cy).wrapping_sub(ny);
     screen_write_set_cursor(ctx, cx as libc::c_int, cy as libc::c_int);
 }
 /* Below region. */
@@ -2462,31 +2385,23 @@ pub unsafe extern "C" fn screen_write_cursordown(mut ctx: *mut screen_write_ctx,
     let mut s: *mut screen = (*ctx).s;
     let mut cx: u_int = (*s).cx;
     let mut cy: u_int = (*s).cy;
-    if ny == 0 as libc::c_int as libc::c_uint {
-        ny = 1 as libc::c_int as u_int
+    if ny == 0u32 {
+        ny = 1u32
     }
     if cy > (*s).rlower {
         /* Below region. */
-        if ny
-            > (*(*s).grid)
-                .sy
-                .wrapping_sub(1 as libc::c_int as libc::c_uint)
-                .wrapping_sub(cy)
-        {
-            ny = (*(*s).grid)
-                .sy
-                .wrapping_sub(1 as libc::c_int as libc::c_uint)
-                .wrapping_sub(cy)
+        if ny > (*(*s).grid).sy.wrapping_sub(1u32).wrapping_sub(cy) {
+            ny = (*(*s).grid).sy.wrapping_sub(1u32).wrapping_sub(cy)
         }
     } else if ny > (*s).rlower.wrapping_sub(cy) {
         ny = (*s).rlower.wrapping_sub(cy)
     }
     if cx == (*(*s).grid).sx {
         cx = cx.wrapping_sub(1)
-    } else if ny == 0 as libc::c_int as libc::c_uint {
+    } else if ny == 0u32 {
         return;
     }
-    cy = (cy as libc::c_uint).wrapping_add(ny) as u_int as u_int;
+    cy = (cy).wrapping_add(ny);
     screen_write_set_cursor(ctx, cx as libc::c_int, cy as libc::c_int);
 }
 /* Above region. */
@@ -2496,24 +2411,16 @@ pub unsafe extern "C" fn screen_write_cursorright(mut ctx: *mut screen_write_ctx
     let mut s: *mut screen = (*ctx).s;
     let mut cx: u_int = (*s).cx;
     let mut cy: u_int = (*s).cy;
-    if nx == 0 as libc::c_int as libc::c_uint {
-        nx = 1 as libc::c_int as u_int
+    if nx == 0u32 {
+        nx = 1u32
     }
-    if nx
-        > (*(*s).grid)
-            .sx
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
-            .wrapping_sub(cx)
-    {
-        nx = (*(*s).grid)
-            .sx
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
-            .wrapping_sub(cx)
+    if nx > (*(*s).grid).sx.wrapping_sub(1u32).wrapping_sub(cx) {
+        nx = (*(*s).grid).sx.wrapping_sub(1u32).wrapping_sub(cx)
     }
-    if nx == 0 as libc::c_int as libc::c_uint {
+    if nx == 0u32 {
         return;
     }
-    cx = (cx as libc::c_uint).wrapping_add(nx) as u_int as u_int;
+    cx = (cx).wrapping_add(nx);
     screen_write_set_cursor(ctx, cx as libc::c_int, cy as libc::c_int);
 }
 /* Cursor left by nx. */
@@ -2522,16 +2429,16 @@ pub unsafe extern "C" fn screen_write_cursorleft(mut ctx: *mut screen_write_ctx,
     let mut s: *mut screen = (*ctx).s;
     let mut cx: u_int = (*s).cx;
     let mut cy: u_int = (*s).cy;
-    if nx == 0 as libc::c_int as libc::c_uint {
-        nx = 1 as libc::c_int as u_int
+    if nx == 0u32 {
+        nx = 1u32
     }
     if nx > cx {
         nx = cx
     }
-    if nx == 0 as libc::c_int as libc::c_uint {
+    if nx == 0u32 {
         return;
     }
-    cx = (cx as libc::c_uint).wrapping_sub(nx) as u_int as u_int;
+    cx = (cx).wrapping_sub(nx);
     screen_write_set_cursor(ctx, cx as libc::c_int, cy as libc::c_int);
 }
 /* Backspace; cursor left unless at start of wrapped line when can move up. */
@@ -2541,22 +2448,17 @@ pub unsafe extern "C" fn screen_write_backspace(mut ctx: *mut screen_write_ctx) 
     let mut gl: *mut grid_line = 0 as *mut grid_line;
     let mut cx: u_int = (*s).cx;
     let mut cy: u_int = (*s).cy;
-    if cx == 0 as libc::c_int as libc::c_uint {
-        if cy == 0 as libc::c_int as libc::c_uint {
+    if cx == 0u32 {
+        if cy == 0u32 {
             return;
         }
         gl = grid_get_line(
             (*s).grid,
-            (*(*s).grid)
-                .hsize
-                .wrapping_add(cy)
-                .wrapping_sub(1 as libc::c_int as libc::c_uint),
+            (*(*s).grid).hsize.wrapping_add(cy).wrapping_sub(1u32),
         );
-        if (*gl).flags & 0x1 as libc::c_int != 0 {
+        if (*gl).flags & 0x1i32 != 0 {
             cy = cy.wrapping_sub(1);
-            cx = (*(*s).grid)
-                .sx
-                .wrapping_sub(1 as libc::c_int as libc::c_uint)
+            cx = (*(*s).grid).sx.wrapping_sub(1u32)
         }
     } else {
         cx = cx.wrapping_sub(1)
@@ -2627,29 +2529,21 @@ pub unsafe extern "C" fn screen_write_alignmenttest(mut ctx: *mut screen_write_c
         &grid_default_cell as *const GridCell as *const libc::c_void,
         ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
-    utf8_set(&mut gc.data, 'E' as i32 as u_char);
-    yy = 0 as libc::c_int as u_int;
+    utf8_set(&mut gc.data, 'E' as u_char);
+    yy = 0u32;
     while yy < (*(*s).grid).sy {
-        xx = 0 as libc::c_int as u_int;
+        xx = 0u32;
         while xx < (*(*s).grid).sx {
             grid_view_set_cell((*s).grid, xx, yy, &mut gc);
             xx = xx.wrapping_add(1)
         }
         yy = yy.wrapping_add(1)
     }
-    screen_write_set_cursor(ctx, 0 as libc::c_int, 0 as libc::c_int);
-    (*s).rupper = 0 as libc::c_int as u_int;
-    (*s).rlower = (*(*s).grid)
-        .sy
-        .wrapping_sub(1 as libc::c_int as libc::c_uint);
-    screen_write_initctx(ctx, &mut ttyctx, 1 as libc::c_int);
-    screen_write_collect_clear(
-        ctx,
-        0 as libc::c_int as u_int,
-        (*(*s).grid)
-            .sy
-            .wrapping_sub(1 as libc::c_int as libc::c_uint),
-    );
+    screen_write_set_cursor(ctx, 0i32, 0i32);
+    (*s).rupper = 0u32;
+    (*s).rlower = (*(*s).grid).sy.wrapping_sub(1u32);
+    screen_write_initctx(ctx, &mut ttyctx, 1i32);
+    screen_write_collect_clear(ctx, 0u32, (*(*s).grid).sy.wrapping_sub(1u32));
     tty_write(
         Some(tty_cmd_alignmenttest as unsafe extern "C" fn(_: *mut tty, _: *const tty_ctx) -> ()),
         &mut ttyctx,
@@ -2703,28 +2597,24 @@ pub unsafe extern "C" fn screen_write_insertcharacter(
         wsx: 0,
         wsy: 0,
     };
-    if nx == 0 as libc::c_int as libc::c_uint {
-        nx = 1 as libc::c_int as u_int
+    if nx == 0u32 {
+        nx = 1u32
     }
     if nx > (*(*s).grid).sx.wrapping_sub((*s).cx) {
         nx = (*(*s).grid).sx.wrapping_sub((*s).cx)
     }
-    if nx == 0 as libc::c_int as libc::c_uint {
+    if nx == 0u32 {
         return;
     }
-    if (*s).cx
-        > (*(*s).grid)
-            .sx
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
-    {
+    if (*s).cx > (*(*s).grid).sx.wrapping_sub(1u32) {
         return;
     }
-    screen_write_initctx(ctx, &mut ttyctx, 0 as libc::c_int);
+    screen_write_initctx(ctx, &mut ttyctx, 0i32);
     ttyctx.bg = bg;
     grid_view_insert_cells((*s).grid, (*s).cx, (*s).cy, nx, bg);
     screen_write_collect_flush(
         ctx,
-        0 as libc::c_int,
+        0i32,
         (*::std::mem::transmute::<&[u8; 29], &[libc::c_char; 29]>(
             b"screen_write_insertcharacter\x00",
         ))
@@ -2784,28 +2674,24 @@ pub unsafe extern "C" fn screen_write_deletecharacter(
         wsx: 0,
         wsy: 0,
     };
-    if nx == 0 as libc::c_int as libc::c_uint {
-        nx = 1 as libc::c_int as u_int
+    if nx == 0u32 {
+        nx = 1u32
     }
     if nx > (*(*s).grid).sx.wrapping_sub((*s).cx) {
         nx = (*(*s).grid).sx.wrapping_sub((*s).cx)
     }
-    if nx == 0 as libc::c_int as libc::c_uint {
+    if nx == 0u32 {
         return;
     }
-    if (*s).cx
-        > (*(*s).grid)
-            .sx
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
-    {
+    if (*s).cx > (*(*s).grid).sx.wrapping_sub(1u32) {
         return;
     }
-    screen_write_initctx(ctx, &mut ttyctx, 0 as libc::c_int);
+    screen_write_initctx(ctx, &mut ttyctx, 0i32);
     ttyctx.bg = bg;
     grid_view_delete_cells((*s).grid, (*s).cx, (*s).cy, nx, bg);
     screen_write_collect_flush(
         ctx,
-        0 as libc::c_int,
+        0i32,
         (*::std::mem::transmute::<&[u8; 29], &[libc::c_char; 29]>(
             b"screen_write_deletecharacter\x00",
         ))
@@ -2865,35 +2751,24 @@ pub unsafe extern "C" fn screen_write_clearcharacter(
         wsx: 0,
         wsy: 0,
     };
-    if nx == 0 as libc::c_int as libc::c_uint {
-        nx = 1 as libc::c_int as u_int
+    if nx == 0u32 {
+        nx = 1u32
     }
     if nx > (*(*s).grid).sx.wrapping_sub((*s).cx) {
         nx = (*(*s).grid).sx.wrapping_sub((*s).cx)
     }
-    if nx == 0 as libc::c_int as libc::c_uint {
+    if nx == 0u32 {
         return;
     }
-    if (*s).cx
-        > (*(*s).grid)
-            .sx
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
-    {
+    if (*s).cx > (*(*s).grid).sx.wrapping_sub(1u32) {
         return;
     }
-    screen_write_initctx(ctx, &mut ttyctx, 0 as libc::c_int);
+    screen_write_initctx(ctx, &mut ttyctx, 0i32);
     ttyctx.bg = bg;
-    grid_view_clear(
-        (*s).grid,
-        (*s).cx,
-        (*s).cy,
-        nx,
-        1 as libc::c_int as u_int,
-        bg,
-    );
+    grid_view_clear((*s).grid, (*s).cx, (*s).cy, nx, 1u32, bg);
     screen_write_collect_flush(
         ctx,
-        0 as libc::c_int,
+        0i32,
         (*::std::mem::transmute::<&[u8; 28], &[libc::c_char; 28]>(
             b"screen_write_clearcharacter\x00",
         ))
@@ -2954,22 +2829,22 @@ pub unsafe extern "C" fn screen_write_insertline(
         wsx: 0,
         wsy: 0,
     };
-    if ny == 0 as libc::c_int as libc::c_uint {
-        ny = 1 as libc::c_int as u_int
+    if ny == 0u32 {
+        ny = 1u32
     }
     if (*s).cy < (*s).rupper || (*s).cy > (*s).rlower {
         if ny > (*(*s).grid).sy.wrapping_sub((*s).cy) {
             ny = (*(*s).grid).sy.wrapping_sub((*s).cy)
         }
-        if ny == 0 as libc::c_int as libc::c_uint {
+        if ny == 0u32 {
             return;
         }
-        screen_write_initctx(ctx, &mut ttyctx, 1 as libc::c_int);
+        screen_write_initctx(ctx, &mut ttyctx, 1i32);
         ttyctx.bg = bg;
         grid_view_insert_lines(gd, (*s).cy, ny, bg);
         screen_write_collect_flush(
             ctx,
-            0 as libc::c_int,
+            0i32,
             (*::std::mem::transmute::<&[u8; 24], &[libc::c_char; 24]>(
                 b"screen_write_insertline\x00",
             ))
@@ -2982,21 +2857,13 @@ pub unsafe extern "C" fn screen_write_insertline(
         );
         return;
     }
-    if ny
-        > (*s)
-            .rlower
-            .wrapping_add(1 as libc::c_int as libc::c_uint)
-            .wrapping_sub((*s).cy)
-    {
-        ny = (*s)
-            .rlower
-            .wrapping_add(1 as libc::c_int as libc::c_uint)
-            .wrapping_sub((*s).cy)
+    if ny > (*s).rlower.wrapping_add(1u32).wrapping_sub((*s).cy) {
+        ny = (*s).rlower.wrapping_add(1u32).wrapping_sub((*s).cy)
     }
-    if ny == 0 as libc::c_int as libc::c_uint {
+    if ny == 0u32 {
         return;
     }
-    screen_write_initctx(ctx, &mut ttyctx, 1 as libc::c_int);
+    screen_write_initctx(ctx, &mut ttyctx, 1i32);
     ttyctx.bg = bg;
     if (*s).cy < (*s).rupper || (*s).cy > (*s).rlower {
         grid_view_insert_lines(gd, (*s).cy, ny, bg);
@@ -3005,7 +2872,7 @@ pub unsafe extern "C" fn screen_write_insertline(
     }
     screen_write_collect_flush(
         ctx,
-        0 as libc::c_int,
+        0i32,
         (*::std::mem::transmute::<&[u8; 24], &[libc::c_char; 24]>(b"screen_write_insertline\x00"))
             .as_ptr(),
     );
@@ -3064,22 +2931,22 @@ pub unsafe extern "C" fn screen_write_deleteline(
         wsx: 0,
         wsy: 0,
     };
-    if ny == 0 as libc::c_int as libc::c_uint {
-        ny = 1 as libc::c_int as u_int
+    if ny == 0u32 {
+        ny = 1u32
     }
     if (*s).cy < (*s).rupper || (*s).cy > (*s).rlower {
         if ny > (*(*s).grid).sy.wrapping_sub((*s).cy) {
             ny = (*(*s).grid).sy.wrapping_sub((*s).cy)
         }
-        if ny == 0 as libc::c_int as libc::c_uint {
+        if ny == 0u32 {
             return;
         }
-        screen_write_initctx(ctx, &mut ttyctx, 1 as libc::c_int);
+        screen_write_initctx(ctx, &mut ttyctx, 1i32);
         ttyctx.bg = bg;
         grid_view_delete_lines(gd, (*s).cy, ny, bg);
         screen_write_collect_flush(
             ctx,
-            0 as libc::c_int,
+            0i32,
             (*::std::mem::transmute::<&[u8; 24], &[libc::c_char; 24]>(
                 b"screen_write_deleteline\x00",
             ))
@@ -3092,21 +2959,13 @@ pub unsafe extern "C" fn screen_write_deleteline(
         );
         return;
     }
-    if ny
-        > (*s)
-            .rlower
-            .wrapping_add(1 as libc::c_int as libc::c_uint)
-            .wrapping_sub((*s).cy)
-    {
-        ny = (*s)
-            .rlower
-            .wrapping_add(1 as libc::c_int as libc::c_uint)
-            .wrapping_sub((*s).cy)
+    if ny > (*s).rlower.wrapping_add(1u32).wrapping_sub((*s).cy) {
+        ny = (*s).rlower.wrapping_add(1u32).wrapping_sub((*s).cy)
     }
-    if ny == 0 as libc::c_int as libc::c_uint {
+    if ny == 0u32 {
         return;
     }
-    screen_write_initctx(ctx, &mut ttyctx, 1 as libc::c_int);
+    screen_write_initctx(ctx, &mut ttyctx, 1i32);
     ttyctx.bg = bg;
     if (*s).cy < (*s).rupper || (*s).cy > (*s).rlower {
         grid_view_delete_lines(gd, (*s).cy, ny, bg);
@@ -3115,7 +2974,7 @@ pub unsafe extern "C" fn screen_write_deleteline(
     }
     screen_write_collect_flush(
         ctx,
-        0 as libc::c_int,
+        0i32,
         (*::std::mem::transmute::<&[u8; 24], &[libc::c_char; 24]>(b"screen_write_deleteline\x00"))
             .as_ptr(),
     );
@@ -3132,23 +2991,13 @@ pub unsafe extern "C" fn screen_write_clearline(mut ctx: *mut screen_write_ctx, 
     let mut gl: *mut grid_line = 0 as *mut grid_line;
     let mut sx: u_int = (*(*s).grid).sx;
     gl = grid_get_line((*s).grid, (*(*s).grid).hsize.wrapping_add((*s).cy));
-    if (*gl).cellsize == 0 as libc::c_int as libc::c_uint
-        && (bg == 8 as libc::c_int as libc::c_uint || bg == 9 as libc::c_int as libc::c_uint)
-    {
+    if (*gl).cellsize == 0u32 && (bg == 8u32 || bg == 9u32) {
         return;
     }
-    grid_view_clear(
-        (*s).grid,
-        0 as libc::c_int as u_int,
-        (*s).cy,
-        sx,
-        1 as libc::c_int as u_int,
-        bg,
-    );
-    screen_write_collect_clear(ctx, (*s).cy, 1 as libc::c_int as u_int);
-    (*(*(*ctx).s).write_list.offset((*s).cy as isize)).bg =
-        (1 as libc::c_int as libc::c_uint).wrapping_add(bg);
-    (*(*ctx).item).used = 0 as libc::c_int as u_int;
+    grid_view_clear((*s).grid, 0u32, (*s).cy, sx, 1u32, bg);
+    screen_write_collect_clear(ctx, (*s).cy, 1u32);
+    (*(*(*ctx).s).write_list.offset((*s).cy as isize)).bg = (1u32).wrapping_add(bg);
+    (*(*ctx).item).used = 0u32;
 }
 /* Clear to end of line from cursor. */
 #[no_mangle]
@@ -3160,15 +3009,12 @@ pub unsafe extern "C" fn screen_write_clearendofline(
     let mut gl: *mut grid_line = 0 as *mut grid_line;
     let mut sx: u_int = (*(*s).grid).sx;
     let mut ci: *mut screen_write_collect_item = (*ctx).item;
-    if (*s).cx == 0 as libc::c_int as libc::c_uint {
+    if (*s).cx == 0u32 {
         screen_write_clearline(ctx, bg);
         return;
     }
     gl = grid_get_line((*s).grid, (*(*s).grid).hsize.wrapping_add((*s).cy));
-    if (*s).cx > sx.wrapping_sub(1 as libc::c_int as libc::c_uint)
-        || (*s).cx >= (*gl).cellsize
-            && (bg == 8 as libc::c_int as libc::c_uint || bg == 9 as libc::c_int as libc::c_uint)
-    {
+    if (*s).cx > sx.wrapping_sub(1u32) || (*s).cx >= (*gl).cellsize && (bg == 8u32 || bg == 9u32) {
         return;
     }
     grid_view_clear(
@@ -3176,7 +3022,7 @@ pub unsafe extern "C" fn screen_write_clearendofline(
         (*s).cx,
         (*s).cy,
         sx.wrapping_sub((*s).cx),
-        1 as libc::c_int as u_int,
+        1u32,
         bg,
     );
     screen_write_collect_clear_end(ctx, (*s).cy, (*s).cx);
@@ -3196,7 +3042,7 @@ pub unsafe extern "C" fn screen_write_clearendofline(
         .tqh_last;
     *fresh3 = &mut (*ci).entry.tqe_next;
     (*ctx).item = xcalloc(
-        1 as libc::c_int as size_t,
+        1u64,
         ::std::mem::size_of::<screen_write_collect_item>() as libc::c_ulong,
     ) as *mut screen_write_collect_item;
 }
@@ -3209,26 +3055,19 @@ pub unsafe extern "C" fn screen_write_clearstartofline(
     let mut s: *mut screen = (*ctx).s;
     let mut sx: u_int = (*(*s).grid).sx;
     let mut ci: *mut screen_write_collect_item = (*ctx).item;
-    if (*s).cx >= sx.wrapping_sub(1 as libc::c_int as libc::c_uint) {
+    if (*s).cx >= sx.wrapping_sub(1u32) {
         screen_write_clearline(ctx, bg);
         return;
     }
-    if (*s).cx > sx.wrapping_sub(1 as libc::c_int as libc::c_uint) {
-        grid_view_clear(
-            (*s).grid,
-            0 as libc::c_int as u_int,
-            (*s).cy,
-            sx,
-            1 as libc::c_int as u_int,
-            bg,
-        );
+    if (*s).cx > sx.wrapping_sub(1u32) {
+        grid_view_clear((*s).grid, 0u32, (*s).cy, sx, 1u32, bg);
     } else {
         grid_view_clear(
             (*s).grid,
-            0 as libc::c_int as u_int,
+            0u32,
             (*s).cy,
-            (*s).cx.wrapping_add(1 as libc::c_int as libc::c_uint),
-            1 as libc::c_int as u_int,
+            (*s).cx.wrapping_add(1u32),
+            1u32,
             bg,
         );
     }
@@ -3249,7 +3088,7 @@ pub unsafe extern "C" fn screen_write_clearstartofline(
         .tqh_last;
     *fresh5 = &mut (*ci).entry.tqe_next;
     (*ctx).item = xcalloc(
-        1 as libc::c_int as size_t,
+        1u64,
         ::std::mem::size_of::<screen_write_collect_item>() as libc::c_ulong,
     ) as *mut screen_write_collect_item;
 }
@@ -3262,32 +3101,18 @@ pub unsafe extern "C" fn screen_write_cursormove(
     mut origin: libc::c_int,
 ) {
     let mut s: *mut screen = (*ctx).s;
-    if origin != 0 && py != -(1 as libc::c_int) && (*s).mode & 0x2000 as libc::c_int != 0 {
+    if origin != 0 && py != -(1i32) && (*s).mode & 0x2000i32 != 0 {
         if py as u_int > (*s).rlower.wrapping_sub((*s).rupper) {
             py = (*s).rlower as libc::c_int
         } else {
-            py = (py as libc::c_uint).wrapping_add((*s).rupper) as libc::c_int as libc::c_int
+            py = (py as libc::c_uint).wrapping_add((*s).rupper) as libc::c_int
         }
     }
-    if px != -(1 as libc::c_int)
-        && px as u_int
-            > (*(*s).grid)
-                .sx
-                .wrapping_sub(1 as libc::c_int as libc::c_uint)
-    {
-        px = (*(*s).grid)
-            .sx
-            .wrapping_sub(1 as libc::c_int as libc::c_uint) as libc::c_int
+    if px != -(1i32) && px as u_int > (*(*s).grid).sx.wrapping_sub(1u32) {
+        px = (*(*s).grid).sx.wrapping_sub(1u32) as libc::c_int
     }
-    if py != -(1 as libc::c_int)
-        && py as u_int
-            > (*(*s).grid)
-                .sy
-                .wrapping_sub(1 as libc::c_int as libc::c_uint)
-    {
-        py = (*(*s).grid)
-            .sy
-            .wrapping_sub(1 as libc::c_int as libc::c_uint) as libc::c_int
+    if py != -(1i32) && py as u_int > (*(*s).grid).sy.wrapping_sub(1u32) {
+        py = (*(*s).grid).sy.wrapping_sub(1u32) as libc::c_int
     }
     screen_write_set_cursor(ctx, px, py);
 }
@@ -3339,13 +3164,13 @@ pub unsafe extern "C" fn screen_write_reverseindex(mut ctx: *mut screen_write_ct
         grid_view_scroll_region_down((*s).grid, (*s).rupper, (*s).rlower, bg);
         screen_write_collect_flush(
             ctx,
-            0 as libc::c_int,
+            0i32,
             (*::std::mem::transmute::<&[u8; 26], &[libc::c_char; 26]>(
                 b"screen_write_reverseindex\x00",
             ))
             .as_ptr(),
         );
-        screen_write_initctx(ctx, &mut ttyctx, 1 as libc::c_int);
+        screen_write_initctx(ctx, &mut ttyctx, 1i32);
         ttyctx.bg = bg;
         tty_write(
             Some(
@@ -3353,12 +3178,8 @@ pub unsafe extern "C" fn screen_write_reverseindex(mut ctx: *mut screen_write_ct
             ),
             &mut ttyctx,
         );
-    } else if (*s).cy > 0 as libc::c_int as libc::c_uint {
-        screen_write_set_cursor(
-            ctx,
-            -(1 as libc::c_int),
-            (*s).cy.wrapping_sub(1 as libc::c_int as libc::c_uint) as libc::c_int,
-        );
+    } else if (*s).cy > 0u32 {
+        screen_write_set_cursor(ctx, -(1i32), (*s).cy.wrapping_sub(1u32) as libc::c_int);
     };
 }
 /* Set scroll region. */
@@ -3369,23 +3190,11 @@ pub unsafe extern "C" fn screen_write_scrollregion(
     mut rlower: u_int,
 ) {
     let mut s: *mut screen = (*ctx).s;
-    if rupper
-        > (*(*s).grid)
-            .sy
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
-    {
-        rupper = (*(*s).grid)
-            .sy
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
+    if rupper > (*(*s).grid).sy.wrapping_sub(1u32) {
+        rupper = (*(*s).grid).sy.wrapping_sub(1u32)
     }
-    if rlower
-        > (*(*s).grid)
-            .sy
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
-    {
-        rlower = (*(*s).grid)
-            .sy
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
+    if rlower > (*(*s).grid).sy.wrapping_sub(1u32) {
+        rlower = (*(*s).grid).sy.wrapping_sub(1u32)
     }
     if rupper >= rlower {
         /* cannot be one line */
@@ -3393,14 +3202,14 @@ pub unsafe extern "C" fn screen_write_scrollregion(
     }
     screen_write_collect_flush(
         ctx,
-        0 as libc::c_int,
+        0i32,
         (*::std::mem::transmute::<&[u8; 26], &[libc::c_char; 26]>(
             b"screen_write_scrollregion\x00",
         ))
         .as_ptr(),
     );
     /* Cursor moves to top-left. */
-    screen_write_set_cursor(ctx, 0 as libc::c_int, 0 as libc::c_int);
+    screen_write_set_cursor(ctx, 0i32, 0i32);
     (*s).rupper = rupper;
     (*s).rlower = rlower;
 }
@@ -3416,9 +3225,9 @@ pub unsafe extern "C" fn screen_write_linefeed(
     let mut gl: *mut grid_line = 0 as *mut grid_line;
     gl = grid_get_line(gd, (*gd).hsize.wrapping_add((*s).cy));
     if wrapped != 0 {
-        (*gl).flags |= 0x1 as libc::c_int
+        (*gl).flags |= 0x1i32
     } else {
-        (*gl).flags &= !(0x1 as libc::c_int)
+        (*gl).flags &= !(0x1i32)
     }
     log_debug(
         b"%s: at %u,%u (region %u-%u)\x00" as *const u8 as *const libc::c_char,
@@ -3432,7 +3241,7 @@ pub unsafe extern "C" fn screen_write_linefeed(
     if bg != (*ctx).bg {
         screen_write_collect_flush(
             ctx,
-            1 as libc::c_int,
+            1i32,
             (*::std::mem::transmute::<&[u8; 22], &[libc::c_char; 22]>(
                 b"screen_write_linefeed\x00",
             ))
@@ -3444,16 +3253,8 @@ pub unsafe extern "C" fn screen_write_linefeed(
         grid_view_scroll_region_up(gd, (*s).rupper, (*s).rlower, bg);
         screen_write_collect_scroll(ctx);
         (*ctx).scrolled = (*ctx).scrolled.wrapping_add(1)
-    } else if (*s).cy
-        < (*(*s).grid)
-            .sy
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
-    {
-        screen_write_set_cursor(
-            ctx,
-            -(1 as libc::c_int),
-            (*s).cy.wrapping_add(1 as libc::c_int as libc::c_uint) as libc::c_int,
-        );
+    } else if (*s).cy < (*(*s).grid).sy.wrapping_sub(1u32) {
+        screen_write_set_cursor(ctx, -(1i32), (*s).cy.wrapping_add(1u32) as libc::c_int);
     };
 }
 /* Scroll up. */
@@ -3466,23 +3267,15 @@ pub unsafe extern "C" fn screen_write_scrollup(
     let mut s: *mut screen = (*ctx).s;
     let mut gd: *mut grid = (*s).grid;
     let mut i: u_int = 0;
-    if lines == 0 as libc::c_int as libc::c_uint {
-        lines = 1 as libc::c_int as u_int
-    } else if lines
-        > (*s)
-            .rlower
-            .wrapping_sub((*s).rupper)
-            .wrapping_add(1 as libc::c_int as libc::c_uint)
-    {
-        lines = (*s)
-            .rlower
-            .wrapping_sub((*s).rupper)
-            .wrapping_add(1 as libc::c_int as libc::c_uint)
+    if lines == 0u32 {
+        lines = 1u32
+    } else if lines > (*s).rlower.wrapping_sub((*s).rupper).wrapping_add(1u32) {
+        lines = (*s).rlower.wrapping_sub((*s).rupper).wrapping_add(1u32)
     }
     if bg != (*ctx).bg {
         screen_write_collect_flush(
             ctx,
-            1 as libc::c_int,
+            1i32,
             (*::std::mem::transmute::<&[u8; 22], &[libc::c_char; 22]>(
                 b"screen_write_scrollup\x00",
             ))
@@ -3490,13 +3283,13 @@ pub unsafe extern "C" fn screen_write_scrollup(
         );
         (*ctx).bg = bg
     }
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < lines {
         grid_view_scroll_region_up(gd, (*s).rupper, (*s).rlower, bg);
         screen_write_collect_scroll(ctx);
         i = i.wrapping_add(1)
     }
-    (*ctx).scrolled = ((*ctx).scrolled as libc::c_uint).wrapping_add(lines) as u_int as u_int;
+    (*ctx).scrolled = ((*ctx).scrolled).wrapping_add(lines);
 }
 /* Scroll down. */
 #[no_mangle]
@@ -3548,29 +3341,21 @@ pub unsafe extern "C" fn screen_write_scrolldown(
         wsy: 0,
     };
     let mut i: u_int = 0;
-    screen_write_initctx(ctx, &mut ttyctx, 1 as libc::c_int);
+    screen_write_initctx(ctx, &mut ttyctx, 1i32);
     ttyctx.bg = bg;
-    if lines == 0 as libc::c_int as libc::c_uint {
-        lines = 1 as libc::c_int as u_int
-    } else if lines
-        > (*s)
-            .rlower
-            .wrapping_sub((*s).rupper)
-            .wrapping_add(1 as libc::c_int as libc::c_uint)
-    {
-        lines = (*s)
-            .rlower
-            .wrapping_sub((*s).rupper)
-            .wrapping_add(1 as libc::c_int as libc::c_uint)
+    if lines == 0u32 {
+        lines = 1u32
+    } else if lines > (*s).rlower.wrapping_sub((*s).rupper).wrapping_add(1u32) {
+        lines = (*s).rlower.wrapping_sub((*s).rupper).wrapping_add(1u32)
     }
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < lines {
         grid_view_scroll_region_down(gd, (*s).rupper, (*s).rlower, bg);
         i = i.wrapping_add(1)
     }
     screen_write_collect_flush(
         ctx,
-        0 as libc::c_int,
+        0i32,
         (*::std::mem::transmute::<&[u8; 24], &[libc::c_char; 24]>(b"screen_write_scrolldown\x00"))
             .as_ptr(),
     );
@@ -3583,7 +3368,7 @@ pub unsafe extern "C" fn screen_write_scrolldown(
 /* Carriage return (cursor to start of line). */
 #[no_mangle]
 pub unsafe extern "C" fn screen_write_carriagereturn(mut ctx: *mut screen_write_ctx) {
-    screen_write_set_cursor(ctx, 0 as libc::c_int, -(1 as libc::c_int));
+    screen_write_set_cursor(ctx, 0i32, -(1i32));
 }
 /* Clear to end of screen from cursor. */
 #[no_mangle]
@@ -3635,42 +3420,32 @@ pub unsafe extern "C" fn screen_write_clearendofscreen(
     };
     let mut sx: u_int = (*(*s).grid).sx;
     let mut sy: u_int = (*(*s).grid).sy;
-    screen_write_initctx(ctx, &mut ttyctx, 1 as libc::c_int);
+    screen_write_initctx(ctx, &mut ttyctx, 1i32);
     ttyctx.bg = bg;
     /* Scroll into history if it is enabled and clearing entire screen. */
-    if (*s).cx == 0 as libc::c_int as libc::c_uint
-        && (*s).cy == 0 as libc::c_int as libc::c_uint
-        && (*gd).flags & 0x1 as libc::c_int != 0
-    {
+    if (*s).cx == 0u32 && (*s).cy == 0u32 && (*gd).flags & 0x1i32 != 0 {
         grid_view_clear_history(gd, bg);
     } else {
-        if (*s).cx <= sx.wrapping_sub(1 as libc::c_int as libc::c_uint) {
-            grid_view_clear(
-                gd,
-                (*s).cx,
-                (*s).cy,
-                sx.wrapping_sub((*s).cx),
-                1 as libc::c_int as u_int,
-                bg,
-            );
+        if (*s).cx <= sx.wrapping_sub(1u32) {
+            grid_view_clear(gd, (*s).cx, (*s).cy, sx.wrapping_sub((*s).cx), 1u32, bg);
         }
         grid_view_clear(
             gd,
-            0 as libc::c_int as u_int,
-            (*s).cy.wrapping_add(1 as libc::c_int as libc::c_uint),
+            0u32,
+            (*s).cy.wrapping_add(1u32),
             sx,
-            sy.wrapping_sub((*s).cy.wrapping_add(1 as libc::c_int as libc::c_uint)),
+            sy.wrapping_sub((*s).cy.wrapping_add(1u32)),
             bg,
         );
     }
     screen_write_collect_clear(
         ctx,
-        (*s).cy.wrapping_add(1 as libc::c_int as libc::c_uint),
-        sy.wrapping_sub((*s).cy.wrapping_add(1 as libc::c_int as libc::c_uint)),
+        (*s).cy.wrapping_add(1u32),
+        sy.wrapping_sub((*s).cy.wrapping_add(1u32)),
     );
     screen_write_collect_flush(
         ctx,
-        0 as libc::c_int,
+        0i32,
         (*::std::mem::transmute::<&[u8; 30], &[libc::c_char; 30]>(
             b"screen_write_clearendofscreen\x00",
         ))
@@ -3731,41 +3506,27 @@ pub unsafe extern "C" fn screen_write_clearstartofscreen(
         wsy: 0,
     };
     let mut sx: u_int = (*(*s).grid).sx;
-    screen_write_initctx(ctx, &mut ttyctx, 1 as libc::c_int);
+    screen_write_initctx(ctx, &mut ttyctx, 1i32);
     ttyctx.bg = bg;
-    if (*s).cy > 0 as libc::c_int as libc::c_uint {
-        grid_view_clear(
-            (*s).grid,
-            0 as libc::c_int as u_int,
-            0 as libc::c_int as u_int,
-            sx,
-            (*s).cy,
-            bg,
-        );
+    if (*s).cy > 0u32 {
+        grid_view_clear((*s).grid, 0u32, 0u32, sx, (*s).cy, bg);
     }
-    if (*s).cx > sx.wrapping_sub(1 as libc::c_int as libc::c_uint) {
-        grid_view_clear(
-            (*s).grid,
-            0 as libc::c_int as u_int,
-            (*s).cy,
-            sx,
-            1 as libc::c_int as u_int,
-            bg,
-        );
+    if (*s).cx > sx.wrapping_sub(1u32) {
+        grid_view_clear((*s).grid, 0u32, (*s).cy, sx, 1u32, bg);
     } else {
         grid_view_clear(
             (*s).grid,
-            0 as libc::c_int as u_int,
+            0u32,
             (*s).cy,
-            (*s).cx.wrapping_add(1 as libc::c_int as libc::c_uint),
-            1 as libc::c_int as u_int,
+            (*s).cx.wrapping_add(1u32),
+            1u32,
             bg,
         );
     }
-    screen_write_collect_clear(ctx, 0 as libc::c_int as u_int, (*s).cy);
+    screen_write_collect_clear(ctx, 0u32, (*s).cy);
     screen_write_collect_flush(
         ctx,
-        0 as libc::c_int,
+        0i32,
         (*::std::mem::transmute::<&[u8; 32], &[libc::c_char; 32]>(
             b"screen_write_clearstartofscreen\x00",
         ))
@@ -3825,22 +3586,15 @@ pub unsafe extern "C" fn screen_write_clearscreen(mut ctx: *mut screen_write_ctx
     };
     let mut sx: u_int = (*(*s).grid).sx;
     let mut sy: u_int = (*(*s).grid).sy;
-    screen_write_initctx(ctx, &mut ttyctx, 1 as libc::c_int);
+    screen_write_initctx(ctx, &mut ttyctx, 1i32);
     ttyctx.bg = bg;
     /* Scroll into history if it is enabled. */
-    if (*(*s).grid).flags & 0x1 as libc::c_int != 0 {
+    if (*(*s).grid).flags & 0x1i32 != 0 {
         grid_view_clear_history((*s).grid, bg);
     } else {
-        grid_view_clear(
-            (*s).grid,
-            0 as libc::c_int as u_int,
-            0 as libc::c_int as u_int,
-            sx,
-            sy,
-            bg,
-        );
+        grid_view_clear((*s).grid, 0u32, 0u32, sx, sy, bg);
     }
-    screen_write_collect_clear(ctx, 0 as libc::c_int as u_int, sy);
+    screen_write_collect_clear(ctx, 0u32, sy);
     tty_write(
         Some(tty_cmd_clearscreen as unsafe extern "C" fn(_: *mut tty, _: *const tty_ctx) -> ()),
         &mut ttyctx,
@@ -3859,8 +3613,8 @@ unsafe extern "C" fn screen_write_collect_clear_start(
 ) {
     let mut ci: *mut screen_write_collect_item = 0 as *mut screen_write_collect_item;
     let mut tmp: *mut screen_write_collect_item = 0 as *mut screen_write_collect_item;
-    let mut size: size_t = 0 as libc::c_int as size_t;
-    let mut items: u_int = 0 as libc::c_int as u_int;
+    let mut size: size_t = 0u64;
+    let mut items: u_int = 0u32;
     if (*(*(*ctx).s).write_list.offset(y as isize))
         .items
         .tqh_first
@@ -3872,9 +3626,9 @@ unsafe extern "C" fn screen_write_collect_clear_start(
     ci = (*(*(*ctx).s).write_list.offset(y as isize)).items.tqh_first;
     while !ci.is_null() && {
         tmp = (*ci).entry.tqe_next;
-        (1 as libc::c_int) != 0
+        (1i32) != 0
     } {
-        match (*ci).type_0 as libc::c_uint {
+        match (*ci).type_0 {
             1 => {
                 if (*ci).x <= x {
                     (*ci).x = x
@@ -3895,8 +3649,7 @@ unsafe extern "C" fn screen_write_collect_clear_start(
         match current_block_15 {
             12209867499936983673 => {
                 items = items.wrapping_add(1);
-                size = (size as libc::c_ulong).wrapping_add((*ci).used as libc::c_ulong) as size_t
-                    as size_t;
+                size = (size).wrapping_add((*ci).used as libc::c_ulong);
                 if !(*ci).entry.tqe_next.is_null() {
                     (*(*ci).entry.tqe_next).entry.tqe_prev = (*ci).entry.tqe_prev
                 } else {
@@ -3911,7 +3664,7 @@ unsafe extern "C" fn screen_write_collect_clear_start(
         }
         ci = tmp
     }
-    (*ctx).skipped = ((*ctx).skipped as libc::c_ulong).wrapping_add(size) as u_int as u_int;
+    (*ctx).skipped = ((*ctx).skipped as libc::c_ulong).wrapping_add(size) as u_int;
     log_debug(
         b"%s: dropped %u items (%zu bytes) (line %u)\x00" as *const u8 as *const libc::c_char,
         (*::std::mem::transmute::<&[u8; 33], &[libc::c_char; 33]>(
@@ -3931,8 +3684,8 @@ unsafe extern "C" fn screen_write_collect_clear_end(
 ) {
     let mut ci: *mut screen_write_collect_item = 0 as *mut screen_write_collect_item;
     let mut tmp: *mut screen_write_collect_item = 0 as *mut screen_write_collect_item;
-    let mut size: size_t = 0 as libc::c_int as size_t;
-    let mut items: u_int = 0 as libc::c_int as u_int;
+    let mut size: size_t = 0u64;
+    let mut items: u_int = 0u32;
     if (*(*(*ctx).s).write_list.offset(y as isize))
         .items
         .tqh_first
@@ -3944,9 +3697,9 @@ unsafe extern "C" fn screen_write_collect_clear_end(
     ci = (*(*(*ctx).s).write_list.offset(y as isize)).items.tqh_first;
     while !ci.is_null() && {
         tmp = (*ci).entry.tqe_next;
-        (1 as libc::c_int) != 0
+        (1i32) != 0
     } {
-        match (*ci).type_0 as libc::c_uint {
+        match (*ci).type_0 {
             2 => {
                 if (*ci).x >= x {
                     (*ci).x = x
@@ -3967,8 +3720,7 @@ unsafe extern "C" fn screen_write_collect_clear_end(
         match current_block_15 {
             12209867499936983673 => {
                 items = items.wrapping_add(1);
-                size = (size as libc::c_ulong).wrapping_add((*ci).used as libc::c_ulong) as size_t
-                    as size_t;
+                size = (size).wrapping_add((*ci).used as libc::c_ulong);
                 if !(*ci).entry.tqe_next.is_null() {
                     (*(*ci).entry.tqe_next).entry.tqe_prev = (*ci).entry.tqe_prev
                 } else {
@@ -3983,7 +3735,7 @@ unsafe extern "C" fn screen_write_collect_clear_end(
         }
         ci = tmp
     }
-    (*ctx).skipped = ((*ctx).skipped as libc::c_ulong).wrapping_add(size) as u_int as u_int;
+    (*ctx).skipped = ((*ctx).skipped as libc::c_ulong).wrapping_add(size) as u_int;
     log_debug(
         b"%s: dropped %u items (%zu bytes) (line %u)\x00" as *const u8 as *const libc::c_char,
         (*::std::mem::transmute::<&[u8; 31], &[libc::c_char; 31]>(
@@ -4030,17 +3782,16 @@ unsafe extern "C" fn screen_write_collect_clear(
             .tqh_first
             .is_null()
         {
-            items = 0 as libc::c_int as u_int;
-            size = 0 as libc::c_int as size_t;
+            items = 0u32;
+            size = 0u64;
             cl = &mut *(*(*ctx).s).write_list.offset(i as isize) as *mut screen_write_collect_line;
             ci = (*cl).items.tqh_first;
             while !ci.is_null() && {
                 tmp = (*ci).entry.tqe_next;
-                (1 as libc::c_int) != 0
+                (1i32) != 0
             } {
                 items = items.wrapping_add(1);
-                size = (size as libc::c_ulong).wrapping_add((*ci).used as libc::c_ulong) as size_t
-                    as size_t;
+                size = (size).wrapping_add((*ci).used as libc::c_ulong);
                 if !(*ci).entry.tqe_next.is_null() {
                     (*(*ci).entry.tqe_next).entry.tqe_prev = (*ci).entry.tqe_prev
                 } else {
@@ -4050,7 +3801,7 @@ unsafe extern "C" fn screen_write_collect_clear(
                 free(ci as *mut libc::c_void);
                 ci = tmp
             }
-            (*ctx).skipped = ((*ctx).skipped as libc::c_ulong).wrapping_add(size) as u_int as u_int;
+            (*ctx).skipped = ((*ctx).skipped as libc::c_ulong).wrapping_add(size) as u_int;
             log_debug(
                 b"%s: dropped %u items (%zu bytes) (line %u)\x00" as *const u8
                     as *const libc::c_char,
@@ -4083,13 +3834,11 @@ unsafe extern "C" fn screen_write_collect_scroll(mut ctx: *mut screen_write_ctx)
         (*s).rupper,
         (*s).rlower,
     );
-    screen_write_collect_clear(ctx, (*s).rupper, 1 as libc::c_int as u_int);
+    screen_write_collect_clear(ctx, (*s).rupper, 1u32);
     saved = (*(*(*ctx).s).write_list.offset((*s).rupper as isize)).data;
     y = (*s).rupper;
     while y < (*s).rlower {
-        cl = &mut *(*(*ctx).s)
-            .write_list
-            .offset(y.wrapping_add(1 as libc::c_int as libc::c_uint) as isize)
+        cl = &mut *(*(*ctx).s).write_list.offset(y.wrapping_add(1u32) as isize)
             as *mut screen_write_collect_line;
         if !(*cl).items.tqh_first.is_null() {
             let ref mut fresh8 = *(*(*(*ctx).s).write_list.offset(y as isize)).items.tqh_last;
@@ -4106,8 +3855,7 @@ unsafe extern "C" fn screen_write_collect_scroll(mut ctx: *mut screen_write_ctx)
         *fresh10 = (*cl).data;
         y = y.wrapping_add(1)
     }
-    (*(*(*ctx).s).write_list.offset((*s).rlower as isize)).bg =
-        (1 as libc::c_int + 8 as libc::c_int) as u_int;
+    (*(*(*ctx).s).write_list.offset((*s).rlower as isize)).bg = (1i32 + 8i32) as u_int;
     let ref mut fresh11 = (*(*(*ctx).s).write_list.offset((*s).rlower as isize)).data;
     *fresh11 = saved;
 }
@@ -4124,7 +3872,7 @@ unsafe extern "C" fn screen_write_collect_flush(
     let mut y: u_int = 0;
     let mut cx: u_int = 0;
     let mut cy: u_int = 0;
-    let mut items: u_int = 0 as libc::c_int as u_int;
+    let mut items: u_int = 0u32;
     let mut ttyctx: tty_ctx = tty_ctx {
         s: 0 as *mut screen,
         redraw_cb: None,
@@ -4165,8 +3913,8 @@ unsafe extern "C" fn screen_write_collect_flush(
         wsx: 0,
         wsy: 0,
     };
-    let mut written: size_t = 0 as libc::c_int as size_t;
-    if (*ctx).scrolled != 0 as libc::c_int as libc::c_uint {
+    let mut written: size_t = 0u64;
+    if (*ctx).scrolled != 0u32 {
         log_debug(
             b"%s: scrolled %u (region %u-%u)\x00" as *const u8 as *const libc::c_char,
             (*::std::mem::transmute::<&[u8; 27], &[libc::c_char; 27]>(
@@ -4177,18 +3925,10 @@ unsafe extern "C" fn screen_write_collect_flush(
             (*s).rupper,
             (*s).rlower,
         );
-        if (*ctx).scrolled
-            > (*s)
-                .rlower
-                .wrapping_sub((*s).rupper)
-                .wrapping_add(1 as libc::c_int as libc::c_uint)
-        {
-            (*ctx).scrolled = (*s)
-                .rlower
-                .wrapping_sub((*s).rupper)
-                .wrapping_add(1 as libc::c_int as libc::c_uint)
+        if (*ctx).scrolled > (*s).rlower.wrapping_sub((*s).rupper).wrapping_add(1u32) {
+            (*ctx).scrolled = (*s).rlower.wrapping_sub((*s).rupper).wrapping_add(1u32)
         }
-        screen_write_initctx(ctx, &mut ttyctx, 1 as libc::c_int);
+        screen_write_initctx(ctx, &mut ttyctx, 1i32);
         ttyctx.num = (*ctx).scrolled;
         ttyctx.bg = (*ctx).bg;
         tty_write(
@@ -4196,20 +3936,20 @@ unsafe extern "C" fn screen_write_collect_flush(
             &mut ttyctx,
         );
     }
-    (*ctx).scrolled = 0 as libc::c_int as u_int;
-    (*ctx).bg = 8 as libc::c_int as u_int;
+    (*ctx).scrolled = 0u32;
+    (*ctx).bg = 8u32;
     if scroll_only != 0 {
         return;
     }
     cx = (*s).cx;
     cy = (*s).cy;
-    y = 0 as libc::c_int as u_int;
+    y = 0u32;
     while y < (*(*s).grid).sy {
         cl = &mut *(*(*ctx).s).write_list.offset(y as isize) as *mut screen_write_collect_line;
-        if (*cl).bg != 0 as libc::c_int as libc::c_uint {
-            screen_write_set_cursor(ctx, 0 as libc::c_int, y as libc::c_int);
-            screen_write_initctx(ctx, &mut ttyctx, 1 as libc::c_int);
-            ttyctx.bg = (*cl).bg.wrapping_sub(1 as libc::c_int as libc::c_uint);
+        if (*cl).bg != 0u32 {
+            screen_write_set_cursor(ctx, 0i32, y as libc::c_int);
+            screen_write_initctx(ctx, &mut ttyctx, 1i32);
+            ttyctx.bg = (*cl).bg.wrapping_sub(1u32);
             tty_write(
                 Some(
                     tty_cmd_clearline as unsafe extern "C" fn(_: *mut tty, _: *const tty_ctx) -> (),
@@ -4220,16 +3960,16 @@ unsafe extern "C" fn screen_write_collect_flush(
         ci = (*cl).items.tqh_first;
         while !ci.is_null() && {
             tmp = (*ci).entry.tqe_next;
-            (1 as libc::c_int) != 0
+            (1i32) != 0
         } {
             screen_write_set_cursor(ctx, (*ci).x as libc::c_int, y as libc::c_int);
-            if (*ci).type_0 as libc::c_uint == CLEAR_END as libc::c_int as libc::c_uint {
+            if (*ci).type_0 == CLEAR_END {
                 log_debug(
                     b"XXX %u %u\x00" as *const u8 as *const libc::c_char,
                     (*ci).x,
                     (*ci).bg,
                 );
-                screen_write_initctx(ctx, &mut ttyctx, 1 as libc::c_int);
+                screen_write_initctx(ctx, &mut ttyctx, 1i32);
                 ttyctx.bg = (*ci).bg;
                 tty_write(
                     Some(
@@ -4238,8 +3978,8 @@ unsafe extern "C" fn screen_write_collect_flush(
                     ),
                     &mut ttyctx,
                 );
-            } else if (*ci).type_0 as libc::c_uint == CLEAR_START as libc::c_int as libc::c_uint {
-                screen_write_initctx(ctx, &mut ttyctx, 1 as libc::c_int);
+            } else if (*ci).type_0 == CLEAR_START {
+                screen_write_initctx(ctx, &mut ttyctx, 1i32);
                 ttyctx.bg = (*ci).bg;
                 tty_write(
                     Some(
@@ -4249,7 +3989,7 @@ unsafe extern "C" fn screen_write_collect_flush(
                     &mut ttyctx,
                 );
             } else {
-                screen_write_initctx(ctx, &mut ttyctx, 0 as libc::c_int);
+                screen_write_initctx(ctx, &mut ttyctx, 0i32);
                 ttyctx.cell = &mut (*ci).gc;
                 ttyctx.wrapped = (*ci).wrapped;
                 ttyctx.ptr = (*cl).data.offset((*ci).x as isize) as *mut libc::c_void;
@@ -4262,8 +4002,7 @@ unsafe extern "C" fn screen_write_collect_flush(
                 );
             }
             items = items.wrapping_add(1);
-            written = (written as libc::c_ulong).wrapping_add((*ci).used as libc::c_ulong) as size_t
-                as size_t;
+            written = (written).wrapping_add((*ci).used as libc::c_ulong);
             if !(*ci).entry.tqe_next.is_null() {
                 (*(*ci).entry.tqe_next).entry.tqe_prev = (*ci).entry.tqe_prev
             } else {
@@ -4273,7 +4012,7 @@ unsafe extern "C" fn screen_write_collect_flush(
             free(ci as *mut libc::c_void);
             ci = tmp
         }
-        (*cl).bg = 0 as libc::c_int as u_int;
+        (*cl).bg = 0u32;
         y = y.wrapping_add(1)
     }
     (*s).cx = cx;
@@ -4288,7 +4027,7 @@ unsafe extern "C" fn screen_write_collect_flush(
         written,
         from,
     );
-    (*ctx).written = ((*ctx).written as libc::c_ulong).wrapping_add(written) as u_int as u_int;
+    (*ctx).written = ((*ctx).written as libc::c_ulong).wrapping_add(written) as u_int;
 }
 /* Finish and store collected cells. */
 #[no_mangle]
@@ -4311,7 +4050,7 @@ pub unsafe extern "C" fn screen_write_collect_end(mut ctx: *mut screen_write_ctx
         us: 0,
     };
     let mut xx: u_int = 0;
-    if (*ci).used == 0 as libc::c_int as libc::c_uint {
+    if (*ci).used == 0u32 {
         return;
     }
     (*ci).x = (*s).cx;
@@ -4320,7 +4059,7 @@ pub unsafe extern "C" fn screen_write_collect_end(mut ctx: *mut screen_write_ctx
     *(*cl).items.tqh_last = ci;
     (*cl).items.tqh_last = &mut (*ci).entry.tqe_next;
     (*ctx).item = xcalloc(
-        1 as libc::c_int as size_t,
+        1u64,
         ::std::mem::size_of::<screen_write_collect_item>() as libc::c_ulong,
     ) as *mut screen_write_collect_item;
     log_debug(
@@ -4333,17 +4072,17 @@ pub unsafe extern "C" fn screen_write_collect_end(mut ctx: *mut screen_write_ctx
         (*s).cx,
         (*s).cy,
     );
-    if (*s).cx != 0 as libc::c_int as libc::c_uint {
+    if (*s).cx != 0u32 {
         xx = (*s).cx;
-        while xx > 0 as libc::c_int as libc::c_uint {
+        while xx > 0u32 {
             grid_view_get_cell((*s).grid, xx, (*s).cy, &mut gc);
-            if !(gc.flags as libc::c_int) & 0x4 as libc::c_int != 0 {
+            if !(gc.flags as libc::c_int) & 0x4i32 != 0 {
                 break;
             }
             grid_view_set_cell((*s).grid, xx, (*s).cy, &grid_default_cell);
             xx = xx.wrapping_sub(1)
         }
-        if gc.data.width as libc::c_int > 1 as libc::c_int {
+        if gc.data.width as libc::c_int > 1i32 {
             grid_view_set_cell((*s).grid, xx, (*s).cy, &grid_default_cell);
         }
     }
@@ -4358,12 +4097,12 @@ pub unsafe extern "C" fn screen_write_collect_end(mut ctx: *mut screen_write_ctx
     screen_write_set_cursor(
         ctx,
         (*s).cx.wrapping_add((*ci).used) as libc::c_int,
-        -(1 as libc::c_int),
+        -(1i32),
     );
     xx = (*s).cx;
     while xx < (*(*s).grid).sx {
         grid_view_get_cell((*s).grid, xx, (*s).cy, &mut gc);
-        if !(gc.flags as libc::c_int) & 0x4 as libc::c_int != 0 {
+        if !(gc.flags as libc::c_int) & 0x4i32 != 0 {
             break;
         }
         grid_view_set_cell((*s).grid, xx, (*s).cy, &grid_default_cell);
@@ -4385,26 +4124,26 @@ pub unsafe extern "C" fn screen_write_collect_add(
      * same - input_parse will end the collection when anything that isn't
      * a plain character is encountered.
      */
-    collect = 1 as libc::c_int; /* may have changed */
-    if (*gc).data.width as libc::c_int != 1 as libc::c_int
-        || (*gc).data.size as libc::c_int != 1 as libc::c_int
-        || *(*gc).data.data.as_ptr() as libc::c_int >= 0x7f as libc::c_int
+    collect = 1i32; /* may have changed */
+    if (*gc).data.width as libc::c_int != 1i32
+        || (*gc).data.size as libc::c_int != 1i32
+        || *(*gc).data.data.as_ptr() as libc::c_int >= 0x7fi32
     {
-        collect = 0 as libc::c_int
-    } else if (*gc).attr as libc::c_int & 0x80 as libc::c_int != 0 {
-        collect = 0 as libc::c_int
-    } else if !(*s).mode & 0x10 as libc::c_int != 0 {
-        collect = 0 as libc::c_int
-    } else if (*s).mode & 0x2 as libc::c_int != 0 {
-        collect = 0 as libc::c_int
+        collect = 0i32
+    } else if (*gc).attr as libc::c_int & 0x80i32 != 0 {
+        collect = 0i32
+    } else if !(*s).mode & 0x10i32 != 0 {
+        collect = 0i32
+    } else if (*s).mode & 0x2i32 != 0 {
+        collect = 0i32
     } else if !(*s).sel.is_null() {
-        collect = 0 as libc::c_int
+        collect = 0i32
     }
     if collect == 0 {
         screen_write_collect_end(ctx);
         screen_write_collect_flush(
             ctx,
-            0 as libc::c_int,
+            0i32,
             (*::std::mem::transmute::<&[u8; 25], &[libc::c_char; 25]>(
                 b"screen_write_collect_add\x00",
             ))
@@ -4414,15 +4153,13 @@ pub unsafe extern "C" fn screen_write_collect_add(
         return;
     }
     (*ctx).cells = (*ctx).cells.wrapping_add(1);
-    if (*s).cx > sx.wrapping_sub(1 as libc::c_int as libc::c_uint)
-        || (*(*ctx).item).used
-            > sx.wrapping_sub(1 as libc::c_int as libc::c_uint)
-                .wrapping_sub((*s).cx)
+    if (*s).cx > sx.wrapping_sub(1u32)
+        || (*(*ctx).item).used > sx.wrapping_sub(1u32).wrapping_sub((*s).cx)
     {
         screen_write_collect_end(ctx);
     }
     ci = (*ctx).item;
-    if (*s).cx > sx.wrapping_sub(1 as libc::c_int as libc::c_uint) {
+    if (*s).cx > sx.wrapping_sub(1u32) {
         log_debug(
             b"%s: wrapped at %u,%u\x00" as *const u8 as *const libc::c_char,
             (*::std::mem::transmute::<&[u8; 25], &[libc::c_char; 25]>(
@@ -4432,11 +4169,11 @@ pub unsafe extern "C" fn screen_write_collect_add(
             (*s).cx,
             (*s).cy,
         );
-        (*ci).wrapped = 1 as libc::c_int;
-        screen_write_linefeed(ctx, 1 as libc::c_int, 8 as libc::c_int as u_int);
-        screen_write_set_cursor(ctx, 0 as libc::c_int, -(1 as libc::c_int));
+        (*ci).wrapped = 1i32;
+        screen_write_linefeed(ctx, 1i32, 8u32);
+        screen_write_set_cursor(ctx, 0i32, -(1i32));
     }
-    if (*ci).used == 0 as libc::c_int as libc::c_uint {
+    if (*ci).used == 0u32 {
         memcpy(
             &mut (*ci).gc as *mut GridCell as *mut libc::c_void,
             gc as *const libc::c_void,
@@ -4454,8 +4191,7 @@ pub unsafe extern "C" fn screen_write_collect_add(
     (*ci).used = (*ci).used.wrapping_add(1);
     *(*(*(*ctx).s).write_list.offset((*s).cy as isize))
         .data
-        .offset((*s).cx.wrapping_add(fresh13) as isize) =
-        (*gc).data.data[0 as libc::c_int as usize] as libc::c_char;
+        .offset((*s).cx.wrapping_add(fresh13) as isize) = (*gc).data.data[0usize] as libc::c_char;
 }
 /* Write cell data. */
 #[no_mangle]
@@ -4541,17 +4277,17 @@ pub unsafe extern "C" fn screen_write_cell(
     let mut cx: u_int = 0;
     let mut cy: u_int = 0;
     let mut selected: libc::c_int = 0;
-    let mut skip: libc::c_int = 1 as libc::c_int;
+    let mut skip: libc::c_int = 1i32;
     /* Ignore padding cells. */
-    if (*gc).flags as libc::c_int & 0x4 as libc::c_int != 0 {
+    if (*gc).flags as libc::c_int & 0x4i32 != 0 {
         return;
     }
     (*ctx).cells = (*ctx).cells.wrapping_add(1);
     /* If the width is zero, combine onto the previous character. */
-    if width == 0 as libc::c_int as libc::c_uint {
+    if width == 0u32 {
         screen_write_collect_flush(
             ctx,
-            0 as libc::c_int,
+            0i32,
             (*::std::mem::transmute::<&[u8; 18], &[libc::c_char; 18]>(b"screen_write_cell\x00"))
                 .as_ptr(),
         );
@@ -4560,7 +4296,7 @@ pub unsafe extern "C" fn screen_write_cell(
             cx = (*s).cx;
             cy = (*s).cy;
             screen_write_set_cursor(ctx, xx as libc::c_int, (*s).cy as libc::c_int);
-            screen_write_initctx(ctx, &mut ttyctx, 0 as libc::c_int);
+            screen_write_initctx(ctx, &mut ttyctx, 0i32);
             ttyctx.cell = gc;
             tty_write(
                 Some(tty_cmd_cell as unsafe extern "C" fn(_: *mut tty, _: *const tty_ctx) -> ()),
@@ -4574,30 +4310,24 @@ pub unsafe extern "C" fn screen_write_cell(
     /* Flush any existing scrolling. */
     screen_write_collect_flush(
         ctx,
-        1 as libc::c_int,
+        1i32,
         (*::std::mem::transmute::<&[u8; 18], &[libc::c_char; 18]>(b"screen_write_cell\x00"))
             .as_ptr(),
     );
     /* If this character doesn't fit, ignore it. */
-    if !(*s).mode & 0x10 as libc::c_int != 0
-        && width > 1 as libc::c_int as libc::c_uint
+    if !(*s).mode & 0x10i32 != 0
+        && width > 1u32
         && (width > sx || (*s).cx != sx && (*s).cx > sx.wrapping_sub(width))
     {
         return;
     }
     /* If in insert mode, make space for the cells. */
-    if (*s).mode & 0x2 as libc::c_int != 0 {
-        grid_view_insert_cells(
-            (*s).grid,
-            (*s).cx,
-            (*s).cy,
-            width,
-            8 as libc::c_int as u_int,
-        );
-        skip = 0 as libc::c_int
+    if (*s).mode & 0x2i32 != 0 {
+        grid_view_insert_cells((*s).grid, (*s).cx, (*s).cy, width, 8u32);
+        skip = 0i32
     }
     /* Check this will fit on the current line and wrap if not. */
-    if (*s).mode & 0x10 as libc::c_int != 0 && (*s).cx > sx.wrapping_sub(width) {
+    if (*s).mode & 0x10i32 != 0 && (*s).cx > sx.wrapping_sub(width) {
         log_debug(
             b"%s: wrapped at %u,%u\x00" as *const u8 as *const libc::c_char,
             (*::std::mem::transmute::<&[u8; 18], &[libc::c_char; 18]>(b"screen_write_cell\x00"))
@@ -4605,35 +4335,33 @@ pub unsafe extern "C" fn screen_write_cell(
             (*s).cx,
             (*s).cy,
         );
-        screen_write_linefeed(ctx, 1 as libc::c_int, 8 as libc::c_int as u_int);
-        screen_write_set_cursor(ctx, 0 as libc::c_int, -(1 as libc::c_int));
+        screen_write_linefeed(ctx, 1i32, 8u32);
+        screen_write_set_cursor(ctx, 0i32, -(1i32));
         screen_write_collect_flush(
             ctx,
-            1 as libc::c_int,
+            1i32,
             (*::std::mem::transmute::<&[u8; 18], &[libc::c_char; 18]>(b"screen_write_cell\x00"))
                 .as_ptr(),
         );
     }
     /* Sanity check cursor position. */
-    if (*s).cx > sx.wrapping_sub(width)
-        || (*s).cy > sy.wrapping_sub(1 as libc::c_int as libc::c_uint)
-    {
+    if (*s).cx > sx.wrapping_sub(width) || (*s).cy > sy.wrapping_sub(1u32) {
         return;
     }
-    screen_write_initctx(ctx, &mut ttyctx, 0 as libc::c_int);
+    screen_write_initctx(ctx, &mut ttyctx, 0i32);
     /* Handle overwriting of UTF-8 characters. */
     gl = grid_get_line((*s).grid, (*(*s).grid).hsize.wrapping_add((*s).cy));
-    if (*gl).flags & 0x2 as libc::c_int != 0 {
+    if (*gl).flags & 0x2i32 != 0 {
         grid_view_get_cell(gd, (*s).cx, (*s).cy, &mut now_gc);
         if screen_write_overwrite(ctx, &mut now_gc, width) != 0 {
-            skip = 0 as libc::c_int
+            skip = 0i32
         }
     }
     /*
      * If the new character is UTF-8 wide, fill in padding cells. Have
      * already ensured there is enough room.
      */
-    xx = (*s).cx.wrapping_add(1 as libc::c_int as libc::c_uint);
+    xx = (*s).cx.wrapping_add(1u32);
     while xx < (*s).cx.wrapping_add(width) {
         log_debug(
             b"%s: new padding at %u,%u\x00" as *const u8 as *const libc::c_char,
@@ -4643,7 +4371,7 @@ pub unsafe extern "C" fn screen_write_cell(
             (*s).cy,
         );
         grid_view_set_padding(gd, xx, (*s).cy);
-        skip = 0 as libc::c_int;
+        skip = 0i32;
         xx = xx.wrapping_add(1)
     }
     /* If no change, do not draw. */
@@ -4652,74 +4380,66 @@ pub unsafe extern "C" fn screen_write_cell(
             skip = grid_cells_equal(gc, &grid_default_cell)
         } else {
             gce = &mut *(*gl).celldata.offset((*s).cx as isize) as *mut grid_cell_entry;
-            if (*gce).flags as libc::c_int & 0x8 as libc::c_int != 0 {
-                skip = 0 as libc::c_int
+            if (*gce).flags as libc::c_int & 0x8i32 != 0 {
+                skip = 0i32
             } else if (*gc).flags as libc::c_int != (*gce).flags as libc::c_int {
-                skip = 0 as libc::c_int
+                skip = 0i32
             } else if (*gc).attr as libc::c_int != (*gce).c2rust_unnamed.data.attr as libc::c_int {
-                skip = 0 as libc::c_int
+                skip = 0i32
             } else if (*gc).fg != (*gce).c2rust_unnamed.data.fg as libc::c_int {
-                skip = 0 as libc::c_int
+                skip = 0i32
             } else if (*gc).bg != (*gce).c2rust_unnamed.data.bg as libc::c_int {
-                skip = 0 as libc::c_int
-            } else if (*gc).data.width as libc::c_int != 1 as libc::c_int {
-                skip = 0 as libc::c_int
-            } else if (*gc).data.size as libc::c_int != 1 as libc::c_int {
-                skip = 0 as libc::c_int
+                skip = 0i32
+            } else if (*gc).data.width as libc::c_int != 1i32 {
+                skip = 0i32
+            } else if (*gc).data.size as libc::c_int != 1i32 {
+                skip = 0i32
             } else if (*gce).c2rust_unnamed.data.data as libc::c_int
-                != (*gc).data.data[0 as libc::c_int as usize] as libc::c_int
+                != (*gc).data.data[0usize] as libc::c_int
             {
-                skip = 0 as libc::c_int
+                skip = 0i32
             }
         }
     }
     /* Update the selected flag and set the cell. */
     selected = screen_check_selection(s, (*s).cx, (*s).cy);
-    if selected != 0 && !((*gc).flags as libc::c_int) & 0x10 as libc::c_int != 0 {
+    if selected != 0 && !((*gc).flags as libc::c_int) & 0x10i32 != 0 {
         memcpy(
             &mut tmp_gc as *mut GridCell as *mut libc::c_void,
             gc as *const libc::c_void,
             ::std::mem::size_of::<GridCell>() as libc::c_ulong,
         );
-        tmp_gc.flags = (tmp_gc.flags as libc::c_int | 0x10 as libc::c_int) as u_char;
+        tmp_gc.flags = (tmp_gc.flags as libc::c_int | 0x10i32) as u_char;
         grid_view_set_cell(gd, (*s).cx, (*s).cy, &mut tmp_gc);
-    } else if selected == 0 && (*gc).flags as libc::c_int & 0x10 as libc::c_int != 0 {
+    } else if selected == 0 && (*gc).flags as libc::c_int & 0x10i32 != 0 {
         memcpy(
             &mut tmp_gc as *mut GridCell as *mut libc::c_void,
             gc as *const libc::c_void,
             ::std::mem::size_of::<GridCell>() as libc::c_ulong,
         );
-        tmp_gc.flags = (tmp_gc.flags as libc::c_int & !(0x10 as libc::c_int)) as u_char;
+        tmp_gc.flags = (tmp_gc.flags as libc::c_int & !(0x10i32)) as u_char;
         grid_view_set_cell(gd, (*s).cx, (*s).cy, &mut tmp_gc);
     } else if skip == 0 {
         grid_view_set_cell(gd, (*s).cx, (*s).cy, gc);
     }
     if selected != 0 {
-        skip = 0 as libc::c_int
+        skip = 0i32
     }
     /*
      * Move the cursor. If not wrapping, stick at the last character and
      * replace it.
      */
-    last = ((*s).mode & 0x10 as libc::c_int == 0) as libc::c_int as u_int;
+    last = ((*s).mode & 0x10i32 == 0) as u_int;
     if (*s).cx <= sx.wrapping_sub(last).wrapping_sub(width) {
-        screen_write_set_cursor(
-            ctx,
-            (*s).cx.wrapping_add(width) as libc::c_int,
-            -(1 as libc::c_int),
-        );
+        screen_write_set_cursor(ctx, (*s).cx.wrapping_add(width) as libc::c_int, -(1i32));
     } else {
-        screen_write_set_cursor(
-            ctx,
-            sx.wrapping_sub(last) as libc::c_int,
-            -(1 as libc::c_int),
-        );
+        screen_write_set_cursor(ctx, sx.wrapping_sub(last) as libc::c_int, -(1i32));
     }
     /* Create space for character in insert mode. */
-    if (*s).mode & 0x2 as libc::c_int != 0 {
+    if (*s).mode & 0x2i32 != 0 {
         screen_write_collect_flush(
             ctx,
-            0 as libc::c_int,
+            0i32,
             (*::std::mem::transmute::<&[u8; 18], &[libc::c_char; 18]>(b"screen_write_cell\x00"))
                 .as_ptr(),
         );
@@ -4772,18 +4492,18 @@ unsafe extern "C" fn screen_write_combine(
     };
     let mut n: u_int = 0;
     /* Can't combine if at 0. */
-    if (*s).cx == 0 as libc::c_int as libc::c_uint {
+    if (*s).cx == 0u32 {
         return 0 as *const GridCell;
     }
     /* Empty data is out. */
-    if (*ud).size as libc::c_int == 0 as libc::c_int {
+    if (*ud).size as libc::c_int == 0i32 {
         fatalx(b"UTF-8 data empty\x00" as *const u8 as *const libc::c_char);
     }
     /* Retrieve the previous cell. */
-    n = 1 as libc::c_int as u_int;
+    n = 1u32;
     while n <= (*s).cx {
         grid_view_get_cell(gd, (*s).cx.wrapping_sub(n), (*s).cy, &mut gc);
-        if !(gc.flags as libc::c_int) & 0x4 as libc::c_int != 0 {
+        if !(gc.flags as libc::c_int) & 0x4i32 != 0 {
             break;
         }
         n = n.wrapping_add(1)
@@ -4853,21 +4573,21 @@ unsafe extern "C" fn screen_write_overwrite(
         us: 0,
     };
     let mut xx: u_int = 0;
-    let mut done: libc::c_int = 0 as libc::c_int;
-    if (*gc).flags as libc::c_int & 0x4 as libc::c_int != 0 {
+    let mut done: libc::c_int = 0i32;
+    if (*gc).flags as libc::c_int & 0x4i32 != 0 {
         /*
          * A padding cell, so clear any following and leading padding
          * cells back to the character. Don't overwrite the current
          * cell as that happens later anyway.
          */
-        xx = (*s).cx.wrapping_add(1 as libc::c_int as libc::c_uint);
+        xx = (*s).cx.wrapping_add(1u32);
         loop {
             xx = xx.wrapping_sub(1);
-            if !(xx > 0 as libc::c_int as libc::c_uint) {
+            if !(xx > 0u32) {
                 break;
             }
             grid_view_get_cell(gd, xx, (*s).cy, &mut tmp_gc);
-            if !(tmp_gc.flags as libc::c_int) & 0x4 as libc::c_int != 0 {
+            if !(tmp_gc.flags as libc::c_int) & 0x4i32 != 0 {
                 break;
             }
             log_debug(
@@ -4892,27 +4612,24 @@ unsafe extern "C" fn screen_write_overwrite(
             (*s).cy,
         );
         grid_view_set_cell(gd, xx, (*s).cy, &grid_default_cell);
-        done = 1 as libc::c_int
+        done = 1i32
     }
     /*
      * Overwrite any padding cells that belong to any UTF-8 characters
      * we'll be overwriting with the current character.
      */
-    if width != 1 as libc::c_int as libc::c_uint
-        || (*gc).data.width as libc::c_int != 1 as libc::c_int
-        || (*gc).flags as libc::c_int & 0x4 as libc::c_int != 0
+    if width != 1u32
+        || (*gc).data.width as libc::c_int != 1i32
+        || (*gc).flags as libc::c_int & 0x4i32 != 0
     {
-        xx = (*s)
-            .cx
-            .wrapping_add(width)
-            .wrapping_sub(1 as libc::c_int as libc::c_uint);
+        xx = (*s).cx.wrapping_add(width).wrapping_sub(1u32);
         loop {
             xx = xx.wrapping_add(1);
             if !(xx < (*(*s).grid).sx) {
                 break;
             }
             grid_view_get_cell(gd, xx, (*s).cy, &mut tmp_gc);
-            if !(tmp_gc.flags as libc::c_int) & 0x4 as libc::c_int != 0 {
+            if !(tmp_gc.flags as libc::c_int) & 0x4i32 != 0 {
                 break;
             }
             log_debug(
@@ -4925,7 +4642,7 @@ unsafe extern "C" fn screen_write_overwrite(
                 (*s).cy,
             );
             grid_view_set_cell(gd, xx, (*s).cy, &grid_default_cell);
-            done = 1 as libc::c_int
+            done = 1i32
         }
     }
     return done;
@@ -4977,7 +4694,7 @@ pub unsafe extern "C" fn screen_write_setselection(
         wsx: 0,
         wsy: 0,
     };
-    screen_write_initctx(ctx, &mut ttyctx, 0 as libc::c_int);
+    screen_write_initctx(ctx, &mut ttyctx, 0i32);
     ttyctx.ptr = str as *mut libc::c_void;
     ttyctx.num = len;
     tty_write(
@@ -5032,7 +4749,7 @@ pub unsafe extern "C" fn screen_write_rawstring(
         wsx: 0,
         wsy: 0,
     };
-    screen_write_initctx(ctx, &mut ttyctx, 0 as libc::c_int);
+    screen_write_initctx(ctx, &mut ttyctx, 0i32);
     ttyctx.ptr = str as *mut libc::c_void;
     ttyctx.num = len;
     tty_write(
@@ -5097,7 +4814,7 @@ pub unsafe extern "C" fn screen_write_alternateon(
         return;
     }
     screen_alternate_on((*ctx).s, gc, cursor);
-    screen_write_initctx(ctx, &mut ttyctx, 1 as libc::c_int);
+    screen_write_initctx(ctx, &mut ttyctx, 1i32);
     ttyctx.redraw_cb.expect("non-null function pointer")(&mut ttyctx);
 }
 /* Turn alternate screen off. */
@@ -5157,6 +4874,6 @@ pub unsafe extern "C" fn screen_write_alternateoff(
         return;
     }
     screen_alternate_off((*ctx).s, gc, cursor);
-    screen_write_initctx(ctx, &mut ttyctx, 1 as libc::c_int);
+    screen_write_initctx(ctx, &mut ttyctx, 1i32);
     ttyctx.redraw_cb.expect("non-null function pointer")(&mut ttyctx);
 }

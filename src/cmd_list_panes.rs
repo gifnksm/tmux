@@ -1097,8 +1097,8 @@ pub static mut cmd_list_panes_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"asF:f:t:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -1111,13 +1111,13 @@ pub static mut cmd_list_panes_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_WINDOW,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0x4 as libc::c_int,
+            flags: 0x4i32,
             exec: Some(
                 cmd_list_panes_exec
                     as unsafe extern "C" fn(
@@ -1156,12 +1156,12 @@ unsafe extern "C" fn cmd_list_panes_exec(
     let mut target: *mut cmd_find_state = cmdq_get_target(item);
     let mut s: *mut session = (*target).s;
     let mut wl: *mut winlink = (*target).wl;
-    if args_has(args, 'a' as i32 as u_char) != 0 {
+    if args_has(args, 'a' as u_char) != 0 {
         cmd_list_panes_server(self_0, item);
-    } else if args_has(args, 's' as i32 as u_char) != 0 {
-        cmd_list_panes_session(self_0, s, item, 1 as libc::c_int);
+    } else if args_has(args, 's' as u_char) != 0 {
+        cmd_list_panes_session(self_0, s, item, 1i32);
     } else {
-        cmd_list_panes_window(self_0, s, wl, item, 0 as libc::c_int);
+        cmd_list_panes_window(self_0, s, wl, item, 0i32);
     }
     return CMD_RETURN_NORMAL;
 }
@@ -1170,9 +1170,9 @@ unsafe extern "C" fn cmd_list_panes_server(
     mut item: *mut crate::cmd_queue::cmdq_item,
 ) {
     let mut s: *mut session = 0 as *mut session;
-    s = sessions_RB_MINMAX(&mut sessions, -(1 as libc::c_int));
+    s = sessions_RB_MINMAX(&mut sessions, -(1i32));
     while !s.is_null() {
-        cmd_list_panes_session(self_0, s, item, 2 as libc::c_int);
+        cmd_list_panes_session(self_0, s, item, 2i32);
         s = sessions_RB_NEXT(s)
     }
 }
@@ -1183,7 +1183,7 @@ unsafe extern "C" fn cmd_list_panes_session(
     mut type_0: libc::c_int,
 ) {
     let mut wl: *mut winlink = 0 as *mut winlink;
-    wl = winlinks_RB_MINMAX(&mut (*s).windows, -(1 as libc::c_int));
+    wl = winlinks_RB_MINMAX(&mut (*s).windows, -(1i32));
     while !wl.is_null() {
         cmd_list_panes_window(self_0, s, wl, item, type_0);
         wl = winlinks_RB_NEXT(wl)
@@ -1205,7 +1205,7 @@ unsafe extern "C" fn cmd_list_panes_window(
     let mut line: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut expanded: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut flag: libc::c_int = 0;
-    template = args_get(args, 'F' as i32 as u_char);
+    template = args_get(args, 'F' as u_char);
     if template.is_null() {
         match type_0 {
             0 => {
@@ -1226,16 +1226,11 @@ unsafe extern "C" fn cmd_list_panes_window(
             _ => { }
         }
     }
-    filter = args_get(args, 'f' as i32 as u_char);
-    n = 0 as libc::c_int as u_int;
+    filter = args_get(args, 'f' as u_char);
+    n = 0u32;
     wp = (*(*wl).window).panes.tqh_first;
     while !wp.is_null() {
-        ft = format_create(
-            cmdq_get_client(item),
-            item,
-            0 as libc::c_int,
-            0 as libc::c_int,
-        );
+        ft = format_create(cmdq_get_client(item), item, 0i32, 0i32);
         format_add(
             ft,
             b"line\x00" as *const u8 as *const libc::c_char,
@@ -1248,7 +1243,7 @@ unsafe extern "C" fn cmd_list_panes_window(
             flag = format_true(expanded);
             free(expanded as *mut libc::c_void);
         } else {
-            flag = 1 as libc::c_int
+            flag = 1i32
         }
         if flag != 0 {
             line = format_expand(ft, template);

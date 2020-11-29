@@ -1124,10 +1124,9 @@ pub static mut cmd_new_window_entry: cmd_entry = {
                                                                as *const u8 as
                                                                *const libc::c_char,
                                                        lower:
-                                                           0 as libc::c_int,
+                                                           0i32,
                                                        upper:
-                                                           -(1 as
-                                                                 libc::c_int),};
+                                                           -(1i32),};
                                   init
                               },
                           usage:
@@ -1140,15 +1139,13 @@ pub static mut cmd_new_window_entry: cmd_entry = {
                           target:
                               {
                                   let mut init =
-                                      cmd_entry_flag{flag:
-                                                         't' as i32 as
-                                                             libc::c_char,
+                                      cmd_entry_flag{flag: 't' as libc::c_char,
                                                      type_0: CMD_FIND_WINDOW,
                                                      flags:
-                                                         0x4 as libc::c_int,};
+                                                         0x4i32,};
                                   init
                               },
-                          flags: 0 as libc::c_int,
+                          flags: 0i32,
                           exec:
                               Some(cmd_new_window_exec as
                                        unsafe extern "C" fn(_: *mut crate::cmd::cmd,
@@ -1199,38 +1196,38 @@ unsafe extern "C" fn cmd_new_window_exec(
         idx: 0,
     };
     let mut value: *mut crate::arguments::args_value = 0 as *mut crate::arguments::args_value;
-    before = args_has(args, 'b' as i32 as u_char);
-    if args_has(args, 'a' as i32 as u_char) != 0 || before != 0 {
+    before = args_has(args, 'b' as u_char);
+    if args_has(args, 'a' as u_char) != 0 || before != 0 {
         idx = winlink_shuffle_up(s, wl, before);
-        if idx == -(1 as libc::c_int) {
+        if idx == -(1i32) {
             idx = (*target).idx
         }
     }
     memset(
         &mut sc as *mut spawn_context as *mut libc::c_void,
-        0 as libc::c_int,
+        0i32,
         ::std::mem::size_of::<spawn_context>() as libc::c_ulong,
     );
     sc.item = item;
     sc.s = s;
     sc.tc = tc;
-    sc.name = args_get(args, 'n' as i32 as u_char);
+    sc.name = args_get(args, 'n' as u_char);
     sc.argc = (*args).argc;
     sc.argv = (*args).argv;
     sc.environ = environ_create();
-    add = args_first_value(args, 'e' as i32 as u_char, &mut value);
+    add = args_first_value(args, 'e' as u_char, &mut value);
     while !add.is_null() {
-        environ_put(sc.environ, add, 0 as libc::c_int);
+        environ_put(sc.environ, add, 0i32);
         add = args_next_value(&mut value)
     }
     sc.idx = idx;
-    sc.cwd = args_get(args, 'c' as i32 as u_char);
-    sc.flags = 0 as libc::c_int;
-    if args_has(args, 'd' as i32 as u_char) != 0 {
-        sc.flags |= 0x2 as libc::c_int
+    sc.cwd = args_get(args, 'c' as u_char);
+    sc.flags = 0i32;
+    if args_has(args, 'd' as u_char) != 0 {
+        sc.flags |= 0x2i32
     }
-    if args_has(args, 'k' as i32 as u_char) != 0 {
-        sc.flags |= 0x1 as libc::c_int
+    if args_has(args, 'k' as u_char) != 0 {
+        sc.flags |= 0x1i32
     }
     new_wl = spawn_window(&mut sc, &mut cause);
     if new_wl.is_null() {
@@ -1242,14 +1239,14 @@ unsafe extern "C" fn cmd_new_window_exec(
         free(cause as *mut libc::c_void);
         return CMD_RETURN_ERROR;
     }
-    if args_has(args, 'd' as i32 as u_char) == 0 || new_wl == (*s).curw {
-        cmd_find_from_winlink(current, new_wl, 0 as libc::c_int);
+    if args_has(args, 'd' as u_char) == 0 || new_wl == (*s).curw {
+        cmd_find_from_winlink(current, new_wl, 0i32);
         server_redraw_session_group(s);
     } else {
         server_status_session_group(s);
     }
-    if args_has(args, 'P' as i32 as u_char) != 0 {
-        template = args_get(args, 'F' as i32 as u_char);
+    if args_has(args, 'P' as u_char) != 0 {
+        template = args_get(args, 'F' as u_char);
         if template.is_null() {
             template = b"#{session_name}:#{window_index}.#{pane_index}\x00" as *const u8
                 as *const libc::c_char
@@ -1258,7 +1255,7 @@ unsafe extern "C" fn cmd_new_window_exec(
         cmdq_print(item, b"%s\x00" as *const u8 as *const libc::c_char, cp);
         free(cp as *mut libc::c_void);
     }
-    cmd_find_from_winlink(&mut fs, new_wl, 0 as libc::c_int);
+    cmd_find_from_winlink(&mut fs, new_wl, 0i32);
     cmdq_insert_hook(
         s,
         item,

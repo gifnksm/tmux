@@ -1301,12 +1301,12 @@ pub struct window_pane_input_data {
 /* Global window list. */
 #[no_mangle]
 pub static mut windows: windows = windows {
-    rbh_root: 0 as *const window as *mut window,
+    rbh_root: 0 as *mut window,
 };
 /* Global panes tree. */
 #[no_mangle]
 pub static mut all_window_panes: window_pane_tree = window_pane_tree {
-    rbh_root: 0 as *const window_pane as *mut window_pane,
+    rbh_root: 0 as *mut window_pane,
 };
 static mut next_window_pane_id: u_int = 0;
 static mut next_window_id: u_int = 0;
@@ -1351,14 +1351,14 @@ pub unsafe extern "C" fn windows_RB_INSERT(
 ) -> *mut window {
     let mut tmp: *mut window = 0 as *mut window;
     let mut parent: *mut window = 0 as *mut window;
-    let mut comp: libc::c_int = 0 as libc::c_int;
+    let mut comp: libc::c_int = 0i32;
     tmp = (*head).rbh_root;
     while !tmp.is_null() {
         parent = tmp;
         comp = window_cmp(elm, parent);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).entry.rbe_right
         } else {
             return tmp;
@@ -1367,9 +1367,9 @@ pub unsafe extern "C" fn windows_RB_INSERT(
     (*elm).entry.rbe_parent = parent;
     (*elm).entry.rbe_right = 0 as *mut window;
     (*elm).entry.rbe_left = (*elm).entry.rbe_right;
-    (*elm).entry.rbe_color = 1 as libc::c_int;
+    (*elm).entry.rbe_color = 1i32;
     if !parent.is_null() {
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             (*parent).entry.rbe_left = elm
         } else {
             (*parent).entry.rbe_right = elm
@@ -1389,9 +1389,9 @@ pub unsafe extern "C" fn windows_RB_FIND(
     let mut comp: libc::c_int = 0;
     while !tmp.is_null() {
         comp = window_cmp(elm, tmp);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).entry.rbe_right
         } else {
             return tmp;
@@ -1409,10 +1409,10 @@ pub unsafe extern "C" fn windows_RB_NFIND(
     let mut comp: libc::c_int = 0;
     while !tmp.is_null() {
         comp = window_cmp(elm, tmp);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             res = tmp;
             tmp = (*tmp).entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).entry.rbe_right
         } else {
             return tmp;
@@ -1447,12 +1447,12 @@ pub unsafe extern "C" fn windows_RB_REMOVE_COLOR(
     mut elm: *mut window,
 ) {
     let mut tmp: *mut window = 0 as *mut window;
-    while (elm.is_null() || (*elm).entry.rbe_color == 0 as libc::c_int) && elm != (*head).rbh_root {
+    while (elm.is_null() || (*elm).entry.rbe_color == 0i32) && elm != (*head).rbh_root {
         if (*parent).entry.rbe_left == elm {
             tmp = (*parent).entry.rbe_right;
-            if (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 1 as libc::c_int;
+            if (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 1i32;
                 tmp = (*parent).entry.rbe_right;
                 (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
                 if !(*parent).entry.rbe_right.is_null() {
@@ -1473,24 +1473,23 @@ pub unsafe extern "C" fn windows_RB_REMOVE_COLOR(
                 !(*tmp).entry.rbe_parent.is_null();
                 tmp = (*parent).entry.rbe_right
             }
-            if ((*tmp).entry.rbe_left.is_null()
-                || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int)
+            if ((*tmp).entry.rbe_left.is_null() || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32)
                 && ((*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int)
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32)
             {
-                (*tmp).entry.rbe_color = 1 as libc::c_int;
+                (*tmp).entry.rbe_color = 1i32;
                 elm = parent;
                 parent = (*elm).entry.rbe_parent
             } else {
                 if (*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32
                 {
                     let mut oleft: *mut window = 0 as *mut window;
                     oleft = (*tmp).entry.rbe_left;
                     if !oleft.is_null() {
-                        (*oleft).entry.rbe_color = 0 as libc::c_int
+                        (*oleft).entry.rbe_color = 0i32
                     }
-                    (*tmp).entry.rbe_color = 1 as libc::c_int;
+                    (*tmp).entry.rbe_color = 1i32;
                     oleft = (*tmp).entry.rbe_left;
                     (*tmp).entry.rbe_left = (*oleft).entry.rbe_right;
                     if !(*tmp).entry.rbe_left.is_null() {
@@ -1512,9 +1511,9 @@ pub unsafe extern "C" fn windows_RB_REMOVE_COLOR(
                     tmp = (*parent).entry.rbe_right
                 }
                 (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
                 if !(*tmp).entry.rbe_right.is_null() {
-                    (*(*tmp).entry.rbe_right).entry.rbe_color = 0 as libc::c_int
+                    (*(*tmp).entry.rbe_right).entry.rbe_color = 0i32
                 }
                 tmp = (*parent).entry.rbe_right;
                 (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
@@ -1539,9 +1538,9 @@ pub unsafe extern "C" fn windows_RB_REMOVE_COLOR(
             }
         } else {
             tmp = (*parent).entry.rbe_left;
-            if (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 1 as libc::c_int;
+            if (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 1i32;
                 tmp = (*parent).entry.rbe_left;
                 (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
                 if !(*parent).entry.rbe_left.is_null() {
@@ -1562,24 +1561,23 @@ pub unsafe extern "C" fn windows_RB_REMOVE_COLOR(
                 !(*tmp).entry.rbe_parent.is_null();
                 tmp = (*parent).entry.rbe_left
             }
-            if ((*tmp).entry.rbe_left.is_null()
-                || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int)
+            if ((*tmp).entry.rbe_left.is_null() || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32)
                 && ((*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int)
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32)
             {
-                (*tmp).entry.rbe_color = 1 as libc::c_int;
+                (*tmp).entry.rbe_color = 1i32;
                 elm = parent;
                 parent = (*elm).entry.rbe_parent
             } else {
                 if (*tmp).entry.rbe_left.is_null()
-                    || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int
+                    || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32
                 {
                     let mut oright: *mut window = 0 as *mut window;
                     oright = (*tmp).entry.rbe_right;
                     if !oright.is_null() {
-                        (*oright).entry.rbe_color = 0 as libc::c_int
+                        (*oright).entry.rbe_color = 0i32
                     }
-                    (*tmp).entry.rbe_color = 1 as libc::c_int;
+                    (*tmp).entry.rbe_color = 1i32;
                     oright = (*tmp).entry.rbe_right;
                     (*tmp).entry.rbe_right = (*oright).entry.rbe_left;
                     if !(*tmp).entry.rbe_right.is_null() {
@@ -1601,9 +1599,9 @@ pub unsafe extern "C" fn windows_RB_REMOVE_COLOR(
                     tmp = (*parent).entry.rbe_left
                 }
                 (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
                 if !(*tmp).entry.rbe_left.is_null() {
-                    (*(*tmp).entry.rbe_left).entry.rbe_color = 0 as libc::c_int
+                    (*(*tmp).entry.rbe_left).entry.rbe_color = 0i32
                 }
                 tmp = (*parent).entry.rbe_left;
                 (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
@@ -1629,7 +1627,7 @@ pub unsafe extern "C" fn windows_RB_REMOVE_COLOR(
         }
     }
     if !elm.is_null() {
-        (*elm).entry.rbe_color = 0 as libc::c_int
+        (*elm).entry.rbe_color = 0i32
     };
 }
 #[no_mangle]
@@ -1720,7 +1718,7 @@ pub unsafe extern "C" fn windows_RB_REMOVE(
         }
         _ => {}
     }
-    if color == 0 as libc::c_int {
+    if color == 0i32 {
         windows_RB_REMOVE_COLOR(head, parent, child);
     }
     return old;
@@ -1734,7 +1732,7 @@ pub unsafe extern "C" fn windows_RB_MINMAX(
     let mut parent: *mut window = 0 as *mut window;
     while !tmp.is_null() {
         parent = tmp;
-        if val < 0 as libc::c_int {
+        if val < 0i32 {
             tmp = (*tmp).entry.rbe_left
         } else {
             tmp = (*tmp).entry.rbe_right
@@ -1749,16 +1747,16 @@ pub unsafe extern "C" fn windows_RB_INSERT_COLOR(mut head: *mut windows, mut elm
     let mut tmp: *mut window = 0 as *mut window;
     loop {
         parent = (*elm).entry.rbe_parent;
-        if !(!parent.is_null() && (*parent).entry.rbe_color == 1 as libc::c_int) {
+        if !(!parent.is_null() && (*parent).entry.rbe_color == 1i32) {
             break;
         }
         gparent = (*parent).entry.rbe_parent;
         if parent == (*gparent).entry.rbe_left {
             tmp = (*gparent).entry.rbe_right;
-            if !tmp.is_null() && (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).entry.rbe_right == elm {
@@ -1784,8 +1782,8 @@ pub unsafe extern "C" fn windows_RB_INSERT_COLOR(mut head: *mut windows, mut elm
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 tmp = (*gparent).entry.rbe_left;
                 (*gparent).entry.rbe_left = (*tmp).entry.rbe_right;
                 if !(*gparent).entry.rbe_left.is_null() {
@@ -1807,10 +1805,10 @@ pub unsafe extern "C" fn windows_RB_INSERT_COLOR(mut head: *mut windows, mut elm
             }
         } else {
             tmp = (*gparent).entry.rbe_left;
-            if !tmp.is_null() && (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).entry.rbe_left == elm {
@@ -1836,8 +1834,8 @@ pub unsafe extern "C" fn windows_RB_INSERT_COLOR(mut head: *mut windows, mut elm
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 tmp = (*gparent).entry.rbe_right;
                 (*gparent).entry.rbe_right = (*tmp).entry.rbe_left;
                 if !(*gparent).entry.rbe_right.is_null() {
@@ -1859,7 +1857,7 @@ pub unsafe extern "C" fn windows_RB_INSERT_COLOR(mut head: *mut windows, mut elm
             }
         }
     }
-    (*(*head).rbh_root).entry.rbe_color = 0 as libc::c_int;
+    (*(*head).rbh_root).entry.rbe_color = 0i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn winlinks_RB_PREV(mut elm: *mut winlink) -> *mut winlink {
@@ -1890,7 +1888,7 @@ pub unsafe extern "C" fn winlinks_RB_MINMAX(
     let mut parent: *mut winlink = 0 as *mut winlink;
     while !tmp.is_null() {
         parent = tmp;
-        if val < 0 as libc::c_int {
+        if val < 0i32 {
             tmp = (*tmp).entry.rbe_left
         } else {
             tmp = (*tmp).entry.rbe_right
@@ -1928,10 +1926,10 @@ pub unsafe extern "C" fn winlinks_RB_NFIND(
     let mut comp: libc::c_int = 0;
     while !tmp.is_null() {
         comp = winlink_cmp(elm, tmp);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             res = tmp;
             tmp = (*tmp).entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).entry.rbe_right
         } else {
             return tmp;
@@ -1948,9 +1946,9 @@ pub unsafe extern "C" fn winlinks_RB_FIND(
     let mut comp: libc::c_int = 0;
     while !tmp.is_null() {
         comp = winlink_cmp(elm, tmp);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).entry.rbe_right
         } else {
             return tmp;
@@ -1965,14 +1963,14 @@ pub unsafe extern "C" fn winlinks_RB_INSERT(
 ) -> *mut winlink {
     let mut tmp: *mut winlink = 0 as *mut winlink;
     let mut parent: *mut winlink = 0 as *mut winlink;
-    let mut comp: libc::c_int = 0 as libc::c_int;
+    let mut comp: libc::c_int = 0i32;
     tmp = (*head).rbh_root;
     while !tmp.is_null() {
         parent = tmp;
         comp = winlink_cmp(elm, parent);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).entry.rbe_right
         } else {
             return tmp;
@@ -1981,9 +1979,9 @@ pub unsafe extern "C" fn winlinks_RB_INSERT(
     (*elm).entry.rbe_parent = parent;
     (*elm).entry.rbe_right = 0 as *mut winlink;
     (*elm).entry.rbe_left = (*elm).entry.rbe_right;
-    (*elm).entry.rbe_color = 1 as libc::c_int;
+    (*elm).entry.rbe_color = 1i32;
     if !parent.is_null() {
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             (*parent).entry.rbe_left = elm
         } else {
             (*parent).entry.rbe_right = elm
@@ -2082,7 +2080,7 @@ pub unsafe extern "C" fn winlinks_RB_REMOVE(
         }
         _ => {}
     }
-    if color == 0 as libc::c_int {
+    if color == 0i32 {
         winlinks_RB_REMOVE_COLOR(head, parent, child);
     }
     return old;
@@ -2094,16 +2092,16 @@ pub unsafe extern "C" fn winlinks_RB_INSERT_COLOR(mut head: *mut winlinks, mut e
     let mut tmp: *mut winlink = 0 as *mut winlink;
     loop {
         parent = (*elm).entry.rbe_parent;
-        if !(!parent.is_null() && (*parent).entry.rbe_color == 1 as libc::c_int) {
+        if !(!parent.is_null() && (*parent).entry.rbe_color == 1i32) {
             break;
         }
         gparent = (*parent).entry.rbe_parent;
         if parent == (*gparent).entry.rbe_left {
             tmp = (*gparent).entry.rbe_right;
-            if !tmp.is_null() && (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).entry.rbe_right == elm {
@@ -2129,8 +2127,8 @@ pub unsafe extern "C" fn winlinks_RB_INSERT_COLOR(mut head: *mut winlinks, mut e
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 tmp = (*gparent).entry.rbe_left;
                 (*gparent).entry.rbe_left = (*tmp).entry.rbe_right;
                 if !(*gparent).entry.rbe_left.is_null() {
@@ -2152,10 +2150,10 @@ pub unsafe extern "C" fn winlinks_RB_INSERT_COLOR(mut head: *mut winlinks, mut e
             }
         } else {
             tmp = (*gparent).entry.rbe_left;
-            if !tmp.is_null() && (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).entry.rbe_left == elm {
@@ -2181,8 +2179,8 @@ pub unsafe extern "C" fn winlinks_RB_INSERT_COLOR(mut head: *mut winlinks, mut e
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 tmp = (*gparent).entry.rbe_right;
                 (*gparent).entry.rbe_right = (*tmp).entry.rbe_left;
                 if !(*gparent).entry.rbe_right.is_null() {
@@ -2204,7 +2202,7 @@ pub unsafe extern "C" fn winlinks_RB_INSERT_COLOR(mut head: *mut winlinks, mut e
             }
         }
     }
-    (*(*head).rbh_root).entry.rbe_color = 0 as libc::c_int;
+    (*(*head).rbh_root).entry.rbe_color = 0i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn winlinks_RB_REMOVE_COLOR(
@@ -2213,12 +2211,12 @@ pub unsafe extern "C" fn winlinks_RB_REMOVE_COLOR(
     mut elm: *mut winlink,
 ) {
     let mut tmp: *mut winlink = 0 as *mut winlink;
-    while (elm.is_null() || (*elm).entry.rbe_color == 0 as libc::c_int) && elm != (*head).rbh_root {
+    while (elm.is_null() || (*elm).entry.rbe_color == 0i32) && elm != (*head).rbh_root {
         if (*parent).entry.rbe_left == elm {
             tmp = (*parent).entry.rbe_right;
-            if (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 1 as libc::c_int;
+            if (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 1i32;
                 tmp = (*parent).entry.rbe_right;
                 (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
                 if !(*parent).entry.rbe_right.is_null() {
@@ -2239,24 +2237,23 @@ pub unsafe extern "C" fn winlinks_RB_REMOVE_COLOR(
                 !(*tmp).entry.rbe_parent.is_null();
                 tmp = (*parent).entry.rbe_right
             }
-            if ((*tmp).entry.rbe_left.is_null()
-                || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int)
+            if ((*tmp).entry.rbe_left.is_null() || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32)
                 && ((*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int)
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32)
             {
-                (*tmp).entry.rbe_color = 1 as libc::c_int;
+                (*tmp).entry.rbe_color = 1i32;
                 elm = parent;
                 parent = (*elm).entry.rbe_parent
             } else {
                 if (*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32
                 {
                     let mut oleft: *mut winlink = 0 as *mut winlink;
                     oleft = (*tmp).entry.rbe_left;
                     if !oleft.is_null() {
-                        (*oleft).entry.rbe_color = 0 as libc::c_int
+                        (*oleft).entry.rbe_color = 0i32
                     }
-                    (*tmp).entry.rbe_color = 1 as libc::c_int;
+                    (*tmp).entry.rbe_color = 1i32;
                     oleft = (*tmp).entry.rbe_left;
                     (*tmp).entry.rbe_left = (*oleft).entry.rbe_right;
                     if !(*tmp).entry.rbe_left.is_null() {
@@ -2278,9 +2275,9 @@ pub unsafe extern "C" fn winlinks_RB_REMOVE_COLOR(
                     tmp = (*parent).entry.rbe_right
                 }
                 (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
                 if !(*tmp).entry.rbe_right.is_null() {
-                    (*(*tmp).entry.rbe_right).entry.rbe_color = 0 as libc::c_int
+                    (*(*tmp).entry.rbe_right).entry.rbe_color = 0i32
                 }
                 tmp = (*parent).entry.rbe_right;
                 (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
@@ -2305,9 +2302,9 @@ pub unsafe extern "C" fn winlinks_RB_REMOVE_COLOR(
             }
         } else {
             tmp = (*parent).entry.rbe_left;
-            if (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 1 as libc::c_int;
+            if (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 1i32;
                 tmp = (*parent).entry.rbe_left;
                 (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
                 if !(*parent).entry.rbe_left.is_null() {
@@ -2328,24 +2325,23 @@ pub unsafe extern "C" fn winlinks_RB_REMOVE_COLOR(
                 !(*tmp).entry.rbe_parent.is_null();
                 tmp = (*parent).entry.rbe_left
             }
-            if ((*tmp).entry.rbe_left.is_null()
-                || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int)
+            if ((*tmp).entry.rbe_left.is_null() || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32)
                 && ((*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int)
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32)
             {
-                (*tmp).entry.rbe_color = 1 as libc::c_int;
+                (*tmp).entry.rbe_color = 1i32;
                 elm = parent;
                 parent = (*elm).entry.rbe_parent
             } else {
                 if (*tmp).entry.rbe_left.is_null()
-                    || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int
+                    || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32
                 {
                     let mut oright: *mut winlink = 0 as *mut winlink;
                     oright = (*tmp).entry.rbe_right;
                     if !oright.is_null() {
-                        (*oright).entry.rbe_color = 0 as libc::c_int
+                        (*oright).entry.rbe_color = 0i32
                     }
-                    (*tmp).entry.rbe_color = 1 as libc::c_int;
+                    (*tmp).entry.rbe_color = 1i32;
                     oright = (*tmp).entry.rbe_right;
                     (*tmp).entry.rbe_right = (*oright).entry.rbe_left;
                     if !(*tmp).entry.rbe_right.is_null() {
@@ -2367,9 +2363,9 @@ pub unsafe extern "C" fn winlinks_RB_REMOVE_COLOR(
                     tmp = (*parent).entry.rbe_left
                 }
                 (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
                 if !(*tmp).entry.rbe_left.is_null() {
-                    (*(*tmp).entry.rbe_left).entry.rbe_color = 0 as libc::c_int
+                    (*(*tmp).entry.rbe_left).entry.rbe_color = 0i32
                 }
                 tmp = (*parent).entry.rbe_left;
                 (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
@@ -2395,7 +2391,7 @@ pub unsafe extern "C" fn winlinks_RB_REMOVE_COLOR(
         }
     }
     if !elm.is_null() {
-        (*elm).entry.rbe_color = 0 as libc::c_int
+        (*elm).entry.rbe_color = 0i32
     };
 }
 #[no_mangle]
@@ -2408,16 +2404,16 @@ pub unsafe extern "C" fn window_pane_tree_RB_INSERT_COLOR(
     let mut tmp: *mut window_pane = 0 as *mut window_pane;
     loop {
         parent = (*elm).tree_entry.rbe_parent;
-        if !(!parent.is_null() && (*parent).tree_entry.rbe_color == 1 as libc::c_int) {
+        if !(!parent.is_null() && (*parent).tree_entry.rbe_color == 1i32) {
             break;
         }
         gparent = (*parent).tree_entry.rbe_parent;
         if parent == (*gparent).tree_entry.rbe_left {
             tmp = (*gparent).tree_entry.rbe_right;
-            if !tmp.is_null() && (*tmp).tree_entry.rbe_color == 1 as libc::c_int {
-                (*tmp).tree_entry.rbe_color = 0 as libc::c_int;
-                (*parent).tree_entry.rbe_color = 0 as libc::c_int;
-                (*gparent).tree_entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).tree_entry.rbe_color == 1i32 {
+                (*tmp).tree_entry.rbe_color = 0i32;
+                (*parent).tree_entry.rbe_color = 0i32;
+                (*gparent).tree_entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).tree_entry.rbe_right == elm {
@@ -2443,8 +2439,8 @@ pub unsafe extern "C" fn window_pane_tree_RB_INSERT_COLOR(
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).tree_entry.rbe_color = 0 as libc::c_int;
-                (*gparent).tree_entry.rbe_color = 1 as libc::c_int;
+                (*parent).tree_entry.rbe_color = 0i32;
+                (*gparent).tree_entry.rbe_color = 1i32;
                 tmp = (*gparent).tree_entry.rbe_left;
                 (*gparent).tree_entry.rbe_left = (*tmp).tree_entry.rbe_right;
                 if !(*gparent).tree_entry.rbe_left.is_null() {
@@ -2466,10 +2462,10 @@ pub unsafe extern "C" fn window_pane_tree_RB_INSERT_COLOR(
             }
         } else {
             tmp = (*gparent).tree_entry.rbe_left;
-            if !tmp.is_null() && (*tmp).tree_entry.rbe_color == 1 as libc::c_int {
-                (*tmp).tree_entry.rbe_color = 0 as libc::c_int;
-                (*parent).tree_entry.rbe_color = 0 as libc::c_int;
-                (*gparent).tree_entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).tree_entry.rbe_color == 1i32 {
+                (*tmp).tree_entry.rbe_color = 0i32;
+                (*parent).tree_entry.rbe_color = 0i32;
+                (*gparent).tree_entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).tree_entry.rbe_left == elm {
@@ -2495,8 +2491,8 @@ pub unsafe extern "C" fn window_pane_tree_RB_INSERT_COLOR(
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).tree_entry.rbe_color = 0 as libc::c_int;
-                (*gparent).tree_entry.rbe_color = 1 as libc::c_int;
+                (*parent).tree_entry.rbe_color = 0i32;
+                (*gparent).tree_entry.rbe_color = 1i32;
                 tmp = (*gparent).tree_entry.rbe_right;
                 (*gparent).tree_entry.rbe_right = (*tmp).tree_entry.rbe_left;
                 if !(*gparent).tree_entry.rbe_right.is_null() {
@@ -2518,7 +2514,7 @@ pub unsafe extern "C" fn window_pane_tree_RB_INSERT_COLOR(
             }
         }
     }
-    (*(*head).rbh_root).tree_entry.rbe_color = 0 as libc::c_int;
+    (*(*head).rbh_root).tree_entry.rbe_color = 0i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn window_pane_tree_RB_REMOVE_COLOR(
@@ -2527,14 +2523,12 @@ pub unsafe extern "C" fn window_pane_tree_RB_REMOVE_COLOR(
     mut elm: *mut window_pane,
 ) {
     let mut tmp: *mut window_pane = 0 as *mut window_pane;
-    while (elm.is_null() || (*elm).tree_entry.rbe_color == 0 as libc::c_int)
-        && elm != (*head).rbh_root
-    {
+    while (elm.is_null() || (*elm).tree_entry.rbe_color == 0i32) && elm != (*head).rbh_root {
         if (*parent).tree_entry.rbe_left == elm {
             tmp = (*parent).tree_entry.rbe_right;
-            if (*tmp).tree_entry.rbe_color == 1 as libc::c_int {
-                (*tmp).tree_entry.rbe_color = 0 as libc::c_int;
-                (*parent).tree_entry.rbe_color = 1 as libc::c_int;
+            if (*tmp).tree_entry.rbe_color == 1i32 {
+                (*tmp).tree_entry.rbe_color = 0i32;
+                (*parent).tree_entry.rbe_color = 1i32;
                 tmp = (*parent).tree_entry.rbe_right;
                 (*parent).tree_entry.rbe_right = (*tmp).tree_entry.rbe_left;
                 if !(*parent).tree_entry.rbe_right.is_null() {
@@ -2556,23 +2550,23 @@ pub unsafe extern "C" fn window_pane_tree_RB_REMOVE_COLOR(
                 tmp = (*parent).tree_entry.rbe_right
             }
             if ((*tmp).tree_entry.rbe_left.is_null()
-                || (*(*tmp).tree_entry.rbe_left).tree_entry.rbe_color == 0 as libc::c_int)
+                || (*(*tmp).tree_entry.rbe_left).tree_entry.rbe_color == 0i32)
                 && ((*tmp).tree_entry.rbe_right.is_null()
-                    || (*(*tmp).tree_entry.rbe_right).tree_entry.rbe_color == 0 as libc::c_int)
+                    || (*(*tmp).tree_entry.rbe_right).tree_entry.rbe_color == 0i32)
             {
-                (*tmp).tree_entry.rbe_color = 1 as libc::c_int;
+                (*tmp).tree_entry.rbe_color = 1i32;
                 elm = parent;
                 parent = (*elm).tree_entry.rbe_parent
             } else {
                 if (*tmp).tree_entry.rbe_right.is_null()
-                    || (*(*tmp).tree_entry.rbe_right).tree_entry.rbe_color == 0 as libc::c_int
+                    || (*(*tmp).tree_entry.rbe_right).tree_entry.rbe_color == 0i32
                 {
                     let mut oleft: *mut window_pane = 0 as *mut window_pane;
                     oleft = (*tmp).tree_entry.rbe_left;
                     if !oleft.is_null() {
-                        (*oleft).tree_entry.rbe_color = 0 as libc::c_int
+                        (*oleft).tree_entry.rbe_color = 0i32
                     }
-                    (*tmp).tree_entry.rbe_color = 1 as libc::c_int;
+                    (*tmp).tree_entry.rbe_color = 1i32;
                     oleft = (*tmp).tree_entry.rbe_left;
                     (*tmp).tree_entry.rbe_left = (*oleft).tree_entry.rbe_right;
                     if !(*tmp).tree_entry.rbe_left.is_null() {
@@ -2594,9 +2588,9 @@ pub unsafe extern "C" fn window_pane_tree_RB_REMOVE_COLOR(
                     tmp = (*parent).tree_entry.rbe_right
                 }
                 (*tmp).tree_entry.rbe_color = (*parent).tree_entry.rbe_color;
-                (*parent).tree_entry.rbe_color = 0 as libc::c_int;
+                (*parent).tree_entry.rbe_color = 0i32;
                 if !(*tmp).tree_entry.rbe_right.is_null() {
-                    (*(*tmp).tree_entry.rbe_right).tree_entry.rbe_color = 0 as libc::c_int
+                    (*(*tmp).tree_entry.rbe_right).tree_entry.rbe_color = 0i32
                 }
                 tmp = (*parent).tree_entry.rbe_right;
                 (*parent).tree_entry.rbe_right = (*tmp).tree_entry.rbe_left;
@@ -2621,9 +2615,9 @@ pub unsafe extern "C" fn window_pane_tree_RB_REMOVE_COLOR(
             }
         } else {
             tmp = (*parent).tree_entry.rbe_left;
-            if (*tmp).tree_entry.rbe_color == 1 as libc::c_int {
-                (*tmp).tree_entry.rbe_color = 0 as libc::c_int;
-                (*parent).tree_entry.rbe_color = 1 as libc::c_int;
+            if (*tmp).tree_entry.rbe_color == 1i32 {
+                (*tmp).tree_entry.rbe_color = 0i32;
+                (*parent).tree_entry.rbe_color = 1i32;
                 tmp = (*parent).tree_entry.rbe_left;
                 (*parent).tree_entry.rbe_left = (*tmp).tree_entry.rbe_right;
                 if !(*parent).tree_entry.rbe_left.is_null() {
@@ -2645,23 +2639,23 @@ pub unsafe extern "C" fn window_pane_tree_RB_REMOVE_COLOR(
                 tmp = (*parent).tree_entry.rbe_left
             }
             if ((*tmp).tree_entry.rbe_left.is_null()
-                || (*(*tmp).tree_entry.rbe_left).tree_entry.rbe_color == 0 as libc::c_int)
+                || (*(*tmp).tree_entry.rbe_left).tree_entry.rbe_color == 0i32)
                 && ((*tmp).tree_entry.rbe_right.is_null()
-                    || (*(*tmp).tree_entry.rbe_right).tree_entry.rbe_color == 0 as libc::c_int)
+                    || (*(*tmp).tree_entry.rbe_right).tree_entry.rbe_color == 0i32)
             {
-                (*tmp).tree_entry.rbe_color = 1 as libc::c_int;
+                (*tmp).tree_entry.rbe_color = 1i32;
                 elm = parent;
                 parent = (*elm).tree_entry.rbe_parent
             } else {
                 if (*tmp).tree_entry.rbe_left.is_null()
-                    || (*(*tmp).tree_entry.rbe_left).tree_entry.rbe_color == 0 as libc::c_int
+                    || (*(*tmp).tree_entry.rbe_left).tree_entry.rbe_color == 0i32
                 {
                     let mut oright: *mut window_pane = 0 as *mut window_pane;
                     oright = (*tmp).tree_entry.rbe_right;
                     if !oright.is_null() {
-                        (*oright).tree_entry.rbe_color = 0 as libc::c_int
+                        (*oright).tree_entry.rbe_color = 0i32
                     }
-                    (*tmp).tree_entry.rbe_color = 1 as libc::c_int;
+                    (*tmp).tree_entry.rbe_color = 1i32;
                     oright = (*tmp).tree_entry.rbe_right;
                     (*tmp).tree_entry.rbe_right = (*oright).tree_entry.rbe_left;
                     if !(*tmp).tree_entry.rbe_right.is_null() {
@@ -2683,9 +2677,9 @@ pub unsafe extern "C" fn window_pane_tree_RB_REMOVE_COLOR(
                     tmp = (*parent).tree_entry.rbe_left
                 }
                 (*tmp).tree_entry.rbe_color = (*parent).tree_entry.rbe_color;
-                (*parent).tree_entry.rbe_color = 0 as libc::c_int;
+                (*parent).tree_entry.rbe_color = 0i32;
                 if !(*tmp).tree_entry.rbe_left.is_null() {
-                    (*(*tmp).tree_entry.rbe_left).tree_entry.rbe_color = 0 as libc::c_int
+                    (*(*tmp).tree_entry.rbe_left).tree_entry.rbe_color = 0i32
                 }
                 tmp = (*parent).tree_entry.rbe_left;
                 (*parent).tree_entry.rbe_left = (*tmp).tree_entry.rbe_right;
@@ -2711,7 +2705,7 @@ pub unsafe extern "C" fn window_pane_tree_RB_REMOVE_COLOR(
         }
     }
     if !elm.is_null() {
-        (*elm).tree_entry.rbe_color = 0 as libc::c_int
+        (*elm).tree_entry.rbe_color = 0i32
     };
 }
 #[no_mangle]
@@ -2766,10 +2760,10 @@ pub unsafe extern "C" fn window_pane_tree_RB_NFIND(
     let mut comp: libc::c_int = 0;
     while !tmp.is_null() {
         comp = window_pane_cmp(elm, tmp);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             res = tmp;
             tmp = (*tmp).tree_entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).tree_entry.rbe_right
         } else {
             return tmp;
@@ -2786,7 +2780,7 @@ pub unsafe extern "C" fn window_pane_tree_RB_MINMAX(
     let mut parent: *mut window_pane = 0 as *mut window_pane;
     while !tmp.is_null() {
         parent = tmp;
-        if val < 0 as libc::c_int {
+        if val < 0i32 {
             tmp = (*tmp).tree_entry.rbe_left
         } else {
             tmp = (*tmp).tree_entry.rbe_right
@@ -2801,14 +2795,14 @@ pub unsafe extern "C" fn window_pane_tree_RB_INSERT(
 ) -> *mut window_pane {
     let mut tmp: *mut window_pane = 0 as *mut window_pane;
     let mut parent: *mut window_pane = 0 as *mut window_pane;
-    let mut comp: libc::c_int = 0 as libc::c_int;
+    let mut comp: libc::c_int = 0i32;
     tmp = (*head).rbh_root;
     while !tmp.is_null() {
         parent = tmp;
         comp = window_pane_cmp(elm, parent);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).tree_entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).tree_entry.rbe_right
         } else {
             return tmp;
@@ -2817,9 +2811,9 @@ pub unsafe extern "C" fn window_pane_tree_RB_INSERT(
     (*elm).tree_entry.rbe_parent = parent;
     (*elm).tree_entry.rbe_right = 0 as *mut window_pane;
     (*elm).tree_entry.rbe_left = (*elm).tree_entry.rbe_right;
-    (*elm).tree_entry.rbe_color = 1 as libc::c_int;
+    (*elm).tree_entry.rbe_color = 1i32;
     if !parent.is_null() {
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             (*parent).tree_entry.rbe_left = elm
         } else {
             (*parent).tree_entry.rbe_right = elm
@@ -2839,9 +2833,9 @@ pub unsafe extern "C" fn window_pane_tree_RB_FIND(
     let mut comp: libc::c_int = 0;
     while !tmp.is_null() {
         comp = window_pane_cmp(elm, tmp);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).tree_entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).tree_entry.rbe_right
         } else {
             return tmp;
@@ -2937,7 +2931,7 @@ pub unsafe extern "C" fn window_pane_tree_RB_REMOVE(
         }
         _ => {}
     }
-    if color == 0 as libc::c_int {
+    if color == 0i32 {
         window_pane_tree_RB_REMOVE_COLOR(head, parent, child);
     }
     return old;
@@ -2963,7 +2957,7 @@ pub unsafe extern "C" fn winlink_find_by_window(
     mut w: *mut window,
 ) -> *mut winlink {
     let mut wl: *mut winlink = 0 as *mut winlink;
-    wl = winlinks_RB_MINMAX(wwl, -(1 as libc::c_int));
+    wl = winlinks_RB_MINMAX(wwl, -(1i32));
     while !wl.is_null() {
         if (*wl).window == w {
             return wl;
@@ -2997,7 +2991,7 @@ pub unsafe extern "C" fn winlink_find_by_index(
             tqe_prev: 0 as *mut *mut winlink,
         },
     };
-    if idx < 0 as libc::c_int {
+    if idx < 0i32 {
         fatalx(b"bad index\x00" as *const u8 as *const libc::c_char);
     }
     wl.idx = idx;
@@ -3009,7 +3003,7 @@ pub unsafe extern "C" fn winlink_find_by_window_id(
     mut id: u_int,
 ) -> *mut winlink {
     let mut wl: *mut winlink = 0 as *mut winlink;
-    wl = winlinks_RB_MINMAX(wwl, -(1 as libc::c_int));
+    wl = winlinks_RB_MINMAX(wwl, -(1i32));
     while !wl.is_null() {
         if (*(*wl).window).id == id {
             return wl;
@@ -3028,8 +3022,8 @@ unsafe extern "C" fn winlink_next_index(
         if winlink_find_by_index(wwl, i).is_null() {
             return i;
         }
-        if i == 2147483647 as libc::c_int {
-            i = 0 as libc::c_int
+        if i == 2147483647i32 {
+            i = 0i32
         } else {
             i += 1
         }
@@ -3037,14 +3031,14 @@ unsafe extern "C" fn winlink_next_index(
             break;
         }
     }
-    return -(1 as libc::c_int);
+    return -(1i32);
 }
 #[no_mangle]
 pub unsafe extern "C" fn winlink_count(mut wwl: *mut winlinks) -> u_int {
     let mut wl: *mut winlink = 0 as *mut winlink;
     let mut n: u_int = 0;
-    n = 0 as libc::c_int as u_int;
-    wl = winlinks_RB_MINMAX(wwl, -(1 as libc::c_int));
+    n = 0u32;
+    wl = winlinks_RB_MINMAX(wwl, -(1i32));
     while !wl.is_null() {
         n = n.wrapping_add(1);
         wl = winlinks_RB_NEXT(wl)
@@ -3054,18 +3048,15 @@ pub unsafe extern "C" fn winlink_count(mut wwl: *mut winlinks) -> u_int {
 #[no_mangle]
 pub unsafe extern "C" fn winlink_add(mut wwl: *mut winlinks, mut idx: libc::c_int) -> *mut winlink {
     let mut wl: *mut winlink = 0 as *mut winlink;
-    if idx < 0 as libc::c_int {
-        idx = winlink_next_index(wwl, -idx - 1 as libc::c_int);
-        if idx == -(1 as libc::c_int) {
+    if idx < 0i32 {
+        idx = winlink_next_index(wwl, -idx - 1i32);
+        if idx == -(1i32) {
             return 0 as *mut winlink;
         }
     } else if !winlink_find_by_index(wwl, idx).is_null() {
         return 0 as *mut winlink;
     }
-    wl = xcalloc(
-        1 as libc::c_int as size_t,
-        ::std::mem::size_of::<winlink>() as libc::c_ulong,
-    ) as *mut winlink;
+    wl = xcalloc(1u64, ::std::mem::size_of::<winlink>() as libc::c_ulong) as *mut winlink;
     (*wl).idx = idx;
     winlinks_RB_INSERT(wwl, wl);
     return wl;
@@ -3129,10 +3120,10 @@ pub unsafe extern "C" fn winlink_next_by_number(
     mut s: *mut session,
     mut n: libc::c_int,
 ) -> *mut winlink {
-    while n > 0 as libc::c_int {
+    while n > 0i32 {
         wl = winlinks_RB_NEXT(wl);
         if wl.is_null() {
-            wl = winlinks_RB_MINMAX(&mut (*s).windows, -(1 as libc::c_int))
+            wl = winlinks_RB_MINMAX(&mut (*s).windows, -(1i32))
         }
         n -= 1
     }
@@ -3144,10 +3135,10 @@ pub unsafe extern "C" fn winlink_previous_by_number(
     mut s: *mut session,
     mut n: libc::c_int,
 ) -> *mut winlink {
-    while n > 0 as libc::c_int {
+    while n > 0i32 {
         wl = winlinks_RB_PREV(wl);
         if wl.is_null() {
-            wl = winlinks_RB_MINMAX(&mut (*s).windows, 1 as libc::c_int)
+            wl = winlinks_RB_MINMAX(&mut (*s).windows, 1i32)
         }
         n -= 1
     }
@@ -3196,11 +3187,9 @@ pub unsafe extern "C" fn window_find_by_id_str(mut s: *const libc::c_char) -> *m
         return 0 as *mut window;
     }
     id = strtonum(
-        s.offset(1 as libc::c_int as isize),
-        0 as libc::c_int as libc::c_longlong,
-        (2147483647 as libc::c_int as libc::c_uint)
-            .wrapping_mul(2 as libc::c_uint)
-            .wrapping_add(1 as libc::c_uint) as libc::c_longlong,
+        s.offset(1isize),
+        0i64,
+        (2147483647u32).wrapping_mul(2u32).wrapping_add(1u32) as libc::c_longlong,
         &mut errstr,
     ) as u_int;
     if !errstr.is_null() {
@@ -3388,7 +3377,7 @@ pub unsafe extern "C" fn window_find_by_id(mut id: u_int) -> *mut window {
 #[no_mangle]
 pub unsafe extern "C" fn window_update_activity(mut w: *mut window) {
     gettimeofday(&mut (*w).activity_time, 0 as *mut libc::c_void);
-    alerts_queue(w, 0x2 as libc::c_int);
+    alerts_queue(w, 0x2i32);
 }
 #[no_mangle]
 pub unsafe extern "C" fn window_create(
@@ -3398,29 +3387,26 @@ pub unsafe extern "C" fn window_create(
     mut ypixel: u_int,
 ) -> *mut window {
     let mut w: *mut window = 0 as *mut window;
-    if xpixel == 0 as libc::c_int as libc::c_uint {
-        xpixel = 16 as libc::c_int as u_int
+    if xpixel == 0u32 {
+        xpixel = 16u32
     }
-    if ypixel == 0 as libc::c_int as libc::c_uint {
-        ypixel = 32 as libc::c_int as u_int
+    if ypixel == 0u32 {
+        ypixel = 32u32
     }
-    w = xcalloc(
-        1 as libc::c_int as size_t,
-        ::std::mem::size_of::<window>() as libc::c_ulong,
-    ) as *mut window;
+    w = xcalloc(1u64, ::std::mem::size_of::<window>() as libc::c_ulong) as *mut window;
     (*w).name = xstrdup(b"\x00" as *const u8 as *const libc::c_char);
-    (*w).flags = 0 as libc::c_int;
+    (*w).flags = 0i32;
     (*w).panes.tqh_first = 0 as *mut window_pane;
     (*w).panes.tqh_last = &mut (*w).panes.tqh_first;
     (*w).active = 0 as *mut window_pane;
-    (*w).lastlayout = -(1 as libc::c_int);
+    (*w).lastlayout = -(1i32);
     (*w).layout_root = 0 as *mut layout_cell;
     (*w).sx = sx;
     (*w).sy = sy;
     (*w).xpixel = xpixel;
     (*w).ypixel = ypixel;
     (*w).options = options_create(global_w_options);
-    (*w).references = 0 as libc::c_int as u_int;
+    (*w).references = 0u32;
     (*w).winlinks.tqh_first = 0 as *mut winlink;
     (*w).winlinks.tqh_last = &mut (*w).winlinks.tqh_first;
     let fresh0 = next_window_id;
@@ -3461,24 +3447,18 @@ unsafe extern "C" fn window_destroy(mut w: *mut window) {
 #[no_mangle]
 pub unsafe extern "C" fn window_pane_destroy_ready(mut wp: *mut window_pane) -> libc::c_int {
     let mut n: libc::c_int = 0;
-    if (*wp).pipe_fd != -(1 as libc::c_int) {
-        if evbuffer_get_length((*(*wp).pipe_event).output) != 0 as libc::c_int as libc::c_ulong {
-            return 0 as libc::c_int;
+    if (*wp).pipe_fd != -(1i32) {
+        if evbuffer_get_length((*(*wp).pipe_event).output) != 0u64 {
+            return 0i32;
         }
-        if ioctl(
-            (*wp).fd,
-            0x541b as libc::c_int as libc::c_ulong,
-            &mut n as *mut libc::c_int,
-        ) != -(1 as libc::c_int)
-            && n > 0 as libc::c_int
-        {
-            return 0 as libc::c_int;
+        if ioctl((*wp).fd, 0x541bu64, &mut n as *mut libc::c_int) != -(1i32) && n > 0i32 {
+            return 0i32;
         }
     }
-    if !(*wp).flags & 0x100 as libc::c_int != 0 {
-        return 0 as libc::c_int;
+    if !(*wp).flags & 0x100i32 != 0 {
+        return 0i32;
     }
-    return 1 as libc::c_int;
+    return 1i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn window_add_ref(mut w: *mut window, mut from: *const libc::c_char) {
@@ -3502,18 +3482,14 @@ pub unsafe extern "C" fn window_remove_ref(mut w: *mut window, mut from: *const 
         from,
         (*w).references,
     );
-    if (*w).references == 0 as libc::c_int as libc::c_uint {
+    if (*w).references == 0u32 {
         window_destroy(w);
     };
 }
 #[no_mangle]
 pub unsafe extern "C" fn window_set_name(mut w: *mut window, mut new_name: *const libc::c_char) {
     free((*w).name as *mut libc::c_void);
-    utf8_stravis(
-        &mut (*w).name,
-        new_name,
-        0x1 as libc::c_int | 0x2 as libc::c_int | 0x8 as libc::c_int | 0x10 as libc::c_int,
-    );
+    utf8_stravis(&mut (*w).name, new_name, 0x1i32 | 0x2i32 | 0x8i32 | 0x10i32);
     notify_window(b"window-renamed\x00" as *const u8 as *const libc::c_char, w);
 }
 #[no_mangle]
@@ -3524,11 +3500,11 @@ pub unsafe extern "C" fn window_resize(
     mut xpixel: libc::c_int,
     mut ypixel: libc::c_int,
 ) {
-    if xpixel == 0 as libc::c_int {
-        xpixel = 16 as libc::c_int
+    if xpixel == 0i32 {
+        xpixel = 16i32
     }
-    if ypixel == 0 as libc::c_int {
-        ypixel = 32 as libc::c_int
+    if ypixel == 0i32 {
+        ypixel = 32i32
     }
     log_debug(
         b"%s: @%u resize %ux%u (%ux%u)\x00" as *const u8 as *const libc::c_char,
@@ -3536,12 +3512,12 @@ pub unsafe extern "C" fn window_resize(
         (*w).id,
         sx,
         sy,
-        if xpixel == -(1 as libc::c_int) {
+        if xpixel == -(1i32) {
             (*w).xpixel
         } else {
             xpixel as u_int
         },
-        if ypixel == -(1 as libc::c_int) {
+        if ypixel == -(1i32) {
             (*w).ypixel
         } else {
             ypixel as u_int
@@ -3549,10 +3525,10 @@ pub unsafe extern "C" fn window_resize(
     );
     (*w).sx = sx;
     (*w).sy = sy;
-    if xpixel != -(1 as libc::c_int) {
+    if xpixel != -(1i32) {
         (*w).xpixel = xpixel as u_int
     }
-    if ypixel != -(1 as libc::c_int) {
+    if ypixel != -(1i32) {
         (*w).ypixel = ypixel as u_int
     };
 }
@@ -3566,15 +3542,15 @@ pub unsafe extern "C" fn window_pane_send_resize(mut wp: *mut window_pane, mut f
         ws_ypixel: 0,
     };
     let mut sy: u_int = 0;
-    if (*wp).fd == -(1 as libc::c_int) {
+    if (*wp).fd == -(1i32) {
         return;
     }
     if force == 0 {
         sy = (*wp).sy
-    } else if (*wp).sy <= 1 as libc::c_int as libc::c_uint {
-        sy = (*wp).sy.wrapping_add(1 as libc::c_int as libc::c_uint)
+    } else if (*wp).sy <= 1u32 {
+        sy = (*wp).sy.wrapping_add(1u32)
     } else {
-        sy = (*wp).sy.wrapping_sub(1 as libc::c_int as libc::c_uint)
+        sy = (*wp).sy.wrapping_sub(1u32)
     }
     log_debug(
         b"%s: %%%u resize to %u,%u\x00" as *const u8 as *const libc::c_char,
@@ -3586,19 +3562,14 @@ pub unsafe extern "C" fn window_pane_send_resize(mut wp: *mut window_pane, mut f
     );
     memset(
         &mut ws as *mut winsize as *mut libc::c_void,
-        0 as libc::c_int,
+        0i32,
         ::std::mem::size_of::<winsize>() as libc::c_ulong,
     );
     ws.ws_col = (*wp).sx as libc::c_ushort;
     ws.ws_row = sy as libc::c_ushort;
     ws.ws_xpixel = (*w).xpixel.wrapping_mul(ws.ws_col as libc::c_uint) as libc::c_ushort;
     ws.ws_ypixel = (*w).ypixel.wrapping_mul(ws.ws_row as libc::c_uint) as libc::c_ushort;
-    if ioctl(
-        (*wp).fd,
-        0x5414 as libc::c_int as libc::c_ulong,
-        &mut ws as *mut winsize,
-    ) == -(1 as libc::c_int)
-    {
+    if ioctl((*wp).fd, 0x5414u64, &mut ws as *mut winsize) == -(1i32) {
         fatal(b"ioctl failed\x00" as *const u8 as *const libc::c_char);
     };
 }
@@ -3611,11 +3582,11 @@ pub unsafe extern "C" fn window_has_pane(
     wp1 = (*w).panes.tqh_first;
     while !wp1.is_null() {
         if wp1 == wp {
-            return 1 as libc::c_int;
+            return 1i32;
         }
         wp1 = (*wp1).entry.tqe_next
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn window_set_active_pane(
@@ -3630,14 +3601,14 @@ pub unsafe extern "C" fn window_set_active_pane(
         (*wp).id,
     );
     if wp == (*w).active {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     (*w).last = (*w).active;
     (*w).active = wp;
     let fresh1 = next_active_point;
     next_active_point = next_active_point.wrapping_add(1);
     (*(*w).active).active_point = fresh1;
-    (*(*w).active).flags |= 0x80 as libc::c_int;
+    (*(*w).active).flags |= 0x80i32;
     tty_update_window_offset(w);
     if notify != 0 {
         notify_window(
@@ -3645,7 +3616,7 @@ pub unsafe extern "C" fn window_set_active_pane(
             w,
         );
     }
-    return 1 as libc::c_int;
+    return 1i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn window_redraw_active_switch(mut w: *mut window, mut wp: *mut window_pane) {
@@ -3664,17 +3635,17 @@ pub unsafe extern "C" fn window_redraw_active_switch(mut w: *mut window, mut wp:
         gc1 = &mut (*wp).cached_gc;
         gc2 = &mut (*wp).cached_active_gc;
         if grid_cells_look_equal(gc1, gc2) == 0 {
-            (*wp).flags |= 0x1 as libc::c_int
+            (*wp).flags |= 0x1i32
         } else {
             c1 = window_pane_get_palette(wp, (*gc1).fg);
             c2 = window_pane_get_palette(wp, (*gc2).fg);
             if c1 != c2 {
-                (*wp).flags |= 0x1 as libc::c_int
+                (*wp).flags |= 0x1i32
             } else {
                 c1 = window_pane_get_palette(wp, (*gc1).bg);
                 c2 = window_pane_get_palette(wp, (*gc2).bg);
                 if c1 != c2 {
-                    (*wp).flags |= 0x1 as libc::c_int
+                    (*wp).flags |= 0x1i32
                 }
             }
         }
@@ -3711,46 +3682,39 @@ pub unsafe extern "C" fn window_find_string(
 ) -> *mut window_pane {
     let mut x: u_int = 0;
     let mut y: u_int = 0;
-    let mut top: u_int = 0 as libc::c_int as u_int;
-    let mut bottom: u_int = (*w).sy.wrapping_sub(1 as libc::c_int as libc::c_uint);
+    let mut top: u_int = 0u32;
+    let mut bottom: u_int = (*w).sy.wrapping_sub(1u32);
     let mut status: libc::c_int = 0;
-    x = (*w).sx.wrapping_div(2 as libc::c_int as libc::c_uint);
-    y = (*w).sy.wrapping_div(2 as libc::c_int as libc::c_uint);
+    x = (*w).sx.wrapping_div(2u32);
+    y = (*w).sy.wrapping_div(2u32);
     status = options_get_number(
         (*w).options,
         b"pane-border-status\x00" as *const u8 as *const libc::c_char,
     ) as libc::c_int;
-    if status == 1 as libc::c_int {
+    if status == 1i32 {
         top = top.wrapping_add(1)
-    } else if status == 2 as libc::c_int {
+    } else if status == 2i32 {
         bottom = bottom.wrapping_sub(1)
     }
-    if strcasecmp(s, b"top\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
+    if strcasecmp(s, b"top\x00" as *const u8 as *const libc::c_char) == 0i32 {
         y = top
-    } else if strcasecmp(s, b"bottom\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
+    } else if strcasecmp(s, b"bottom\x00" as *const u8 as *const libc::c_char) == 0i32 {
         y = bottom
-    } else if strcasecmp(s, b"left\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
-        x = 0 as libc::c_int as u_int
-    } else if strcasecmp(s, b"right\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
-        x = (*w).sx.wrapping_sub(1 as libc::c_int as libc::c_uint)
-    } else if strcasecmp(s, b"top-left\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int
-    {
-        x = 0 as libc::c_int as u_int;
+    } else if strcasecmp(s, b"left\x00" as *const u8 as *const libc::c_char) == 0i32 {
+        x = 0u32
+    } else if strcasecmp(s, b"right\x00" as *const u8 as *const libc::c_char) == 0i32 {
+        x = (*w).sx.wrapping_sub(1u32)
+    } else if strcasecmp(s, b"top-left\x00" as *const u8 as *const libc::c_char) == 0i32 {
+        x = 0u32;
         y = top
-    } else if strcasecmp(s, b"top-right\x00" as *const u8 as *const libc::c_char)
-        == 0 as libc::c_int
-    {
-        x = (*w).sx.wrapping_sub(1 as libc::c_int as libc::c_uint);
+    } else if strcasecmp(s, b"top-right\x00" as *const u8 as *const libc::c_char) == 0i32 {
+        x = (*w).sx.wrapping_sub(1u32);
         y = top
-    } else if strcasecmp(s, b"bottom-left\x00" as *const u8 as *const libc::c_char)
-        == 0 as libc::c_int
-    {
-        x = 0 as libc::c_int as u_int;
+    } else if strcasecmp(s, b"bottom-left\x00" as *const u8 as *const libc::c_char) == 0i32 {
+        x = 0u32;
         y = bottom
-    } else if strcasecmp(s, b"bottom-right\x00" as *const u8 as *const libc::c_char)
-        == 0 as libc::c_int
-    {
-        x = (*w).sx.wrapping_sub(1 as libc::c_int as libc::c_uint);
+    } else if strcasecmp(s, b"bottom-right\x00" as *const u8 as *const libc::c_char) == 0i32 {
+        x = (*w).sx.wrapping_sub(1u32);
         y = bottom
     } else {
         return 0 as *mut window_pane;
@@ -3761,14 +3725,14 @@ pub unsafe extern "C" fn window_find_string(
 pub unsafe extern "C" fn window_zoom(mut wp: *mut window_pane) -> libc::c_int {
     let mut w: *mut window = (*wp).window;
     let mut wp1: *mut window_pane = 0 as *mut window_pane;
-    if (*w).flags & 0x8 as libc::c_int != 0 {
-        return -(1 as libc::c_int);
+    if (*w).flags & 0x8i32 != 0 {
+        return -(1i32);
     }
-    if window_count_panes(w) == 1 as libc::c_int as libc::c_uint {
-        return -(1 as libc::c_int);
+    if window_count_panes(w) == 1u32 {
+        return -(1i32);
     }
     if (*w).active != wp {
-        window_set_active_pane(w, wp, 1 as libc::c_int);
+        window_set_active_pane(w, wp, 1i32);
     }
     wp1 = (*w).panes.tqh_first;
     while !wp1.is_null() {
@@ -3778,20 +3742,20 @@ pub unsafe extern "C" fn window_zoom(mut wp: *mut window_pane) -> libc::c_int {
     }
     (*w).saved_layout_root = (*w).layout_root;
     layout_init(w, wp);
-    (*w).flags |= 0x8 as libc::c_int;
+    (*w).flags |= 0x8i32;
     notify_window(
         b"window-layout-changed\x00" as *const u8 as *const libc::c_char,
         w,
     );
-    return 0 as libc::c_int;
+    return 0i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn window_unzoom(mut w: *mut window) -> libc::c_int {
     let mut wp: *mut window_pane = 0 as *mut window_pane;
-    if (*w).flags & 0x8 as libc::c_int == 0 {
-        return -(1 as libc::c_int);
+    if (*w).flags & 0x8i32 == 0 {
+        return -(1i32);
     }
-    (*w).flags &= !(0x8 as libc::c_int);
+    (*w).flags &= !(0x8i32);
     layout_free(w);
     (*w).layout_root = (*w).saved_layout_root;
     (*w).saved_layout_root = 0 as *mut layout_cell;
@@ -3806,7 +3770,7 @@ pub unsafe extern "C" fn window_unzoom(mut w: *mut window) -> libc::c_int {
         b"window-layout-changed\x00" as *const u8 as *const libc::c_char,
         w,
     );
-    return 0 as libc::c_int;
+    return 0i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn window_push_zoom(
@@ -3818,14 +3782,14 @@ pub unsafe extern "C" fn window_push_zoom(
         (*::std::mem::transmute::<&[u8; 17], &[libc::c_char; 17]>(b"window_push_zoom\x00"))
             .as_ptr(),
         (*w).id,
-        (flag != 0 && (*w).flags & 0x8 as libc::c_int != 0) as libc::c_int,
+        (flag != 0 && (*w).flags & 0x8i32 != 0) as libc::c_int,
     );
-    if flag != 0 && (*w).flags & 0x8 as libc::c_int != 0 {
-        (*w).flags |= 0x10 as libc::c_int
+    if flag != 0 && (*w).flags & 0x8i32 != 0 {
+        (*w).flags |= 0x10i32
     } else {
-        (*w).flags &= !(0x10 as libc::c_int)
+        (*w).flags &= !(0x10i32)
     }
-    return (window_unzoom(w) == 0 as libc::c_int) as libc::c_int;
+    return (window_unzoom(w) == 0i32) as libc::c_int;
 }
 #[no_mangle]
 pub unsafe extern "C" fn window_pop_zoom(mut w: *mut window) -> libc::c_int {
@@ -3833,12 +3797,12 @@ pub unsafe extern "C" fn window_pop_zoom(mut w: *mut window) -> libc::c_int {
         b"%s: @%u %d\x00" as *const u8 as *const libc::c_char,
         (*::std::mem::transmute::<&[u8; 16], &[libc::c_char; 16]>(b"window_pop_zoom\x00")).as_ptr(),
         (*w).id,
-        ((*w).flags & 0x10 as libc::c_int != 0) as libc::c_int,
+        ((*w).flags & 0x10i32 != 0) as libc::c_int,
     );
-    if (*w).flags & 0x10 as libc::c_int != 0 {
-        return (window_zoom((*w).active) == 0 as libc::c_int) as libc::c_int;
+    if (*w).flags & 0x10i32 != 0 {
+        return (window_zoom((*w).active) == 0i32) as libc::c_int;
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn window_add_pane(
@@ -3867,7 +3831,7 @@ pub unsafe extern "C" fn window_add_pane(
         }
         (*w).panes.tqh_first = wp;
         (*wp).entry.tqe_prev = &mut (*w).panes.tqh_first
-    } else if flags & 0x8 as libc::c_int != 0 {
+    } else if flags & 0x8i32 != 0 {
         log_debug(
             b"%s: @%u before %%%u\x00" as *const u8 as *const libc::c_char,
             (*::std::mem::transmute::<&[u8; 16], &[libc::c_char; 16]>(b"window_add_pane\x00"))
@@ -3875,7 +3839,7 @@ pub unsafe extern "C" fn window_add_pane(
             (*w).id,
             (*wp).id,
         );
-        if flags & 0x20 as libc::c_int != 0 {
+        if flags & 0x20i32 != 0 {
             (*wp).entry.tqe_next = (*w).panes.tqh_first;
             if !(*wp).entry.tqe_next.is_null() {
                 (*(*w).panes.tqh_first).entry.tqe_prev = &mut (*wp).entry.tqe_next
@@ -3898,7 +3862,7 @@ pub unsafe extern "C" fn window_add_pane(
             (*w).id,
             (*wp).id,
         );
-        if flags & 0x20 as libc::c_int != 0 {
+        if flags & 0x20i32 != 0 {
             (*wp).entry.tqe_next = 0 as *mut window_pane;
             (*wp).entry.tqe_prev = (*w).panes.tqh_last;
             *(*w).panes.tqh_last = wp;
@@ -3938,7 +3902,7 @@ pub unsafe extern "C" fn window_lost_pane(mut w: *mut window, mut wp: *mut windo
             }
         }
         if !(*w).active.is_null() {
-            (*(*w).active).flags |= 0x80 as libc::c_int;
+            (*(*w).active).flags |= 0x80i32;
             notify_window(
                 b"window-pane-changed\x00" as *const u8 as *const libc::c_char,
                 w,
@@ -3986,7 +3950,7 @@ pub unsafe extern "C" fn window_pane_next_by_number(
     mut wp: *mut window_pane,
     mut n: u_int,
 ) -> *mut window_pane {
-    while n > 0 as libc::c_int as libc::c_uint {
+    while n > 0u32 {
         wp = (*wp).entry.tqe_next;
         if wp.is_null() {
             wp = (*w).panes.tqh_first
@@ -4001,7 +3965,7 @@ pub unsafe extern "C" fn window_pane_previous_by_number(
     mut wp: *mut window_pane,
     mut n: u_int,
 ) -> *mut window_pane {
-    while n > 0 as libc::c_int as libc::c_uint {
+    while n > 0u32 {
         wp = *(*((*wp).entry.tqe_prev as *mut window_panes)).tqh_last;
         if wp.is_null() {
             wp = *(*((*w).panes.tqh_last as *mut window_panes)).tqh_last
@@ -4024,18 +3988,18 @@ pub unsafe extern "C" fn window_pane_index(
     wq = (*w).panes.tqh_first;
     while !wq.is_null() {
         if wp == wq {
-            return 0 as libc::c_int;
+            return 0i32;
         }
         *i = (*i).wrapping_add(1);
         wq = (*wq).entry.tqe_next
     }
-    return -(1 as libc::c_int);
+    return -(1i32);
 }
 #[no_mangle]
 pub unsafe extern "C" fn window_count_panes(mut w: *mut window) -> u_int {
     let mut wp: *mut window_pane = 0 as *mut window_pane;
     let mut n: u_int = 0;
-    n = 0 as libc::c_int as u_int;
+    n = 0u32;
     wp = (*w).panes.tqh_first;
     while !wp.is_null() {
         n = n.wrapping_add(1);
@@ -4062,43 +4026,43 @@ pub unsafe extern "C" fn window_printable_flags(mut wl: *mut winlink) -> *const 
     let mut s: *mut session = (*wl).session;
     static mut flags: [libc::c_char; 32] = [0; 32];
     let mut pos: libc::c_int = 0;
-    pos = 0 as libc::c_int;
-    if (*wl).flags & 0x2 as libc::c_int != 0 {
+    pos = 0i32;
+    if (*wl).flags & 0x2i32 != 0 {
         let fresh2 = pos;
         pos = pos + 1;
-        flags[fresh2 as usize] = '#' as i32 as libc::c_char
+        flags[fresh2 as usize] = '#' as libc::c_char
     }
-    if (*wl).flags & 0x1 as libc::c_int != 0 {
+    if (*wl).flags & 0x1i32 != 0 {
         let fresh3 = pos;
         pos = pos + 1;
-        flags[fresh3 as usize] = '!' as i32 as libc::c_char
+        flags[fresh3 as usize] = '!' as libc::c_char
     }
-    if (*wl).flags & 0x4 as libc::c_int != 0 {
+    if (*wl).flags & 0x4i32 != 0 {
         let fresh4 = pos;
         pos = pos + 1;
-        flags[fresh4 as usize] = '~' as i32 as libc::c_char
+        flags[fresh4 as usize] = '~' as libc::c_char
     }
     if wl == (*s).curw {
         let fresh5 = pos;
         pos = pos + 1;
-        flags[fresh5 as usize] = '*' as i32 as libc::c_char
+        flags[fresh5 as usize] = '*' as libc::c_char
     }
     if wl == (*s).lastw.tqh_first {
         let fresh6 = pos;
         pos = pos + 1;
-        flags[fresh6 as usize] = '-' as i32 as libc::c_char
+        flags[fresh6 as usize] = '-' as libc::c_char
     }
     if server_check_marked() != 0 && wl == marked_pane.wl {
         let fresh7 = pos;
         pos = pos + 1;
-        flags[fresh7 as usize] = 'M' as i32 as libc::c_char
+        flags[fresh7 as usize] = 'M' as libc::c_char
     }
-    if (*(*wl).window).flags & 0x8 as libc::c_int != 0 {
+    if (*(*wl).window).flags & 0x8i32 != 0 {
         let fresh8 = pos;
         pos = pos + 1;
-        flags[fresh8 as usize] = 'Z' as i32 as libc::c_char
+        flags[fresh8 as usize] = 'Z' as libc::c_char
     }
-    flags[pos as usize] = '\u{0}' as i32 as libc::c_char;
+    flags[pos as usize] = '\u{0}' as libc::c_char;
     return flags.as_mut_ptr();
 }
 #[no_mangle]
@@ -4111,11 +4075,9 @@ pub unsafe extern "C" fn window_pane_find_by_id_str(
         return 0 as *mut window_pane;
     }
     id = strtonum(
-        s.offset(1 as libc::c_int as isize),
-        0 as libc::c_int as libc::c_longlong,
-        (2147483647 as libc::c_int as libc::c_uint)
-            .wrapping_mul(2 as libc::c_uint)
-            .wrapping_add(1 as libc::c_uint) as libc::c_longlong,
+        s.offset(1isize),
+        0i64,
+        (2147483647u32).wrapping_mul(2u32).wrapping_add(1u32) as libc::c_longlong,
         &mut errstr,
     ) as u_int;
     if !errstr.is_null() {
@@ -4375,46 +4337,38 @@ unsafe extern "C" fn window_pane_create(
 ) -> *mut window_pane {
     let mut wp: *mut window_pane = 0 as *mut window_pane;
     let mut host: [libc::c_char; 65] = [0; 65];
-    wp = xcalloc(
-        1 as libc::c_int as size_t,
-        ::std::mem::size_of::<window_pane>() as libc::c_ulong,
-    ) as *mut window_pane;
+    wp = xcalloc(1u64, ::std::mem::size_of::<window_pane>() as libc::c_ulong) as *mut window_pane;
     (*wp).window = w;
     (*wp).options = options_create((*w).options);
-    (*wp).flags = 0x1000 as libc::c_int;
+    (*wp).flags = 0x1000i32;
     let fresh9 = next_window_pane_id;
     next_window_pane_id = next_window_pane_id.wrapping_add(1);
     (*wp).id = fresh9;
     window_pane_tree_RB_INSERT(&mut all_window_panes, wp);
-    (*wp).argc = 0 as libc::c_int;
+    (*wp).argc = 0i32;
     (*wp).argv = 0 as *mut *mut libc::c_char;
     (*wp).shell = 0 as *mut libc::c_char;
     (*wp).cwd = 0 as *mut libc::c_char;
-    (*wp).fd = -(1 as libc::c_int);
+    (*wp).fd = -(1i32);
     (*wp).event = 0 as *mut bufferevent;
-    (*wp).fg = 8 as libc::c_int;
-    (*wp).bg = 8 as libc::c_int;
+    (*wp).fg = 8i32;
+    (*wp).bg = 8i32;
     (*wp).modes.tqh_first = 0 as *mut window_mode_entry;
     (*wp).modes.tqh_last = &mut (*wp).modes.tqh_first;
     (*wp).layout_cell = 0 as *mut layout_cell;
-    (*wp).xoff = 0 as libc::c_int as u_int;
-    (*wp).yoff = 0 as libc::c_int as u_int;
+    (*wp).xoff = 0u32;
+    (*wp).yoff = 0u32;
     (*wp).sx = sx;
     (*wp).sy = sy;
-    (*wp).pipe_fd = -(1 as libc::c_int);
+    (*wp).pipe_fd = -(1i32);
     (*wp).pipe_event = 0 as *mut bufferevent;
     screen_init(&mut (*wp).base, sx, sy, hlimit);
     (*wp).screen = &mut (*wp).base;
-    screen_init(
-        &mut (*wp).status_screen,
-        1 as libc::c_int as u_int,
-        1 as libc::c_int as u_int,
-        0 as libc::c_int as u_int,
-    );
+    screen_init(&mut (*wp).status_screen, 1u32, 1u32, 0u32);
     if gethostname(
         host.as_mut_ptr(),
         ::std::mem::size_of::<[libc::c_char; 65]>() as libc::c_ulong,
-    ) == 0 as libc::c_int
+    ) == 0i32
     {
         screen_set_title(&mut (*wp).base, host.as_mut_ptr());
     }
@@ -4423,7 +4377,7 @@ unsafe extern "C" fn window_pane_create(
 unsafe extern "C" fn window_pane_destroy(mut wp: *mut window_pane) {
     window_pane_reset_mode_all(wp);
     free((*wp).searchstr as *mut libc::c_void);
-    if (*wp).fd != -(1 as libc::c_int) {
+    if (*wp).fd != -(1i32) {
         bufferevent_free((*wp).event);
         close((*wp).fd);
     }
@@ -4432,7 +4386,7 @@ unsafe extern "C" fn window_pane_destroy(mut wp: *mut window_pane) {
     }
     screen_free(&mut (*wp).status_screen);
     screen_free(&mut (*wp).base);
-    if (*wp).pipe_fd != -(1 as libc::c_int) {
+    if (*wp).pipe_fd != -(1i32) {
         bufferevent_free((*wp).pipe_event);
         close((*wp).pipe_fd);
     }
@@ -4461,9 +4415,9 @@ unsafe extern "C" fn window_pane_read_callback(
     let mut new_data: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut new_size: size_t = 0;
     let mut c: *mut client = 0 as *mut client;
-    if (*wp).pipe_fd != -(1 as libc::c_int) {
+    if (*wp).pipe_fd != -(1i32) {
         new_data = window_pane_get_new_data(wp, wpo, &mut new_size) as *mut libc::c_char;
-        if new_size > 0 as libc::c_int as libc::c_ulong {
+        if new_size > 0u64 {
             bufferevent_write((*wp).pipe_event, new_data as *const libc::c_void, new_size);
             window_pane_update_used_data(wp, wpo, new_size);
         }
@@ -4475,13 +4429,13 @@ unsafe extern "C" fn window_pane_read_callback(
     );
     c = clients.tqh_first;
     while !c.is_null() {
-        if !(*c).session.is_null() && (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
+        if !(*c).session.is_null() && (*c).flags & 0x2000u64 != 0 {
             control_write_output(c, wp);
         }
         c = (*c).entry.tqe_next
     }
     input_parse_pane(wp);
-    bufferevent_disable((*wp).event, 0x2 as libc::c_int as libc::c_short);
+    bufferevent_disable((*wp).event, 0x2i16);
 }
 unsafe extern "C" fn window_pane_error_callback(
     mut _bufev: *mut bufferevent,
@@ -4493,14 +4447,14 @@ unsafe extern "C" fn window_pane_error_callback(
         b"%%%u error\x00" as *const u8 as *const libc::c_char,
         (*wp).id,
     );
-    (*wp).flags |= 0x100 as libc::c_int;
+    (*wp).flags |= 0x100i32;
     if window_pane_destroy_ready(wp) != 0 {
-        server_destroy_pane(wp, 1 as libc::c_int);
+        server_destroy_pane(wp, 1i32);
     };
 }
 #[no_mangle]
 pub unsafe extern "C" fn window_pane_set_event(mut wp: *mut window_pane) {
-    setblocking((*wp).fd, 0 as libc::c_int);
+    setblocking((*wp).fd, 0i32);
     (*wp).event = bufferevent_new(
         (*wp).fd,
         Some(
@@ -4519,10 +4473,7 @@ pub unsafe extern "C" fn window_pane_set_event(mut wp: *mut window_pane) {
         wp as *mut libc::c_void,
     );
     (*wp).ictx = input_init(wp, (*wp).event);
-    bufferevent_enable(
-        (*wp).event,
-        (0x2 as libc::c_int | 0x4 as libc::c_int) as libc::c_short,
-    );
+    bufferevent_enable((*wp).event, (0x2i32 | 0x4i32) as libc::c_short);
 }
 #[no_mangle]
 pub unsafe extern "C" fn window_pane_resize(
@@ -4548,7 +4499,7 @@ pub unsafe extern "C" fn window_pane_resize(
         &mut (*wp).base,
         sx,
         sy,
-        ((*wp).base.saved_grid == 0 as *mut libc::c_void as *mut grid) as libc::c_int,
+        ((*wp).base.saved_grid == 0 as *mut grid) as libc::c_int,
     );
     wme = (*wp).modes.tqh_first;
     if !wme.is_null() && (*(*wme).mode).resize.is_some() {
@@ -4558,10 +4509,10 @@ pub unsafe extern "C" fn window_pane_resize(
      * If the pane has already been resized, set the force flag and make
      * the application resize twice to force it to redraw.
      */
-    if (*wp).flags & 0x8 as libc::c_int != 0 {
-        (*wp).flags |= 0x10 as libc::c_int
+    if (*wp).flags & 0x8i32 != 0 {
+        (*wp).flags |= 0x10i32
     }
-    (*wp).flags |= 0x8 as libc::c_int;
+    (*wp).flags |= 0x8i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn window_pane_set_palette(
@@ -4569,25 +4520,25 @@ pub unsafe extern "C" fn window_pane_set_palette(
     mut n: u_int,
     mut colour: libc::c_int,
 ) {
-    if n > 0xff as libc::c_int as libc::c_uint {
+    if n > 0xffu32 {
         return;
     }
     if (*wp).palette.is_null() {
         (*wp).palette = xcalloc(
-            0x100 as libc::c_int as size_t,
+            0x100u64,
             ::std::mem::size_of::<libc::c_int>() as libc::c_ulong,
         ) as *mut libc::c_int
     }
     *(*wp).palette.offset(n as isize) = colour;
-    (*wp).flags |= 0x1 as libc::c_int;
+    (*wp).flags |= 0x1i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn window_pane_unset_palette(mut wp: *mut window_pane, mut n: u_int) {
-    if n > 0xff as libc::c_int as libc::c_uint || (*wp).palette.is_null() {
+    if n > 0xffu32 || (*wp).palette.is_null() {
         return;
     }
-    *(*wp).palette.offset(n as isize) = 0 as libc::c_int;
-    (*wp).flags |= 0x1 as libc::c_int;
+    *(*wp).palette.offset(n as isize) = 0i32;
+    (*wp).flags |= 0x1i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn window_pane_reset_palette(mut wp: *mut window_pane) {
@@ -4596,7 +4547,7 @@ pub unsafe extern "C" fn window_pane_reset_palette(mut wp: *mut window_pane) {
     }
     free((*wp).palette as *mut libc::c_void);
     (*wp).palette = 0 as *mut libc::c_int;
-    (*wp).flags |= 0x1 as libc::c_int;
+    (*wp).flags |= 0x1i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn window_pane_get_palette(
@@ -4605,22 +4556,18 @@ pub unsafe extern "C" fn window_pane_get_palette(
 ) -> libc::c_int {
     let mut new: libc::c_int = 0;
     if wp.is_null() || (*wp).palette.is_null() {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
-    new = -(1 as libc::c_int);
-    if c < 8 as libc::c_int {
+    new = -(1i32);
+    if c < 8i32 {
         new = *(*wp).palette.offset(c as isize)
-    } else if c >= 90 as libc::c_int && c <= 97 as libc::c_int {
-        new = *(*wp)
-            .palette
-            .offset((8 as libc::c_int + c - 90 as libc::c_int) as isize)
-    } else if c & 0x1000000 as libc::c_int != 0 {
-        new = *(*wp)
-            .palette
-            .offset((c & !(0x1000000 as libc::c_int)) as isize)
+    } else if c >= 90i32 && c <= 97i32 {
+        new = *(*wp).palette.offset((8i32 + c - 90i32) as isize)
+    } else if c & 0x1000000i32 != 0 {
+        new = *(*wp).palette.offset((c & !(0x1000000i32)) as isize)
     }
-    if new == 0 as libc::c_int {
-        return -(1 as libc::c_int);
+    if new == 0i32 {
+        return -(1i32);
     }
     return new;
 }
@@ -4634,7 +4581,7 @@ pub unsafe extern "C" fn window_pane_set_mode(
 ) -> libc::c_int {
     let mut wme: *mut window_mode_entry = 0 as *mut window_mode_entry;
     if !(*wp).modes.tqh_first.is_null() && (*(*wp).modes.tqh_first).mode == mode {
-        return 1 as libc::c_int;
+        return 1i32;
     }
     wme = (*wp).modes.tqh_first;
     while !wme.is_null() {
@@ -4660,13 +4607,13 @@ pub unsafe extern "C" fn window_pane_set_mode(
         (*wme).entry.tqe_prev = &mut (*wp).modes.tqh_first
     } else {
         wme = xcalloc(
-            1 as libc::c_int as size_t,
+            1u64,
             ::std::mem::size_of::<window_mode_entry>() as libc::c_ulong,
         ) as *mut window_mode_entry;
         (*wme).wp = wp;
         (*wme).swp = swp;
         (*wme).mode = mode;
-        (*wme).prefix = 1 as libc::c_int as u_int;
+        (*wme).prefix = 1u32;
         (*wme).entry.tqe_next = (*wp).modes.tqh_first;
         if !(*wme).entry.tqe_next.is_null() {
             (*(*wp).modes.tqh_first).entry.tqe_prev = &mut (*wme).entry.tqe_next
@@ -4678,14 +4625,14 @@ pub unsafe extern "C" fn window_pane_set_mode(
         (*wme).screen = (*(*wme).mode).init.expect("non-null function pointer")(wme, fs, args)
     }
     (*wp).screen = (*wme).screen;
-    (*wp).flags |= 0x1 as libc::c_int | 0x80 as libc::c_int;
+    (*wp).flags |= 0x1i32 | 0x80i32;
     server_redraw_window_borders((*wp).window);
     server_status_window((*wp).window);
     notify_pane(
         b"pane-mode-changed\x00" as *const u8 as *const libc::c_char,
         wp,
     );
-    return 0 as libc::c_int;
+    return 0i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn window_pane_reset_mode(mut wp: *mut window_pane) {
@@ -4727,7 +4674,7 @@ pub unsafe extern "C" fn window_pane_reset_mode(mut wp: *mut window_pane) {
             (*(*next).mode).resize.expect("non-null function pointer")(next, (*wp).sx, (*wp).sy);
         }
     }
-    (*wp).flags |= 0x1 as libc::c_int | 0x80 as libc::c_int;
+    (*wp).flags |= 0x1i32 | 0x80i32;
     server_redraw_window_borders((*wp).window);
     server_status_window((*wp).window);
     notify_pane(
@@ -4752,34 +4699,30 @@ pub unsafe extern "C" fn window_pane_key(
 ) -> libc::c_int {
     let mut wme: *mut window_mode_entry = 0 as *mut window_mode_entry;
     let mut wp2: *mut window_pane = 0 as *mut window_pane;
-    if key & 0xfffffffffff as libc::c_ulonglong
-        >= key_code_code::MOUSE as libc::c_ulong as libc::c_ulonglong
-        && (key & 0xfffffffffff as libc::c_ulonglong)
-            < key_code_code::BSPACE as libc::c_ulong as libc::c_ulonglong
+    if key & 0xfffffffffffu64 >= key_code_code::MOUSE
+        && (key & 0xfffffffffffu64) < key_code_code::BSPACE
         && m.is_null()
     {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     wme = (*wp).modes.tqh_first;
     if !wme.is_null() {
         if (*(*wme).mode).key.is_some() && !c.is_null() {
-            key &= !(0xff000000000000 as libc::c_ulonglong);
+            key &= !(0xff000000000000u64);
             (*(*wme).mode).key.expect("non-null function pointer")(wme, c, s, wl, key, m);
         }
-        return 0 as libc::c_int;
+        return 0i32;
     }
-    if (*wp).fd == -(1 as libc::c_int) || (*wp).flags & 0x40 as libc::c_int != 0 {
-        return 0 as libc::c_int;
+    if (*wp).fd == -(1i32) || (*wp).flags & 0x40i32 != 0 {
+        return 0i32;
     }
-    if input_key_pane(wp, key, m) != 0 as libc::c_int {
-        return -(1 as libc::c_int);
+    if input_key_pane(wp, key, m) != 0i32 {
+        return -(1i32);
     }
-    if key & 0xfffffffffff as libc::c_ulonglong
-        >= key_code_code::MOUSE as libc::c_ulong as libc::c_ulonglong
-        && (key & 0xfffffffffff as libc::c_ulonglong)
-            < key_code_code::BSPACE as libc::c_ulong as libc::c_ulonglong
+    if key & 0xfffffffffffu64 >= key_code_code::MOUSE
+        && (key & 0xfffffffffffu64) < key_code_code::BSPACE
     {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     if options_get_number(
         (*(*wp).window).options,
@@ -4790,8 +4733,8 @@ pub unsafe extern "C" fn window_pane_key(
         while !wp2.is_null() {
             if wp2 != wp
                 && (*wp2).modes.tqh_first.is_null()
-                && (*wp2).fd != -(1 as libc::c_int)
-                && !(*wp2).flags & 0x40 as libc::c_int != 0
+                && (*wp2).fd != -(1i32)
+                && !(*wp2).flags & 0x40i32 != 0
                 && window_pane_visible(wp2) != 0
             {
                 input_key_pane(wp2, key, 0 as *mut mouse_event);
@@ -4799,12 +4742,12 @@ pub unsafe extern "C" fn window_pane_key(
             wp2 = (*wp2).entry.tqe_next
         }
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn window_pane_visible(mut wp: *mut window_pane) -> libc::c_int {
-    if !(*(*wp).window).flags & 0x8 as libc::c_int != 0 {
-        return 1 as libc::c_int;
+    if !(*(*wp).window).flags & 0x8i32 != 0 {
+        return 1i32;
     }
     return (wp == (*(*wp).window).active) as libc::c_int;
 }
@@ -4830,12 +4773,12 @@ pub unsafe extern "C" fn window_pane_search(
     let mut new: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut line: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut i: u_int = 0;
-    let mut flags: libc::c_int = 0 as libc::c_int;
+    let mut flags: libc::c_int = 0i32;
     let mut found: libc::c_int = 0;
     let mut n: size_t = 0;
     if regex == 0 {
         if ignore != 0 {
-            flags |= (1 as libc::c_int) << 4 as libc::c_int
+            flags |= (1i32) << 4i32
         }
         xasprintf(
             &mut new as *mut *mut libc::c_char,
@@ -4844,28 +4787,26 @@ pub unsafe extern "C" fn window_pane_search(
         );
     } else {
         if ignore != 0 {
-            flags |= (1 as libc::c_int) << 1 as libc::c_int
+            flags |= (1i32) << 1i32
         }
-        if regcomp(&mut r, term, flags | 1 as libc::c_int) != 0 as libc::c_int {
-            return 0 as libc::c_int as u_int;
+        if regcomp(&mut r, term, flags | 1i32) != 0i32 {
+            return 0u32;
         }
     }
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < (*(*s).grid).sy {
-        line = grid_view_string_cells((*s).grid, 0 as libc::c_int as u_int, i, (*(*s).grid).sx);
+        line = grid_view_string_cells((*s).grid, 0u32, i, (*(*s).grid).sx);
         n = strlen(line);
-        while n > 0 as libc::c_int as libc::c_ulong {
+        while n > 0u64 {
             if *(*__ctype_b_loc()).offset(
-                *line.offset(n.wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize) as u_char
-                    as libc::c_int as isize,
+                *line.offset(n.wrapping_sub(1u64) as isize) as u_char as libc::c_int as isize
             ) as libc::c_int
-                & _ISspace as libc::c_int as libc::c_ushort as libc::c_int
+                & _ISspace as libc::c_ushort as libc::c_int
                 == 0
             {
                 break;
             }
-            *line.offset(n.wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize) =
-                '\u{0}' as i32 as libc::c_char;
+            *line.offset(n.wrapping_sub(1u64) as isize) = '\u{0}' as libc::c_char;
             n = n.wrapping_sub(1)
         }
         log_debug(
@@ -4875,15 +4816,9 @@ pub unsafe extern "C" fn window_pane_search(
             line,
         );
         if regex == 0 {
-            found = (fnmatch(new, line, flags) == 0 as libc::c_int) as libc::c_int
+            found = (fnmatch(new, line, flags) == 0i32) as libc::c_int
         } else {
-            found = (regexec(
-                &mut r,
-                line,
-                0 as libc::c_int as size_t,
-                0 as *mut regmatch_t,
-                0 as libc::c_int,
-            ) == 0 as libc::c_int) as libc::c_int
+            found = (regexec(&mut r, line, 0u64, 0 as *mut regmatch_t, 0i32) == 0i32) as libc::c_int
         }
         free(line as *mut libc::c_void);
         if found != 0 {
@@ -4897,9 +4832,9 @@ pub unsafe extern "C" fn window_pane_search(
         regfree(&mut r);
     }
     if i == (*(*s).grid).sy {
-        return 0 as libc::c_int as u_int;
+        return 0u32;
     }
-    return i.wrapping_add(1 as libc::c_int as libc::c_uint);
+    return i.wrapping_add(1u32);
 }
 /* Get MRU pane from a list. */
 unsafe extern "C" fn window_pane_choose_best(
@@ -4909,11 +4844,11 @@ unsafe extern "C" fn window_pane_choose_best(
     let mut next: *mut window_pane = 0 as *mut window_pane;
     let mut best: *mut window_pane = 0 as *mut window_pane;
     let mut i: u_int = 0;
-    if size == 0 as libc::c_int as libc::c_uint {
+    if size == 0u32 {
         return 0 as *mut window_pane;
     }
-    best = *list.offset(0 as libc::c_int as isize);
-    i = 1 as libc::c_int as u_int;
+    best = *list.offset(0isize);
+    i = 1u32;
     while i < size {
         next = *list.offset(i as isize);
         if (*next).active_point > (*best).active_point {
@@ -4949,46 +4884,38 @@ pub unsafe extern "C" fn window_pane_find_up(mut wp: *mut window_pane) -> *mut w
         b"pane-border-status\x00" as *const u8 as *const libc::c_char,
     ) as libc::c_int;
     list = 0 as *mut *mut window_pane;
-    size = 0 as libc::c_int as u_int;
+    size = 0u32;
     edge = (*wp).yoff;
-    if status == 1 as libc::c_int {
-        if edge == 1 as libc::c_int as libc::c_uint {
-            edge = (*w).sy.wrapping_add(1 as libc::c_int as libc::c_uint)
+    if status == 1i32 {
+        if edge == 1u32 {
+            edge = (*w).sy.wrapping_add(1u32)
         }
-    } else if status == 2 as libc::c_int {
-        if edge == 0 as libc::c_int as libc::c_uint {
+    } else if status == 2i32 {
+        if edge == 0u32 {
             edge = (*w).sy
         }
-    } else if edge == 0 as libc::c_int as libc::c_uint {
-        edge = (*w).sy.wrapping_add(1 as libc::c_int as libc::c_uint)
+    } else if edge == 0u32 {
+        edge = (*w).sy.wrapping_add(1u32)
     }
     left = (*wp).xoff;
     right = (*wp).xoff.wrapping_add((*wp).sx);
     next = (*w).panes.tqh_first;
     while !next.is_null() {
         if !(next == wp) {
-            if !((*next)
-                .yoff
-                .wrapping_add((*next).sy)
-                .wrapping_add(1 as libc::c_int as libc::c_uint)
-                != edge)
-            {
-                end = (*next)
-                    .xoff
-                    .wrapping_add((*next).sx)
-                    .wrapping_sub(1 as libc::c_int as libc::c_uint);
-                found = 0 as libc::c_int;
+            if !((*next).yoff.wrapping_add((*next).sy).wrapping_add(1u32) != edge) {
+                end = (*next).xoff.wrapping_add((*next).sx).wrapping_sub(1u32);
+                found = 0i32;
                 if (*next).xoff < left && end > right {
-                    found = 1 as libc::c_int
+                    found = 1i32
                 } else if (*next).xoff >= left && (*next).xoff <= right {
-                    found = 1 as libc::c_int
+                    found = 1i32
                 } else if end >= left && end <= right {
-                    found = 1 as libc::c_int
+                    found = 1i32
                 }
                 if !(found == 0) {
                     list = xreallocarray(
                         list as *mut libc::c_void,
-                        size.wrapping_add(1 as libc::c_int as libc::c_uint) as size_t,
+                        size.wrapping_add(1u32) as size_t,
                         ::std::mem::size_of::<*mut window_pane>() as libc::c_ulong,
                     ) as *mut *mut window_pane;
                     let fresh10 = size;
@@ -5027,21 +4954,18 @@ pub unsafe extern "C" fn window_pane_find_down(mut wp: *mut window_pane) -> *mut
         b"pane-border-status\x00" as *const u8 as *const libc::c_char,
     ) as libc::c_int;
     list = 0 as *mut *mut window_pane;
-    size = 0 as libc::c_int as u_int;
-    edge = (*wp)
-        .yoff
-        .wrapping_add((*wp).sy)
-        .wrapping_add(1 as libc::c_int as libc::c_uint);
-    if status == 1 as libc::c_int {
+    size = 0u32;
+    edge = (*wp).yoff.wrapping_add((*wp).sy).wrapping_add(1u32);
+    if status == 1i32 {
         if edge >= (*w).sy {
-            edge = 1 as libc::c_int as u_int
+            edge = 1u32
         }
-    } else if status == 2 as libc::c_int {
-        if edge >= (*w).sy.wrapping_sub(1 as libc::c_int as libc::c_uint) {
-            edge = 0 as libc::c_int as u_int
+    } else if status == 2i32 {
+        if edge >= (*w).sy.wrapping_sub(1u32) {
+            edge = 0u32
         }
     } else if edge >= (*w).sy {
-        edge = 0 as libc::c_int as u_int
+        edge = 0u32
     }
     left = (*wp).xoff;
     right = (*wp).xoff.wrapping_add((*wp).sx);
@@ -5049,22 +4973,19 @@ pub unsafe extern "C" fn window_pane_find_down(mut wp: *mut window_pane) -> *mut
     while !next.is_null() {
         if !(next == wp) {
             if !((*next).yoff != edge) {
-                end = (*next)
-                    .xoff
-                    .wrapping_add((*next).sx)
-                    .wrapping_sub(1 as libc::c_int as libc::c_uint);
-                found = 0 as libc::c_int;
+                end = (*next).xoff.wrapping_add((*next).sx).wrapping_sub(1u32);
+                found = 0i32;
                 if (*next).xoff < left && end > right {
-                    found = 1 as libc::c_int
+                    found = 1i32
                 } else if (*next).xoff >= left && (*next).xoff <= right {
-                    found = 1 as libc::c_int
+                    found = 1i32
                 } else if end >= left && end <= right {
-                    found = 1 as libc::c_int
+                    found = 1i32
                 }
                 if !(found == 0) {
                     list = xreallocarray(
                         list as *mut libc::c_void,
-                        size.wrapping_add(1 as libc::c_int as libc::c_uint) as size_t,
+                        size.wrapping_add(1u32) as size_t,
                         ::std::mem::size_of::<*mut window_pane>() as libc::c_ulong,
                     ) as *mut *mut window_pane;
                     let fresh12 = size;
@@ -5098,38 +5019,30 @@ pub unsafe extern "C" fn window_pane_find_left(mut wp: *mut window_pane) -> *mut
     }
     w = (*wp).window;
     list = 0 as *mut *mut window_pane;
-    size = 0 as libc::c_int as u_int;
+    size = 0u32;
     edge = (*wp).xoff;
-    if edge == 0 as libc::c_int as libc::c_uint {
-        edge = (*w).sx.wrapping_add(1 as libc::c_int as libc::c_uint)
+    if edge == 0u32 {
+        edge = (*w).sx.wrapping_add(1u32)
     }
     top = (*wp).yoff;
     bottom = (*wp).yoff.wrapping_add((*wp).sy);
     next = (*w).panes.tqh_first;
     while !next.is_null() {
         if !(next == wp) {
-            if !((*next)
-                .xoff
-                .wrapping_add((*next).sx)
-                .wrapping_add(1 as libc::c_int as libc::c_uint)
-                != edge)
-            {
-                end = (*next)
-                    .yoff
-                    .wrapping_add((*next).sy)
-                    .wrapping_sub(1 as libc::c_int as libc::c_uint);
-                found = 0 as libc::c_int;
+            if !((*next).xoff.wrapping_add((*next).sx).wrapping_add(1u32) != edge) {
+                end = (*next).yoff.wrapping_add((*next).sy).wrapping_sub(1u32);
+                found = 0i32;
                 if (*next).yoff < top && end > bottom {
-                    found = 1 as libc::c_int
+                    found = 1i32
                 } else if (*next).yoff >= top && (*next).yoff <= bottom {
-                    found = 1 as libc::c_int
+                    found = 1i32
                 } else if end >= top && end <= bottom {
-                    found = 1 as libc::c_int
+                    found = 1i32
                 }
                 if !(found == 0) {
                     list = xreallocarray(
                         list as *mut libc::c_void,
-                        size.wrapping_add(1 as libc::c_int as libc::c_uint) as size_t,
+                        size.wrapping_add(1u32) as size_t,
                         ::std::mem::size_of::<*mut window_pane>() as libc::c_ulong,
                     ) as *mut *mut window_pane;
                     let fresh14 = size;
@@ -5163,13 +5076,10 @@ pub unsafe extern "C" fn window_pane_find_right(mut wp: *mut window_pane) -> *mu
     }
     w = (*wp).window;
     list = 0 as *mut *mut window_pane;
-    size = 0 as libc::c_int as u_int;
-    edge = (*wp)
-        .xoff
-        .wrapping_add((*wp).sx)
-        .wrapping_add(1 as libc::c_int as libc::c_uint);
+    size = 0u32;
+    edge = (*wp).xoff.wrapping_add((*wp).sx).wrapping_add(1u32);
     if edge >= (*w).sx {
-        edge = 0 as libc::c_int as u_int
+        edge = 0u32
     }
     top = (*wp).yoff;
     bottom = (*wp).yoff.wrapping_add((*wp).sy);
@@ -5177,22 +5087,19 @@ pub unsafe extern "C" fn window_pane_find_right(mut wp: *mut window_pane) -> *mu
     while !next.is_null() {
         if !(next == wp) {
             if !((*next).xoff != edge) {
-                end = (*next)
-                    .yoff
-                    .wrapping_add((*next).sy)
-                    .wrapping_sub(1 as libc::c_int as libc::c_uint);
-                found = 0 as libc::c_int;
+                end = (*next).yoff.wrapping_add((*next).sy).wrapping_sub(1u32);
+                found = 0i32;
                 if (*next).yoff < top && end > bottom {
-                    found = 1 as libc::c_int
+                    found = 1i32
                 } else if (*next).yoff >= top && (*next).yoff <= bottom {
-                    found = 1 as libc::c_int
+                    found = 1i32
                 } else if end >= top && end <= bottom {
-                    found = 1 as libc::c_int
+                    found = 1i32
                 }
                 if !(found == 0) {
                     list = xreallocarray(
                         list as *mut libc::c_void,
-                        size.wrapping_add(1 as libc::c_int as libc::c_uint) as size_t,
+                        size.wrapping_add(1u32) as size_t,
                         ::std::mem::size_of::<*mut window_pane>() as libc::c_ulong,
                     ) as *mut *mut window_pane;
                     let fresh16 = size;
@@ -5212,13 +5119,11 @@ pub unsafe extern "C" fn window_pane_find_right(mut wp: *mut window_pane) -> *mu
 #[no_mangle]
 pub unsafe extern "C" fn winlink_clear_flags(mut wl: *mut winlink) {
     let mut loop_0: *mut winlink = 0 as *mut winlink;
-    (*(*wl).window).flags &= !(0x1 as libc::c_int | 0x2 as libc::c_int | 0x4 as libc::c_int);
+    (*(*wl).window).flags &= !(0x1i32 | 0x2i32 | 0x4i32);
     loop_0 = (*(*wl).window).winlinks.tqh_first;
     while !loop_0.is_null() {
-        if (*loop_0).flags & (0x1 as libc::c_int | 0x2 as libc::c_int | 0x4 as libc::c_int)
-            != 0 as libc::c_int
-        {
-            (*loop_0).flags &= !(0x1 as libc::c_int | 0x2 as libc::c_int | 0x4 as libc::c_int);
+        if (*loop_0).flags & (0x1i32 | 0x2i32 | 0x4i32) != 0i32 {
+            (*loop_0).flags &= !(0x1i32 | 0x2i32 | 0x4i32);
             server_status_session((*loop_0).session);
         }
         loop_0 = (*loop_0).wentry.tqe_next
@@ -5234,27 +5139,27 @@ pub unsafe extern "C" fn winlink_shuffle_up(
     let mut idx: libc::c_int = 0;
     let mut last: libc::c_int = 0;
     if wl.is_null() {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     if before != 0 {
         idx = (*wl).idx
     } else {
-        idx = (*wl).idx + 1 as libc::c_int
+        idx = (*wl).idx + 1i32
     }
     /* Find the next free index. */
     last = idx;
-    while last < 2147483647 as libc::c_int {
+    while last < 2147483647i32 {
         if winlink_find_by_index(&mut (*s).windows, last).is_null() {
             break;
         }
         last += 1
     }
-    if last == 2147483647 as libc::c_int {
-        return -(1 as libc::c_int);
+    if last == 2147483647i32 {
+        return -(1i32);
     }
     /* Move everything from last - 1 to idx up a bit. */
     while last > idx {
-        wl = winlink_find_by_index(&mut (*s).windows, last - 1 as libc::c_int);
+        wl = winlink_find_by_index(&mut (*s).windows, last - 1i32);
         winlinks_RB_REMOVE(&mut (*s).windows, wl);
         (*wl).idx += 1;
         winlinks_RB_INSERT(&mut (*s).windows, wl);
@@ -5272,16 +5177,12 @@ unsafe extern "C" fn window_pane_input_callback(
 ) {
     let mut cdata: *mut window_pane_input_data = data as *mut window_pane_input_data;
     let mut wp: *mut window_pane = 0 as *mut window_pane;
-    let mut buf: *mut u_char = evbuffer_pullup(buffer, -(1 as libc::c_int) as ssize_t);
+    let mut buf: *mut u_char = evbuffer_pullup(buffer, -1i64);
     let mut len: size_t = evbuffer_get_length(buffer);
     wp = window_pane_find_by_id((*cdata).wp);
-    if wp.is_null()
-        || closed != 0
-        || error != 0 as libc::c_int
-        || (*c).flags & 0x200 as libc::c_int as libc::c_ulong != 0
-    {
+    if wp.is_null() || closed != 0 || error != 0i32 || (*c).flags & 0x200u64 != 0 {
         if wp.is_null() {
-            (*c).flags |= 0x4 as libc::c_int as libc::c_ulong
+            (*c).flags |= 0x4u64
         }
         evbuffer_drain(buffer, len);
         cmdq_continue((*cdata).item);
@@ -5300,9 +5201,9 @@ pub unsafe extern "C" fn window_pane_start_input(
 ) -> libc::c_int {
     let mut c: *mut client = cmdq_get_client(item);
     let mut cdata: *mut window_pane_input_data = 0 as *mut window_pane_input_data;
-    if !(*wp).flags & 0x800 as libc::c_int != 0 {
+    if !(*wp).flags & 0x800i32 != 0 {
         *cause = xstrdup(b"pane is not empty\x00" as *const u8 as *const libc::c_char);
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     cdata = xmalloc(::std::mem::size_of::<window_pane_input_data>() as libc::c_ulong)
         as *mut window_pane_input_data;
@@ -5325,7 +5226,7 @@ pub unsafe extern "C" fn window_pane_start_input(
         ),
         cdata as *mut libc::c_void,
     );
-    return 0 as libc::c_int;
+    return 0i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn window_pane_get_new_data(
@@ -5335,8 +5236,7 @@ pub unsafe extern "C" fn window_pane_get_new_data(
 ) -> *mut libc::c_void {
     let mut used: size_t = (*wpo).used.wrapping_sub((*wp).base_offset);
     *size = evbuffer_get_length((*(*wp).event).input).wrapping_sub(used);
-    return evbuffer_pullup((*(*wp).event).input, -(1 as libc::c_int) as ssize_t)
-        .offset(used as isize) as *mut libc::c_void;
+    return evbuffer_pullup((*(*wp).event).input, -1i64).offset(used as isize) as *mut libc::c_void;
 }
 #[no_mangle]
 pub unsafe extern "C" fn window_pane_update_used_data(
@@ -5348,5 +5248,5 @@ pub unsafe extern "C" fn window_pane_update_used_data(
     if size > evbuffer_get_length((*(*wp).event).input).wrapping_sub(used) {
         size = evbuffer_get_length((*(*wp).event).input).wrapping_sub(used)
     }
-    (*wpo).used = ((*wpo).used as libc::c_ulong).wrapping_add(size) as size_t as size_t;
+    (*wpo).used = ((*wpo).used).wrapping_add(size);
 }

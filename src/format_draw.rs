@@ -1191,15 +1191,13 @@ pub const LEFT: C2RustUnnamed_33 = 0;
 pub type C2RustUnnamed_33 = libc::c_uint;
 /* Does this range match this style? */
 unsafe extern "C" fn format_is_type(mut fr: *mut format_range, mut sy: *mut style) -> libc::c_int {
-    if (*fr).type_0 as libc::c_uint != (*sy).range_type as libc::c_uint {
-        return 0 as libc::c_int;
+    if (*fr).type_0 != (*sy).range_type {
+        return 0i32;
     }
-    if (*fr).type_0 as libc::c_uint == STYLE_RANGE_WINDOW as libc::c_int as libc::c_uint
-        && (*fr).argument != (*sy).range_argument
-    {
-        return 0 as libc::c_int;
+    if (*fr).type_0 == STYLE_RANGE_WINDOW && (*fr).argument != (*sy).range_argument {
+        return 0i32;
     }
-    return 1 as libc::c_int;
+    return 1i32;
 }
 /* Free a range. */
 unsafe extern "C" fn format_free_range(mut frs: *mut format_ranges, mut fr: *mut format_range) {
@@ -1227,7 +1225,7 @@ unsafe extern "C" fn format_update_ranges(
     fr = (*frs).tqh_first;
     while !fr.is_null() && {
         fr1 = (*fr).entry.tqe_next;
-        (1 as libc::c_int) != 0
+        (1i32) != 0
     } {
         if !((*fr).s != s) {
             if (*fr).end <= start || (*fr).start >= start.wrapping_add(width) {
@@ -1242,12 +1240,10 @@ unsafe extern "C" fn format_update_ranges(
                 if (*fr).start == (*fr).end {
                     format_free_range(frs, fr);
                 } else {
-                    (*fr).start =
-                        ((*fr).start as libc::c_uint).wrapping_sub(start) as u_int as u_int;
-                    (*fr).end = ((*fr).end as libc::c_uint).wrapping_sub(start) as u_int as u_int;
-                    (*fr).start =
-                        ((*fr).start as libc::c_uint).wrapping_add(offset) as u_int as u_int;
-                    (*fr).end = ((*fr).end as libc::c_uint).wrapping_add(offset) as u_int as u_int
+                    (*fr).start = ((*fr).start).wrapping_sub(start);
+                    (*fr).end = ((*fr).end).wrapping_sub(start);
+                    (*fr).start = ((*fr).start).wrapping_add(offset);
+                    (*fr).end = ((*fr).end).wrapping_add(offset)
                 }
             }
         }
@@ -1273,16 +1269,9 @@ unsafe extern "C" fn format_draw_put(
         octx,
         ocx.wrapping_add(offset) as libc::c_int,
         ocy as libc::c_int,
-        0 as libc::c_int,
+        0i32,
     );
-    screen_write_fast_copy(
-        octx,
-        s,
-        start,
-        0 as libc::c_int as u_int,
-        width,
-        1 as libc::c_int as u_int,
-    );
+    screen_write_fast_copy(octx, s, start, 0u32, width, 1u32);
     format_update_ranges(frs, s, offset, start, width);
 }
 /* Draw list part of format. */
@@ -1303,47 +1292,31 @@ unsafe extern "C" fn format_draw_put_list(
     let mut focus_centre: u_int = 0;
     /* If there is enough space for the list, draw it entirely. */
     if width >= (*list).cx {
-        format_draw_put(
-            octx,
-            ocx,
-            ocy,
-            list,
-            frs,
-            offset,
-            0 as libc::c_int as u_int,
-            width,
-        );
+        format_draw_put(octx, ocx, ocy, list, frs, offset, 0u32, width);
         return;
     }
     /* The list needs to be trimmed. Try to keep the focus visible. */
-    focus_centre = (focus_start + (focus_end - focus_start) / 2 as libc::c_int) as u_int;
-    if focus_centre < width.wrapping_div(2 as libc::c_int as libc::c_uint) {
-        start = 0 as libc::c_int as u_int
+    focus_centre = (focus_start + (focus_end - focus_start) / 2i32) as u_int;
+    if focus_centre < width.wrapping_div(2u32) {
+        start = 0u32
     } else {
-        start = focus_centre.wrapping_sub(width.wrapping_div(2 as libc::c_int as libc::c_uint))
+        start = focus_centre.wrapping_sub(width.wrapping_div(2u32))
     }
     if start.wrapping_add(width) > (*list).cx {
         start = (*list).cx.wrapping_sub(width)
     }
     /* Draw <> markers at either side if needed. */
-    if start != 0 as libc::c_int as libc::c_uint && width > (*list_left).cx {
+    if start != 0u32 && width > (*list_left).cx {
         screen_write_cursormove(
             octx,
             ocx.wrapping_add(offset) as libc::c_int,
             ocy as libc::c_int,
-            0 as libc::c_int,
+            0i32,
         );
-        screen_write_fast_copy(
-            octx,
-            list_left,
-            0 as libc::c_int as u_int,
-            0 as libc::c_int as u_int,
-            (*list_left).cx,
-            1 as libc::c_int as u_int,
-        );
-        offset = (offset as libc::c_uint).wrapping_add((*list_left).cx) as u_int as u_int;
-        start = (start as libc::c_uint).wrapping_add((*list_left).cx) as u_int as u_int;
-        width = (width as libc::c_uint).wrapping_sub((*list_left).cx) as u_int as u_int
+        screen_write_fast_copy(octx, list_left, 0u32, 0u32, (*list_left).cx, 1u32);
+        offset = (offset).wrapping_add((*list_left).cx);
+        start = (start).wrapping_add((*list_left).cx);
+        width = (width).wrapping_sub((*list_left).cx)
     }
     if start.wrapping_add(width) < (*list).cx && width > (*list_right).cx {
         screen_write_cursormove(
@@ -1352,17 +1325,10 @@ unsafe extern "C" fn format_draw_put_list(
                 .wrapping_add(width)
                 .wrapping_sub((*list_right).cx) as libc::c_int,
             ocy as libc::c_int,
-            0 as libc::c_int,
+            0i32,
         );
-        screen_write_fast_copy(
-            octx,
-            list_right,
-            0 as libc::c_int as u_int,
-            0 as libc::c_int as u_int,
-            (*list_right).cx,
-            1 as libc::c_int as u_int,
-        );
-        width = (width as libc::c_uint).wrapping_sub((*list_right).cx) as u_int as u_int
+        screen_write_fast_copy(octx, list_right, 0u32, 0u32, (*list_right).cx, 1u32);
+        width = (width).wrapping_sub((*list_right).cx)
     }
     /* Draw the list screen itself. */
     format_draw_put(octx, ocx, ocy, list, frs, offset, start, width);
@@ -1393,25 +1359,16 @@ unsafe extern "C" fn format_draw_none(
         .wrapping_add(width_right)
         > available
     {
-        if width_centre > 0 as libc::c_int as libc::c_uint {
+        if width_centre > 0u32 {
             width_centre = width_centre.wrapping_sub(1)
-        } else if width_right > 0 as libc::c_int as libc::c_uint {
+        } else if width_right > 0u32 {
             width_right = width_right.wrapping_sub(1)
         } else {
             width_left = width_left.wrapping_sub(1)
         }
     }
     /* Write left. */
-    format_draw_put(
-        octx,
-        ocx,
-        ocy,
-        left,
-        frs,
-        0 as libc::c_int as u_int,
-        0 as libc::c_int as u_int,
-        width_left,
-    );
+    format_draw_put(octx, ocx, ocy, left, frs, 0u32, 0u32, width_left);
     /* Write right at available - width_right. */
     format_draw_put(
         octx,
@@ -1440,13 +1397,13 @@ unsafe extern "C" fn format_draw_none(
                 available
                     .wrapping_sub(width_right)
                     .wrapping_sub(width_left)
-                    .wrapping_div(2 as libc::c_int as libc::c_uint),
+                    .wrapping_div(2u32),
             )
-            .wrapping_sub(width_centre.wrapping_div(2 as libc::c_int as libc::c_uint)),
+            .wrapping_sub(width_centre.wrapping_div(2u32)),
         (*centre)
             .cx
-            .wrapping_div(2 as libc::c_int as libc::c_uint)
-            .wrapping_sub(width_centre.wrapping_div(2 as libc::c_int as libc::c_uint)),
+            .wrapping_div(2u32)
+            .wrapping_sub(width_centre.wrapping_div(2u32)),
         width_centre,
     );
 }
@@ -1501,44 +1458,28 @@ unsafe extern "C" fn format_draw_left(
         .wrapping_add(width_after)
         > available
     {
-        if width_centre > 0 as libc::c_int as libc::c_uint {
+        if width_centre > 0u32 {
             width_centre = width_centre.wrapping_sub(1)
-        } else if width_list > 0 as libc::c_int as libc::c_uint {
+        } else if width_list > 0u32 {
             width_list = width_list.wrapping_sub(1)
-        } else if width_right > 0 as libc::c_int as libc::c_uint {
+        } else if width_right > 0u32 {
             width_right = width_right.wrapping_sub(1)
-        } else if width_after > 0 as libc::c_int as libc::c_uint {
+        } else if width_after > 0u32 {
             width_after = width_after.wrapping_sub(1)
         } else {
             width_left = width_left.wrapping_sub(1)
         }
     }
     /* If there is no list left, pass off to the no list function. */
-    if width_list == 0 as libc::c_int as libc::c_uint {
+    if width_list == 0u32 {
         screen_write_start(&mut ctx, left);
-        screen_write_fast_copy(
-            &mut ctx,
-            after,
-            0 as libc::c_int as u_int,
-            0 as libc::c_int as u_int,
-            width_after,
-            1 as libc::c_int as u_int,
-        );
+        screen_write_fast_copy(&mut ctx, after, 0u32, 0u32, width_after, 1u32);
         screen_write_stop(&mut ctx);
         format_draw_none(octx, available, ocx, ocy, left, centre, right, frs);
         return;
     }
     /* Write left at 0. */
-    format_draw_put(
-        octx,
-        ocx,
-        ocy,
-        left,
-        frs,
-        0 as libc::c_int as u_int,
-        0 as libc::c_int as u_int,
-        width_left,
-    );
+    format_draw_put(octx, ocx, ocy, left, frs, 0u32, 0u32, width_left);
     /* Write right at available - width_right. */
     format_draw_put(
         octx,
@@ -1558,7 +1499,7 @@ unsafe extern "C" fn format_draw_left(
         after,
         frs,
         width_left.wrapping_add(width_list),
-        0 as libc::c_int as u_int,
+        0u32,
         width_after,
     );
     /*
@@ -1584,13 +1525,13 @@ unsafe extern "C" fn format_draw_left(
                             .wrapping_add(width_list)
                             .wrapping_add(width_after),
                     )
-                    .wrapping_div(2 as libc::c_int as libc::c_uint),
+                    .wrapping_div(2u32),
             )
-            .wrapping_sub(width_centre.wrapping_div(2 as libc::c_int as libc::c_uint)),
+            .wrapping_sub(width_centre.wrapping_div(2u32)),
         (*centre)
             .cx
-            .wrapping_div(2 as libc::c_int as libc::c_uint)
-            .wrapping_sub(width_centre.wrapping_div(2 as libc::c_int as libc::c_uint)),
+            .wrapping_div(2u32)
+            .wrapping_sub(width_centre.wrapping_div(2u32)),
         width_centre,
     );
     /*
@@ -1600,8 +1541,8 @@ unsafe extern "C" fn format_draw_left(
      *     width_left + width_list.
      * If there is no focus given, keep the left in focus.
      */
-    if focus_start == -(1 as libc::c_int) || focus_end == -(1 as libc::c_int) {
-        focus_end = 0 as libc::c_int;
+    if focus_start == -(1i32) || focus_end == -(1i32) {
+        focus_end = 0i32;
         focus_start = focus_end
     }
     format_draw_put_list(
@@ -1670,44 +1611,28 @@ unsafe extern "C" fn format_draw_centre(
         .wrapping_add(width_after)
         > available
     {
-        if width_list > 0 as libc::c_int as libc::c_uint {
+        if width_list > 0u32 {
             width_list = width_list.wrapping_sub(1)
-        } else if width_after > 0 as libc::c_int as libc::c_uint {
+        } else if width_after > 0u32 {
             width_after = width_after.wrapping_sub(1)
-        } else if width_centre > 0 as libc::c_int as libc::c_uint {
+        } else if width_centre > 0u32 {
             width_centre = width_centre.wrapping_sub(1)
-        } else if width_right > 0 as libc::c_int as libc::c_uint {
+        } else if width_right > 0u32 {
             width_right = width_right.wrapping_sub(1)
         } else {
             width_left = width_left.wrapping_sub(1)
         }
     }
     /* If there is no list left, pass off to the no list function. */
-    if width_list == 0 as libc::c_int as libc::c_uint {
+    if width_list == 0u32 {
         screen_write_start(&mut ctx, centre);
-        screen_write_fast_copy(
-            &mut ctx,
-            after,
-            0 as libc::c_int as u_int,
-            0 as libc::c_int as u_int,
-            width_after,
-            1 as libc::c_int as u_int,
-        );
+        screen_write_fast_copy(&mut ctx, after, 0u32, 0u32, width_after, 1u32);
         screen_write_stop(&mut ctx);
         format_draw_none(octx, available, ocx, ocy, left, centre, right, frs);
         return;
     }
     /* Write left at 0. */
-    format_draw_put(
-        octx,
-        ocx,
-        ocy,
-        left,
-        frs,
-        0 as libc::c_int as u_int,
-        0 as libc::c_int as u_int,
-        width_left,
-    );
+    format_draw_put(octx, ocx, ocy, left, frs, 0u32, 0u32, width_left);
     /* Write right at available - width_right. */
     format_draw_put(
         octx,
@@ -1727,7 +1652,7 @@ unsafe extern "C" fn format_draw_centre(
         available
             .wrapping_sub(width_right)
             .wrapping_sub(width_left)
-            .wrapping_div(2 as libc::c_int as libc::c_uint),
+            .wrapping_div(2u32),
     );
     /*
      * Write centre at
@@ -1740,9 +1665,9 @@ unsafe extern "C" fn format_draw_centre(
         centre,
         frs,
         middle
-            .wrapping_sub(width_list.wrapping_div(2 as libc::c_int as libc::c_uint))
+            .wrapping_sub(width_list.wrapping_div(2u32))
             .wrapping_sub(width_centre),
-        0 as libc::c_int as u_int,
+        0u32,
         width_centre,
     );
     /*
@@ -1756,9 +1681,9 @@ unsafe extern "C" fn format_draw_centre(
         after,
         frs,
         middle
-            .wrapping_sub(width_list.wrapping_div(2 as libc::c_int as libc::c_uint))
+            .wrapping_sub(width_list.wrapping_div(2u32))
             .wrapping_add(width_list),
-        0 as libc::c_int as u_int,
+        0u32,
         width_after,
     );
     /*
@@ -1768,15 +1693,15 @@ unsafe extern "C" fn format_draw_centre(
      *     middle + width_list / 2
      * If there is no focus given, keep the centre in focus.
      */
-    if focus_start == -(1 as libc::c_int) || focus_end == -(1 as libc::c_int) {
-        focus_end = (*list).cx.wrapping_div(2 as libc::c_int as libc::c_uint) as libc::c_int;
+    if focus_start == -(1i32) || focus_end == -(1i32) {
+        focus_end = (*list).cx.wrapping_div(2u32) as libc::c_int;
         focus_start = focus_end
     }
     format_draw_put_list(
         octx,
         ocx,
         ocy,
-        middle.wrapping_sub(width_list.wrapping_div(2 as libc::c_int as libc::c_uint)),
+        middle.wrapping_sub(width_list.wrapping_div(2u32)),
         width_list,
         list,
         list_left,
@@ -1837,44 +1762,28 @@ unsafe extern "C" fn format_draw_right(
         .wrapping_add(width_after)
         > available
     {
-        if width_centre > 0 as libc::c_int as libc::c_uint {
+        if width_centre > 0u32 {
             width_centre = width_centre.wrapping_sub(1)
-        } else if width_list > 0 as libc::c_int as libc::c_uint {
+        } else if width_list > 0u32 {
             width_list = width_list.wrapping_sub(1)
-        } else if width_right > 0 as libc::c_int as libc::c_uint {
+        } else if width_right > 0u32 {
             width_right = width_right.wrapping_sub(1)
-        } else if width_after > 0 as libc::c_int as libc::c_uint {
+        } else if width_after > 0u32 {
             width_after = width_after.wrapping_sub(1)
         } else {
             width_left = width_left.wrapping_sub(1)
         }
     }
     /* If there is no list left, pass off to the no list function. */
-    if width_list == 0 as libc::c_int as libc::c_uint {
+    if width_list == 0u32 {
         screen_write_start(&mut ctx, right);
-        screen_write_fast_copy(
-            &mut ctx,
-            after,
-            0 as libc::c_int as u_int,
-            0 as libc::c_int as u_int,
-            width_after,
-            1 as libc::c_int as u_int,
-        );
+        screen_write_fast_copy(&mut ctx, after, 0u32, 0u32, width_after, 1u32);
         screen_write_stop(&mut ctx);
         format_draw_none(octx, available, ocx, ocy, left, centre, right, frs);
         return;
     }
     /* Write left at 0. */
-    format_draw_put(
-        octx,
-        ocx,
-        ocy,
-        left,
-        frs,
-        0 as libc::c_int as u_int,
-        0 as libc::c_int as u_int,
-        width_left,
-    );
+    format_draw_put(octx, ocx, ocy, left, frs, 0u32, 0u32, width_left);
     /* Write after at available - width_after. */
     format_draw_put(
         octx,
@@ -1900,7 +1809,7 @@ unsafe extern "C" fn format_draw_right(
             .wrapping_sub(width_right)
             .wrapping_sub(width_list)
             .wrapping_sub(width_after),
-        0 as libc::c_int as u_int,
+        0u32,
         width_right,
     );
     /*
@@ -1922,13 +1831,13 @@ unsafe extern "C" fn format_draw_right(
                     .wrapping_sub(width_list)
                     .wrapping_sub(width_after)
                     .wrapping_sub(width_left)
-                    .wrapping_div(2 as libc::c_int as libc::c_uint),
+                    .wrapping_div(2u32),
             )
-            .wrapping_sub(width_centre.wrapping_div(2 as libc::c_int as libc::c_uint)),
+            .wrapping_sub(width_centre.wrapping_div(2u32)),
         (*centre)
             .cx
-            .wrapping_div(2 as libc::c_int as libc::c_uint)
-            .wrapping_sub(width_centre.wrapping_div(2 as libc::c_int as libc::c_uint)),
+            .wrapping_div(2u32)
+            .wrapping_sub(width_centre.wrapping_div(2u32)),
         width_centre,
     );
     /*
@@ -1938,8 +1847,8 @@ unsafe extern "C" fn format_draw_right(
      *     available - width_after
      * If there is no focus given, keep the right in focus.
      */
-    if focus_start == -(1 as libc::c_int) || focus_end == -(1 as libc::c_int) {
-        focus_end = 0 as libc::c_int;
+    if focus_start == -(1i32) || focus_end == -(1i32) {
+        focus_end = 0i32;
         focus_start = focus_end
     }
     format_draw_put_list(
@@ -2029,16 +1938,11 @@ pub unsafe extern "C" fn format_draw(
     let mut ocy: u_int = (*os).cy;
     let mut i: u_int = 0;
     let mut width: [u_int; 7] = [0; 7];
-    let mut map: [u_int; 4] = [
-        LEFT as libc::c_int as u_int,
-        LEFT as libc::c_int as u_int,
-        CENTRE as libc::c_int as u_int,
-        RIGHT as libc::c_int as u_int,
-    ];
-    let mut focus_start: libc::c_int = -(1 as libc::c_int);
-    let mut focus_end: libc::c_int = -(1 as libc::c_int);
-    let mut list_state: libc::c_int = -(1 as libc::c_int);
-    let mut fill: libc::c_int = -(1 as libc::c_int);
+    let mut map: [u_int; 4] = [LEFT, LEFT, CENTRE, RIGHT];
+    let mut focus_start: libc::c_int = -(1i32);
+    let mut focus_end: libc::c_int = -(1i32);
+    let mut list_state: libc::c_int = -(1i32);
+    let mut fill: libc::c_int = -(1i32);
     let mut list_align: style_align = STYLE_ALIGN_DEFAULT;
     let mut gc: GridCell = GridCell {
         data: Utf8Data {
@@ -2140,13 +2044,13 @@ pub unsafe extern "C" fn format_draw(
      * the list, one for anything after the list and two for the list left
      * and right markers.
      */
-    i = 0 as libc::c_int as u_int;
-    while i < TOTAL as libc::c_int as libc::c_uint {
+    i = 0u32;
+    while i < TOTAL {
         screen_init(
             &mut *s.as_mut_ptr().offset(i as isize),
             size as u_int,
-            1 as libc::c_int as u_int,
-            0 as libc::c_int as u_int,
+            1u32,
+            0u32,
         );
         screen_write_start(
             &mut *ctx.as_mut_ptr().offset(i as isize),
@@ -2156,7 +2060,7 @@ pub unsafe extern "C" fn format_draw(
             &mut *ctx.as_mut_ptr().offset(i as isize),
             current_default.bg as u_int,
         );
-        width[i as usize] = 0 as libc::c_int as u_int;
+        width[i as usize] = 0u32;
         i = i.wrapping_add(1)
     }
     /*
@@ -2169,31 +2073,27 @@ pub unsafe extern "C" fn format_draw(
             current_block = 10763371041174037105;
             break;
         }
-        if *cp.offset(0 as libc::c_int as isize) as libc::c_int != '#' as i32
-            || *cp.offset(1 as libc::c_int as isize) as libc::c_int != '[' as i32
+        if *cp.offset(0isize) as libc::c_int != '#' as i32
+            || *cp.offset(1isize) as libc::c_int != '[' as i32
             || sy.ignore != 0
         {
             /* See if this is a UTF-8 character. */
             more = utf8_open(ud, *cp as u_char);
-            if more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint {
+            if more == utf8_state::MORE {
                 loop {
                     cp = cp.offset(1);
-                    if !(*cp as libc::c_int != '\u{0}' as i32
-                        && more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint)
-                    {
+                    if !(*cp as libc::c_int != '\u{0}' as i32 && more == utf8_state::MORE) {
                         break;
                     }
                     more = utf8_append(ud, *cp as u_char)
                 }
-                if more as libc::c_uint != utf8_state::DONE as libc::c_int as libc::c_uint {
+                if more != utf8_state::DONE {
                     cp = cp.offset(-((*ud).have as libc::c_int as isize))
                 }
             }
             /* Not a UTF-8 character - ASCII or not valid. */
-            if more as libc::c_uint != utf8_state::DONE as libc::c_int as libc::c_uint {
-                if (*cp as libc::c_int) < 0x20 as libc::c_int
-                    || *cp as libc::c_int > 0x7e as libc::c_int
-                {
+            if more != utf8_state::DONE {
+                if (*cp as libc::c_int) < 0x20i32 || *cp as libc::c_int > 0x7ei32 {
                     /* Ignore nonprintable characters. */
                     cp = cp.offset(1);
                     continue;
@@ -2204,13 +2104,12 @@ pub unsafe extern "C" fn format_draw(
             }
             /* Draw the cell to the current screen. */
             screen_write_cell(&mut *ctx.as_mut_ptr().offset(current as isize), &mut sy.gc);
-            width[current as usize] = (width[current as usize] as libc::c_uint)
-                .wrapping_add((*ud).width as libc::c_uint)
-                as u_int as u_int
+            width[current as usize] =
+                (width[current as usize]).wrapping_add((*ud).width as libc::c_uint)
         } else {
             /* This is a style. Work out where the end is and parse it. */
             end = format_skip(
-                cp.offset(2 as libc::c_int as isize),
+                cp.offset(2isize),
                 b"]\x00" as *const u8 as *const libc::c_char,
             );
             if end.is_null() {
@@ -2218,12 +2117,12 @@ pub unsafe extern "C" fn format_draw(
                     b"%s: no terminating ] at \'%s\'\x00" as *const u8 as *const libc::c_char,
                     (*::std::mem::transmute::<&[u8; 12], &[libc::c_char; 12]>(b"format_draw\x00"))
                         .as_ptr(),
-                    cp.offset(2 as libc::c_int as isize),
+                    cp.offset(2isize),
                 );
                 fr = frs.tqh_first;
                 while !fr.is_null() && {
                     fr1 = (*fr).entry.tqe_next;
-                    (1 as libc::c_int) != 0
+                    (1i32) != 0
                 } {
                     format_free_range(&mut frs, fr);
                     fr = fr1
@@ -2232,12 +2131,11 @@ pub unsafe extern "C" fn format_draw(
                 break;
             } else {
                 tmp = xstrndup(
-                    cp.offset(2 as libc::c_int as isize),
-                    end.wrapping_offset_from(cp.offset(2 as libc::c_int as isize)) as libc::c_long
-                        as size_t,
+                    cp.offset(2isize),
+                    end.wrapping_offset_from(cp.offset(2isize)) as size_t,
                 );
                 style_copy(&mut saved_sy, &mut sy);
-                if style_parse(&mut sy, &mut current_default, tmp) != 0 as libc::c_int {
+                if style_parse(&mut sy, &mut current_default, tmp) != 0i32 {
                     log_debug(
                         b"%s: invalid style \'%s\'\x00" as *const u8 as *const libc::c_char,
                         (*::std::mem::transmute::<&[u8; 12], &[libc::c_char; 12]>(
@@ -2247,7 +2145,7 @@ pub unsafe extern "C" fn format_draw(
                         tmp,
                     );
                     free(tmp as *mut libc::c_void);
-                    cp = end.offset(1 as libc::c_int as isize)
+                    cp = end.offset(1isize)
                 } else {
                     log_debug(
                         b"%s: style \'%s\' -> \'%s\'\x00" as *const u8 as *const libc::c_char,
@@ -2260,22 +2158,18 @@ pub unsafe extern "C" fn format_draw(
                     );
                     free(tmp as *mut libc::c_void);
                     /* If this style has a fill colour, store it for later. */
-                    if sy.fill != 8 as libc::c_int {
+                    if sy.fill != 8i32 {
                         fill = sy.fill
                     }
                     /* If this style pushed or popped the default, update it. */
-                    if sy.default_type as libc::c_uint
-                        == STYLE_DEFAULT_PUSH as libc::c_int as libc::c_uint
-                    {
+                    if sy.default_type == STYLE_DEFAULT_PUSH {
                         memcpy(
                             &mut current_default as *mut GridCell as *mut libc::c_void,
                             &mut saved_sy.gc as *mut GridCell as *const libc::c_void,
                             ::std::mem::size_of::<GridCell>() as libc::c_ulong,
                         );
                         sy.default_type = STYLE_DEFAULT_BASE
-                    } else if sy.default_type as libc::c_uint
-                        == STYLE_DEFAULT_POP as libc::c_int as libc::c_uint
-                    {
+                    } else if sy.default_type == STYLE_DEFAULT_POP {
                         memcpy(
                             &mut current_default as *mut GridCell as *mut libc::c_void,
                             base as *const libc::c_void,
@@ -2284,77 +2178,66 @@ pub unsafe extern "C" fn format_draw(
                         sy.default_type = STYLE_DEFAULT_BASE
                     }
                     /* Check the list state. */
-                    match sy.list as libc::c_uint {
+                    match sy.list {
                         1 => {
                             /*
                              * Entering the list, exiting a marker, or exiting the
                              * focus.
                              */
-                            if list_state != 0 as libc::c_int {
+                            if list_state != 0i32 {
                                 if !fr.is_null() {
                                     /* abort any region */
                                     free(fr as *mut libc::c_void);
                                     fr = 0 as *mut format_range
                                 }
-                                list_state = 0 as libc::c_int;
+                                list_state = 0i32;
                                 list_align = sy.align
                             }
                             /* End the focus if started. */
-                            if focus_start != -(1 as libc::c_int)
-                                && focus_end == -(1 as libc::c_int)
-                            {
-                                focus_end = s[LIST as libc::c_int as usize].cx as libc::c_int
+                            if focus_start != -(1i32) && focus_end == -(1i32) {
+                                focus_end = s[LIST as usize].cx as libc::c_int
                             }
                             current = LIST
                         }
                         2 => {
                             /* Entering the focus. */
-                            if !(list_state != 0 as libc::c_int) {
-                                if focus_start == -(1 as libc::c_int) {
+                            if !(list_state != 0i32) {
+                                if focus_start == -(1i32) {
                                     /* focus already started */
-                                    focus_start = s[LIST as libc::c_int as usize].cx as libc::c_int
+                                    focus_start = s[LIST as usize].cx as libc::c_int
                                 }
                             }
                         }
                         0 => {
                             /* Exiting or outside the list. */
-                            if list_state == 0 as libc::c_int {
+                            if list_state == 0i32 {
                                 if !fr.is_null() {
                                     /* abort any region */
                                     free(fr as *mut libc::c_void);
                                     fr = 0 as *mut format_range
                                 }
-                                if focus_start != -(1 as libc::c_int)
-                                    && focus_end == -(1 as libc::c_int)
-                                {
-                                    focus_end = s[LIST as libc::c_int as usize].cx as libc::c_int
+                                if focus_start != -(1i32) && focus_end == -(1i32) {
+                                    focus_end = s[LIST as usize].cx as libc::c_int
                                 }
-                                map[list_align as usize] = AFTER as libc::c_int as u_int;
-                                if list_align as libc::c_uint
-                                    == STYLE_ALIGN_LEFT as libc::c_int as libc::c_uint
-                                {
-                                    map[STYLE_ALIGN_DEFAULT as libc::c_int as usize] =
-                                        AFTER as libc::c_int as u_int
+                                map[list_align as usize] = AFTER;
+                                if list_align == STYLE_ALIGN_LEFT {
+                                    map[STYLE_ALIGN_DEFAULT as usize] = AFTER
                                 }
-                                list_state = 1 as libc::c_int
+                                list_state = 1i32
                             }
-                            current = map[sy.align as usize] as C2RustUnnamed_33
+                            current = map[sy.align as usize]
                         }
                         3 => {
                             /* Entering left marker. */
-                            if !(list_state != 0 as libc::c_int) {
-                                if !(s[LIST_LEFT as libc::c_int as usize].cx
-                                    != 0 as libc::c_int as libc::c_uint)
-                                {
+                            if !(list_state != 0i32) {
+                                if !(s[LIST_LEFT as usize].cx != 0u32) {
                                     if !fr.is_null() {
                                         /* abort any region */
                                         free(fr as *mut libc::c_void);
                                         fr = 0 as *mut format_range
                                     }
-                                    if focus_start != -(1 as libc::c_int)
-                                        && focus_end == -(1 as libc::c_int)
-                                    {
-                                        focus_end = -(1 as libc::c_int);
+                                    if focus_start != -(1i32) && focus_end == -(1i32) {
+                                        focus_end = -(1i32);
                                         focus_start = focus_end
                                     }
                                     current = LIST_LEFT
@@ -2363,19 +2246,15 @@ pub unsafe extern "C" fn format_draw(
                         }
                         4 => {
                             /* Entering right marker. */
-                            if !(list_state != 0 as libc::c_int) {
-                                if !(s[LIST_RIGHT as libc::c_int as usize].cx
-                                    != 0 as libc::c_int as libc::c_uint)
-                                {
+                            if !(list_state != 0i32) {
+                                if !(s[LIST_RIGHT as usize].cx != 0u32) {
                                     if !fr.is_null() {
                                         /* abort any region */
                                         free(fr as *mut libc::c_void);
                                         fr = 0 as *mut format_range
                                     }
-                                    if focus_start != -(1 as libc::c_int)
-                                        && focus_end == -(1 as libc::c_int)
-                                    {
-                                        focus_end = -(1 as libc::c_int);
+                                    if focus_start != -(1i32) && focus_end == -(1i32) {
+                                        focus_end = -(1i32);
                                         focus_start = focus_end
                                     }
                                     current = LIST_RIGHT
@@ -2384,7 +2263,7 @@ pub unsafe extern "C" fn format_draw(
                         }
                         _ => {}
                     }
-                    if current as libc::c_uint != last as libc::c_uint {
+                    if current != last {
                         log_debug(
                             b"%s: change %s -> %s\x00" as *const u8 as *const libc::c_char,
                             (*::std::mem::transmute::<&[u8; 12], &[libc::c_char; 12]>(
@@ -2403,9 +2282,7 @@ pub unsafe extern "C" fn format_draw(
                     if !srs.is_null() {
                         if !fr.is_null() && format_is_type(fr, &mut sy) == 0 {
                             if s[current as usize].cx != (*fr).start {
-                                (*fr).end = s[current as usize]
-                                    .cx
-                                    .wrapping_add(1 as libc::c_int as libc::c_uint);
+                                (*fr).end = s[current as usize].cx.wrapping_add(1u32);
                                 (*fr).entry.tqe_next = 0 as *mut format_range;
                                 (*fr).entry.tqe_prev = frs.tqh_last;
                                 *frs.tqh_last = fr;
@@ -2415,22 +2292,19 @@ pub unsafe extern "C" fn format_draw(
                             }
                             fr = 0 as *mut format_range
                         }
-                        if fr.is_null()
-                            && sy.range_type as libc::c_uint
-                                != STYLE_RANGE_NONE as libc::c_int as libc::c_uint
-                        {
+                        if fr.is_null() && sy.range_type != STYLE_RANGE_NONE {
                             fr = xcalloc(
-                                1 as libc::c_int as size_t,
+                                1u64,
                                 ::std::mem::size_of::<format_range>() as libc::c_ulong,
                             ) as *mut format_range;
-                            (*fr).index = current as u_int;
+                            (*fr).index = current;
                             (*fr).s = &mut *s.as_mut_ptr().offset(current as isize) as *mut screen;
                             (*fr).start = s[current as usize].cx;
                             (*fr).type_0 = sy.range_type;
                             (*fr).argument = sy.range_argument
                         }
                     }
-                    cp = end.offset(1 as libc::c_int as isize)
+                    cp = end.offset(1isize)
                 }
             }
         }
@@ -2438,8 +2312,8 @@ pub unsafe extern "C" fn format_draw(
     match current_block {
         10763371041174037105 => {
             free(fr as *mut libc::c_void);
-            i = 0 as libc::c_int as u_int;
-            while i < TOTAL as libc::c_int as libc::c_uint {
+            i = 0u32;
+            while i < TOTAL {
                 screen_write_stop(&mut *ctx.as_mut_ptr().offset(i as isize));
                 log_debug(
                     b"%s: width %s is %u\x00" as *const u8 as *const libc::c_char,
@@ -2450,7 +2324,7 @@ pub unsafe extern "C" fn format_draw(
                 );
                 i = i.wrapping_add(1)
             }
-            if focus_start != -(1 as libc::c_int) && focus_end != -(1 as libc::c_int) {
+            if focus_start != -(1i32) && focus_end != -(1i32) {
                 log_debug(
                     b"%s: focus %d-%d\x00" as *const u8 as *const libc::c_char,
                     (*::std::mem::transmute::<&[u8; 12], &[libc::c_char; 12]>(b"format_draw\x00"))
@@ -2465,7 +2339,7 @@ pub unsafe extern "C" fn format_draw(
                     b"%s: range %d|%u is %s %u-%u\x00" as *const u8 as *const libc::c_char,
                     (*::std::mem::transmute::<&[u8; 12], &[libc::c_char; 12]>(b"format_draw\x00"))
                         .as_ptr(),
-                    (*fr).type_0 as libc::c_uint,
+                    (*fr).type_0,
                     (*fr).argument,
                     names[(*fr).index as usize],
                     (*fr).start,
@@ -2474,16 +2348,16 @@ pub unsafe extern "C" fn format_draw(
                 fr = (*fr).entry.tqe_next
             }
             /* Clear the available area. */
-            if fill != -(1 as libc::c_int) {
+            if fill != -(1i32) {
                 memcpy(
                     &mut gc as *mut GridCell as *mut libc::c_void,
                     &grid_default_cell as *const GridCell as *const libc::c_void,
                     ::std::mem::size_of::<GridCell>() as libc::c_ulong,
                 );
                 gc.bg = fill;
-                i = 0 as libc::c_int as u_int;
+                i = 0u32;
                 while i < available {
-                    screen_write_putc(octx, &mut gc, ' ' as i32 as u_char);
+                    screen_write_putc(octx, &mut gc, ' ' as u_char);
                     i = i.wrapping_add(1)
                 }
             }
@@ -2491,7 +2365,7 @@ pub unsafe extern "C" fn format_draw(
              * Draw the screens. How they are arranged depends on where the list
              * appears.
              */
-            match list_align as libc::c_uint {
+            match list_align {
                 0 => {
                     /* No list. */
                     format_draw_none(
@@ -2568,12 +2442,10 @@ pub unsafe extern "C" fn format_draw(
             fr = frs.tqh_first;
             while !fr.is_null() && {
                 fr1 = (*fr).entry.tqe_next;
-                (1 as libc::c_int) != 0
+                (1i32) != 0
             } {
-                sr = xcalloc(
-                    1 as libc::c_int as size_t,
-                    ::std::mem::size_of::<style_range>() as libc::c_ulong,
-                ) as *mut style_range;
+                sr = xcalloc(1u64, ::std::mem::size_of::<style_range>() as libc::c_ulong)
+                    as *mut style_range;
                 (*sr).type_0 = (*fr).type_0;
                 (*sr).argument = (*fr).argument;
                 (*sr).start = (*fr).start;
@@ -2586,7 +2458,7 @@ pub unsafe extern "C" fn format_draw(
                     b"%s: range %d|%u at %u-%u\x00" as *const u8 as *const libc::c_char,
                     (*::std::mem::transmute::<&[u8; 12], &[libc::c_char; 12]>(b"format_draw\x00"))
                         .as_ptr(),
-                    (*sr).type_0 as libc::c_uint,
+                    (*sr).type_0,
                     (*sr).argument,
                     (*sr).start,
                     (*sr).end,
@@ -2598,25 +2470,20 @@ pub unsafe extern "C" fn format_draw(
         _ => {}
     }
     /* Free the screens. */
-    i = 0 as libc::c_int as u_int;
-    while i < TOTAL as libc::c_int as libc::c_uint {
+    i = 0u32;
+    while i < TOTAL {
         screen_free(&mut *s.as_mut_ptr().offset(i as isize));
         i = i.wrapping_add(1)
     }
     /* Restore the original cursor position. */
-    screen_write_cursormove(
-        octx,
-        ocx as libc::c_int,
-        ocy as libc::c_int,
-        0 as libc::c_int,
-    );
+    screen_write_cursormove(octx, ocx as libc::c_int, ocy as libc::c_int, 0i32);
 }
 /* Get width, taking #[] into account. */
 #[no_mangle]
 pub unsafe extern "C" fn format_width(mut expanded: *const libc::c_char) -> u_int {
     let mut cp: *const libc::c_char = 0 as *const libc::c_char;
     let mut end: *const libc::c_char = 0 as *const libc::c_char;
-    let mut width: u_int = 0 as libc::c_int as u_int;
+    let mut width: u_int = 0u32;
     let mut ud: Utf8Data = Utf8Data {
         data: [0; 21],
         have: 0,
@@ -2626,38 +2493,33 @@ pub unsafe extern "C" fn format_width(mut expanded: *const libc::c_char) -> u_in
     let mut more: Utf8State = utf8_state::MORE;
     cp = expanded;
     while *cp as libc::c_int != '\u{0}' as i32 {
-        if *cp.offset(0 as libc::c_int as isize) as libc::c_int == '#' as i32
-            && *cp.offset(1 as libc::c_int as isize) as libc::c_int == '[' as i32
+        if *cp.offset(0isize) as libc::c_int == '#' as i32
+            && *cp.offset(1isize) as libc::c_int == '[' as i32
         {
             end = format_skip(
-                cp.offset(2 as libc::c_int as isize),
+                cp.offset(2isize),
                 b"]\x00" as *const u8 as *const libc::c_char,
             );
             if end.is_null() {
-                return 0 as libc::c_int as u_int;
+                return 0u32;
             }
-            cp = end.offset(1 as libc::c_int as isize)
+            cp = end.offset(1isize)
         } else {
             more = utf8_open(&mut ud, *cp as u_char);
-            if more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint {
+            if more == utf8_state::MORE {
                 loop {
                     cp = cp.offset(1);
-                    if !(*cp as libc::c_int != '\u{0}' as i32
-                        && more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint)
-                    {
+                    if !(*cp as libc::c_int != '\u{0}' as i32 && more == utf8_state::MORE) {
                         break;
                     }
                     more = utf8_append(&mut ud, *cp as u_char)
                 }
-                if more as libc::c_uint == utf8_state::DONE as libc::c_int as libc::c_uint {
-                    width = (width as libc::c_uint).wrapping_add(ud.width as libc::c_uint) as u_int
-                        as u_int
+                if more == utf8_state::DONE {
+                    width = (width).wrapping_add(ud.width as libc::c_uint)
                 } else {
                     cp = cp.offset(-(ud.have as libc::c_int as isize))
                 }
-            } else if *cp as libc::c_int > 0x1f as libc::c_int
-                && (*cp as libc::c_int) < 0x7f as libc::c_int
-            {
+            } else if *cp as libc::c_int > 0x1fi32 && (*cp as libc::c_int) < 0x7fi32 {
                 width = width.wrapping_add(1);
                 cp = cp.offset(1)
             } else {
@@ -2677,7 +2539,7 @@ pub unsafe extern "C" fn format_trim_left(
     let mut out: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut cp: *const libc::c_char = expanded;
     let mut end: *const libc::c_char = 0 as *const libc::c_char;
-    let mut width: u_int = 0 as libc::c_int as u_int;
+    let mut width: u_int = 0u32;
     let mut ud: Utf8Data = Utf8Data {
         data: [0; 21],
         have: 0,
@@ -2685,15 +2547,14 @@ pub unsafe extern "C" fn format_trim_left(
         width: 0,
     };
     let mut more: Utf8State = utf8_state::MORE;
-    copy = xmalloc(strlen(expanded).wrapping_add(1 as libc::c_int as libc::c_ulong))
-        as *mut libc::c_char;
+    copy = xmalloc(strlen(expanded).wrapping_add(1u64)) as *mut libc::c_char;
     out = copy;
     while *cp as libc::c_int != '\u{0}' as i32 {
-        if *cp.offset(0 as libc::c_int as isize) as libc::c_int == '#' as i32
-            && *cp.offset(1 as libc::c_int as isize) as libc::c_int == '[' as i32
+        if *cp.offset(0isize) as libc::c_int == '#' as i32
+            && *cp.offset(1isize) as libc::c_int == '[' as i32
         {
             end = format_skip(
-                cp.offset(2 as libc::c_int as isize),
+                cp.offset(2isize),
                 b"]\x00" as *const u8 as *const libc::c_char,
             );
             if end.is_null() {
@@ -2702,27 +2563,21 @@ pub unsafe extern "C" fn format_trim_left(
             memcpy(
                 out as *mut libc::c_void,
                 cp as *const libc::c_void,
-                end.offset(1 as libc::c_int as isize)
-                    .wrapping_offset_from(cp) as libc::c_long as libc::c_ulong,
+                end.offset(1isize).wrapping_offset_from(cp) as libc::c_ulong,
             );
-            out = out.offset(
-                end.offset(1 as libc::c_int as isize)
-                    .wrapping_offset_from(cp) as libc::c_long as isize,
-            );
-            cp = end.offset(1 as libc::c_int as isize)
+            out = out.offset(end.offset(1isize).wrapping_offset_from(cp));
+            cp = end.offset(1isize)
         } else {
             more = utf8_open(&mut ud, *cp as u_char);
-            if more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint {
+            if more == utf8_state::MORE {
                 loop {
                     cp = cp.offset(1);
-                    if !(*cp as libc::c_int != '\u{0}' as i32
-                        && more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint)
-                    {
+                    if !(*cp as libc::c_int != '\u{0}' as i32 && more == utf8_state::MORE) {
                         break;
                     }
                     more = utf8_append(&mut ud, *cp as u_char)
                 }
-                if more as libc::c_uint == utf8_state::DONE as libc::c_int as libc::c_uint {
+                if more == utf8_state::DONE {
                     if width.wrapping_add(ud.width as libc::c_uint) <= limit {
                         memcpy(
                             out as *mut libc::c_void,
@@ -2731,16 +2586,13 @@ pub unsafe extern "C" fn format_trim_left(
                         );
                         out = out.offset(ud.size as libc::c_int as isize)
                     }
-                    width = (width as libc::c_uint).wrapping_add(ud.width as libc::c_uint) as u_int
-                        as u_int
+                    width = (width).wrapping_add(ud.width as libc::c_uint)
                 } else {
                     cp = cp.offset(-(ud.have as libc::c_int as isize));
                     cp = cp.offset(1)
                 }
-            } else if *cp as libc::c_int > 0x1f as libc::c_int
-                && (*cp as libc::c_int) < 0x7f as libc::c_int
-            {
-                if width.wrapping_add(1 as libc::c_int as libc::c_uint) <= limit {
+            } else if *cp as libc::c_int > 0x1fi32 && (*cp as libc::c_int) < 0x7fi32 {
+                if width.wrapping_add(1u32) <= limit {
                     let fresh0 = out;
                     out = out.offset(1);
                     *fresh0 = *cp
@@ -2752,7 +2604,7 @@ pub unsafe extern "C" fn format_trim_left(
             }
         }
     }
-    *out = '\u{0}' as i32 as libc::c_char;
+    *out = '\u{0}' as libc::c_char;
     return copy;
 }
 /* Trim on the right, taking #[] into account. */
@@ -2765,7 +2617,7 @@ pub unsafe extern "C" fn format_trim_right(
     let mut out: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut cp: *const libc::c_char = expanded;
     let mut end: *const libc::c_char = 0 as *const libc::c_char;
-    let mut width: u_int = 0 as libc::c_int as u_int;
+    let mut width: u_int = 0u32;
     let mut total_width: u_int = 0;
     let mut skip: u_int = 0;
     let mut ud: Utf8Data = Utf8Data {
@@ -2780,15 +2632,14 @@ pub unsafe extern "C" fn format_trim_right(
         return xstrdup(expanded);
     }
     skip = total_width.wrapping_sub(limit);
-    copy = xmalloc(strlen(expanded).wrapping_add(1 as libc::c_int as libc::c_ulong))
-        as *mut libc::c_char;
+    copy = xmalloc(strlen(expanded).wrapping_add(1u64)) as *mut libc::c_char;
     out = copy;
     while *cp as libc::c_int != '\u{0}' as i32 {
-        if *cp.offset(0 as libc::c_int as isize) as libc::c_int == '#' as i32
-            && *cp.offset(1 as libc::c_int as isize) as libc::c_int == '[' as i32
+        if *cp.offset(0isize) as libc::c_int == '#' as i32
+            && *cp.offset(1isize) as libc::c_int == '[' as i32
         {
             end = format_skip(
-                cp.offset(2 as libc::c_int as isize),
+                cp.offset(2isize),
                 b"]\x00" as *const u8 as *const libc::c_char,
             );
             if end.is_null() {
@@ -2797,27 +2648,21 @@ pub unsafe extern "C" fn format_trim_right(
             memcpy(
                 out as *mut libc::c_void,
                 cp as *const libc::c_void,
-                end.offset(1 as libc::c_int as isize)
-                    .wrapping_offset_from(cp) as libc::c_long as libc::c_ulong,
+                end.offset(1isize).wrapping_offset_from(cp) as libc::c_ulong,
             );
-            out = out.offset(
-                end.offset(1 as libc::c_int as isize)
-                    .wrapping_offset_from(cp) as libc::c_long as isize,
-            );
-            cp = end.offset(1 as libc::c_int as isize)
+            out = out.offset(end.offset(1isize).wrapping_offset_from(cp));
+            cp = end.offset(1isize)
         } else {
             more = utf8_open(&mut ud, *cp as u_char);
-            if more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint {
+            if more == utf8_state::MORE {
                 loop {
                     cp = cp.offset(1);
-                    if !(*cp as libc::c_int != '\u{0}' as i32
-                        && more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint)
-                    {
+                    if !(*cp as libc::c_int != '\u{0}' as i32 && more == utf8_state::MORE) {
                         break;
                     }
                     more = utf8_append(&mut ud, *cp as u_char)
                 }
-                if more as libc::c_uint == utf8_state::DONE as libc::c_int as libc::c_uint {
+                if more == utf8_state::DONE {
                     if width >= skip {
                         memcpy(
                             out as *mut libc::c_void,
@@ -2826,15 +2671,12 @@ pub unsafe extern "C" fn format_trim_right(
                         );
                         out = out.offset(ud.size as libc::c_int as isize)
                     }
-                    width = (width as libc::c_uint).wrapping_add(ud.width as libc::c_uint) as u_int
-                        as u_int
+                    width = (width).wrapping_add(ud.width as libc::c_uint)
                 } else {
                     cp = cp.offset(-(ud.have as libc::c_int as isize));
                     cp = cp.offset(1)
                 }
-            } else if *cp as libc::c_int > 0x1f as libc::c_int
-                && (*cp as libc::c_int) < 0x7f as libc::c_int
-            {
+            } else if *cp as libc::c_int > 0x1fi32 && (*cp as libc::c_int) < 0x7fi32 {
                 if width >= skip {
                     let fresh1 = out;
                     out = out.offset(1);
@@ -2847,6 +2689,6 @@ pub unsafe extern "C" fn format_trim_right(
             }
         }
     }
-    *out = '\u{0}' as i32 as libc::c_char;
+    *out = '\u{0}' as libc::c_char;
     return copy;
 }

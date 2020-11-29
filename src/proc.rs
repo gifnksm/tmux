@@ -486,21 +486,19 @@ unsafe extern "C" fn proc_event_cb(
         fd: 0,
         data: 0 as *mut libc::c_void,
     };
-    if (*peer).flags & 0x1 as libc::c_int == 0 && events as libc::c_int & 0x2 as libc::c_int != 0 {
+    if (*peer).flags & 0x1i32 == 0 && events as libc::c_int & 0x2i32 != 0 {
         n = imsg_read(&mut (*peer).ibuf);
-        if n == -(1 as libc::c_int) as libc::c_long && *__errno_location() != 11 as libc::c_int
-            || n == 0 as libc::c_int as libc::c_long
-        {
+        if n == -1i64 && *__errno_location() != 11i32 || n == 0i64 {
             (*peer).dispatchcb.expect("non-null function pointer")(0 as *mut imsg, (*peer).arg);
             return;
         }
         loop {
             n = imsg_get(&mut (*peer).ibuf, &mut imsg);
-            if n == -(1 as libc::c_int) as libc::c_long {
+            if n == -1i64 {
                 (*peer).dispatchcb.expect("non-null function pointer")(0 as *mut imsg, (*peer).arg);
                 return;
             }
-            if n == 0 as libc::c_int as libc::c_long {
+            if n == 0i64 {
                 break;
             }
             log_debug(
@@ -508,8 +506,8 @@ unsafe extern "C" fn proc_event_cb(
                 peer,
                 imsg.hdr.type_0,
             );
-            if peer_check_version(peer, &mut imsg) != 0 as libc::c_int {
-                if imsg.fd != -(1 as libc::c_int) {
+            if peer_check_version(peer, &mut imsg) != 0i32 {
+                if imsg.fd != -(1i32) {
                     close(imsg.fd);
                 }
                 imsg_free(&mut imsg);
@@ -520,17 +518,13 @@ unsafe extern "C" fn proc_event_cb(
             }
         }
     }
-    if events as libc::c_int & 0x4 as libc::c_int != 0 {
-        if msgbuf_write(&mut (*peer).ibuf.w) <= 0 as libc::c_int
-            && *__errno_location() != 11 as libc::c_int
-        {
+    if events as libc::c_int & 0x4i32 != 0 {
+        if msgbuf_write(&mut (*peer).ibuf.w) <= 0i32 && *__errno_location() != 11i32 {
             (*peer).dispatchcb.expect("non-null function pointer")(0 as *mut imsg, (*peer).arg);
             return;
         }
     }
-    if (*peer).flags & 0x1 as libc::c_int != 0
-        && (*peer).ibuf.w.queued == 0 as libc::c_int as libc::c_uint
-    {
+    if (*peer).flags & 0x1i32 != 0 && (*peer).ibuf.w.queued == 0u32 {
         (*peer).dispatchcb.expect("non-null function pointer")(0 as *mut imsg, (*peer).arg);
         return;
     }
@@ -549,10 +543,8 @@ unsafe extern "C" fn peer_check_version(
     mut imsg: *mut imsg,
 ) -> libc::c_int {
     let mut version: libc::c_int = 0;
-    version = ((*imsg).hdr.peerid & 0xff as libc::c_int as libc::c_uint) as libc::c_int;
-    if (*imsg).hdr.type_0 != msgtype_code::VERSION as libc::c_int as libc::c_uint
-        && version != 8 as libc::c_int
-    {
+    version = ((*imsg).hdr.peerid & 0xffu32) as libc::c_int;
+    if (*imsg).hdr.type_0 != msgtype_code::VERSION && version != 8i32 {
         log_debug(
             b"peer %p bad version %d\x00" as *const u8 as *const libc::c_char,
             peer,
@@ -561,21 +553,21 @@ unsafe extern "C" fn peer_check_version(
         proc_send(
             peer,
             msgtype_code::VERSION,
-            -(1 as libc::c_int),
+            -(1i32),
             0 as *const libc::c_void,
-            0 as libc::c_int as size_t,
+            0u64,
         );
-        (*peer).flags |= 0x1 as libc::c_int;
-        return -(1 as libc::c_int);
+        (*peer).flags |= 0x1i32;
+        return -(1i32);
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 unsafe extern "C" fn proc_update_event(mut peer: *mut tmuxpeer) {
     let mut events: libc::c_short = 0;
     event_del(&mut (*peer).event);
-    events = 0x2 as libc::c_int as libc::c_short;
-    if (*peer).ibuf.w.queued > 0 as libc::c_int as libc::c_uint {
-        events = (events as libc::c_int | 0x4 as libc::c_int) as libc::c_short
+    events = 0x2i16;
+    if (*peer).ibuf.w.queued > 0u32 {
+        events = (events as libc::c_int | 0x4i32) as libc::c_short
     }
     event_set(
         &mut (*peer).event,
@@ -604,29 +596,21 @@ pub unsafe extern "C" fn proc_send(
     let mut ibuf: *mut imsgbuf = &mut (*peer).ibuf;
     let mut vp: *mut libc::c_void = buf as *mut libc::c_void;
     let mut retval: libc::c_int = 0;
-    if (*peer).flags & 0x1 as libc::c_int != 0 {
-        return -(1 as libc::c_int);
+    if (*peer).flags & 0x1i32 != 0 {
+        return -(1i32);
     }
     log_debug(
         b"sending message %d to peer %p (%zu bytes)\x00" as *const u8 as *const libc::c_char,
-        type_0 as libc::c_uint,
+        type_0,
         peer,
         len,
     );
-    retval = imsg_compose(
-        ibuf,
-        type_0 as uint32_t,
-        8 as libc::c_int as uint32_t,
-        -(1 as libc::c_int),
-        fd,
-        vp,
-        len as uint16_t,
-    );
-    if retval != 1 as libc::c_int {
-        return -(1 as libc::c_int);
+    retval = imsg_compose(ibuf, type_0, 8u32, -(1i32), fd, vp, len as uint16_t);
+    if retval != 1i32 {
+        return -(1i32);
     }
     proc_update_event(peer);
-    return 0 as libc::c_int;
+    return 0i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn proc_start(mut name: *const libc::c_char) -> *mut tmuxproc {
@@ -645,10 +629,10 @@ pub unsafe extern "C" fn proc_start(mut name: *const libc::c_char) -> *mut tmuxp
         name,
         socket_path,
     );
-    if uname(&mut u) < 0 as libc::c_int {
+    if uname(&mut u) < 0i32 {
         memset(
             &mut u as *mut utsname as *mut libc::c_void,
-            0 as libc::c_int,
+            0i32,
             ::std::mem::size_of::<utsname>() as libc::c_ulong,
         );
     }
@@ -659,7 +643,7 @@ pub unsafe extern "C" fn proc_start(mut name: *const libc::c_char) -> *mut tmuxp
         getpid() as libc::c_long,
         getversion(),
         socket_path,
-        8 as libc::c_int,
+        8i32,
     );
     log_debug(
         b"on %s %s %s\x00" as *const u8 as *const libc::c_char,
@@ -672,10 +656,7 @@ pub unsafe extern "C" fn proc_start(mut name: *const libc::c_char) -> *mut tmuxp
         event_get_version(),
         event_get_method(),
     );
-    tp = xcalloc(
-        1 as libc::c_int as size_t,
-        ::std::mem::size_of::<tmuxproc>() as libc::c_ulong,
-    ) as *mut tmuxproc;
+    tp = xcalloc(1u64, ::std::mem::size_of::<tmuxproc>() as libc::c_ulong) as *mut tmuxproc;
     (*tp).name = xstrdup(name);
     return tp;
 }
@@ -689,7 +670,7 @@ pub unsafe extern "C" fn proc_loop(
         (*tp).name,
     );
     loop {
-        event_loop(0x1 as libc::c_int);
+        event_loop(0x1i32);
         if !((*tp).exit == 0
             && (loopcb.is_none() || loopcb.expect("non-null function pointer")() == 0))
         {
@@ -703,7 +684,7 @@ pub unsafe extern "C" fn proc_loop(
 }
 #[no_mangle]
 pub unsafe extern "C" fn proc_exit(mut tp: *mut tmuxproc) {
-    (*tp).exit = 1 as libc::c_int;
+    (*tp).exit = 1i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn proc_set_signals(
@@ -719,22 +700,22 @@ pub unsafe extern "C" fn proc_set_signals(
     (*tp).signalcb = signalcb;
     memset(
         &mut sa as *mut sigaction as *mut libc::c_void,
-        0 as libc::c_int,
+        0i32,
         ::std::mem::size_of::<sigaction>() as libc::c_ulong,
     );
     sigemptyset(&mut sa.sa_mask);
-    sa.sa_flags = 0x10000000 as libc::c_int;
+    sa.sa_flags = 0x10000000i32;
     sa.__sigaction_handler.sa_handler =
-        ::std::mem::transmute::<libc::intptr_t, __sighandler_t>(1 as libc::c_int as libc::intptr_t);
-    sigaction(13 as libc::c_int, &mut sa, 0 as *mut sigaction);
-    sigaction(20 as libc::c_int, &mut sa, 0 as *mut sigaction);
-    sigaction(21 as libc::c_int, &mut sa, 0 as *mut sigaction);
-    sigaction(22 as libc::c_int, &mut sa, 0 as *mut sigaction);
-    sigaction(3 as libc::c_int, &mut sa, 0 as *mut sigaction);
+        ::std::mem::transmute::<libc::intptr_t, __sighandler_t>(1isize);
+    sigaction(13i32, &mut sa, 0 as *mut sigaction);
+    sigaction(20i32, &mut sa, 0 as *mut sigaction);
+    sigaction(21i32, &mut sa, 0 as *mut sigaction);
+    sigaction(22i32, &mut sa, 0 as *mut sigaction);
+    sigaction(3i32, &mut sa, 0 as *mut sigaction);
     event_set(
         &mut (*tp).ev_sigint,
-        2 as libc::c_int,
-        (0x8 as libc::c_int | 0x10 as libc::c_int) as libc::c_short,
+        2i32,
+        (0x8i32 | 0x10i32) as libc::c_short,
         Some(
             proc_signal_cb
                 as unsafe extern "C" fn(
@@ -748,8 +729,8 @@ pub unsafe extern "C" fn proc_set_signals(
     event_add(&mut (*tp).ev_sigint, 0 as *const timeval);
     event_set(
         &mut (*tp).ev_sighup,
-        1 as libc::c_int,
-        (0x8 as libc::c_int | 0x10 as libc::c_int) as libc::c_short,
+        1i32,
+        (0x8i32 | 0x10i32) as libc::c_short,
         Some(
             proc_signal_cb
                 as unsafe extern "C" fn(
@@ -763,8 +744,8 @@ pub unsafe extern "C" fn proc_set_signals(
     event_add(&mut (*tp).ev_sighup, 0 as *const timeval);
     event_set(
         &mut (*tp).ev_sigchld,
-        17 as libc::c_int,
-        (0x8 as libc::c_int | 0x10 as libc::c_int) as libc::c_short,
+        17i32,
+        (0x8i32 | 0x10i32) as libc::c_short,
         Some(
             proc_signal_cb
                 as unsafe extern "C" fn(
@@ -778,8 +759,8 @@ pub unsafe extern "C" fn proc_set_signals(
     event_add(&mut (*tp).ev_sigchld, 0 as *const timeval);
     event_set(
         &mut (*tp).ev_sigcont,
-        18 as libc::c_int,
-        (0x8 as libc::c_int | 0x10 as libc::c_int) as libc::c_short,
+        18i32,
+        (0x8i32 | 0x10i32) as libc::c_short,
         Some(
             proc_signal_cb
                 as unsafe extern "C" fn(
@@ -793,8 +774,8 @@ pub unsafe extern "C" fn proc_set_signals(
     event_add(&mut (*tp).ev_sigcont, 0 as *const timeval);
     event_set(
         &mut (*tp).ev_sigterm,
-        15 as libc::c_int,
-        (0x8 as libc::c_int | 0x10 as libc::c_int) as libc::c_short,
+        15i32,
+        (0x8i32 | 0x10i32) as libc::c_short,
         Some(
             proc_signal_cb
                 as unsafe extern "C" fn(
@@ -808,8 +789,8 @@ pub unsafe extern "C" fn proc_set_signals(
     event_add(&mut (*tp).ev_sigterm, 0 as *const timeval);
     event_set(
         &mut (*tp).ev_sigusr1,
-        10 as libc::c_int,
-        (0x8 as libc::c_int | 0x10 as libc::c_int) as libc::c_short,
+        10i32,
+        (0x8i32 | 0x10i32) as libc::c_short,
         Some(
             proc_signal_cb
                 as unsafe extern "C" fn(
@@ -823,8 +804,8 @@ pub unsafe extern "C" fn proc_set_signals(
     event_add(&mut (*tp).ev_sigusr1, 0 as *const timeval);
     event_set(
         &mut (*tp).ev_sigusr2,
-        12 as libc::c_int,
-        (0x8 as libc::c_int | 0x10 as libc::c_int) as libc::c_short,
+        12i32,
+        (0x8i32 | 0x10i32) as libc::c_short,
         Some(
             proc_signal_cb
                 as unsafe extern "C" fn(
@@ -838,8 +819,8 @@ pub unsafe extern "C" fn proc_set_signals(
     event_add(&mut (*tp).ev_sigusr2, 0 as *const timeval);
     event_set(
         &mut (*tp).ev_sigwinch,
-        28 as libc::c_int,
-        (0x8 as libc::c_int | 0x10 as libc::c_int) as libc::c_short,
+        28i32,
+        (0x8i32 | 0x10i32) as libc::c_short,
         Some(
             proc_signal_cb
                 as unsafe extern "C" fn(
@@ -862,14 +843,14 @@ pub unsafe extern "C" fn proc_clear_signals(mut tp: *mut tmuxproc, mut defaults:
     };
     memset(
         &mut sa as *mut sigaction as *mut libc::c_void,
-        0 as libc::c_int,
+        0i32,
         ::std::mem::size_of::<sigaction>() as libc::c_ulong,
     );
     sigemptyset(&mut sa.sa_mask);
-    sa.sa_flags = 0x10000000 as libc::c_int;
+    sa.sa_flags = 0x10000000i32;
     sa.__sigaction_handler.sa_handler = None;
-    sigaction(13 as libc::c_int, &mut sa, 0 as *mut sigaction);
-    sigaction(20 as libc::c_int, &mut sa, 0 as *mut sigaction);
+    sigaction(13i32, &mut sa, 0 as *mut sigaction);
+    sigaction(20i32, &mut sa, 0 as *mut sigaction);
     event_del(&mut (*tp).ev_sigint);
     event_del(&mut (*tp).ev_sighup);
     event_del(&mut (*tp).ev_sigchld);
@@ -879,15 +860,15 @@ pub unsafe extern "C" fn proc_clear_signals(mut tp: *mut tmuxproc, mut defaults:
     event_del(&mut (*tp).ev_sigusr2);
     event_del(&mut (*tp).ev_sigwinch);
     if defaults != 0 {
-        sigaction(2 as libc::c_int, &mut sa, 0 as *mut sigaction);
-        sigaction(3 as libc::c_int, &mut sa, 0 as *mut sigaction);
-        sigaction(1 as libc::c_int, &mut sa, 0 as *mut sigaction);
-        sigaction(17 as libc::c_int, &mut sa, 0 as *mut sigaction);
-        sigaction(18 as libc::c_int, &mut sa, 0 as *mut sigaction);
-        sigaction(15 as libc::c_int, &mut sa, 0 as *mut sigaction);
-        sigaction(10 as libc::c_int, &mut sa, 0 as *mut sigaction);
-        sigaction(12 as libc::c_int, &mut sa, 0 as *mut sigaction);
-        sigaction(28 as libc::c_int, &mut sa, 0 as *mut sigaction);
+        sigaction(2i32, &mut sa, 0 as *mut sigaction);
+        sigaction(3i32, &mut sa, 0 as *mut sigaction);
+        sigaction(1i32, &mut sa, 0 as *mut sigaction);
+        sigaction(17i32, &mut sa, 0 as *mut sigaction);
+        sigaction(18i32, &mut sa, 0 as *mut sigaction);
+        sigaction(15i32, &mut sa, 0 as *mut sigaction);
+        sigaction(10i32, &mut sa, 0 as *mut sigaction);
+        sigaction(12i32, &mut sa, 0 as *mut sigaction);
+        sigaction(28i32, &mut sa, 0 as *mut sigaction);
     };
 }
 #[no_mangle]
@@ -898,10 +879,7 @@ pub unsafe extern "C" fn proc_add_peer(
     mut arg: *mut libc::c_void,
 ) -> *mut tmuxpeer {
     let mut peer: *mut tmuxpeer = 0 as *mut tmuxpeer;
-    peer = xcalloc(
-        1 as libc::c_int as size_t,
-        ::std::mem::size_of::<tmuxpeer>() as libc::c_ulong,
-    ) as *mut tmuxpeer;
+    peer = xcalloc(1u64, ::std::mem::size_of::<tmuxpeer>() as libc::c_ulong) as *mut tmuxpeer;
     (*peer).parent = tp;
     (*peer).dispatchcb = dispatchcb;
     (*peer).arg = arg;
@@ -909,7 +887,7 @@ pub unsafe extern "C" fn proc_add_peer(
     event_set(
         &mut (*peer).event,
         fd,
-        0x2 as libc::c_int as libc::c_short,
+        0x2i16,
         Some(
             proc_event_cb
                 as unsafe extern "C" fn(
@@ -942,7 +920,7 @@ pub unsafe extern "C" fn proc_remove_peer(mut peer: *mut tmuxpeer) {
 }
 #[no_mangle]
 pub unsafe extern "C" fn proc_kill_peer(mut peer: *mut tmuxpeer) {
-    (*peer).flags |= 0x1 as libc::c_int;
+    (*peer).flags |= 0x1i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn proc_toggle_log(mut tp: *mut tmuxproc) {

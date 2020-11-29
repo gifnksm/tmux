@@ -1178,15 +1178,13 @@ pub struct clients {
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 #[no_mangle]
-pub static mut cfg_client: *mut client = 0 as *const client as *mut client;
-static mut cfg_file: *mut libc::c_char = 0 as *const libc::c_char as *mut libc::c_char;
+pub static mut cfg_client: *mut client = 0 as *mut client;
+static mut cfg_file: *mut libc::c_char = 0 as *mut libc::c_char;
 #[no_mangle]
 pub static mut cfg_finished: libc::c_int = 0;
-static mut cfg_causes: *mut *mut libc::c_char =
-    0 as *const *mut libc::c_char as *mut *mut libc::c_char;
+static mut cfg_causes: *mut *mut libc::c_char = 0 as *mut *mut libc::c_char;
 static mut cfg_ncauses: u_int = 0;
-static mut cfg_item: *mut crate::cmd_queue::cmdq_item =
-    0 as *const crate::cmd_queue::cmdq_item as *mut crate::cmd_queue::cmdq_item;
+static mut cfg_item: *mut crate::cmd_queue::cmdq_item = 0 as *mut crate::cmd_queue::cmdq_item;
 unsafe extern "C" fn cfg_client_done(
     mut _item: *mut crate::cmd_queue::cmdq_item,
     mut _data: *mut libc::c_void,
@@ -1203,9 +1201,9 @@ unsafe extern "C" fn cfg_done(
     if cfg_finished != 0 {
         return CMD_RETURN_NORMAL;
     }
-    cfg_finished = 1 as libc::c_int;
+    cfg_finished = 1i32;
     if !sessions.rbh_root.is_null() {
-        cfg_show_causes(sessions_RB_MINMAX(&mut sessions, -(1 as libc::c_int)));
+        cfg_show_causes(sessions_RB_MINMAX(&mut sessions, -(1i32)));
     }
     if !cfg_item.is_null() {
         cmdq_continue(cfg_item);
@@ -1254,13 +1252,13 @@ pub unsafe extern "C" fn start_cfg() {
         expand_paths(b"/etc/tmux.conf:~/.tmux.conf:$XDG_CONFIG_HOME/tmux/tmux.conf:~/.config/tmux/tmux.conf\x00"
                          as *const u8 as *const libc::c_char, &mut paths,
                      &mut n);
-        i = 0 as libc::c_int as u_int;
+        i = 0u32;
         while i < n {
             load_cfg(
                 *paths.offset(i as isize),
                 c,
                 0 as *mut crate::cmd_queue::cmdq_item,
-                0x1 as libc::c_int,
+                0x1i32,
                 0 as *mut *mut crate::cmd_queue::cmdq_item,
             );
             free(*paths.offset(i as isize) as *mut libc::c_void);
@@ -1272,7 +1270,7 @@ pub unsafe extern "C" fn start_cfg() {
             cfg_file,
             c,
             0 as *mut crate::cmd_queue::cmdq_item,
-            0 as libc::c_int,
+            0i32,
             0 as *mut *mut crate::cmd_queue::cmdq_item,
         );
     }
@@ -1324,39 +1322,39 @@ pub unsafe extern "C" fn load_cfg(
     log_debug(b"loading %s\x00" as *const u8 as *const libc::c_char, path);
     f = fopen(path, b"rb\x00" as *const u8 as *const libc::c_char);
     if f.is_null() {
-        if *__errno_location() == 2 as libc::c_int && flags & 0x1 as libc::c_int != 0 {
-            return 0 as libc::c_int;
+        if *__errno_location() == 2i32 && flags & 0x1i32 != 0 {
+            return 0i32;
         }
         cfg_add_cause(
             b"%s: %s\x00" as *const u8 as *const libc::c_char,
             path,
             strerror(*__errno_location()),
         );
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     memset(
         &mut pi as *mut cmd_parse_input as *mut libc::c_void,
-        0 as libc::c_int,
+        0i32,
         ::std::mem::size_of::<cmd_parse_input>() as libc::c_ulong,
     );
     pi.flags = flags;
     pi.file = path;
-    pi.line = 1 as libc::c_int as u_int;
+    pi.line = 1u32;
     pi.item = item;
     pi.c = c;
     pr = cmd_parse_from_file(f, &mut pi);
     fclose(f);
-    if (*pr).status as libc::c_uint == CMD_PARSE_EMPTY as libc::c_int as libc::c_uint {
-        return 0 as libc::c_int;
+    if (*pr).status == CMD_PARSE_EMPTY {
+        return 0i32;
     }
-    if (*pr).status as libc::c_uint == CMD_PARSE_ERROR as libc::c_int as libc::c_uint {
+    if (*pr).status == CMD_PARSE_ERROR {
         cfg_add_cause(b"%s\x00" as *const u8 as *const libc::c_char, (*pr).error);
         free((*pr).error as *mut libc::c_void);
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
-    if flags & 0x2 as libc::c_int != 0 {
+    if flags & 0x2i32 != 0 {
         cmd_list_free((*pr).cmdlist);
-        return 0 as libc::c_int;
+        return 0i32;
     }
     new_item0 = cmdq_get_command((*pr).cmdlist, 0 as *mut crate::cmd_queue::cmdq_state);
     if !item.is_null() {
@@ -1368,7 +1366,7 @@ pub unsafe extern "C" fn load_cfg(
     if !new_item.is_null() {
         *new_item = new_item0
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn load_cfg_from_buffer(
@@ -1404,26 +1402,26 @@ pub unsafe extern "C" fn load_cfg_from_buffer(
     log_debug(b"loading %s\x00" as *const u8 as *const libc::c_char, path);
     memset(
         &mut pi as *mut cmd_parse_input as *mut libc::c_void,
-        0 as libc::c_int,
+        0i32,
         ::std::mem::size_of::<cmd_parse_input>() as libc::c_ulong,
     );
     pi.flags = flags;
     pi.file = path;
-    pi.line = 1 as libc::c_int as u_int;
+    pi.line = 1u32;
     pi.item = item;
     pi.c = c;
     pr = cmd_parse_from_buffer(buf, len, &mut pi);
-    if (*pr).status as libc::c_uint == CMD_PARSE_EMPTY as libc::c_int as libc::c_uint {
-        return 0 as libc::c_int;
+    if (*pr).status == CMD_PARSE_EMPTY {
+        return 0i32;
     }
-    if (*pr).status as libc::c_uint == CMD_PARSE_ERROR as libc::c_int as libc::c_uint {
+    if (*pr).status == CMD_PARSE_ERROR {
         cfg_add_cause(b"%s\x00" as *const u8 as *const libc::c_char, (*pr).error);
         free((*pr).error as *mut libc::c_void);
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
-    if flags & 0x2 as libc::c_int != 0 {
+    if flags & 0x2i32 != 0 {
         cmd_list_free((*pr).cmdlist);
-        return 0 as libc::c_int;
+        return 0i32;
     }
     new_item0 = cmdq_get_command((*pr).cmdlist, 0 as *mut crate::cmd_queue::cmdq_state);
     if !item.is_null() {
@@ -1435,7 +1433,7 @@ pub unsafe extern "C" fn load_cfg_from_buffer(
     if !new_item.is_null() {
         *new_item = new_item0
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn cfg_add_cause(mut fmt: *const libc::c_char, mut args: ...) {
@@ -1449,14 +1447,13 @@ pub unsafe extern "C" fn cfg_add_cause(mut fmt: *const libc::c_char, mut args: .
         cfg_ncauses as size_t,
         ::std::mem::size_of::<*mut libc::c_char>() as libc::c_ulong,
     ) as *mut *mut libc::c_char;
-    let ref mut fresh0 =
-        *cfg_causes.offset(cfg_ncauses.wrapping_sub(1 as libc::c_int as libc::c_uint) as isize);
+    let ref mut fresh0 = *cfg_causes.offset(cfg_ncauses.wrapping_sub(1u32) as isize);
     *fresh0 = msg;
 }
 #[no_mangle]
 pub unsafe extern "C" fn cfg_print_causes(mut item: *mut crate::cmd_queue::cmdq_item) {
     let mut i: u_int = 0;
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < cfg_ncauses {
         cmdq_print(
             item,
@@ -1468,14 +1465,14 @@ pub unsafe extern "C" fn cfg_print_causes(mut item: *mut crate::cmd_queue::cmdq_
     }
     free(cfg_causes as *mut libc::c_void);
     cfg_causes = 0 as *mut *mut libc::c_char;
-    cfg_ncauses = 0 as libc::c_int as u_int;
+    cfg_ncauses = 0u32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn cfg_show_causes(mut s: *mut session) {
     let mut wp: *mut window_pane = 0 as *mut window_pane;
     let mut wme: *mut window_mode_entry = 0 as *mut window_mode_entry;
     let mut i: u_int = 0;
-    if s.is_null() || cfg_ncauses == 0 as libc::c_int as libc::c_uint {
+    if s.is_null() || cfg_ncauses == 0u32 {
         return;
     }
     wp = (*(*(*s).curw).window).active;
@@ -1489,7 +1486,7 @@ pub unsafe extern "C" fn cfg_show_causes(mut s: *mut session) {
             0 as *mut args,
         );
     }
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < cfg_ncauses {
         window_copy_add(
             wp,
@@ -1501,5 +1498,5 @@ pub unsafe extern "C" fn cfg_show_causes(mut s: *mut session) {
     }
     free(cfg_causes as *mut libc::c_void);
     cfg_causes = 0 as *mut *mut libc::c_char;
-    cfg_ncauses = 0 as libc::c_int as u_int;
+    cfg_ncauses = 0u32;
 }

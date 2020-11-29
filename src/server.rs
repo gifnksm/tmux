@@ -1405,7 +1405,7 @@ unsafe extern "C" fn stat(
     mut __path: *const libc::c_char,
     mut __statbuf: *mut stat,
 ) -> libc::c_int {
-    return __xstat(1 as libc::c_int, __path, __statbuf);
+    return __xstat(1i32, __path, __statbuf);
 }
 /* $OpenBSD$ */
 /*
@@ -1428,20 +1428,19 @@ unsafe extern "C" fn stat(
  */
 #[no_mangle]
 pub static mut clients: clients = clients {
-    tqh_first: 0 as *const client as *mut client,
-    tqh_last: 0 as *const *mut client as *mut *mut client,
+    tqh_first: 0 as *mut client,
+    tqh_last: 0 as *mut *mut client,
 };
 #[no_mangle]
-pub static mut server_proc: *mut crate::proc::tmuxproc =
-    0 as *const crate::proc::tmuxproc as *mut crate::proc::tmuxproc;
-static mut server_fd: libc::c_int = -(1 as libc::c_int);
+pub static mut server_proc: *mut crate::proc::tmuxproc = 0 as *mut crate::proc::tmuxproc;
+static mut server_fd: libc::c_int = -(1i32);
 static mut server_client_flags: uint64_t = 0;
 static mut server_exit: libc::c_int = 0;
 static mut server_ev_accept: event = event {
     ev_evcallback: event_callback {
         evcb_active_next: C2RustUnnamed_8 {
-            tqe_next: 0 as *const event_callback as *mut event_callback,
-            tqe_prev: 0 as *const *mut event_callback as *mut *mut event_callback,
+            tqe_next: 0 as *mut event_callback,
+            tqe_prev: 0 as *mut *mut event_callback,
         },
         evcb_flags: 0,
         evcb_pri: 0,
@@ -1449,21 +1448,21 @@ static mut server_ev_accept: event = event {
         evcb_cb_union: C2RustUnnamed_7 {
             evcb_callback: None,
         },
-        evcb_arg: 0 as *const libc::c_void as *mut libc::c_void,
+        evcb_arg: 0 as *mut libc::c_void,
     },
     ev_timeout_pos: C2RustUnnamed_5 {
         ev_next_with_common_timeout: C2RustUnnamed_6 {
-            tqe_next: 0 as *const event as *mut event,
-            tqe_prev: 0 as *const *mut event as *mut *mut event,
+            tqe_next: 0 as *mut event,
+            tqe_prev: 0 as *mut *mut event,
         },
     },
     ev_fd: 0,
-    ev_base: 0 as *const event_base as *mut event_base,
+    ev_base: 0 as *mut event_base,
     ev_: C2RustUnnamed_0 {
         ev_io: C2RustUnnamed_3 {
             ev_io_next: C2RustUnnamed_4 {
-                le_next: 0 as *const event as *mut event,
-                le_prev: 0 as *const *mut event as *mut *mut event,
+                le_next: 0 as *mut event,
+                le_prev: 0 as *mut *mut event,
             },
             ev_timeout: timeval {
                 tv_sec: 0,
@@ -1481,18 +1480,18 @@ static mut server_ev_accept: event = event {
 #[no_mangle]
 pub static mut marked_pane: cmd_find_state = cmd_find_state {
     flags: 0,
-    current: 0 as *const cmd_find_state as *mut cmd_find_state,
-    s: 0 as *const session as *mut session,
-    wl: 0 as *const winlink as *mut winlink,
-    w: 0 as *const window as *mut window,
-    wp: 0 as *const window_pane as *mut window_pane,
+    current: 0 as *mut cmd_find_state,
+    s: 0 as *mut session,
+    wl: 0 as *mut winlink,
+    w: 0 as *mut window,
+    wp: 0 as *mut window_pane,
     idx: 0,
 };
 static mut message_next: u_int = 0;
 #[no_mangle]
 pub static mut message_log: message_list = message_list {
-    tqh_first: 0 as *const message_entry as *mut message_entry,
-    tqh_last: 0 as *const *mut message_entry as *mut *mut message_entry,
+    tqh_first: 0 as *mut message_entry,
+    tqh_last: 0 as *mut *mut message_entry,
 };
 /* Set marked pane. */
 #[no_mangle]
@@ -1501,7 +1500,7 @@ pub unsafe extern "C" fn server_set_marked(
     mut wl: *mut winlink,
     mut wp: *mut window_pane,
 ) {
-    cmd_find_clear_state(&mut marked_pane, 0 as libc::c_int);
+    cmd_find_clear_state(&mut marked_pane, 0i32);
     marked_pane.s = s;
     marked_pane.wl = wl;
     marked_pane.w = (*wl).window;
@@ -1510,7 +1509,7 @@ pub unsafe extern "C" fn server_set_marked(
 /* Clear marked pane. */
 #[no_mangle]
 pub unsafe extern "C" fn server_clear_marked() {
-    cmd_find_clear_state(&mut marked_pane, 0 as libc::c_int);
+    cmd_find_clear_state(&mut marked_pane, 0i32);
 }
 /* Is this the marked pane? */
 #[no_mangle]
@@ -1520,13 +1519,13 @@ pub unsafe extern "C" fn server_is_marked(
     mut wp: *mut window_pane,
 ) -> libc::c_int {
     if s.is_null() || wl.is_null() || wp.is_null() {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     if marked_pane.s != s || marked_pane.wl != wl {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     if marked_pane.wp != wp {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     return server_check_marked();
 }
@@ -1550,41 +1549,32 @@ unsafe extern "C" fn server_create_socket(
     let mut saved_errno: libc::c_int = 0;
     memset(
         &mut sa as *mut sockaddr_un as *mut libc::c_void,
-        0 as libc::c_int,
+        0i32,
         ::std::mem::size_of::<sockaddr_un>() as libc::c_ulong,
     );
-    sa.sun_family = 1 as libc::c_int as sa_family_t;
+    sa.sun_family = 1u16;
     size = strlcpy(
         sa.sun_path.as_mut_ptr(),
         socket_path,
         ::std::mem::size_of::<[libc::c_char; 108]>() as libc::c_ulong,
     );
     if size >= ::std::mem::size_of::<[libc::c_char; 108]>() as libc::c_ulong {
-        *__errno_location() = 36 as libc::c_int
+        *__errno_location() = 36i32
     } else {
         unlink(sa.sun_path.as_mut_ptr());
-        fd = socket(
-            1 as libc::c_int,
-            SOCK_STREAM as libc::c_int,
-            0 as libc::c_int,
-        );
-        if !(fd == -(1 as libc::c_int)) {
-            if flags & 0x8000000 as libc::c_int != 0 {
+        fd = socket(1i32, SOCK_STREAM as libc::c_int, 0i32);
+        if !(fd == -(1i32)) {
+            if flags & 0x8000000i32 != 0 {
                 mask = umask(
-                    (0o100 as libc::c_int
-                        | 0o100 as libc::c_int >> 3 as libc::c_int
-                        | (0o400 as libc::c_int | 0o200 as libc::c_int | 0o100 as libc::c_int)
-                            >> 3 as libc::c_int
-                            >> 3 as libc::c_int) as __mode_t,
+                    (0o100i32 | 0o100i32 >> 3i32 | (0o400i32 | 0o200i32 | 0o100i32) >> 3i32 >> 3i32)
+                        as __mode_t,
                 )
             } else {
                 mask = umask(
-                    (0o100 as libc::c_int
-                        | (0o400 as libc::c_int | 0o200 as libc::c_int | 0o100 as libc::c_int)
-                            >> 3 as libc::c_int
-                        | (0o400 as libc::c_int | 0o200 as libc::c_int | 0o100 as libc::c_int)
-                            >> 3 as libc::c_int
-                            >> 3 as libc::c_int) as __mode_t,
+                    (0o100i32
+                        | (0o400i32 | 0o200i32 | 0o100i32) >> 3i32
+                        | (0o400i32 | 0o200i32 | 0o100i32) >> 3i32 >> 3i32)
+                        as __mode_t,
                 )
             }
             if bind(
@@ -1592,20 +1582,20 @@ unsafe extern "C" fn server_create_socket(
                 __CONST_SOCKADDR_ARG {
                     __sockaddr__: &mut sa as *mut sockaddr_un as *mut sockaddr,
                 },
-                ::std::mem::size_of::<sockaddr_un>() as libc::c_ulong as socklen_t,
-            ) == -(1 as libc::c_int)
+                ::std::mem::size_of::<sockaddr_un>() as socklen_t,
+            ) == -(1i32)
             {
                 saved_errno = *__errno_location();
                 close(fd);
                 *__errno_location() = saved_errno
             } else {
                 umask(mask);
-                if listen(fd, 128 as libc::c_int) == -(1 as libc::c_int) {
+                if listen(fd, 128i32) == -(1i32) {
                     saved_errno = *__errno_location();
                     close(fd);
                     *__errno_location() = saved_errno
                 } else {
-                    setblocking(fd, 0 as libc::c_int);
+                    setblocking(fd, 0i32);
                     return fd;
                 }
             }
@@ -1619,7 +1609,7 @@ unsafe extern "C" fn server_create_socket(
             strerror(*__errno_location()),
         );
     }
-    return -(1 as libc::c_int);
+    return -(1i32);
 }
 /* Fork new server. */
 #[no_mangle]
@@ -1636,15 +1626,9 @@ pub unsafe extern "C" fn server_start(
     let mut c: *mut client = 0 as *mut client;
     let mut cause: *mut libc::c_char = 0 as *mut libc::c_char;
     sigfillset(&mut set);
-    sigprocmask(0 as libc::c_int, &mut set, &mut oldset);
-    if !flags & 0x40000000 as libc::c_int != 0 {
-        if socketpair(
-            1 as libc::c_int,
-            SOCK_STREAM as libc::c_int,
-            0 as libc::c_int,
-            pair.as_mut_ptr(),
-        ) != 0 as libc::c_int
-        {
+    sigprocmask(0i32, &mut set, &mut oldset);
+    if !flags & 0x40000000i32 != 0 {
+        if socketpair(1i32, SOCK_STREAM as libc::c_int, 0i32, pair.as_mut_ptr()) != 0i32 {
             fatal(b"socketpair failed\x00" as *const u8 as *const libc::c_char);
         }
         match fork() {
@@ -1653,19 +1637,19 @@ pub unsafe extern "C" fn server_start(
             }
             0 => {}
             _ => {
-                sigprocmask(2 as libc::c_int, &mut oldset, 0 as *mut sigset_t);
-                close(pair[1 as libc::c_int as usize]);
-                return pair[0 as libc::c_int as usize];
+                sigprocmask(2i32, &mut oldset, 0 as *mut sigset_t);
+                close(pair[1usize]);
+                return pair[0usize];
             }
         }
-        close(pair[0 as libc::c_int as usize]);
-        if daemon(1 as libc::c_int, 0 as libc::c_int) != 0 as libc::c_int {
+        close(pair[0usize]);
+        if daemon(1i32, 0i32) != 0i32 {
             fatal(b"daemon failed\x00" as *const u8 as *const libc::c_char);
         }
     }
     server_client_flags = flags as uint64_t;
-    proc_clear_signals(client, 0 as libc::c_int);
-    if event_reinit(base) != 0 as libc::c_int {
+    proc_clear_signals(client, 0i32);
+    if event_reinit(base) != 0i32 {
         fatalx(b"event_reinit failed\x00" as *const u8 as *const libc::c_char);
     }
     server_proc = proc_start(b"server\x00" as *const u8 as *const libc::c_char);
@@ -1673,11 +1657,11 @@ pub unsafe extern "C" fn server_start(
         server_proc,
         Some(server_signal as unsafe extern "C" fn(_: libc::c_int) -> ()),
     );
-    sigprocmask(2 as libc::c_int, &mut oldset, 0 as *mut sigset_t);
-    if log_get_level() > 1 as libc::c_int {
+    sigprocmask(2i32, &mut oldset, 0 as *mut sigset_t);
+    if log_get_level() > 1i32 {
         tty_create_log();
     }
-    if 0 as libc::c_int != 0 as libc::c_int {
+    if 0i32 != 0i32 {
         fatal(b"pledge failed\x00" as *const u8 as *const libc::c_char);
     }
     input_key_build();
@@ -1691,19 +1675,19 @@ pub unsafe extern "C" fn server_start(
     message_log.tqh_last = &mut message_log.tqh_first;
     gettimeofday(&mut start_time, 0 as *mut libc::c_void);
     server_fd = server_create_socket(flags, &mut cause);
-    if server_fd != -(1 as libc::c_int) {
+    if server_fd != -(1i32) {
         server_update_socket();
     }
-    if !flags & 0x40000000 as libc::c_int != 0 {
-        c = server_client_create(pair[1 as libc::c_int as usize])
+    if !flags & 0x40000000i32 != 0 {
+        c = server_client_create(pair[1usize])
     } else {
         options_set_number(
             global_options,
             b"exit-empty\x00" as *const u8 as *const libc::c_char,
-            0 as libc::c_int as libc::c_longlong,
+            0i64,
         );
     }
-    if lockfd >= 0 as libc::c_int {
+    if lockfd >= 0i32 {
         unlink(lockfile);
         free(lockfile as *mut libc::c_void);
         close(lockfd);
@@ -1711,18 +1695,18 @@ pub unsafe extern "C" fn server_start(
     if !cause.is_null() {
         if !c.is_null() {
             cmdq_append(c, cmdq_get_error(cause));
-            (*c).flags |= 0x4 as libc::c_int as libc::c_ulong
+            (*c).flags |= 0x4u64
         }
         free(cause as *mut libc::c_void);
     }
-    server_add_accept(0 as libc::c_int);
+    server_add_accept(0i32);
     proc_loop(
         server_proc,
         Some(server_loop as unsafe extern "C" fn() -> libc::c_int),
     );
     job_kill_all();
     status_prompt_save_history();
-    exit(0 as libc::c_int);
+    exit(0i32);
 }
 /* Server loop callback. */
 unsafe extern "C" fn server_loop() -> libc::c_int {
@@ -1732,12 +1716,12 @@ unsafe extern "C" fn server_loop() -> libc::c_int {
         items = cmdq_next(0 as *mut client);
         c = clients.tqh_first;
         while !c.is_null() {
-            if (*c).flags & 0x40000 as libc::c_int as libc::c_ulong != 0 {
-                items = (items as libc::c_uint).wrapping_add(cmdq_next(c)) as u_int as u_int
+            if (*c).flags & 0x40000u64 != 0 {
+                items = (items).wrapping_add(cmdq_next(c))
             }
             c = (*c).entry.tqe_next
         }
-        if !(items != 0 as libc::c_int as libc::c_uint) {
+        if !(items != 0u32) {
             break;
         }
     }
@@ -1748,7 +1732,7 @@ unsafe extern "C" fn server_loop() -> libc::c_int {
     ) == 0
         && server_exit == 0
     {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     if options_get_number(
         global_options,
@@ -1756,13 +1740,13 @@ unsafe extern "C" fn server_loop() -> libc::c_int {
     ) == 0
     {
         if !sessions.rbh_root.is_null() {
-            return 0 as libc::c_int;
+            return 0i32;
         }
     }
     c = clients.tqh_first;
     while !c.is_null() {
         if !(*c).session.is_null() {
-            return 0 as libc::c_int;
+            return 0i32;
         }
         c = (*c).entry.tqe_next
     }
@@ -1772,12 +1756,12 @@ unsafe extern "C" fn server_loop() -> libc::c_int {
      */
     cmd_wait_for_flush();
     if !clients.tqh_first.is_null() {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     if job_still_running() != 0 {
-        return 0 as libc::c_int;
+        return 0i32;
     }
-    return 1 as libc::c_int;
+    return 1i32;
 }
 /* Exit the server by killing all clients and windows. */
 unsafe extern "C" fn server_send_exit() {
@@ -1789,25 +1773,25 @@ unsafe extern "C" fn server_send_exit() {
     c = clients.tqh_first;
     while !c.is_null() && {
         c1 = (*c).entry.tqe_next;
-        (1 as libc::c_int) != 0
+        (1i32) != 0
     } {
-        if (*c).flags & 0x40 as libc::c_int as libc::c_ulong != 0 {
+        if (*c).flags & 0x40u64 != 0 {
             server_client_lost(c);
         } else {
-            (*c).flags |= 0x4 as libc::c_int as libc::c_ulong;
+            (*c).flags |= 0x4u64;
             (*c).exit_type = CLIENT_EXIT_SHUTDOWN
         }
         (*c).session = 0 as *mut session;
         c = c1
     }
-    s = sessions_RB_MINMAX(&mut sessions, -(1 as libc::c_int));
+    s = sessions_RB_MINMAX(&mut sessions, -(1i32));
     while !s.is_null() && {
         s1 = sessions_RB_NEXT(s);
-        (1 as libc::c_int) != 0
+        (1i32) != 0
     } {
         session_destroy(
             s,
-            1 as libc::c_int,
+            1i32,
             (*::std::mem::transmute::<&[u8; 17], &[libc::c_char; 17]>(b"server_send_exit\x00"))
                 .as_ptr(),
         );
@@ -1818,7 +1802,7 @@ unsafe extern "C" fn server_send_exit() {
 #[no_mangle]
 pub unsafe extern "C" fn server_update_socket() {
     let mut s: *mut session = 0 as *mut session;
-    static mut last: libc::c_int = -(1 as libc::c_int);
+    static mut last: libc::c_int = -(1i32);
     let mut n: libc::c_int = 0;
     let mut mode: libc::c_int = 0;
     let mut sb: stat = stat {
@@ -1847,10 +1831,10 @@ pub unsafe extern "C" fn server_update_socket() {
         },
         __glibc_reserved: [0; 3],
     };
-    n = 0 as libc::c_int;
-    s = sessions_RB_MINMAX(&mut sessions, -(1 as libc::c_int));
+    n = 0i32;
+    s = sessions_RB_MINMAX(&mut sessions, -(1i32));
     while !s.is_null() {
-        if (*s).attached != 0 as libc::c_int as libc::c_uint {
+        if (*s).attached != 0u32 {
             n += 1;
             break;
         } else {
@@ -1859,32 +1843,28 @@ pub unsafe extern "C" fn server_update_socket() {
     }
     if n != last {
         last = n;
-        if stat(socket_path, &mut sb) != 0 as libc::c_int {
+        if stat(socket_path, &mut sb) != 0i32 {
             return;
         }
         mode = (sb.st_mode
-            & (0o400 as libc::c_int
-                | 0o200 as libc::c_int
-                | 0o100 as libc::c_int
-                | (0o400 as libc::c_int | 0o200 as libc::c_int | 0o100 as libc::c_int)
-                    >> 3 as libc::c_int
-                | (0o400 as libc::c_int | 0o200 as libc::c_int | 0o100 as libc::c_int)
-                    >> 3 as libc::c_int
-                    >> 3 as libc::c_int) as libc::c_uint) as libc::c_int;
-        if n != 0 as libc::c_int {
-            if mode & 0o400 as libc::c_int != 0 {
-                mode |= 0o100 as libc::c_int
+            & (0o400i32
+                | 0o200i32
+                | 0o100i32
+                | (0o400i32 | 0o200i32 | 0o100i32) >> 3i32
+                | (0o400i32 | 0o200i32 | 0o100i32) >> 3i32 >> 3i32) as libc::c_uint)
+            as libc::c_int;
+        if n != 0i32 {
+            if mode & 0o400i32 != 0 {
+                mode |= 0o100i32
             }
-            if mode & 0o400 as libc::c_int >> 3 as libc::c_int != 0 {
-                mode |= 0o100 as libc::c_int >> 3 as libc::c_int
+            if mode & 0o400i32 >> 3i32 != 0 {
+                mode |= 0o100i32 >> 3i32
             }
-            if mode & 0o400 as libc::c_int >> 3 as libc::c_int >> 3 as libc::c_int != 0 {
-                mode |= 0o100 as libc::c_int >> 3 as libc::c_int >> 3 as libc::c_int
+            if mode & 0o400i32 >> 3i32 >> 3i32 != 0 {
+                mode |= 0o100i32 >> 3i32 >> 3i32
             }
         } else {
-            mode &= !(0o100 as libc::c_int
-                | 0o100 as libc::c_int >> 3 as libc::c_int
-                | 0o100 as libc::c_int >> 3 as libc::c_int >> 3 as libc::c_int)
+            mode &= !(0o100i32 | 0o100i32 >> 3i32 | 0o100i32 >> 3i32 >> 3i32)
         }
         chmod(socket_path, mode as __mode_t);
     };
@@ -1900,11 +1880,10 @@ unsafe extern "C" fn server_accept(
         __ss_padding: [0; 118],
         __ss_align: 0,
     };
-    let mut slen: socklen_t =
-        ::std::mem::size_of::<sockaddr_storage>() as libc::c_ulong as socklen_t;
+    let mut slen: socklen_t = ::std::mem::size_of::<sockaddr_storage>() as socklen_t;
     let mut newfd: libc::c_int = 0;
-    server_add_accept(0 as libc::c_int);
-    if events as libc::c_int & 0x2 as libc::c_int == 0 {
+    server_add_accept(0i32);
+    if events as libc::c_int & 0x2i32 == 0 {
         return;
     }
     newfd = accept(
@@ -1914,16 +1893,16 @@ unsafe extern "C" fn server_accept(
         },
         &mut slen,
     );
-    if newfd == -(1 as libc::c_int) {
-        if *__errno_location() == 11 as libc::c_int
-            || *__errno_location() == 4 as libc::c_int
-            || *__errno_location() == 103 as libc::c_int
+    if newfd == -(1i32) {
+        if *__errno_location() == 11i32
+            || *__errno_location() == 4i32
+            || *__errno_location() == 103i32
         {
             return;
         }
-        if *__errno_location() == 23 as libc::c_int || *__errno_location() == 24 as libc::c_int {
+        if *__errno_location() == 23i32 || *__errno_location() == 24i32 {
             /* Delete and don't try again for 1 second. */
-            server_add_accept(1 as libc::c_int);
+            server_add_accept(1i32);
             return;
         }
         fatal(b"accept failed\x00" as *const u8 as *const libc::c_char);
@@ -1943,21 +1922,21 @@ pub unsafe extern "C" fn server_add_accept(mut timeout: libc::c_int) {
     let mut tv: timeval = {
         let mut init = timeval {
             tv_sec: timeout as __time_t,
-            tv_usec: 0 as libc::c_int as __suseconds_t,
+            tv_usec: 0i64,
         };
         init
     };
-    if server_fd == -(1 as libc::c_int) {
+    if server_fd == -(1i32) {
         return;
     }
     if event_initialized(&mut server_ev_accept) != 0 {
         event_del(&mut server_ev_accept);
     }
-    if timeout == 0 as libc::c_int {
+    if timeout == 0i32 {
         event_set(
             &mut server_ev_accept,
             server_fd,
-            0x2 as libc::c_int as libc::c_short,
+            0x2i16,
             Some(
                 server_accept
                     as unsafe extern "C" fn(
@@ -1973,7 +1952,7 @@ pub unsafe extern "C" fn server_add_accept(mut timeout: libc::c_int) {
         event_set(
             &mut server_ev_accept,
             server_fd,
-            0x1 as libc::c_int as libc::c_short,
+            0x1i16,
             Some(
                 server_accept
                     as unsafe extern "C" fn(
@@ -1997,7 +1976,7 @@ unsafe extern "C" fn server_signal(mut sig: libc::c_int) {
     );
     match sig {
         2 | 15 => {
-            server_exit = 1 as libc::c_int;
+            server_exit = 1i32;
             server_send_exit();
         }
         17 => {
@@ -2009,12 +1988,12 @@ unsafe extern "C" fn server_signal(mut sig: libc::c_int) {
                 server_client_flags as libc::c_int,
                 0 as *mut *mut libc::c_char,
             );
-            if fd != -(1 as libc::c_int) {
+            if fd != -(1i32) {
                 close(server_fd);
                 server_fd = fd;
                 server_update_socket();
             }
-            server_add_accept(0 as libc::c_int);
+            server_add_accept(0i32);
         }
         12 => {
             proc_toggle_log(server_proc);
@@ -2027,14 +2006,10 @@ unsafe extern "C" fn server_child_signal() {
     let mut status: libc::c_int = 0;
     let mut pid: pid_t = 0;
     loop {
-        pid = waitpid(
-            -(1 as libc::c_int),
-            &mut status,
-            1 as libc::c_int | 2 as libc::c_int,
-        );
+        pid = waitpid(-(1i32), &mut status, 1i32 | 2i32);
         match pid {
             -1 => {
-                if *__errno_location() == 10 as libc::c_int {
+                if *__errno_location() == 10i32 {
                     return;
                 }
                 fatal(b"waitpid failed\x00" as *const u8 as *const libc::c_char);
@@ -2042,12 +2017,10 @@ unsafe extern "C" fn server_child_signal() {
             0 => return,
             _ => {}
         }
-        if status & 0xff as libc::c_int == 0x7f as libc::c_int {
+        if status & 0xffi32 == 0x7fi32 {
             server_child_stopped(pid, status);
-        } else if status & 0x7f as libc::c_int == 0 as libc::c_int
-            || ((status & 0x7f as libc::c_int) + 1 as libc::c_int) as libc::c_schar as libc::c_int
-                >> 1 as libc::c_int
-                > 0 as libc::c_int
+        } else if status & 0x7fi32 == 0i32
+            || ((status & 0x7fi32) + 1i32) as libc::c_schar as libc::c_int >> 1i32 > 0i32
         {
             server_child_exited(pid, status);
         }
@@ -2058,23 +2031,23 @@ unsafe extern "C" fn server_child_exited(mut pid: pid_t, mut status: libc::c_int
     let mut w: *mut window = 0 as *mut window;
     let mut w1: *mut window = 0 as *mut window;
     let mut wp: *mut window_pane = 0 as *mut window_pane;
-    w = windows_RB_MINMAX(&mut windows, -(1 as libc::c_int));
+    w = windows_RB_MINMAX(&mut windows, -(1i32));
     while !w.is_null() && {
         w1 = windows_RB_NEXT(w);
-        (1 as libc::c_int) != 0
+        (1i32) != 0
     } {
         wp = (*w).panes.tqh_first;
         while !wp.is_null() {
             if (*wp).pid == pid {
                 (*wp).status = status;
-                (*wp).flags |= 0x200 as libc::c_int;
+                (*wp).flags |= 0x200i32;
                 log_debug(
                     b"%%%u exited\x00" as *const u8 as *const libc::c_char,
                     (*wp).id,
                 );
-                (*wp).flags |= 0x100 as libc::c_int;
+                (*wp).flags |= 0x100i32;
                 if window_pane_destroy_ready(wp) != 0 {
-                    server_destroy_pane(wp, 1 as libc::c_int);
+                    server_destroy_pane(wp, 1i32);
                 }
                 break;
             } else {
@@ -2089,18 +2062,16 @@ unsafe extern "C" fn server_child_exited(mut pid: pid_t, mut status: libc::c_int
 unsafe extern "C" fn server_child_stopped(mut pid: pid_t, mut status: libc::c_int) {
     let mut w: *mut window = 0 as *mut window;
     let mut wp: *mut window_pane = 0 as *mut window_pane;
-    if (status & 0xff00 as libc::c_int) >> 8 as libc::c_int == 21 as libc::c_int
-        || (status & 0xff00 as libc::c_int) >> 8 as libc::c_int == 22 as libc::c_int
-    {
+    if (status & 0xff00i32) >> 8i32 == 21i32 || (status & 0xff00i32) >> 8i32 == 22i32 {
         return;
     }
-    w = windows_RB_MINMAX(&mut windows, -(1 as libc::c_int));
+    w = windows_RB_MINMAX(&mut windows, -(1i32));
     while !w.is_null() {
         wp = (*w).panes.tqh_first;
         while !wp.is_null() {
             if (*wp).pid == pid {
-                if killpg(pid, 18 as libc::c_int) != 0 as libc::c_int {
-                    kill(pid, 18 as libc::c_int);
+                if killpg(pid, 18i32) != 0i32 {
+                    kill(pid, 18i32);
                 }
             }
             wp = (*wp).entry.tqe_next
@@ -2121,7 +2092,7 @@ pub unsafe extern "C" fn server_add_message(mut fmt: *const libc::c_char, mut ar
     xvasprintf(&mut s, fmt, ap.as_va_list());
     log_debug(b"message: %s\x00" as *const u8 as *const libc::c_char, s);
     msg = xcalloc(
-        1 as libc::c_int as size_t,
+        1u64,
         ::std::mem::size_of::<message_entry>() as libc::c_ulong,
     ) as *mut message_entry;
     gettimeofday(&mut (*msg).msg_time, 0 as *mut libc::c_void);
@@ -2140,7 +2111,7 @@ pub unsafe extern "C" fn server_add_message(mut fmt: *const libc::c_char, mut ar
     msg = message_log.tqh_first;
     while !msg.is_null() && {
         msg1 = (*msg).entry.tqe_next;
-        (1 as libc::c_int) != 0
+        (1i32) != 0
     } {
         if (*msg).msg_num.wrapping_add(limit) >= message_next {
             break;

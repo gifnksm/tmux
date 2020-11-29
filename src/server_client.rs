@@ -1488,12 +1488,12 @@ unsafe extern "C" fn server_client_window_cmp(
     mut cw2: *mut client_window,
 ) -> libc::c_int {
     if (*cw1).window < (*cw2).window {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     if (*cw1).window > (*cw2).window {
-        return 1 as libc::c_int;
+        return 1i32;
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn client_windows_RB_NFIND(
@@ -1505,10 +1505,10 @@ pub unsafe extern "C" fn client_windows_RB_NFIND(
     let mut comp: libc::c_int = 0;
     while !tmp.is_null() {
         comp = server_client_window_cmp(elm, tmp);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             res = tmp;
             tmp = (*tmp).entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).entry.rbe_right
         } else {
             return tmp;
@@ -1523,14 +1523,14 @@ pub unsafe extern "C" fn client_windows_RB_INSERT(
 ) -> *mut client_window {
     let mut tmp: *mut client_window = 0 as *mut client_window;
     let mut parent: *mut client_window = 0 as *mut client_window;
-    let mut comp: libc::c_int = 0 as libc::c_int;
+    let mut comp: libc::c_int = 0i32;
     tmp = (*head).rbh_root;
     while !tmp.is_null() {
         parent = tmp;
         comp = server_client_window_cmp(elm, parent);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).entry.rbe_right
         } else {
             return tmp;
@@ -1539,9 +1539,9 @@ pub unsafe extern "C" fn client_windows_RB_INSERT(
     (*elm).entry.rbe_parent = parent;
     (*elm).entry.rbe_right = 0 as *mut client_window;
     (*elm).entry.rbe_left = (*elm).entry.rbe_right;
-    (*elm).entry.rbe_color = 1 as libc::c_int;
+    (*elm).entry.rbe_color = 1i32;
     if !parent.is_null() {
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             (*parent).entry.rbe_left = elm
         } else {
             (*parent).entry.rbe_right = elm
@@ -1562,16 +1562,16 @@ pub unsafe extern "C" fn client_windows_RB_INSERT_COLOR(
     let mut tmp: *mut client_window = 0 as *mut client_window;
     loop {
         parent = (*elm).entry.rbe_parent;
-        if !(!parent.is_null() && (*parent).entry.rbe_color == 1 as libc::c_int) {
+        if !(!parent.is_null() && (*parent).entry.rbe_color == 1i32) {
             break;
         }
         gparent = (*parent).entry.rbe_parent;
         if parent == (*gparent).entry.rbe_left {
             tmp = (*gparent).entry.rbe_right;
-            if !tmp.is_null() && (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).entry.rbe_right == elm {
@@ -1597,8 +1597,8 @@ pub unsafe extern "C" fn client_windows_RB_INSERT_COLOR(
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 tmp = (*gparent).entry.rbe_left;
                 (*gparent).entry.rbe_left = (*tmp).entry.rbe_right;
                 if !(*gparent).entry.rbe_left.is_null() {
@@ -1620,10 +1620,10 @@ pub unsafe extern "C" fn client_windows_RB_INSERT_COLOR(
             }
         } else {
             tmp = (*gparent).entry.rbe_left;
-            if !tmp.is_null() && (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).entry.rbe_left == elm {
@@ -1649,8 +1649,8 @@ pub unsafe extern "C" fn client_windows_RB_INSERT_COLOR(
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 tmp = (*gparent).entry.rbe_right;
                 (*gparent).entry.rbe_right = (*tmp).entry.rbe_left;
                 if !(*gparent).entry.rbe_right.is_null() {
@@ -1672,7 +1672,7 @@ pub unsafe extern "C" fn client_windows_RB_INSERT_COLOR(
             }
         }
     }
-    (*(*head).rbh_root).entry.rbe_color = 0 as libc::c_int;
+    (*(*head).rbh_root).entry.rbe_color = 0i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn client_windows_RB_FIND(
@@ -1683,9 +1683,9 @@ pub unsafe extern "C" fn client_windows_RB_FIND(
     let mut comp: libc::c_int = 0;
     while !tmp.is_null() {
         comp = server_client_window_cmp(elm, tmp);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).entry.rbe_right
         } else {
             return tmp;
@@ -1702,7 +1702,7 @@ pub unsafe extern "C" fn client_windows_RB_MINMAX(
     let mut parent: *mut client_window = 0 as *mut client_window;
     while !tmp.is_null() {
         parent = tmp;
-        if val < 0 as libc::c_int {
+        if val < 0i32 {
             tmp = (*tmp).entry.rbe_left
         } else {
             tmp = (*tmp).entry.rbe_right
@@ -1838,7 +1838,7 @@ pub unsafe extern "C" fn client_windows_RB_REMOVE(
         }
         _ => {}
     }
-    if color == 0 as libc::c_int {
+    if color == 0i32 {
         client_windows_RB_REMOVE_COLOR(head, parent, child);
     }
     return old;
@@ -1850,12 +1850,12 @@ pub unsafe extern "C" fn client_windows_RB_REMOVE_COLOR(
     mut elm: *mut client_window,
 ) {
     let mut tmp: *mut client_window = 0 as *mut client_window;
-    while (elm.is_null() || (*elm).entry.rbe_color == 0 as libc::c_int) && elm != (*head).rbh_root {
+    while (elm.is_null() || (*elm).entry.rbe_color == 0i32) && elm != (*head).rbh_root {
         if (*parent).entry.rbe_left == elm {
             tmp = (*parent).entry.rbe_right;
-            if (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 1 as libc::c_int;
+            if (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 1i32;
                 tmp = (*parent).entry.rbe_right;
                 (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
                 if !(*parent).entry.rbe_right.is_null() {
@@ -1876,24 +1876,23 @@ pub unsafe extern "C" fn client_windows_RB_REMOVE_COLOR(
                 !(*tmp).entry.rbe_parent.is_null();
                 tmp = (*parent).entry.rbe_right
             }
-            if ((*tmp).entry.rbe_left.is_null()
-                || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int)
+            if ((*tmp).entry.rbe_left.is_null() || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32)
                 && ((*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int)
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32)
             {
-                (*tmp).entry.rbe_color = 1 as libc::c_int;
+                (*tmp).entry.rbe_color = 1i32;
                 elm = parent;
                 parent = (*elm).entry.rbe_parent
             } else {
                 if (*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32
                 {
                     let mut oleft: *mut client_window = 0 as *mut client_window;
                     oleft = (*tmp).entry.rbe_left;
                     if !oleft.is_null() {
-                        (*oleft).entry.rbe_color = 0 as libc::c_int
+                        (*oleft).entry.rbe_color = 0i32
                     }
-                    (*tmp).entry.rbe_color = 1 as libc::c_int;
+                    (*tmp).entry.rbe_color = 1i32;
                     oleft = (*tmp).entry.rbe_left;
                     (*tmp).entry.rbe_left = (*oleft).entry.rbe_right;
                     if !(*tmp).entry.rbe_left.is_null() {
@@ -1915,9 +1914,9 @@ pub unsafe extern "C" fn client_windows_RB_REMOVE_COLOR(
                     tmp = (*parent).entry.rbe_right
                 }
                 (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
                 if !(*tmp).entry.rbe_right.is_null() {
-                    (*(*tmp).entry.rbe_right).entry.rbe_color = 0 as libc::c_int
+                    (*(*tmp).entry.rbe_right).entry.rbe_color = 0i32
                 }
                 tmp = (*parent).entry.rbe_right;
                 (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
@@ -1942,9 +1941,9 @@ pub unsafe extern "C" fn client_windows_RB_REMOVE_COLOR(
             }
         } else {
             tmp = (*parent).entry.rbe_left;
-            if (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 1 as libc::c_int;
+            if (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 1i32;
                 tmp = (*parent).entry.rbe_left;
                 (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
                 if !(*parent).entry.rbe_left.is_null() {
@@ -1965,24 +1964,23 @@ pub unsafe extern "C" fn client_windows_RB_REMOVE_COLOR(
                 !(*tmp).entry.rbe_parent.is_null();
                 tmp = (*parent).entry.rbe_left
             }
-            if ((*tmp).entry.rbe_left.is_null()
-                || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int)
+            if ((*tmp).entry.rbe_left.is_null() || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32)
                 && ((*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int)
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32)
             {
-                (*tmp).entry.rbe_color = 1 as libc::c_int;
+                (*tmp).entry.rbe_color = 1i32;
                 elm = parent;
                 parent = (*elm).entry.rbe_parent
             } else {
                 if (*tmp).entry.rbe_left.is_null()
-                    || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int
+                    || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32
                 {
                     let mut oright: *mut client_window = 0 as *mut client_window;
                     oright = (*tmp).entry.rbe_right;
                     if !oright.is_null() {
-                        (*oright).entry.rbe_color = 0 as libc::c_int
+                        (*oright).entry.rbe_color = 0i32
                     }
-                    (*tmp).entry.rbe_color = 1 as libc::c_int;
+                    (*tmp).entry.rbe_color = 1i32;
                     oright = (*tmp).entry.rbe_right;
                     (*tmp).entry.rbe_right = (*oright).entry.rbe_left;
                     if !(*tmp).entry.rbe_right.is_null() {
@@ -2004,9 +2002,9 @@ pub unsafe extern "C" fn client_windows_RB_REMOVE_COLOR(
                     tmp = (*parent).entry.rbe_left
                 }
                 (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
                 if !(*tmp).entry.rbe_left.is_null() {
-                    (*(*tmp).entry.rbe_left).entry.rbe_color = 0 as libc::c_int
+                    (*(*tmp).entry.rbe_left).entry.rbe_color = 0i32
                 }
                 tmp = (*parent).entry.rbe_left;
                 (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
@@ -2032,7 +2030,7 @@ pub unsafe extern "C" fn client_windows_RB_REMOVE_COLOR(
         }
     }
     if !elm.is_null() {
-        (*elm).entry.rbe_color = 0 as libc::c_int
+        (*elm).entry.rbe_color = 0i32
     };
 }
 /* Number of attached clients. */
@@ -2040,13 +2038,11 @@ pub unsafe extern "C" fn client_windows_RB_REMOVE_COLOR(
 pub unsafe extern "C" fn server_client_how_many() -> u_int {
     let mut c: *mut client = 0 as *mut client;
     let mut n: u_int = 0;
-    n = 0 as libc::c_int as u_int;
+    n = 0u32;
     c = clients.tqh_first;
     while !c.is_null() {
         if !(*c).session.is_null()
-            && !(*c).flags
-                & (0x200 as libc::c_int | 0x40 as libc::c_int | 0x4 as libc::c_int) as libc::c_ulong
-                != 0
+            && !(*c).flags & (0x200i32 | 0x40i32 | 0x4i32) as libc::c_ulong != 0
         {
             n = n.wrapping_add(1)
         }
@@ -2081,16 +2077,15 @@ pub unsafe extern "C" fn server_client_set_overlay(
     if (*c).overlay_draw.is_some() {
         server_client_clear_overlay(c);
     }
-    tv.tv_sec = delay.wrapping_div(1000 as libc::c_int as libc::c_uint) as __time_t;
-    tv.tv_usec = delay.wrapping_rem(1000 as libc::c_int as libc::c_uint) as libc::c_long
-        * 1000 as libc::c_long;
+    tv.tv_sec = delay.wrapping_div(1000u32) as __time_t;
+    tv.tv_usec = delay.wrapping_rem(1000u32) as libc::c_long * 1000i64;
     if event_initialized(&mut (*c).overlay_timer) != 0 {
         event_del(&mut (*c).overlay_timer);
     }
     event_set(
         &mut (*c).overlay_timer,
-        -(1 as libc::c_int),
-        0 as libc::c_int as libc::c_short,
+        -(1i32),
+        0i16,
         Some(
             server_client_overlay_timer
                 as unsafe extern "C" fn(
@@ -2101,7 +2096,7 @@ pub unsafe extern "C" fn server_client_set_overlay(
         ),
         c as *mut libc::c_void,
     );
-    if delay != 0 as libc::c_int as libc::c_uint {
+    if delay != 0u32 {
         event_add(&mut (*c).overlay_timer, &mut tv);
     }
     (*c).overlay_check = checkcb;
@@ -2110,9 +2105,9 @@ pub unsafe extern "C" fn server_client_set_overlay(
     (*c).overlay_key = keycb;
     (*c).overlay_free = freecb;
     (*c).overlay_data = data;
-    (*c).tty.flags |= 0x2 as libc::c_int;
+    (*c).tty.flags |= 0x2i32;
     if (*c).overlay_mode.is_none() {
-        (*c).tty.flags |= 0x1 as libc::c_int
+        (*c).tty.flags |= 0x1i32
     }
     server_redraw_client(c);
 }
@@ -2134,7 +2129,7 @@ pub unsafe extern "C" fn server_client_clear_overlay(mut c: *mut client) {
     (*c).overlay_key = None;
     (*c).overlay_free = None;
     (*c).overlay_data = 0 as *mut libc::c_void;
-    (*c).tty.flags &= !(0x2 as libc::c_int | 0x1 as libc::c_int);
+    (*c).tty.flags &= !(0x2i32 | 0x1i32);
     server_redraw_client(c);
 }
 /* Check if this client is inside this server. */
@@ -2147,16 +2142,16 @@ pub unsafe extern "C" fn server_client_check_nested(mut c: *mut client) -> libc:
         b"TMUX\x00" as *const u8 as *const libc::c_char,
     );
     if envent.is_null() || *(*envent).value as libc::c_int == '\u{0}' as i32 {
-        return 0 as libc::c_int;
+        return 0i32;
     }
-    wp = window_pane_tree_RB_MINMAX(&mut all_window_panes, -(1 as libc::c_int));
+    wp = window_pane_tree_RB_MINMAX(&mut all_window_panes, -(1i32));
     while !wp.is_null() {
-        if strcmp((*wp).tty.as_mut_ptr(), (*c).ttyname) == 0 as libc::c_int {
-            return 1 as libc::c_int;
+        if strcmp((*wp).tty.as_mut_ptr(), (*c).ttyname) == 0i32 {
+            return 1i32;
         }
         wp = window_pane_tree_RB_NEXT(wp)
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 /* Set client key table. */
 #[no_mangle]
@@ -2168,7 +2163,7 @@ pub unsafe extern "C" fn server_client_set_key_table(
         name = server_client_get_key_table(c)
     }
     key_bindings_unref_table((*c).keytable);
-    (*c).keytable = key_bindings_get_table(name, 1 as libc::c_int);
+    (*c).keytable = key_bindings_get_table(name, 1i32);
     (*(*c).keytable).references = (*(*c).keytable).references.wrapping_add(1);
 }
 /* Get default key table. */
@@ -2193,19 +2188,15 @@ unsafe extern "C" fn server_client_is_default_key_table(
     mut c: *mut client,
     mut table: *mut key_table,
 ) -> libc::c_int {
-    return (strcmp((*table).name, server_client_get_key_table(c)) == 0 as libc::c_int)
-        as libc::c_int;
+    return (strcmp((*table).name, server_client_get_key_table(c)) == 0i32) as libc::c_int;
 }
 /* Create a new client. */
 #[no_mangle]
 pub unsafe extern "C" fn server_client_create(mut fd: libc::c_int) -> *mut client {
     let mut c: *mut client = 0 as *mut client;
-    setblocking(fd, 0 as libc::c_int);
-    c = xcalloc(
-        1 as libc::c_int as size_t,
-        ::std::mem::size_of::<client>() as libc::c_ulong,
-    ) as *mut client;
-    (*c).references = 1 as libc::c_int;
+    setblocking(fd, 0i32);
+    c = xcalloc(1u64, ::std::mem::size_of::<client>() as libc::c_ulong) as *mut client;
+    (*c).references = 1i32;
     (*c).peer = proc_add_peer(
         server_proc,
         fd,
@@ -2215,7 +2206,7 @@ pub unsafe extern "C" fn server_client_create(mut fd: libc::c_int) -> *mut clien
         ),
         c as *mut libc::c_void,
     );
-    if gettimeofday(&mut (*c).creation_time, 0 as *mut libc::c_void) != 0 as libc::c_int {
+    if gettimeofday(&mut (*c).creation_time, 0 as *mut libc::c_void) != 0i32 {
         fatal(b"gettimeofday failed\x00" as *const u8 as *const libc::c_char);
     }
     memcpy(
@@ -2224,24 +2215,21 @@ pub unsafe extern "C" fn server_client_create(mut fd: libc::c_int) -> *mut clien
         ::std::mem::size_of::<timeval>() as libc::c_ulong,
     );
     (*c).environ = environ_create();
-    (*c).fd = -(1 as libc::c_int);
-    (*c).out_fd = -(1 as libc::c_int);
+    (*c).fd = -(1i32);
+    (*c).out_fd = -(1i32);
     (*c).queue = cmdq_new();
     (*c).windows.rbh_root = 0 as *mut client_window;
     (*c).files.rbh_root = 0 as *mut client_file;
-    (*c).tty.sx = 80 as libc::c_int as u_int;
-    (*c).tty.sy = 24 as libc::c_int as u_int;
+    (*c).tty.sx = 80u32;
+    (*c).tty.sy = 24u32;
     status_init(c);
-    (*c).flags |= 0x8000 as libc::c_int as libc::c_ulong;
-    (*c).keytable = key_bindings_get_table(
-        b"root\x00" as *const u8 as *const libc::c_char,
-        1 as libc::c_int,
-    );
+    (*c).flags |= 0x8000u64;
+    (*c).keytable = key_bindings_get_table(b"root\x00" as *const u8 as *const libc::c_char, 1i32);
     (*(*c).keytable).references = (*(*c).keytable).references.wrapping_add(1);
     event_set(
         &mut (*c).repeat_timer,
-        -(1 as libc::c_int),
-        0 as libc::c_int as libc::c_short,
+        -(1i32),
+        0i16,
         Some(
             server_client_repeat_timer
                 as unsafe extern "C" fn(
@@ -2254,8 +2242,8 @@ pub unsafe extern "C" fn server_client_create(mut fd: libc::c_int) -> *mut clien
     );
     event_set(
         &mut (*c).click_timer,
-        -(1 as libc::c_int),
-        0 as libc::c_int as libc::c_short,
+        -(1i32),
+        0i16,
         Some(
             server_client_click_timer
                 as unsafe extern "C" fn(
@@ -2280,44 +2268,44 @@ pub unsafe extern "C" fn server_client_open(
     mut cause: *mut *mut libc::c_char,
 ) -> libc::c_int {
     let mut ttynam: *const libc::c_char = b"/dev/tty\x00" as *const u8 as *const libc::c_char;
-    if (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
-        return 0 as libc::c_int;
+    if (*c).flags & 0x2000u64 != 0 {
+        return 0i32;
     }
-    if strcmp((*c).ttyname, ttynam) == 0 as libc::c_int
-        || (isatty(0 as libc::c_int) != 0
+    if strcmp((*c).ttyname, ttynam) == 0i32
+        || (isatty(0i32) != 0
             && {
-                ttynam = ttyname(0 as libc::c_int);
+                ttynam = ttyname(0i32);
                 !ttynam.is_null()
             }
-            && strcmp((*c).ttyname, ttynam) == 0 as libc::c_int
-            || isatty(1 as libc::c_int) != 0
+            && strcmp((*c).ttyname, ttynam) == 0i32
+            || isatty(1i32) != 0
                 && {
-                    ttynam = ttyname(1 as libc::c_int);
+                    ttynam = ttyname(1i32);
                     !ttynam.is_null()
                 }
-                && strcmp((*c).ttyname, ttynam) == 0 as libc::c_int
-            || isatty(2 as libc::c_int) != 0
+                && strcmp((*c).ttyname, ttynam) == 0i32
+            || isatty(2i32) != 0
                 && {
-                    ttynam = ttyname(2 as libc::c_int);
+                    ttynam = ttyname(2i32);
                     !ttynam.is_null()
                 }
-                && strcmp((*c).ttyname, ttynam) == 0 as libc::c_int)
+                && strcmp((*c).ttyname, ttynam) == 0i32)
     {
         xasprintf(
             cause,
             b"can\'t use %s\x00" as *const u8 as *const libc::c_char,
             (*c).ttyname,
         );
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
-    if (*c).flags & 0x1 as libc::c_int as libc::c_ulong == 0 {
+    if (*c).flags & 0x1u64 == 0 {
         *cause = xstrdup(b"not a terminal\x00" as *const u8 as *const libc::c_char);
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
-    if tty_open(&mut (*c).tty, cause) != 0 as libc::c_int {
-        return -(1 as libc::c_int);
+    if tty_open(&mut (*c).tty, cause) != 0i32 {
+        return -(1i32);
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 /* Lost a client. */
 #[no_mangle]
@@ -2326,23 +2314,23 @@ pub unsafe extern "C" fn server_client_lost(mut c: *mut client) {
     let mut cf1: *mut client_file = 0 as *mut client_file;
     let mut cw: *mut client_window = 0 as *mut client_window;
     let mut cw1: *mut client_window = 0 as *mut client_window;
-    (*c).flags |= 0x200 as libc::c_int as libc::c_ulong;
+    (*c).flags |= 0x200u64;
     server_client_clear_overlay(c);
     status_prompt_clear(c);
     status_message_clear(c);
-    cf = client_files_RB_MINMAX(&mut (*c).files, -(1 as libc::c_int));
+    cf = client_files_RB_MINMAX(&mut (*c).files, -(1i32));
     while !cf.is_null() && {
         cf1 = client_files_RB_NEXT(cf);
-        (1 as libc::c_int) != 0
+        (1i32) != 0
     } {
-        (*cf).error = 4 as libc::c_int;
+        (*cf).error = 4i32;
         file_fire_done(cf);
         cf = cf1
     }
-    cw = client_windows_RB_MINMAX(&mut (*c).windows, -(1 as libc::c_int));
+    cw = client_windows_RB_MINMAX(&mut (*c).windows, -(1i32));
     while !cw.is_null() && {
         cw1 = client_windows_RB_NEXT(cw);
-        (1 as libc::c_int) != 0
+        (1i32) != 0
     } {
         client_windows_RB_REMOVE(&mut (*c).windows, cw);
         free(cw as *mut libc::c_void);
@@ -2355,10 +2343,10 @@ pub unsafe extern "C" fn server_client_lost(mut c: *mut client) {
     }
     *(*c).entry.tqe_prev = (*c).entry.tqe_next;
     log_debug(b"lost client %p\x00" as *const u8 as *const libc::c_char, c);
-    if (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
+    if (*c).flags & 0x2000u64 != 0 {
         control_stop(c);
     }
-    if (*c).flags & 0x1 as libc::c_int as libc::c_ulong != 0 {
+    if (*c).flags & 0x1u64 != 0 {
         tty_free(&mut (*c).tty);
     }
     free((*c).ttyname as *mut libc::c_void);
@@ -2381,15 +2369,15 @@ pub unsafe extern "C" fn server_client_lost(mut c: *mut client) {
     environ_free((*c).environ);
     proc_remove_peer((*c).peer);
     (*c).peer = 0 as *mut crate::proc::tmuxpeer;
-    if (*c).out_fd != -(1 as libc::c_int) {
+    if (*c).out_fd != -(1i32) {
         close((*c).out_fd);
     }
-    if (*c).fd != -(1 as libc::c_int) {
+    if (*c).fd != -(1i32) {
         close((*c).fd);
-        (*c).fd = -(1 as libc::c_int)
+        (*c).fd = -(1i32)
     }
     server_client_unref(c);
-    server_add_accept(0 as libc::c_int);
+    server_add_accept(0i32);
     recalculate_sizes();
     server_check_unattached();
     server_update_socket();
@@ -2403,10 +2391,10 @@ pub unsafe extern "C" fn server_client_unref(mut c: *mut client) {
         (*c).references,
     );
     (*c).references -= 1;
-    if (*c).references == 0 as libc::c_int {
+    if (*c).references == 0i32 {
         event_once(
-            -(1 as libc::c_int),
-            0x1 as libc::c_int as libc::c_short,
+            -(1i32),
+            0x1i16,
             Some(
                 server_client_free
                     as unsafe extern "C" fn(
@@ -2449,7 +2437,7 @@ unsafe extern "C" fn server_client_free(
         (*c).references,
     );
     cmdq_free((*c).queue);
-    if (*c).references == 0 as libc::c_int {
+    if (*c).references == 0i32 {
         free((*c).name as *mut libc::c_void);
         free(c as *mut libc::c_void);
     };
@@ -2458,35 +2446,27 @@ unsafe extern "C" fn server_client_free(
 #[no_mangle]
 pub unsafe extern "C" fn server_client_suspend(mut c: *mut client) {
     let mut s: *mut session = (*c).session;
-    if s.is_null()
-        || (*c).flags
-            & (0x200 as libc::c_int | 0x40 as libc::c_int | 0x4 as libc::c_int) as libc::c_ulong
-            != 0
-    {
+    if s.is_null() || (*c).flags & (0x200i32 | 0x40i32 | 0x4i32) as libc::c_ulong != 0 {
         return;
     }
     tty_stop_tty(&mut (*c).tty);
-    (*c).flags |= 0x40 as libc::c_int as libc::c_ulong;
+    (*c).flags |= 0x40u64;
     proc_send(
         (*c).peer,
         msgtype_code::SUSPEND,
-        -(1 as libc::c_int),
+        -(1i32),
         0 as *const libc::c_void,
-        0 as libc::c_int as size_t,
+        0u64,
     );
 }
 /* Detach a client. */
 #[no_mangle]
 pub unsafe extern "C" fn server_client_detach(mut c: *mut client, mut msgtype: Msgtype) {
     let mut s: *mut session = (*c).session;
-    if s.is_null()
-        || (*c).flags
-            & (0x200 as libc::c_int | 0x40 as libc::c_int | 0x4 as libc::c_int) as libc::c_ulong
-            != 0
-    {
+    if s.is_null() || (*c).flags & (0x200i32 | 0x40i32 | 0x4i32) as libc::c_ulong != 0 {
         return;
     }
-    (*c).flags |= 0x4 as libc::c_int as libc::c_ulong;
+    (*c).flags |= 0x4u64;
     (*c).exit_type = CLIENT_EXIT_DETACH;
     (*c).exit_msgtype = msgtype;
     (*c).exit_session = xstrdup((*s).name);
@@ -2502,7 +2482,7 @@ pub unsafe extern "C" fn server_client_exec(mut c: *mut client, mut cmd: *const 
     if *cmd as libc::c_int == '\u{0}' as i32 {
         return;
     }
-    cmdsize = strlen(cmd).wrapping_add(1 as libc::c_int as libc::c_ulong);
+    cmdsize = strlen(cmd).wrapping_add(1u64);
     if !s.is_null() {
         shell = options_get_string(
             (*s).options,
@@ -2517,7 +2497,7 @@ pub unsafe extern "C" fn server_client_exec(mut c: *mut client, mut cmd: *const 
     if checkshell(shell) == 0 {
         shell = b"/bin/sh\x00" as *const u8 as *const libc::c_char
     }
-    shellsize = strlen(shell).wrapping_add(1 as libc::c_int as libc::c_ulong);
+    shellsize = strlen(shell).wrapping_add(1u64);
     msg = xmalloc(cmdsize.wrapping_add(shellsize)) as *mut libc::c_char;
     memcpy(
         msg as *mut libc::c_void,
@@ -2532,7 +2512,7 @@ pub unsafe extern "C" fn server_client_exec(mut c: *mut client, mut cmd: *const 
     proc_send(
         (*c).peer,
         msgtype_code::EXEC,
-        -(1 as libc::c_int),
+        -(1i32),
         msg as *const libc::c_void,
         cmdsize.wrapping_add(shellsize),
     );
@@ -2555,7 +2535,7 @@ unsafe extern "C" fn server_client_check_mouse(
     let mut sy: u_int = 0;
     let mut px: u_int = 0;
     let mut py: u_int = 0;
-    let mut ignore: libc::c_int = 0 as libc::c_int;
+    let mut ignore: libc::c_int = 0i32;
     let mut key: key_code = 0;
     let mut tv: timeval = timeval {
         tv_sec: 0,
@@ -2575,42 +2555,42 @@ unsafe extern "C" fn server_client_check_mouse(
         (*c).tty.mouse_drag_flag,
     );
     /* What type of event is this? */
-    if (*event).key == key_code_code::DOUBLECLICK as libc::c_ulong as libc::c_ulonglong {
+    if (*event).key == key_code_code::DOUBLECLICK {
         type_0 = DOUBLE;
         x = (*m).x;
         y = (*m).y;
         b = (*m).b;
-        ignore = 1 as libc::c_int;
+        ignore = 1i32;
         log_debug(
             b"double-click at %u,%u\x00" as *const u8 as *const libc::c_char,
             x,
             y,
         );
-    } else if (*m).sgr_type != ' ' as i32 as libc::c_uint
-        && (*m).sgr_b & 32 as libc::c_int as libc::c_uint != 0
-        && (*m).sgr_b & 3 as libc::c_int as libc::c_uint == 3 as libc::c_int as libc::c_uint
-        || (*m).sgr_type == ' ' as i32 as libc::c_uint
-            && (*m).b & 32 as libc::c_int as libc::c_uint != 0
-            && (*m).b & 3 as libc::c_int as libc::c_uint == 3 as libc::c_int as libc::c_uint
-            && (*m).lb & 3 as libc::c_int as libc::c_uint == 3 as libc::c_int as libc::c_uint
+    } else if (*m).sgr_type != ' ' as libc::c_uint
+        && (*m).sgr_b & 32u32 != 0
+        && (*m).sgr_b & 3u32 == 3u32
+        || (*m).sgr_type == ' ' as libc::c_uint
+            && (*m).b & 32u32 != 0
+            && (*m).b & 3u32 == 3u32
+            && (*m).lb & 3u32 == 3u32
     {
         type_0 = MOVE;
         x = (*m).x;
         y = (*m).y;
-        b = 0 as libc::c_int as u_int;
+        b = 0u32;
         log_debug(
             b"move at %u,%u\x00" as *const u8 as *const libc::c_char,
             x,
             y,
         );
-    } else if (*m).b & 32 as libc::c_int as libc::c_uint != 0 {
+    } else if (*m).b & 32u32 != 0 {
         type_0 = DRAG;
         if (*c).tty.mouse_drag_flag != 0 {
             x = (*m).x;
             y = (*m).y;
             b = (*m).b;
             if x == (*m).lx && y == (*m).ly {
-                return 0xfe000000000 as libc::c_ulonglong;
+                return 0xfe000000000u64;
             }
             log_debug(
                 b"drag update at %u,%u\x00" as *const u8 as *const libc::c_char,
@@ -2627,7 +2607,7 @@ unsafe extern "C" fn server_client_check_mouse(
                 y,
             );
         }
-    } else if (*m).b & 64 as libc::c_int as libc::c_uint != 0 {
+    } else if (*m).b & 64u32 != 0 {
         type_0 = WHEEL;
         x = (*m).x;
         y = (*m).y;
@@ -2637,16 +2617,16 @@ unsafe extern "C" fn server_client_check_mouse(
             x,
             y,
         );
-    } else if (*m).b & 3 as libc::c_int as libc::c_uint == 3 as libc::c_int as libc::c_uint {
+    } else if (*m).b & 3u32 == 3u32 {
         type_0 = UP;
         x = (*m).x;
         y = (*m).y;
         b = (*m).lb;
         log_debug(b"up at %u,%u\x00" as *const u8 as *const libc::c_char, x, y);
     } else {
-        if (*c).flags & 0x100000 as libc::c_int as libc::c_ulong != 0 {
+        if (*c).flags & 0x100000u64 != 0 {
             event_del(&mut (*c).click_timer);
-            (*c).flags &= !(0x100000 as libc::c_int) as libc::c_ulong;
+            (*c).flags &= !(0x100000i32) as libc::c_ulong;
             if (*m).b == (*c).click_button {
                 type_0 = SECOND;
                 x = (*m).x;
@@ -2657,12 +2637,12 @@ unsafe extern "C" fn server_client_check_mouse(
                     x,
                     y,
                 );
-                (*c).flags |= 0x200000 as libc::c_int as libc::c_ulong
+                (*c).flags |= 0x200000u64
             }
             current_block = 1724319918354933278;
-        } else if (*c).flags & 0x200000 as libc::c_int as libc::c_ulong != 0 {
+        } else if (*c).flags & 0x200000u64 != 0 {
             event_del(&mut (*c).click_timer);
-            (*c).flags &= !(0x200000 as libc::c_int) as libc::c_ulong;
+            (*c).flags &= !(0x200000i32) as libc::c_ulong;
             if (*m).b == (*c).click_button {
                 type_0 = TRIPLE;
                 x = (*m).x;
@@ -2687,13 +2667,13 @@ unsafe extern "C" fn server_client_check_mouse(
                 x,
                 y,
             );
-            (*c).flags |= 0x100000 as libc::c_int as libc::c_ulong;
+            (*c).flags |= 0x100000u64;
             current_block = 1724319918354933278;
         }
         match current_block {
             1862170126770142589 => {}
             _ => {
-                if 300 as libc::c_int != 0 as libc::c_int {
+                if 300i32 != 0i32 {
                     memcpy(
                         &mut (*c).click_event as *mut mouse_event as *mut libc::c_void,
                         m as *const libc::c_void,
@@ -2701,26 +2681,25 @@ unsafe extern "C" fn server_client_check_mouse(
                     );
                     (*c).click_button = (*m).b;
                     log_debug(b"click timer started\x00" as *const u8 as *const libc::c_char);
-                    tv.tv_sec = (300 as libc::c_int / 1000 as libc::c_int) as __time_t;
-                    tv.tv_usec = (300 as libc::c_int % 1000 as libc::c_int) as libc::c_long
-                        * 1000 as libc::c_long;
+                    tv.tv_sec = (300i32 / 1000i32) as __time_t;
+                    tv.tv_usec = (300i32 % 1000i32) as libc::c_long * 1000i64;
                     event_del(&mut (*c).click_timer);
                     event_add(&mut (*c).click_timer, &mut tv);
                 }
             }
         }
     }
-    if type_0 as libc::c_uint == NOTYPE as libc::c_int as libc::c_uint {
-        return 0xfe000000000 as libc::c_ulonglong;
+    if type_0 == NOTYPE {
+        return 0xfe000000000u64;
     }
     /* Save the session. */
     (*m).s = (*s).id as libc::c_int;
-    (*m).w = -(1 as libc::c_int);
+    (*m).w = -(1i32);
     (*m).ignore = ignore;
     /* Is this on the status line? */
     (*m).statusat = status_at_line(c);
     (*m).statuslines = status_line_size(c);
-    if (*m).statusat != -(1 as libc::c_int)
+    if (*m).statusat != -(1i32)
         && y >= (*m).statusat as u_int
         && y < ((*m).statusat as libc::c_uint).wrapping_add((*m).statuslines)
     {
@@ -2728,14 +2707,14 @@ unsafe extern "C" fn server_client_check_mouse(
         if sr.is_null() {
             where_0 = STATUS_DEFAULT
         } else {
-            match (*sr).type_0 as libc::c_uint {
-                0 => return 0xfe000000000 as libc::c_ulonglong,
+            match (*sr).type_0 {
+                0 => return 0xfe000000000u64,
                 1 => where_0 = STATUS_LEFT,
                 2 => where_0 = STATUS_RIGHT,
                 3 => {
                     wl = winlink_find_by_index(&mut (*s).windows, (*sr).argument as libc::c_int);
                     if wl.is_null() {
-                        return 0xfe000000000 as libc::c_ulonglong;
+                        return 0xfe000000000u64;
                     }
                     (*m).w = (*(*wl).window).id as libc::c_int;
                     where_0 = STATUS
@@ -2745,12 +2724,12 @@ unsafe extern "C" fn server_client_check_mouse(
         }
     }
     /* Not on status line. Adjust position and check for border or pane. */
-    if where_0 as libc::c_uint == NOWHERE as libc::c_int as libc::c_uint {
+    if where_0 == NOWHERE {
         px = x;
-        if (*m).statusat == 0 as libc::c_int && y >= (*m).statuslines {
+        if (*m).statusat == 0i32 && y >= (*m).statuslines {
             py = y.wrapping_sub((*m).statuslines)
-        } else if (*m).statusat > 0 as libc::c_int && y >= (*m).statusat as u_int {
-            py = ((*m).statusat - 1 as libc::c_int) as u_int
+        } else if (*m).statusat > 0i32 && y >= (*m).statusat as u_int {
+            py = ((*m).statusat - 1i32) as u_int
         } else {
             py = y
         }
@@ -2764,19 +2743,19 @@ unsafe extern "C" fn server_client_check_mouse(
             sy,
         );
         if px > sx || py > sy {
-            return 0xfe000000000 as libc::c_ulonglong;
+            return 0xfe000000000u64;
         }
         px = px.wrapping_add((*m).ox);
         py = py.wrapping_add((*m).oy);
         /* Try the pane borders if not zoomed. */
-        if !(*(*(*s).curw).window).flags & 0x8 as libc::c_int != 0 {
+        if !(*(*(*s).curw).window).flags & 0x8i32 != 0 {
             wp = (*(*(*s).curw).window).panes.tqh_first;
             while !wp.is_null() {
                 if (*wp).xoff.wrapping_add((*wp).sx) == px
-                    && (*wp).yoff <= (1 as libc::c_int as libc::c_uint).wrapping_add(py)
+                    && (*wp).yoff <= (1u32).wrapping_add(py)
                     && (*wp).yoff.wrapping_add((*wp).sy) >= py
                     || (*wp).yoff.wrapping_add((*wp).sy) == py
-                        && (*wp).xoff <= (1 as libc::c_int as libc::c_uint).wrapping_add(px)
+                        && (*wp).xoff <= (1u32).wrapping_add(px)
                         && (*wp).xoff.wrapping_add((*wp).sx) >= px
                 {
                     break;
@@ -2788,22 +2767,22 @@ unsafe extern "C" fn server_client_check_mouse(
             }
         }
         /* Otherwise try inside the pane. */
-        if where_0 as libc::c_uint == NOWHERE as libc::c_int as libc::c_uint {
+        if where_0 == NOWHERE {
             wp = window_get_active_at((*(*s).curw).window, px, py);
             if !wp.is_null() {
                 where_0 = PANE
             } else {
-                return 0xfe000000000 as libc::c_ulonglong;
+                return 0xfe000000000u64;
             }
         }
-        if where_0 as libc::c_uint == PANE as libc::c_int as libc::c_uint {
+        if where_0 == PANE {
             log_debug(
                 b"mouse %u,%u on pane %%%u\x00" as *const u8 as *const libc::c_char,
                 x,
                 y,
                 (*wp).id,
             );
-        } else if where_0 as libc::c_uint == BORDER as libc::c_int as libc::c_uint {
+        } else if where_0 == BORDER {
             log_debug(
                 b"mouse on pane %%%u border\x00" as *const u8 as *const libc::c_char,
                 (*wp).id,
@@ -2812,13 +2791,10 @@ unsafe extern "C" fn server_client_check_mouse(
         (*m).wp = (*wp).id as libc::c_int;
         (*m).w = (*(*wp).window).id as libc::c_int
     } else {
-        (*m).wp = -(1 as libc::c_int)
+        (*m).wp = -(1i32)
     }
     /* Stop dragging if needed. */
-    if type_0 as libc::c_uint != DRAG as libc::c_int as libc::c_uint
-        && type_0 as libc::c_uint != WHEEL as libc::c_int as libc::c_uint
-        && (*c).tty.mouse_drag_flag != 0
-    {
+    if type_0 != DRAG && type_0 != WHEEL && (*c).tty.mouse_drag_flag != 0 {
         if (*c).tty.mouse_drag_release.is_some() {
             (*c).tty
                 .mouse_drag_release
@@ -2832,179 +2808,155 @@ unsafe extern "C" fn server_client_check_mouse(
          */
         match (*c).tty.mouse_drag_flag {
             1 => {
-                if where_0 as libc::c_uint == PANE as libc::c_int as libc::c_uint {
-                    key = key_code_code::MOUSEDRAGEND1_PANE as libc::c_ulong as key_code
+                if where_0 == PANE {
+                    key = key_code_code::MOUSEDRAGEND1_PANE
                 }
-                if where_0 as libc::c_uint == STATUS as libc::c_int as libc::c_uint {
-                    key = key_code_code::MOUSEDRAGEND1_STATUS as libc::c_ulong as key_code
+                if where_0 == STATUS {
+                    key = key_code_code::MOUSEDRAGEND1_STATUS
                 }
-                if where_0 as libc::c_uint == STATUS_LEFT as libc::c_int as libc::c_uint {
-                    key = key_code_code::MOUSEDRAGEND1_STATUS_LEFT as libc::c_ulong as key_code
+                if where_0 == STATUS_LEFT {
+                    key = key_code_code::MOUSEDRAGEND1_STATUS_LEFT
                 }
-                if where_0 as libc::c_uint == STATUS_RIGHT as libc::c_int as libc::c_uint {
-                    key = key_code_code::MOUSEDRAGEND1_STATUS_RIGHT as libc::c_ulong as key_code
+                if where_0 == STATUS_RIGHT {
+                    key = key_code_code::MOUSEDRAGEND1_STATUS_RIGHT
                 }
-                if where_0 as libc::c_uint == STATUS_DEFAULT as libc::c_int as libc::c_uint {
-                    key = key_code_code::MOUSEDRAGEND1_STATUS_DEFAULT as libc::c_ulong as key_code
+                if where_0 == STATUS_DEFAULT {
+                    key = key_code_code::MOUSEDRAGEND1_STATUS_DEFAULT
                 }
-                if where_0 as libc::c_uint == BORDER as libc::c_int as libc::c_uint {
-                    key = key_code_code::MOUSEDRAGEND1_BORDER as libc::c_ulong as key_code
+                if where_0 == BORDER {
+                    key = key_code_code::MOUSEDRAGEND1_BORDER
                 }
             }
             2 => {
-                if where_0 as libc::c_uint == PANE as libc::c_int as libc::c_uint {
-                    key = key_code_code::MOUSEDRAGEND2_PANE as libc::c_ulong as key_code
+                if where_0 == PANE {
+                    key = key_code_code::MOUSEDRAGEND2_PANE
                 }
-                if where_0 as libc::c_uint == STATUS as libc::c_int as libc::c_uint {
-                    key = key_code_code::MOUSEDRAGEND2_STATUS as libc::c_ulong as key_code
+                if where_0 == STATUS {
+                    key = key_code_code::MOUSEDRAGEND2_STATUS
                 }
-                if where_0 as libc::c_uint == STATUS_LEFT as libc::c_int as libc::c_uint {
-                    key = key_code_code::MOUSEDRAGEND2_STATUS_LEFT as libc::c_ulong as key_code
+                if where_0 == STATUS_LEFT {
+                    key = key_code_code::MOUSEDRAGEND2_STATUS_LEFT
                 }
-                if where_0 as libc::c_uint == STATUS_RIGHT as libc::c_int as libc::c_uint {
-                    key = key_code_code::MOUSEDRAGEND2_STATUS_RIGHT as libc::c_ulong as key_code
+                if where_0 == STATUS_RIGHT {
+                    key = key_code_code::MOUSEDRAGEND2_STATUS_RIGHT
                 }
-                if where_0 as libc::c_uint == STATUS_DEFAULT as libc::c_int as libc::c_uint {
-                    key = key_code_code::MOUSEDRAGEND2_STATUS_DEFAULT as libc::c_ulong as key_code
+                if where_0 == STATUS_DEFAULT {
+                    key = key_code_code::MOUSEDRAGEND2_STATUS_DEFAULT
                 }
-                if where_0 as libc::c_uint == BORDER as libc::c_int as libc::c_uint {
-                    key = key_code_code::MOUSEDRAGEND2_BORDER as libc::c_ulong as key_code
+                if where_0 == BORDER {
+                    key = key_code_code::MOUSEDRAGEND2_BORDER
                 }
             }
             3 => {
-                if where_0 as libc::c_uint == PANE as libc::c_int as libc::c_uint {
-                    key = key_code_code::MOUSEDRAGEND3_PANE as libc::c_ulong as key_code
+                if where_0 == PANE {
+                    key = key_code_code::MOUSEDRAGEND3_PANE
                 }
-                if where_0 as libc::c_uint == STATUS as libc::c_int as libc::c_uint {
-                    key = key_code_code::MOUSEDRAGEND3_STATUS as libc::c_ulong as key_code
+                if where_0 == STATUS {
+                    key = key_code_code::MOUSEDRAGEND3_STATUS
                 }
-                if where_0 as libc::c_uint == STATUS_LEFT as libc::c_int as libc::c_uint {
-                    key = key_code_code::MOUSEDRAGEND3_STATUS_LEFT as libc::c_ulong as key_code
+                if where_0 == STATUS_LEFT {
+                    key = key_code_code::MOUSEDRAGEND3_STATUS_LEFT
                 }
-                if where_0 as libc::c_uint == STATUS_RIGHT as libc::c_int as libc::c_uint {
-                    key = key_code_code::MOUSEDRAGEND3_STATUS_RIGHT as libc::c_ulong as key_code
+                if where_0 == STATUS_RIGHT {
+                    key = key_code_code::MOUSEDRAGEND3_STATUS_RIGHT
                 }
-                if where_0 as libc::c_uint == STATUS_DEFAULT as libc::c_int as libc::c_uint {
-                    key = key_code_code::MOUSEDRAGEND3_STATUS_DEFAULT as libc::c_ulong as key_code
+                if where_0 == STATUS_DEFAULT {
+                    key = key_code_code::MOUSEDRAGEND3_STATUS_DEFAULT
                 }
-                if where_0 as libc::c_uint == BORDER as libc::c_int as libc::c_uint {
-                    key = key_code_code::MOUSEDRAGEND3_BORDER as libc::c_ulong as key_code
+                if where_0 == BORDER {
+                    key = key_code_code::MOUSEDRAGEND3_BORDER
                 }
             }
-            _ => key = key_code_code::MOUSE as libc::c_ulong as key_code,
+            _ => key = key_code_code::MOUSE,
         }
-        (*c).tty.mouse_drag_flag = 0 as libc::c_int
+        (*c).tty.mouse_drag_flag = 0i32
     } else {
         /* Convert to a key binding. */
-        key = 0xfe000000000 as libc::c_ulonglong;
-        match type_0 as libc::c_uint {
+        key = 0xfe000000000u64;
+        match type_0 {
             1 => {
-                if where_0 as libc::c_uint == PANE as libc::c_int as libc::c_uint {
-                    key = key_code_code::MOUSEMOVE_PANE as libc::c_ulong as key_code
+                if where_0 == PANE {
+                    key = key_code_code::MOUSEMOVE_PANE
                 }
-                if where_0 as libc::c_uint == STATUS as libc::c_int as libc::c_uint {
-                    key = key_code_code::MOUSEMOVE_STATUS as libc::c_ulong as key_code
+                if where_0 == STATUS {
+                    key = key_code_code::MOUSEMOVE_STATUS
                 }
-                if where_0 as libc::c_uint == STATUS_LEFT as libc::c_int as libc::c_uint {
-                    key = key_code_code::MOUSEMOVE_STATUS_LEFT as libc::c_ulong as key_code
+                if where_0 == STATUS_LEFT {
+                    key = key_code_code::MOUSEMOVE_STATUS_LEFT
                 }
-                if where_0 as libc::c_uint == STATUS_RIGHT as libc::c_int as libc::c_uint {
-                    key = key_code_code::MOUSEMOVE_STATUS_RIGHT as libc::c_ulong as key_code
+                if where_0 == STATUS_RIGHT {
+                    key = key_code_code::MOUSEMOVE_STATUS_RIGHT
                 }
-                if where_0 as libc::c_uint == STATUS_DEFAULT as libc::c_int as libc::c_uint {
-                    key = key_code_code::MOUSEMOVE_STATUS_DEFAULT as libc::c_ulong as key_code
+                if where_0 == STATUS_DEFAULT {
+                    key = key_code_code::MOUSEMOVE_STATUS_DEFAULT
                 }
-                if where_0 as libc::c_uint == BORDER as libc::c_int as libc::c_uint {
-                    key = key_code_code::MOUSEMOVE_BORDER as libc::c_ulong as key_code
+                if where_0 == BORDER {
+                    key = key_code_code::MOUSEMOVE_BORDER
                 }
             }
             4 => {
                 if (*c).tty.mouse_drag_update.is_some() {
-                    key = key_code_code::DRAGGING as libc::c_ulong as key_code
+                    key = key_code_code::DRAGGING
                 } else {
-                    match b & 3 as libc::c_int as libc::c_uint {
+                    match b & 3u32 {
                         0 => {
-                            if where_0 as libc::c_uint == PANE as libc::c_int as libc::c_uint {
-                                key = key_code_code::MOUSEDRAG1_PANE as libc::c_ulong as key_code
+                            if where_0 == PANE {
+                                key = key_code_code::MOUSEDRAG1_PANE
                             }
-                            if where_0 as libc::c_uint == STATUS as libc::c_int as libc::c_uint {
-                                key = key_code_code::MOUSEDRAG1_STATUS as libc::c_ulong as key_code
+                            if where_0 == STATUS {
+                                key = key_code_code::MOUSEDRAG1_STATUS
                             }
-                            if where_0 as libc::c_uint == STATUS_LEFT as libc::c_int as libc::c_uint
-                            {
-                                key = key_code_code::MOUSEDRAG1_STATUS_LEFT as libc::c_ulong
-                                    as key_code
+                            if where_0 == STATUS_LEFT {
+                                key = key_code_code::MOUSEDRAG1_STATUS_LEFT
                             }
-                            if where_0 as libc::c_uint
-                                == STATUS_RIGHT as libc::c_int as libc::c_uint
-                            {
-                                key = key_code_code::MOUSEDRAG1_STATUS_RIGHT as libc::c_ulong
-                                    as key_code
+                            if where_0 == STATUS_RIGHT {
+                                key = key_code_code::MOUSEDRAG1_STATUS_RIGHT
                             }
-                            if where_0 as libc::c_uint
-                                == STATUS_DEFAULT as libc::c_int as libc::c_uint
-                            {
-                                key = key_code_code::MOUSEDRAG1_STATUS_DEFAULT as libc::c_ulong
-                                    as key_code
+                            if where_0 == STATUS_DEFAULT {
+                                key = key_code_code::MOUSEDRAG1_STATUS_DEFAULT
                             }
-                            if where_0 as libc::c_uint == BORDER as libc::c_int as libc::c_uint {
-                                key = key_code_code::MOUSEDRAG1_BORDER as libc::c_ulong as key_code
+                            if where_0 == BORDER {
+                                key = key_code_code::MOUSEDRAG1_BORDER
                             }
                         }
                         1 => {
-                            if where_0 as libc::c_uint == PANE as libc::c_int as libc::c_uint {
-                                key = key_code_code::MOUSEDRAG2_PANE as libc::c_ulong as key_code
+                            if where_0 == PANE {
+                                key = key_code_code::MOUSEDRAG2_PANE
                             }
-                            if where_0 as libc::c_uint == STATUS as libc::c_int as libc::c_uint {
-                                key = key_code_code::MOUSEDRAG2_STATUS as libc::c_ulong as key_code
+                            if where_0 == STATUS {
+                                key = key_code_code::MOUSEDRAG2_STATUS
                             }
-                            if where_0 as libc::c_uint == STATUS_LEFT as libc::c_int as libc::c_uint
-                            {
-                                key = key_code_code::MOUSEDRAG2_STATUS_LEFT as libc::c_ulong
-                                    as key_code
+                            if where_0 == STATUS_LEFT {
+                                key = key_code_code::MOUSEDRAG2_STATUS_LEFT
                             }
-                            if where_0 as libc::c_uint
-                                == STATUS_RIGHT as libc::c_int as libc::c_uint
-                            {
-                                key = key_code_code::MOUSEDRAG2_STATUS_RIGHT as libc::c_ulong
-                                    as key_code
+                            if where_0 == STATUS_RIGHT {
+                                key = key_code_code::MOUSEDRAG2_STATUS_RIGHT
                             }
-                            if where_0 as libc::c_uint
-                                == STATUS_DEFAULT as libc::c_int as libc::c_uint
-                            {
-                                key = key_code_code::MOUSEDRAG2_STATUS_DEFAULT as libc::c_ulong
-                                    as key_code
+                            if where_0 == STATUS_DEFAULT {
+                                key = key_code_code::MOUSEDRAG2_STATUS_DEFAULT
                             }
-                            if where_0 as libc::c_uint == BORDER as libc::c_int as libc::c_uint {
-                                key = key_code_code::MOUSEDRAG2_BORDER as libc::c_ulong as key_code
+                            if where_0 == BORDER {
+                                key = key_code_code::MOUSEDRAG2_BORDER
                             }
                         }
                         2 => {
-                            if where_0 as libc::c_uint == PANE as libc::c_int as libc::c_uint {
-                                key = key_code_code::MOUSEDRAG3_PANE as libc::c_ulong as key_code
+                            if where_0 == PANE {
+                                key = key_code_code::MOUSEDRAG3_PANE
                             }
-                            if where_0 as libc::c_uint == STATUS as libc::c_int as libc::c_uint {
-                                key = key_code_code::MOUSEDRAG3_STATUS as libc::c_ulong as key_code
+                            if where_0 == STATUS {
+                                key = key_code_code::MOUSEDRAG3_STATUS
                             }
-                            if where_0 as libc::c_uint == STATUS_LEFT as libc::c_int as libc::c_uint
-                            {
-                                key = key_code_code::MOUSEDRAG3_STATUS_LEFT as libc::c_ulong
-                                    as key_code
+                            if where_0 == STATUS_LEFT {
+                                key = key_code_code::MOUSEDRAG3_STATUS_LEFT
                             }
-                            if where_0 as libc::c_uint
-                                == STATUS_RIGHT as libc::c_int as libc::c_uint
-                            {
-                                key = key_code_code::MOUSEDRAG3_STATUS_RIGHT as libc::c_ulong
-                                    as key_code
+                            if where_0 == STATUS_RIGHT {
+                                key = key_code_code::MOUSEDRAG3_STATUS_RIGHT
                             }
-                            if where_0 as libc::c_uint
-                                == STATUS_DEFAULT as libc::c_int as libc::c_uint
-                            {
-                                key = key_code_code::MOUSEDRAG3_STATUS_DEFAULT as libc::c_ulong
-                                    as key_code
+                            if where_0 == STATUS_DEFAULT {
+                                key = key_code_code::MOUSEDRAG3_STATUS_DEFAULT
                             }
-                            if where_0 as libc::c_uint == BORDER as libc::c_int as libc::c_uint {
-                                key = key_code_code::MOUSEDRAG3_BORDER as libc::c_ulong as key_code
+                            if where_0 == BORDER {
+                                key = key_code_code::MOUSEDRAG3_BORDER
                             }
                         }
                         _ => {}
@@ -3014,395 +2966,384 @@ unsafe extern "C" fn server_client_check_mouse(
                  * Begin a drag by setting the flag to a non-zero value that
                  * corresponds to the mouse button in use.
                  */
-                (*c).tty.mouse_drag_flag = (b & 3 as libc::c_int as libc::c_uint)
-                    .wrapping_add(1 as libc::c_int as libc::c_uint)
-                    as libc::c_int
+                (*c).tty.mouse_drag_flag = (b & 3u32).wrapping_add(1u32) as libc::c_int
             }
             5 => {
-                if b & 3 as libc::c_int as libc::c_uint == 0 as libc::c_int as libc::c_uint {
-                    if where_0 as libc::c_uint == PANE as libc::c_int as libc::c_uint {
-                        key = key_code_code::WHEELUP_PANE as libc::c_ulong as key_code
+                if b & 3u32 == 0u32 {
+                    if where_0 == PANE {
+                        key = key_code_code::WHEELUP_PANE
                     }
-                    if where_0 as libc::c_uint == STATUS as libc::c_int as libc::c_uint {
-                        key = key_code_code::WHEELUP_STATUS as libc::c_ulong as key_code
+                    if where_0 == STATUS {
+                        key = key_code_code::WHEELUP_STATUS
                     }
-                    if where_0 as libc::c_uint == STATUS_LEFT as libc::c_int as libc::c_uint {
-                        key = key_code_code::WHEELUP_STATUS_LEFT as libc::c_ulong as key_code
+                    if where_0 == STATUS_LEFT {
+                        key = key_code_code::WHEELUP_STATUS_LEFT
                     }
-                    if where_0 as libc::c_uint == STATUS_RIGHT as libc::c_int as libc::c_uint {
-                        key = key_code_code::WHEELUP_STATUS_RIGHT as libc::c_ulong as key_code
+                    if where_0 == STATUS_RIGHT {
+                        key = key_code_code::WHEELUP_STATUS_RIGHT
                     }
-                    if where_0 as libc::c_uint == STATUS_DEFAULT as libc::c_int as libc::c_uint {
-                        key = key_code_code::WHEELUP_STATUS_DEFAULT as libc::c_ulong as key_code
+                    if where_0 == STATUS_DEFAULT {
+                        key = key_code_code::WHEELUP_STATUS_DEFAULT
                     }
-                    if where_0 as libc::c_uint == BORDER as libc::c_int as libc::c_uint {
-                        key = key_code_code::WHEELUP_BORDER as libc::c_ulong as key_code
+                    if where_0 == BORDER {
+                        key = key_code_code::WHEELUP_BORDER
                     }
                 } else {
-                    if where_0 as libc::c_uint == PANE as libc::c_int as libc::c_uint {
-                        key = key_code_code::WHEELDOWN_PANE as libc::c_ulong as key_code
+                    if where_0 == PANE {
+                        key = key_code_code::WHEELDOWN_PANE
                     }
-                    if where_0 as libc::c_uint == STATUS as libc::c_int as libc::c_uint {
-                        key = key_code_code::WHEELDOWN_STATUS as libc::c_ulong as key_code
+                    if where_0 == STATUS {
+                        key = key_code_code::WHEELDOWN_STATUS
                     }
-                    if where_0 as libc::c_uint == STATUS_LEFT as libc::c_int as libc::c_uint {
-                        key = key_code_code::WHEELDOWN_STATUS_LEFT as libc::c_ulong as key_code
+                    if where_0 == STATUS_LEFT {
+                        key = key_code_code::WHEELDOWN_STATUS_LEFT
                     }
-                    if where_0 as libc::c_uint == STATUS_RIGHT as libc::c_int as libc::c_uint {
-                        key = key_code_code::WHEELDOWN_STATUS_RIGHT as libc::c_ulong as key_code
+                    if where_0 == STATUS_RIGHT {
+                        key = key_code_code::WHEELDOWN_STATUS_RIGHT
                     }
-                    if where_0 as libc::c_uint == STATUS_DEFAULT as libc::c_int as libc::c_uint {
-                        key = key_code_code::WHEELDOWN_STATUS_DEFAULT as libc::c_ulong as key_code
+                    if where_0 == STATUS_DEFAULT {
+                        key = key_code_code::WHEELDOWN_STATUS_DEFAULT
                     }
-                    if where_0 as libc::c_uint == BORDER as libc::c_int as libc::c_uint {
-                        key = key_code_code::WHEELDOWN_BORDER as libc::c_ulong as key_code
+                    if where_0 == BORDER {
+                        key = key_code_code::WHEELDOWN_BORDER
                     }
                 }
             }
-            3 => match b & 3 as libc::c_int as libc::c_uint {
+            3 => match b & 3u32 {
                 0 => {
-                    if where_0 as libc::c_uint == PANE as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEUP1_PANE as libc::c_ulong as key_code
+                    if where_0 == PANE {
+                        key = key_code_code::MOUSEUP1_PANE
                     }
-                    if where_0 as libc::c_uint == STATUS as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEUP1_STATUS as libc::c_ulong as key_code
+                    if where_0 == STATUS {
+                        key = key_code_code::MOUSEUP1_STATUS
                     }
-                    if where_0 as libc::c_uint == STATUS_LEFT as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEUP1_STATUS_LEFT as libc::c_ulong as key_code
+                    if where_0 == STATUS_LEFT {
+                        key = key_code_code::MOUSEUP1_STATUS_LEFT
                     }
-                    if where_0 as libc::c_uint == STATUS_RIGHT as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEUP1_STATUS_RIGHT as libc::c_ulong as key_code
+                    if where_0 == STATUS_RIGHT {
+                        key = key_code_code::MOUSEUP1_STATUS_RIGHT
                     }
-                    if where_0 as libc::c_uint == STATUS_DEFAULT as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEUP1_STATUS_DEFAULT as libc::c_ulong as key_code
+                    if where_0 == STATUS_DEFAULT {
+                        key = key_code_code::MOUSEUP1_STATUS_DEFAULT
                     }
-                    if where_0 as libc::c_uint == BORDER as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEUP1_BORDER as libc::c_ulong as key_code
+                    if where_0 == BORDER {
+                        key = key_code_code::MOUSEUP1_BORDER
                     }
                 }
                 1 => {
-                    if where_0 as libc::c_uint == PANE as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEUP2_PANE as libc::c_ulong as key_code
+                    if where_0 == PANE {
+                        key = key_code_code::MOUSEUP2_PANE
                     }
-                    if where_0 as libc::c_uint == STATUS as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEUP2_STATUS as libc::c_ulong as key_code
+                    if where_0 == STATUS {
+                        key = key_code_code::MOUSEUP2_STATUS
                     }
-                    if where_0 as libc::c_uint == STATUS_LEFT as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEUP2_STATUS_LEFT as libc::c_ulong as key_code
+                    if where_0 == STATUS_LEFT {
+                        key = key_code_code::MOUSEUP2_STATUS_LEFT
                     }
-                    if where_0 as libc::c_uint == STATUS_RIGHT as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEUP2_STATUS_RIGHT as libc::c_ulong as key_code
+                    if where_0 == STATUS_RIGHT {
+                        key = key_code_code::MOUSEUP2_STATUS_RIGHT
                     }
-                    if where_0 as libc::c_uint == STATUS_DEFAULT as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEUP2_STATUS_DEFAULT as libc::c_ulong as key_code
+                    if where_0 == STATUS_DEFAULT {
+                        key = key_code_code::MOUSEUP2_STATUS_DEFAULT
                     }
-                    if where_0 as libc::c_uint == BORDER as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEUP2_BORDER as libc::c_ulong as key_code
+                    if where_0 == BORDER {
+                        key = key_code_code::MOUSEUP2_BORDER
                     }
                 }
                 2 => {
-                    if where_0 as libc::c_uint == PANE as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEUP3_PANE as libc::c_ulong as key_code
+                    if where_0 == PANE {
+                        key = key_code_code::MOUSEUP3_PANE
                     }
-                    if where_0 as libc::c_uint == STATUS as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEUP3_STATUS as libc::c_ulong as key_code
+                    if where_0 == STATUS {
+                        key = key_code_code::MOUSEUP3_STATUS
                     }
-                    if where_0 as libc::c_uint == STATUS_LEFT as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEUP3_STATUS_LEFT as libc::c_ulong as key_code
+                    if where_0 == STATUS_LEFT {
+                        key = key_code_code::MOUSEUP3_STATUS_LEFT
                     }
-                    if where_0 as libc::c_uint == STATUS_RIGHT as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEUP3_STATUS_RIGHT as libc::c_ulong as key_code
+                    if where_0 == STATUS_RIGHT {
+                        key = key_code_code::MOUSEUP3_STATUS_RIGHT
                     }
-                    if where_0 as libc::c_uint == STATUS_DEFAULT as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEUP3_STATUS_DEFAULT as libc::c_ulong as key_code
+                    if where_0 == STATUS_DEFAULT {
+                        key = key_code_code::MOUSEUP3_STATUS_DEFAULT
                     }
-                    if where_0 as libc::c_uint == BORDER as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEUP3_BORDER as libc::c_ulong as key_code
+                    if where_0 == BORDER {
+                        key = key_code_code::MOUSEUP3_BORDER
                     }
                 }
                 _ => {}
             },
-            2 => match b & 3 as libc::c_int as libc::c_uint {
+            2 => match b & 3u32 {
                 0 => {
-                    if where_0 as libc::c_uint == PANE as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEDOWN1_PANE as libc::c_ulong as key_code
+                    if where_0 == PANE {
+                        key = key_code_code::MOUSEDOWN1_PANE
                     }
-                    if where_0 as libc::c_uint == STATUS as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEDOWN1_STATUS as libc::c_ulong as key_code
+                    if where_0 == STATUS {
+                        key = key_code_code::MOUSEDOWN1_STATUS
                     }
-                    if where_0 as libc::c_uint == STATUS_LEFT as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEDOWN1_STATUS_LEFT as libc::c_ulong as key_code
+                    if where_0 == STATUS_LEFT {
+                        key = key_code_code::MOUSEDOWN1_STATUS_LEFT
                     }
-                    if where_0 as libc::c_uint == STATUS_RIGHT as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEDOWN1_STATUS_RIGHT as libc::c_ulong as key_code
+                    if where_0 == STATUS_RIGHT {
+                        key = key_code_code::MOUSEDOWN1_STATUS_RIGHT
                     }
-                    if where_0 as libc::c_uint == STATUS_DEFAULT as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEDOWN1_STATUS_DEFAULT as libc::c_ulong as key_code
+                    if where_0 == STATUS_DEFAULT {
+                        key = key_code_code::MOUSEDOWN1_STATUS_DEFAULT
                     }
-                    if where_0 as libc::c_uint == BORDER as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEDOWN1_BORDER as libc::c_ulong as key_code
+                    if where_0 == BORDER {
+                        key = key_code_code::MOUSEDOWN1_BORDER
                     }
                 }
                 1 => {
-                    if where_0 as libc::c_uint == PANE as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEDOWN2_PANE as libc::c_ulong as key_code
+                    if where_0 == PANE {
+                        key = key_code_code::MOUSEDOWN2_PANE
                     }
-                    if where_0 as libc::c_uint == STATUS as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEDOWN2_STATUS as libc::c_ulong as key_code
+                    if where_0 == STATUS {
+                        key = key_code_code::MOUSEDOWN2_STATUS
                     }
-                    if where_0 as libc::c_uint == STATUS_LEFT as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEDOWN2_STATUS_LEFT as libc::c_ulong as key_code
+                    if where_0 == STATUS_LEFT {
+                        key = key_code_code::MOUSEDOWN2_STATUS_LEFT
                     }
-                    if where_0 as libc::c_uint == STATUS_RIGHT as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEDOWN2_STATUS_RIGHT as libc::c_ulong as key_code
+                    if where_0 == STATUS_RIGHT {
+                        key = key_code_code::MOUSEDOWN2_STATUS_RIGHT
                     }
-                    if where_0 as libc::c_uint == STATUS_DEFAULT as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEDOWN2_STATUS_DEFAULT as libc::c_ulong as key_code
+                    if where_0 == STATUS_DEFAULT {
+                        key = key_code_code::MOUSEDOWN2_STATUS_DEFAULT
                     }
-                    if where_0 as libc::c_uint == BORDER as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEDOWN2_BORDER as libc::c_ulong as key_code
+                    if where_0 == BORDER {
+                        key = key_code_code::MOUSEDOWN2_BORDER
                     }
                 }
                 2 => {
-                    if where_0 as libc::c_uint == PANE as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEDOWN3_PANE as libc::c_ulong as key_code
+                    if where_0 == PANE {
+                        key = key_code_code::MOUSEDOWN3_PANE
                     }
-                    if where_0 as libc::c_uint == STATUS as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEDOWN3_STATUS as libc::c_ulong as key_code
+                    if where_0 == STATUS {
+                        key = key_code_code::MOUSEDOWN3_STATUS
                     }
-                    if where_0 as libc::c_uint == STATUS_LEFT as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEDOWN3_STATUS_LEFT as libc::c_ulong as key_code
+                    if where_0 == STATUS_LEFT {
+                        key = key_code_code::MOUSEDOWN3_STATUS_LEFT
                     }
-                    if where_0 as libc::c_uint == STATUS_RIGHT as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEDOWN3_STATUS_RIGHT as libc::c_ulong as key_code
+                    if where_0 == STATUS_RIGHT {
+                        key = key_code_code::MOUSEDOWN3_STATUS_RIGHT
                     }
-                    if where_0 as libc::c_uint == STATUS_DEFAULT as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEDOWN3_STATUS_DEFAULT as libc::c_ulong as key_code
+                    if where_0 == STATUS_DEFAULT {
+                        key = key_code_code::MOUSEDOWN3_STATUS_DEFAULT
                     }
-                    if where_0 as libc::c_uint == BORDER as libc::c_int as libc::c_uint {
-                        key = key_code_code::MOUSEDOWN3_BORDER as libc::c_ulong as key_code
+                    if where_0 == BORDER {
+                        key = key_code_code::MOUSEDOWN3_BORDER
                     }
                 }
                 _ => {}
             },
-            6 => match b & 3 as libc::c_int as libc::c_uint {
+            6 => match b & 3u32 {
                 0 => {
-                    if where_0 as libc::c_uint == PANE as libc::c_int as libc::c_uint {
-                        key = key_code_code::SECONDCLICK1_PANE as libc::c_ulong as key_code
+                    if where_0 == PANE {
+                        key = key_code_code::SECONDCLICK1_PANE
                     }
-                    if where_0 as libc::c_uint == STATUS as libc::c_int as libc::c_uint {
-                        key = key_code_code::SECONDCLICK1_STATUS as libc::c_ulong as key_code
+                    if where_0 == STATUS {
+                        key = key_code_code::SECONDCLICK1_STATUS
                     }
-                    if where_0 as libc::c_uint == STATUS_LEFT as libc::c_int as libc::c_uint {
-                        key = key_code_code::SECONDCLICK1_STATUS_LEFT as libc::c_ulong as key_code
+                    if where_0 == STATUS_LEFT {
+                        key = key_code_code::SECONDCLICK1_STATUS_LEFT
                     }
-                    if where_0 as libc::c_uint == STATUS_RIGHT as libc::c_int as libc::c_uint {
-                        key = key_code_code::SECONDCLICK1_STATUS_RIGHT as libc::c_ulong as key_code
+                    if where_0 == STATUS_RIGHT {
+                        key = key_code_code::SECONDCLICK1_STATUS_RIGHT
                     }
-                    if where_0 as libc::c_uint == STATUS_DEFAULT as libc::c_int as libc::c_uint {
-                        key =
-                            key_code_code::SECONDCLICK1_STATUS_DEFAULT as libc::c_ulong as key_code
+                    if where_0 == STATUS_DEFAULT {
+                        key = key_code_code::SECONDCLICK1_STATUS_DEFAULT
                     }
-                    if where_0 as libc::c_uint == BORDER as libc::c_int as libc::c_uint {
-                        key = key_code_code::SECONDCLICK1_BORDER as libc::c_ulong as key_code
+                    if where_0 == BORDER {
+                        key = key_code_code::SECONDCLICK1_BORDER
                     }
                 }
                 1 => {
-                    if where_0 as libc::c_uint == PANE as libc::c_int as libc::c_uint {
-                        key = key_code_code::SECONDCLICK2_PANE as libc::c_ulong as key_code
+                    if where_0 == PANE {
+                        key = key_code_code::SECONDCLICK2_PANE
                     }
-                    if where_0 as libc::c_uint == STATUS as libc::c_int as libc::c_uint {
-                        key = key_code_code::SECONDCLICK2_STATUS as libc::c_ulong as key_code
+                    if where_0 == STATUS {
+                        key = key_code_code::SECONDCLICK2_STATUS
                     }
-                    if where_0 as libc::c_uint == STATUS_LEFT as libc::c_int as libc::c_uint {
-                        key = key_code_code::SECONDCLICK2_STATUS_LEFT as libc::c_ulong as key_code
+                    if where_0 == STATUS_LEFT {
+                        key = key_code_code::SECONDCLICK2_STATUS_LEFT
                     }
-                    if where_0 as libc::c_uint == STATUS_RIGHT as libc::c_int as libc::c_uint {
-                        key = key_code_code::SECONDCLICK2_STATUS_RIGHT as libc::c_ulong as key_code
+                    if where_0 == STATUS_RIGHT {
+                        key = key_code_code::SECONDCLICK2_STATUS_RIGHT
                     }
-                    if where_0 as libc::c_uint == STATUS_DEFAULT as libc::c_int as libc::c_uint {
-                        key =
-                            key_code_code::SECONDCLICK2_STATUS_DEFAULT as libc::c_ulong as key_code
+                    if where_0 == STATUS_DEFAULT {
+                        key = key_code_code::SECONDCLICK2_STATUS_DEFAULT
                     }
-                    if where_0 as libc::c_uint == BORDER as libc::c_int as libc::c_uint {
-                        key = key_code_code::SECONDCLICK2_BORDER as libc::c_ulong as key_code
+                    if where_0 == BORDER {
+                        key = key_code_code::SECONDCLICK2_BORDER
                     }
                 }
                 2 => {
-                    if where_0 as libc::c_uint == PANE as libc::c_int as libc::c_uint {
-                        key = key_code_code::SECONDCLICK3_PANE as libc::c_ulong as key_code
+                    if where_0 == PANE {
+                        key = key_code_code::SECONDCLICK3_PANE
                     }
-                    if where_0 as libc::c_uint == STATUS as libc::c_int as libc::c_uint {
-                        key = key_code_code::SECONDCLICK3_STATUS as libc::c_ulong as key_code
+                    if where_0 == STATUS {
+                        key = key_code_code::SECONDCLICK3_STATUS
                     }
-                    if where_0 as libc::c_uint == STATUS_LEFT as libc::c_int as libc::c_uint {
-                        key = key_code_code::SECONDCLICK3_STATUS_LEFT as libc::c_ulong as key_code
+                    if where_0 == STATUS_LEFT {
+                        key = key_code_code::SECONDCLICK3_STATUS_LEFT
                     }
-                    if where_0 as libc::c_uint == STATUS_RIGHT as libc::c_int as libc::c_uint {
-                        key = key_code_code::SECONDCLICK3_STATUS_RIGHT as libc::c_ulong as key_code
+                    if where_0 == STATUS_RIGHT {
+                        key = key_code_code::SECONDCLICK3_STATUS_RIGHT
                     }
-                    if where_0 as libc::c_uint == STATUS_DEFAULT as libc::c_int as libc::c_uint {
-                        key =
-                            key_code_code::SECONDCLICK3_STATUS_DEFAULT as libc::c_ulong as key_code
+                    if where_0 == STATUS_DEFAULT {
+                        key = key_code_code::SECONDCLICK3_STATUS_DEFAULT
                     }
-                    if where_0 as libc::c_uint == BORDER as libc::c_int as libc::c_uint {
-                        key = key_code_code::SECONDCLICK3_BORDER as libc::c_ulong as key_code
+                    if where_0 == BORDER {
+                        key = key_code_code::SECONDCLICK3_BORDER
                     }
                 }
                 _ => {}
             },
-            7 => match b & 3 as libc::c_int as libc::c_uint {
+            7 => match b & 3u32 {
                 0 => {
-                    if where_0 as libc::c_uint == PANE as libc::c_int as libc::c_uint {
-                        key = key_code_code::DOUBLECLICK1_PANE as libc::c_ulong as key_code
+                    if where_0 == PANE {
+                        key = key_code_code::DOUBLECLICK1_PANE
                     }
-                    if where_0 as libc::c_uint == STATUS as libc::c_int as libc::c_uint {
-                        key = key_code_code::DOUBLECLICK1_STATUS as libc::c_ulong as key_code
+                    if where_0 == STATUS {
+                        key = key_code_code::DOUBLECLICK1_STATUS
                     }
-                    if where_0 as libc::c_uint == STATUS_LEFT as libc::c_int as libc::c_uint {
-                        key = key_code_code::DOUBLECLICK1_STATUS_LEFT as libc::c_ulong as key_code
+                    if where_0 == STATUS_LEFT {
+                        key = key_code_code::DOUBLECLICK1_STATUS_LEFT
                     }
-                    if where_0 as libc::c_uint == STATUS_RIGHT as libc::c_int as libc::c_uint {
-                        key = key_code_code::DOUBLECLICK1_STATUS_RIGHT as libc::c_ulong as key_code
+                    if where_0 == STATUS_RIGHT {
+                        key = key_code_code::DOUBLECLICK1_STATUS_RIGHT
                     }
-                    if where_0 as libc::c_uint == STATUS_DEFAULT as libc::c_int as libc::c_uint {
-                        key =
-                            key_code_code::DOUBLECLICK1_STATUS_DEFAULT as libc::c_ulong as key_code
+                    if where_0 == STATUS_DEFAULT {
+                        key = key_code_code::DOUBLECLICK1_STATUS_DEFAULT
                     }
-                    if where_0 as libc::c_uint == BORDER as libc::c_int as libc::c_uint {
-                        key = key_code_code::DOUBLECLICK1_BORDER as libc::c_ulong as key_code
+                    if where_0 == BORDER {
+                        key = key_code_code::DOUBLECLICK1_BORDER
                     }
                 }
                 1 => {
-                    if where_0 as libc::c_uint == PANE as libc::c_int as libc::c_uint {
-                        key = key_code_code::DOUBLECLICK2_PANE as libc::c_ulong as key_code
+                    if where_0 == PANE {
+                        key = key_code_code::DOUBLECLICK2_PANE
                     }
-                    if where_0 as libc::c_uint == STATUS as libc::c_int as libc::c_uint {
-                        key = key_code_code::DOUBLECLICK2_STATUS as libc::c_ulong as key_code
+                    if where_0 == STATUS {
+                        key = key_code_code::DOUBLECLICK2_STATUS
                     }
-                    if where_0 as libc::c_uint == STATUS_LEFT as libc::c_int as libc::c_uint {
-                        key = key_code_code::DOUBLECLICK2_STATUS_LEFT as libc::c_ulong as key_code
+                    if where_0 == STATUS_LEFT {
+                        key = key_code_code::DOUBLECLICK2_STATUS_LEFT
                     }
-                    if where_0 as libc::c_uint == STATUS_RIGHT as libc::c_int as libc::c_uint {
-                        key = key_code_code::DOUBLECLICK2_STATUS_RIGHT as libc::c_ulong as key_code
+                    if where_0 == STATUS_RIGHT {
+                        key = key_code_code::DOUBLECLICK2_STATUS_RIGHT
                     }
-                    if where_0 as libc::c_uint == STATUS_DEFAULT as libc::c_int as libc::c_uint {
-                        key =
-                            key_code_code::DOUBLECLICK2_STATUS_DEFAULT as libc::c_ulong as key_code
+                    if where_0 == STATUS_DEFAULT {
+                        key = key_code_code::DOUBLECLICK2_STATUS_DEFAULT
                     }
-                    if where_0 as libc::c_uint == BORDER as libc::c_int as libc::c_uint {
-                        key = key_code_code::DOUBLECLICK2_BORDER as libc::c_ulong as key_code
+                    if where_0 == BORDER {
+                        key = key_code_code::DOUBLECLICK2_BORDER
                     }
                 }
                 2 => {
-                    if where_0 as libc::c_uint == PANE as libc::c_int as libc::c_uint {
-                        key = key_code_code::DOUBLECLICK3_PANE as libc::c_ulong as key_code
+                    if where_0 == PANE {
+                        key = key_code_code::DOUBLECLICK3_PANE
                     }
-                    if where_0 as libc::c_uint == STATUS as libc::c_int as libc::c_uint {
-                        key = key_code_code::DOUBLECLICK3_STATUS as libc::c_ulong as key_code
+                    if where_0 == STATUS {
+                        key = key_code_code::DOUBLECLICK3_STATUS
                     }
-                    if where_0 as libc::c_uint == STATUS_LEFT as libc::c_int as libc::c_uint {
-                        key = key_code_code::DOUBLECLICK3_STATUS_LEFT as libc::c_ulong as key_code
+                    if where_0 == STATUS_LEFT {
+                        key = key_code_code::DOUBLECLICK3_STATUS_LEFT
                     }
-                    if where_0 as libc::c_uint == STATUS_RIGHT as libc::c_int as libc::c_uint {
-                        key = key_code_code::DOUBLECLICK3_STATUS_RIGHT as libc::c_ulong as key_code
+                    if where_0 == STATUS_RIGHT {
+                        key = key_code_code::DOUBLECLICK3_STATUS_RIGHT
                     }
-                    if where_0 as libc::c_uint == STATUS_DEFAULT as libc::c_int as libc::c_uint {
-                        key =
-                            key_code_code::DOUBLECLICK3_STATUS_DEFAULT as libc::c_ulong as key_code
+                    if where_0 == STATUS_DEFAULT {
+                        key = key_code_code::DOUBLECLICK3_STATUS_DEFAULT
                     }
-                    if where_0 as libc::c_uint == BORDER as libc::c_int as libc::c_uint {
-                        key = key_code_code::DOUBLECLICK3_BORDER as libc::c_ulong as key_code
+                    if where_0 == BORDER {
+                        key = key_code_code::DOUBLECLICK3_BORDER
                     }
                 }
                 _ => {}
             },
-            8 => match b & 3 as libc::c_int as libc::c_uint {
+            8 => match b & 3u32 {
                 0 => {
-                    if where_0 as libc::c_uint == PANE as libc::c_int as libc::c_uint {
-                        key = key_code_code::TRIPLECLICK1_PANE as libc::c_ulong as key_code
+                    if where_0 == PANE {
+                        key = key_code_code::TRIPLECLICK1_PANE
                     }
-                    if where_0 as libc::c_uint == STATUS as libc::c_int as libc::c_uint {
-                        key = key_code_code::TRIPLECLICK1_STATUS as libc::c_ulong as key_code
+                    if where_0 == STATUS {
+                        key = key_code_code::TRIPLECLICK1_STATUS
                     }
-                    if where_0 as libc::c_uint == STATUS_LEFT as libc::c_int as libc::c_uint {
-                        key = key_code_code::TRIPLECLICK1_STATUS_LEFT as libc::c_ulong as key_code
+                    if where_0 == STATUS_LEFT {
+                        key = key_code_code::TRIPLECLICK1_STATUS_LEFT
                     }
-                    if where_0 as libc::c_uint == STATUS_RIGHT as libc::c_int as libc::c_uint {
-                        key = key_code_code::TRIPLECLICK1_STATUS_RIGHT as libc::c_ulong as key_code
+                    if where_0 == STATUS_RIGHT {
+                        key = key_code_code::TRIPLECLICK1_STATUS_RIGHT
                     }
-                    if where_0 as libc::c_uint == STATUS_DEFAULT as libc::c_int as libc::c_uint {
-                        key =
-                            key_code_code::TRIPLECLICK1_STATUS_DEFAULT as libc::c_ulong as key_code
+                    if where_0 == STATUS_DEFAULT {
+                        key = key_code_code::TRIPLECLICK1_STATUS_DEFAULT
                     }
-                    if where_0 as libc::c_uint == BORDER as libc::c_int as libc::c_uint {
-                        key = key_code_code::TRIPLECLICK1_BORDER as libc::c_ulong as key_code
+                    if where_0 == BORDER {
+                        key = key_code_code::TRIPLECLICK1_BORDER
                     }
                 }
                 1 => {
-                    if where_0 as libc::c_uint == PANE as libc::c_int as libc::c_uint {
-                        key = key_code_code::TRIPLECLICK2_PANE as libc::c_ulong as key_code
+                    if where_0 == PANE {
+                        key = key_code_code::TRIPLECLICK2_PANE
                     }
-                    if where_0 as libc::c_uint == STATUS as libc::c_int as libc::c_uint {
-                        key = key_code_code::TRIPLECLICK2_STATUS as libc::c_ulong as key_code
+                    if where_0 == STATUS {
+                        key = key_code_code::TRIPLECLICK2_STATUS
                     }
-                    if where_0 as libc::c_uint == STATUS_LEFT as libc::c_int as libc::c_uint {
-                        key = key_code_code::TRIPLECLICK2_STATUS_LEFT as libc::c_ulong as key_code
+                    if where_0 == STATUS_LEFT {
+                        key = key_code_code::TRIPLECLICK2_STATUS_LEFT
                     }
-                    if where_0 as libc::c_uint == STATUS_RIGHT as libc::c_int as libc::c_uint {
-                        key = key_code_code::TRIPLECLICK2_STATUS_RIGHT as libc::c_ulong as key_code
+                    if where_0 == STATUS_RIGHT {
+                        key = key_code_code::TRIPLECLICK2_STATUS_RIGHT
                     }
-                    if where_0 as libc::c_uint == STATUS_DEFAULT as libc::c_int as libc::c_uint {
-                        key =
-                            key_code_code::TRIPLECLICK2_STATUS_DEFAULT as libc::c_ulong as key_code
+                    if where_0 == STATUS_DEFAULT {
+                        key = key_code_code::TRIPLECLICK2_STATUS_DEFAULT
                     }
-                    if where_0 as libc::c_uint == BORDER as libc::c_int as libc::c_uint {
-                        key = key_code_code::TRIPLECLICK2_BORDER as libc::c_ulong as key_code
+                    if where_0 == BORDER {
+                        key = key_code_code::TRIPLECLICK2_BORDER
                     }
                 }
                 2 => {
-                    if where_0 as libc::c_uint == PANE as libc::c_int as libc::c_uint {
-                        key = key_code_code::TRIPLECLICK3_PANE as libc::c_ulong as key_code
+                    if where_0 == PANE {
+                        key = key_code_code::TRIPLECLICK3_PANE
                     }
-                    if where_0 as libc::c_uint == STATUS as libc::c_int as libc::c_uint {
-                        key = key_code_code::TRIPLECLICK3_STATUS as libc::c_ulong as key_code
+                    if where_0 == STATUS {
+                        key = key_code_code::TRIPLECLICK3_STATUS
                     }
-                    if where_0 as libc::c_uint == STATUS_LEFT as libc::c_int as libc::c_uint {
-                        key = key_code_code::TRIPLECLICK3_STATUS_LEFT as libc::c_ulong as key_code
+                    if where_0 == STATUS_LEFT {
+                        key = key_code_code::TRIPLECLICK3_STATUS_LEFT
                     }
-                    if where_0 as libc::c_uint == STATUS_RIGHT as libc::c_int as libc::c_uint {
-                        key = key_code_code::TRIPLECLICK3_STATUS_RIGHT as libc::c_ulong as key_code
+                    if where_0 == STATUS_RIGHT {
+                        key = key_code_code::TRIPLECLICK3_STATUS_RIGHT
                     }
-                    if where_0 as libc::c_uint == STATUS_DEFAULT as libc::c_int as libc::c_uint {
-                        key =
-                            key_code_code::TRIPLECLICK3_STATUS_DEFAULT as libc::c_ulong as key_code
+                    if where_0 == STATUS_DEFAULT {
+                        key = key_code_code::TRIPLECLICK3_STATUS_DEFAULT
                     }
-                    if where_0 as libc::c_uint == BORDER as libc::c_int as libc::c_uint {
-                        key = key_code_code::TRIPLECLICK3_BORDER as libc::c_ulong as key_code
+                    if where_0 == BORDER {
+                        key = key_code_code::TRIPLECLICK3_BORDER
                     }
                 }
                 _ => {}
             },
             0 | _ => {}
         }
-        if key == 0xfe000000000 as libc::c_ulonglong {
-            return 0xfe000000000 as libc::c_ulonglong;
+        if key == 0xfe000000000u64 {
+            return 0xfe000000000u64;
         }
     }
     /* Apply modifiers if any. */
-    if b & 8 as libc::c_int as libc::c_uint != 0 {
-        key |= 0x100000000000 as libc::c_ulonglong
+    if b & 8u32 != 0 {
+        key |= 0x100000000000u64
     }
-    if b & 16 as libc::c_int as libc::c_uint != 0 {
-        key |= 0x200000000000 as libc::c_ulonglong
+    if b & 16u32 != 0 {
+        key |= 0x200000000000u64
     }
-    if b & 4 as libc::c_int as libc::c_uint != 0 {
-        key |= 0x400000000000 as libc::c_ulonglong
+    if b & 4u32 != 0 {
+        key |= 0x400000000000u64
     }
-    if log_get_level() != 0 as libc::c_int {
+    if log_get_level() != 0i32 {
         log_debug(
             b"mouse key is %s\x00" as *const u8 as *const libc::c_char,
-            key_string_lookup_key(key, 1 as libc::c_int),
+            key_string_lookup_key(key, 1i32),
         );
     }
     return key;
@@ -3418,35 +3359,33 @@ unsafe extern "C" fn server_client_assume_paste(mut s: *mut session) -> libc::c_
         (*s).options,
         b"assume-paste-time\x00" as *const u8 as *const libc::c_char,
     ) as libc::c_int;
-    if t == 0 as libc::c_int {
-        return 0 as libc::c_int;
+    if t == 0i32 {
+        return 0i32;
     }
     tv.tv_sec = (*s).activity_time.tv_sec - (*s).last_activity_time.tv_sec;
     tv.tv_usec = (*s).activity_time.tv_usec - (*s).last_activity_time.tv_usec;
-    if tv.tv_usec < 0 as libc::c_int as libc::c_long {
+    if tv.tv_usec < 0i64 {
         tv.tv_sec -= 1;
-        tv.tv_usec += 1000000 as libc::c_int as libc::c_long
+        tv.tv_usec += 1000000i64
     }
-    if tv.tv_sec == 0 as libc::c_int as libc::c_long
-        && tv.tv_usec < (t * 1000 as libc::c_int) as libc::c_long
-    {
+    if tv.tv_sec == 0i64 && tv.tv_usec < (t * 1000i32) as libc::c_long {
         log_debug(
             b"session %s pasting (flag %d)\x00" as *const u8 as *const libc::c_char,
             (*s).name,
-            ((*s).flags & 0x1 as libc::c_int != 0) as libc::c_int,
+            ((*s).flags & 0x1i32 != 0) as libc::c_int,
         );
-        if (*s).flags & 0x1 as libc::c_int != 0 {
-            return 1 as libc::c_int;
+        if (*s).flags & 0x1i32 != 0 {
+            return 1i32;
         }
-        (*s).flags |= 0x1 as libc::c_int;
-        return 0 as libc::c_int;
+        (*s).flags |= 0x1i32;
+        return 0i32;
     }
     log_debug(
         b"session %s not pasting\x00" as *const u8 as *const libc::c_char,
         (*s).name,
     );
-    (*s).flags &= !(0x1 as libc::c_int);
-    return 0 as libc::c_int;
+    (*s).flags &= !(0x1i32);
+    return 0i32;
 }
 /* Has the latest client changed? */
 unsafe extern "C" fn server_client_update_latest(mut c: *mut client) {
@@ -3462,9 +3401,9 @@ unsafe extern "C" fn server_client_update_latest(mut c: *mut client) {
     if options_get_number(
         (*w).options,
         b"window-size\x00" as *const u8 as *const libc::c_char,
-    ) == 3 as libc::c_int as libc::c_longlong
+    ) == 3i64
     {
-        recalculate_size(w, 0 as libc::c_int);
+        recalculate_size(w, 0i32);
     };
 }
 /*
@@ -3504,38 +3443,30 @@ unsafe extern "C" fn server_client_key_callback(
     };
     let mut key0: key_code = 0;
     /* Check the client is good to accept input. */
-    if !(s.is_null()
-        || (*c).flags
-            & (0x200 as libc::c_int | 0x40 as libc::c_int | 0x4 as libc::c_int) as libc::c_ulong
-            != 0)
-    {
+    if !(s.is_null() || (*c).flags & (0x200i32 | 0x40i32 | 0x4i32) as libc::c_ulong != 0) {
         wl = (*s).curw;
         /* Update the activity timer. */
-        if gettimeofday(&mut (*c).activity_time, 0 as *mut libc::c_void) != 0 as libc::c_int {
+        if gettimeofday(&mut (*c).activity_time, 0 as *mut libc::c_void) != 0i32 {
             fatal(b"gettimeofday failed\x00" as *const u8 as *const libc::c_char);
         }
         session_update_activity(s, &mut (*c).activity_time);
         /* Check for mouse keys. */
-        (*m).valid = 0 as libc::c_int;
-        if key == key_code_code::MOUSE as libc::c_ulong as libc::c_ulonglong
-            || key == key_code_code::DOUBLECLICK as libc::c_ulong as libc::c_ulonglong
-        {
-            if (*c).flags & 0x800 as libc::c_int as libc::c_ulong != 0 {
+        (*m).valid = 0i32;
+        if key == key_code_code::MOUSE || key == key_code_code::DOUBLECLICK {
+            if (*c).flags & 0x800u64 != 0 {
                 current_block = 4278348705573827347;
             } else {
                 key = server_client_check_mouse(c, event);
-                if key == 0xfe000000000 as libc::c_ulonglong {
+                if key == 0xfe000000000u64 {
                     current_block = 4278348705573827347;
                 } else {
-                    (*m).valid = 1 as libc::c_int;
+                    (*m).valid = 1i32;
                     (*m).key = key;
                     /*
                      * Mouse drag is in progress, so fire the callback (now that
                      * the mouse event is valid).
                      */
-                    if key & 0xfffffffffff as libc::c_ulonglong
-                        == key_code_code::DRAGGING as libc::c_ulong as libc::c_ulonglong
-                    {
+                    if key & 0xfffffffffffu64 == key_code_code::DRAGGING {
                         (*c).tty
                             .mouse_drag_update
                             .expect("non-null function pointer")(c, m);
@@ -3553,30 +3484,24 @@ unsafe extern "C" fn server_client_key_callback(
             4278348705573827347 => {}
             _ => {
                 /* Find affected pane. */
-                if !(key & 0xfffffffffff as libc::c_ulonglong
-                    >= key_code_code::MOUSE as libc::c_ulong as libc::c_ulonglong
-                    && (key & 0xfffffffffff as libc::c_ulonglong)
-                        < key_code_code::BSPACE as libc::c_ulong as libc::c_ulonglong)
-                    || cmd_find_from_mouse(&mut fs, m, 0 as libc::c_int) != 0 as libc::c_int
+                if !(key & 0xfffffffffffu64 >= key_code_code::MOUSE
+                    && (key & 0xfffffffffffu64) < key_code_code::BSPACE)
+                    || cmd_find_from_mouse(&mut fs, m, 0i32) != 0i32
                 {
-                    cmd_find_from_client(&mut fs, c, 0 as libc::c_int);
+                    cmd_find_from_client(&mut fs, c, 0i32);
                 }
                 wp = fs.wp;
                 /* Forward mouse keys if disabled. */
-                if key & 0xfffffffffff as libc::c_ulonglong
-                    >= key_code_code::MOUSE as libc::c_ulong as libc::c_ulonglong
-                    && (key & 0xfffffffffff as libc::c_ulonglong)
-                        < key_code_code::BSPACE as libc::c_ulong as libc::c_ulonglong
+                if key & 0xfffffffffffu64 >= key_code_code::MOUSE
+                    && (key & 0xfffffffffffu64) < key_code_code::BSPACE
                     && options_get_number(
                         (*s).options,
                         b"mouse\x00" as *const u8 as *const libc::c_char,
                     ) == 0
                 {
                     current_block = 9475926807518885972;
-                } else if !(key & 0xfffffffffff as libc::c_ulonglong
-                    >= key_code_code::MOUSE as libc::c_ulong as libc::c_ulonglong
-                    && (key & 0xfffffffffff as libc::c_ulonglong)
-                        < key_code_code::BSPACE as libc::c_ulong as libc::c_ulonglong)
+                } else if !(key & 0xfffffffffffu64 >= key_code_code::MOUSE
+                    && (key & 0xfffffffffffu64) < key_code_code::BSPACE)
                     && server_client_assume_paste(s) != 0
                 {
                     current_block = 9475926807518885972;
@@ -3596,7 +3521,7 @@ unsafe extern "C" fn server_client_key_callback(
                     {
                         table = key_bindings_get_table(
                             (*(*wme).mode).key_table.expect("non-null function pointer")(wme),
-                            1 as libc::c_int,
+                            1i32,
                         )
                     } else {
                         table = (*c).keytable
@@ -3607,9 +3532,7 @@ unsafe extern "C" fn server_client_key_callback(
                          * The prefix always takes precedence and forces a switch to the prefix
                          * table, unless we are already there.
                          */
-                        key0 = key
-                            & (0xfffffffffff as libc::c_ulonglong
-                                | 0xf00000000000 as libc::c_ulonglong);
+                        key0 = key & (0xfffffffffffu64 | 0xf00000000000u64);
                         if (key0
                             == options_get_number(
                                 (*s).options,
@@ -3623,7 +3546,7 @@ unsafe extern "C" fn server_client_key_callback(
                             && strcmp(
                                 (*table).name,
                                 b"prefix\x00" as *const u8 as *const libc::c_char,
-                            ) != 0 as libc::c_int
+                            ) != 0i32
                         {
                             server_client_set_key_table(
                                 c,
@@ -3650,7 +3573,7 @@ unsafe extern "C" fn server_client_key_callback(
                                         (*wp).id,
                                     );
                                 }
-                                if (*c).flags & 0x20 as libc::c_int as libc::c_ulong != 0 {
+                                if (*c).flags & 0x20u64 != 0 {
                                     log_debug(
                                         b"currently repeating\x00" as *const u8
                                             as *const libc::c_char,
@@ -3664,19 +3587,15 @@ unsafe extern "C" fn server_client_key_callback(
                                      * non-repeating binding was found, stop repeating and try
                                      * again in the root table.
                                      */
-                                    if (*c).flags & 0x20 as libc::c_int as libc::c_ulong != 0
-                                        && !(*bd).flags & 0x1 as libc::c_int != 0
-                                    {
+                                    if (*c).flags & 0x20u64 != 0 && !(*bd).flags & 0x1i32 != 0 {
                                         current_block = 3938820862080741272;
                                         break;
                                     } else {
                                         current_block = 13460095289871124136;
                                         break;
                                     }
-                                } else if key0
-                                    != key_code_code::ANY as libc::c_ulong as libc::c_ulonglong
-                                {
-                                    key0 = key_code_code::ANY as libc::c_ulong as key_code
+                                } else if key0 != key_code_code::ANY {
+                                    key0 = key_code_code::ANY
                                 } else {
                                     /*
                                      * No match, try the ANY key.
@@ -3691,7 +3610,7 @@ unsafe extern "C" fn server_client_key_callback(
                                         (*table).name,
                                     );
                                     if server_client_is_default_key_table(c, table) == 0
-                                        || (*c).flags & 0x20 as libc::c_int as libc::c_ulong != 0
+                                        || (*c).flags & 0x20u64 != 0
                                     {
                                         current_block = 5028470053297453708;
                                         break;
@@ -3708,7 +3627,7 @@ unsafe extern "C" fn server_client_key_callback(
                                  * tried, don't pass the key to the pane.
                                  */
                                 {
-                                    if first != table && !flags & 0x20 as libc::c_int != 0 {
+                                    if first != table && !flags & 0x20i32 != 0 {
                                         current_block = 3736434875406665187;
                                         break;
                                     } else {
@@ -3725,7 +3644,7 @@ unsafe extern "C" fn server_client_key_callback(
                                     server_client_set_key_table(c, 0 as *const libc::c_char);
                                     table = (*c).keytable;
                                     first = table;
-                                    (*c).flags &= !(0x20 as libc::c_int) as libc::c_ulong;
+                                    (*c).flags &= !(0x20i32) as libc::c_ulong;
                                     server_status_client(c);
                                 }
                                 5028470053297453708 => {
@@ -3735,10 +3654,10 @@ unsafe extern "C" fn server_client_key_callback(
                                     );
                                     server_client_set_key_table(c, 0 as *const libc::c_char);
                                     table = (*c).keytable;
-                                    if (*c).flags & 0x20 as libc::c_int as libc::c_ulong != 0 {
+                                    if (*c).flags & 0x20u64 != 0 {
                                         first = table
                                     }
-                                    (*c).flags &= !(0x20 as libc::c_int) as libc::c_ulong;
+                                    (*c).flags &= !(0x20i32) as libc::c_ulong;
                                     server_status_client(c);
                                 }
                                 _ => {
@@ -3760,18 +3679,14 @@ unsafe extern "C" fn server_client_key_callback(
                                         (*s).options,
                                         b"repeat-time\x00" as *const u8 as *const libc::c_char,
                                     ) as libc::c_int;
-                                    if xtimeout != 0 as libc::c_int
-                                        && (*bd).flags & 0x1 as libc::c_int != 0
-                                    {
-                                        (*c).flags |= 0x20 as libc::c_int as libc::c_ulong;
-                                        tv.tv_sec = (xtimeout / 1000 as libc::c_int) as __time_t;
-                                        tv.tv_usec = (xtimeout % 1000 as libc::c_int)
-                                            as libc::c_long
-                                            * 1000 as libc::c_long;
+                                    if xtimeout != 0i32 && (*bd).flags & 0x1i32 != 0 {
+                                        (*c).flags |= 0x20u64;
+                                        tv.tv_sec = (xtimeout / 1000i32) as __time_t;
+                                        tv.tv_usec = (xtimeout % 1000i32) as libc::c_long * 1000i64;
                                         event_del(&mut (*c).repeat_timer);
                                         event_add(&mut (*c).repeat_timer, &mut tv);
                                     } else {
-                                        (*c).flags &= !(0x20 as libc::c_int) as libc::c_ulong;
+                                        (*c).flags &= !(0x20i32) as libc::c_ulong;
                                         server_client_set_key_table(c, 0 as *const libc::c_char);
                                     }
                                     server_status_client(c);
@@ -3797,7 +3712,7 @@ unsafe extern "C" fn server_client_key_callback(
                 match current_block {
                     4278348705573827347 => {}
                     _ => {
-                        if !((*c).flags & 0x800 as libc::c_int as libc::c_ulong != 0) {
+                        if !((*c).flags & 0x800u64 != 0) {
                             if !wp.is_null() {
                                 window_pane_key(wp, c, s, wl, key, m);
                             }
@@ -3807,7 +3722,7 @@ unsafe extern "C" fn server_client_key_callback(
             }
         }
     }
-    if !s.is_null() && key != key_code_code::FOCUS_OUT as libc::c_ulong as libc::c_ulonglong {
+    if !s.is_null() && key != key_code_code::FOCUS_OUT {
         server_client_update_latest(c);
     }
     free(event as *mut libc::c_void);
@@ -3822,34 +3737,30 @@ pub unsafe extern "C" fn server_client_handle_key(
     let mut s: *mut session = (*c).session;
     let mut item: *mut crate::cmd_queue::cmdq_item = 0 as *mut crate::cmd_queue::cmdq_item;
     /* Check the client is good to accept input. */
-    if s.is_null()
-        || (*c).flags
-            & (0x200 as libc::c_int | 0x40 as libc::c_int | 0x4 as libc::c_int) as libc::c_ulong
-            != 0
-    {
-        return 0 as libc::c_int;
+    if s.is_null() || (*c).flags & (0x200i32 | 0x40i32 | 0x4i32) as libc::c_ulong != 0 {
+        return 0i32;
     }
     /*
      * Key presses in overlay mode and the command prompt are a special
      * case. The queue might be blocked so they need to be processed
      * immediately rather than queued.
      */
-    if !(*c).flags & 0x800 as libc::c_int as libc::c_ulong != 0 {
+    if !(*c).flags & 0x800u64 != 0 {
         status_message_clear(c);
         if (*c).overlay_key.is_some() {
             match (*c).overlay_key.expect("non-null function pointer")(c, event) {
-                0 => return 0 as libc::c_int,
+                0 => return 0i32,
                 1 => {
                     server_client_clear_overlay(c);
-                    return 0 as libc::c_int;
+                    return 0i32;
                 }
                 _ => {}
             }
         }
         server_client_clear_overlay(c);
         if !(*c).prompt_string.is_null() {
-            if status_prompt_key(c, (*event).key) == 0 as libc::c_int {
-                return 0 as libc::c_int;
+            if status_prompt_key(c, (*event).key) == 0i32 {
+                return 0i32;
             }
         }
     }
@@ -3869,7 +3780,7 @@ pub unsafe extern "C" fn server_client_handle_key(
         event as *mut libc::c_void,
     );
     cmdq_append(c, item);
-    return 1 as libc::c_int;
+    return 1i32;
 }
 /* Client functions that need to happen every loop. */
 #[no_mangle]
@@ -3879,7 +3790,7 @@ pub unsafe extern "C" fn server_client_loop() {
     let mut wp: *mut window_pane = 0 as *mut window_pane;
     let mut focus: libc::c_int = 0;
     /* Check for window resize. This is done before redrawing. */
-    w = windows_RB_MINMAX(&mut windows, -(1 as libc::c_int));
+    w = windows_RB_MINMAX(&mut windows, -(1i32));
     while !w.is_null() {
         server_client_check_window_resize(w);
         w = windows_RB_NEXT(w)
@@ -3902,18 +3813,18 @@ pub unsafe extern "C" fn server_client_loop() {
         global_options,
         b"focus-events\x00" as *const u8 as *const libc::c_char,
     ) as libc::c_int;
-    w = windows_RB_MINMAX(&mut windows, -(1 as libc::c_int));
+    w = windows_RB_MINMAX(&mut windows, -(1i32));
     while !w.is_null() {
         wp = (*w).panes.tqh_first;
         while !wp.is_null() {
-            if (*wp).fd != -(1 as libc::c_int) {
+            if (*wp).fd != -(1i32) {
                 if focus != 0 {
                     server_client_check_pane_focus(wp);
                 }
                 server_client_check_pane_resize(wp);
                 server_client_check_pane_buffer(wp);
             }
-            (*wp).flags &= !(0x1 as libc::c_int);
+            (*wp).flags &= !(0x1i32);
             wp = (*wp).entry.tqe_next
         }
         check_window_name(w);
@@ -3923,14 +3834,12 @@ pub unsafe extern "C" fn server_client_loop() {
 /* Check if window needs to be resized. */
 unsafe extern "C" fn server_client_check_window_resize(mut w: *mut window) {
     let mut wl: *mut winlink = 0 as *mut winlink;
-    if !(*w).flags & 0x20 as libc::c_int != 0 {
+    if !(*w).flags & 0x20i32 != 0 {
         return;
     }
     wl = (*w).winlinks.tqh_first;
     while !wl.is_null() {
-        if (*(*wl).session).attached != 0 as libc::c_int as libc::c_uint
-            && (*(*wl).session).curw == wl
-        {
+        if (*(*wl).session).attached != 0u32 && (*(*wl).session).curw == wl {
             break;
         }
         wl = (*wl).wentry.tqe_next
@@ -3976,7 +3885,7 @@ unsafe extern "C" fn server_client_start_resize_timer(mut wp: *mut window_pane) 
     let mut tv: timeval = {
         let mut init = timeval {
             tv_sec: 0,
-            tv_usec: 250000 as libc::c_int as __suseconds_t,
+            tv_usec: 250000i64,
         };
         init
     };
@@ -4006,14 +3915,14 @@ unsafe extern "C" fn server_client_force_timer(
         (*wp).id,
     );
     event_del(&mut (*wp).force_timer);
-    (*wp).flags |= 0x2000 as libc::c_int;
+    (*wp).flags |= 0x2000i32;
 }
 /* Start the force timer. */
 unsafe extern "C" fn server_client_start_force_timer(mut wp: *mut window_pane) {
     let mut tv: timeval = {
         let mut init = timeval {
             tv_sec: 0,
-            tv_usec: 10000 as libc::c_int as __suseconds_t,
+            tv_usec: 10000i64,
         };
         init
     };
@@ -4032,8 +3941,8 @@ unsafe extern "C" fn server_client_check_pane_resize(mut wp: *mut window_pane) {
     if event_initialized(&mut (*wp).resize_timer) == 0 {
         event_set(
             &mut (*wp).resize_timer,
-            -(1 as libc::c_int),
-            0 as libc::c_int as libc::c_short,
+            -(1i32),
+            0i16,
             Some(
                 server_client_resize_timer
                     as unsafe extern "C" fn(
@@ -4048,8 +3957,8 @@ unsafe extern "C" fn server_client_check_pane_resize(mut wp: *mut window_pane) {
     if event_initialized(&mut (*wp).force_timer) == 0 {
         event_set(
             &mut (*wp).force_timer,
-            -(1 as libc::c_int),
-            0 as libc::c_int as libc::c_short,
+            -(1i32),
+            0i16,
             Some(
                 server_client_force_timer
                     as unsafe extern "C" fn(
@@ -4061,7 +3970,7 @@ unsafe extern "C" fn server_client_check_pane_resize(mut wp: *mut window_pane) {
             wp as *mut libc::c_void,
         );
     }
-    if !(*wp).flags & 0x8 as libc::c_int != 0 {
+    if !(*wp).flags & 0x8i32 != 0 {
         return;
     }
     log_debug(
@@ -4072,12 +3981,7 @@ unsafe extern "C" fn server_client_check_pane_resize(mut wp: *mut window_pane) {
         .as_ptr(),
         (*wp).id,
     );
-    if event_pending(
-        &mut (*wp).resize_timer,
-        0x1 as libc::c_int as libc::c_short,
-        0 as *mut timeval,
-    ) != 0
-    {
+    if event_pending(&mut (*wp).resize_timer, 0x1i16, 0 as *mut timeval) != 0 {
         log_debug(
             b"%s: %%%u resize timer is running\x00" as *const u8 as *const libc::c_char,
             (*::std::mem::transmute::<&[u8; 32], &[libc::c_char; 32]>(
@@ -4089,7 +3993,7 @@ unsafe extern "C" fn server_client_check_pane_resize(mut wp: *mut window_pane) {
         return;
     }
     server_client_start_resize_timer(wp);
-    if !(*wp).flags & 0x10 as libc::c_int != 0 {
+    if !(*wp).flags & 0x10i32 != 0 {
         /*
          * The timer is not running and we don't need to force a
          * resize, so just resize immediately.
@@ -4102,9 +4006,9 @@ unsafe extern "C" fn server_client_check_pane_resize(mut wp: *mut window_pane) {
             .as_ptr(),
             (*wp).id,
         );
-        window_pane_send_resize(wp, 0 as libc::c_int);
-        (*wp).flags &= !(0x8 as libc::c_int)
-    } else if (*wp).flags & 0x2000 as libc::c_int != 0 {
+        window_pane_send_resize(wp, 0i32);
+        (*wp).flags &= !(0x8i32)
+    } else if (*wp).flags & 0x2000i32 != 0 {
         log_debug(
             b"%s: resizing %%%u after forced resize\x00" as *const u8 as *const libc::c_char,
             (*::std::mem::transmute::<&[u8; 32], &[libc::c_char; 32]>(
@@ -4113,14 +4017,9 @@ unsafe extern "C" fn server_client_check_pane_resize(mut wp: *mut window_pane) {
             .as_ptr(),
             (*wp).id,
         );
-        window_pane_send_resize(wp, 0 as libc::c_int);
-        (*wp).flags &= !(0x8 as libc::c_int | 0x10 as libc::c_int | 0x2000 as libc::c_int)
-    } else if event_pending(
-        &mut (*wp).force_timer,
-        0x1 as libc::c_int as libc::c_short,
-        0 as *mut timeval,
-    ) == 0
-    {
+        window_pane_send_resize(wp, 0i32);
+        (*wp).flags &= !(0x8i32 | 0x10i32 | 0x2000i32)
+    } else if event_pending(&mut (*wp).force_timer, 0x1i16, 0 as *mut timeval) == 0 {
         log_debug(
             b"%s: forcing resize of %%%u\x00" as *const u8 as *const libc::c_char,
             (*::std::mem::transmute::<&[u8; 32], &[libc::c_char; 32]>(
@@ -4129,7 +4028,7 @@ unsafe extern "C" fn server_client_check_pane_resize(mut wp: *mut window_pane) {
             .as_ptr(),
             (*wp).id,
         );
-        window_pane_send_resize(wp, 1 as libc::c_int);
+        window_pane_send_resize(wp, 1i32);
         server_client_start_force_timer(wp);
     };
 }
@@ -4144,31 +4043,31 @@ unsafe extern "C" fn server_client_check_pane_buffer(mut wp: *mut window_pane) {
     let mut minimum: size_t = 0;
     let mut c: *mut client = 0 as *mut client;
     let mut wpo: *mut window_pane_offset = 0 as *mut window_pane_offset;
-    let mut off: libc::c_int = 1 as libc::c_int;
+    let mut off: libc::c_int = 1i32;
     let mut flag: libc::c_int = 0;
-    let mut attached_clients: u_int = 0 as libc::c_int as u_int;
+    let mut attached_clients: u_int = 0u32;
     let mut new_size: size_t = 0;
     /*
      * Work out the minimum used size. This is the most that can be removed
      * from the buffer.
      */
     minimum = (*wp).offset.used;
-    if (*wp).pipe_fd != -(1 as libc::c_int) && (*wp).pipe_offset.used < minimum {
+    if (*wp).pipe_fd != -(1i32) && (*wp).pipe_offset.used < minimum {
         minimum = (*wp).pipe_offset.used
     }
     c = clients.tqh_first;
     while !c.is_null() {
         if !(*c).session.is_null() {
             attached_clients = attached_clients.wrapping_add(1);
-            if !(*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
-                off = 0 as libc::c_int
+            if !(*c).flags & 0x2000u64 != 0 {
+                off = 0i32
             } else {
                 wpo = control_pane_offset(c, wp, &mut flag);
                 if wpo.is_null() {
-                    off = 0 as libc::c_int
+                    off = 0i32
                 } else {
                     if flag == 0 {
-                        off = 0 as libc::c_int
+                        off = 0i32
                     }
                     window_pane_get_new_data(wp, wpo, &mut new_size);
                     log_debug(
@@ -4191,11 +4090,11 @@ unsafe extern "C" fn server_client_check_pane_buffer(mut wp: *mut window_pane) {
         }
         c = (*c).entry.tqe_next
     }
-    if attached_clients == 0 as libc::c_int as libc::c_uint {
-        off = 0 as libc::c_int
+    if attached_clients == 0u32 {
+        off = 0i32
     }
-    minimum = (minimum as libc::c_ulong).wrapping_sub((*wp).base_offset) as size_t as size_t;
-    if !(minimum == 0 as libc::c_int as libc::c_ulong) {
+    minimum = (minimum).wrapping_sub((*wp).base_offset);
+    if !(minimum == 0u64) {
         /* Drain the buffer. */
         log_debug(
             b"%s: %%%u has %zu minimum (of %zu) bytes used\x00" as *const u8 as *const libc::c_char,
@@ -4212,7 +4111,7 @@ unsafe extern "C" fn server_client_check_pane_buffer(mut wp: *mut window_pane) {
          * Adjust the base offset. If it would roll over, all the offsets into
          * the buffer need to be adjusted.
          */
-        if (*wp).base_offset > (18446744073709551615 as libc::c_ulong).wrapping_sub(minimum) {
+        if (*wp).base_offset > (18446744073709551615u64).wrapping_sub(minimum) {
             log_debug(
                 b"%s: %%%u base offset has wrapped\x00" as *const u8 as *const libc::c_char,
                 (*::std::mem::transmute::<&[u8; 32], &[libc::c_char; 32]>(
@@ -4221,30 +4120,23 @@ unsafe extern "C" fn server_client_check_pane_buffer(mut wp: *mut window_pane) {
                 .as_ptr(),
                 (*wp).id,
             );
-            (*wp).offset.used = ((*wp).offset.used as libc::c_ulong).wrapping_sub((*wp).base_offset)
-                as size_t as size_t;
-            if (*wp).pipe_fd != -(1 as libc::c_int) {
-                (*wp).pipe_offset.used = ((*wp).pipe_offset.used as libc::c_ulong)
-                    .wrapping_sub((*wp).base_offset)
-                    as size_t as size_t
+            (*wp).offset.used = ((*wp).offset.used).wrapping_sub((*wp).base_offset);
+            if (*wp).pipe_fd != -(1i32) {
+                (*wp).pipe_offset.used = ((*wp).pipe_offset.used).wrapping_sub((*wp).base_offset)
             }
             c = clients.tqh_first;
             while !c.is_null() {
-                if !((*c).session.is_null()
-                    || !(*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0)
-                {
+                if !((*c).session.is_null() || !(*c).flags & 0x2000u64 != 0) {
                     wpo = control_pane_offset(c, wp, &mut flag);
                     if !wpo.is_null() && flag == 0 {
-                        (*wpo).used = ((*wpo).used as libc::c_ulong).wrapping_sub((*wp).base_offset)
-                            as size_t as size_t
+                        (*wpo).used = ((*wpo).used).wrapping_sub((*wp).base_offset)
                     }
                 }
                 c = (*c).entry.tqe_next
             }
             (*wp).base_offset = minimum
         } else {
-            (*wp).base_offset =
-                ((*wp).base_offset as libc::c_ulong).wrapping_add(minimum) as size_t as size_t
+            (*wp).base_offset = ((*wp).base_offset).wrapping_add(minimum)
         }
     }
     /*
@@ -4267,9 +4159,9 @@ unsafe extern "C" fn server_client_check_pane_buffer(mut wp: *mut window_pane) {
         },
     );
     if off != 0 {
-        bufferevent_disable((*wp).event, 0x2 as libc::c_int as libc::c_short);
+        bufferevent_disable((*wp).event, 0x2i16);
     } else {
-        bufferevent_enable((*wp).event, 0x2 as libc::c_int as libc::c_short);
+        bufferevent_enable((*wp).event, 0x2i16);
     };
 }
 /* Check whether pane should be focused. */
@@ -4278,8 +4170,8 @@ unsafe extern "C" fn server_client_check_pane_focus(mut wp: *mut window_pane) {
     let mut c: *mut client = 0 as *mut client;
     let mut push: libc::c_int = 0;
     /* Do we need to push the focus state? */
-    push = (*wp).flags & 0x20 as libc::c_int;
-    (*wp).flags &= !(0x20 as libc::c_int);
+    push = (*wp).flags & 0x20i32;
+    (*wp).flags &= !(0x20i32);
     /* If we're not the active pane in our window, we're not focused. */
     if !((*(*wp).window).active != wp) {
         /*
@@ -4292,9 +4184,8 @@ unsafe extern "C" fn server_client_check_pane_focus(mut wp: *mut window_pane) {
                 current_block = 12717618590137386175;
                 break;
             }
-            if !((*c).session.is_null() || (*c).flags & 0x8000 as libc::c_int as libc::c_ulong == 0)
-            {
-                if !((*(*c).session).attached == 0 as libc::c_int as libc::c_uint) {
+            if !((*c).session.is_null() || (*c).flags & 0x8000u64 == 0) {
+                if !((*(*c).session).attached == 0u32) {
                     if (*(*(*c).session).curw).window == (*wp).window {
                         current_block = 16836582972682985622;
                         break;
@@ -4306,29 +4197,28 @@ unsafe extern "C" fn server_client_check_pane_focus(mut wp: *mut window_pane) {
         match current_block {
             12717618590137386175 => {}
             _ => {
-                if push != 0 || (*wp).flags & 0x4 as libc::c_int == 0 {
-                    if (*wp).base.mode & 0x800 as libc::c_int != 0 {
+                if push != 0 || (*wp).flags & 0x4i32 == 0 {
+                    if (*wp).base.mode & 0x800i32 != 0 {
                         bufferevent_write(
                             (*wp).event,
-                            b"\x1b[I\x00" as *const u8 as *const libc::c_char
-                                as *const libc::c_void,
-                            3 as libc::c_int as size_t,
+                            b"\x1b[I\x00" as *const u8 as *const libc::c_void,
+                            3u64,
                         );
                     }
                     notify_pane(b"pane-focus-in\x00" as *const u8 as *const libc::c_char, wp);
                     session_update_activity((*c).session, 0 as *mut timeval);
                 }
-                (*wp).flags |= 0x4 as libc::c_int;
+                (*wp).flags |= 0x4i32;
                 return;
             }
         }
     }
-    if push != 0 || (*wp).flags & 0x4 as libc::c_int != 0 {
-        if (*wp).base.mode & 0x800 as libc::c_int != 0 {
+    if push != 0 || (*wp).flags & 0x4i32 != 0 {
+        if (*wp).base.mode & 0x800i32 != 0 {
             bufferevent_write(
                 (*wp).event,
-                b"\x1b[O\x00" as *const u8 as *const libc::c_char as *const libc::c_void,
-                3 as libc::c_int as size_t,
+                b"\x1b[O\x00" as *const u8 as *const libc::c_void,
+                3u64,
             );
         }
         notify_pane(
@@ -4336,7 +4226,7 @@ unsafe extern "C" fn server_client_check_pane_focus(mut wp: *mut window_pane) {
             wp,
         );
     }
-    (*wp).flags &= !(0x4 as libc::c_int);
+    (*wp).flags &= !(0x4i32);
 }
 /*
  * Update cursor position and mode settings. The scroll region and attributes
@@ -4354,21 +4244,21 @@ unsafe extern "C" fn server_client_reset_state(mut c: *mut client) {
     let mut loop_0: *mut window_pane = 0 as *mut window_pane;
     let mut s: *mut screen = 0 as *mut screen;
     let mut oo: *mut crate::options::options = (*(*c).session).options;
-    let mut mode: libc::c_int = 0 as libc::c_int;
+    let mut mode: libc::c_int = 0i32;
     let mut cursor: libc::c_int = 0;
     let mut flags: libc::c_int = 0;
-    let mut cx: u_int = 0 as libc::c_int as u_int;
-    let mut cy: u_int = 0 as libc::c_int as u_int;
+    let mut cx: u_int = 0u32;
+    let mut cy: u_int = 0u32;
     let mut ox: u_int = 0;
     let mut oy: u_int = 0;
     let mut sx: u_int = 0;
     let mut sy: u_int = 0;
-    if (*c).flags & (0x2000 as libc::c_int | 0x40 as libc::c_int) as libc::c_ulong != 0 {
+    if (*c).flags & (0x2000i32 | 0x40i32) as libc::c_ulong != 0 {
         return;
     }
     /* Disable the block flag. */
-    flags = (*tty).flags & 0x80 as libc::c_int;
-    (*tty).flags &= !(0x80 as libc::c_int);
+    flags = (*tty).flags & 0x80i32;
+    (*tty).flags &= !(0x80i32);
     /* Get mode from overlay if any, else from screen. */
     if (*c).overlay_draw.is_some() {
         if (*c).overlay_mode.is_some() {
@@ -4394,22 +4284,22 @@ unsafe extern "C" fn server_client_reset_state(mut c: *mut client) {
     tty_margin_off(tty);
     /* Move cursor to pane cursor and offset. */
     if (*c).overlay_draw.is_none() {
-        cursor = 0 as libc::c_int;
+        cursor = 0i32;
         tty_window_offset(tty, &mut ox, &mut oy, &mut sx, &mut sy);
         if (*wp).xoff.wrapping_add((*s).cx) >= ox
             && (*wp).xoff.wrapping_add((*s).cx) <= ox.wrapping_add(sx)
             && (*wp).yoff.wrapping_add((*s).cy) >= oy
             && (*wp).yoff.wrapping_add((*s).cy) <= oy.wrapping_add(sy)
         {
-            cursor = 1 as libc::c_int;
+            cursor = 1i32;
             cx = (*wp).xoff.wrapping_add((*s).cx).wrapping_sub(ox);
             cy = (*wp).yoff.wrapping_add((*s).cy).wrapping_sub(oy);
-            if status_at_line(c) == 0 as libc::c_int {
-                cy = (cy as libc::c_uint).wrapping_add(status_line_size(c)) as u_int as u_int
+            if status_at_line(c) == 0i32 {
+                cy = (cy).wrapping_add(status_line_size(c))
             }
         }
         if cursor == 0 {
-            mode &= !(0x1 as libc::c_int)
+            mode &= !(0x1i32)
         }
     }
     log_debug(
@@ -4428,22 +4318,22 @@ unsafe extern "C" fn server_client_reset_state(mut c: *mut client) {
      */
     if options_get_number(oo, b"mouse\x00" as *const u8 as *const libc::c_char) != 0 {
         if (*c).overlay_draw.is_none() {
-            mode &= !(0x20 as libc::c_int | 0x40 as libc::c_int | 0x1000 as libc::c_int);
+            mode &= !(0x20i32 | 0x40i32 | 0x1000i32);
             loop_0 = (*w).panes.tqh_first;
             while !loop_0.is_null() {
-                if (*(*loop_0).screen).mode & 0x1000 as libc::c_int != 0 {
-                    mode |= 0x1000 as libc::c_int
+                if (*(*loop_0).screen).mode & 0x1000i32 != 0 {
+                    mode |= 0x1000i32
                 }
                 loop_0 = (*loop_0).entry.tqe_next
             }
         }
-        if !mode & 0x1000 as libc::c_int != 0 {
-            mode |= 0x40 as libc::c_int
+        if !mode & 0x1000i32 != 0 {
+            mode |= 0x40i32
         }
     }
     /* Clear bracketed paste mode if at the prompt. */
     if (*c).overlay_draw.is_none() && !(*c).prompt_string.is_null() {
-        mode &= !(0x400 as libc::c_int)
+        mode &= !(0x400i32)
     }
     /* Set the terminal mode and reset attributes. */
     tty_update_mode(tty, mode, s);
@@ -4459,9 +4349,9 @@ unsafe extern "C" fn server_client_repeat_timer(
     mut data: *mut libc::c_void,
 ) {
     let mut c: *mut client = data as *mut client;
-    if (*c).flags & 0x20 as libc::c_int as libc::c_ulong != 0 {
+    if (*c).flags & 0x20u64 != 0 {
         server_client_set_key_table(c, 0 as *const libc::c_char);
-        (*c).flags &= !(0x20 as libc::c_int) as libc::c_ulong;
+        (*c).flags &= !(0x20i32) as libc::c_ulong;
         server_status_client(c);
     };
 }
@@ -4474,13 +4364,13 @@ unsafe extern "C" fn server_client_click_timer(
     let mut c: *mut client = data as *mut client;
     let mut event: *mut key_event = 0 as *mut key_event;
     log_debug(b"click timer expired\x00" as *const u8 as *const libc::c_char);
-    if (*c).flags & 0x200000 as libc::c_int as libc::c_ulong != 0 {
+    if (*c).flags & 0x200000u64 != 0 {
         /*
          * Waiting for a third click that hasn't happened, so this must
          * have been a double click.
          */
         event = xmalloc(::std::mem::size_of::<key_event>() as libc::c_ulong) as *mut key_event;
-        (*event).key = key_code_code::DOUBLECLICK as libc::c_ulong as key_code;
+        (*event).key = key_code_code::DOUBLECLICK;
         memcpy(
             &mut (*event).m as *mut mouse_event as *mut libc::c_void,
             &mut (*c).click_event as *mut mouse_event as *const libc::c_void,
@@ -4490,7 +4380,7 @@ unsafe extern "C" fn server_client_click_timer(
             free(event as *mut libc::c_void);
         }
     }
-    (*c).flags &= !(0x100000 as libc::c_int | 0x200000 as libc::c_int) as libc::c_ulong;
+    (*c).flags &= !(0x100000i32 | 0x200000i32) as libc::c_ulong;
 }
 /* Check if client should be exited. */
 unsafe extern "C" fn server_client_check_exit(mut c: *mut client) {
@@ -4499,36 +4389,36 @@ unsafe extern "C" fn server_client_check_exit(mut c: *mut client) {
     let mut data: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut size: size_t = 0;
     let mut msize: size_t = 0;
-    if (*c).flags & (0x200 as libc::c_int | 0x100 as libc::c_int) as libc::c_ulong != 0 {
+    if (*c).flags & (0x200i32 | 0x100i32) as libc::c_ulong != 0 {
         return;
     }
-    if !(*c).flags & 0x4 as libc::c_int as libc::c_ulong != 0 {
+    if !(*c).flags & 0x4u64 != 0 {
         return;
     }
-    if (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
+    if (*c).flags & 0x2000u64 != 0 {
         control_discard(c);
         if control_all_done(c) == 0 {
             return;
         }
     }
-    cf = client_files_RB_MINMAX(&mut (*c).files, -(1 as libc::c_int));
+    cf = client_files_RB_MINMAX(&mut (*c).files, -(1i32));
     while !cf.is_null() {
-        if evbuffer_get_length((*cf).buffer) != 0 as libc::c_int as libc::c_ulong {
+        if evbuffer_get_length((*cf).buffer) != 0u64 {
             return;
         }
         cf = client_files_RB_NEXT(cf)
     }
-    if (*c).flags & 0x80 as libc::c_int as libc::c_ulong != 0 {
+    if (*c).flags & 0x80u64 != 0 {
         notify_client(
             b"client-detached\x00" as *const u8 as *const libc::c_char,
             c,
         );
     }
-    (*c).flags |= 0x100 as libc::c_int as libc::c_ulong;
-    match (*c).exit_type as libc::c_uint {
+    (*c).flags |= 0x100u64;
+    match (*c).exit_type {
         0 => {
             if !(*c).exit_message.is_null() {
-                msize = strlen((*c).exit_message).wrapping_add(1 as libc::c_int as libc::c_ulong);
+                msize = strlen((*c).exit_message).wrapping_add(1u64);
                 size = (::std::mem::size_of::<libc::c_int>() as libc::c_ulong).wrapping_add(msize)
             } else {
                 size = ::std::mem::size_of::<libc::c_int>() as libc::c_ulong
@@ -4541,8 +4431,7 @@ unsafe extern "C" fn server_client_check_exit(mut c: *mut client) {
             );
             if !(*c).exit_message.is_null() {
                 memcpy(
-                    data.offset(::std::mem::size_of::<libc::c_int>() as libc::c_ulong as isize)
-                        as *mut libc::c_void,
+                    data.offset(::std::mem::size_of::<libc::c_int>() as isize) as *mut libc::c_void,
                     (*c).exit_message as *const libc::c_void,
                     msize,
                 );
@@ -4550,7 +4439,7 @@ unsafe extern "C" fn server_client_check_exit(mut c: *mut client) {
             proc_send(
                 (*c).peer,
                 msgtype_code::EXIT,
-                -(1 as libc::c_int),
+                -(1i32),
                 data as *const libc::c_void,
                 size,
             );
@@ -4560,18 +4449,18 @@ unsafe extern "C" fn server_client_check_exit(mut c: *mut client) {
             proc_send(
                 (*c).peer,
                 msgtype_code::SHUTDOWN,
-                -(1 as libc::c_int),
+                -(1i32),
                 0 as *const libc::c_void,
-                0 as libc::c_int as size_t,
+                0u64,
             );
         }
         2 => {
             proc_send(
                 (*c).peer,
                 (*c).exit_msgtype,
-                -(1 as libc::c_int),
+                -(1i32),
                 name as *const libc::c_void,
-                strlen(name).wrapping_add(1 as libc::c_int as libc::c_ulong),
+                strlen(name).wrapping_add(1u64),
             );
         }
         _ => {}
@@ -4596,21 +4485,21 @@ unsafe extern "C" fn server_client_check_redraw(mut c: *mut client) {
     let mut needed: libc::c_int = 0;
     let mut flags: libc::c_int = 0;
     let mut mode: libc::c_int = (*tty).mode;
-    let mut new_flags: libc::c_int = 0 as libc::c_int;
+    let mut new_flags: libc::c_int = 0i32;
     let mut redraw: libc::c_int = 0;
-    let mut bit: u_int = 0 as libc::c_int as u_int;
+    let mut bit: u_int = 0u32;
     let mut tv: timeval = {
         let mut init = timeval {
             tv_sec: 0,
-            tv_usec: 1000 as libc::c_int as __suseconds_t,
+            tv_usec: 1000i64,
         };
         init
     };
     static mut ev: event = event {
         ev_evcallback: event_callback {
             evcb_active_next: C2RustUnnamed_7 {
-                tqe_next: 0 as *const event_callback as *mut event_callback,
-                tqe_prev: 0 as *const *mut event_callback as *mut *mut event_callback,
+                tqe_next: 0 as *mut event_callback,
+                tqe_prev: 0 as *mut *mut event_callback,
             },
             evcb_flags: 0,
             evcb_pri: 0,
@@ -4618,21 +4507,21 @@ unsafe extern "C" fn server_client_check_redraw(mut c: *mut client) {
             evcb_cb_union: C2RustUnnamed_6 {
                 evcb_callback: None,
             },
-            evcb_arg: 0 as *const libc::c_void as *mut libc::c_void,
+            evcb_arg: 0 as *mut libc::c_void,
         },
         ev_timeout_pos: C2RustUnnamed_4 {
             ev_next_with_common_timeout: C2RustUnnamed_5 {
-                tqe_next: 0 as *const event as *mut event,
-                tqe_prev: 0 as *const *mut event as *mut *mut event,
+                tqe_next: 0 as *mut event,
+                tqe_prev: 0 as *mut *mut event,
             },
         },
         ev_fd: 0,
-        ev_base: 0 as *const event_base as *mut event_base,
+        ev_base: 0 as *mut event_base,
         ev_: C2RustUnnamed {
             ev_io: C2RustUnnamed_2 {
                 ev_io_next: C2RustUnnamed_3 {
-                    le_next: 0 as *const event as *mut event,
-                    le_prev: 0 as *const *mut event as *mut *mut event,
+                    le_next: 0 as *mut event,
+                    le_prev: 0 as *mut *mut event,
                 },
                 ev_timeout: timeval {
                     tv_sec: 0,
@@ -4648,42 +4537,38 @@ unsafe extern "C" fn server_client_check_redraw(mut c: *mut client) {
         },
     };
     let mut left: size_t = 0;
-    if (*c).flags & (0x2000 as libc::c_int | 0x40 as libc::c_int) as libc::c_ulong != 0 {
+    if (*c).flags & (0x2000i32 | 0x40i32) as libc::c_ulong != 0 {
         return;
     }
     if (*c).flags
-        & (0x8 as libc::c_int
-            | 0x10 as libc::c_int
-            | 0x1000000 as libc::c_int
-            | 0x400 as libc::c_int
-            | 0x2000000 as libc::c_int
-            | 0x20000000 as libc::c_int) as libc::c_ulong
+        & (0x8i32 | 0x10i32 | 0x1000000i32 | 0x400i32 | 0x2000000i32 | 0x20000000i32)
+            as libc::c_ulong
         != 0
     {
         log_debug(
             b"%s: redraw%s%s%s%s%s\x00" as *const u8 as *const libc::c_char,
             (*c).name,
-            if (*c).flags & 0x8 as libc::c_int as libc::c_ulong != 0 {
+            if (*c).flags & 0x8u64 != 0 {
                 b" window\x00" as *const u8 as *const libc::c_char
             } else {
                 b"\x00" as *const u8 as *const libc::c_char
             },
-            if (*c).flags & 0x10 as libc::c_int as libc::c_ulong != 0 {
+            if (*c).flags & 0x10u64 != 0 {
                 b" status\x00" as *const u8 as *const libc::c_char
             } else {
                 b"\x00" as *const u8 as *const libc::c_char
             },
-            if (*c).flags & 0x400 as libc::c_int as libc::c_ulong != 0 {
+            if (*c).flags & 0x400u64 != 0 {
                 b" borders\x00" as *const u8 as *const libc::c_char
             } else {
                 b"\x00" as *const u8 as *const libc::c_char
             },
-            if (*c).flags & 0x2000000 as libc::c_int as libc::c_ulong != 0 {
+            if (*c).flags & 0x2000000u64 != 0 {
                 b" overlay\x00" as *const u8 as *const libc::c_char
             } else {
                 b"\x00" as *const u8 as *const libc::c_char
             },
-            if (*c).flags & 0x20000000 as libc::c_int as libc::c_ulong != 0 {
+            if (*c).flags & 0x20000000u64 != 0 {
                 b" panes\x00" as *const u8 as *const libc::c_char
             } else {
                 b"\x00" as *const u8 as *const libc::c_char
@@ -4695,34 +4580,30 @@ unsafe extern "C" fn server_client_check_redraw(mut c: *mut client) {
      * consumed. We can just add a timer to get out of the event loop and
      * end up back here.
      */
-    needed = 0 as libc::c_int;
+    needed = 0i32;
     if (*c).flags
-        & (0x8 as libc::c_int
-            | 0x10 as libc::c_int
-            | 0x1000000 as libc::c_int
-            | 0x400 as libc::c_int
-            | 0x2000000 as libc::c_int
-            | 0x20000000 as libc::c_int) as libc::c_ulong
+        & (0x8i32 | 0x10i32 | 0x1000000i32 | 0x400i32 | 0x2000000i32 | 0x20000000i32)
+            as libc::c_ulong
         != 0
     {
-        needed = 1 as libc::c_int
+        needed = 1i32
     } else {
         wp = (*w).panes.tqh_first;
         while !wp.is_null() {
-            if (*wp).flags & 0x1 as libc::c_int != 0 {
-                needed = 1 as libc::c_int;
+            if (*wp).flags & 0x1i32 != 0 {
+                needed = 1i32;
                 break;
             } else {
                 wp = (*wp).entry.tqe_next
             }
         }
         if needed != 0 {
-            new_flags |= 0x20000000 as libc::c_int
+            new_flags |= 0x20000000i32
         }
     }
     if needed != 0 && {
         left = evbuffer_get_length((*tty).out);
-        (left) != 0 as libc::c_int as libc::c_ulong
+        (left) != 0u64
     } {
         log_debug(
             b"%s: redraw deferred (%zu left)\x00" as *const u8 as *const libc::c_char,
@@ -4732,8 +4613,8 @@ unsafe extern "C" fn server_client_check_redraw(mut c: *mut client) {
         if event_initialized(&mut ev) == 0 {
             event_set(
                 &mut ev,
-                -(1 as libc::c_int),
-                0 as libc::c_int as libc::c_short,
+                -(1i32),
+                0i16,
                 Some(
                     server_client_redraw_timer
                         as unsafe extern "C" fn(
@@ -4745,41 +4626,36 @@ unsafe extern "C" fn server_client_check_redraw(mut c: *mut client) {
                 0 as *mut libc::c_void,
             );
         }
-        if event_pending(
-            &mut ev,
-            0x1 as libc::c_int as libc::c_short,
-            0 as *mut timeval,
-        ) == 0
-        {
+        if event_pending(&mut ev, 0x1i16, 0 as *mut timeval) == 0 {
             log_debug(b"redraw timer started\x00" as *const u8 as *const libc::c_char);
             event_add(&mut ev, &mut tv);
         }
-        if !(*c).flags & 0x8 as libc::c_int as libc::c_ulong != 0 {
+        if !(*c).flags & 0x8u64 != 0 {
             wp = (*w).panes.tqh_first;
             while !wp.is_null() {
-                if (*wp).flags & 0x1 as libc::c_int != 0 {
+                if (*wp).flags & 0x1i32 != 0 {
                     log_debug(
                         b"%s: pane %%%u needs redraw\x00" as *const u8 as *const libc::c_char,
                         (*c).name,
                         (*wp).id,
                     );
-                    (*c).redraw_panes |= ((1 as libc::c_int) << bit) as libc::c_ulong
+                    (*c).redraw_panes |= ((1i32) << bit) as libc::c_ulong
                 }
                 bit = bit.wrapping_add(1);
-                if bit == 64 as libc::c_int as libc::c_uint {
+                if bit == 64u32 {
                     /*
                      * If more that 64 panes, give up and
                      * just redraw the window.
                      */
-                    new_flags &= 0x20000000 as libc::c_int;
-                    new_flags |= 0x8 as libc::c_int;
+                    new_flags &= 0x20000000i32;
+                    new_flags |= 0x8i32;
                     break;
                 } else {
                     wp = (*wp).entry.tqe_next
                 }
             }
-            if (*c).redraw_panes != 0 as libc::c_int as libc::c_ulong {
-                (*c).flags |= 0x20000000 as libc::c_int as libc::c_ulong
+            if (*c).redraw_panes != 0u64 {
+                (*c).flags |= 0x20000000u64
             }
         }
         (*c).flags |= new_flags as libc::c_ulong;
@@ -4792,21 +4668,20 @@ unsafe extern "C" fn server_client_check_redraw(mut c: *mut client) {
             );
         }
     }
-    flags = (*tty).flags & (0x80 as libc::c_int | 0x2 as libc::c_int | 0x1 as libc::c_int);
-    (*tty).flags = (*tty).flags & !(0x80 as libc::c_int | 0x2 as libc::c_int) | 0x1 as libc::c_int;
-    if !(*c).flags & 0x8 as libc::c_int as libc::c_ulong != 0 {
+    flags = (*tty).flags & (0x80i32 | 0x2i32 | 0x1i32);
+    (*tty).flags = (*tty).flags & !(0x80i32 | 0x2i32) | 0x1i32;
+    if !(*c).flags & 0x8u64 != 0 {
         /*
          * If not redrawing the entire window, check whether each pane
          * needs to be redrawn.
          */
         wp = (*w).panes.tqh_first;
         while !wp.is_null() {
-            redraw = 0 as libc::c_int;
-            if (*wp).flags & 0x1 as libc::c_int != 0 {
-                redraw = 1 as libc::c_int
-            } else if (*c).flags & 0x20000000 as libc::c_int as libc::c_ulong != 0 {
-                redraw = ((*c).redraw_panes & ((1 as libc::c_int) << bit) as libc::c_ulong != 0)
-                    as libc::c_int
+            redraw = 0i32;
+            if (*wp).flags & 0x1i32 != 0 {
+                redraw = 1i32
+            } else if (*c).flags & 0x20000000u64 != 0 {
+                redraw = ((*c).redraw_panes & ((1i32) << bit) as libc::c_ulong != 0) as libc::c_int
             }
             bit = bit.wrapping_add(1);
             if !(redraw == 0) {
@@ -4822,16 +4697,12 @@ unsafe extern "C" fn server_client_check_redraw(mut c: *mut client) {
             }
             wp = (*wp).entry.tqe_next
         }
-        (*c).redraw_panes = 0 as libc::c_int as uint64_t;
-        (*c).flags &= !(0x20000000 as libc::c_int) as libc::c_ulong
+        (*c).redraw_panes = 0u64;
+        (*c).flags &= !(0x20000000i32) as libc::c_ulong
     }
     if (*c).flags
-        & (0x8 as libc::c_int
-            | 0x10 as libc::c_int
-            | 0x1000000 as libc::c_int
-            | 0x400 as libc::c_int
-            | 0x2000000 as libc::c_int
-            | 0x20000000 as libc::c_int) as libc::c_ulong
+        & (0x8i32 | 0x10i32 | 0x1000000i32 | 0x400i32 | 0x2000000i32 | 0x20000000i32)
+            as libc::c_ulong
         != 0
     {
         if options_get_number(
@@ -4843,17 +4714,12 @@ unsafe extern "C" fn server_client_check_redraw(mut c: *mut client) {
         }
         screen_redraw_screen(c);
     }
-    (*tty).flags = (*tty).flags & !(0x1 as libc::c_int) | flags & 0x1 as libc::c_int;
+    (*tty).flags = (*tty).flags & !(0x1i32) | flags & 0x1i32;
     tty_update_mode(tty, mode, 0 as *mut screen);
-    (*tty).flags =
-        (*tty).flags & !(0x80 as libc::c_int | 0x2 as libc::c_int | 0x1 as libc::c_int) | flags;
-    (*c).flags &= !(0x8 as libc::c_int
-        | 0x10 as libc::c_int
-        | 0x1000000 as libc::c_int
-        | 0x400 as libc::c_int
-        | 0x2000000 as libc::c_int
-        | 0x20000000 as libc::c_int
-        | 0x80000 as libc::c_int) as libc::c_ulong;
+    (*tty).flags = (*tty).flags & !(0x80i32 | 0x2i32 | 0x1i32) | flags;
+    (*c).flags &=
+        !(0x8i32 | 0x10i32 | 0x1000000i32 | 0x400i32 | 0x2000000i32 | 0x20000000i32 | 0x80000i32)
+            as libc::c_ulong;
     if needed != 0 {
         /*
          * We would have deferred the redraw unless the output buffer
@@ -4878,12 +4744,7 @@ unsafe extern "C" fn server_client_set_title(mut c: *mut client) {
         (*s).options,
         b"set-titles-string\x00" as *const u8 as *const libc::c_char,
     );
-    ft = format_create(
-        c,
-        0 as *mut crate::cmd_queue::cmdq_item,
-        0 as libc::c_int,
-        0 as libc::c_int,
-    );
+    ft = format_create(c, 0 as *mut crate::cmd_queue::cmdq_item, 0i32, 0i32);
     format_defaults(
         ft,
         c,
@@ -4892,7 +4753,7 @@ unsafe extern "C" fn server_client_set_title(mut c: *mut client) {
         0 as *mut window_pane,
     );
     title = format_expand_time(ft, template);
-    if (*c).title.is_null() || strcmp(title, (*c).title) != 0 as libc::c_int {
+    if (*c).title.is_null() || strcmp(title, (*c).title) != 0i32 {
         free((*c).title as *mut libc::c_void);
         (*c).title = xstrdup(title);
         tty_set_title(&mut (*c).tty, (*c).title);
@@ -4905,7 +4766,7 @@ unsafe extern "C" fn server_client_dispatch(mut imsg: *mut imsg, mut arg: *mut l
     let mut c: *mut client = arg as *mut client;
     let mut datalen: ssize_t = 0;
     let mut s: *mut session = 0 as *mut session;
-    if (*c).flags & 0x200 as libc::c_int as libc::c_ulong != 0 {
+    if (*c).flags & 0x200u64 != 0 {
         return;
     }
     if imsg.is_null() {
@@ -4922,10 +4783,10 @@ unsafe extern "C" fn server_client_dispatch(mut imsg: *mut imsg, mut arg: *mut l
             server_client_dispatch_command(c, imsg);
         }
         208 => {
-            if datalen != 0 as libc::c_int as libc::c_long {
+            if datalen != 0i64 {
                 fatalx(b"bad msgtype_code::RESIZE size\x00" as *const u8 as *const libc::c_char);
             }
-            if !((*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0) {
+            if !((*c).flags & 0x2000u64 != 0) {
                 server_client_update_latest(c);
                 server_client_clear_overlay(c);
                 tty_resize(&mut (*c).tty);
@@ -4937,7 +4798,7 @@ unsafe extern "C" fn server_client_dispatch(mut imsg: *mut imsg, mut arg: *mut l
             }
         }
         205 => {
-            if datalen != 0 as libc::c_int as libc::c_long {
+            if datalen != 0i64 {
                 fatalx(b"bad msgtype_code::EXITING size\x00" as *const u8 as *const libc::c_char);
             }
             (*c).session = 0 as *mut session;
@@ -4945,22 +4806,20 @@ unsafe extern "C" fn server_client_dispatch(mut imsg: *mut imsg, mut arg: *mut l
             proc_send(
                 (*c).peer,
                 msgtype_code::EXITED,
-                -(1 as libc::c_int),
+                -(1i32),
                 0 as *const libc::c_void,
-                0 as libc::c_int as size_t,
+                0u64,
             );
         }
         216 | 215 => {
-            if datalen != 0 as libc::c_int as libc::c_long {
+            if datalen != 0i64 {
                 fatalx(b"bad msgtype_code::WAKEUP size\x00" as *const u8 as *const libc::c_char);
             }
-            if !((*c).flags & 0x40 as libc::c_int as libc::c_ulong == 0) {
-                (*c).flags &= !(0x40 as libc::c_int) as libc::c_ulong;
-                if !((*c).fd == -(1 as libc::c_int) || (*c).session.is_null()) {
+            if !((*c).flags & 0x40u64 == 0) {
+                (*c).flags &= !(0x40i32) as libc::c_ulong;
+                if !((*c).fd == -(1i32) || (*c).session.is_null()) {
                     s = (*c).session;
-                    if gettimeofday(&mut (*c).activity_time, 0 as *mut libc::c_void)
-                        != 0 as libc::c_int
-                    {
+                    if gettimeofday(&mut (*c).activity_time, 0 as *mut libc::c_void) != 0i32 {
                         fatal(b"gettimeofday failed\x00" as *const u8 as *const libc::c_char);
                     }
                     tty_start_tty(&mut (*c).tty);
@@ -4973,7 +4832,7 @@ unsafe extern "C" fn server_client_dispatch(mut imsg: *mut imsg, mut arg: *mut l
             }
         }
         209 => {
-            if datalen != 0 as libc::c_int as libc::c_long {
+            if datalen != 0i64 {
                 fatalx(b"bad msgtype_code::SHELL size\x00" as *const u8 as *const libc::c_char);
             }
             server_client_dispatch_shell(c);
@@ -4996,9 +4855,9 @@ unsafe extern "C" fn server_client_command_done(
     mut _data: *mut libc::c_void,
 ) -> cmd_retval {
     let mut c: *mut client = cmdq_get_client(item);
-    if !(*c).flags & 0x80 as libc::c_int as libc::c_ulong != 0 {
-        (*c).flags |= 0x4 as libc::c_int as libc::c_ulong
-    } else if !(*c).flags & 0x4 as libc::c_int as libc::c_ulong != 0 {
+    if !(*c).flags & 0x80u64 != 0 {
+        (*c).flags |= 0x4u64
+    } else if !(*c).flags & 0x4u64 != 0 {
         tty_send_requests(&mut (*c).tty);
     }
     return CMD_RETURN_NORMAL;
@@ -5012,7 +4871,7 @@ unsafe extern "C" fn server_client_dispatch_command(mut c: *mut client, mut imsg
     let mut argv: *mut *mut libc::c_char = 0 as *mut *mut libc::c_char;
     let mut cause: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut pr: *mut cmd_parse_result = 0 as *mut cmd_parse_result;
-    if (*c).flags & 0x4 as libc::c_int as libc::c_ulong != 0 {
+    if (*c).flags & 0x4u64 != 0 {
         return;
     }
     if ((*imsg).hdr.len as libc::c_ulong)
@@ -5026,31 +4885,27 @@ unsafe extern "C" fn server_client_dispatch_command(mut c: *mut client, mut imsg
         (*imsg).data,
         ::std::mem::size_of::<MsgCommand>() as libc::c_ulong,
     );
-    buf = ((*imsg).data as *mut libc::c_char)
-        .offset(::std::mem::size_of::<MsgCommand>() as libc::c_ulong as isize);
+    buf = ((*imsg).data as *mut libc::c_char).offset(::std::mem::size_of::<MsgCommand>() as isize);
     len = ((*imsg).hdr.len as libc::c_ulong)
         .wrapping_sub(::std::mem::size_of::<imsg_hdr>() as libc::c_ulong)
         .wrapping_sub(::std::mem::size_of::<MsgCommand>() as libc::c_ulong);
-    if len > 0 as libc::c_int as libc::c_ulong
-        && *buf.offset(len.wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize) as libc::c_int
-            != '\u{0}' as i32
-    {
+    if len > 0u64 && *buf.offset(len.wrapping_sub(1u64) as isize) as libc::c_int != '\u{0}' as i32 {
         fatalx(b"bad msgtype_code::COMMAND string\x00" as *const u8 as *const libc::c_char);
     }
     argc = data.argc;
-    if cmd_unpack_argv(buf, len, argc, &mut argv) != 0 as libc::c_int {
+    if cmd_unpack_argv(buf, len, argc, &mut argv) != 0i32 {
         cause = xstrdup(b"command too long\x00" as *const u8 as *const libc::c_char)
     } else {
-        if argc == 0 as libc::c_int {
-            argc = 1 as libc::c_int;
+        if argc == 0i32 {
+            argc = 1i32;
             argv = xcalloc(
-                1 as libc::c_int as size_t,
+                1u64,
                 ::std::mem::size_of::<*mut libc::c_char>() as libc::c_ulong,
             ) as *mut *mut libc::c_char;
             *argv = xstrdup(b"new-session\x00" as *const u8 as *const libc::c_char)
         }
         pr = cmd_parse_from_arguments(argc, argv, 0 as *mut cmd_parse_input);
-        match (*pr).status as libc::c_uint {
+        match (*pr).status {
             0 => cause = xstrdup(b"empty command\x00" as *const u8 as *const libc::c_char),
             1 => cause = (*pr).error,
             2 | _ => {
@@ -5082,7 +4937,7 @@ unsafe extern "C" fn server_client_dispatch_command(mut c: *mut client, mut imsg
     cmd_free_argv(argc, argv);
     cmdq_append(c, cmdq_get_error(cause));
     free(cause as *mut libc::c_void);
-    (*c).flags |= 0x4 as libc::c_int as libc::c_ulong;
+    (*c).flags |= 0x4u64;
 }
 /* Handle identify message. */
 unsafe extern "C" fn server_client_dispatch_identify(mut c: *mut client, mut imsg: *mut imsg) {
@@ -5093,7 +4948,7 @@ unsafe extern "C" fn server_client_dispatch_identify(mut c: *mut client, mut ims
     let mut feat: libc::c_int = 0;
     let mut longflags: uint64_t = 0;
     let mut name: *mut libc::c_char = 0 as *mut libc::c_char;
-    if (*c).flags & 0x40000 as libc::c_int as libc::c_ulong != 0 {
+    if (*c).flags & 0x40000u64 != 0 {
         fatalx(b"out-of-order identify message\x00" as *const u8 as *const libc::c_char);
     }
     data = (*imsg).data as *const libc::c_char;
@@ -5154,13 +5009,12 @@ unsafe extern "C" fn server_client_dispatch_identify(mut c: *mut client, mut ims
             log_debug(
                 b"client %p IDENTIFY_LONGFLAGS %#llx\x00" as *const u8 as *const libc::c_char,
                 c,
-                longflags as libc::c_ulonglong,
+                longflags,
             );
         }
         101 => {
-            if datalen == 0 as libc::c_int as libc::c_ulong
-                || *data.offset(datalen.wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize)
-                    as libc::c_int
+            if datalen == 0u64
+                || *data.offset(datalen.wrapping_sub(1u64) as isize) as libc::c_int
                     != '\u{0}' as i32
             {
                 fatalx(
@@ -5180,9 +5034,8 @@ unsafe extern "C" fn server_client_dispatch_identify(mut c: *mut client, mut ims
             );
         }
         102 => {
-            if datalen == 0 as libc::c_int as libc::c_ulong
-                || *data.offset(datalen.wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize)
-                    as libc::c_int
+            if datalen == 0u64
+                || *data.offset(datalen.wrapping_sub(1u64) as isize) as libc::c_int
                     != '\u{0}' as i32
             {
                 fatalx(
@@ -5198,9 +5051,8 @@ unsafe extern "C" fn server_client_dispatch_identify(mut c: *mut client, mut ims
             );
         }
         108 => {
-            if datalen == 0 as libc::c_int as libc::c_ulong
-                || *data.offset(datalen.wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize)
-                    as libc::c_int
+            if datalen == 0u64
+                || *data.offset(datalen.wrapping_sub(1u64) as isize) as libc::c_int
                     != '\u{0}' as i32
             {
                 fatalx(
@@ -5208,7 +5060,7 @@ unsafe extern "C" fn server_client_dispatch_identify(mut c: *mut client, mut ims
                         as *const libc::c_char,
                 );
             }
-            if access(data, 1 as libc::c_int) == 0 as libc::c_int {
+            if access(data, 1i32) == 0i32 {
                 (*c).cwd = xstrdup(data)
             } else {
                 home = find_home();
@@ -5225,7 +5077,7 @@ unsafe extern "C" fn server_client_dispatch_identify(mut c: *mut client, mut ims
             );
         }
         104 => {
-            if datalen != 0 as libc::c_int as libc::c_ulong {
+            if datalen != 0u64 {
                 fatalx(
                     b"bad msgtype_code::IDENTIFY_STDIN size\x00" as *const u8
                         as *const libc::c_char,
@@ -5239,7 +5091,7 @@ unsafe extern "C" fn server_client_dispatch_identify(mut c: *mut client, mut ims
             );
         }
         110 => {
-            if datalen != 0 as libc::c_int as libc::c_ulong {
+            if datalen != 0u64 {
                 fatalx(
                     b"bad msgtype_code::IDENTIFY_STDOUT size\x00" as *const u8
                         as *const libc::c_char,
@@ -5253,9 +5105,8 @@ unsafe extern "C" fn server_client_dispatch_identify(mut c: *mut client, mut ims
             );
         }
         105 => {
-            if datalen == 0 as libc::c_int as libc::c_ulong
-                || *data.offset(datalen.wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize)
-                    as libc::c_int
+            if datalen == 0u64
+                || *data.offset(datalen.wrapping_sub(1u64) as isize) as libc::c_int
                     != '\u{0}' as i32
             {
                 fatalx(
@@ -5264,7 +5115,7 @@ unsafe extern "C" fn server_client_dispatch_identify(mut c: *mut client, mut ims
                 );
             }
             if !strchr(data, '=' as i32).is_null() {
-                environ_put((*c).environ, data, 0 as libc::c_int);
+                environ_put((*c).environ, data, 0i32);
             }
             log_debug(
                 b"client %p IDENTIFY_ENVIRON %s\x00" as *const u8 as *const libc::c_char,
@@ -5292,10 +5143,10 @@ unsafe extern "C" fn server_client_dispatch_identify(mut c: *mut client, mut ims
         }
         _ => {}
     }
-    if (*imsg).hdr.type_0 != msgtype_code::IDENTIFY_DONE as libc::c_int as libc::c_uint {
+    if (*imsg).hdr.type_0 != msgtype_code::IDENTIFY_DONE {
         return;
     }
-    (*c).flags |= 0x40000 as libc::c_int as libc::c_ulong;
+    (*c).flags |= 0x40000u64;
     if *(*c).ttyname as libc::c_int != '\u{0}' as i32 {
         name = xstrdup((*c).ttyname)
     } else {
@@ -5311,28 +5162,25 @@ unsafe extern "C" fn server_client_dispatch_identify(mut c: *mut client, mut ims
         c,
         (*c).name,
     );
-    if (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
+    if (*c).flags & 0x2000u64 != 0 {
         control_start(c);
-    } else if (*c).fd != -(1 as libc::c_int) {
-        if tty_init(&mut (*c).tty, c) != 0 as libc::c_int {
+    } else if (*c).fd != -(1i32) {
+        if tty_init(&mut (*c).tty, c) != 0i32 {
             close((*c).fd);
-            (*c).fd = -(1 as libc::c_int)
+            (*c).fd = -(1i32)
         } else {
             tty_resize(&mut (*c).tty);
-            (*c).flags |= 0x1 as libc::c_int as libc::c_ulong
+            (*c).flags |= 0x1u64
         }
         close((*c).out_fd);
-        (*c).out_fd = -(1 as libc::c_int)
+        (*c).out_fd = -(1i32)
     }
     /*
      * If this is the first client, load configuration files. Any later
      * clients are allowed to continue with their command even if the
      * config has not been loaded - they might have been run from inside it
      */
-    if !(*c).flags & 0x4 as libc::c_int as libc::c_ulong != 0
-        && cfg_finished == 0
-        && c == clients.tqh_first
-    {
+    if !(*c).flags & 0x4u64 != 0 && cfg_finished == 0 && c == clients.tqh_first {
         start_cfg();
     };
 }
@@ -5349,9 +5197,9 @@ unsafe extern "C" fn server_client_dispatch_shell(mut c: *mut client) {
     proc_send(
         (*c).peer,
         msgtype_code::SHELL,
-        -(1 as libc::c_int),
+        -(1i32),
         shell as *const libc::c_void,
-        strlen(shell).wrapping_add(1 as libc::c_int as libc::c_ulong),
+        strlen(shell).wrapping_add(1u64),
     );
     proc_kill_peer((*c).peer);
 }
@@ -5388,7 +5236,7 @@ unsafe extern "C" fn server_client_dispatch_write_ready(mut c: *mut client, mut 
     if cf.is_null() {
         return;
     }
-    if (*msg).error != 0 as libc::c_int {
+    if (*msg).error != 0i32 {
         (*cf).error = (*msg).error;
         file_fire_done(cf);
     } else {
@@ -5420,7 +5268,7 @@ unsafe extern "C" fn server_client_dispatch_read_data(mut c: *mut client, mut im
         },
     };
     let mut cf: *mut client_file = 0 as *mut client_file;
-    let mut bdata: *mut libc::c_void = msg.offset(1 as libc::c_int as isize) as *mut libc::c_void;
+    let mut bdata: *mut libc::c_void = msg.offset(1isize) as *mut libc::c_void;
     let mut bsize: size_t =
         msglen.wrapping_sub(::std::mem::size_of::<MsgReadData>() as libc::c_ulong);
     if msglen < ::std::mem::size_of::<MsgReadData>() as libc::c_ulong {
@@ -5437,9 +5285,9 @@ unsafe extern "C" fn server_client_dispatch_read_data(mut c: *mut client, mut im
         (*cf).stream,
         bsize,
     );
-    if (*cf).error == 0 as libc::c_int {
-        if evbuffer_add((*cf).buffer, bdata, bsize) != 0 as libc::c_int {
-            (*cf).error = 12 as libc::c_int;
+    if (*cf).error == 0i32 {
+        if evbuffer_add((*cf).buffer, bdata, bsize) != 0i32 {
+            (*cf).error = 12i32;
             file_fire_done(cf);
         } else {
             file_fire_read(cf);
@@ -5523,28 +5371,26 @@ unsafe extern "C" fn server_client_control_flags(
     mut c: *mut client,
     mut next: *const libc::c_char,
 ) -> uint64_t {
-    if strcmp(next, b"pause-after\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
-        (*c).pause_age = 0 as libc::c_int as u_int;
-        return 0x100000000 as libc::c_ulonglong as uint64_t;
+    if strcmp(next, b"pause-after\x00" as *const u8 as *const libc::c_char) == 0i32 {
+        (*c).pause_age = 0u32;
+        return 0x100000000u64;
     }
     if sscanf(
         next,
         b"pause-after=%u\x00" as *const u8 as *const libc::c_char,
         &mut (*c).pause_age as *mut u_int,
-    ) == 1 as libc::c_int
+    ) == 1i32
     {
-        (*c).pause_age = ((*c).pause_age as libc::c_uint)
-            .wrapping_mul(1000 as libc::c_int as libc::c_uint) as u_int
-            as u_int;
-        return 0x100000000 as libc::c_ulonglong as uint64_t;
+        (*c).pause_age = ((*c).pause_age).wrapping_mul(1000u32);
+        return 0x100000000u64;
     }
-    if strcmp(next, b"no-output\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
-        return 0x4000000 as libc::c_int as uint64_t;
+    if strcmp(next, b"no-output\x00" as *const u8 as *const libc::c_char) == 0i32 {
+        return 0x4000000u64;
     }
-    if strcmp(next, b"wait-exit\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
-        return 0x200000000 as libc::c_ulonglong as uint64_t;
+    if strcmp(next, b"wait-exit\x00" as *const u8 as *const libc::c_char) == 0i32 {
+        return 0x200000000u64;
     }
-    return 0 as libc::c_int as uint64_t;
+    return 0u64;
 }
 /* Set client flags. */
 #[no_mangle]
@@ -5568,23 +5414,19 @@ pub unsafe extern "C" fn server_client_set_flags(
         if not != 0 {
             next = next.offset(1)
         }
-        if (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
+        if (*c).flags & 0x2000u64 != 0 {
             flag = server_client_control_flags(c, next)
         } else {
-            flag = 0 as libc::c_int as uint64_t
+            flag = 0u64
         }
-        if strcmp(next, b"read-only\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
-            flag = 0x800 as libc::c_int as uint64_t
-        } else if strcmp(next, b"ignore-size\x00" as *const u8 as *const libc::c_char)
-            == 0 as libc::c_int
-        {
-            flag = 0x20000 as libc::c_int as uint64_t
-        } else if strcmp(next, b"active-pane\x00" as *const u8 as *const libc::c_char)
-            == 0 as libc::c_int
-        {
-            flag = 0x80000000 as libc::c_ulonglong as uint64_t
+        if strcmp(next, b"read-only\x00" as *const u8 as *const libc::c_char) == 0i32 {
+            flag = 0x800u64
+        } else if strcmp(next, b"ignore-size\x00" as *const u8 as *const libc::c_char) == 0i32 {
+            flag = 0x20000u64
+        } else if strcmp(next, b"active-pane\x00" as *const u8 as *const libc::c_char) == 0i32 {
+            flag = 0x80000000u64
         }
-        if flag == 0 as libc::c_int as libc::c_ulong {
+        if flag == 0u64 {
             continue;
         }
         log_debug(
@@ -5597,7 +5439,7 @@ pub unsafe extern "C" fn server_client_set_flags(
         } else {
             (*c).flags |= flag
         }
-        if flag == 0x4000000 as libc::c_int as libc::c_ulong {
+        if flag == 0x4000000u64 {
             control_reset_offsets(c);
         }
     }
@@ -5605,7 +5447,7 @@ pub unsafe extern "C" fn server_client_set_flags(
     proc_send(
         (*c).peer,
         msgtype_code::FLAGS,
-        -(1 as libc::c_int),
+        -(1i32),
         &mut (*c).flags as *mut uint64_t as *const libc::c_void,
         ::std::mem::size_of::<uint64_t>() as libc::c_ulong,
     );
@@ -5615,49 +5457,48 @@ pub unsafe extern "C" fn server_client_set_flags(
 pub unsafe extern "C" fn server_client_get_flags(mut c: *mut client) -> *const libc::c_char {
     static mut s: [libc::c_char; 256] = [0; 256];
     let mut tmp: [libc::c_char; 32] = [0; 32];
-    *s.as_mut_ptr() = '\u{0}' as i32 as libc::c_char;
-    if (*c).flags & 0x80 as libc::c_int as libc::c_ulong != 0 {
+    *s.as_mut_ptr() = '\u{0}' as libc::c_char;
+    if (*c).flags & 0x80u64 != 0 {
         strlcat(
             s.as_mut_ptr(),
             b"attached,\x00" as *const u8 as *const libc::c_char,
             ::std::mem::size_of::<[libc::c_char; 256]>() as libc::c_ulong,
         );
     }
-    if (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
+    if (*c).flags & 0x2000u64 != 0 {
         strlcat(
             s.as_mut_ptr(),
             b"control-mode,\x00" as *const u8 as *const libc::c_char,
             ::std::mem::size_of::<[libc::c_char; 256]>() as libc::c_ulong,
         );
     }
-    if (*c).flags & 0x20000 as libc::c_int as libc::c_ulong != 0 {
+    if (*c).flags & 0x20000u64 != 0 {
         strlcat(
             s.as_mut_ptr(),
             b"ignore-size,\x00" as *const u8 as *const libc::c_char,
             ::std::mem::size_of::<[libc::c_char; 256]>() as libc::c_ulong,
         );
     }
-    if (*c).flags & 0x4000000 as libc::c_int as libc::c_ulong != 0 {
+    if (*c).flags & 0x4000000u64 != 0 {
         strlcat(
             s.as_mut_ptr(),
             b"no-output,\x00" as *const u8 as *const libc::c_char,
             ::std::mem::size_of::<[libc::c_char; 256]>() as libc::c_ulong,
         );
     }
-    if (*c).flags as libc::c_ulonglong & 0x200000000 as libc::c_ulonglong != 0 {
+    if (*c).flags & 0x200000000u64 != 0 {
         strlcat(
             s.as_mut_ptr(),
             b"wait-exit,\x00" as *const u8 as *const libc::c_char,
             ::std::mem::size_of::<[libc::c_char; 256]>() as libc::c_ulong,
         );
     }
-    if (*c).flags as libc::c_ulonglong & 0x100000000 as libc::c_ulonglong != 0 {
+    if (*c).flags & 0x100000000u64 != 0 {
         xsnprintf(
             tmp.as_mut_ptr(),
             ::std::mem::size_of::<[libc::c_char; 32]>() as libc::c_ulong,
             b"pause-after=%u,\x00" as *const u8 as *const libc::c_char,
-            (*c).pause_age
-                .wrapping_div(1000 as libc::c_int as libc::c_uint),
+            (*c).pause_age.wrapping_div(1000u32),
         );
         strlcat(
             s.as_mut_ptr(),
@@ -5665,28 +5506,28 @@ pub unsafe extern "C" fn server_client_get_flags(mut c: *mut client) -> *const l
             ::std::mem::size_of::<[libc::c_char; 256]>() as libc::c_ulong,
         );
     }
-    if (*c).flags & 0x800 as libc::c_int as libc::c_ulong != 0 {
+    if (*c).flags & 0x800u64 != 0 {
         strlcat(
             s.as_mut_ptr(),
             b"read-only,\x00" as *const u8 as *const libc::c_char,
             ::std::mem::size_of::<[libc::c_char; 256]>() as libc::c_ulong,
         );
     }
-    if (*c).flags as libc::c_ulonglong & 0x80000000 as libc::c_ulonglong != 0 {
+    if (*c).flags & 0x80000000u64 != 0 {
         strlcat(
             s.as_mut_ptr(),
             b"active-pane,\x00" as *const u8 as *const libc::c_char,
             ::std::mem::size_of::<[libc::c_char; 256]>() as libc::c_ulong,
         );
     }
-    if (*c).flags & 0x40 as libc::c_int as libc::c_ulong != 0 {
+    if (*c).flags & 0x40u64 != 0 {
         strlcat(
             s.as_mut_ptr(),
             b"suspended,\x00" as *const u8 as *const libc::c_char,
             ::std::mem::size_of::<[libc::c_char; 256]>() as libc::c_ulong,
         );
     }
-    if (*c).flags & 0x10000 as libc::c_int as libc::c_ulong != 0 {
+    if (*c).flags & 0x10000u64 != 0 {
         strlcat(
             s.as_mut_ptr(),
             b"UTF-8,\x00" as *const u8 as *const libc::c_char,
@@ -5694,8 +5535,7 @@ pub unsafe extern "C" fn server_client_get_flags(mut c: *mut client) -> *const l
         );
     }
     if *s.as_mut_ptr() as libc::c_int != '\u{0}' as i32 {
-        s[strlen(s.as_mut_ptr()).wrapping_sub(1 as libc::c_int as libc::c_ulong) as usize] =
-            '\u{0}' as i32 as libc::c_char
+        s[strlen(s.as_mut_ptr()).wrapping_sub(1u64) as usize] = '\u{0}' as libc::c_char
     }
     return s.as_mut_ptr();
 }
@@ -5727,7 +5567,7 @@ pub unsafe extern "C" fn server_client_get_pane(mut c: *mut client) -> *mut wind
     if s.is_null() {
         return 0 as *mut window_pane;
     }
-    if !(*c).flags as libc::c_ulonglong & 0x80000000 as libc::c_ulonglong != 0 {
+    if !(*c).flags & 0x80000000u64 != 0 {
         return (*(*(*s).curw).window).active;
     }
     cw = server_client_get_client_window(c, (*(*(*s).curw).window).id);
@@ -5747,7 +5587,7 @@ pub unsafe extern "C" fn server_client_set_pane(mut c: *mut client, mut wp: *mut
     cw = server_client_get_client_window(c, (*(*(*s).curw).window).id);
     if cw.is_null() {
         cw = xcalloc(
-            1 as libc::c_int as size_t,
+            1u64,
             ::std::mem::size_of::<client_window>() as libc::c_ulong,
         ) as *mut client_window;
         (*cw).window = (*(*(*s).curw).window).id;

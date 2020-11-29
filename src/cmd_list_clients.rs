@@ -1088,8 +1088,8 @@ pub static mut cmd_list_clients_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"F:t:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -1101,13 +1101,13 @@ pub static mut cmd_list_clients_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_SESSION,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0x2 as libc::c_int | 0x4 as libc::c_int,
+            flags: 0x2i32 | 0x4i32,
             exec: Some(
                 cmd_list_clients_exec
                     as unsafe extern "C" fn(
@@ -1131,27 +1131,22 @@ unsafe extern "C" fn cmd_list_clients_exec(
     let mut template: *const libc::c_char = 0 as *const libc::c_char;
     let mut idx: u_int = 0;
     let mut line: *mut libc::c_char = 0 as *mut libc::c_char;
-    if args_has(args, 't' as i32 as u_char) != 0 {
+    if args_has(args, 't' as u_char) != 0 {
         s = (*target).s
     } else {
         s = 0 as *mut session
     }
-    template = args_get(args, 'F' as i32 as u_char);
+    template = args_get(args, 'F' as u_char);
     if template.is_null() {
         template =
             b"#{client_name}: #{session_name} [#{client_width}x#{client_height} #{client_termname}] #{?client_flags,(,}#{client_flags}#{?client_flags,),}\x00"
                 as *const u8 as *const libc::c_char
     }
-    idx = 0 as libc::c_int as u_int;
+    idx = 0u32;
     c = clients.tqh_first;
     while !c.is_null() {
         if !((*c).session.is_null() || !s.is_null() && s != (*c).session) {
-            ft = format_create(
-                cmdq_get_client(item),
-                item,
-                0 as libc::c_int,
-                0 as libc::c_int,
-            );
+            ft = format_create(cmdq_get_client(item), item, 0i32, 0i32);
             format_add(
                 ft,
                 b"line\x00" as *const u8 as *const libc::c_char,

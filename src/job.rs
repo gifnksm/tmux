@@ -1152,7 +1152,7 @@ pub struct joblist {
 }
 static mut all_jobs: joblist = {
     let mut init = joblist {
-        lh_first: 0 as *const job as *mut job,
+        lh_first: 0 as *mut job,
     };
     init
 };
@@ -1192,11 +1192,11 @@ pub unsafe extern "C" fn job_run(
      */
     env = environ_for_session(s, (cfg_finished == 0) as libc::c_int);
     sigfillset(&mut set);
-    sigprocmask(0 as libc::c_int, &mut set, &mut oldset);
-    if flags & 0x4 as libc::c_int != 0 {
+    sigprocmask(0i32, &mut set, &mut oldset);
+    if flags & 0x4i32 != 0 {
         memset(
             &mut ws as *mut winsize as *mut libc::c_void,
-            0 as libc::c_int,
+            0i32,
             ::std::mem::size_of::<winsize>() as libc::c_ulong,
         );
         ws.ws_col = sx as libc::c_ushort;
@@ -1209,13 +1209,7 @@ pub unsafe extern "C" fn job_run(
             &mut ws,
         );
         current_block = 12599329904712511516;
-    } else if socketpair(
-        1 as libc::c_int,
-        SOCK_STREAM as libc::c_int,
-        0 as libc::c_int,
-        out.as_mut_ptr(),
-    ) != 0 as libc::c_int
-    {
+    } else if socketpair(1i32, SOCK_STREAM as libc::c_int, 0i32, out.as_mut_ptr()) != 0i32 {
         current_block = 972739748014652499;
     } else {
         pid = fork();
@@ -1235,73 +1229,67 @@ pub unsafe extern "C" fn job_run(
             );
             match pid {
                 -1 => {
-                    if !flags & 0x4 as libc::c_int != 0 {
-                        close(out[0 as libc::c_int as usize]);
-                        close(out[1 as libc::c_int as usize]);
+                    if !flags & 0x4i32 != 0 {
+                        close(out[0usize]);
+                        close(out[1usize]);
                     }
                 }
                 0 => {
-                    proc_clear_signals(server_proc, 1 as libc::c_int);
-                    sigprocmask(2 as libc::c_int, &mut oldset, 0 as *mut sigset_t);
-                    if cwd.is_null() || chdir(cwd) != 0 as libc::c_int {
+                    proc_clear_signals(server_proc, 1i32);
+                    sigprocmask(2i32, &mut oldset, 0 as *mut sigset_t);
+                    if cwd.is_null() || chdir(cwd) != 0i32 {
                         home = find_home();
-                        if home.is_null() || chdir(home) != 0 as libc::c_int {
+                        if home.is_null() || chdir(home) != 0i32 {
                             chdir(b"/\x00" as *const u8 as *const libc::c_char);
                         }
                     }
                     environ_push(env);
                     environ_free(env);
-                    if !flags & 0x4 as libc::c_int != 0 {
-                        if dup2(out[1 as libc::c_int as usize], 0 as libc::c_int)
-                            == -(1 as libc::c_int)
-                        {
+                    if !flags & 0x4i32 != 0 {
+                        if dup2(out[1usize], 0i32) == -(1i32) {
                             fatal(b"dup2 failed\x00" as *const u8 as *const libc::c_char);
                         }
-                        if dup2(out[1 as libc::c_int as usize], 1 as libc::c_int)
-                            == -(1 as libc::c_int)
-                        {
+                        if dup2(out[1usize], 1i32) == -(1i32) {
                             fatal(b"dup2 failed\x00" as *const u8 as *const libc::c_char);
                         }
-                        if out[1 as libc::c_int as usize] != 0 as libc::c_int
-                            && out[1 as libc::c_int as usize] != 1 as libc::c_int
-                        {
-                            close(out[1 as libc::c_int as usize]);
+                        if out[1usize] != 0i32 && out[1usize] != 1i32 {
+                            close(out[1usize]);
                         }
-                        close(out[0 as libc::c_int as usize]);
+                        close(out[0usize]);
                         nullfd = open(
                             b"/dev/null\x00" as *const u8 as *const libc::c_char,
-                            0o2 as libc::c_int,
-                            0 as libc::c_int,
+                            0o2i32,
+                            0i32,
                         );
-                        if nullfd == -(1 as libc::c_int) {
+                        if nullfd == -(1i32) {
                             fatal(b"open failed\x00" as *const u8 as *const libc::c_char);
                         }
-                        if dup2(nullfd, 2 as libc::c_int) == -(1 as libc::c_int) {
+                        if dup2(nullfd, 2i32) == -(1i32) {
                             fatal(b"dup2 failed\x00" as *const u8 as *const libc::c_char);
                         }
-                        if nullfd != 2 as libc::c_int {
+                        if nullfd != 2i32 {
                             close(nullfd);
                         }
                     }
-                    closefrom(2 as libc::c_int + 1 as libc::c_int);
+                    closefrom(2i32 + 1i32);
                     execl(
                         b"/bin/sh\x00" as *const u8 as *const libc::c_char,
                         b"sh\x00" as *const u8 as *const libc::c_char,
                         b"-c\x00" as *const u8 as *const libc::c_char,
                         cmd,
-                        0 as *mut libc::c_void as *mut libc::c_char,
+                        0 as *mut libc::c_char,
                     );
                     fatal(b"execl failed\x00" as *const u8 as *const libc::c_char);
                 }
                 _ => {
-                    sigprocmask(2 as libc::c_int, &mut oldset, 0 as *mut sigset_t);
+                    sigprocmask(2i32, &mut oldset, 0 as *mut sigset_t);
                     environ_free(env);
                     job = xmalloc(::std::mem::size_of::<job>() as libc::c_ulong) as *mut job;
                     (*job).state = JOB_RUNNING;
                     (*job).flags = flags;
                     (*job).cmd = xstrdup(cmd);
                     (*job).pid = pid;
-                    (*job).status = 0 as libc::c_int;
+                    (*job).status = 0i32;
                     (*job).entry.le_next = all_jobs.lh_first;
                     if !(*job).entry.le_next.is_null() {
                         (*all_jobs.lh_first).entry.le_prev = &mut (*job).entry.le_next
@@ -1312,13 +1300,13 @@ pub unsafe extern "C" fn job_run(
                     (*job).completecb = completecb;
                     (*job).freecb = freecb;
                     (*job).data = data;
-                    if !flags & 0x4 as libc::c_int != 0 {
-                        close(out[1 as libc::c_int as usize]);
-                        (*job).fd = out[0 as libc::c_int as usize]
+                    if !flags & 0x4i32 != 0 {
+                        close(out[1usize]);
+                        (*job).fd = out[0usize]
                     } else {
                         (*job).fd = master
                     }
-                    setblocking((*job).fd, 0 as libc::c_int);
+                    setblocking((*job).fd, 0i32);
                     (*job).event = bufferevent_new(
                         (*job).fd,
                         Some(
@@ -1348,10 +1336,7 @@ pub unsafe extern "C" fn job_run(
                     if (*job).event.is_null() {
                         fatalx(b"out of memory\x00" as *const u8 as *const libc::c_char);
                     }
-                    bufferevent_enable(
-                        (*job).event,
-                        (0x2 as libc::c_int | 0x4 as libc::c_int) as libc::c_short,
-                    );
+                    bufferevent_enable((*job).event, (0x2i32 | 0x4i32) as libc::c_short);
                     log_debug(
                         b"run job %p: %s, pid %ld\x00" as *const u8 as *const libc::c_char,
                         job,
@@ -1364,7 +1349,7 @@ pub unsafe extern "C" fn job_run(
         }
         _ => {}
     }
-    sigprocmask(2 as libc::c_int, &mut oldset, 0 as *mut sigset_t);
+    sigprocmask(2i32, &mut oldset, 0 as *mut sigset_t);
     environ_free(env);
     return 0 as *mut job;
 }
@@ -1384,13 +1369,13 @@ pub unsafe extern "C" fn job_free(mut job: *mut job) {
     if (*job).freecb.is_some() && !(*job).data.is_null() {
         (*job).freecb.expect("non-null function pointer")((*job).data);
     }
-    if (*job).pid != -(1 as libc::c_int) {
-        kill((*job).pid, 15 as libc::c_int);
+    if (*job).pid != -(1i32) {
+        kill((*job).pid, 15i32);
     }
     if !(*job).event.is_null() {
         bufferevent_free((*job).event);
     }
-    if (*job).fd != -(1 as libc::c_int) {
+    if (*job).fd != -(1i32) {
         close((*job).fd);
     }
     free(job as *mut libc::c_void);
@@ -1404,7 +1389,7 @@ pub unsafe extern "C" fn job_resize(mut job: *mut job, mut sx: u_int, mut sy: u_
         ws_xpixel: 0,
         ws_ypixel: 0,
     };
-    if (*job).fd == -(1 as libc::c_int) || !(*job).flags & 0x4 as libc::c_int != 0 {
+    if (*job).fd == -(1i32) || !(*job).flags & 0x4i32 != 0 {
         return;
     }
     log_debug(
@@ -1415,17 +1400,12 @@ pub unsafe extern "C" fn job_resize(mut job: *mut job, mut sx: u_int, mut sy: u_
     );
     memset(
         &mut ws as *mut winsize as *mut libc::c_void,
-        0 as libc::c_int,
+        0i32,
         ::std::mem::size_of::<winsize>() as libc::c_ulong,
     );
     ws.ws_col = sx as libc::c_ushort;
     ws.ws_row = sy as libc::c_ushort;
-    if ioctl(
-        (*job).fd,
-        0x5414 as libc::c_int as libc::c_ulong,
-        &mut ws as *mut winsize,
-    ) == -(1 as libc::c_int)
-    {
+    if ioctl((*job).fd, 0x5414u64, &mut ws as *mut winsize) == -(1i32) {
         fatal(b"ioctl failed\x00" as *const u8 as *const libc::c_char);
     };
 }
@@ -1471,9 +1451,9 @@ unsafe extern "C" fn job_write_callback(mut _bufev: *mut bufferevent, mut data: 
         (*job).pid as libc::c_long,
         len,
     );
-    if len == 0 as libc::c_int as libc::c_ulong && !(*job).flags & 0x2 as libc::c_int != 0 {
+    if len == 0u64 && !(*job).flags & 0x2i32 != 0 {
         shutdown((*job).fd, SHUT_WR as libc::c_int);
-        bufferevent_disable((*job).event, 0x4 as libc::c_int as libc::c_short);
+        bufferevent_disable((*job).event, 0x4i16);
     };
 }
 /* Job buffer error callback. */
@@ -1489,13 +1469,13 @@ unsafe extern "C" fn job_error_callback(
         (*job).cmd,
         (*job).pid as libc::c_long,
     );
-    if (*job).state as libc::c_uint == JOB_DEAD as libc::c_int as libc::c_uint {
+    if (*job).state == JOB_DEAD {
         if (*job).completecb.is_some() {
             (*job).completecb.expect("non-null function pointer")(job);
         }
         job_free(job);
     } else {
-        bufferevent_disable((*job).event, 0x2 as libc::c_int as libc::c_short);
+        bufferevent_disable((*job).event, 0x2i16);
         (*job).state = JOB_CLOSED
     };
 }
@@ -1513,13 +1493,11 @@ pub unsafe extern "C" fn job_check_died(mut pid: pid_t, mut status: libc::c_int)
     if job.is_null() {
         return;
     }
-    if status & 0xff as libc::c_int == 0x7f as libc::c_int {
-        if (status & 0xff00 as libc::c_int) >> 8 as libc::c_int == 21 as libc::c_int
-            || (status & 0xff00 as libc::c_int) >> 8 as libc::c_int == 22 as libc::c_int
-        {
+    if status & 0xffi32 == 0x7fi32 {
+        if (status & 0xff00i32) >> 8i32 == 21i32 || (status & 0xff00i32) >> 8i32 == 22i32 {
             return;
         }
-        killpg((*job).pid, 18 as libc::c_int);
+        killpg((*job).pid, 18i32);
         return;
     }
     log_debug(
@@ -1529,13 +1507,13 @@ pub unsafe extern "C" fn job_check_died(mut pid: pid_t, mut status: libc::c_int)
         (*job).pid as libc::c_long,
     );
     (*job).status = status;
-    if (*job).state as libc::c_uint == JOB_CLOSED as libc::c_int as libc::c_uint {
+    if (*job).state == JOB_CLOSED {
         if (*job).completecb.is_some() {
             (*job).completecb.expect("non-null function pointer")(job);
         }
         job_free(job);
     } else {
-        (*job).pid = -(1 as libc::c_int);
+        (*job).pid = -(1i32);
         (*job).state = JOB_DEAD
     };
 }
@@ -1560,8 +1538,8 @@ pub unsafe extern "C" fn job_kill_all() {
     let mut job: *mut job = 0 as *mut job;
     job = all_jobs.lh_first;
     while !job.is_null() {
-        if (*job).pid != -(1 as libc::c_int) {
-            kill((*job).pid, 15 as libc::c_int);
+        if (*job).pid != -(1i32) {
+            kill((*job).pid, 15i32);
         }
         job = (*job).entry.le_next
     }
@@ -1572,14 +1550,12 @@ pub unsafe extern "C" fn job_still_running() -> libc::c_int {
     let mut job: *mut job = 0 as *mut job;
     job = all_jobs.lh_first;
     while !job.is_null() {
-        if !(*job).flags & 0x1 as libc::c_int != 0
-            && (*job).state as libc::c_uint == JOB_RUNNING as libc::c_int as libc::c_uint
-        {
-            return 1 as libc::c_int;
+        if !(*job).flags & 0x1i32 != 0 && (*job).state == JOB_RUNNING {
+            return 1i32;
         }
         job = (*job).entry.le_next
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 /* Print job summary. */
 #[no_mangle]
@@ -1588,7 +1564,7 @@ pub unsafe extern "C" fn job_print_summary(
     mut blank: libc::c_int,
 ) {
     let mut job: *mut job = 0 as *mut job;
-    let mut n: u_int = 0 as libc::c_int as u_int;
+    let mut n: u_int = 0u32;
     job = all_jobs.lh_first;
     while !job.is_null() {
         if blank != 0 {
@@ -1597,7 +1573,7 @@ pub unsafe extern "C" fn job_print_summary(
                 b"%s\x00" as *const u8 as *const libc::c_char,
                 b"\x00" as *const u8 as *const libc::c_char,
             );
-            blank = 0 as libc::c_int
+            blank = 0i32
         }
         cmdq_print(
             item,

@@ -1107,8 +1107,8 @@ pub static mut cmd_show_messages_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_33 {
                     template: b"JTt:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -1123,7 +1123,7 @@ pub static mut cmd_show_messages_entry: cmd_entry = {
                 type_0: CMD_FIND_PANE,
                 flags: 0,
             },
-            flags: 0x4 as libc::c_int | 0x10 as libc::c_int,
+            flags: 0x4i32 | 0x10i32,
             exec: Some(
                 cmd_show_messages_exec
                     as unsafe extern "C" fn(
@@ -1145,17 +1145,17 @@ unsafe extern "C" fn cmd_show_messages_terminals(
     let mut term: *mut tty_term = 0 as *mut tty_term;
     let mut i: u_int = 0;
     let mut n: u_int = 0;
-    n = 0 as libc::c_int as u_int;
+    n = 0u32;
     term = tty_terms.lh_first;
     while !term.is_null() {
-        if !(args_has(args, 't' as i32 as u_char) != 0 && term != (*tc).tty.term) {
+        if !(args_has(args, 't' as u_char) != 0 && term != (*tc).tty.term) {
             if blank != 0 {
                 cmdq_print(
                     item,
                     b"%s\x00" as *const u8 as *const libc::c_char,
                     b"\x00" as *const u8 as *const libc::c_char,
                 );
-                blank = 0 as libc::c_int
+                blank = 0i32
             }
             cmdq_print(
                 item,
@@ -1166,19 +1166,19 @@ unsafe extern "C" fn cmd_show_messages_terminals(
                 (*term).flags,
             );
             n = n.wrapping_add(1);
-            i = 0 as libc::c_int as u_int;
+            i = 0u32;
             while i < tty_term_ncodes() {
                 cmdq_print(
                     item,
                     b"%s\x00" as *const u8 as *const libc::c_char,
-                    tty_term_describe(term, i as TtyCode),
+                    tty_term_describe(term, i),
                 );
                 i = i.wrapping_add(1)
             }
         }
         term = (*term).entry.le_next
     }
-    return (n != 0 as libc::c_int as libc::c_uint) as libc::c_int;
+    return (n != 0u32) as libc::c_int;
 }
 unsafe extern "C" fn cmd_show_messages_exec(
     mut self_0: *mut crate::cmd::cmd,
@@ -1190,15 +1190,15 @@ unsafe extern "C" fn cmd_show_messages_exec(
     let mut done: libc::c_int = 0;
     let mut blank: libc::c_int = 0;
     let mut ft: *mut crate::format::format_tree = 0 as *mut crate::format::format_tree;
-    blank = 0 as libc::c_int;
+    blank = 0i32;
     done = blank;
-    if args_has(args, 'T' as i32 as u_char) != 0 {
+    if args_has(args, 'T' as u_char) != 0 {
         blank = cmd_show_messages_terminals(self_0, item, blank);
-        done = 1 as libc::c_int
+        done = 1i32
     }
-    if args_has(args, 'J' as i32 as u_char) != 0 {
+    if args_has(args, 'J' as u_char) != 0 {
         job_print_summary(item, blank);
-        done = 1 as libc::c_int
+        done = 1i32
     }
     if done != 0 {
         return CMD_RETURN_NORMAL;

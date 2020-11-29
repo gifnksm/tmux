@@ -1576,8 +1576,8 @@ pub type job_update_cb = Option<unsafe extern "C" fn(_: *mut crate::job::job) ->
 static mut format_job_event: event = event {
     ev_evcallback: event_callback {
         evcb_active_next: C2RustUnnamed_8 {
-            tqe_next: 0 as *const event_callback as *mut event_callback,
-            tqe_prev: 0 as *const *mut event_callback as *mut *mut event_callback,
+            tqe_next: 0 as *mut event_callback,
+            tqe_prev: 0 as *mut *mut event_callback,
         },
         evcb_flags: 0,
         evcb_pri: 0,
@@ -1585,21 +1585,21 @@ static mut format_job_event: event = event {
         evcb_cb_union: C2RustUnnamed_7 {
             evcb_callback: None,
         },
-        evcb_arg: 0 as *const libc::c_void as *mut libc::c_void,
+        evcb_arg: 0 as *mut libc::c_void,
     },
     ev_timeout_pos: C2RustUnnamed_5 {
         ev_next_with_common_timeout: C2RustUnnamed_6 {
-            tqe_next: 0 as *const event as *mut event,
-            tqe_prev: 0 as *const *mut event as *mut *mut event,
+            tqe_next: 0 as *mut event,
+            tqe_prev: 0 as *mut *mut event,
         },
     },
     ev_fd: 0,
-    ev_base: 0 as *const event_base as *mut event_base,
+    ev_base: 0 as *mut event_base,
     ev_: C2RustUnnamed_0 {
         ev_io: C2RustUnnamed_3 {
             ev_io_next: C2RustUnnamed_4 {
-                le_next: 0 as *const event as *mut event,
-                le_prev: 0 as *const *mut event as *mut *mut event,
+                le_next: 0 as *mut event,
+                le_prev: 0 as *mut *mut event,
             },
             ev_timeout: timeval {
                 tv_sec: 0,
@@ -1616,7 +1616,7 @@ static mut format_job_event: event = event {
 };
 static mut format_jobs: format_job_tree = {
     let mut init = format_job_tree {
-        rbh_root: 0 as *const format_job as *mut format_job,
+        rbh_root: 0 as *mut format_job,
     };
     init
 };
@@ -1626,12 +1626,12 @@ unsafe extern "C" fn format_job_tree_RB_REMOVE_COLOR(
     mut elm: *mut format_job,
 ) {
     let mut tmp: *mut format_job = 0 as *mut format_job;
-    while (elm.is_null() || (*elm).entry.rbe_color == 0 as libc::c_int) && elm != (*head).rbh_root {
+    while (elm.is_null() || (*elm).entry.rbe_color == 0i32) && elm != (*head).rbh_root {
         if (*parent).entry.rbe_left == elm {
             tmp = (*parent).entry.rbe_right;
-            if (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 1 as libc::c_int;
+            if (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 1i32;
                 tmp = (*parent).entry.rbe_right;
                 (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
                 if !(*parent).entry.rbe_right.is_null() {
@@ -1652,24 +1652,23 @@ unsafe extern "C" fn format_job_tree_RB_REMOVE_COLOR(
                 !(*tmp).entry.rbe_parent.is_null();
                 tmp = (*parent).entry.rbe_right
             }
-            if ((*tmp).entry.rbe_left.is_null()
-                || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int)
+            if ((*tmp).entry.rbe_left.is_null() || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32)
                 && ((*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int)
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32)
             {
-                (*tmp).entry.rbe_color = 1 as libc::c_int;
+                (*tmp).entry.rbe_color = 1i32;
                 elm = parent;
                 parent = (*elm).entry.rbe_parent
             } else {
                 if (*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32
                 {
                     let mut oleft: *mut format_job = 0 as *mut format_job;
                     oleft = (*tmp).entry.rbe_left;
                     if !oleft.is_null() {
-                        (*oleft).entry.rbe_color = 0 as libc::c_int
+                        (*oleft).entry.rbe_color = 0i32
                     }
-                    (*tmp).entry.rbe_color = 1 as libc::c_int;
+                    (*tmp).entry.rbe_color = 1i32;
                     oleft = (*tmp).entry.rbe_left;
                     (*tmp).entry.rbe_left = (*oleft).entry.rbe_right;
                     if !(*tmp).entry.rbe_left.is_null() {
@@ -1691,9 +1690,9 @@ unsafe extern "C" fn format_job_tree_RB_REMOVE_COLOR(
                     tmp = (*parent).entry.rbe_right
                 }
                 (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
                 if !(*tmp).entry.rbe_right.is_null() {
-                    (*(*tmp).entry.rbe_right).entry.rbe_color = 0 as libc::c_int
+                    (*(*tmp).entry.rbe_right).entry.rbe_color = 0i32
                 }
                 tmp = (*parent).entry.rbe_right;
                 (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
@@ -1718,9 +1717,9 @@ unsafe extern "C" fn format_job_tree_RB_REMOVE_COLOR(
             }
         } else {
             tmp = (*parent).entry.rbe_left;
-            if (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 1 as libc::c_int;
+            if (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 1i32;
                 tmp = (*parent).entry.rbe_left;
                 (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
                 if !(*parent).entry.rbe_left.is_null() {
@@ -1741,24 +1740,23 @@ unsafe extern "C" fn format_job_tree_RB_REMOVE_COLOR(
                 !(*tmp).entry.rbe_parent.is_null();
                 tmp = (*parent).entry.rbe_left
             }
-            if ((*tmp).entry.rbe_left.is_null()
-                || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int)
+            if ((*tmp).entry.rbe_left.is_null() || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32)
                 && ((*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int)
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32)
             {
-                (*tmp).entry.rbe_color = 1 as libc::c_int;
+                (*tmp).entry.rbe_color = 1i32;
                 elm = parent;
                 parent = (*elm).entry.rbe_parent
             } else {
                 if (*tmp).entry.rbe_left.is_null()
-                    || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int
+                    || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32
                 {
                     let mut oright: *mut format_job = 0 as *mut format_job;
                     oright = (*tmp).entry.rbe_right;
                     if !oright.is_null() {
-                        (*oright).entry.rbe_color = 0 as libc::c_int
+                        (*oright).entry.rbe_color = 0i32
                     }
-                    (*tmp).entry.rbe_color = 1 as libc::c_int;
+                    (*tmp).entry.rbe_color = 1i32;
                     oright = (*tmp).entry.rbe_right;
                     (*tmp).entry.rbe_right = (*oright).entry.rbe_left;
                     if !(*tmp).entry.rbe_right.is_null() {
@@ -1780,9 +1778,9 @@ unsafe extern "C" fn format_job_tree_RB_REMOVE_COLOR(
                     tmp = (*parent).entry.rbe_left
                 }
                 (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
                 if !(*tmp).entry.rbe_left.is_null() {
-                    (*(*tmp).entry.rbe_left).entry.rbe_color = 0 as libc::c_int
+                    (*(*tmp).entry.rbe_left).entry.rbe_color = 0i32
                 }
                 tmp = (*parent).entry.rbe_left;
                 (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
@@ -1808,7 +1806,7 @@ unsafe extern "C" fn format_job_tree_RB_REMOVE_COLOR(
         }
     }
     if !elm.is_null() {
-        (*elm).entry.rbe_color = 0 as libc::c_int
+        (*elm).entry.rbe_color = 0i32
     };
 }
 unsafe extern "C" fn format_job_tree_RB_FIND(
@@ -1819,9 +1817,9 @@ unsafe extern "C" fn format_job_tree_RB_FIND(
     let mut comp: libc::c_int = 0;
     while !tmp.is_null() {
         comp = format_job_cmp(elm, tmp);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).entry.rbe_right
         } else {
             return tmp;
@@ -1835,14 +1833,14 @@ unsafe extern "C" fn format_job_tree_RB_INSERT(
 ) -> *mut format_job {
     let mut tmp: *mut format_job = 0 as *mut format_job;
     let mut parent: *mut format_job = 0 as *mut format_job;
-    let mut comp: libc::c_int = 0 as libc::c_int;
+    let mut comp: libc::c_int = 0i32;
     tmp = (*head).rbh_root;
     while !tmp.is_null() {
         parent = tmp;
         comp = format_job_cmp(elm, parent);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).entry.rbe_right
         } else {
             return tmp;
@@ -1851,9 +1849,9 @@ unsafe extern "C" fn format_job_tree_RB_INSERT(
     (*elm).entry.rbe_parent = parent;
     (*elm).entry.rbe_right = 0 as *mut format_job;
     (*elm).entry.rbe_left = (*elm).entry.rbe_right;
-    (*elm).entry.rbe_color = 1 as libc::c_int;
+    (*elm).entry.rbe_color = 1i32;
     if !parent.is_null() {
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             (*parent).entry.rbe_left = elm
         } else {
             (*parent).entry.rbe_right = elm
@@ -1872,7 +1870,7 @@ unsafe extern "C" fn format_job_tree_RB_MINMAX(
     let mut parent: *mut format_job = 0 as *mut format_job;
     while !tmp.is_null() {
         parent = tmp;
-        if val < 0 as libc::c_int {
+        if val < 0i32 {
             tmp = (*tmp).entry.rbe_left
         } else {
             tmp = (*tmp).entry.rbe_right
@@ -1986,7 +1984,7 @@ unsafe extern "C" fn format_job_tree_RB_REMOVE(
         }
         _ => {}
     }
-    if color == 0 as libc::c_int {
+    if color == 0i32 {
         format_job_tree_RB_REMOVE_COLOR(head, parent, child);
     }
     return old;
@@ -2000,16 +1998,16 @@ unsafe extern "C" fn format_job_tree_RB_INSERT_COLOR(
     let mut tmp: *mut format_job = 0 as *mut format_job;
     loop {
         parent = (*elm).entry.rbe_parent;
-        if !(!parent.is_null() && (*parent).entry.rbe_color == 1 as libc::c_int) {
+        if !(!parent.is_null() && (*parent).entry.rbe_color == 1i32) {
             break;
         }
         gparent = (*parent).entry.rbe_parent;
         if parent == (*gparent).entry.rbe_left {
             tmp = (*gparent).entry.rbe_right;
-            if !tmp.is_null() && (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).entry.rbe_right == elm {
@@ -2035,8 +2033,8 @@ unsafe extern "C" fn format_job_tree_RB_INSERT_COLOR(
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 tmp = (*gparent).entry.rbe_left;
                 (*gparent).entry.rbe_left = (*tmp).entry.rbe_right;
                 if !(*gparent).entry.rbe_left.is_null() {
@@ -2058,10 +2056,10 @@ unsafe extern "C" fn format_job_tree_RB_INSERT_COLOR(
             }
         } else {
             tmp = (*gparent).entry.rbe_left;
-            if !tmp.is_null() && (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).entry.rbe_left == elm {
@@ -2087,8 +2085,8 @@ unsafe extern "C" fn format_job_tree_RB_INSERT_COLOR(
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 tmp = (*gparent).entry.rbe_right;
                 (*gparent).entry.rbe_right = (*tmp).entry.rbe_left;
                 if !(*gparent).entry.rbe_right.is_null() {
@@ -2110,7 +2108,7 @@ unsafe extern "C" fn format_job_tree_RB_INSERT_COLOR(
             }
         }
     }
-    (*(*head).rbh_root).entry.rbe_color = 0 as libc::c_int;
+    (*(*head).rbh_root).entry.rbe_color = 0i32;
 }
 /* Format job tree comparison function. */
 unsafe extern "C" fn format_job_cmp(
@@ -2118,10 +2116,10 @@ unsafe extern "C" fn format_job_cmp(
     mut fj2: *mut format_job,
 ) -> libc::c_int {
     if (*fj1).tag < (*fj2).tag {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     if (*fj1).tag > (*fj2).tag {
-        return 1 as libc::c_int;
+        return 1i32;
     }
     return strcmp((*fj1).cmd, (*fj2).cmd);
 }
@@ -2134,16 +2132,16 @@ unsafe extern "C" fn format_entry_tree_RB_INSERT_COLOR(
     let mut tmp: *mut format_entry = 0 as *mut format_entry;
     loop {
         parent = (*elm).entry.rbe_parent;
-        if !(!parent.is_null() && (*parent).entry.rbe_color == 1 as libc::c_int) {
+        if !(!parent.is_null() && (*parent).entry.rbe_color == 1i32) {
             break;
         }
         gparent = (*parent).entry.rbe_parent;
         if parent == (*gparent).entry.rbe_left {
             tmp = (*gparent).entry.rbe_right;
-            if !tmp.is_null() && (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).entry.rbe_right == elm {
@@ -2169,8 +2167,8 @@ unsafe extern "C" fn format_entry_tree_RB_INSERT_COLOR(
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 tmp = (*gparent).entry.rbe_left;
                 (*gparent).entry.rbe_left = (*tmp).entry.rbe_right;
                 if !(*gparent).entry.rbe_left.is_null() {
@@ -2192,10 +2190,10 @@ unsafe extern "C" fn format_entry_tree_RB_INSERT_COLOR(
             }
         } else {
             tmp = (*gparent).entry.rbe_left;
-            if !tmp.is_null() && (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).entry.rbe_left == elm {
@@ -2221,8 +2219,8 @@ unsafe extern "C" fn format_entry_tree_RB_INSERT_COLOR(
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 tmp = (*gparent).entry.rbe_right;
                 (*gparent).entry.rbe_right = (*tmp).entry.rbe_left;
                 if !(*gparent).entry.rbe_right.is_null() {
@@ -2244,7 +2242,7 @@ unsafe extern "C" fn format_entry_tree_RB_INSERT_COLOR(
             }
         }
     }
-    (*(*head).rbh_root).entry.rbe_color = 0 as libc::c_int;
+    (*(*head).rbh_root).entry.rbe_color = 0i32;
 }
 unsafe extern "C" fn format_entry_tree_RB_REMOVE(
     mut head: *mut format_entry_tree,
@@ -2333,7 +2331,7 @@ unsafe extern "C" fn format_entry_tree_RB_REMOVE(
         }
         _ => {}
     }
-    if color == 0 as libc::c_int {
+    if color == 0i32 {
         format_entry_tree_RB_REMOVE_COLOR(head, parent, child);
     }
     return old;
@@ -2344,12 +2342,12 @@ unsafe extern "C" fn format_entry_tree_RB_REMOVE_COLOR(
     mut elm: *mut format_entry,
 ) {
     let mut tmp: *mut format_entry = 0 as *mut format_entry;
-    while (elm.is_null() || (*elm).entry.rbe_color == 0 as libc::c_int) && elm != (*head).rbh_root {
+    while (elm.is_null() || (*elm).entry.rbe_color == 0i32) && elm != (*head).rbh_root {
         if (*parent).entry.rbe_left == elm {
             tmp = (*parent).entry.rbe_right;
-            if (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 1 as libc::c_int;
+            if (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 1i32;
                 tmp = (*parent).entry.rbe_right;
                 (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
                 if !(*parent).entry.rbe_right.is_null() {
@@ -2370,24 +2368,23 @@ unsafe extern "C" fn format_entry_tree_RB_REMOVE_COLOR(
                 !(*tmp).entry.rbe_parent.is_null();
                 tmp = (*parent).entry.rbe_right
             }
-            if ((*tmp).entry.rbe_left.is_null()
-                || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int)
+            if ((*tmp).entry.rbe_left.is_null() || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32)
                 && ((*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int)
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32)
             {
-                (*tmp).entry.rbe_color = 1 as libc::c_int;
+                (*tmp).entry.rbe_color = 1i32;
                 elm = parent;
                 parent = (*elm).entry.rbe_parent
             } else {
                 if (*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32
                 {
                     let mut oleft: *mut format_entry = 0 as *mut format_entry;
                     oleft = (*tmp).entry.rbe_left;
                     if !oleft.is_null() {
-                        (*oleft).entry.rbe_color = 0 as libc::c_int
+                        (*oleft).entry.rbe_color = 0i32
                     }
-                    (*tmp).entry.rbe_color = 1 as libc::c_int;
+                    (*tmp).entry.rbe_color = 1i32;
                     oleft = (*tmp).entry.rbe_left;
                     (*tmp).entry.rbe_left = (*oleft).entry.rbe_right;
                     if !(*tmp).entry.rbe_left.is_null() {
@@ -2409,9 +2406,9 @@ unsafe extern "C" fn format_entry_tree_RB_REMOVE_COLOR(
                     tmp = (*parent).entry.rbe_right
                 }
                 (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
                 if !(*tmp).entry.rbe_right.is_null() {
-                    (*(*tmp).entry.rbe_right).entry.rbe_color = 0 as libc::c_int
+                    (*(*tmp).entry.rbe_right).entry.rbe_color = 0i32
                 }
                 tmp = (*parent).entry.rbe_right;
                 (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
@@ -2436,9 +2433,9 @@ unsafe extern "C" fn format_entry_tree_RB_REMOVE_COLOR(
             }
         } else {
             tmp = (*parent).entry.rbe_left;
-            if (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 1 as libc::c_int;
+            if (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 1i32;
                 tmp = (*parent).entry.rbe_left;
                 (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
                 if !(*parent).entry.rbe_left.is_null() {
@@ -2459,24 +2456,23 @@ unsafe extern "C" fn format_entry_tree_RB_REMOVE_COLOR(
                 !(*tmp).entry.rbe_parent.is_null();
                 tmp = (*parent).entry.rbe_left
             }
-            if ((*tmp).entry.rbe_left.is_null()
-                || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int)
+            if ((*tmp).entry.rbe_left.is_null() || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32)
                 && ((*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int)
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32)
             {
-                (*tmp).entry.rbe_color = 1 as libc::c_int;
+                (*tmp).entry.rbe_color = 1i32;
                 elm = parent;
                 parent = (*elm).entry.rbe_parent
             } else {
                 if (*tmp).entry.rbe_left.is_null()
-                    || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int
+                    || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32
                 {
                     let mut oright: *mut format_entry = 0 as *mut format_entry;
                     oright = (*tmp).entry.rbe_right;
                     if !oright.is_null() {
-                        (*oright).entry.rbe_color = 0 as libc::c_int
+                        (*oright).entry.rbe_color = 0i32
                     }
-                    (*tmp).entry.rbe_color = 1 as libc::c_int;
+                    (*tmp).entry.rbe_color = 1i32;
                     oright = (*tmp).entry.rbe_right;
                     (*tmp).entry.rbe_right = (*oright).entry.rbe_left;
                     if !(*tmp).entry.rbe_right.is_null() {
@@ -2498,9 +2494,9 @@ unsafe extern "C" fn format_entry_tree_RB_REMOVE_COLOR(
                     tmp = (*parent).entry.rbe_left
                 }
                 (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
                 if !(*tmp).entry.rbe_left.is_null() {
-                    (*(*tmp).entry.rbe_left).entry.rbe_color = 0 as libc::c_int
+                    (*(*tmp).entry.rbe_left).entry.rbe_color = 0i32
                 }
                 tmp = (*parent).entry.rbe_left;
                 (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
@@ -2526,7 +2522,7 @@ unsafe extern "C" fn format_entry_tree_RB_REMOVE_COLOR(
         }
     }
     if !elm.is_null() {
-        (*elm).entry.rbe_color = 0 as libc::c_int
+        (*elm).entry.rbe_color = 0i32
     };
 }
 unsafe extern "C" fn format_entry_tree_RB_FIND(
@@ -2537,9 +2533,9 @@ unsafe extern "C" fn format_entry_tree_RB_FIND(
     let mut comp: libc::c_int = 0;
     while !tmp.is_null() {
         comp = format_entry_cmp(elm, tmp);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).entry.rbe_right
         } else {
             return tmp;
@@ -2553,14 +2549,14 @@ unsafe extern "C" fn format_entry_tree_RB_INSERT(
 ) -> *mut format_entry {
     let mut tmp: *mut format_entry = 0 as *mut format_entry;
     let mut parent: *mut format_entry = 0 as *mut format_entry;
-    let mut comp: libc::c_int = 0 as libc::c_int;
+    let mut comp: libc::c_int = 0i32;
     tmp = (*head).rbh_root;
     while !tmp.is_null() {
         parent = tmp;
         comp = format_entry_cmp(elm, parent);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).entry.rbe_right
         } else {
             return tmp;
@@ -2569,9 +2565,9 @@ unsafe extern "C" fn format_entry_tree_RB_INSERT(
     (*elm).entry.rbe_parent = parent;
     (*elm).entry.rbe_right = 0 as *mut format_entry;
     (*elm).entry.rbe_left = (*elm).entry.rbe_right;
-    (*elm).entry.rbe_color = 1 as libc::c_int;
+    (*elm).entry.rbe_color = 1i32;
     if !parent.is_null() {
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             (*parent).entry.rbe_left = elm
         } else {
             (*parent).entry.rbe_right = elm
@@ -2609,7 +2605,7 @@ unsafe extern "C" fn format_entry_tree_RB_MINMAX(
     let mut parent: *mut format_entry = 0 as *mut format_entry;
     while !tmp.is_null() {
         parent = tmp;
-        if val < 0 as libc::c_int {
+        if val < 0i32 {
             tmp = (*tmp).entry.rbe_left
         } else {
             tmp = (*tmp).entry.rbe_right
@@ -2685,8 +2681,7 @@ static mut format_lower: [*const libc::c_char; 26] = [
 /* Is logging enabled? */
 #[inline]
 unsafe extern "C" fn format_logging(mut ft: *mut format_tree) -> libc::c_int {
-    return (log_get_level() != 0 as libc::c_int || (*ft).flags & 0x8 as libc::c_int != 0)
-        as libc::c_int;
+    return (log_get_level() != 0i32 || (*ft).flags & 0x8i32 != 0) as libc::c_int;
 }
 /* Log a message if verbose. */
 unsafe extern "C" fn format_log1(
@@ -2706,7 +2701,7 @@ unsafe extern "C" fn format_log1(
     ap = args.clone();
     xvasprintf(&mut s, fmt, ap.as_va_list());
     log_debug(b"%s: %s\x00" as *const u8 as *const libc::c_char, from, s);
-    if !(*ft).item.is_null() && (*ft).flags & 0x8 as libc::c_int != 0 {
+    if !(*ft).item.is_null() && (*ft).flags & 0x8i32 != 0 {
         cmdq_print(
             (*ft).item,
             b"#%.*s%s\x00" as *const u8 as *const libc::c_char,
@@ -2746,7 +2741,7 @@ unsafe extern "C" fn format_job_update(mut job: *mut crate::job::job) {
     if line.is_null() {
         return;
     }
-    (*fj).updated = 1 as libc::c_int;
+    (*fj).updated = 1i32;
     free((*fj).out as *mut libc::c_void);
     (*fj).out = line;
     log_debug(
@@ -2777,15 +2772,15 @@ unsafe extern "C" fn format_job_complete(mut job: *mut crate::job::job) {
     line = evbuffer_readline(evb);
     if line.is_null() {
         len = evbuffer_get_length(evb);
-        buf = xmalloc(len.wrapping_add(1 as libc::c_int as libc::c_ulong)) as *mut libc::c_char;
-        if len != 0 as libc::c_int as libc::c_ulong {
+        buf = xmalloc(len.wrapping_add(1u64)) as *mut libc::c_char;
+        if len != 0u64 {
             memcpy(
                 buf as *mut libc::c_void,
-                evbuffer_pullup(evb, -(1 as libc::c_int) as ssize_t) as *const libc::c_void,
+                evbuffer_pullup(evb, -1i64) as *const libc::c_void,
                 len,
             );
         }
-        *buf.offset(len as isize) = '\u{0}' as i32 as libc::c_char
+        *buf.offset(len as isize) = '\u{0}' as libc::c_char
     } else {
         buf = line
     }
@@ -2807,7 +2802,7 @@ unsafe extern "C" fn format_job_complete(mut job: *mut crate::job::job) {
         if !(*fj).client.is_null() {
             server_status_client((*fj).client);
         }
-        (*fj).status = 0 as libc::c_int
+        (*fj).status = 0i32
     };
 }
 /* $OpenBSD$ */
@@ -2878,10 +2873,7 @@ unsafe extern "C" fn format_job_get(
     fj0.cmd = cmd;
     fj = format_job_tree_RB_FIND(jobs, &mut fj0);
     if fj.is_null() {
-        fj = xcalloc(
-            1 as libc::c_int as size_t,
-            ::std::mem::size_of::<format_job>() as libc::c_ulong,
-        ) as *mut format_job;
+        fj = xcalloc(1u64, ::std::mem::size_of::<format_job>() as libc::c_ulong) as *mut format_job;
         (*fj).client = (*ft).client;
         (*fj).tag = (*ft).tag;
         (*fj).cmd = xstrdup(cmd);
@@ -2894,12 +2886,12 @@ unsafe extern "C" fn format_job_get(
         format_job_tree_RB_INSERT(jobs, fj);
     }
     expanded = format_expand1(es, cmd);
-    if (*fj).expanded.is_null() || strcmp(expanded, (*fj).expanded) != 0 as libc::c_int {
+    if (*fj).expanded.is_null() || strcmp(expanded, (*fj).expanded) != 0i32 {
         free((*fj).expanded as *mut libc::c_void);
         (*fj).expanded = xstrdup(expanded);
-        force = 1 as libc::c_int
+        force = 1i32
     } else {
-        force = (*ft).flags & 0x2 as libc::c_int
+        force = (*ft).flags & 0x2i32
     }
     t = time(0 as *mut time_t);
     if force != 0 && !(*fj).job.is_null() {
@@ -2914,9 +2906,9 @@ unsafe extern "C" fn format_job_get(
             Some(format_job_complete as unsafe extern "C" fn(_: *mut crate::job::job) -> ()),
             None,
             fj as *mut libc::c_void,
-            0x1 as libc::c_int,
-            -(1 as libc::c_int),
-            -(1 as libc::c_int),
+            0x1i32,
+            -(1i32),
+            -(1i32),
         );
         if (*fj).job.is_null() {
             free((*fj).out as *mut libc::c_void);
@@ -2927,13 +2919,13 @@ unsafe extern "C" fn format_job_get(
             );
         }
         (*fj).last = t;
-        (*fj).updated = 0 as libc::c_int
+        (*fj).updated = 0i32
     }
     free(expanded as *mut libc::c_void);
-    if (*ft).flags & 0x1 as libc::c_int != 0 {
-        (*fj).status = 1 as libc::c_int
+    if (*ft).flags & 0x1i32 != 0 {
+        (*fj).status = 1i32
     }
-    format_copy_state(&mut next, es, 0x2 as libc::c_int);
+    format_copy_state(&mut next, es, 0x2i32);
     return format_expand1(&mut next, (*fj).out);
 }
 /* Remove old jobs. */
@@ -2942,14 +2934,12 @@ unsafe extern "C" fn format_job_tidy(mut jobs: *mut format_job_tree, mut force: 
     let mut fj1: *mut format_job = 0 as *mut format_job;
     let mut now: time_t = 0;
     now = time(0 as *mut time_t);
-    fj = format_job_tree_RB_MINMAX(jobs, -(1 as libc::c_int));
+    fj = format_job_tree_RB_MINMAX(jobs, -(1i32));
     while !fj.is_null() && {
         fj1 = format_job_tree_RB_NEXT(fj);
-        (1 as libc::c_int) != 0
+        (1i32) != 0
     } {
-        if !(force == 0
-            && ((*fj).last > now || now - (*fj).last < 3600 as libc::c_int as libc::c_long))
-        {
+        if !(force == 0 && ((*fj).last > now || now - (*fj).last < 3600i64)) {
             format_job_tree_RB_REMOVE(jobs, fj);
             log_debug(
                 b"%s: %s\x00" as *const u8 as *const libc::c_char,
@@ -2972,7 +2962,7 @@ unsafe extern "C" fn format_job_tidy(mut jobs: *mut format_job_tree, mut force: 
 #[no_mangle]
 pub unsafe extern "C" fn format_lost_client(mut c: *mut client) {
     if !(*c).jobs.is_null() {
-        format_job_tidy((*c).jobs, 1 as libc::c_int);
+        format_job_tidy((*c).jobs, 1i32);
     }
     free((*c).jobs as *mut libc::c_void);
 }
@@ -2985,16 +2975,16 @@ unsafe extern "C" fn format_job_timer(
     let mut c: *mut client = 0 as *mut client;
     let mut tv: timeval = {
         let mut init = timeval {
-            tv_sec: 60 as libc::c_int as __time_t,
+            tv_sec: 60i64,
             tv_usec: 0,
         };
         init
     };
-    format_job_tidy(&mut format_jobs, 0 as libc::c_int);
+    format_job_tidy(&mut format_jobs, 0i32);
     c = clients.tqh_first;
     while !c.is_null() {
         if !(*c).jobs.is_null() {
-            format_job_tidy((*c).jobs, 0 as libc::c_int);
+            format_job_tidy((*c).jobs, 0i32);
         }
         c = (*c).entry.tqe_next
     }
@@ -3007,7 +2997,7 @@ unsafe extern "C" fn format_cb_host(mut _ft: *mut format_tree) -> *mut libc::c_c
     if gethostname(
         host.as_mut_ptr(),
         ::std::mem::size_of::<[libc::c_char; 65]>() as libc::c_ulong,
-    ) != 0 as libc::c_int
+    ) != 0i32
     {
         return xstrdup(b"\x00" as *const u8 as *const libc::c_char);
     }
@@ -3020,13 +3010,13 @@ unsafe extern "C" fn format_cb_host_short(mut _ft: *mut format_tree) -> *mut lib
     if gethostname(
         host.as_mut_ptr(),
         ::std::mem::size_of::<[libc::c_char; 65]>() as libc::c_ulong,
-    ) != 0 as libc::c_int
+    ) != 0i32
     {
         return xstrdup(b"\x00" as *const u8 as *const libc::c_char);
     }
     cp = strchr(host.as_mut_ptr(), '.' as i32);
     if !cp.is_null() {
-        *cp = '\u{0}' as i32 as libc::c_char
+        *cp = '\u{0}' as libc::c_char
     }
     return xstrdup(host.as_mut_ptr());
 }
@@ -3059,12 +3049,8 @@ unsafe extern "C" fn format_cb_session_attached_list(
     loop_0 = clients.tqh_first;
     while !loop_0.is_null() {
         if (*loop_0).session == s {
-            if evbuffer_get_length(buffer) > 0 as libc::c_int as libc::c_ulong {
-                evbuffer_add(
-                    buffer,
-                    b",\x00" as *const u8 as *const libc::c_char as *const libc::c_void,
-                    1 as libc::c_int as size_t,
-                );
+            if evbuffer_get_length(buffer) > 0u64 {
+                evbuffer_add(buffer, b",\x00" as *const u8 as *const libc::c_void, 1u64);
             }
             evbuffer_add_printf(
                 buffer,
@@ -3075,12 +3061,12 @@ unsafe extern "C" fn format_cb_session_attached_list(
         loop_0 = (*loop_0).entry.tqe_next
     }
     size = evbuffer_get_length(buffer) as libc::c_int;
-    if size != 0 as libc::c_int {
+    if size != 0i32 {
         xasprintf(
             &mut value as *mut *mut libc::c_char,
             b"%.*s\x00" as *const u8 as *const libc::c_char,
             size,
-            evbuffer_pullup(buffer, -(1 as libc::c_int) as ssize_t),
+            evbuffer_pullup(buffer, -1i64),
         );
     }
     evbuffer_free(buffer);
@@ -3095,12 +3081,10 @@ unsafe extern "C" fn format_cb_session_alerts(mut ft: *mut format_tree) -> *mut 
     if s.is_null() {
         return 0 as *mut libc::c_char;
     }
-    *alerts.as_mut_ptr() = '\u{0}' as i32 as libc::c_char;
-    wl = winlinks_RB_MINMAX(&mut (*s).windows, -(1 as libc::c_int));
+    *alerts.as_mut_ptr() = '\u{0}' as libc::c_char;
+    wl = winlinks_RB_MINMAX(&mut (*s).windows, -(1i32));
     while !wl.is_null() {
-        if !((*wl).flags & (0x1 as libc::c_int | 0x2 as libc::c_int | 0x4 as libc::c_int)
-            == 0 as libc::c_int)
-        {
+        if !((*wl).flags & (0x1i32 | 0x2i32 | 0x4i32) == 0i32) {
             xsnprintf(
                 tmp.as_mut_ptr(),
                 ::std::mem::size_of::<[libc::c_char; 16]>() as libc::c_ulong,
@@ -3119,21 +3103,21 @@ unsafe extern "C" fn format_cb_session_alerts(mut ft: *mut format_tree) -> *mut 
                 tmp.as_mut_ptr(),
                 ::std::mem::size_of::<[libc::c_char; 1024]>() as libc::c_ulong,
             );
-            if (*wl).flags & 0x2 as libc::c_int != 0 {
+            if (*wl).flags & 0x2i32 != 0 {
                 strlcat(
                     alerts.as_mut_ptr(),
                     b"#\x00" as *const u8 as *const libc::c_char,
                     ::std::mem::size_of::<[libc::c_char; 1024]>() as libc::c_ulong,
                 );
             }
-            if (*wl).flags & 0x1 as libc::c_int != 0 {
+            if (*wl).flags & 0x1i32 != 0 {
                 strlcat(
                     alerts.as_mut_ptr(),
                     b"!\x00" as *const u8 as *const libc::c_char,
                     ::std::mem::size_of::<[libc::c_char; 1024]>() as libc::c_ulong,
                 );
             }
-            if (*wl).flags & 0x4 as libc::c_int != 0 {
+            if (*wl).flags & 0x4i32 != 0 {
                 strlcat(
                     alerts.as_mut_ptr(),
                     b"~\x00" as *const u8 as *const libc::c_char,
@@ -3190,7 +3174,7 @@ unsafe extern "C" fn format_cb_window_stack_index(mut ft: *mut format_tree) -> *
     let mut wl: *mut winlink = 0 as *mut winlink;
     let mut idx: u_int = 0;
     let mut value: *mut libc::c_char = 0 as *mut libc::c_char;
-    idx = 0 as libc::c_int as u_int;
+    idx = 0u32;
     wl = (*s).lastw.tqh_first;
     while !wl.is_null() {
         idx = idx.wrapping_add(1);
@@ -3224,12 +3208,8 @@ unsafe extern "C" fn format_cb_window_linked_sessions_list(
     }
     wl = (*w).winlinks.tqh_first;
     while !wl.is_null() {
-        if evbuffer_get_length(buffer) > 0 as libc::c_int as libc::c_ulong {
-            evbuffer_add(
-                buffer,
-                b",\x00" as *const u8 as *const libc::c_char as *const libc::c_void,
-                1 as libc::c_int as size_t,
-            );
+        if evbuffer_get_length(buffer) > 0u64 {
+            evbuffer_add(buffer, b",\x00" as *const u8 as *const libc::c_void, 1u64);
         }
         evbuffer_add_printf(
             buffer,
@@ -3239,12 +3219,12 @@ unsafe extern "C" fn format_cb_window_linked_sessions_list(
         wl = (*wl).wentry.tqe_next
     }
     size = evbuffer_get_length(buffer) as libc::c_int;
-    if size != 0 as libc::c_int {
+    if size != 0i32 {
         xasprintf(
             &mut value as *mut *mut libc::c_char,
             b"%.*s\x00" as *const u8 as *const libc::c_char,
             size,
-            evbuffer_pullup(buffer, -(1 as libc::c_int) as ssize_t),
+            evbuffer_pullup(buffer, -1i64),
         );
     }
     evbuffer_free(buffer);
@@ -3256,7 +3236,7 @@ unsafe extern "C" fn format_cb_window_active_sessions(
 ) -> *mut libc::c_char {
     let mut w: *mut window = (*(*ft).wl).window;
     let mut wl: *mut winlink = 0 as *mut winlink;
-    let mut n: u_int = 0 as libc::c_int as u_int;
+    let mut n: u_int = 0u32;
     let mut value: *mut libc::c_char = 0 as *mut libc::c_char;
     wl = (*w).winlinks.tqh_first;
     while !wl.is_null() {
@@ -3288,12 +3268,8 @@ unsafe extern "C" fn format_cb_window_active_sessions_list(
     wl = (*w).winlinks.tqh_first;
     while !wl.is_null() {
         if (*(*wl).session).curw == wl {
-            if evbuffer_get_length(buffer) > 0 as libc::c_int as libc::c_ulong {
-                evbuffer_add(
-                    buffer,
-                    b",\x00" as *const u8 as *const libc::c_char as *const libc::c_void,
-                    1 as libc::c_int as size_t,
-                );
+            if evbuffer_get_length(buffer) > 0u64 {
+                evbuffer_add(buffer, b",\x00" as *const u8 as *const libc::c_void, 1u64);
             }
             evbuffer_add_printf(
                 buffer,
@@ -3304,12 +3280,12 @@ unsafe extern "C" fn format_cb_window_active_sessions_list(
         wl = (*wl).wentry.tqe_next
     }
     size = evbuffer_get_length(buffer) as libc::c_int;
-    if size != 0 as libc::c_int {
+    if size != 0i32 {
         xasprintf(
             &mut value as *mut *mut libc::c_char,
             b"%.*s\x00" as *const u8 as *const libc::c_char,
             size,
-            evbuffer_pullup(buffer, -(1 as libc::c_int) as ssize_t),
+            evbuffer_pullup(buffer, -1i64),
         );
     }
     evbuffer_free(buffer);
@@ -3322,7 +3298,7 @@ unsafe extern "C" fn format_cb_window_active_clients(
     let mut w: *mut window = (*(*ft).wl).window;
     let mut loop_0: *mut client = 0 as *mut client;
     let mut client_session: *mut session = 0 as *mut session;
-    let mut n: u_int = 0 as libc::c_int as u_int;
+    let mut n: u_int = 0u32;
     let mut value: *mut libc::c_char = 0 as *mut libc::c_char;
     loop_0 = clients.tqh_first;
     while !loop_0.is_null() {
@@ -3360,12 +3336,8 @@ unsafe extern "C" fn format_cb_window_active_clients_list(
         client_session = (*loop_0).session;
         if !client_session.is_null() {
             if w == (*(*client_session).curw).window {
-                if evbuffer_get_length(buffer) > 0 as libc::c_int as libc::c_ulong {
-                    evbuffer_add(
-                        buffer,
-                        b",\x00" as *const u8 as *const libc::c_char as *const libc::c_void,
-                        1 as libc::c_int as size_t,
-                    );
+                if evbuffer_get_length(buffer) > 0u64 {
+                    evbuffer_add(buffer, b",\x00" as *const u8 as *const libc::c_void, 1u64);
                 }
                 evbuffer_add_printf(
                     buffer,
@@ -3377,12 +3349,12 @@ unsafe extern "C" fn format_cb_window_active_clients_list(
         loop_0 = (*loop_0).entry.tqe_next
     }
     size = evbuffer_get_length(buffer) as libc::c_int;
-    if size != 0 as libc::c_int {
+    if size != 0i32 {
         xasprintf(
             &mut value as *mut *mut libc::c_char,
             b"%.*s\x00" as *const u8 as *const libc::c_char,
             size,
-            evbuffer_pullup(buffer, -(1 as libc::c_int) as ssize_t),
+            evbuffer_pullup(buffer, -1i64),
         );
     }
     evbuffer_free(buffer);
@@ -3456,30 +3428,30 @@ unsafe extern "C" fn format_cb_history_bytes(mut ft: *mut format_tree) -> *mut l
     let mut wp: *mut window_pane = (*ft).wp;
     let mut gd: *mut grid = 0 as *mut grid;
     let mut gl: *mut grid_line = 0 as *mut grid_line;
-    let mut size: size_t = 0 as libc::c_int as size_t;
+    let mut size: size_t = 0u64;
     let mut i: u_int = 0;
     let mut value: *mut libc::c_char = 0 as *mut libc::c_char;
     if wp.is_null() {
         return 0 as *mut libc::c_char;
     }
     gd = (*wp).base.grid;
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < (*gd).hsize.wrapping_add((*gd).sy) {
         gl = grid_get_line(gd, i);
-        size = (size as libc::c_ulong).wrapping_add(
+        size = (size).wrapping_add(
             ((*gl).cellsize as libc::c_ulong)
                 .wrapping_mul(::std::mem::size_of::<grid_cell_entry>() as libc::c_ulong),
-        ) as size_t as size_t;
-        size = (size as libc::c_ulong).wrapping_add(
+        );
+        size = (size).wrapping_add(
             ((*gl).extdsize as libc::c_ulong)
                 .wrapping_mul(::std::mem::size_of::<grid_extd_entry>() as libc::c_ulong),
-        ) as size_t as size_t;
+        );
         i = i.wrapping_add(1)
     }
-    size = (size as libc::c_ulong).wrapping_add(
+    size = (size).wrapping_add(
         ((*gd).hsize.wrapping_add((*gd).sy) as libc::c_ulong)
             .wrapping_mul(::std::mem::size_of::<grid_line>() as libc::c_ulong),
-    ) as size_t as size_t;
+    );
     xasprintf(
         &mut value as *mut *mut libc::c_char,
         b"%zu\x00" as *const u8 as *const libc::c_char,
@@ -3494,20 +3466,19 @@ unsafe extern "C" fn format_cb_history_all_bytes(mut ft: *mut format_tree) -> *m
     let mut gl: *mut grid_line = 0 as *mut grid_line;
     let mut i: u_int = 0;
     let mut lines: u_int = 0;
-    let mut cells: u_int = 0 as libc::c_int as u_int;
-    let mut extended_cells: u_int = 0 as libc::c_int as u_int;
+    let mut cells: u_int = 0u32;
+    let mut extended_cells: u_int = 0u32;
     let mut value: *mut libc::c_char = 0 as *mut libc::c_char;
     if wp.is_null() {
         return 0 as *mut libc::c_char;
     }
     gd = (*wp).base.grid;
     lines = (*gd).hsize.wrapping_add((*gd).sy);
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < lines {
         gl = grid_get_line(gd, i);
-        cells = (cells as libc::c_uint).wrapping_add((*gl).cellsize) as u_int as u_int;
-        extended_cells =
-            (extended_cells as libc::c_uint).wrapping_add((*gl).extdsize) as u_int as u_int;
+        cells = (cells).wrapping_add((*gl).cellsize);
+        extended_cells = (extended_cells).wrapping_add((*gl).extdsize);
         i = i.wrapping_add(1)
     }
     xasprintf(
@@ -3538,30 +3509,25 @@ unsafe extern "C" fn format_cb_pane_tabs(mut ft: *mut format_tree) -> *mut libc:
     if buffer.is_null() {
         fatalx(b"out of memory\x00" as *const u8 as *const libc::c_char);
     }
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < (*(*wp).base.grid).sx {
-        if !(*(*wp).base.tabs.offset((i >> 3 as libc::c_int) as isize) as libc::c_int
-            & (1 as libc::c_int) << (i & 0x7 as libc::c_int as libc::c_uint)
+        if !(*(*wp).base.tabs.offset((i >> 3i32) as isize) as libc::c_int & (1i32) << (i & 0x7u32)
             == 0)
         {
-            if evbuffer_get_length(buffer) > 0 as libc::c_int as libc::c_ulong {
-                evbuffer_add(
-                    buffer,
-                    b",\x00" as *const u8 as *const libc::c_char as *const libc::c_void,
-                    1 as libc::c_int as size_t,
-                );
+            if evbuffer_get_length(buffer) > 0u64 {
+                evbuffer_add(buffer, b",\x00" as *const u8 as *const libc::c_void, 1u64);
             }
             evbuffer_add_printf(buffer, b"%u\x00" as *const u8 as *const libc::c_char, i);
         }
         i = i.wrapping_add(1)
     }
     size = evbuffer_get_length(buffer) as libc::c_int;
-    if size != 0 as libc::c_int {
+    if size != 0i32 {
         xasprintf(
             &mut value as *mut *mut libc::c_char,
             b"%.*s\x00" as *const u8 as *const libc::c_char,
             size,
-            evbuffer_pullup(buffer, -(1 as libc::c_int) as ssize_t),
+            evbuffer_pullup(buffer, -1i64),
         );
     }
     evbuffer_free(buffer);
@@ -3588,12 +3554,8 @@ unsafe extern "C" fn format_cb_session_group_list(mut ft: *mut format_tree) -> *
     }
     loop_0 = (*sg).sessions.tqh_first;
     while !loop_0.is_null() {
-        if evbuffer_get_length(buffer) > 0 as libc::c_int as libc::c_ulong {
-            evbuffer_add(
-                buffer,
-                b",\x00" as *const u8 as *const libc::c_char as *const libc::c_void,
-                1 as libc::c_int as size_t,
-            );
+        if evbuffer_get_length(buffer) > 0u64 {
+            evbuffer_add(buffer, b",\x00" as *const u8 as *const libc::c_void, 1u64);
         }
         evbuffer_add_printf(
             buffer,
@@ -3603,12 +3565,12 @@ unsafe extern "C" fn format_cb_session_group_list(mut ft: *mut format_tree) -> *
         loop_0 = (*loop_0).gentry.tqe_next
     }
     size = evbuffer_get_length(buffer) as libc::c_int;
-    if size != 0 as libc::c_int {
+    if size != 0i32 {
         xasprintf(
             &mut value as *mut *mut libc::c_char,
             b"%.*s\x00" as *const u8 as *const libc::c_char,
             size,
-            evbuffer_pullup(buffer, -(1 as libc::c_int) as ssize_t),
+            evbuffer_pullup(buffer, -1i64),
         );
     }
     evbuffer_free(buffer);
@@ -3644,12 +3606,8 @@ unsafe extern "C" fn format_cb_session_group_attached_list(
             session_loop = (*sg).sessions.tqh_first;
             while !session_loop.is_null() {
                 if session_loop == client_session {
-                    if evbuffer_get_length(buffer) > 0 as libc::c_int as libc::c_ulong {
-                        evbuffer_add(
-                            buffer,
-                            b",\x00" as *const u8 as *const libc::c_char as *const libc::c_void,
-                            1 as libc::c_int as size_t,
-                        );
+                    if evbuffer_get_length(buffer) > 0u64 {
+                        evbuffer_add(buffer, b",\x00" as *const u8 as *const libc::c_void, 1u64);
                     }
                     evbuffer_add_printf(
                         buffer,
@@ -3663,12 +3621,12 @@ unsafe extern "C" fn format_cb_session_group_attached_list(
         loop_0 = (*loop_0).entry.tqe_next
     }
     size = evbuffer_get_length(buffer) as libc::c_int;
-    if size != 0 as libc::c_int {
+    if size != 0i32 {
         xasprintf(
             &mut value as *mut *mut libc::c_char,
             b"%.*s\x00" as *const u8 as *const libc::c_char,
             size,
-            evbuffer_pullup(buffer, -(1 as libc::c_int) as ssize_t),
+            evbuffer_pullup(buffer, -1i64),
         );
     }
     evbuffer_free(buffer);
@@ -3677,7 +3635,7 @@ unsafe extern "C" fn format_cb_session_group_attached_list(
 /* Callback for pane_in_mode. */
 unsafe extern "C" fn format_cb_pane_in_mode(mut ft: *mut format_tree) -> *mut libc::c_char {
     let mut wp: *mut window_pane = (*ft).wp;
-    let mut n: u_int = 0 as libc::c_int as u_int;
+    let mut n: u_int = 0u32;
     let mut wme: *mut window_mode_entry = 0 as *mut window_mode_entry;
     let mut value: *mut libc::c_char = 0 as *mut libc::c_char;
     if wp.is_null() {
@@ -3710,10 +3668,10 @@ unsafe extern "C" fn format_cb_pane_at_top(mut ft: *mut format_tree) -> *mut lib
         (*w).options,
         b"pane-border-status\x00" as *const u8 as *const libc::c_char,
     ) as libc::c_int;
-    if status == 1 as libc::c_int {
-        flag = ((*wp).yoff == 1 as libc::c_int as libc::c_uint) as libc::c_int
+    if status == 1i32 {
+        flag = ((*wp).yoff == 1u32) as libc::c_int
     } else {
-        flag = ((*wp).yoff == 0 as libc::c_int as libc::c_uint) as libc::c_int
+        flag = ((*wp).yoff == 0u32) as libc::c_int
     }
     xasprintf(
         &mut value as *mut *mut libc::c_char,
@@ -3737,9 +3695,8 @@ unsafe extern "C" fn format_cb_pane_at_bottom(mut ft: *mut format_tree) -> *mut 
         (*w).options,
         b"pane-border-status\x00" as *const u8 as *const libc::c_char,
     ) as libc::c_int;
-    if status == 2 as libc::c_int {
-        flag = ((*wp).yoff.wrapping_add((*wp).sy)
-            == (*w).sy.wrapping_sub(1 as libc::c_int as libc::c_uint)) as libc::c_int
+    if status == 2i32 {
+        flag = ((*wp).yoff.wrapping_add((*wp).sy) == (*w).sy.wrapping_sub(1u32)) as libc::c_int
     } else {
         flag = ((*wp).yoff.wrapping_add((*wp).sy) == (*w).sy) as libc::c_int
     }
@@ -3771,7 +3728,7 @@ unsafe extern "C" fn format_cb_cursor_character(mut ft: *mut format_tree) -> *mu
         return 0 as *mut libc::c_char;
     }
     grid_view_get_cell((*wp).base.grid, (*wp).base.cx, (*wp).base.cy, &mut gc);
-    if !(gc.flags as libc::c_int) & 0x4 as libc::c_int != 0 {
+    if !(gc.flags as libc::c_int) & 0x4i32 != 0 {
         xasprintf(
             &mut value as *mut *mut libc::c_char,
             b"%.*s\x00" as *const u8 as *const libc::c_char,
@@ -3805,8 +3762,8 @@ pub unsafe extern "C" fn format_grid_word(
     let mut ws: *const libc::c_char = 0 as *const libc::c_char;
     let mut ud: *mut Utf8Data = 0 as *mut Utf8Data;
     let mut end: u_int = 0;
-    let mut size: size_t = 0 as libc::c_int as size_t;
-    let mut found: libc::c_int = 0 as libc::c_int;
+    let mut size: size_t = 0u64;
+    let mut found: libc::c_int = 0i32;
     let mut s: *mut libc::c_char = 0 as *mut libc::c_char;
     ws = options_get_string(
         global_s_options,
@@ -3814,24 +3771,24 @@ pub unsafe extern "C" fn format_grid_word(
     );
     loop {
         grid_get_cell(gd, x, y, &mut gc);
-        if gc.flags as libc::c_int & 0x4 as libc::c_int != 0 {
+        if gc.flags as libc::c_int & 0x4i32 != 0 {
             break;
         }
         if utf8_cstrhas(ws, &mut gc.data) != 0 {
-            found = 1 as libc::c_int;
+            found = 1i32;
             break;
         } else {
-            if x == 0 as libc::c_int as libc::c_uint {
-                if y == 0 as libc::c_int as libc::c_uint {
+            if x == 0u32 {
+                if y == 0u32 {
                     break;
                 }
-                gl = grid_peek_line(gd, y.wrapping_sub(1 as libc::c_int as libc::c_uint));
-                if !(*gl).flags & 0x1 as libc::c_int != 0 {
+                gl = grid_peek_line(gd, y.wrapping_sub(1u32));
+                if !(*gl).flags & 0x1i32 != 0 {
                     break;
                 }
                 y = y.wrapping_sub(1);
                 x = grid_line_length(gd, y);
-                if x == 0 as libc::c_int as libc::c_uint {
+                if x == 0u32 {
                     break;
                 }
             }
@@ -3841,29 +3798,23 @@ pub unsafe extern "C" fn format_grid_word(
     loop {
         if found != 0 {
             end = grid_line_length(gd, y);
-            if end == 0 as libc::c_int as libc::c_uint
-                || x == end.wrapping_sub(1 as libc::c_int as libc::c_uint)
-            {
-                if y == (*gd)
-                    .hsize
-                    .wrapping_add((*gd).sy)
-                    .wrapping_sub(1 as libc::c_int as libc::c_uint)
-                {
+            if end == 0u32 || x == end.wrapping_sub(1u32) {
+                if y == (*gd).hsize.wrapping_add((*gd).sy).wrapping_sub(1u32) {
                     break;
                 }
                 gl = grid_peek_line(gd, y);
-                if !(*gl).flags & 0x1 as libc::c_int != 0 {
+                if !(*gl).flags & 0x1i32 != 0 {
                     break;
                 }
                 y = y.wrapping_add(1);
-                x = 0 as libc::c_int as u_int
+                x = 0u32
             } else {
                 x = x.wrapping_add(1)
             }
         }
-        found = 1 as libc::c_int;
+        found = 1i32;
         grid_get_cell(gd, x, y, &mut gc);
-        if gc.flags as libc::c_int & 0x4 as libc::c_int != 0 {
+        if gc.flags as libc::c_int & 0x4i32 != 0 {
             break;
         }
         if utf8_cstrhas(ws, &mut gc.data) != 0 {
@@ -3871,7 +3822,7 @@ pub unsafe extern "C" fn format_grid_word(
         }
         ud = xreallocarray(
             ud as *mut libc::c_void,
-            size.wrapping_add(2 as libc::c_int as libc::c_ulong),
+            size.wrapping_add(2u64),
             ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
         ) as *mut Utf8Data;
         let fresh0 = size;
@@ -3882,8 +3833,8 @@ pub unsafe extern "C" fn format_grid_word(
             ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
         );
     }
-    if size != 0 as libc::c_int as libc::c_ulong {
-        (*ud.offset(size as isize)).size = 0 as libc::c_int as u_char;
+    if size != 0u64 {
+        (*ud.offset(size as isize)).size = 0u8;
         s = utf8_tocstr(ud);
         free(ud as *mut libc::c_void);
     }
@@ -3903,7 +3854,7 @@ unsafe extern "C" fn format_cb_mouse_word(mut ft: *mut format_tree) -> *mut libc
     if wp.is_null() {
         return 0 as *mut libc::c_char;
     }
-    if cmd_mouse_at(wp, &mut (*ft).m, &mut x, &mut y, 0 as libc::c_int) != 0 as libc::c_int {
+    if cmd_mouse_at(wp, &mut (*ft).m, &mut x, &mut y, 0i32) != 0i32 {
         return 0 as *mut libc::c_char;
     }
     if !(*wp).modes.tqh_first.is_null() {
@@ -3936,17 +3887,17 @@ pub unsafe extern "C" fn format_grid_line(mut gd: *mut grid, mut y: u_int) -> *m
     };
     let mut ud: *mut Utf8Data = 0 as *mut Utf8Data;
     let mut x: u_int = 0;
-    let mut size: size_t = 0 as libc::c_int as size_t;
+    let mut size: size_t = 0u64;
     let mut s: *mut libc::c_char = 0 as *mut libc::c_char;
-    x = 0 as libc::c_int as u_int;
+    x = 0u32;
     while x < grid_line_length(gd, y) {
         grid_get_cell(gd, x, y, &mut gc);
-        if gc.flags as libc::c_int & 0x4 as libc::c_int != 0 {
+        if gc.flags as libc::c_int & 0x4i32 != 0 {
             break;
         }
         ud = xreallocarray(
             ud as *mut libc::c_void,
-            size.wrapping_add(2 as libc::c_int as libc::c_ulong),
+            size.wrapping_add(2u64),
             ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
         ) as *mut Utf8Data;
         let fresh1 = size;
@@ -3958,8 +3909,8 @@ pub unsafe extern "C" fn format_grid_line(mut gd: *mut grid, mut y: u_int) -> *m
         );
         x = x.wrapping_add(1)
     }
-    if size != 0 as libc::c_int as libc::c_ulong {
-        (*ud.offset(size as isize)).size = 0 as libc::c_int as u_char;
+    if size != 0u64 {
+        (*ud.offset(size as isize)).size = 0u8;
         s = utf8_tocstr(ud);
         free(ud as *mut libc::c_void);
     }
@@ -3978,7 +3929,7 @@ unsafe extern "C" fn format_cb_mouse_line(mut ft: *mut format_tree) -> *mut libc
     if wp.is_null() {
         return 0 as *mut libc::c_char;
     }
-    if cmd_mouse_at(wp, &mut (*ft).m, &mut x, &mut y, 0 as libc::c_int) != 0 as libc::c_int {
+    if cmd_mouse_at(wp, &mut (*ft).m, &mut x, &mut y, 0i32) != 0i32 {
         return 0 as *mut libc::c_char;
     }
     if !(*wp).modes.tqh_first.is_null() {
@@ -3996,7 +3947,7 @@ unsafe extern "C" fn format_cb_mouse_line(mut ft: *mut format_tree) -> *mut libc
 #[no_mangle]
 pub unsafe extern "C" fn format_merge(mut ft: *mut format_tree, mut from: *mut format_tree) {
     let mut fe: *mut format_entry = 0 as *mut format_entry;
-    fe = format_entry_tree_RB_MINMAX(&mut (*from).tree, -(1 as libc::c_int));
+    fe = format_entry_tree_RB_MINMAX(&mut (*from).tree, -(1i32));
     while !fe.is_null() {
         if !(*fe).value.is_null() {
             format_add(
@@ -4035,7 +3986,7 @@ unsafe extern "C" fn format_create_add_item(
             b"%%%u\x00" as *const u8 as *const libc::c_char,
             (*wp).id,
         );
-        if cmd_mouse_at(wp, m, &mut x, &mut y, 0 as libc::c_int) == 0 as libc::c_int {
+        if cmd_mouse_at(wp, m, &mut x, &mut y, 0i32) == 0i32 {
             format_add(
                 ft,
                 b"mouse_x\x00" as *const u8 as *const libc::c_char,
@@ -4086,8 +4037,8 @@ pub unsafe extern "C" fn format_create(
     if event_initialized(&mut format_job_event) == 0 {
         event_set(
             &mut format_job_event,
-            -(1 as libc::c_int),
-            0 as libc::c_int as libc::c_short,
+            -(1i32),
+            0i16,
             Some(
                 format_job_timer
                     as unsafe extern "C" fn(
@@ -4098,16 +4049,9 @@ pub unsafe extern "C" fn format_create(
             ),
             0 as *mut libc::c_void,
         );
-        format_job_timer(
-            -(1 as libc::c_int),
-            0 as libc::c_int as libc::c_short,
-            0 as *mut libc::c_void,
-        );
+        format_job_timer(-(1i32), 0i16, 0 as *mut libc::c_void);
     }
-    ft = xcalloc(
-        1 as libc::c_int as size_t,
-        ::std::mem::size_of::<format_tree>() as libc::c_ulong,
-    ) as *mut format_tree;
+    ft = xcalloc(1u64, ::std::mem::size_of::<format_tree>() as libc::c_ulong) as *mut format_tree;
     (*ft).tree.rbh_root = 0 as *mut format_entry;
     if !c.is_null() {
         (*ft).client = c;
@@ -4162,7 +4106,7 @@ pub unsafe extern "C" fn format_create(
             tmp[strcspn(
                 tmp.as_mut_ptr(),
                 b"-\x00" as *const u8 as *const libc::c_char,
-            ) as usize] = '_' as i32 as libc::c_char;
+            ) as usize] = '_' as libc::c_char;
             format_add(
                 ft,
                 tmp.as_mut_ptr(),
@@ -4182,10 +4126,10 @@ pub unsafe extern "C" fn format_create(
 pub unsafe extern "C" fn format_free(mut ft: *mut format_tree) {
     let mut fe: *mut format_entry = 0 as *mut format_entry;
     let mut fe1: *mut format_entry = 0 as *mut format_entry;
-    fe = format_entry_tree_RB_MINMAX(&mut (*ft).tree, -(1 as libc::c_int));
+    fe = format_entry_tree_RB_MINMAX(&mut (*ft).tree, -(1i32));
     while !fe.is_null() && {
         fe1 = format_entry_tree_RB_NEXT(fe);
-        (1 as libc::c_int) != 0
+        (1i32) != 0
     } {
         format_entry_tree_RB_REMOVE(&mut (*ft).tree, fe);
         free((*fe).value as *mut libc::c_void);
@@ -4213,14 +4157,14 @@ pub unsafe extern "C" fn format_each(
 ) {
     let mut fe: *mut format_entry = 0 as *mut format_entry;
     let mut s: [libc::c_char; 64] = [0; 64];
-    fe = format_entry_tree_RB_MINMAX(&mut (*ft).tree, -(1 as libc::c_int));
+    fe = format_entry_tree_RB_MINMAX(&mut (*ft).tree, -(1i32));
     while !fe.is_null() {
-        if (*fe).time != 0 as libc::c_int as libc::c_long {
+        if (*fe).time != 0i64 {
             xsnprintf(
                 s.as_mut_ptr(),
                 ::std::mem::size_of::<[libc::c_char; 64]>() as libc::c_ulong,
                 b"%lld\x00" as *const u8 as *const libc::c_char,
-                (*fe).time as libc::c_longlong,
+                (*fe).time,
             );
             cb.expect("non-null function pointer")((*fe).key, s.as_mut_ptr(), arg);
         } else {
@@ -4256,7 +4200,7 @@ pub unsafe extern "C" fn format_add(
         fe = fe_now
     }
     (*fe).cb = None;
-    (*fe).time = 0 as libc::c_int as time_t;
+    (*fe).time = 0i64;
     ap = args.clone();
     xvasprintf(&mut (*fe).value, fmt, ap.as_va_list());
 }
@@ -4301,7 +4245,7 @@ pub unsafe extern "C" fn format_add_cb(
         fe = fe_now
     }
     (*fe).cb = cb;
-    (*fe).time = 0 as libc::c_int as time_t;
+    (*fe).time = 0i64;
     (*fe).value = 0 as *mut libc::c_char;
 }
 /* Quote special characters in string. */
@@ -4309,11 +4253,7 @@ unsafe extern "C" fn format_quote(mut s: *const libc::c_char) -> *mut libc::c_ch
     let mut cp: *const libc::c_char = 0 as *const libc::c_char;
     let mut out: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut at: *mut libc::c_char = 0 as *mut libc::c_char;
-    out = xmalloc(
-        strlen(s)
-            .wrapping_mul(2 as libc::c_int as libc::c_ulong)
-            .wrapping_add(1 as libc::c_int as libc::c_ulong),
-    ) as *mut libc::c_char;
+    out = xmalloc(strlen(s).wrapping_mul(2u64).wrapping_add(1u64)) as *mut libc::c_char;
     at = out;
     cp = s;
     while *cp as libc::c_int != '\u{0}' as i32 {
@@ -4325,14 +4265,14 @@ unsafe extern "C" fn format_quote(mut s: *const libc::c_char) -> *mut libc::c_ch
         {
             let fresh2 = at;
             at = at.offset(1);
-            *fresh2 = '\\' as i32 as libc::c_char
+            *fresh2 = '\\' as libc::c_char
         }
         let fresh3 = at;
         at = at.offset(1);
         *fresh3 = *cp;
         cp = cp.offset(1)
     }
-    *at = '\u{0}' as i32 as libc::c_char;
+    *at = '\u{0}' as libc::c_char;
     return out;
 }
 /* Make a prettier time. */
@@ -4374,7 +4314,7 @@ unsafe extern "C" fn format_pretty_time(mut t: time_t) -> *mut libc::c_char {
     localtime_r(&mut now, &mut now_tm);
     localtime_r(&mut t, &mut tm);
     /* Last 24 hours. */
-    if age < (24 as libc::c_int * 3600 as libc::c_int) as libc::c_long {
+    if age < (24i32 * 3600i32) as libc::c_long {
         strftime(
             s.as_mut_ptr(),
             ::std::mem::size_of::<[libc::c_char; 6]>() as libc::c_ulong,
@@ -4385,7 +4325,7 @@ unsafe extern "C" fn format_pretty_time(mut t: time_t) -> *mut libc::c_char {
     }
     /* This month or last 28 days. */
     if tm.tm_year == now_tm.tm_year && tm.tm_mon == now_tm.tm_mon
-        || age < (28 as libc::c_int * 24 as libc::c_int * 3600 as libc::c_int) as libc::c_long
+        || age < (28i32 * 24i32 * 3600i32) as libc::c_long
     {
         strftime(
             s.as_mut_ptr(),
@@ -4397,7 +4337,7 @@ unsafe extern "C" fn format_pretty_time(mut t: time_t) -> *mut libc::c_char {
     }
     /* Last 12 months. */
     if tm.tm_year == now_tm.tm_year && tm.tm_mon < now_tm.tm_mon
-        || tm.tm_year == now_tm.tm_year - 1 as libc::c_int && tm.tm_mon > now_tm.tm_mon
+        || tm.tm_year == now_tm.tm_year - 1i32 && tm.tm_mon > now_tm.tm_mon
     {
         strftime(
             s.as_mut_ptr(),
@@ -4444,7 +4384,7 @@ unsafe extern "C" fn format_find(
     let mut saved: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut s: [libc::c_char; 512] = [0; 512];
     let mut errstr: *const libc::c_char = 0 as *const libc::c_char;
-    let mut t: time_t = 0 as libc::c_int as time_t;
+    let mut t: time_t = 0i64;
     let mut tm: tm = tm {
         tm_sec: 0,
         tm_min: 0,
@@ -4458,29 +4398,29 @@ unsafe extern "C" fn format_find(
         tm_gmtoff: 0,
         tm_zone: 0 as *const libc::c_char,
     };
-    o = options_parse_get(global_options, key, &mut idx, 0 as libc::c_int);
+    o = options_parse_get(global_options, key, &mut idx, 0i32);
     if o.is_null() && !(*ft).wp.is_null() {
-        o = options_parse_get((*(*ft).wp).options, key, &mut idx, 0 as libc::c_int)
+        o = options_parse_get((*(*ft).wp).options, key, &mut idx, 0i32)
     }
     if o.is_null() && !(*ft).w.is_null() {
-        o = options_parse_get((*(*ft).w).options, key, &mut idx, 0 as libc::c_int)
+        o = options_parse_get((*(*ft).w).options, key, &mut idx, 0i32)
     }
     if o.is_null() {
-        o = options_parse_get(global_w_options, key, &mut idx, 0 as libc::c_int)
+        o = options_parse_get(global_w_options, key, &mut idx, 0i32)
     }
     if o.is_null() && !(*ft).s.is_null() {
-        o = options_parse_get((*(*ft).s).options, key, &mut idx, 0 as libc::c_int)
+        o = options_parse_get((*(*ft).s).options, key, &mut idx, 0i32)
     }
     if o.is_null() {
-        o = options_parse_get(global_s_options, key, &mut idx, 0 as libc::c_int)
+        o = options_parse_get(global_s_options, key, &mut idx, 0i32)
     }
     if !o.is_null() {
-        found = options_to_string(o, idx, 1 as libc::c_int)
+        found = options_to_string(o, idx, 1i32)
     } else {
         fe_find.key = key as *mut libc::c_char;
         fe = format_entry_tree_RB_FIND(&mut (*ft).tree, &mut fe_find);
         if !fe.is_null() {
-            if (*fe).time != 0 as libc::c_int as libc::c_long {
+            if (*fe).time != 0i64 {
                 t = (*fe).time
             } else {
                 if (*fe).value.is_null() && (*fe).cb.is_some() {
@@ -4492,7 +4432,7 @@ unsafe extern "C" fn format_find(
                 found = xstrdup((*fe).value)
             }
         } else {
-            if !modifiers & 0x1 as libc::c_int != 0 {
+            if !modifiers & 0x1i32 != 0 {
                 envent = 0 as *mut environ_entry;
                 if !(*ft).s.is_null() {
                     envent = environ_find((*(*ft).s).environ, key)
@@ -4515,23 +4455,18 @@ unsafe extern "C" fn format_find(
             }
         }
     }
-    if modifiers & 0x1 as libc::c_int != 0 {
-        if t == 0 as libc::c_int as libc::c_long && !found.is_null() {
-            t = strtonum(
-                found,
-                0 as libc::c_int as libc::c_longlong,
-                9223372036854775807 as libc::c_long as libc::c_longlong,
-                &mut errstr,
-            ) as time_t;
+    if modifiers & 0x1i32 != 0 {
+        if t == 0i64 && !found.is_null() {
+            t = strtonum(found, 0i64, 9223372036854775807i64, &mut errstr);
             if !errstr.is_null() {
-                t = 0 as libc::c_int as time_t
+                t = 0i64
             }
             free(found as *mut libc::c_void);
         }
-        if t == 0 as libc::c_int as libc::c_long {
+        if t == 0i64 {
             return 0 as *mut libc::c_char;
         }
-        if modifiers & 0x400 as libc::c_int != 0 {
+        if modifiers & 0x400i32 != 0 {
             found = format_pretty_time(t)
         } else {
             if !time_format.is_null() {
@@ -4547,32 +4482,32 @@ unsafe extern "C" fn format_find(
                 s[strcspn(
                     s.as_mut_ptr(),
                     b"\n\x00" as *const u8 as *const libc::c_char,
-                ) as usize] = '\u{0}' as i32 as libc::c_char
+                ) as usize] = '\u{0}' as libc::c_char
             }
             found = xstrdup(s.as_mut_ptr())
         }
         return found;
     }
-    if t != 0 as libc::c_int as libc::c_long {
+    if t != 0i64 {
         xasprintf(
             &mut found as *mut *mut libc::c_char,
             b"%lld\x00" as *const u8 as *const libc::c_char,
-            t as libc::c_longlong,
+            t,
         );
     } else if found.is_null() {
         return 0 as *mut libc::c_char;
     }
-    if modifiers & 0x2 as libc::c_int != 0 {
+    if modifiers & 0x2i32 != 0 {
         saved = found;
         found = xstrdup(__xpg_basename(saved));
         free(saved as *mut libc::c_void);
     }
-    if modifiers & 0x4 as libc::c_int != 0 {
+    if modifiers & 0x4i32 != 0 {
         saved = found;
         found = xstrdup(dirname(saved));
         free(saved as *mut libc::c_void);
     }
-    if modifiers & 0x8 as libc::c_int != 0 {
+    if modifiers & 0x8i32 != 0 {
         saved = found;
         found = xstrdup(format_quote(saved));
         free(saved as *mut libc::c_void);
@@ -4583,23 +4518,21 @@ unsafe extern "C" fn format_find(
 unsafe extern "C" fn format_strip(mut s: *const libc::c_char) -> *mut libc::c_char {
     let mut out: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut cp: *mut libc::c_char = 0 as *mut libc::c_char;
-    let mut brackets: libc::c_int = 0 as libc::c_int;
-    out = xmalloc(strlen(s).wrapping_add(1 as libc::c_int as libc::c_ulong)) as *mut libc::c_char;
+    let mut brackets: libc::c_int = 0i32;
+    out = xmalloc(strlen(s).wrapping_add(1u64)) as *mut libc::c_char;
     cp = out;
     while *s as libc::c_int != '\u{0}' as i32 {
-        if *s as libc::c_int == '#' as i32
-            && *s.offset(1 as libc::c_int as isize) as libc::c_int == '{' as i32
-        {
+        if *s as libc::c_int == '#' as i32 && *s.offset(1isize) as libc::c_int == '{' as i32 {
             brackets += 1
         }
         if *s as libc::c_int == '#' as i32
             && !strchr(
                 b",#{}:\x00" as *const u8 as *const libc::c_char,
-                *s.offset(1 as libc::c_int as isize) as libc::c_int,
+                *s.offset(1isize) as libc::c_int,
             )
             .is_null()
         {
-            if brackets != 0 as libc::c_int {
+            if brackets != 0i32 {
                 let fresh4 = cp;
                 cp = cp.offset(1);
                 *fresh4 = *s
@@ -4614,7 +4547,7 @@ unsafe extern "C" fn format_strip(mut s: *const libc::c_char) -> *mut libc::c_ch
         }
         s = s.offset(1)
     }
-    *cp = '\u{0}' as i32 as libc::c_char;
+    *cp = '\u{0}' as libc::c_char;
     return out;
 }
 /* Skip until end. */
@@ -4623,17 +4556,15 @@ pub unsafe extern "C" fn format_skip(
     mut s: *const libc::c_char,
     mut end: *const libc::c_char,
 ) -> *const libc::c_char {
-    let mut brackets: libc::c_int = 0 as libc::c_int;
+    let mut brackets: libc::c_int = 0i32;
     while *s as libc::c_int != '\u{0}' as i32 {
-        if *s as libc::c_int == '#' as i32
-            && *s.offset(1 as libc::c_int as isize) as libc::c_int == '{' as i32
-        {
+        if *s as libc::c_int == '#' as i32 && *s.offset(1isize) as libc::c_int == '{' as i32 {
             brackets += 1
         }
         if *s as libc::c_int == '#' as i32
             && !strchr(
                 b",#{}:\x00" as *const u8 as *const libc::c_char,
-                *s.offset(1 as libc::c_int as isize) as libc::c_int,
+                *s.offset(1isize) as libc::c_int,
             )
             .is_null()
         {
@@ -4642,7 +4573,7 @@ pub unsafe extern "C" fn format_skip(
             if *s as libc::c_int == '}' as i32 {
                 brackets -= 1
             }
-            if !strchr(end, *s as libc::c_int).is_null() && brackets == 0 as libc::c_int {
+            if !strchr(end, *s as libc::c_int).is_null() && brackets == 0i32 {
                 break;
             }
         }
@@ -4666,10 +4597,10 @@ unsafe extern "C" fn format_choose(
     let mut right0: *mut libc::c_char = 0 as *mut libc::c_char;
     cp = format_skip(s, b",\x00" as *const u8 as *const libc::c_char);
     if cp.is_null() {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
-    left0 = xstrndup(s, cp.wrapping_offset_from(s) as libc::c_long as size_t);
-    right0 = xstrdup(cp.offset(1 as libc::c_int as isize));
+    left0 = xstrndup(s, cp.wrapping_offset_from(s) as size_t);
+    right0 = xstrdup(cp.offset(1isize));
     if expand != 0 {
         *left = format_expand1(es, left0);
         free(left0 as *mut libc::c_void);
@@ -4679,19 +4610,19 @@ unsafe extern "C" fn format_choose(
         *left = left0;
         *right = right0
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 /* Is this true? */
 #[no_mangle]
 pub unsafe extern "C" fn format_true(mut s: *const libc::c_char) -> libc::c_int {
     if !s.is_null()
         && *s as libc::c_int != '\u{0}' as i32
-        && (*s.offset(0 as libc::c_int as isize) as libc::c_int != '0' as i32
-            || *s.offset(1 as libc::c_int as isize) as libc::c_int != '\u{0}' as i32)
+        && (*s.offset(0isize) as libc::c_int != '0' as i32
+            || *s.offset(1isize) as libc::c_int != '\u{0}' as i32)
     {
-        return 1 as libc::c_int;
+        return 1i32;
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 /* Check if modifier end. */
 unsafe extern "C" fn format_is_end(mut c: libc::c_char) -> libc::c_int {
@@ -4709,7 +4640,7 @@ unsafe extern "C" fn format_add_modifier(
     let mut fm: *mut format_modifier = 0 as *mut format_modifier;
     *list = xreallocarray(
         *list as *mut libc::c_void,
-        (*count).wrapping_add(1 as libc::c_int as libc::c_uint) as size_t,
+        (*count).wrapping_add(1u32) as size_t,
         ::std::mem::size_of::<format_modifier>() as libc::c_ulong,
     ) as *mut format_modifier;
     let fresh6 = *count;
@@ -4720,7 +4651,7 @@ unsafe extern "C" fn format_add_modifier(
         c as *const libc::c_void,
         n,
     );
-    (*fm).modifier[n as usize] = '\u{0}' as i32 as libc::c_char;
+    (*fm).modifier[n as usize] = '\u{0}' as libc::c_char;
     (*fm).size = n as u_int;
     (*fm).argv = argv;
     (*fm).argc = argc;
@@ -4728,7 +4659,7 @@ unsafe extern "C" fn format_add_modifier(
 /* Free modifier list. */
 unsafe extern "C" fn format_free_modifiers(mut list: *mut format_modifier, mut count: u_int) {
     let mut i: u_int = 0;
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < count {
         cmd_free_argv(
             (*list.offset(i as isize)).argc,
@@ -4763,7 +4694,7 @@ unsafe extern "C" fn format_build_modifiers(
      *	s/a/b
      *	||,&&,!=,==,<=,>=
      */
-    *count = 0 as libc::c_int as u_int;
+    *count = 0u32;
     while *cp as libc::c_int != '\u{0}' as i32 && *cp as libc::c_int != ':' as i32 {
         /* Skip any separator character. */
         if *cp as libc::c_int == ';' as i32 {
@@ -4772,182 +4703,159 @@ unsafe extern "C" fn format_build_modifiers(
         /* Check single character modifiers with no arguments. */
         if !strchr(
             b"lbdnqETSWP<>\x00" as *const u8 as *const libc::c_char,
-            *cp.offset(0 as libc::c_int as isize) as libc::c_int,
+            *cp.offset(0isize) as libc::c_int,
         )
         .is_null()
-            && format_is_end(*cp.offset(1 as libc::c_int as isize)) != 0
+            && format_is_end(*cp.offset(1isize)) != 0
         {
             format_add_modifier(
                 &mut list,
                 count,
                 cp,
-                1 as libc::c_int as size_t,
+                1u64,
                 0 as *mut *mut libc::c_char,
-                0 as libc::c_int,
+                0i32,
             );
             cp = cp.offset(1)
         } else if (memcmp(
-            b"||\x00" as *const u8 as *const libc::c_char as *const libc::c_void,
+            b"||\x00" as *const u8 as *const libc::c_void,
             cp as *const libc::c_void,
-            2 as libc::c_int as libc::c_ulong,
-        ) == 0 as libc::c_int
+            2u64,
+        ) == 0i32
             || memcmp(
-                b"&&\x00" as *const u8 as *const libc::c_char as *const libc::c_void,
+                b"&&\x00" as *const u8 as *const libc::c_void,
                 cp as *const libc::c_void,
-                2 as libc::c_int as libc::c_ulong,
-            ) == 0 as libc::c_int
+                2u64,
+            ) == 0i32
             || memcmp(
-                b"!=\x00" as *const u8 as *const libc::c_char as *const libc::c_void,
+                b"!=\x00" as *const u8 as *const libc::c_void,
                 cp as *const libc::c_void,
-                2 as libc::c_int as libc::c_ulong,
-            ) == 0 as libc::c_int
+                2u64,
+            ) == 0i32
             || memcmp(
-                b"==\x00" as *const u8 as *const libc::c_char as *const libc::c_void,
+                b"==\x00" as *const u8 as *const libc::c_void,
                 cp as *const libc::c_void,
-                2 as libc::c_int as libc::c_ulong,
-            ) == 0 as libc::c_int
+                2u64,
+            ) == 0i32
             || memcmp(
-                b"<=\x00" as *const u8 as *const libc::c_char as *const libc::c_void,
+                b"<=\x00" as *const u8 as *const libc::c_void,
                 cp as *const libc::c_void,
-                2 as libc::c_int as libc::c_ulong,
-            ) == 0 as libc::c_int
+                2u64,
+            ) == 0i32
             || memcmp(
-                b">=\x00" as *const u8 as *const libc::c_char as *const libc::c_void,
+                b">=\x00" as *const u8 as *const libc::c_void,
                 cp as *const libc::c_void,
-                2 as libc::c_int as libc::c_ulong,
-            ) == 0 as libc::c_int)
-            && format_is_end(*cp.offset(2 as libc::c_int as isize)) != 0
+                2u64,
+            ) == 0i32)
+            && format_is_end(*cp.offset(2isize)) != 0
         {
             format_add_modifier(
                 &mut list,
                 count,
                 cp,
-                2 as libc::c_int as size_t,
+                2u64,
                 0 as *mut *mut libc::c_char,
-                0 as libc::c_int,
+                0i32,
             );
-            cp = cp.offset(2 as libc::c_int as isize)
+            cp = cp.offset(2isize)
         } else {
             /* Then try double character with no arguments. */
             /* Now try single character with arguments. */
             if strchr(
                 b"mCst=pe\x00" as *const u8 as *const libc::c_char,
-                *cp.offset(0 as libc::c_int as isize) as libc::c_int,
+                *cp.offset(0isize) as libc::c_int,
             )
             .is_null()
             {
                 break;
             }
-            c = *cp.offset(0 as libc::c_int as isize);
+            c = *cp.offset(0isize);
             /* No arguments provided. */
-            if format_is_end(*cp.offset(1 as libc::c_int as isize)) != 0 {
+            if format_is_end(*cp.offset(1isize)) != 0 {
                 format_add_modifier(
                     &mut list,
                     count,
                     cp,
-                    1 as libc::c_int as size_t,
+                    1u64,
                     0 as *mut *mut libc::c_char,
-                    0 as libc::c_int,
+                    0i32,
                 );
                 cp = cp.offset(1)
             } else {
                 argv = 0 as *mut *mut libc::c_char;
-                argc = 0 as libc::c_int;
+                argc = 0i32;
                 /* Single argument with no wrapper character. */
-                if *(*__ctype_b_loc())
-                    .offset(*cp.offset(1 as libc::c_int as isize) as libc::c_int as isize)
+                if *(*__ctype_b_loc()).offset(*cp.offset(1isize) as libc::c_int as isize)
                     as libc::c_int
-                    & _ISpunct as libc::c_int as libc::c_ushort as libc::c_int
+                    & _ISpunct as libc::c_ushort as libc::c_int
                     == 0
-                    || *cp.offset(1 as libc::c_int as isize) as libc::c_int == '-' as i32
+                    || *cp.offset(1isize) as libc::c_int == '-' as i32
                 {
                     end = format_skip(
-                        cp.offset(1 as libc::c_int as isize),
+                        cp.offset(1isize),
                         b":;\x00" as *const u8 as *const libc::c_char,
                     );
                     if end.is_null() {
                         break;
                     }
                     argv = xcalloc(
-                        1 as libc::c_int as size_t,
+                        1u64,
                         ::std::mem::size_of::<*mut libc::c_char>() as libc::c_ulong,
                     ) as *mut *mut libc::c_char;
                     value = xstrndup(
-                        cp.offset(1 as libc::c_int as isize),
-                        end.wrapping_offset_from(cp.offset(1 as libc::c_int as isize))
-                            as libc::c_long as size_t,
+                        cp.offset(1isize),
+                        end.wrapping_offset_from(cp.offset(1isize)) as size_t,
                     );
-                    let ref mut fresh7 = *argv.offset(0 as libc::c_int as isize);
+                    let ref mut fresh7 = *argv.offset(0isize);
                     *fresh7 = format_expand1(es, value);
                     free(value as *mut libc::c_void);
-                    argc = 1 as libc::c_int;
-                    format_add_modifier(
-                        &mut list,
-                        count,
-                        &mut c,
-                        1 as libc::c_int as size_t,
-                        argv,
-                        argc,
-                    );
+                    argc = 1i32;
+                    format_add_modifier(&mut list, count, &mut c, 1u64, argv, argc);
                     cp = end
                 } else {
                     /* Multiple arguments with a wrapper character. */
-                    last[0 as libc::c_int as usize] = *cp.offset(1 as libc::c_int as isize);
+                    last[0usize] = *cp.offset(1isize);
                     cp = cp.offset(1);
                     loop {
-                        if *cp.offset(0 as libc::c_int as isize) as libc::c_int
-                            == last[0 as libc::c_int as usize] as libc::c_int
-                            && format_is_end(*cp.offset(1 as libc::c_int as isize)) != 0
+                        if *cp.offset(0isize) as libc::c_int == last[0usize] as libc::c_int
+                            && format_is_end(*cp.offset(1isize)) != 0
                         {
                             cp = cp.offset(1);
                             break;
                         } else {
-                            end = format_skip(
-                                cp.offset(1 as libc::c_int as isize),
-                                last.as_mut_ptr(),
-                            );
+                            end = format_skip(cp.offset(1isize), last.as_mut_ptr());
                             if end.is_null() {
                                 break;
                             }
                             cp = cp.offset(1);
                             argv = xreallocarray(
                                 argv as *mut libc::c_void,
-                                (argc + 1 as libc::c_int) as size_t,
+                                (argc + 1i32) as size_t,
                                 ::std::mem::size_of::<*mut libc::c_char>() as libc::c_ulong,
                             ) as *mut *mut libc::c_char;
-                            value = xstrndup(
-                                cp,
-                                end.wrapping_offset_from(cp) as libc::c_long as size_t,
-                            );
+                            value = xstrndup(cp, end.wrapping_offset_from(cp) as size_t);
                             let fresh8 = argc;
                             argc = argc + 1;
                             let ref mut fresh9 = *argv.offset(fresh8 as isize);
                             *fresh9 = format_expand1(es, value);
                             free(value as *mut libc::c_void);
                             cp = end;
-                            if !(format_is_end(*cp.offset(0 as libc::c_int as isize)) == 0) {
+                            if !(format_is_end(*cp.offset(0isize)) == 0) {
                                 break;
                             }
                         }
                     }
-                    format_add_modifier(
-                        &mut list,
-                        count,
-                        &mut c,
-                        1 as libc::c_int as size_t,
-                        argv,
-                        argc,
-                    );
+                    format_add_modifier(&mut list, count, &mut c, 1u64, argv, argc);
                 }
             }
         }
     }
     if *cp as libc::c_int != ':' as i32 {
         format_free_modifiers(list, *count);
-        *count = 0 as libc::c_int as u_int;
+        *count = 0u32;
         return 0 as *mut format_modifier;
     }
-    *s = cp.offset(1 as libc::c_int as isize);
+    *s = cp.offset(1isize);
     return list;
 }
 /* Match against an fnmatch(3) pattern or regular expression. */
@@ -4968,33 +4876,26 @@ unsafe extern "C" fn format_match(
         can_be_null_regs_allocated_fastmap_accurate_no_sub_not_bol_not_eol_newline_anchor: [0; 1],
         c2rust_padding: [0; 7],
     };
-    let mut flags: libc::c_int = 0 as libc::c_int;
-    if (*fm).argc >= 1 as libc::c_int {
-        s = *(*fm).argv.offset(0 as libc::c_int as isize)
+    let mut flags: libc::c_int = 0i32;
+    if (*fm).argc >= 1i32 {
+        s = *(*fm).argv.offset(0isize)
     }
     if strchr(s, 'r' as i32).is_null() {
         if !strchr(s, 'i' as i32).is_null() {
-            flags |= (1 as libc::c_int) << 4 as libc::c_int
+            flags |= (1i32) << 4i32
         }
-        if fnmatch(pattern, text, flags) != 0 as libc::c_int {
+        if fnmatch(pattern, text, flags) != 0i32 {
             return xstrdup(b"0\x00" as *const u8 as *const libc::c_char);
         }
     } else {
-        flags = 1 as libc::c_int | (1 as libc::c_int) << 3 as libc::c_int;
+        flags = 1i32 | (1i32) << 3i32;
         if !strchr(s, 'i' as i32).is_null() {
-            flags |= (1 as libc::c_int) << 1 as libc::c_int
+            flags |= (1i32) << 1i32
         }
-        if regcomp(&mut r, pattern, flags) != 0 as libc::c_int {
+        if regcomp(&mut r, pattern, flags) != 0i32 {
             return xstrdup(b"0\x00" as *const u8 as *const libc::c_char);
         }
-        if regexec(
-            &mut r,
-            text,
-            0 as libc::c_int as size_t,
-            0 as *mut regmatch_t,
-            0 as libc::c_int,
-        ) != 0 as libc::c_int
-        {
+        if regexec(&mut r, text, 0u64, 0 as *mut regmatch_t, 0i32) != 0i32 {
             regfree(&mut r);
             return xstrdup(b"0\x00" as *const u8 as *const libc::c_char);
         }
@@ -5010,11 +4911,9 @@ unsafe extern "C" fn format_sub(
     mut with: *const libc::c_char,
 ) -> *mut libc::c_char {
     let mut value: *mut libc::c_char = 0 as *mut libc::c_char;
-    let mut flags: libc::c_int = 1 as libc::c_int;
-    if (*fm).argc >= 3 as libc::c_int
-        && !strchr(*(*fm).argv.offset(2 as libc::c_int as isize), 'i' as i32).is_null()
-    {
-        flags |= (1 as libc::c_int) << 1 as libc::c_int
+    let mut flags: libc::c_int = 1i32;
+    if (*fm).argc >= 3i32 && !strchr(*(*fm).argv.offset(2isize), 'i' as i32).is_null() {
+        flags |= (1i32) << 1i32
     }
     value = regsub(pattern, with, text, flags);
     if value.is_null() {
@@ -5028,15 +4927,15 @@ unsafe extern "C" fn format_search(
     mut wp: *mut window_pane,
     mut s: *const libc::c_char,
 ) -> *mut libc::c_char {
-    let mut ignore: libc::c_int = 0 as libc::c_int;
-    let mut regex: libc::c_int = 0 as libc::c_int;
+    let mut ignore: libc::c_int = 0i32;
+    let mut regex: libc::c_int = 0i32;
     let mut value: *mut libc::c_char = 0 as *mut libc::c_char;
-    if (*fm).argc >= 1 as libc::c_int {
-        if !strchr(*(*fm).argv.offset(0 as libc::c_int as isize), 'i' as i32).is_null() {
-            ignore = 1 as libc::c_int
+    if (*fm).argc >= 1i32 {
+        if !strchr(*(*fm).argv.offset(0isize), 'i' as i32).is_null() {
+            ignore = 1i32
         }
-        if !strchr(*(*fm).argv.offset(0 as libc::c_int as isize), 'r' as i32).is_null() {
-            regex = 1 as libc::c_int
+        if !strchr(*(*fm).argv.offset(0isize), 'r' as i32).is_null() {
+            regex = 1i32
         }
     }
     xasprintf(
@@ -5065,9 +4964,9 @@ unsafe extern "C" fn format_loop_sessions(
     let mut value: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut valuelen: size_t = 0;
     let mut s: *mut session = 0 as *mut session;
-    value = xcalloc(1 as libc::c_int as size_t, 1 as libc::c_int as size_t) as *mut libc::c_char;
-    valuelen = 1 as libc::c_int as size_t;
-    s = sessions_RB_MINMAX(&mut sessions, -(1 as libc::c_int));
+    value = xcalloc(1u64, 1u64) as *mut libc::c_char;
+    valuelen = 1u64;
+    s = sessions_RB_MINMAX(&mut sessions, -(1i32));
     while !s.is_null() {
         format_log1(
             es,
@@ -5076,7 +4975,7 @@ unsafe extern "C" fn format_loop_sessions(
             b"session loop: $%u\x00" as *const u8 as *const libc::c_char,
             (*s).id,
         );
-        nft = format_create(c, item, 0 as libc::c_int, (*ft).flags);
+        nft = format_create(c, item, 0i32, (*ft).flags);
         format_defaults(
             next.ft,
             (*ft).c,
@@ -5084,11 +4983,11 @@ unsafe extern "C" fn format_loop_sessions(
             0 as *mut winlink,
             0 as *mut window_pane,
         );
-        format_copy_state(&mut next, es, 0 as libc::c_int);
+        format_copy_state(&mut next, es, 0i32);
         next.ft = nft;
         expanded = format_expand1(&mut next, fmt);
         format_free(next.ft);
-        valuelen = (valuelen as libc::c_ulong).wrapping_add(strlen(expanded)) as size_t as size_t;
+        valuelen = (valuelen).wrapping_add(strlen(expanded));
         value = xrealloc(value as *mut libc::c_void, valuelen) as *mut libc::c_char;
         strlcat(value, expanded, valuelen);
         free(expanded as *mut libc::c_void);
@@ -5128,13 +5027,13 @@ unsafe extern "C" fn format_loop_windows(
         );
         return 0 as *mut libc::c_char;
     }
-    if format_choose(es, fmt, &mut all, &mut active, 0 as libc::c_int) != 0 as libc::c_int {
+    if format_choose(es, fmt, &mut all, &mut active, 0i32) != 0i32 {
         all = xstrdup(fmt);
         active = 0 as *mut libc::c_char
     }
-    value = xcalloc(1 as libc::c_int as size_t, 1 as libc::c_int as size_t) as *mut libc::c_char;
-    valuelen = 1 as libc::c_int as size_t;
-    wl = winlinks_RB_MINMAX(&mut (*(*ft).s).windows, -(1 as libc::c_int));
+    value = xcalloc(1u64, 1u64) as *mut libc::c_char;
+    valuelen = 1u64;
+    wl = winlinks_RB_MINMAX(&mut (*(*ft).s).windows, -(1i32));
     while !wl.is_null() {
         w = (*wl).window;
         format_log1(
@@ -5153,15 +5052,15 @@ unsafe extern "C" fn format_loop_windows(
         nft = format_create(
             c,
             item,
-            (0x40000000 as libc::c_uint | (*w).id) as libc::c_int,
+            (0x40000000u32 | (*w).id) as libc::c_int,
             (*ft).flags,
         );
         format_defaults(nft, (*ft).c, (*ft).s, wl, 0 as *mut window_pane);
-        format_copy_state(&mut next, es, 0 as libc::c_int);
+        format_copy_state(&mut next, es, 0i32);
         next.ft = nft;
         expanded = format_expand1(&mut next, use_0);
         format_free(nft);
-        valuelen = (valuelen as libc::c_ulong).wrapping_add(strlen(expanded)) as size_t as size_t;
+        valuelen = (valuelen).wrapping_add(strlen(expanded));
         value = xrealloc(value as *mut libc::c_void, valuelen) as *mut libc::c_char;
         strlcat(value, expanded, valuelen);
         free(expanded as *mut libc::c_void);
@@ -5202,12 +5101,12 @@ unsafe extern "C" fn format_loop_panes(
         );
         return 0 as *mut libc::c_char;
     }
-    if format_choose(es, fmt, &mut all, &mut active, 0 as libc::c_int) != 0 as libc::c_int {
+    if format_choose(es, fmt, &mut all, &mut active, 0i32) != 0i32 {
         all = xstrdup(fmt);
         active = 0 as *mut libc::c_char
     }
-    value = xcalloc(1 as libc::c_int as size_t, 1 as libc::c_int as size_t) as *mut libc::c_char;
-    valuelen = 1 as libc::c_int as size_t;
+    value = xcalloc(1u64, 1u64) as *mut libc::c_char;
+    valuelen = 1u64;
     wp = (*(*ft).w).panes.tqh_first;
     while !wp.is_null() {
         format_log1(
@@ -5225,15 +5124,15 @@ unsafe extern "C" fn format_loop_panes(
         nft = format_create(
             c,
             item,
-            (0x80000000 as libc::c_uint | (*wp).id) as libc::c_int,
+            (0x80000000u32 | (*wp).id) as libc::c_int,
             (*ft).flags,
         );
         format_defaults(nft, (*ft).c, (*ft).s, (*ft).wl, wp);
-        format_copy_state(&mut next, es, 0 as libc::c_int);
+        format_copy_state(&mut next, es, 0i32);
         next.ft = nft;
         expanded = format_expand1(&mut next, use_0);
         format_free(nft);
-        valuelen = (valuelen as libc::c_ulong).wrapping_add(strlen(expanded)) as size_t as size_t;
+        valuelen = (valuelen).wrapping_add(strlen(expanded));
         value = xrealloc(value as *mut libc::c_void, valuelen) as *mut libc::c_char;
         strlcat(value, expanded, valuelen);
         free(expanded as *mut libc::c_void);
@@ -5255,90 +5154,90 @@ unsafe extern "C" fn format_replace_expression(
     let mut value: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut left: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut right: *mut libc::c_char = 0 as *mut libc::c_char;
-    let mut use_fp: libc::c_int = 0 as libc::c_int;
-    let mut prec: u_int = 0 as libc::c_int as u_int;
+    let mut use_fp: libc::c_int = 0i32;
+    let mut prec: u_int = 0u32;
     let mut mleft: libc::c_double = 0.;
     let mut mright: libc::c_double = 0.;
     let mut result: libc::c_double = 0.;
     let mut operator: C2RustUnnamed_38 = ADD;
     if strcmp(
-        *(*mexp).argv.offset(0 as libc::c_int as isize),
+        *(*mexp).argv.offset(0isize),
         b"+\x00" as *const u8 as *const libc::c_char,
-    ) == 0 as libc::c_int
+    ) == 0i32
     {
         operator = ADD;
         current_block = 11307063007268554308;
     } else if strcmp(
-        *(*mexp).argv.offset(0 as libc::c_int as isize),
+        *(*mexp).argv.offset(0isize),
         b"-\x00" as *const u8 as *const libc::c_char,
-    ) == 0 as libc::c_int
+    ) == 0i32
     {
         operator = SUBTRACT;
         current_block = 11307063007268554308;
     } else if strcmp(
-        *(*mexp).argv.offset(0 as libc::c_int as isize),
+        *(*mexp).argv.offset(0isize),
         b"*\x00" as *const u8 as *const libc::c_char,
-    ) == 0 as libc::c_int
+    ) == 0i32
     {
         operator = MULTIPLY;
         current_block = 11307063007268554308;
     } else if strcmp(
-        *(*mexp).argv.offset(0 as libc::c_int as isize),
+        *(*mexp).argv.offset(0isize),
         b"/\x00" as *const u8 as *const libc::c_char,
-    ) == 0 as libc::c_int
+    ) == 0i32
     {
         operator = DIVIDE;
         current_block = 11307063007268554308;
     } else if strcmp(
-        *(*mexp).argv.offset(0 as libc::c_int as isize),
+        *(*mexp).argv.offset(0isize),
         b"%\x00" as *const u8 as *const libc::c_char,
-    ) == 0 as libc::c_int
+    ) == 0i32
         || strcmp(
-            *(*mexp).argv.offset(0 as libc::c_int as isize),
+            *(*mexp).argv.offset(0isize),
             b"m\x00" as *const u8 as *const libc::c_char,
-        ) == 0 as libc::c_int
+        ) == 0i32
     {
         operator = MODULUS;
         current_block = 11307063007268554308;
     } else if strcmp(
-        *(*mexp).argv.offset(0 as libc::c_int as isize),
+        *(*mexp).argv.offset(0isize),
         b"==\x00" as *const u8 as *const libc::c_char,
-    ) == 0 as libc::c_int
+    ) == 0i32
     {
         operator = EQUAL;
         current_block = 11307063007268554308;
     } else if strcmp(
-        *(*mexp).argv.offset(0 as libc::c_int as isize),
+        *(*mexp).argv.offset(0isize),
         b"!=\x00" as *const u8 as *const libc::c_char,
-    ) == 0 as libc::c_int
+    ) == 0i32
     {
         operator = NOT_EQUAL;
         current_block = 11307063007268554308;
     } else if strcmp(
-        *(*mexp).argv.offset(0 as libc::c_int as isize),
+        *(*mexp).argv.offset(0isize),
         b">\x00" as *const u8 as *const libc::c_char,
-    ) == 0 as libc::c_int
+    ) == 0i32
     {
         operator = GREATER_THAN;
         current_block = 11307063007268554308;
     } else if strcmp(
-        *(*mexp).argv.offset(0 as libc::c_int as isize),
+        *(*mexp).argv.offset(0isize),
         b"<\x00" as *const u8 as *const libc::c_char,
-    ) == 0 as libc::c_int
+    ) == 0i32
     {
         operator = LESS_THAN;
         current_block = 11307063007268554308;
     } else if strcmp(
-        *(*mexp).argv.offset(0 as libc::c_int as isize),
+        *(*mexp).argv.offset(0isize),
         b">=\x00" as *const u8 as *const libc::c_char,
-    ) == 0 as libc::c_int
+    ) == 0i32
     {
         operator = GREATER_THAN_EQUAL;
         current_block = 11307063007268554308;
     } else if strcmp(
-        *(*mexp).argv.offset(0 as libc::c_int as isize),
+        *(*mexp).argv.offset(0isize),
         b"<=\x00" as *const u8 as *const libc::c_char,
-    ) == 0 as libc::c_int
+    ) == 0i32
     {
         operator = LESS_THAN_EQUAL;
         current_block = 11307063007268554308;
@@ -5350,25 +5249,23 @@ unsafe extern "C" fn format_replace_expression(
             ))
             .as_ptr(),
             b"expression has no valid operator: \'%s\'\x00" as *const u8 as *const libc::c_char,
-            *(*mexp).argv.offset(0 as libc::c_int as isize),
+            *(*mexp).argv.offset(0isize),
         );
         current_block = 2045625362422199595;
     }
     match current_block {
         11307063007268554308 => {
             /* The second argument may be flags. */
-            if argc >= 2 as libc::c_int
-                && !strchr(*(*mexp).argv.offset(1 as libc::c_int as isize), 'f' as i32).is_null()
-            {
-                use_fp = 1 as libc::c_int;
-                prec = 2 as libc::c_int as u_int
+            if argc >= 2i32 && !strchr(*(*mexp).argv.offset(1isize), 'f' as i32).is_null() {
+                use_fp = 1i32;
+                prec = 2u32
             }
             /* The third argument may be precision. */
-            if argc >= 3 as libc::c_int {
+            if argc >= 3i32 {
                 prec = strtonum(
-                    *(*mexp).argv.offset(2 as libc::c_int as isize),
-                    (-(2147483647 as libc::c_int) - 1 as libc::c_int) as libc::c_longlong,
-                    2147483647 as libc::c_int as libc::c_longlong,
+                    *(*mexp).argv.offset(2isize),
+                    (-(2147483647i32) - 1i32) as libc::c_longlong,
+                    2147483647i64,
                     &mut errstr,
                 ) as u_int;
                 if !errstr.is_null() {
@@ -5380,7 +5277,7 @@ unsafe extern "C" fn format_replace_expression(
                         .as_ptr(),
                         b"expression precision %s: %s\x00" as *const u8 as *const libc::c_char,
                         errstr,
-                        *(*mexp).argv.offset(2 as libc::c_int as isize),
+                        *(*mexp).argv.offset(2isize),
                     );
                     current_block = 2045625362422199595;
                 } else {
@@ -5392,9 +5289,7 @@ unsafe extern "C" fn format_replace_expression(
             match current_block {
                 2045625362422199595 => {}
                 _ => {
-                    if format_choose(es, copy, &mut left, &mut right, 1 as libc::c_int)
-                        != 0 as libc::c_int
-                    {
+                    if format_choose(es, copy, &mut left, &mut right, 1i32) != 0i32 {
                         format_log1(
                             es,
                             (*::std::mem::transmute::<&[u8; 26], &[libc::c_char; 26]>(
@@ -5456,7 +5351,7 @@ unsafe extern "C" fn format_replace_expression(
                                     prec,
                                     mright,
                                 );
-                                match operator as libc::c_uint {
+                                match operator {
                                     0 => result = mleft + mright,
                                     1 => result = mleft - mright,
                                     2 => result = mleft * mright,
@@ -5545,9 +5440,9 @@ unsafe extern "C" fn format_replace(
     let mut left: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut right: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut valuelen: size_t = 0;
-    let mut modifiers: libc::c_int = 0 as libc::c_int;
-    let mut limit: libc::c_int = 0 as libc::c_int;
-    let mut width: libc::c_int = 0 as libc::c_int;
+    let mut modifiers: libc::c_int = 0i32;
+    let mut limit: libc::c_int = 0i32;
+    let mut width: libc::c_int = 0i32;
     let mut j: libc::c_int = 0;
     let mut list: *mut format_modifier = 0 as *mut format_modifier;
     let mut cmp: *mut format_modifier = 0 as *mut format_modifier;
@@ -5557,7 +5452,7 @@ unsafe extern "C" fn format_replace(
     let mut fm: *mut format_modifier = 0 as *mut format_modifier;
     let mut i: u_int = 0;
     let mut count: u_int = 0;
-    let mut nsub: u_int = 0 as libc::c_int as u_int;
+    let mut nsub: u_int = 0u32;
     let mut next: format_expand_state = format_expand_state {
         ft: 0 as *mut format_tree,
         loop_0: 0,
@@ -5569,7 +5464,7 @@ unsafe extern "C" fn format_replace(
     copy = copy0;
     /* Process modifier list. */
     list = format_build_modifiers(es, &mut copy, &mut count);
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < count {
         fm = &mut *list.offset(i as isize) as *mut format_modifier;
         if format_logging(ft) != 0 {
@@ -5581,7 +5476,7 @@ unsafe extern "C" fn format_replace(
                 i,
                 (*fm).modifier.as_mut_ptr(),
             );
-            j = 0 as libc::c_int;
+            j = 0i32;
             while j < (*fm).argc {
                 format_log1(
                     es,
@@ -5597,15 +5492,15 @@ unsafe extern "C" fn format_replace(
                 j += 1
             }
         }
-        if (*fm).size == 1 as libc::c_int as libc::c_uint {
-            match (*fm).modifier[0 as libc::c_int as usize] as libc::c_int {
+        if (*fm).size == 1u32 {
+            match (*fm).modifier[0usize] as libc::c_int {
                 109 | 60 | 62 => cmp = fm,
                 67 => search = fm,
                 115 => {
-                    if !((*fm).argc < 2 as libc::c_int) {
+                    if !((*fm).argc < 2i32) {
                         sub = xreallocarray(
                             sub as *mut libc::c_void,
-                            nsub.wrapping_add(1 as libc::c_int as libc::c_uint) as size_t,
+                            nsub.wrapping_add(1u32) as size_t,
                             ::std::mem::size_of::<*mut format_modifier>() as libc::c_ulong,
                         ) as *mut *mut format_modifier;
                         let fresh10 = nsub;
@@ -5615,94 +5510,88 @@ unsafe extern "C" fn format_replace(
                     }
                 }
                 61 => {
-                    if !((*fm).argc < 1 as libc::c_int) {
+                    if !((*fm).argc < 1i32) {
                         limit = strtonum(
-                            *(*fm).argv.offset(0 as libc::c_int as isize),
-                            (-(2147483647 as libc::c_int) - 1 as libc::c_int) as libc::c_longlong,
-                            2147483647 as libc::c_int as libc::c_longlong,
+                            *(*fm).argv.offset(0isize),
+                            (-(2147483647i32) - 1i32) as libc::c_longlong,
+                            2147483647i64,
                             &mut errptr,
                         ) as libc::c_int;
                         if !errptr.is_null() {
-                            limit = 0 as libc::c_int
+                            limit = 0i32
                         }
-                        if (*fm).argc >= 2 as libc::c_int
-                            && !(*(*fm).argv.offset(1 as libc::c_int as isize)).is_null()
-                        {
-                            marker = *(*fm).argv.offset(1 as libc::c_int as isize)
+                        if (*fm).argc >= 2i32 && !(*(*fm).argv.offset(1isize)).is_null() {
+                            marker = *(*fm).argv.offset(1isize)
                         }
                     }
                 }
                 112 => {
-                    if !((*fm).argc < 1 as libc::c_int) {
+                    if !((*fm).argc < 1i32) {
                         width = strtonum(
-                            *(*fm).argv.offset(0 as libc::c_int as isize),
-                            (-(2147483647 as libc::c_int) - 1 as libc::c_int) as libc::c_longlong,
-                            2147483647 as libc::c_int as libc::c_longlong,
+                            *(*fm).argv.offset(0isize),
+                            (-(2147483647i32) - 1i32) as libc::c_longlong,
+                            2147483647i64,
                             &mut errptr,
                         ) as libc::c_int;
                         if !errptr.is_null() {
-                            width = 0 as libc::c_int
+                            width = 0i32
                         }
                     }
                 }
                 101 => {
-                    if !((*fm).argc < 1 as libc::c_int || (*fm).argc > 3 as libc::c_int) {
+                    if !((*fm).argc < 1i32 || (*fm).argc > 3i32) {
                         mexp = fm
                     }
                 }
-                108 => modifiers |= 0x10 as libc::c_int,
-                98 => modifiers |= 0x2 as libc::c_int,
-                100 => modifiers |= 0x4 as libc::c_int,
-                110 => modifiers |= 0x800 as libc::c_int,
+                108 => modifiers |= 0x10i32,
+                98 => modifiers |= 0x2i32,
+                100 => modifiers |= 0x4i32,
+                110 => modifiers |= 0x800i32,
                 116 => {
-                    modifiers |= 0x1 as libc::c_int;
-                    if !((*fm).argc < 1 as libc::c_int) {
-                        if !strchr(*(*fm).argv.offset(0 as libc::c_int as isize), 'p' as i32)
-                            .is_null()
+                    modifiers |= 0x1i32;
+                    if !((*fm).argc < 1i32) {
+                        if !strchr(*(*fm).argv.offset(0isize), 'p' as i32).is_null() {
+                            modifiers |= 0x400i32
+                        } else if (*fm).argc >= 2i32
+                            && !strchr(*(*fm).argv.offset(0isize), 'f' as i32).is_null()
                         {
-                            modifiers |= 0x400 as libc::c_int
-                        } else if (*fm).argc >= 2 as libc::c_int
-                            && !strchr(*(*fm).argv.offset(0 as libc::c_int as isize), 'f' as i32)
-                                .is_null()
-                        {
-                            time_format =
-                                format_strip(*(*fm).argv.offset(1 as libc::c_int as isize))
+                            time_format = format_strip(*(*fm).argv.offset(1isize))
                         }
                     }
                 }
-                113 => modifiers |= 0x8 as libc::c_int,
-                69 => modifiers |= 0x20 as libc::c_int,
-                84 => modifiers |= 0x40 as libc::c_int,
-                83 => modifiers |= 0x80 as libc::c_int,
-                87 => modifiers |= 0x100 as libc::c_int,
-                80 => modifiers |= 0x200 as libc::c_int,
+                113 => modifiers |= 0x8i32,
+                69 => modifiers |= 0x20i32,
+                84 => modifiers |= 0x40i32,
+                83 => modifiers |= 0x80i32,
+                87 => modifiers |= 0x100i32,
+                80 => modifiers |= 0x200i32,
                 _ => {}
             }
-        } else if (*fm).size == 2 as libc::c_int as libc::c_uint {
+        } else if (*fm).size == 2u32 {
             if strcmp(
                 (*fm).modifier.as_mut_ptr(),
                 b"||\x00" as *const u8 as *const libc::c_char,
-            ) == 0 as libc::c_int
+            ) == 0i32
                 || strcmp(
                     (*fm).modifier.as_mut_ptr(),
                     b"&&\x00" as *const u8 as *const libc::c_char,
-                ) == 0 as libc::c_int
+                ) == 0i32
                 || strcmp(
                     (*fm).modifier.as_mut_ptr(),
                     b"==\x00" as *const u8 as *const libc::c_char,
-                ) == 0 as libc::c_int
+                ) == 0i32
                 || strcmp(
                     (*fm).modifier.as_mut_ptr(),
                     b"!=\x00" as *const u8 as *const libc::c_char,
-                ) == 0 as libc::c_int
+                ) == 0i32
                 || strcmp(
                     (*fm).modifier.as_mut_ptr(),
                     b">=\x00" as *const u8 as *const libc::c_char,
-                ) == 0 as libc::c_int
+                ) == 0i32
                 || strcmp(
                     (*fm).modifier.as_mut_ptr(),
                     b"<=\x00" as *const u8 as *const libc::c_char,
-                ) == 0 as libc::c_int
+                ) == 0i32
             {
                 cmp = fm
             }
@@ -5710,25 +5599,25 @@ unsafe extern "C" fn format_replace(
         i = i.wrapping_add(1)
     }
     /* Is this a literal string? */
-    if modifiers & 0x10 as libc::c_int != 0 {
+    if modifiers & 0x10i32 != 0 {
         value = xstrdup(copy)
     } else {
         /* Is this a loop, comparison or condition? */
-        if modifiers & 0x80 as libc::c_int != 0 {
+        if modifiers & 0x80i32 != 0 {
             value = format_loop_sessions(es, copy);
             if value.is_null() {
                 current_block = 4023792313809996375;
             } else {
                 current_block = 10449397189332721644;
             }
-        } else if modifiers & 0x100 as libc::c_int != 0 {
+        } else if modifiers & 0x100i32 != 0 {
             value = format_loop_windows(es, copy);
             if value.is_null() {
                 current_block = 4023792313809996375;
             } else {
                 current_block = 10449397189332721644;
             }
-        } else if modifiers & 0x200 as libc::c_int != 0 {
+        } else if modifiers & 0x200i32 != 0 {
             value = format_loop_panes(es, copy);
             if value.is_null() {
                 current_block = 4023792313809996375;
@@ -5766,8 +5655,7 @@ unsafe extern "C" fn format_replace(
             current_block = 10449397189332721644;
         } else if !cmp.is_null() {
             /* Comparison of left and right. */
-            if format_choose(es, copy, &mut left, &mut right, 1 as libc::c_int) != 0 as libc::c_int
-            {
+            if format_choose(es, copy, &mut left, &mut right, 1i32) != 0i32 {
                 format_log1(
                     es,
                     (*::std::mem::transmute::<&[u8; 15], &[libc::c_char; 15]>(
@@ -5803,7 +5691,7 @@ unsafe extern "C" fn format_replace(
                 if strcmp(
                     (*cmp).modifier.as_mut_ptr(),
                     b"||\x00" as *const u8 as *const libc::c_char,
-                ) == 0 as libc::c_int
+                ) == 0i32
                 {
                     if format_true(left) != 0 || format_true(right) != 0 {
                         value = xstrdup(b"1\x00" as *const u8 as *const libc::c_char)
@@ -5813,7 +5701,7 @@ unsafe extern "C" fn format_replace(
                 } else if strcmp(
                     (*cmp).modifier.as_mut_ptr(),
                     b"&&\x00" as *const u8 as *const libc::c_char,
-                ) == 0 as libc::c_int
+                ) == 0i32
                 {
                     if format_true(left) != 0 && format_true(right) != 0 {
                         value = xstrdup(b"1\x00" as *const u8 as *const libc::c_char)
@@ -5823,9 +5711,9 @@ unsafe extern "C" fn format_replace(
                 } else if strcmp(
                     (*cmp).modifier.as_mut_ptr(),
                     b"==\x00" as *const u8 as *const libc::c_char,
-                ) == 0 as libc::c_int
+                ) == 0i32
                 {
-                    if strcmp(left, right) == 0 as libc::c_int {
+                    if strcmp(left, right) == 0i32 {
                         value = xstrdup(b"1\x00" as *const u8 as *const libc::c_char)
                     } else {
                         value = xstrdup(b"0\x00" as *const u8 as *const libc::c_char)
@@ -5833,9 +5721,9 @@ unsafe extern "C" fn format_replace(
                 } else if strcmp(
                     (*cmp).modifier.as_mut_ptr(),
                     b"!=\x00" as *const u8 as *const libc::c_char,
-                ) == 0 as libc::c_int
+                ) == 0i32
                 {
-                    if strcmp(left, right) != 0 as libc::c_int {
+                    if strcmp(left, right) != 0i32 {
                         value = xstrdup(b"1\x00" as *const u8 as *const libc::c_char)
                     } else {
                         value = xstrdup(b"0\x00" as *const u8 as *const libc::c_char)
@@ -5843,9 +5731,9 @@ unsafe extern "C" fn format_replace(
                 } else if strcmp(
                     (*cmp).modifier.as_mut_ptr(),
                     b"<\x00" as *const u8 as *const libc::c_char,
-                ) == 0 as libc::c_int
+                ) == 0i32
                 {
-                    if strcmp(left, right) < 0 as libc::c_int {
+                    if strcmp(left, right) < 0i32 {
                         value = xstrdup(b"1\x00" as *const u8 as *const libc::c_char)
                     } else {
                         value = xstrdup(b"0\x00" as *const u8 as *const libc::c_char)
@@ -5853,9 +5741,9 @@ unsafe extern "C" fn format_replace(
                 } else if strcmp(
                     (*cmp).modifier.as_mut_ptr(),
                     b">\x00" as *const u8 as *const libc::c_char,
-                ) == 0 as libc::c_int
+                ) == 0i32
                 {
-                    if strcmp(left, right) > 0 as libc::c_int {
+                    if strcmp(left, right) > 0i32 {
                         value = xstrdup(b"1\x00" as *const u8 as *const libc::c_char)
                     } else {
                         value = xstrdup(b"0\x00" as *const u8 as *const libc::c_char)
@@ -5863,9 +5751,9 @@ unsafe extern "C" fn format_replace(
                 } else if strcmp(
                     (*cmp).modifier.as_mut_ptr(),
                     b"<=\x00" as *const u8 as *const libc::c_char,
-                ) == 0 as libc::c_int
+                ) == 0i32
                 {
-                    if strcmp(left, right) <= 0 as libc::c_int {
+                    if strcmp(left, right) <= 0i32 {
                         value = xstrdup(b"1\x00" as *const u8 as *const libc::c_char)
                     } else {
                         value = xstrdup(b"0\x00" as *const u8 as *const libc::c_char)
@@ -5873,9 +5761,9 @@ unsafe extern "C" fn format_replace(
                 } else if strcmp(
                     (*cmp).modifier.as_mut_ptr(),
                     b">=\x00" as *const u8 as *const libc::c_char,
-                ) == 0 as libc::c_int
+                ) == 0i32
                 {
-                    if strcmp(left, right) >= 0 as libc::c_int {
+                    if strcmp(left, right) >= 0i32 {
                         value = xstrdup(b"1\x00" as *const u8 as *const libc::c_char)
                     } else {
                         value = xstrdup(b"0\x00" as *const u8 as *const libc::c_char)
@@ -5883,7 +5771,7 @@ unsafe extern "C" fn format_replace(
                 } else if strcmp(
                     (*cmp).modifier.as_mut_ptr(),
                     b"m\x00" as *const u8 as *const libc::c_char,
-                ) == 0 as libc::c_int
+                ) == 0i32
                 {
                     value = format_match(cmp, left, right)
                 }
@@ -5894,7 +5782,7 @@ unsafe extern "C" fn format_replace(
         } else if *copy as libc::c_int == '?' as i32 {
             /* Conditional: check first and choose second or third. */
             cp = format_skip(
-                copy.offset(1 as libc::c_int as isize),
+                copy.offset(1isize),
                 b",\x00" as *const u8 as *const libc::c_char,
             );
             if cp.is_null() {
@@ -5905,14 +5793,13 @@ unsafe extern "C" fn format_replace(
                     ))
                     .as_ptr(),
                     b"condition syntax error: %s\x00" as *const u8 as *const libc::c_char,
-                    copy.offset(1 as libc::c_int as isize),
+                    copy.offset(1isize),
                 );
                 current_block = 4023792313809996375;
             } else {
                 condition = xstrndup(
-                    copy.offset(1 as libc::c_int as isize),
-                    cp.wrapping_offset_from(copy.offset(1 as libc::c_int as isize)) as libc::c_long
-                        as size_t,
+                    copy.offset(1isize),
+                    cp.wrapping_offset_from(copy.offset(1isize)) as size_t,
                 );
                 format_log1(
                     es,
@@ -5931,7 +5818,7 @@ unsafe extern "C" fn format_replace(
                      * false.
                      */
                     found = format_expand1(es, condition);
-                    if strcmp(found, condition) == 0 as libc::c_int {
+                    if strcmp(found, condition) == 0i32 {
                         free(found as *mut libc::c_void);
                         found = xstrdup(b"\x00" as *const u8 as *const libc::c_char);
                         format_log1(
@@ -5967,14 +5854,7 @@ unsafe extern "C" fn format_replace(
                         condition,
                     );
                 }
-                if format_choose(
-                    es,
-                    cp.offset(1 as libc::c_int as isize),
-                    &mut left,
-                    &mut right,
-                    0 as libc::c_int,
-                ) != 0 as libc::c_int
-                {
+                if format_choose(es, cp.offset(1isize), &mut left, &mut right, 0i32) != 0i32 {
                     format_log1(
                         es,
                         (*::std::mem::transmute::<&[u8; 15], &[libc::c_char; 15]>(
@@ -5984,7 +5864,7 @@ unsafe extern "C" fn format_replace(
                         b"condition \'%s\' syntax error: %s\x00" as *const u8
                             as *const libc::c_char,
                         condition,
-                        cp.offset(1 as libc::c_int as isize),
+                        cp.offset(1isize),
                     );
                     free(found as *mut libc::c_void);
                     current_block = 4023792313809996375;
@@ -6079,36 +5959,26 @@ unsafe extern "C" fn format_replace(
                 free(sub as *mut libc::c_void);
                 format_free_modifiers(list, count);
                 free(copy0 as *mut libc::c_void);
-                return -(1 as libc::c_int);
+                return -(1i32);
             }
         }
     }
     /* Expand again if required. */
-    if modifiers & 0x20 as libc::c_int != 0 {
+    if modifiers & 0x20i32 != 0 {
         new = format_expand1(es, value);
         free(value as *mut libc::c_void);
         value = new
-    } else if modifiers & 0x40 as libc::c_int != 0 {
-        format_copy_state(&mut next, es, 0x1 as libc::c_int);
+    } else if modifiers & 0x40i32 != 0 {
+        format_copy_state(&mut next, es, 0x1i32);
         new = format_expand1(&mut next, value);
         free(value as *mut libc::c_void);
         value = new
     }
     /* Perform substitution if any. */
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < nsub {
-        left = format_expand1(
-            es,
-            *(**sub.offset(i as isize))
-                .argv
-                .offset(0 as libc::c_int as isize),
-        );
-        right = format_expand1(
-            es,
-            *(**sub.offset(i as isize))
-                .argv
-                .offset(1 as libc::c_int as isize),
-        );
+        left = format_expand1(es, *(**sub.offset(i as isize)).argv.offset(0isize));
+        right = format_expand1(es, *(**sub.offset(i as isize)).argv.offset(1isize));
         new = format_sub(*sub.offset(i as isize), value, left, right);
         format_log1(
             es,
@@ -6126,9 +5996,9 @@ unsafe extern "C" fn format_replace(
         i = i.wrapping_add(1)
     }
     /* Truncate the value if needed. */
-    if limit > 0 as libc::c_int {
+    if limit > 0i32 {
         new = format_trim_left(value, limit as u_int);
-        if !marker.is_null() && strcmp(new, value) != 0 as libc::c_int {
+        if !marker.is_null() && strcmp(new, value) != 0i32 {
             free(value as *mut libc::c_void);
             xasprintf(
                 &mut value as *mut *mut libc::c_char,
@@ -6148,9 +6018,9 @@ unsafe extern "C" fn format_replace(
             limit,
             value,
         );
-    } else if limit < 0 as libc::c_int {
+    } else if limit < 0i32 {
         new = format_trim_right(value, -limit as u_int);
-        if !marker.is_null() && strcmp(new, value) != 0 as libc::c_int {
+        if !marker.is_null() && strcmp(new, value) != 0i32 {
             free(value as *mut libc::c_void);
             xasprintf(
                 &mut value as *mut *mut libc::c_char,
@@ -6172,7 +6042,7 @@ unsafe extern "C" fn format_replace(
         );
     }
     /* Pad the value if needed. */
-    if width > 0 as libc::c_int {
+    if width > 0i32 {
         new = utf8_padcstr(value, width as u_int);
         free(value as *mut libc::c_void);
         value = new;
@@ -6184,7 +6054,7 @@ unsafe extern "C" fn format_replace(
             width,
             value,
         );
-    } else if width < 0 as libc::c_int {
+    } else if width < 0i32 {
         new = utf8_rpadcstr(value, -width as u_int);
         free(value as *mut libc::c_void);
         value = new;
@@ -6198,7 +6068,7 @@ unsafe extern "C" fn format_replace(
         );
     }
     /* Replace with the length if needed. */
-    if modifiers & 0x800 as libc::c_int != 0 {
+    if modifiers & 0x800i32 != 0 {
         xasprintf(
             &mut new as *mut *mut libc::c_char,
             b"%zu\x00" as *const u8 as *const libc::c_char,
@@ -6216,18 +6086,16 @@ unsafe extern "C" fn format_replace(
     }
     /* Expand the buffer and copy in the value. */
     valuelen = strlen(value);
-    while (*len).wrapping_sub(*off) < valuelen.wrapping_add(1 as libc::c_int as libc::c_ulong) {
-        *buf = xreallocarray(*buf as *mut libc::c_void, 2 as libc::c_int as size_t, *len)
-            as *mut libc::c_char;
-        *len = (*len as libc::c_ulong).wrapping_mul(2 as libc::c_int as libc::c_ulong) as size_t
-            as size_t
+    while (*len).wrapping_sub(*off) < valuelen.wrapping_add(1u64) {
+        *buf = xreallocarray(*buf as *mut libc::c_void, 2u64, *len) as *mut libc::c_char;
+        *len = (*len).wrapping_mul(2u64)
     }
     memcpy(
         (*buf).offset(*off as isize) as *mut libc::c_void,
         value as *const libc::c_void,
         valuelen,
     );
-    *off = (*off as libc::c_ulong).wrapping_add(valuelen) as size_t as size_t;
+    *off = (*off).wrapping_add(valuelen);
     format_log1(
         es,
         (*::std::mem::transmute::<&[u8; 15], &[libc::c_char; 15]>(b"format_replace\x00")).as_ptr(),
@@ -6239,7 +6107,7 @@ unsafe extern "C" fn format_replace(
     free(sub as *mut libc::c_void);
     format_free_modifiers(list, count);
     free(copy0 as *mut libc::c_void);
-    return 0 as libc::c_int;
+    return 0i32;
 }
 /* Expand keys in a template. */
 unsafe extern "C" fn format_expand1(
@@ -6263,7 +6131,7 @@ unsafe extern "C" fn format_expand1(
     if fmt.is_null() || *fmt as libc::c_int == '\u{0}' as i32 {
         return xstrdup(b"\x00" as *const u8 as *const libc::c_char);
     }
-    if (*es).loop_0 == 10 as libc::c_int as libc::c_uint {
+    if (*es).loop_0 == 10u32 {
         return xstrdup(b"\x00" as *const u8 as *const libc::c_char);
     }
     (*es).loop_0 = (*es).loop_0.wrapping_add(1);
@@ -6273,8 +6141,8 @@ unsafe extern "C" fn format_expand1(
         b"expanding format: %s\x00" as *const u8 as *const libc::c_char,
         fmt,
     );
-    if (*es).flags & 0x1 as libc::c_int != 0 {
-        if (*es).time == 0 as libc::c_int as libc::c_long {
+    if (*es).flags & 0x1i32 != 0 {
+        if (*es).time == 0i64 {
             (*es).time = time(0 as *mut time_t)
         }
         tm = localtime(&mut (*es).time);
@@ -6283,7 +6151,7 @@ unsafe extern "C" fn format_expand1(
             ::std::mem::size_of::<[libc::c_char; 8192]>() as libc::c_ulong,
             fmt,
             tm,
-        ) == 0 as libc::c_int as libc::c_ulong
+        ) == 0u64
         {
             format_log1(
                 es,
@@ -6293,7 +6161,7 @@ unsafe extern "C" fn format_expand1(
             );
             return xstrdup(b"\x00" as *const u8 as *const libc::c_char);
         }
-        if format_logging(ft) != 0 && strcmp(expanded.as_mut_ptr(), fmt) != 0 as libc::c_int {
+        if format_logging(ft) != 0 && strcmp(expanded.as_mut_ptr(), fmt) != 0i32 {
             format_log1(
                 es,
                 (*::std::mem::transmute::<&[u8; 15], &[libc::c_char; 15]>(b"format_expand1\x00"))
@@ -6304,16 +6172,14 @@ unsafe extern "C" fn format_expand1(
         }
         fmt = expanded.as_mut_ptr()
     }
-    len = 64 as libc::c_int as size_t;
+    len = 64u64;
     buf = xmalloc(len) as *mut libc::c_char;
-    off = 0 as libc::c_int as size_t;
+    off = 0u64;
     while *fmt as libc::c_int != '\u{0}' as i32 {
         if *fmt as libc::c_int != '#' as i32 {
-            while len.wrapping_sub(off) < 2 as libc::c_int as libc::c_ulong {
-                buf = xreallocarray(buf as *mut libc::c_void, 2 as libc::c_int as size_t, len)
-                    as *mut libc::c_char;
-                len = (len as libc::c_ulong).wrapping_mul(2 as libc::c_int as libc::c_ulong)
-                    as size_t as size_t
+            while len.wrapping_sub(off) < 2u64 {
+                buf = xreallocarray(buf as *mut libc::c_void, 2u64, len) as *mut libc::c_char;
+                len = (len).wrapping_mul(2u64)
             }
             let fresh12 = fmt;
             fmt = fmt.offset(1);
@@ -6327,7 +6193,7 @@ unsafe extern "C" fn format_expand1(
             ch = *fresh14 as u_char as libc::c_int;
             match ch {
                 40 => {
-                    brackets = 1 as libc::c_int;
+                    brackets = 1i32;
                     ptr = fmt;
                     while *ptr as libc::c_int != '\u{0}' as i32 {
                         if *ptr as libc::c_int == '(' as i32 {
@@ -6335,16 +6201,16 @@ unsafe extern "C" fn format_expand1(
                         }
                         if *ptr as libc::c_int == ')' as i32 && {
                             brackets -= 1;
-                            (brackets) == 0 as libc::c_int
+                            (brackets) == 0i32
                         } {
                             break;
                         }
                         ptr = ptr.offset(1)
                     }
-                    if *ptr as libc::c_int != ')' as i32 || brackets != 0 as libc::c_int {
+                    if *ptr as libc::c_int != ')' as i32 || brackets != 0i32 {
                         break;
                     }
-                    n = ptr.wrapping_offset_from(fmt) as libc::c_long as size_t;
+                    n = ptr.wrapping_offset_from(fmt) as size_t;
                     name = xstrndup(fmt, n);
                     format_log1(
                         es,
@@ -6355,9 +6221,7 @@ unsafe extern "C" fn format_expand1(
                         b"found #(): %s\x00" as *const u8 as *const libc::c_char,
                         name,
                     );
-                    if (*ft).flags & 0x4 as libc::c_int != 0
-                        || (*es).flags & 0x2 as libc::c_int != 0
-                    {
+                    if (*ft).flags & 0x4i32 != 0 || (*es).flags & 0x2i32 != 0 {
                         out = xstrdup(b"\x00" as *const u8 as *const libc::c_char);
                         format_log1(
                             es,
@@ -6381,35 +6245,29 @@ unsafe extern "C" fn format_expand1(
                     }
                     free(name as *mut libc::c_void);
                     outlen = strlen(out);
-                    while len.wrapping_sub(off)
-                        < outlen.wrapping_add(1 as libc::c_int as libc::c_ulong)
-                    {
-                        buf = xreallocarray(
-                            buf as *mut libc::c_void,
-                            2 as libc::c_int as size_t,
-                            len,
-                        ) as *mut libc::c_char;
-                        len = (len as libc::c_ulong).wrapping_mul(2 as libc::c_int as libc::c_ulong)
-                            as size_t as size_t
+                    while len.wrapping_sub(off) < outlen.wrapping_add(1u64) {
+                        buf =
+                            xreallocarray(buf as *mut libc::c_void, 2u64, len) as *mut libc::c_char;
+                        len = (len).wrapping_mul(2u64)
                     }
                     memcpy(
                         buf.offset(off as isize) as *mut libc::c_void,
                         out as *const libc::c_void,
                         outlen,
                     );
-                    off = (off as libc::c_ulong).wrapping_add(outlen) as size_t as size_t;
+                    off = (off).wrapping_add(outlen);
                     free(out as *mut libc::c_void);
-                    fmt = fmt.offset(n.wrapping_add(1 as libc::c_int as libc::c_ulong) as isize)
+                    fmt = fmt.offset(n.wrapping_add(1u64) as isize)
                 }
                 123 => {
                     ptr = format_skip(
-                        (fmt as *mut libc::c_char).offset(-(2 as libc::c_int as isize)),
+                        (fmt as *mut libc::c_char).offset(-(2isize)),
                         b"}\x00" as *const u8 as *const libc::c_char,
                     );
                     if ptr.is_null() {
                         break;
                     }
-                    n = ptr.wrapping_offset_from(fmt) as libc::c_long as size_t;
+                    n = ptr.wrapping_offset_from(fmt) as size_t;
                     format_log1(
                         es,
                         (*::std::mem::transmute::<&[u8; 15], &[libc::c_char; 15]>(
@@ -6420,11 +6278,10 @@ unsafe extern "C" fn format_expand1(
                         n as libc::c_int,
                         fmt,
                     );
-                    if format_replace(es, fmt, n, &mut buf, &mut len, &mut off) != 0 as libc::c_int
-                    {
+                    if format_replace(es, fmt, n, &mut buf, &mut len, &mut off) != 0i32 {
                         break;
                     }
-                    fmt = fmt.offset(n.wrapping_add(1 as libc::c_int as libc::c_ulong) as isize)
+                    fmt = fmt.offset(n.wrapping_add(1u64) as isize)
                 }
                 125 | 35 | 44 => {
                     format_log1(
@@ -6436,14 +6293,10 @@ unsafe extern "C" fn format_expand1(
                         b"found #%c\x00" as *const u8 as *const libc::c_char,
                         ch,
                     );
-                    while len.wrapping_sub(off) < 2 as libc::c_int as libc::c_ulong {
-                        buf = xreallocarray(
-                            buf as *mut libc::c_void,
-                            2 as libc::c_int as size_t,
-                            len,
-                        ) as *mut libc::c_char;
-                        len = (len as libc::c_ulong).wrapping_mul(2 as libc::c_int as libc::c_ulong)
-                            as size_t as size_t
+                    while len.wrapping_sub(off) < 2u64 {
+                        buf =
+                            xreallocarray(buf as *mut libc::c_void, 2u64, len) as *mut libc::c_char;
+                        len = (len).wrapping_mul(2u64)
                     }
                     let fresh15 = off;
                     off = off.wrapping_add(1);
@@ -6457,19 +6310,14 @@ unsafe extern "C" fn format_expand1(
                         s = format_lower[(ch - 'a' as i32) as usize]
                     }
                     if s.is_null() {
-                        while len.wrapping_sub(off) < 3 as libc::c_int as libc::c_ulong {
-                            buf = xreallocarray(
-                                buf as *mut libc::c_void,
-                                2 as libc::c_int as size_t,
-                                len,
-                            ) as *mut libc::c_char;
-                            len = (len as libc::c_ulong)
-                                .wrapping_mul(2 as libc::c_int as libc::c_ulong)
-                                as size_t as size_t
+                        while len.wrapping_sub(off) < 3u64 {
+                            buf = xreallocarray(buf as *mut libc::c_void, 2u64, len)
+                                as *mut libc::c_char;
+                            len = (len).wrapping_mul(2u64)
                         }
                         let fresh16 = off;
                         off = off.wrapping_add(1);
-                        *buf.offset(fresh16 as isize) = '#' as i32 as libc::c_char;
+                        *buf.offset(fresh16 as isize) = '#' as libc::c_char;
                         let fresh17 = off;
                         off = off.wrapping_add(1);
                         *buf.offset(fresh17 as isize) = ch as libc::c_char
@@ -6485,9 +6333,7 @@ unsafe extern "C" fn format_expand1(
                             ch,
                             s,
                         );
-                        if format_replace(es, s, n, &mut buf, &mut len, &mut off)
-                            != 0 as libc::c_int
-                        {
+                        if format_replace(es, s, n, &mut buf, &mut len, &mut off) != 0i32 {
                             break;
                         }
                     }
@@ -6495,7 +6341,7 @@ unsafe extern "C" fn format_expand1(
             }
         }
     }
-    *buf.offset(off as isize) = '\u{0}' as i32 as libc::c_char;
+    *buf.offset(off as isize) = '\u{0}' as libc::c_char;
     format_log1(
         es,
         (*::std::mem::transmute::<&[u8; 15], &[libc::c_char; 15]>(b"format_expand1\x00")).as_ptr(),
@@ -6519,11 +6365,11 @@ pub unsafe extern "C" fn format_expand_time(
     };
     memset(
         &mut es as *mut format_expand_state as *mut libc::c_void,
-        0 as libc::c_int,
+        0i32,
         ::std::mem::size_of::<format_expand_state>() as libc::c_ulong,
     );
     es.ft = ft;
-    es.flags = 0x1 as libc::c_int;
+    es.flags = 0x1i32;
     return format_expand1(&mut es, fmt);
 }
 /* Expand keys in a template. */
@@ -6540,11 +6386,11 @@ pub unsafe extern "C" fn format_expand(
     };
     memset(
         &mut es as *mut format_expand_state as *mut libc::c_void,
-        0 as libc::c_int,
+        0i32,
         ::std::mem::size_of::<format_expand_state>() as libc::c_ulong,
     );
     es.ft = ft;
-    es.flags = 0 as libc::c_int;
+    es.flags = 0i32;
     return format_expand1(&mut es, fmt);
 }
 /* Expand a single string. */
@@ -6594,14 +6440,9 @@ pub unsafe extern "C" fn format_create_defaults(
 ) -> *mut format_tree {
     let mut ft: *mut format_tree = 0 as *mut format_tree;
     if !item.is_null() {
-        ft = format_create(
-            cmdq_get_client(item),
-            item,
-            0 as libc::c_int,
-            0 as libc::c_int,
-        )
+        ft = format_create(cmdq_get_client(item), item, 0i32, 0i32)
     } else {
-        ft = format_create(0 as *mut client, item, 0 as libc::c_int, 0 as libc::c_int)
+        ft = format_create(0 as *mut client, item, 0i32, 0i32)
     }
     format_defaults(ft, c, s, wl, wp);
     return ft;
@@ -6700,19 +6541,19 @@ pub unsafe extern "C" fn format_defaults(
         ft,
         b"session_format\x00" as *const u8 as *const libc::c_char,
         b"%d\x00" as *const u8 as *const libc::c_char,
-        (s != 0 as *mut libc::c_void as *mut session) as libc::c_int,
+        (s != 0 as *mut session) as libc::c_int,
     );
     format_add(
         ft,
         b"window_format\x00" as *const u8 as *const libc::c_char,
         b"%d\x00" as *const u8 as *const libc::c_char,
-        (wl != 0 as *mut libc::c_void as *mut winlink) as libc::c_int,
+        (wl != 0 as *mut winlink) as libc::c_int,
     );
     format_add(
         ft,
         b"pane_format\x00" as *const u8 as *const libc::c_char,
         b"%d\x00" as *const u8 as *const libc::c_char,
-        (wp != 0 as *mut libc::c_void as *mut window_pane) as libc::c_int,
+        (wp != 0 as *mut window_pane) as libc::c_int,
     );
     if s.is_null() && !c.is_null() {
         s = (*c).session
@@ -6773,7 +6614,7 @@ unsafe extern "C" fn format_defaults_session(mut ft: *mut format_tree, mut s: *m
         ft,
         b"session_grouped\x00" as *const u8 as *const libc::c_char,
         b"%d\x00" as *const u8 as *const libc::c_char,
-        (sg != 0 as *mut libc::c_void as *mut session_group) as libc::c_int,
+        (sg != 0 as *mut session_group) as libc::c_int,
     );
     if !sg.is_null() {
         format_add(
@@ -6798,7 +6639,7 @@ unsafe extern "C" fn format_defaults_session(mut ft: *mut format_tree, mut s: *m
             ft,
             b"session_group_many_attached\x00" as *const u8 as *const libc::c_char,
             b"%u\x00" as *const u8 as *const libc::c_char,
-            (session_group_attached_count(sg) > 1 as libc::c_int as libc::c_uint) as libc::c_int,
+            (session_group_attached_count(sg) > 1u32) as libc::c_int,
         );
         format_add_cb(
             ft,
@@ -6842,7 +6683,7 @@ unsafe extern "C" fn format_defaults_session(mut ft: *mut format_tree, mut s: *m
         ft,
         b"session_many_attached\x00" as *const u8 as *const libc::c_char,
         b"%d\x00" as *const u8 as *const libc::c_char,
-        ((*s).attached > 1 as libc::c_int as libc::c_uint) as libc::c_int,
+        ((*s).attached > 1u32) as libc::c_int,
     );
     format_add_cb(
         ft,
@@ -6937,7 +6778,7 @@ unsafe extern "C" fn format_defaults_client(mut ft: *mut format_tree, mut c: *mu
         ft,
         b"client_control_mode\x00" as *const u8 as *const libc::c_char,
         b"%d\x00" as *const u8 as *const libc::c_char,
-        ((*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0) as libc::c_int,
+        ((*c).flags & 0x2000u64 != 0) as libc::c_int,
     );
     format_add(
         ft,
@@ -6982,19 +6823,19 @@ unsafe extern "C" fn format_defaults_client(mut ft: *mut format_tree, mut c: *mu
         (*c).discarded,
     );
     name = server_client_get_key_table(c);
-    if strcmp((*(*c).keytable).name, name) == 0 as libc::c_int {
+    if strcmp((*(*c).keytable).name, name) == 0i32 {
         format_add(
             ft,
             b"client_prefix\x00" as *const u8 as *const libc::c_char,
             b"%d\x00" as *const u8 as *const libc::c_char,
-            0 as libc::c_int,
+            0i32,
         );
     } else {
         format_add(
             ft,
             b"client_prefix\x00" as *const u8 as *const libc::c_char,
             b"%d\x00" as *const u8 as *const libc::c_char,
-            1 as libc::c_int,
+            1i32,
         );
     }
     format_add(
@@ -7003,34 +6844,34 @@ unsafe extern "C" fn format_defaults_client(mut ft: *mut format_tree, mut c: *mu
         b"%s\x00" as *const u8 as *const libc::c_char,
         (*(*c).keytable).name,
     );
-    if (*c).flags & 0x10000 as libc::c_int as libc::c_ulong != 0 {
+    if (*c).flags & 0x10000u64 != 0 {
         format_add(
             ft,
             b"client_utf8\x00" as *const u8 as *const libc::c_char,
             b"%d\x00" as *const u8 as *const libc::c_char,
-            1 as libc::c_int,
+            1i32,
         );
     } else {
         format_add(
             ft,
             b"client_utf8\x00" as *const u8 as *const libc::c_char,
             b"%d\x00" as *const u8 as *const libc::c_char,
-            0 as libc::c_int,
+            0i32,
         );
     }
-    if (*c).flags & 0x800 as libc::c_int as libc::c_ulong != 0 {
+    if (*c).flags & 0x800u64 != 0 {
         format_add(
             ft,
             b"client_readonly\x00" as *const u8 as *const libc::c_char,
             b"%d\x00" as *const u8 as *const libc::c_char,
-            1 as libc::c_int,
+            1i32,
         );
     } else {
         format_add(
             ft,
             b"client_readonly\x00" as *const u8 as *const libc::c_char,
             b"%d\x00" as *const u8 as *const libc::c_char,
-            0 as libc::c_int,
+            0i32,
         );
     }
     format_add(
@@ -7129,7 +6970,7 @@ pub unsafe extern "C" fn format_defaults_window(mut ft: *mut format_tree, mut w:
         ft,
         b"window_zoomed_flag\x00" as *const u8 as *const libc::c_char,
         b"%d\x00" as *const u8 as *const libc::c_char,
-        ((*w).flags & 0x8 as libc::c_int != 0) as libc::c_int,
+        ((*w).flags & 0x8i32 != 0) as libc::c_int,
     );
 }
 /* Set default format keys for a winlink. */
@@ -7231,13 +7072,13 @@ unsafe extern "C" fn format_defaults_winlink(mut ft: *mut format_tree, mut wl: *
         ft,
         b"window_start_flag\x00" as *const u8 as *const libc::c_char,
         b"%d\x00" as *const u8 as *const libc::c_char,
-        (wl == winlinks_RB_MINMAX(&mut (*s).windows, -(1 as libc::c_int))) as libc::c_int,
+        (wl == winlinks_RB_MINMAX(&mut (*s).windows, -(1i32))) as libc::c_int,
     );
     format_add(
         ft,
         b"window_end_flag\x00" as *const u8 as *const libc::c_char,
         b"%d\x00" as *const u8 as *const libc::c_char,
-        (wl == winlinks_RB_MINMAX(&mut (*s).windows, 1 as libc::c_int)) as libc::c_int,
+        (wl == winlinks_RB_MINMAX(&mut (*s).windows, 1i32)) as libc::c_int,
     );
     if server_check_marked() != 0 && marked_pane.wl == wl {
         format_add(
@@ -7256,19 +7097,19 @@ unsafe extern "C" fn format_defaults_winlink(mut ft: *mut format_tree, mut wl: *
         ft,
         b"window_bell_flag\x00" as *const u8 as *const libc::c_char,
         b"%d\x00" as *const u8 as *const libc::c_char,
-        ((*wl).flags & 0x1 as libc::c_int != 0) as libc::c_int,
+        ((*wl).flags & 0x1i32 != 0) as libc::c_int,
     );
     format_add(
         ft,
         b"window_activity_flag\x00" as *const u8 as *const libc::c_char,
         b"%d\x00" as *const u8 as *const libc::c_char,
-        ((*wl).flags & 0x2 as libc::c_int != 0) as libc::c_int,
+        ((*wl).flags & 0x2i32 != 0) as libc::c_int,
     );
     format_add(
         ft,
         b"window_silence_flag\x00" as *const u8 as *const libc::c_char,
         b"%d\x00" as *const u8 as *const libc::c_char,
-        ((*wl).flags & 0x4 as libc::c_int != 0) as libc::c_int,
+        ((*wl).flags & 0x4i32 != 0) as libc::c_int,
     );
     format_add(
         ft,
@@ -7349,7 +7190,7 @@ pub unsafe extern "C" fn format_defaults_pane(mut ft: *mut format_tree, mut wp: 
         b"%zu\x00" as *const u8 as *const libc::c_char,
         (*wp).skipped,
     );
-    if window_pane_index(wp, &mut idx) != 0 as libc::c_int {
+    if window_pane_index(wp, &mut idx) != 0i32 {
         fatalx(b"index not found\x00" as *const u8 as *const libc::c_char);
     }
     format_add(
@@ -7400,28 +7241,28 @@ pub unsafe extern "C" fn format_defaults_pane(mut ft: *mut format_tree, mut wp: 
         ft,
         b"pane_input_off\x00" as *const u8 as *const libc::c_char,
         b"%d\x00" as *const u8 as *const libc::c_char,
-        ((*wp).flags & 0x40 as libc::c_int != 0) as libc::c_int,
+        ((*wp).flags & 0x40i32 != 0) as libc::c_int,
     );
     format_add(
         ft,
         b"pane_pipe\x00" as *const u8 as *const libc::c_char,
         b"%d\x00" as *const u8 as *const libc::c_char,
-        ((*wp).pipe_fd != -(1 as libc::c_int)) as libc::c_int,
+        ((*wp).pipe_fd != -(1i32)) as libc::c_int,
     );
-    if (*wp).flags & 0x200 as libc::c_int != 0 && status & 0x7f as libc::c_int == 0 as libc::c_int {
+    if (*wp).flags & 0x200i32 != 0 && status & 0x7fi32 == 0i32 {
         format_add(
             ft,
             b"pane_dead_status\x00" as *const u8 as *const libc::c_char,
             b"%d\x00" as *const u8 as *const libc::c_char,
-            (status & 0xff00 as libc::c_int) >> 8 as libc::c_int,
+            (status & 0xff00i32) >> 8i32,
         );
     }
-    if !(*wp).flags & 0x800 as libc::c_int != 0 {
+    if !(*wp).flags & 0x800i32 != 0 {
         format_add(
             ft,
             b"pane_dead\x00" as *const u8 as *const libc::c_char,
             b"%d\x00" as *const u8 as *const libc::c_char,
-            ((*wp).fd == -(1 as libc::c_int)) as libc::c_int,
+            ((*wp).fd == -(1i32)) as libc::c_int,
         );
     } else {
         format_add(
@@ -7471,25 +7312,19 @@ pub unsafe extern "C" fn format_defaults_pane(mut ft: *mut format_tree, mut wp: 
         ft,
         b"pane_right\x00" as *const u8 as *const libc::c_char,
         b"%u\x00" as *const u8 as *const libc::c_char,
-        (*wp)
-            .xoff
-            .wrapping_add((*wp).sx)
-            .wrapping_sub(1 as libc::c_int as libc::c_uint),
+        (*wp).xoff.wrapping_add((*wp).sx).wrapping_sub(1u32),
     );
     format_add(
         ft,
         b"pane_bottom\x00" as *const u8 as *const libc::c_char,
         b"%u\x00" as *const u8 as *const libc::c_char,
-        (*wp)
-            .yoff
-            .wrapping_add((*wp).sy)
-            .wrapping_sub(1 as libc::c_int as libc::c_uint),
+        (*wp).yoff.wrapping_add((*wp).sy).wrapping_sub(1u32),
     );
     format_add(
         ft,
         b"pane_at_left\x00" as *const u8 as *const libc::c_char,
         b"%d\x00" as *const u8 as *const libc::c_char,
-        ((*wp).xoff == 0 as libc::c_int as libc::c_uint) as libc::c_int,
+        ((*wp).xoff == 0u32) as libc::c_int,
     );
     format_add_cb(
         ft,
@@ -7621,13 +7456,9 @@ pub unsafe extern "C" fn format_defaults_pane(mut ft: *mut format_tree, mut wp: 
         ft,
         b"alternate_on\x00" as *const u8 as *const libc::c_char,
         b"%d\x00" as *const u8 as *const libc::c_char,
-        ((*wp).base.saved_grid != 0 as *mut libc::c_void as *mut grid) as libc::c_int,
+        ((*wp).base.saved_grid != 0 as *mut grid) as libc::c_int,
     );
-    if (*wp).base.saved_cx
-        != (2147483647 as libc::c_int as libc::c_uint)
-            .wrapping_mul(2 as libc::c_uint)
-            .wrapping_add(1 as libc::c_uint)
-    {
+    if (*wp).base.saved_cx != (2147483647u32).wrapping_mul(2u32).wrapping_add(1u32) {
         format_add(
             ft,
             b"alternate_saved_x\x00" as *const u8 as *const libc::c_char,
@@ -7635,11 +7466,7 @@ pub unsafe extern "C" fn format_defaults_pane(mut ft: *mut format_tree, mut wp: 
             (*wp).base.saved_cx,
         );
     }
-    if (*wp).base.saved_cy
-        != (2147483647 as libc::c_int as libc::c_uint)
-            .wrapping_mul(2 as libc::c_uint)
-            .wrapping_add(1 as libc::c_uint)
-    {
+    if (*wp).base.saved_cy != (2147483647u32).wrapping_mul(2u32).wrapping_add(1u32) {
         format_add(
             ft,
             b"alternate_saved_y\x00" as *const u8 as *const libc::c_char,
@@ -7651,74 +7478,73 @@ pub unsafe extern "C" fn format_defaults_pane(mut ft: *mut format_tree, mut wp: 
         ft,
         b"cursor_flag\x00" as *const u8 as *const libc::c_char,
         b"%d\x00" as *const u8 as *const libc::c_char,
-        ((*wp).base.mode & 0x1 as libc::c_int != 0) as libc::c_int,
+        ((*wp).base.mode & 0x1i32 != 0) as libc::c_int,
     );
     format_add(
         ft,
         b"insert_flag\x00" as *const u8 as *const libc::c_char,
         b"%d\x00" as *const u8 as *const libc::c_char,
-        ((*wp).base.mode & 0x2 as libc::c_int != 0) as libc::c_int,
+        ((*wp).base.mode & 0x2i32 != 0) as libc::c_int,
     );
     format_add(
         ft,
         b"keypad_cursor_flag\x00" as *const u8 as *const libc::c_char,
         b"%d\x00" as *const u8 as *const libc::c_char,
-        ((*wp).base.mode & 0x4 as libc::c_int != 0) as libc::c_int,
+        ((*wp).base.mode & 0x4i32 != 0) as libc::c_int,
     );
     format_add(
         ft,
         b"keypad_flag\x00" as *const u8 as *const libc::c_char,
         b"%d\x00" as *const u8 as *const libc::c_char,
-        ((*wp).base.mode & 0x8 as libc::c_int != 0) as libc::c_int,
+        ((*wp).base.mode & 0x8i32 != 0) as libc::c_int,
     );
     format_add(
         ft,
         b"wrap_flag\x00" as *const u8 as *const libc::c_char,
         b"%d\x00" as *const u8 as *const libc::c_char,
-        ((*wp).base.mode & 0x10 as libc::c_int != 0) as libc::c_int,
+        ((*wp).base.mode & 0x10i32 != 0) as libc::c_int,
     );
     format_add(
         ft,
         b"origin_flag\x00" as *const u8 as *const libc::c_char,
         b"%d\x00" as *const u8 as *const libc::c_char,
-        ((*wp).base.mode & 0x2000 as libc::c_int != 0) as libc::c_int,
+        ((*wp).base.mode & 0x2000i32 != 0) as libc::c_int,
     );
     format_add(
         ft,
         b"mouse_any_flag\x00" as *const u8 as *const libc::c_char,
         b"%d\x00" as *const u8 as *const libc::c_char,
-        ((*wp).base.mode & (0x20 as libc::c_int | 0x40 as libc::c_int | 0x1000 as libc::c_int) != 0)
-            as libc::c_int,
+        ((*wp).base.mode & (0x20i32 | 0x40i32 | 0x1000i32) != 0) as libc::c_int,
     );
     format_add(
         ft,
         b"mouse_standard_flag\x00" as *const u8 as *const libc::c_char,
         b"%d\x00" as *const u8 as *const libc::c_char,
-        ((*wp).base.mode & 0x20 as libc::c_int != 0) as libc::c_int,
+        ((*wp).base.mode & 0x20i32 != 0) as libc::c_int,
     );
     format_add(
         ft,
         b"mouse_button_flag\x00" as *const u8 as *const libc::c_char,
         b"%d\x00" as *const u8 as *const libc::c_char,
-        ((*wp).base.mode & 0x40 as libc::c_int != 0) as libc::c_int,
+        ((*wp).base.mode & 0x40i32 != 0) as libc::c_int,
     );
     format_add(
         ft,
         b"mouse_all_flag\x00" as *const u8 as *const libc::c_char,
         b"%d\x00" as *const u8 as *const libc::c_char,
-        ((*wp).base.mode & 0x1000 as libc::c_int != 0) as libc::c_int,
+        ((*wp).base.mode & 0x1000i32 != 0) as libc::c_int,
     );
     format_add(
         ft,
         b"mouse_utf8_flag\x00" as *const u8 as *const libc::c_char,
         b"%d\x00" as *const u8 as *const libc::c_char,
-        ((*wp).base.mode & 0x100 as libc::c_int != 0) as libc::c_int,
+        ((*wp).base.mode & 0x100i32 != 0) as libc::c_int,
     );
     format_add(
         ft,
         b"mouse_sgr_flag\x00" as *const u8 as *const libc::c_char,
         b"%d\x00" as *const u8 as *const libc::c_char,
-        ((*wp).base.mode & 0x200 as libc::c_int != 0) as libc::c_int,
+        ((*wp).base.mode & 0x200i32 != 0) as libc::c_int,
     );
     format_add_cb(
         ft,
@@ -7738,7 +7564,7 @@ pub unsafe extern "C" fn format_defaults_paste_buffer(
     };
     let mut size: size_t = 0;
     let mut s: *mut libc::c_char = 0 as *mut libc::c_char;
-    tv.tv_usec = 0 as libc::c_int as __suseconds_t;
+    tv.tv_usec = 0i64;
     tv.tv_sec = tv.tv_usec;
     tv.tv_sec = paste_buffer_created(pb);
     paste_buffer_data(pb, &mut size);

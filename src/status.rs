@@ -1530,8 +1530,7 @@ pub struct status_prompt_menu {
     pub list: *mut *mut libc::c_char,
     pub flag: libc::c_char,
 }
-static mut status_prompt_hlist: *mut *mut libc::c_char =
-    0 as *const *mut libc::c_char as *mut *mut libc::c_char;
+static mut status_prompt_hlist: *mut *mut libc::c_char = 0 as *mut *mut libc::c_char;
 static mut status_prompt_hsize: u_int = 0;
 /* Find the history file to load/save from/to. */
 unsafe extern "C" fn status_prompt_find_history_file() -> *mut libc::c_char {
@@ -1548,8 +1547,8 @@ unsafe extern "C" fn status_prompt_find_history_file() -> *mut libc::c_char {
     if *history_file as libc::c_int == '/' as i32 {
         return xstrdup(history_file);
     }
-    if *history_file.offset(0 as libc::c_int as isize) as libc::c_int != '~' as i32
-        || *history_file.offset(1 as libc::c_int as isize) as libc::c_int != '/' as i32
+    if *history_file.offset(0isize) as libc::c_int != '~' as i32
+        || *history_file.offset(1isize) as libc::c_int != '/' as i32
     {
         return 0 as *mut libc::c_char;
     }
@@ -1561,7 +1560,7 @@ unsafe extern "C" fn status_prompt_find_history_file() -> *mut libc::c_char {
         &mut path as *mut *mut libc::c_char,
         b"%s%s\x00" as *const u8 as *const libc::c_char,
         home,
-        history_file.offset(1 as libc::c_int as isize),
+        history_file.offset(1isize),
     );
     return path;
 }
@@ -1597,23 +1596,18 @@ pub unsafe extern "C" fn status_prompt_load_history() {
         if line.is_null() {
             break;
         }
-        if length > 0 as libc::c_int as libc::c_ulong {
-            if *line.offset(length.wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize)
-                as libc::c_int
-                == '\n' as i32
-            {
-                *line.offset(length.wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize) =
-                    '\u{0}' as i32 as libc::c_char;
+        if length > 0u64 {
+            if *line.offset(length.wrapping_sub(1u64) as isize) as libc::c_int == '\n' as i32 {
+                *line.offset(length.wrapping_sub(1u64) as isize) = '\u{0}' as libc::c_char;
                 status_prompt_add_history(line);
             } else {
-                tmp = xmalloc(length.wrapping_add(1 as libc::c_int as libc::c_ulong))
-                    as *mut libc::c_char;
+                tmp = xmalloc(length.wrapping_add(1u64)) as *mut libc::c_char;
                 memcpy(
                     tmp as *mut libc::c_void,
                     line as *const libc::c_void,
                     length,
                 );
-                *tmp.offset(length as isize) = '\u{0}' as i32 as libc::c_char;
+                *tmp.offset(length as isize) = '\u{0}' as libc::c_char;
                 status_prompt_add_history(tmp);
                 free(tmp as *mut libc::c_void);
             }
@@ -1646,7 +1640,7 @@ pub unsafe extern "C" fn status_prompt_save_history() {
         return;
     }
     free(history_file as *mut libc::c_void);
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < status_prompt_hsize {
         fputs(*status_prompt_hlist.offset(i as isize), f);
         fputc('\n' as i32, f);
@@ -1671,15 +1665,15 @@ unsafe extern "C" fn status_timer_callback(
         return;
     }
     if (*c).message_string.is_null() && (*c).prompt_string.is_null() {
-        (*c).flags |= 0x10 as libc::c_int as libc::c_ulong
+        (*c).flags |= 0x10u64
     }
-    tv.tv_usec = 0 as libc::c_int as __suseconds_t;
+    tv.tv_usec = 0i64;
     tv.tv_sec = tv.tv_usec;
     tv.tv_sec = options_get_number(
         (*s).options,
         b"status-interval\x00" as *const u8 as *const libc::c_char,
-    ) as __time_t;
-    if tv.tv_sec != 0 as libc::c_int as libc::c_long {
+    );
+    if tv.tv_sec != 0i64 {
         event_add(&mut (*c).status.timer, &mut tv);
     }
     log_debug(
@@ -1697,8 +1691,8 @@ pub unsafe extern "C" fn status_timer_start(mut c: *mut client) {
     } else {
         event_set(
             &mut (*c).status.timer,
-            -(1 as libc::c_int),
-            0 as libc::c_int as libc::c_short,
+            -(1i32),
+            0i16,
             Some(
                 status_timer_callback
                     as unsafe extern "C" fn(
@@ -1716,11 +1710,7 @@ pub unsafe extern "C" fn status_timer_start(mut c: *mut client) {
             b"status\x00" as *const u8 as *const libc::c_char,
         ) != 0
     {
-        status_timer_callback(
-            -(1 as libc::c_int),
-            0 as libc::c_int as libc::c_short,
-            c as *mut libc::c_void,
-        );
+        status_timer_callback(-(1i32), 0i16, c as *mut libc::c_void);
     };
 }
 /* Start status timer for all clients. */
@@ -1740,26 +1730,26 @@ pub unsafe extern "C" fn status_update_cache(mut s: *mut session) {
         (*s).options,
         b"status\x00" as *const u8 as *const libc::c_char,
     ) as u_int;
-    if (*s).statuslines == 0 as libc::c_int as libc::c_uint {
-        (*s).statusat = -(1 as libc::c_int)
+    if (*s).statuslines == 0u32 {
+        (*s).statusat = -(1i32)
     } else if options_get_number(
         (*s).options,
         b"status-position\x00" as *const u8 as *const libc::c_char,
-    ) == 0 as libc::c_int as libc::c_longlong
+    ) == 0i64
     {
-        (*s).statusat = 0 as libc::c_int
+        (*s).statusat = 0i32
     } else {
-        (*s).statusat = 1 as libc::c_int
+        (*s).statusat = 1i32
     };
 }
 /* Get screen line of status line. -1 means off. */
 #[no_mangle]
 pub unsafe extern "C" fn status_at_line(mut c: *mut client) -> libc::c_int {
     let mut s: *mut session = (*c).session;
-    if (*c).flags & (0x800000 as libc::c_int | 0x2000 as libc::c_int) as libc::c_ulong != 0 {
-        return -(1 as libc::c_int);
+    if (*c).flags & (0x800000i32 | 0x2000i32) as libc::c_ulong != 0 {
+        return -(1i32);
     }
-    if (*s).statusat != 1 as libc::c_int {
+    if (*s).statusat != 1i32 {
         return (*s).statusat;
     }
     return (*c).tty.sy.wrapping_sub(status_line_size(c)) as libc::c_int;
@@ -1768,8 +1758,8 @@ pub unsafe extern "C" fn status_at_line(mut c: *mut client) -> libc::c_int {
 #[no_mangle]
 pub unsafe extern "C" fn status_line_size(mut c: *mut client) -> u_int {
     let mut s: *mut session = (*c).session;
-    if (*c).flags & (0x800000 as libc::c_int | 0x2000 as libc::c_int) as libc::c_ulong != 0 {
-        return 0 as libc::c_int as u_int;
+    if (*c).flags & (0x800000i32 | 0x2000i32) as libc::c_ulong != 0 {
+        return 0u32;
     }
     return (*s).statuslines;
 }
@@ -1804,7 +1794,7 @@ unsafe extern "C" fn status_free_ranges(mut srs: *mut style_ranges) {
     sr = (*srs).tqh_first;
     while !sr.is_null() && {
         sr1 = (*sr).entry.tqe_next;
-        (1 as libc::c_int) != 0
+        (1i32) != 0
     } {
         if !(*sr).entry.tqe_next.is_null() {
             (*(*sr).entry.tqe_next).entry.tqe_prev = (*sr).entry.tqe_prev
@@ -1821,12 +1811,7 @@ unsafe extern "C" fn status_push_screen(mut c: *mut client) {
     let mut sl: *mut status_line = &mut (*c).status;
     if (*sl).active == &mut (*sl).screen as *mut screen {
         (*sl).active = xmalloc(::std::mem::size_of::<screen>() as libc::c_ulong) as *mut screen;
-        screen_init(
-            (*sl).active,
-            (*c).tty.sx,
-            status_line_size(c),
-            0 as libc::c_int as u_int,
-        );
+        screen_init((*sl).active, (*c).tty.sx, status_line_size(c), 0u32);
     }
     (*sl).references += 1;
 }
@@ -1834,7 +1819,7 @@ unsafe extern "C" fn status_push_screen(mut c: *mut client) {
 unsafe extern "C" fn status_pop_screen(mut c: *mut client) {
     let mut sl: *mut status_line = &mut (*c).status;
     (*sl).references -= 1;
-    if (*sl).references == 0 as libc::c_int {
+    if (*sl).references == 0i32 {
         screen_free((*sl).active);
         free((*sl).active as *mut libc::c_void);
         (*sl).active = &mut (*sl).screen
@@ -1845,7 +1830,7 @@ unsafe extern "C" fn status_pop_screen(mut c: *mut client) {
 pub unsafe extern "C" fn status_init(mut c: *mut client) {
     let mut sl: *mut status_line = &mut (*c).status;
     let mut i: u_int = 0;
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while (i as libc::c_ulong)
         < (::std::mem::size_of::<[status_line_entry; 5]>() as libc::c_ulong)
             .wrapping_div(::std::mem::size_of::<status_line_entry>() as libc::c_ulong)
@@ -1857,12 +1842,7 @@ pub unsafe extern "C" fn status_init(mut c: *mut client) {
                 .tqh_first;
         i = i.wrapping_add(1)
     }
-    screen_init(
-        &mut (*sl).screen,
-        (*c).tty.sx,
-        1 as libc::c_int as u_int,
-        0 as libc::c_int as u_int,
-    );
+    screen_init(&mut (*sl).screen, (*c).tty.sx, 1u32, 0u32);
     (*sl).active = &mut (*sl).screen;
 }
 /* Free status line. */
@@ -1870,7 +1850,7 @@ pub unsafe extern "C" fn status_init(mut c: *mut client) {
 pub unsafe extern "C" fn status_free(mut c: *mut client) {
     let mut sl: *mut status_line = &mut (*c).status;
     let mut i: u_int = 0;
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while (i as libc::c_ulong)
         < (::std::mem::size_of::<[status_line_entry; 5]>() as libc::c_ulong)
             .wrapping_div(::std::mem::size_of::<status_line_entry>() as libc::c_ulong)
@@ -1925,8 +1905,8 @@ pub unsafe extern "C" fn status_redraw(mut c: *mut client) -> libc::c_int {
     let mut n: u_int = 0;
     let mut width: u_int = (*c).tty.sx;
     let mut flags: libc::c_int = 0;
-    let mut force: libc::c_int = 0 as libc::c_int;
-    let mut changed: libc::c_int = 0 as libc::c_int;
+    let mut force: libc::c_int = 0i32;
+    let mut changed: libc::c_int = 0i32;
     let mut fg: libc::c_int = 0;
     let mut bg: libc::c_int = 0;
     let mut o: *mut crate::options::options_entry = 0 as *mut crate::options::options_entry;
@@ -1943,21 +1923,15 @@ pub unsafe extern "C" fn status_redraw(mut c: *mut client) -> libc::c_int {
     }
     /* No status line? */
     lines = status_line_size(c);
-    if (*c).tty.sy == 0 as libc::c_int as libc::c_uint || lines == 0 as libc::c_int as libc::c_uint
-    {
-        return 1 as libc::c_int;
+    if (*c).tty.sy == 0u32 || lines == 0u32 {
+        return 1i32;
     }
     /* Create format tree. */
-    flags = 0x1 as libc::c_int;
-    if (*c).flags & 0x80000 as libc::c_int as libc::c_ulong != 0 {
-        flags |= 0x2 as libc::c_int
+    flags = 0x1i32;
+    if (*c).flags & 0x80000u64 != 0 {
+        flags |= 0x2i32
     }
-    ft = format_create(
-        c,
-        0 as *mut crate::cmd_queue::cmdq_item,
-        0 as libc::c_int,
-        flags,
-    );
+    ft = format_create(c, 0 as *mut crate::cmd_queue::cmdq_item, 0i32, flags);
     format_defaults(
         ft,
         c,
@@ -1976,18 +1950,18 @@ pub unsafe extern "C" fn status_redraw(mut c: *mut client) -> libc::c_int {
         (*s).options,
         b"status-fg\x00" as *const u8 as *const libc::c_char,
     ) as libc::c_int;
-    if fg != 8 as libc::c_int {
+    if fg != 8i32 {
         gc.fg = fg
     }
     bg = options_get_number(
         (*s).options,
         b"status-bg\x00" as *const u8 as *const libc::c_char,
     ) as libc::c_int;
-    if bg != 8 as libc::c_int {
+    if bg != 8i32 {
         gc.bg = bg
     }
     if grid_cells_equal(&mut gc, &mut (*sl).style) == 0 {
-        force = 1 as libc::c_int;
+        force = 1i32;
         memcpy(
             &mut (*sl).style as *mut GridCell as *mut libc::c_void,
             &mut gc as *mut GridCell as *const libc::c_void,
@@ -1996,8 +1970,8 @@ pub unsafe extern "C" fn status_redraw(mut c: *mut client) -> libc::c_int {
     }
     /* Resize the target screen. */
     if (*(*sl).screen.grid).sx != width || (*(*sl).screen.grid).sy != lines {
-        screen_resize(&mut (*sl).screen, width, lines, 0 as libc::c_int);
-        force = 1 as libc::c_int;
+        screen_resize(&mut (*sl).screen, width, lines, 0i32);
+        force = 1i32;
         changed = force
     }
     screen_write_start(&mut ctx, &mut (*sl).screen);
@@ -2007,25 +1981,20 @@ pub unsafe extern "C" fn status_redraw(mut c: *mut client) -> libc::c_int {
         b"status-format\x00" as *const u8 as *const libc::c_char,
     );
     if o.is_null() {
-        n = 0 as libc::c_int as u_int;
+        n = 0u32;
         while n < width.wrapping_mul(lines) {
-            screen_write_putc(&mut ctx, &mut gc, ' ' as i32 as u_char);
+            screen_write_putc(&mut ctx, &mut gc, ' ' as u_char);
             n = n.wrapping_add(1)
         }
     } else {
-        i = 0 as libc::c_int as u_int;
+        i = 0u32;
         while i < lines {
-            screen_write_cursormove(
-                &mut ctx,
-                0 as libc::c_int,
-                i as libc::c_int,
-                0 as libc::c_int,
-            );
+            screen_write_cursormove(&mut ctx, 0i32, i as libc::c_int, 0i32);
             ov = options_array_get(o, i);
             if ov.is_null() {
-                n = 0 as libc::c_int as u_int;
+                n = 0u32;
                 while n < width {
-                    screen_write_putc(&mut ctx, &mut gc, ' ' as i32 as u_char);
+                    screen_write_putc(&mut ctx, &mut gc, ' ' as u_char);
                     n = n.wrapping_add(1)
                 }
             } else {
@@ -2033,22 +2002,17 @@ pub unsafe extern "C" fn status_redraw(mut c: *mut client) -> libc::c_int {
                 expanded = format_expand_time(ft, (*ov).string);
                 if force == 0
                     && !(*sle).expanded.is_null()
-                    && strcmp(expanded, (*sle).expanded) == 0 as libc::c_int
+                    && strcmp(expanded, (*sle).expanded) == 0i32
                 {
                     free(expanded as *mut libc::c_void);
                 } else {
-                    changed = 1 as libc::c_int;
-                    n = 0 as libc::c_int as u_int;
+                    changed = 1i32;
+                    n = 0u32;
                     while n < width {
-                        screen_write_putc(&mut ctx, &mut gc, ' ' as i32 as u_char);
+                        screen_write_putc(&mut ctx, &mut gc, ' ' as u_char);
                         n = n.wrapping_add(1)
                     }
-                    screen_write_cursormove(
-                        &mut ctx,
-                        0 as libc::c_int,
-                        i as libc::c_int,
-                        0 as libc::c_int,
-                    );
+                    screen_write_cursormove(&mut ctx, 0i32, i as libc::c_int, 0i32);
                     status_free_ranges(&mut (*sle).ranges);
                     format_draw(&mut ctx, &mut gc, width, expanded, &mut (*sle).ranges);
                     free((*sle).expanded as *mut libc::c_void);
@@ -2098,22 +2062,22 @@ pub unsafe extern "C" fn status_message_set(
      * With delay -1, the display-time option is used; zero means wait for
      * key press; more than zero is the actual delay time in milliseconds.
      */
-    if delay == -(1 as libc::c_int) {
+    if delay == -(1i32) {
         delay = options_get_number(
             (*(*c).session).options,
             b"display-time\x00" as *const u8 as *const libc::c_char,
         ) as libc::c_int
     }
-    if delay > 0 as libc::c_int {
-        tv.tv_sec = (delay / 1000 as libc::c_int) as __time_t;
-        tv.tv_usec = (delay % 1000 as libc::c_int) as libc::c_long * 1000 as libc::c_long;
+    if delay > 0i32 {
+        tv.tv_sec = (delay / 1000i32) as __time_t;
+        tv.tv_usec = (delay % 1000i32) as libc::c_long * 1000i64;
         if event_initialized(&mut (*c).message_timer) != 0 {
             event_del(&mut (*c).message_timer);
         }
         event_set(
             &mut (*c).message_timer,
-            -(1 as libc::c_int),
-            0 as libc::c_int as libc::c_short,
+            -(1i32),
+            0i16,
             Some(
                 status_message_callback
                     as unsafe extern "C" fn(
@@ -2126,8 +2090,8 @@ pub unsafe extern "C" fn status_message_set(
         );
         event_add(&mut (*c).message_timer, &mut tv);
     }
-    (*c).tty.flags |= 0x1 as libc::c_int | 0x2 as libc::c_int;
-    (*c).flags |= 0x10 as libc::c_int as libc::c_ulong;
+    (*c).tty.flags |= 0x1i32 | 0x2i32;
+    (*c).flags |= 0x10u64;
 }
 /* Clear status line message. */
 #[no_mangle]
@@ -2138,14 +2102,10 @@ pub unsafe extern "C" fn status_message_clear(mut c: *mut client) {
     free((*c).message_string as *mut libc::c_void);
     (*c).message_string = 0 as *mut libc::c_char;
     if (*c).prompt_string.is_null() {
-        (*c).tty.flags &= !(0x1 as libc::c_int | 0x2 as libc::c_int)
+        (*c).tty.flags &= !(0x1i32 | 0x2i32)
     }
-    (*c).flags |= (0x8 as libc::c_int
-        | 0x10 as libc::c_int
-        | 0x1000000 as libc::c_int
-        | 0x400 as libc::c_int
-        | 0x2000000 as libc::c_int
-        | 0x20000000 as libc::c_int) as libc::c_ulong;
+    (*c).flags |= (0x8i32 | 0x10i32 | 0x1000000i32 | 0x400i32 | 0x2000000i32 | 0x20000000i32)
+        as libc::c_ulong;
     status_pop_screen(c);
 }
 /* $OpenBSD$ */
@@ -2241,10 +2201,8 @@ pub unsafe extern "C" fn status_message_redraw(mut c: *mut client) -> libc::c_in
         us: 0,
     };
     let mut ft: *mut crate::format::format_tree = 0 as *mut crate::format::format_tree;
-    if (*c).tty.sx == 0 as libc::c_int as libc::c_uint
-        || (*c).tty.sy == 0 as libc::c_int as libc::c_uint
-    {
-        return 0 as libc::c_int;
+    if (*c).tty.sx == 0u32 || (*c).tty.sy == 0u32 {
+        return 0i32;
     }
     memcpy(
         &mut old_screen as *mut screen as *mut libc::c_void,
@@ -2252,10 +2210,10 @@ pub unsafe extern "C" fn status_message_redraw(mut c: *mut client) -> libc::c_in
         ::std::mem::size_of::<screen>() as libc::c_ulong,
     );
     lines = status_line_size(c);
-    if lines <= 1 as libc::c_int as libc::c_uint {
-        lines = 1 as libc::c_int as u_int
+    if lines <= 1u32 {
+        lines = 1u32
     }
-    screen_init((*sl).active, (*c).tty.sx, lines, 0 as libc::c_int as u_int);
+    screen_init((*sl).active, (*c).tty.sx, lines, 0u32);
     len = screen_write_strlen(
         b"%s\x00" as *const u8 as *const libc::c_char,
         (*c).message_string,
@@ -2281,27 +2239,27 @@ pub unsafe extern "C" fn status_message_redraw(mut c: *mut client) -> libc::c_in
     screen_write_fast_copy(
         &mut ctx,
         &mut (*sl).screen,
-        0 as libc::c_int as u_int,
-        0 as libc::c_int as u_int,
+        0u32,
+        0u32,
         (*c).tty.sx,
-        lines.wrapping_sub(1 as libc::c_int as libc::c_uint),
+        lines.wrapping_sub(1u32),
     );
     screen_write_cursormove(
         &mut ctx,
-        0 as libc::c_int,
-        lines.wrapping_sub(1 as libc::c_int as libc::c_uint) as libc::c_int,
-        0 as libc::c_int,
+        0i32,
+        lines.wrapping_sub(1u32) as libc::c_int,
+        0i32,
     );
-    offset = 0 as libc::c_int as u_int;
+    offset = 0u32;
     while offset < (*c).tty.sx {
-        screen_write_putc(&mut ctx, &mut gc, ' ' as i32 as u_char);
+        screen_write_putc(&mut ctx, &mut gc, ' ' as u_char);
         offset = offset.wrapping_add(1)
     }
     screen_write_cursormove(
         &mut ctx,
-        0 as libc::c_int,
-        lines.wrapping_sub(1 as libc::c_int as libc::c_uint) as libc::c_int,
-        0 as libc::c_int,
+        0i32,
+        lines.wrapping_sub(1u32) as libc::c_int,
+        0i32,
     );
     if (*c).message_ignore_styles != 0 {
         screen_write_nputs(
@@ -2321,12 +2279,12 @@ pub unsafe extern "C" fn status_message_redraw(mut c: *mut client) -> libc::c_in
         );
     }
     screen_write_stop(&mut ctx);
-    if grid_compare((*(*sl).active).grid, old_screen.grid) == 0 as libc::c_int {
+    if grid_compare((*(*sl).active).grid, old_screen.grid) == 0i32 {
         screen_free(&mut old_screen);
-        return 0 as libc::c_int;
+        return 0i32;
     }
     screen_free(&mut old_screen);
-    return 1 as libc::c_int;
+    return 1i32;
 }
 /* Enable status line prompt. */
 #[no_mangle]
@@ -2357,7 +2315,7 @@ pub unsafe extern "C" fn status_prompt_set(
     if input.is_null() {
         input = b"\x00" as *const u8 as *const libc::c_char
     }
-    if flags & 0x8 as libc::c_int != 0 {
+    if flags & 0x8i32 != 0 {
         tmp = xstrdup(input)
     } else {
         tmp = format_expand_time(ft, input)
@@ -2371,25 +2329,20 @@ pub unsafe extern "C" fn status_prompt_set(
     (*c).prompt_inputcb = inputcb;
     (*c).prompt_freecb = freecb;
     (*c).prompt_data = data;
-    (*c).prompt_hindex = 0 as libc::c_int as u_int;
+    (*c).prompt_hindex = 0u32;
     (*c).prompt_flags = flags;
     (*c).prompt_mode = PROMPT_ENTRY;
-    if !flags & 0x4 as libc::c_int != 0 {
-        (*c).tty.flags |= 0x1 as libc::c_int | 0x2 as libc::c_int
+    if !flags & 0x4i32 != 0 {
+        (*c).tty.flags |= 0x1i32 | 0x2i32
     }
-    (*c).flags |= 0x10 as libc::c_int as libc::c_ulong;
-    if flags & 0x4 as libc::c_int != 0 && *tmp as libc::c_int != '\u{0}' as i32 {
+    (*c).flags |= 0x10u64;
+    if flags & 0x4i32 != 0 && *tmp as libc::c_int != '\u{0}' as i32 {
         xasprintf(
             &mut cp as *mut *mut libc::c_char,
             b"=%s\x00" as *const u8 as *const libc::c_char,
             tmp,
         );
-        (*c).prompt_inputcb.expect("non-null function pointer")(
-            c,
-            (*c).prompt_data,
-            cp,
-            0 as libc::c_int,
-        );
+        (*c).prompt_inputcb.expect("non-null function pointer")(c, (*c).prompt_data, cp, 0i32);
         free(cp as *mut libc::c_void);
     }
     free(tmp as *mut libc::c_void);
@@ -2410,13 +2363,9 @@ pub unsafe extern "C" fn status_prompt_clear(mut c: *mut client) {
     (*c).prompt_buffer = 0 as *mut Utf8Data;
     free((*c).prompt_saved as *mut libc::c_void);
     (*c).prompt_saved = 0 as *mut Utf8Data;
-    (*c).tty.flags &= !(0x1 as libc::c_int | 0x2 as libc::c_int);
-    (*c).flags |= (0x8 as libc::c_int
-        | 0x10 as libc::c_int
-        | 0x1000000 as libc::c_int
-        | 0x400 as libc::c_int
-        | 0x2000000 as libc::c_int
-        | 0x20000000 as libc::c_int) as libc::c_ulong;
+    (*c).tty.flags &= !(0x1i32 | 0x2i32);
+    (*c).flags |= (0x8i32 | 0x10i32 | 0x1000000i32 | 0x400i32 | 0x2000000i32 | 0x20000000i32)
+        as libc::c_ulong;
     status_pop_screen(c);
 }
 /* Update status line prompt with a new prompt string. */
@@ -2428,12 +2377,7 @@ pub unsafe extern "C" fn status_prompt_update(
 ) {
     let mut ft: *mut crate::format::format_tree = 0 as *mut crate::format::format_tree;
     let mut tmp: *mut libc::c_char = 0 as *mut libc::c_char;
-    ft = format_create(
-        c,
-        0 as *mut crate::cmd_queue::cmdq_item,
-        0 as libc::c_int,
-        0 as libc::c_int,
-    );
+    ft = format_create(c, 0 as *mut crate::cmd_queue::cmdq_item, 0i32, 0i32);
     format_defaults(
         ft,
         c,
@@ -2447,8 +2391,8 @@ pub unsafe extern "C" fn status_prompt_update(
     free((*c).prompt_buffer as *mut libc::c_void);
     (*c).prompt_buffer = utf8_fromcstr(tmp);
     (*c).prompt_index = utf8_strlen((*c).prompt_buffer);
-    (*c).prompt_hindex = 0 as libc::c_int as u_int;
-    (*c).flags |= 0x10 as libc::c_int as libc::c_ulong;
+    (*c).prompt_hindex = 0u32;
+    (*c).flags |= 0x10u64;
     free(tmp as *mut libc::c_void);
     format_free(ft);
 }
@@ -2538,10 +2482,8 @@ pub unsafe extern "C" fn status_prompt_redraw(mut c: *mut client) -> libc::c_int
         us: 0,
     };
     let mut ft: *mut crate::format::format_tree = 0 as *mut crate::format::format_tree;
-    if (*c).tty.sx == 0 as libc::c_int as libc::c_uint
-        || (*c).tty.sy == 0 as libc::c_int as libc::c_uint
-    {
-        return 0 as libc::c_int;
+    if (*c).tty.sx == 0u32 || (*c).tty.sy == 0u32 {
+        return 0i32;
     }
     memcpy(
         &mut old_screen as *mut screen as *mut libc::c_void,
@@ -2549,10 +2491,10 @@ pub unsafe extern "C" fn status_prompt_redraw(mut c: *mut client) -> libc::c_int
         ::std::mem::size_of::<screen>() as libc::c_ulong,
     );
     lines = status_line_size(c);
-    if lines <= 1 as libc::c_int as libc::c_uint {
-        lines = 1 as libc::c_int as u_int
+    if lines <= 1u32 {
+        lines = 1u32
     }
-    screen_init((*sl).active, (*c).tty.sx, lines, 0 as libc::c_int as u_int);
+    screen_init((*sl).active, (*c).tty.sx, lines, 0u32);
     ft = format_create_defaults(
         0 as *mut crate::cmd_queue::cmdq_item,
         c,
@@ -2560,7 +2502,7 @@ pub unsafe extern "C" fn status_prompt_redraw(mut c: *mut client) -> libc::c_int
         0 as *mut winlink,
         0 as *mut window_pane,
     );
-    if (*c).prompt_mode as libc::c_uint == PROMPT_COMMAND as libc::c_int as libc::c_uint {
+    if (*c).prompt_mode == PROMPT_COMMAND {
         style_apply(
             &mut gc,
             (*s).options,
@@ -2581,7 +2523,7 @@ pub unsafe extern "C" fn status_prompt_redraw(mut c: *mut client) -> libc::c_int
         &mut gc as *mut GridCell as *const libc::c_void,
         ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
-    cursorgc.attr = (cursorgc.attr as libc::c_int ^ 0x10 as libc::c_int) as u_short;
+    cursorgc.attr = (cursorgc.attr as libc::c_int ^ 0x10i32) as u_short;
     start = screen_write_strlen(
         b"%s\x00" as *const u8 as *const libc::c_char,
         (*c).prompt_string,
@@ -2593,27 +2535,27 @@ pub unsafe extern "C" fn status_prompt_redraw(mut c: *mut client) -> libc::c_int
     screen_write_fast_copy(
         &mut ctx,
         &mut (*sl).screen,
-        0 as libc::c_int as u_int,
-        0 as libc::c_int as u_int,
+        0u32,
+        0u32,
         (*c).tty.sx,
-        lines.wrapping_sub(1 as libc::c_int as libc::c_uint),
+        lines.wrapping_sub(1u32),
     );
     screen_write_cursormove(
         &mut ctx,
-        0 as libc::c_int,
-        lines.wrapping_sub(1 as libc::c_int as libc::c_uint) as libc::c_int,
-        0 as libc::c_int,
+        0i32,
+        lines.wrapping_sub(1u32) as libc::c_int,
+        0i32,
     );
-    offset = 0 as libc::c_int as u_int;
+    offset = 0u32;
     while offset < (*c).tty.sx {
-        screen_write_putc(&mut ctx, &mut gc, ' ' as i32 as u_char);
+        screen_write_putc(&mut ctx, &mut gc, ' ' as u_char);
         offset = offset.wrapping_add(1)
     }
     screen_write_cursormove(
         &mut ctx,
-        0 as libc::c_int,
-        lines.wrapping_sub(1 as libc::c_int as libc::c_uint) as libc::c_int,
-        0 as libc::c_int,
+        0i32,
+        lines.wrapping_sub(1u32) as libc::c_int,
+        0i32,
     );
     screen_write_nputs(
         &mut ctx as *mut screen_write_ctx,
@@ -2625,42 +2567,38 @@ pub unsafe extern "C" fn status_prompt_redraw(mut c: *mut client) -> libc::c_int
     screen_write_cursormove(
         &mut ctx,
         start as libc::c_int,
-        lines.wrapping_sub(1 as libc::c_int as libc::c_uint) as libc::c_int,
-        0 as libc::c_int,
+        lines.wrapping_sub(1u32) as libc::c_int,
+        0i32,
     );
     left = (*c).tty.sx.wrapping_sub(start);
-    if !(left == 0 as libc::c_int as libc::c_uint) {
+    if !(left == 0u32) {
         pcursor = utf8_strwidth((*c).prompt_buffer, (*c).prompt_index as ssize_t);
-        pwidth = utf8_strwidth((*c).prompt_buffer, -(1 as libc::c_int) as ssize_t);
+        pwidth = utf8_strwidth((*c).prompt_buffer, -1i64);
         if pcursor >= left {
             /*
              * The cursor would be outside the screen so start drawing
              * with it on the right.
              */
-            offset = pcursor
-                .wrapping_sub(left)
-                .wrapping_add(1 as libc::c_int as libc::c_uint);
+            offset = pcursor.wrapping_sub(left).wrapping_add(1u32);
             pwidth = left
         } else {
-            offset = 0 as libc::c_int as u_int
+            offset = 0u32
         }
         if pwidth > left {
             pwidth = left
         }
-        width = 0 as libc::c_int as u_int;
-        i = 0 as libc::c_int as u_int;
-        while (*(*c).prompt_buffer.offset(i as isize)).size as libc::c_int != 0 as libc::c_int {
+        width = 0u32;
+        i = 0u32;
+        while (*(*c).prompt_buffer.offset(i as isize)).size as libc::c_int != 0i32 {
             if width < offset {
-                width = (width as libc::c_uint)
+                width = (width)
                     .wrapping_add((*(*c).prompt_buffer.offset(i as isize)).width as libc::c_uint)
-                    as u_int as u_int
             } else {
                 if width >= offset.wrapping_add(pwidth) {
                     break;
                 }
-                width = (width as libc::c_uint)
-                    .wrapping_add((*(*c).prompt_buffer.offset(i as isize)).width as libc::c_uint)
-                    as u_int as u_int;
+                width = (width)
+                    .wrapping_add((*(*c).prompt_buffer.offset(i as isize)).width as libc::c_uint);
                 if width > offset.wrapping_add(pwidth) {
                     break;
                 }
@@ -2680,36 +2618,32 @@ pub unsafe extern "C" fn status_prompt_redraw(mut c: *mut client) -> libc::c_int
         if (*(*sl).active).cx < (*(*(*sl).active).grid).sx
             && (*c).prompt_index >= i as libc::c_ulong
         {
-            screen_write_putc(&mut ctx, &mut cursorgc, ' ' as i32 as u_char);
+            screen_write_putc(&mut ctx, &mut cursorgc, ' ' as u_char);
         }
     }
     screen_write_stop(&mut ctx);
-    if grid_compare((*(*sl).active).grid, old_screen.grid) == 0 as libc::c_int {
+    if grid_compare((*(*sl).active).grid, old_screen.grid) == 0i32 {
         screen_free(&mut old_screen);
-        return 0 as libc::c_int;
+        return 0i32;
     }
     screen_free(&mut old_screen);
-    return 1 as libc::c_int;
+    return 1i32;
 }
 /* Is this a separator? */
 unsafe extern "C" fn status_prompt_in_list(
     mut ws: *const libc::c_char,
     mut ud: *const Utf8Data,
 ) -> libc::c_int {
-    if (*ud).size as libc::c_int != 1 as libc::c_int
-        || (*ud).width as libc::c_int != 1 as libc::c_int
-    {
-        return 0 as libc::c_int;
+    if (*ud).size as libc::c_int != 1i32 || (*ud).width as libc::c_int != 1i32 {
+        return 0i32;
     }
-    return (strchr(ws, *(*ud).data.as_ptr() as libc::c_int)
-        != 0 as *mut libc::c_void as *mut libc::c_char) as libc::c_int;
+    return (strchr(ws, *(*ud).data.as_ptr() as libc::c_int) != 0 as *mut libc::c_char)
+        as libc::c_int;
 }
 /* Is this a space? */
 unsafe extern "C" fn status_prompt_space(mut ud: *const Utf8Data) -> libc::c_int {
-    if (*ud).size as libc::c_int != 1 as libc::c_int
-        || (*ud).width as libc::c_int != 1 as libc::c_int
-    {
-        return 0 as libc::c_int;
+    if (*ud).size as libc::c_int != 1i32 || (*ud).width as libc::c_int != 1i32 {
+        return 0i32;
     }
     return (*(*ud).data.as_ptr() as libc::c_int == ' ' as i32) as libc::c_int;
 }
@@ -2722,7 +2656,7 @@ unsafe extern "C" fn status_prompt_translate_key(
     mut key: key_code,
     mut new_key: *mut key_code,
 ) -> libc::c_int {
-    if (*c).prompt_mode as libc::c_uint == PROMPT_ENTRY as libc::c_int as libc::c_uint {
+    if (*c).prompt_mode == PROMPT_ENTRY {
         's_63: {
             let mut current_block_4: u64;
             match key {
@@ -2749,8 +2683,8 @@ unsafe extern "C" fn status_prompt_translate_key(
                 27 => {
                     /* Escape */
                     (*c).prompt_mode = PROMPT_COMMAND;
-                    (*c).flags |= 0x10 as libc::c_int as libc::c_ulong;
-                    return 0 as libc::c_int;
+                    (*c).flags |= 0x10u64;
+                    return 0i32;
                 }
                 _ => {
                     break 's_63;
@@ -2788,87 +2722,87 @@ unsafe extern "C" fn status_prompt_translate_key(
             }
             /* C-c */
             *new_key = key; /* C-u */
-            return 1 as libc::c_int;
+            return 1i32;
         }
         *new_key = key;
-        return 2 as libc::c_int;
+        return 2i32;
     }
     match key {
         65 | 73 | 67 | 115 | 97 => {
             (*c).prompt_mode = PROMPT_ENTRY;
-            (*c).flags |= 0x10 as libc::c_int as libc::c_ulong
+            (*c).flags |= 0x10u64
         }
         83 => {
             (*c).prompt_mode = PROMPT_ENTRY;
-            (*c).flags |= 0x10 as libc::c_int as libc::c_ulong;
+            (*c).flags |= 0x10u64;
             *new_key = '\u{15}' as i32 as key_code;
-            return 1 as libc::c_int;
+            return 1i32;
         }
         105 | 27 => {
             /* Escape */
             (*c).prompt_mode = PROMPT_ENTRY; /* C-k */
-            (*c).flags |= 0x10 as libc::c_int as libc::c_ulong; /* C-y */
-            return 0 as libc::c_int;
+            (*c).flags |= 0x10u64; /* C-y */
+            return 0i32;
         }
         _ => {}
     } /* C-c */
     's_308: {
         match key {
             65 | 36 => {
-                *new_key = key_code_code::END as libc::c_ulong as key_code;
-                return 1 as libc::c_int;
+                *new_key = key_code_code::END;
+                return 1i32;
             }
             73 | 48 | 94 => {
-                *new_key = key_code_code::HOME as libc::c_ulong as key_code;
-                return 1 as libc::c_int;
+                *new_key = key_code_code::HOME;
+                return 1i32;
             }
             67 | 68 => {
                 *new_key = '\u{b}' as i32 as key_code;
-                return 1 as libc::c_int;
+                return 1i32;
             }
             68719476888 | 88 => {
-                *new_key = key_code_code::BSPACE as libc::c_ulong as key_code;
-                return 1 as libc::c_int;
+                *new_key = key_code_code::BSPACE;
+                return 1i32;
             }
             98 | 66 => {
-                *new_key = 'b' as i32 as libc::c_ulonglong | 0x100000000000 as libc::c_ulonglong;
-                return 1 as libc::c_int;
+                *new_key = 'b' as i32 as libc::c_ulonglong | 0x100000000000u64;
+                return 1i32;
             }
             100 => {
                 *new_key = '\u{15}' as i32 as key_code;
-                return 1 as libc::c_int;
+                return 1i32;
             }
             101 | 69 | 119 | 87 => {
-                *new_key = 'f' as i32 as libc::c_ulonglong | 0x100000000000 as libc::c_ulonglong;
-                return 1 as libc::c_int;
+                *new_key = 'f' as i32 as libc::c_ulonglong | 0x100000000000u64;
+                return 1i32;
             }
             112 => {
                 *new_key = '\u{19}' as i32 as key_code;
-                return 1 as libc::c_int;
+                return 1i32;
             }
             113 => {
                 *new_key = '\u{3}' as i32 as key_code;
-                return 1 as libc::c_int;
+                return 1i32;
             }
             115 | 68719476902 | 120 => {
-                *new_key = key_code_code::DC as libc::c_ulong as key_code;
-                return 1 as libc::c_int;
+                *new_key = key_code_code::DC;
+                return 1i32;
             }
             68719476909 | 106 => {
-                *new_key = key_code_code::DOWN as libc::c_ulong as key_code;
-                return 1 as libc::c_int;
+                *new_key = key_code_code::DOWN;
+                return 1i32;
             }
             68719476910 | 104 => {
-                *new_key = key_code_code::LEFT as libc::c_ulong as key_code;
-                return 1 as libc::c_int;
+                *new_key = key_code_code::LEFT;
+                return 1i32;
             }
             97 | 68719476911 | 108 => {
-                *new_key = key_code_code::RIGHT as libc::c_ulong as key_code;
-                return 1 as libc::c_int;
+                *new_key = key_code_code::RIGHT;
+                return 1i32;
             }
             68719476908 | 107 => {
-                *new_key = key_code_code::UP as libc::c_ulong as key_code;
-                return 1 as libc::c_int;
+                *new_key = key_code_code::UP;
+                return 1i32;
             }
             3 => {}
             8 | 10 | 13 => {}
@@ -2877,9 +2811,9 @@ unsafe extern "C" fn status_prompt_translate_key(
             }
         }
         /* C-h */
-        return 1 as libc::c_int;
+        return 1i32;
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 /* Paste into prompt. */
 unsafe extern "C" fn status_prompt_paste(mut c: *mut client) -> libc::c_int {
@@ -2899,39 +2833,36 @@ unsafe extern "C" fn status_prompt_paste(mut c: *mut client) -> libc::c_int {
     } else {
         pb = paste_get_top(0 as *mut *const libc::c_char);
         if pb.is_null() {
-            return 0 as libc::c_int;
+            return 0i32;
         }
         bufdata = paste_buffer_data(pb, &mut bufsize);
         ud = xreallocarray(
             0 as *mut libc::c_void,
-            bufsize.wrapping_add(1 as libc::c_int as libc::c_ulong),
+            bufsize.wrapping_add(1u64),
             ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
         ) as *mut Utf8Data;
         udp = ud;
-        i = 0 as libc::c_int as u_int;
+        i = 0u32;
         while i as libc::c_ulong != bufsize {
             /* nothing */
             more = utf8_open(udp, *bufdata.offset(i as isize) as u_char);
-            if more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint {
+            if more == utf8_state::MORE {
                 loop {
                     i = i.wrapping_add(1);
-                    if !(i as libc::c_ulong != bufsize
-                        && more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint)
-                    {
+                    if !(i as libc::c_ulong != bufsize && more == utf8_state::MORE) {
                         break;
                     }
                     more = utf8_append(udp, *bufdata.offset(i as isize) as u_char)
                 }
-                if more as libc::c_uint == utf8_state::DONE as libc::c_int as libc::c_uint {
+                if more == utf8_state::DONE {
                     udp = udp.offset(1);
                     continue;
                 } else {
-                    i = (i as libc::c_uint).wrapping_sub((*udp).have as libc::c_uint) as u_int
-                        as u_int
+                    i = (i).wrapping_sub((*udp).have as libc::c_uint)
                 }
             }
-            if *bufdata.offset(i as isize) as libc::c_int <= 31 as libc::c_int
-                || *bufdata.offset(i as isize) as libc::c_int >= 127 as libc::c_int
+            if *bufdata.offset(i as isize) as libc::c_int <= 31i32
+                || *bufdata.offset(i as isize) as libc::c_int >= 127i32
             {
                 break;
             }
@@ -2939,16 +2870,15 @@ unsafe extern "C" fn status_prompt_paste(mut c: *mut client) -> libc::c_int {
             udp = udp.offset(1);
             i = i.wrapping_add(1)
         }
-        (*udp).size = 0 as libc::c_int as u_char;
-        n = udp.wrapping_offset_from(ud) as libc::c_long as size_t
+        (*udp).size = 0u8;
+        n = udp.wrapping_offset_from(ud) as size_t
     }
-    if n == 0 as libc::c_int as libc::c_ulong {
-        return 0 as libc::c_int;
+    if n == 0u64 {
+        return 0i32;
     }
     (*c).prompt_buffer = xreallocarray(
         (*c).prompt_buffer as *mut libc::c_void,
-        size.wrapping_add(n)
-            .wrapping_add(1 as libc::c_int as libc::c_ulong),
+        size.wrapping_add(n).wrapping_add(1u64),
         ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
     ) as *mut Utf8Data;
     if (*c).prompt_index == size {
@@ -2957,16 +2887,15 @@ unsafe extern "C" fn status_prompt_paste(mut c: *mut client) -> libc::c_int {
             ud as *const libc::c_void,
             n.wrapping_mul(::std::mem::size_of::<Utf8Data>() as libc::c_ulong),
         );
-        (*c).prompt_index =
-            ((*c).prompt_index as libc::c_ulong).wrapping_add(n) as size_t as size_t;
-        (*(*c).prompt_buffer.offset((*c).prompt_index as isize)).size = 0 as libc::c_int as u_char
+        (*c).prompt_index = ((*c).prompt_index).wrapping_add(n);
+        (*(*c).prompt_buffer.offset((*c).prompt_index as isize)).size = 0u8
     } else {
         memmove(
             (*c).prompt_buffer
                 .offset((*c).prompt_index as isize)
                 .offset(n as isize) as *mut libc::c_void,
             (*c).prompt_buffer.offset((*c).prompt_index as isize) as *const libc::c_void,
-            size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+            size.wrapping_add(1u64)
                 .wrapping_sub((*c).prompt_index)
                 .wrapping_mul(::std::mem::size_of::<Utf8Data>() as libc::c_ulong),
         );
@@ -2975,12 +2904,12 @@ unsafe extern "C" fn status_prompt_paste(mut c: *mut client) -> libc::c_int {
             ud as *const libc::c_void,
             n.wrapping_mul(::std::mem::size_of::<Utf8Data>() as libc::c_ulong),
         );
-        (*c).prompt_index = ((*c).prompt_index as libc::c_ulong).wrapping_add(n) as size_t as size_t
+        (*c).prompt_index = ((*c).prompt_index).wrapping_add(n)
     }
     if ud != (*c).prompt_saved {
         free(ud as *mut libc::c_void);
     }
-    return 1 as libc::c_int;
+    return 1i32;
 }
 /* Finish completion. */
 unsafe extern "C" fn status_prompt_replace_complete(
@@ -2999,7 +2928,7 @@ unsafe extern "C" fn status_prompt_replace_complete(
     let mut ud: *mut Utf8Data = 0 as *mut Utf8Data;
     /* Work out where the cursor currently is. */
     idx = (*c).prompt_index;
-    if idx != 0 as libc::c_int as libc::c_ulong {
+    if idx != 0u64 {
         idx = idx.wrapping_sub(1)
     }
     size = utf8_strlen((*c).prompt_buffer);
@@ -3008,24 +2937,24 @@ unsafe extern "C" fn status_prompt_replace_complete(
     while first > (*c).prompt_buffer && status_prompt_space(first) == 0 {
         first = first.offset(-1)
     }
-    while (*first).size as libc::c_int != 0 as libc::c_int && status_prompt_space(first) != 0 {
+    while (*first).size as libc::c_int != 0i32 && status_prompt_space(first) != 0 {
         first = first.offset(1)
     }
     last = &mut *(*c).prompt_buffer.offset(idx as isize) as *mut Utf8Data;
-    while (*last).size as libc::c_int != 0 as libc::c_int && status_prompt_space(last) == 0 {
+    while (*last).size as libc::c_int != 0i32 && status_prompt_space(last) == 0 {
         last = last.offset(1)
     }
     while last > (*c).prompt_buffer && status_prompt_space(last) != 0 {
         last = last.offset(-1)
     }
-    if (*last).size as libc::c_int != 0 as libc::c_int {
+    if (*last).size as libc::c_int != 0i32 {
         last = last.offset(1)
     }
     if last < first {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     if s.is_null() {
-        used = 0 as libc::c_int as size_t;
+        used = 0u64;
         ud = first;
         while ud < last {
             if used.wrapping_add((*ud).size as libc::c_ulong)
@@ -3038,47 +2967,42 @@ unsafe extern "C" fn status_prompt_replace_complete(
                 (*ud).data.as_mut_ptr() as *const libc::c_void,
                 (*ud).size as libc::c_ulong,
             );
-            used = (used as libc::c_ulong).wrapping_add((*ud).size as libc::c_ulong) as size_t
-                as size_t;
+            used = (used).wrapping_add((*ud).size as libc::c_ulong);
             ud = ud.offset(1)
         }
         if ud != last {
-            return 0 as libc::c_int;
+            return 0i32;
         }
-        word[used as usize] = '\u{0}' as i32 as libc::c_char
+        word[used as usize] = '\u{0}' as libc::c_char
     }
     /* Try to complete it. */
     if s.is_null() {
         allocated = status_prompt_complete(
             c,
             word.as_mut_ptr(),
-            first.wrapping_offset_from((*c).prompt_buffer) as libc::c_long as u_int,
+            first.wrapping_offset_from((*c).prompt_buffer) as u_int,
         );
         if allocated.is_null() {
-            return 0 as libc::c_int;
+            return 0i32;
         }
         s = allocated
     }
     /* Trim out word. */
     n = size
-        .wrapping_sub(
-            last.wrapping_offset_from((*c).prompt_buffer) as libc::c_long as libc::c_ulong,
-        )
-        .wrapping_add(1 as libc::c_int as libc::c_ulong); /* with \0 */
+        .wrapping_sub(last.wrapping_offset_from((*c).prompt_buffer) as libc::c_ulong)
+        .wrapping_add(1u64); /* with \0 */
     memmove(
         first as *mut libc::c_void,
         last as *const libc::c_void,
         n.wrapping_mul(::std::mem::size_of::<Utf8Data>() as libc::c_ulong),
     );
-    size = (size as libc::c_ulong)
-        .wrapping_sub(last.wrapping_offset_from(first) as libc::c_long as libc::c_ulong)
-        as size_t as size_t;
+    size = (size).wrapping_sub(last.wrapping_offset_from(first) as libc::c_ulong);
     /* Insert the new word. */
-    size = (size as libc::c_ulong).wrapping_add(strlen(s)) as size_t as size_t;
-    off = first.wrapping_offset_from((*c).prompt_buffer) as libc::c_long as size_t;
+    size = (size).wrapping_add(strlen(s));
+    off = first.wrapping_offset_from((*c).prompt_buffer) as size_t;
     (*c).prompt_buffer = xreallocarray(
         (*c).prompt_buffer as *mut libc::c_void,
-        size.wrapping_add(1 as libc::c_int as libc::c_ulong),
+        size.wrapping_add(1u64),
         ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
     ) as *mut Utf8Data;
     first = (*c).prompt_buffer.offset(off as isize);
@@ -3087,7 +3011,7 @@ unsafe extern "C" fn status_prompt_replace_complete(
         first as *const libc::c_void,
         n.wrapping_mul(::std::mem::size_of::<Utf8Data>() as libc::c_ulong),
     );
-    idx = 0 as libc::c_int as size_t;
+    idx = 0u64;
     while idx < strlen(s) {
         utf8_set(
             &mut *first.offset(idx as isize),
@@ -3095,11 +3019,10 @@ unsafe extern "C" fn status_prompt_replace_complete(
         );
         idx = idx.wrapping_add(1)
     }
-    (*c).prompt_index = (first.wrapping_offset_from((*c).prompt_buffer) as libc::c_long
-        as libc::c_ulong)
-        .wrapping_add(strlen(s));
+    (*c).prompt_index =
+        (first.wrapping_offset_from((*c).prompt_buffer) as libc::c_ulong).wrapping_add(strlen(s));
     free(allocated as *mut libc::c_void);
-    return 1 as libc::c_int;
+    return 1i32;
 }
 /* Handle keys in prompt. */
 #[no_mangle]
@@ -3108,7 +3031,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
     let mut oo: *mut crate::options::options = (*(*c).session).options;
     let mut s: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut cp: *mut libc::c_char = 0 as *mut libc::c_char;
-    let mut prefix: libc::c_char = '=' as i32 as libc::c_char;
+    let mut prefix: libc::c_char = '=' as libc::c_char;
     let mut histstr: *const libc::c_char = 0 as *const libc::c_char;
     let mut ws: *const libc::c_char = 0 as *const libc::c_char;
     let mut keystring: *const libc::c_char = 0 as *const libc::c_char;
@@ -3121,40 +3044,35 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
         width: 0,
     };
     let mut keys: libc::c_int = 0;
-    if (*c).prompt_flags & 0x10 as libc::c_int != 0 {
-        keystring = key_string_lookup_key(key, 0 as libc::c_int);
+    if (*c).prompt_flags & 0x10i32 != 0 {
+        keystring = key_string_lookup_key(key, 0i32);
         (*c).prompt_inputcb.expect("non-null function pointer")(
             c,
             (*c).prompt_data,
             keystring,
-            1 as libc::c_int,
+            1i32,
         );
         status_prompt_clear(c);
-        return 0 as libc::c_int;
+        return 0i32;
     }
     size = utf8_strlen((*c).prompt_buffer);
-    if (*c).prompt_flags & 0x2 as libc::c_int != 0 {
+    if (*c).prompt_flags & 0x2i32 != 0 {
         if key >= '0' as i32 as libc::c_ulonglong && key <= '9' as i32 as libc::c_ulonglong {
             current_block = 14272474440432613372;
         } else {
             s = utf8_tocstr((*c).prompt_buffer);
-            (*c).prompt_inputcb.expect("non-null function pointer")(
-                c,
-                (*c).prompt_data,
-                s,
-                1 as libc::c_int,
-            );
+            (*c).prompt_inputcb.expect("non-null function pointer")(c, (*c).prompt_data, s, 1i32);
             status_prompt_clear(c);
             free(s as *mut libc::c_void);
-            return 1 as libc::c_int;
+            return 1i32;
         }
     } else {
-        key &= !(0xff000000000000 as libc::c_ulonglong);
+        key &= !(0xff000000000000u64);
         keys = options_get_number(
             (*(*c).session).options,
             b"status-keys\x00" as *const u8 as *const libc::c_char,
         ) as libc::c_int;
-        if keys == 1 as libc::c_int {
+        if keys == 1i32 {
             match status_prompt_translate_key(c, key, &mut key) {
                 1 => {
                     current_block = 10489599262272764497;
@@ -3162,7 +3080,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                 2 => {
                     current_block = 14272474440432613372;
                 }
-                _ => return 0 as libc::c_int,
+                _ => return 0i32,
             }
         } else {
             current_block = 10489599262272764497;
@@ -3177,8 +3095,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                             13716905325739901580 =>
                             /* C-r */
                             {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '-' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '-' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -3193,8 +3111,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     c,
                                     (*c).prompt_data,
                                     s,
-                                    1 as libc::c_int,
-                                ) == 0 as libc::c_int
+                                    1i32,
+                                ) == 0i32
                                 {
                                     status_prompt_clear(c);
                                 }
@@ -3207,29 +3125,25 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if idx < size {
                                     idx = idx.wrapping_add(1)
                                 }
-                                if idx >= 2 as libc::c_int as libc::c_ulong {
+                                if idx >= 2u64 {
                                     utf8_copy(
                                         &mut tmp,
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                         &mut tmp,
                                     );
                                     (*c).prompt_index = idx;
@@ -3268,7 +3182,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
                                 /* Find a non-separator. */
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if status_prompt_in_list(
@@ -3280,7 +3194,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     }
                                 }
                                 /* Find the separator at the beginning of the word. */
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if !(status_prompt_in_list(
@@ -3329,8 +3243,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if options_get_number(
                                     oo,
                                     b"status-keys\x00" as *const u8 as *const libc::c_char,
-                                ) == 1 as libc::c_int as libc::c_longlong
-                                    && (*c).prompt_index != 0 as libc::c_int as libc::c_ulong
+                                ) == 1i64
+                                    && (*c).prompt_index != 0u64
                                 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
                                 }
@@ -3344,7 +3258,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 );
                                 idx = (*c).prompt_index;
                                 /* Find a non-separator. */
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if status_prompt_in_list(
                                         ws,
@@ -3355,7 +3269,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     }
                                 }
                                 /* Find the separator at the beginning of the word. */
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if !(status_prompt_in_list(
                                         ws,
@@ -3371,9 +3285,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
                                     ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
-                                    (*c).prompt_index
-                                        .wrapping_sub(idx)
-                                        .wrapping_add(1 as libc::c_int as libc::c_ulong),
+                                    (*c).prompt_index.wrapping_sub(idx).wrapping_add(1u64),
                                 )
                                     as *mut Utf8Data;
                                 memcpy(
@@ -3387,7 +3299,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     (*c).prompt_buffer.offset(idx as isize) as *mut libc::c_void,
                                     (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                         as *const libc::c_void,
-                                    size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                    size.wrapping_add(1u64)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
                                             ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -3411,7 +3323,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                             {
                                 if (*c).prompt_index < size {
                                     (*(*c).prompt_buffer.offset((*c).prompt_index as isize)).size =
-                                        0 as libc::c_int as u_char;
+                                        0u8;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -3419,9 +3331,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                             }
                             7209921709130718133 => {
                                 /* C-u */
-                                (*(*c).prompt_buffer.offset(0 as libc::c_int as isize)).size =
-                                    0 as libc::c_int as u_char;
-                                (*c).prompt_index = 0 as libc::c_int as size_t;
+                                (*(*c).prompt_buffer.offset(0isize)).size = 0u8;
+                                (*c).prompt_index = 0u64;
                                 current_block = 368077705793071303;
                             }
                             11026770671687539224 =>
@@ -3433,9 +3344,9 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             as *mut libc::c_void,
                                         (*c).prompt_buffer
                                             .offset((*c).prompt_index as isize)
-                                            .offset(1 as libc::c_int as isize)
+                                            .offset(1isize)
                                             as *const libc::c_void,
-                                        size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                        size.wrapping_add(1u64)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
                                                 ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -3449,20 +3360,20 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                             4303351861420576715 =>
                             /* C-h */
                             {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index != 0u64 {
                                     if (*c).prompt_index == size {
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                         (*(*c).prompt_buffer.offset((*c).prompt_index as isize))
-                                            .size = 0 as libc::c_int as u_char
+                                            .size = 0u8
                                     } else {
                                         memmove(
                                             (*c).prompt_buffer
                                                 .offset((*c).prompt_index as isize)
-                                                .offset(-(1 as libc::c_int as isize))
+                                                .offset(-(1isize))
                                                 as *mut libc::c_void,
                                             (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                                 as *const libc::c_void,
-                                            size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                            size.wrapping_add(1u64)
                                                 .wrapping_sub((*c).prompt_index)
                                                 .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
@@ -3487,8 +3398,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                             9649627425948382823 =>
                             /* C-a */
                             {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
-                                    (*c).prompt_index = 0 as libc::c_int as size_t;
+                                if (*c).prompt_index != 0u64 {
+                                    (*c).prompt_index = 0u64;
                                     current_block = 16835199615365683821;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -3507,7 +3418,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                             8595499525207474077 =>
                             /* C-b */
                             {
-                                if (*c).prompt_index > 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index > 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     current_block = 16835199615365683821;
                                 } else {
@@ -3517,8 +3428,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                             16592328677945139976 =>
                             /* C-s */
                             {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '+' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '+' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -3562,16 +3473,16 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             c,
                                             (*c).prompt_data,
                                             0 as *const libc::c_char,
-                                            1 as libc::c_int,
-                                        ) == 0 as libc::c_int
+                                            1i32,
+                                        ) == 0i32
                                         {
                                             status_prompt_clear(c);
                                         }
                                     }
                                     _ => {}
                                 }
-                                (*c).flags |= 0x10 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x10u64;
+                                return 0i32;
                             }
                         }
                     }
@@ -3579,8 +3490,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                         current_block = 12087305117219508006;
                         match current_block {
                             13716905325739901580 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '-' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '-' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -3595,8 +3506,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     c,
                                     (*c).prompt_data,
                                     s,
-                                    1 as libc::c_int,
-                                ) == 0 as libc::c_int
+                                    1i32,
+                                ) == 0i32
                                 {
                                     status_prompt_clear(c);
                                 }
@@ -3608,29 +3519,25 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if idx < size {
                                     idx = idx.wrapping_add(1)
                                 }
-                                if idx >= 2 as libc::c_int as libc::c_ulong {
+                                if idx >= 2u64 {
                                     utf8_copy(
                                         &mut tmp,
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                         &mut tmp,
                                     );
                                     (*c).prompt_index = idx;
@@ -3666,7 +3573,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     oo,
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if status_prompt_in_list(
@@ -3677,7 +3584,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if !(status_prompt_in_list(
@@ -3722,8 +3629,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if options_get_number(
                                     oo,
                                     b"status-keys\x00" as *const u8 as *const libc::c_char,
-                                ) == 1 as libc::c_int as libc::c_longlong
-                                    && (*c).prompt_index != 0 as libc::c_int as libc::c_ulong
+                                ) == 1i64
+                                    && (*c).prompt_index != 0u64
                                 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
                                 }
@@ -3735,7 +3642,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
                                 idx = (*c).prompt_index;
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if status_prompt_in_list(
                                         ws,
@@ -3745,7 +3652,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if !(status_prompt_in_list(
                                         ws,
@@ -3760,9 +3667,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
                                     ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
-                                    (*c).prompt_index
-                                        .wrapping_sub(idx)
-                                        .wrapping_add(1 as libc::c_int as libc::c_ulong),
+                                    (*c).prompt_index.wrapping_sub(idx).wrapping_add(1u64),
                                 )
                                     as *mut Utf8Data;
                                 memcpy(
@@ -3776,7 +3681,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     (*c).prompt_buffer.offset(idx as isize) as *mut libc::c_void,
                                     (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                         as *const libc::c_void,
-                                    size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                    size.wrapping_add(1u64)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
                                             ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -3798,16 +3703,15 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                             10675534896202779322 => {
                                 if (*c).prompt_index < size {
                                     (*(*c).prompt_buffer.offset((*c).prompt_index as isize)).size =
-                                        0 as libc::c_int as u_char;
+                                        0u8;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
                                 }
                             }
                             7209921709130718133 => {
-                                (*(*c).prompt_buffer.offset(0 as libc::c_int as isize)).size =
-                                    0 as libc::c_int as u_char;
-                                (*c).prompt_index = 0 as libc::c_int as size_t;
+                                (*(*c).prompt_buffer.offset(0isize)).size = 0u8;
+                                (*c).prompt_index = 0u64;
                                 current_block = 368077705793071303;
                             }
                             11026770671687539224 => {
@@ -3817,9 +3721,9 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             as *mut libc::c_void,
                                         (*c).prompt_buffer
                                             .offset((*c).prompt_index as isize)
-                                            .offset(1 as libc::c_int as isize)
+                                            .offset(1isize)
                                             as *const libc::c_void,
-                                        size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                        size.wrapping_add(1u64)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
                                                 ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -3831,20 +3735,20 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             4303351861420576715 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index != 0u64 {
                                     if (*c).prompt_index == size {
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                         (*(*c).prompt_buffer.offset((*c).prompt_index as isize))
-                                            .size = 0 as libc::c_int as u_char
+                                            .size = 0u8
                                     } else {
                                         memmove(
                                             (*c).prompt_buffer
                                                 .offset((*c).prompt_index as isize)
-                                                .offset(-(1 as libc::c_int as isize))
+                                                .offset(-(1isize))
                                                 as *mut libc::c_void,
                                             (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                                 as *const libc::c_void,
-                                            size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                            size.wrapping_add(1u64)
                                                 .wrapping_sub((*c).prompt_index)
                                                 .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
@@ -3865,8 +3769,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             9649627425948382823 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
-                                    (*c).prompt_index = 0 as libc::c_int as size_t;
+                                if (*c).prompt_index != 0u64 {
+                                    (*c).prompt_index = 0u64;
                                     current_block = 16835199615365683821;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -3881,7 +3785,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             8595499525207474077 => {
-                                if (*c).prompt_index > 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index > 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     current_block = 16835199615365683821;
                                 } else {
@@ -3889,8 +3793,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             16592328677945139976 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '+' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '+' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -3925,16 +3829,16 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             c,
                                             (*c).prompt_data,
                                             0 as *const libc::c_char,
-                                            1 as libc::c_int,
-                                        ) == 0 as libc::c_int
+                                            1i32,
+                                        ) == 0i32
                                         {
                                             status_prompt_clear(c);
                                         }
                                     }
                                     _ => {}
                                 }
-                                (*c).flags |= 0x10 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x10u64;
+                                return 0i32;
                             }
                         }
                     }
@@ -3942,8 +3846,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                         current_block = 9649627425948382823;
                         match current_block {
                             13716905325739901580 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '-' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '-' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -3958,8 +3862,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     c,
                                     (*c).prompt_data,
                                     s,
-                                    1 as libc::c_int,
-                                ) == 0 as libc::c_int
+                                    1i32,
+                                ) == 0i32
                                 {
                                     status_prompt_clear(c);
                                 }
@@ -3971,29 +3875,25 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if idx < size {
                                     idx = idx.wrapping_add(1)
                                 }
-                                if idx >= 2 as libc::c_int as libc::c_ulong {
+                                if idx >= 2u64 {
                                     utf8_copy(
                                         &mut tmp,
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                         &mut tmp,
                                     );
                                     (*c).prompt_index = idx;
@@ -4029,7 +3929,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     oo,
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if status_prompt_in_list(
@@ -4040,7 +3940,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if !(status_prompt_in_list(
@@ -4085,8 +3985,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if options_get_number(
                                     oo,
                                     b"status-keys\x00" as *const u8 as *const libc::c_char,
-                                ) == 1 as libc::c_int as libc::c_longlong
-                                    && (*c).prompt_index != 0 as libc::c_int as libc::c_ulong
+                                ) == 1i64
+                                    && (*c).prompt_index != 0u64
                                 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
                                 }
@@ -4098,7 +3998,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
                                 idx = (*c).prompt_index;
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if status_prompt_in_list(
                                         ws,
@@ -4108,7 +4008,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if !(status_prompt_in_list(
                                         ws,
@@ -4123,9 +4023,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
                                     ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
-                                    (*c).prompt_index
-                                        .wrapping_sub(idx)
-                                        .wrapping_add(1 as libc::c_int as libc::c_ulong),
+                                    (*c).prompt_index.wrapping_sub(idx).wrapping_add(1u64),
                                 )
                                     as *mut Utf8Data;
                                 memcpy(
@@ -4139,7 +4037,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     (*c).prompt_buffer.offset(idx as isize) as *mut libc::c_void,
                                     (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                         as *const libc::c_void,
-                                    size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                    size.wrapping_add(1u64)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
                                             ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -4161,16 +4059,15 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                             10675534896202779322 => {
                                 if (*c).prompt_index < size {
                                     (*(*c).prompt_buffer.offset((*c).prompt_index as isize)).size =
-                                        0 as libc::c_int as u_char;
+                                        0u8;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
                                 }
                             }
                             7209921709130718133 => {
-                                (*(*c).prompt_buffer.offset(0 as libc::c_int as isize)).size =
-                                    0 as libc::c_int as u_char;
-                                (*c).prompt_index = 0 as libc::c_int as size_t;
+                                (*(*c).prompt_buffer.offset(0isize)).size = 0u8;
+                                (*c).prompt_index = 0u64;
                                 current_block = 368077705793071303;
                             }
                             11026770671687539224 => {
@@ -4180,9 +4077,9 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             as *mut libc::c_void,
                                         (*c).prompt_buffer
                                             .offset((*c).prompt_index as isize)
-                                            .offset(1 as libc::c_int as isize)
+                                            .offset(1isize)
                                             as *const libc::c_void,
-                                        size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                        size.wrapping_add(1u64)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
                                                 ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -4194,20 +4091,20 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             4303351861420576715 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index != 0u64 {
                                     if (*c).prompt_index == size {
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                         (*(*c).prompt_buffer.offset((*c).prompt_index as isize))
-                                            .size = 0 as libc::c_int as u_char
+                                            .size = 0u8
                                     } else {
                                         memmove(
                                             (*c).prompt_buffer
                                                 .offset((*c).prompt_index as isize)
-                                                .offset(-(1 as libc::c_int as isize))
+                                                .offset(-(1isize))
                                                 as *mut libc::c_void,
                                             (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                                 as *const libc::c_void,
-                                            size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                            size.wrapping_add(1u64)
                                                 .wrapping_sub((*c).prompt_index)
                                                 .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
@@ -4228,8 +4125,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             9649627425948382823 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
-                                    (*c).prompt_index = 0 as libc::c_int as size_t;
+                                if (*c).prompt_index != 0u64 {
+                                    (*c).prompt_index = 0u64;
                                     current_block = 16835199615365683821;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -4244,7 +4141,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             8595499525207474077 => {
-                                if (*c).prompt_index > 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index > 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     current_block = 16835199615365683821;
                                 } else {
@@ -4252,8 +4149,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             16592328677945139976 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '+' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '+' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -4288,16 +4185,16 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             c,
                                             (*c).prompt_data,
                                             0 as *const libc::c_char,
-                                            1 as libc::c_int,
-                                        ) == 0 as libc::c_int
+                                            1i32,
+                                        ) == 0i32
                                         {
                                             status_prompt_clear(c);
                                         }
                                     }
                                     _ => {}
                                 }
-                                (*c).flags |= 0x10 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x10u64;
+                                return 0i32;
                             }
                         }
                     }
@@ -4305,8 +4202,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                         current_block = 15329334428063834850;
                         match current_block {
                             13716905325739901580 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '-' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '-' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -4321,8 +4218,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     c,
                                     (*c).prompt_data,
                                     s,
-                                    1 as libc::c_int,
-                                ) == 0 as libc::c_int
+                                    1i32,
+                                ) == 0i32
                                 {
                                     status_prompt_clear(c);
                                 }
@@ -4334,29 +4231,25 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if idx < size {
                                     idx = idx.wrapping_add(1)
                                 }
-                                if idx >= 2 as libc::c_int as libc::c_ulong {
+                                if idx >= 2u64 {
                                     utf8_copy(
                                         &mut tmp,
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                         &mut tmp,
                                     );
                                     (*c).prompt_index = idx;
@@ -4392,7 +4285,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     oo,
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if status_prompt_in_list(
@@ -4403,7 +4296,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if !(status_prompt_in_list(
@@ -4448,8 +4341,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if options_get_number(
                                     oo,
                                     b"status-keys\x00" as *const u8 as *const libc::c_char,
-                                ) == 1 as libc::c_int as libc::c_longlong
-                                    && (*c).prompt_index != 0 as libc::c_int as libc::c_ulong
+                                ) == 1i64
+                                    && (*c).prompt_index != 0u64
                                 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
                                 }
@@ -4461,7 +4354,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
                                 idx = (*c).prompt_index;
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if status_prompt_in_list(
                                         ws,
@@ -4471,7 +4364,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if !(status_prompt_in_list(
                                         ws,
@@ -4486,9 +4379,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
                                     ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
-                                    (*c).prompt_index
-                                        .wrapping_sub(idx)
-                                        .wrapping_add(1 as libc::c_int as libc::c_ulong),
+                                    (*c).prompt_index.wrapping_sub(idx).wrapping_add(1u64),
                                 )
                                     as *mut Utf8Data;
                                 memcpy(
@@ -4502,7 +4393,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     (*c).prompt_buffer.offset(idx as isize) as *mut libc::c_void,
                                     (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                         as *const libc::c_void,
-                                    size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                    size.wrapping_add(1u64)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
                                             ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -4524,16 +4415,15 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                             10675534896202779322 => {
                                 if (*c).prompt_index < size {
                                     (*(*c).prompt_buffer.offset((*c).prompt_index as isize)).size =
-                                        0 as libc::c_int as u_char;
+                                        0u8;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
                                 }
                             }
                             7209921709130718133 => {
-                                (*(*c).prompt_buffer.offset(0 as libc::c_int as isize)).size =
-                                    0 as libc::c_int as u_char;
-                                (*c).prompt_index = 0 as libc::c_int as size_t;
+                                (*(*c).prompt_buffer.offset(0isize)).size = 0u8;
+                                (*c).prompt_index = 0u64;
                                 current_block = 368077705793071303;
                             }
                             11026770671687539224 => {
@@ -4543,9 +4433,9 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             as *mut libc::c_void,
                                         (*c).prompt_buffer
                                             .offset((*c).prompt_index as isize)
-                                            .offset(1 as libc::c_int as isize)
+                                            .offset(1isize)
                                             as *const libc::c_void,
-                                        size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                        size.wrapping_add(1u64)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
                                                 ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -4557,20 +4447,20 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             4303351861420576715 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index != 0u64 {
                                     if (*c).prompt_index == size {
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                         (*(*c).prompt_buffer.offset((*c).prompt_index as isize))
-                                            .size = 0 as libc::c_int as u_char
+                                            .size = 0u8
                                     } else {
                                         memmove(
                                             (*c).prompt_buffer
                                                 .offset((*c).prompt_index as isize)
-                                                .offset(-(1 as libc::c_int as isize))
+                                                .offset(-(1isize))
                                                 as *mut libc::c_void,
                                             (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                                 as *const libc::c_void,
-                                            size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                            size.wrapping_add(1u64)
                                                 .wrapping_sub((*c).prompt_index)
                                                 .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
@@ -4591,8 +4481,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             9649627425948382823 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
-                                    (*c).prompt_index = 0 as libc::c_int as size_t;
+                                if (*c).prompt_index != 0u64 {
+                                    (*c).prompt_index = 0u64;
                                     current_block = 16835199615365683821;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -4607,7 +4497,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             8595499525207474077 => {
-                                if (*c).prompt_index > 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index > 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     current_block = 16835199615365683821;
                                 } else {
@@ -4615,8 +4505,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             16592328677945139976 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '+' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '+' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -4651,16 +4541,16 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             c,
                                             (*c).prompt_data,
                                             0 as *const libc::c_char,
-                                            1 as libc::c_int,
-                                        ) == 0 as libc::c_int
+                                            1i32,
+                                        ) == 0i32
                                         {
                                             status_prompt_clear(c);
                                         }
                                     }
                                     _ => {}
                                 }
-                                (*c).flags |= 0x10 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x10u64;
+                                return 0i32;
                             }
                         }
                     }
@@ -4668,8 +4558,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                         current_block = 9949027150079833961;
                         match current_block {
                             13716905325739901580 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '-' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '-' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -4684,8 +4574,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     c,
                                     (*c).prompt_data,
                                     s,
-                                    1 as libc::c_int,
-                                ) == 0 as libc::c_int
+                                    1i32,
+                                ) == 0i32
                                 {
                                     status_prompt_clear(c);
                                 }
@@ -4697,29 +4587,25 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if idx < size {
                                     idx = idx.wrapping_add(1)
                                 }
-                                if idx >= 2 as libc::c_int as libc::c_ulong {
+                                if idx >= 2u64 {
                                     utf8_copy(
                                         &mut tmp,
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                         &mut tmp,
                                     );
                                     (*c).prompt_index = idx;
@@ -4755,7 +4641,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     oo,
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if status_prompt_in_list(
@@ -4766,7 +4652,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if !(status_prompt_in_list(
@@ -4811,8 +4697,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if options_get_number(
                                     oo,
                                     b"status-keys\x00" as *const u8 as *const libc::c_char,
-                                ) == 1 as libc::c_int as libc::c_longlong
-                                    && (*c).prompt_index != 0 as libc::c_int as libc::c_ulong
+                                ) == 1i64
+                                    && (*c).prompt_index != 0u64
                                 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
                                 }
@@ -4824,7 +4710,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
                                 idx = (*c).prompt_index;
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if status_prompt_in_list(
                                         ws,
@@ -4834,7 +4720,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if !(status_prompt_in_list(
                                         ws,
@@ -4849,9 +4735,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
                                     ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
-                                    (*c).prompt_index
-                                        .wrapping_sub(idx)
-                                        .wrapping_add(1 as libc::c_int as libc::c_ulong),
+                                    (*c).prompt_index.wrapping_sub(idx).wrapping_add(1u64),
                                 )
                                     as *mut Utf8Data;
                                 memcpy(
@@ -4865,7 +4749,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     (*c).prompt_buffer.offset(idx as isize) as *mut libc::c_void,
                                     (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                         as *const libc::c_void,
-                                    size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                    size.wrapping_add(1u64)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
                                             ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -4887,16 +4771,15 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                             10675534896202779322 => {
                                 if (*c).prompt_index < size {
                                     (*(*c).prompt_buffer.offset((*c).prompt_index as isize)).size =
-                                        0 as libc::c_int as u_char;
+                                        0u8;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
                                 }
                             }
                             7209921709130718133 => {
-                                (*(*c).prompt_buffer.offset(0 as libc::c_int as isize)).size =
-                                    0 as libc::c_int as u_char;
-                                (*c).prompt_index = 0 as libc::c_int as size_t;
+                                (*(*c).prompt_buffer.offset(0isize)).size = 0u8;
+                                (*c).prompt_index = 0u64;
                                 current_block = 368077705793071303;
                             }
                             11026770671687539224 => {
@@ -4906,9 +4789,9 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             as *mut libc::c_void,
                                         (*c).prompt_buffer
                                             .offset((*c).prompt_index as isize)
-                                            .offset(1 as libc::c_int as isize)
+                                            .offset(1isize)
                                             as *const libc::c_void,
-                                        size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                        size.wrapping_add(1u64)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
                                                 ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -4920,20 +4803,20 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             4303351861420576715 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index != 0u64 {
                                     if (*c).prompt_index == size {
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                         (*(*c).prompt_buffer.offset((*c).prompt_index as isize))
-                                            .size = 0 as libc::c_int as u_char
+                                            .size = 0u8
                                     } else {
                                         memmove(
                                             (*c).prompt_buffer
                                                 .offset((*c).prompt_index as isize)
-                                                .offset(-(1 as libc::c_int as isize))
+                                                .offset(-(1isize))
                                                 as *mut libc::c_void,
                                             (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                                 as *const libc::c_void,
-                                            size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                            size.wrapping_add(1u64)
                                                 .wrapping_sub((*c).prompt_index)
                                                 .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
@@ -4954,8 +4837,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             9649627425948382823 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
-                                    (*c).prompt_index = 0 as libc::c_int as size_t;
+                                if (*c).prompt_index != 0u64 {
+                                    (*c).prompt_index = 0u64;
                                     current_block = 16835199615365683821;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -4970,7 +4853,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             8595499525207474077 => {
-                                if (*c).prompt_index > 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index > 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     current_block = 16835199615365683821;
                                 } else {
@@ -4978,8 +4861,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             16592328677945139976 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '+' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '+' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -5014,16 +4897,16 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             c,
                                             (*c).prompt_data,
                                             0 as *const libc::c_char,
-                                            1 as libc::c_int,
-                                        ) == 0 as libc::c_int
+                                            1i32,
+                                        ) == 0i32
                                         {
                                             status_prompt_clear(c);
                                         }
                                     }
                                     _ => {}
                                 }
-                                (*c).flags |= 0x10 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x10u64;
+                                return 0i32;
                             }
                         }
                     }
@@ -5031,8 +4914,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                         current_block = 4303351861420576715;
                         match current_block {
                             13716905325739901580 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '-' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '-' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -5047,8 +4930,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     c,
                                     (*c).prompt_data,
                                     s,
-                                    1 as libc::c_int,
-                                ) == 0 as libc::c_int
+                                    1i32,
+                                ) == 0i32
                                 {
                                     status_prompt_clear(c);
                                 }
@@ -5060,29 +4943,25 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if idx < size {
                                     idx = idx.wrapping_add(1)
                                 }
-                                if idx >= 2 as libc::c_int as libc::c_ulong {
+                                if idx >= 2u64 {
                                     utf8_copy(
                                         &mut tmp,
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                         &mut tmp,
                                     );
                                     (*c).prompt_index = idx;
@@ -5118,7 +4997,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     oo,
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if status_prompt_in_list(
@@ -5129,7 +5008,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if !(status_prompt_in_list(
@@ -5174,8 +5053,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if options_get_number(
                                     oo,
                                     b"status-keys\x00" as *const u8 as *const libc::c_char,
-                                ) == 1 as libc::c_int as libc::c_longlong
-                                    && (*c).prompt_index != 0 as libc::c_int as libc::c_ulong
+                                ) == 1i64
+                                    && (*c).prompt_index != 0u64
                                 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
                                 }
@@ -5187,7 +5066,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
                                 idx = (*c).prompt_index;
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if status_prompt_in_list(
                                         ws,
@@ -5197,7 +5076,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if !(status_prompt_in_list(
                                         ws,
@@ -5212,9 +5091,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
                                     ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
-                                    (*c).prompt_index
-                                        .wrapping_sub(idx)
-                                        .wrapping_add(1 as libc::c_int as libc::c_ulong),
+                                    (*c).prompt_index.wrapping_sub(idx).wrapping_add(1u64),
                                 )
                                     as *mut Utf8Data;
                                 memcpy(
@@ -5228,7 +5105,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     (*c).prompt_buffer.offset(idx as isize) as *mut libc::c_void,
                                     (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                         as *const libc::c_void,
-                                    size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                    size.wrapping_add(1u64)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
                                             ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -5250,16 +5127,15 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                             10675534896202779322 => {
                                 if (*c).prompt_index < size {
                                     (*(*c).prompt_buffer.offset((*c).prompt_index as isize)).size =
-                                        0 as libc::c_int as u_char;
+                                        0u8;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
                                 }
                             }
                             7209921709130718133 => {
-                                (*(*c).prompt_buffer.offset(0 as libc::c_int as isize)).size =
-                                    0 as libc::c_int as u_char;
-                                (*c).prompt_index = 0 as libc::c_int as size_t;
+                                (*(*c).prompt_buffer.offset(0isize)).size = 0u8;
+                                (*c).prompt_index = 0u64;
                                 current_block = 368077705793071303;
                             }
                             11026770671687539224 => {
@@ -5269,9 +5145,9 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             as *mut libc::c_void,
                                         (*c).prompt_buffer
                                             .offset((*c).prompt_index as isize)
-                                            .offset(1 as libc::c_int as isize)
+                                            .offset(1isize)
                                             as *const libc::c_void,
-                                        size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                        size.wrapping_add(1u64)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
                                                 ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -5283,20 +5159,20 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             4303351861420576715 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index != 0u64 {
                                     if (*c).prompt_index == size {
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                         (*(*c).prompt_buffer.offset((*c).prompt_index as isize))
-                                            .size = 0 as libc::c_int as u_char
+                                            .size = 0u8
                                     } else {
                                         memmove(
                                             (*c).prompt_buffer
                                                 .offset((*c).prompt_index as isize)
-                                                .offset(-(1 as libc::c_int as isize))
+                                                .offset(-(1isize))
                                                 as *mut libc::c_void,
                                             (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                                 as *const libc::c_void,
-                                            size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                            size.wrapping_add(1u64)
                                                 .wrapping_sub((*c).prompt_index)
                                                 .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
@@ -5317,8 +5193,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             9649627425948382823 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
-                                    (*c).prompt_index = 0 as libc::c_int as size_t;
+                                if (*c).prompt_index != 0u64 {
+                                    (*c).prompt_index = 0u64;
                                     current_block = 16835199615365683821;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -5333,7 +5209,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             8595499525207474077 => {
-                                if (*c).prompt_index > 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index > 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     current_block = 16835199615365683821;
                                 } else {
@@ -5341,8 +5217,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             16592328677945139976 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '+' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '+' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -5377,16 +5253,16 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             c,
                                             (*c).prompt_data,
                                             0 as *const libc::c_char,
-                                            1 as libc::c_int,
-                                        ) == 0 as libc::c_int
+                                            1i32,
+                                        ) == 0i32
                                         {
                                             status_prompt_clear(c);
                                         }
                                     }
                                     _ => {}
                                 }
-                                (*c).flags |= 0x10 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x10u64;
+                                return 0i32;
                             }
                         }
                     }
@@ -5394,8 +5270,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                         current_block = 11026770671687539224;
                         match current_block {
                             13716905325739901580 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '-' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '-' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -5410,8 +5286,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     c,
                                     (*c).prompt_data,
                                     s,
-                                    1 as libc::c_int,
-                                ) == 0 as libc::c_int
+                                    1i32,
+                                ) == 0i32
                                 {
                                     status_prompt_clear(c);
                                 }
@@ -5423,29 +5299,25 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if idx < size {
                                     idx = idx.wrapping_add(1)
                                 }
-                                if idx >= 2 as libc::c_int as libc::c_ulong {
+                                if idx >= 2u64 {
                                     utf8_copy(
                                         &mut tmp,
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                         &mut tmp,
                                     );
                                     (*c).prompt_index = idx;
@@ -5481,7 +5353,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     oo,
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if status_prompt_in_list(
@@ -5492,7 +5364,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if !(status_prompt_in_list(
@@ -5537,8 +5409,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if options_get_number(
                                     oo,
                                     b"status-keys\x00" as *const u8 as *const libc::c_char,
-                                ) == 1 as libc::c_int as libc::c_longlong
-                                    && (*c).prompt_index != 0 as libc::c_int as libc::c_ulong
+                                ) == 1i64
+                                    && (*c).prompt_index != 0u64
                                 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
                                 }
@@ -5550,7 +5422,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
                                 idx = (*c).prompt_index;
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if status_prompt_in_list(
                                         ws,
@@ -5560,7 +5432,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if !(status_prompt_in_list(
                                         ws,
@@ -5575,9 +5447,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
                                     ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
-                                    (*c).prompt_index
-                                        .wrapping_sub(idx)
-                                        .wrapping_add(1 as libc::c_int as libc::c_ulong),
+                                    (*c).prompt_index.wrapping_sub(idx).wrapping_add(1u64),
                                 )
                                     as *mut Utf8Data;
                                 memcpy(
@@ -5591,7 +5461,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     (*c).prompt_buffer.offset(idx as isize) as *mut libc::c_void,
                                     (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                         as *const libc::c_void,
-                                    size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                    size.wrapping_add(1u64)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
                                             ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -5613,16 +5483,15 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                             10675534896202779322 => {
                                 if (*c).prompt_index < size {
                                     (*(*c).prompt_buffer.offset((*c).prompt_index as isize)).size =
-                                        0 as libc::c_int as u_char;
+                                        0u8;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
                                 }
                             }
                             7209921709130718133 => {
-                                (*(*c).prompt_buffer.offset(0 as libc::c_int as isize)).size =
-                                    0 as libc::c_int as u_char;
-                                (*c).prompt_index = 0 as libc::c_int as size_t;
+                                (*(*c).prompt_buffer.offset(0isize)).size = 0u8;
+                                (*c).prompt_index = 0u64;
                                 current_block = 368077705793071303;
                             }
                             11026770671687539224 => {
@@ -5632,9 +5501,9 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             as *mut libc::c_void,
                                         (*c).prompt_buffer
                                             .offset((*c).prompt_index as isize)
-                                            .offset(1 as libc::c_int as isize)
+                                            .offset(1isize)
                                             as *const libc::c_void,
-                                        size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                        size.wrapping_add(1u64)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
                                                 ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -5646,20 +5515,20 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             4303351861420576715 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index != 0u64 {
                                     if (*c).prompt_index == size {
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                         (*(*c).prompt_buffer.offset((*c).prompt_index as isize))
-                                            .size = 0 as libc::c_int as u_char
+                                            .size = 0u8
                                     } else {
                                         memmove(
                                             (*c).prompt_buffer
                                                 .offset((*c).prompt_index as isize)
-                                                .offset(-(1 as libc::c_int as isize))
+                                                .offset(-(1isize))
                                                 as *mut libc::c_void,
                                             (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                                 as *const libc::c_void,
-                                            size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                            size.wrapping_add(1u64)
                                                 .wrapping_sub((*c).prompt_index)
                                                 .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
@@ -5680,8 +5549,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             9649627425948382823 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
-                                    (*c).prompt_index = 0 as libc::c_int as size_t;
+                                if (*c).prompt_index != 0u64 {
+                                    (*c).prompt_index = 0u64;
                                     current_block = 16835199615365683821;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -5696,7 +5565,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             8595499525207474077 => {
-                                if (*c).prompt_index > 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index > 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     current_block = 16835199615365683821;
                                 } else {
@@ -5704,8 +5573,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             16592328677945139976 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '+' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '+' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -5740,16 +5609,16 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             c,
                                             (*c).prompt_data,
                                             0 as *const libc::c_char,
-                                            1 as libc::c_int,
-                                        ) == 0 as libc::c_int
+                                            1i32,
+                                        ) == 0i32
                                         {
                                             status_prompt_clear(c);
                                         }
                                     }
                                     _ => {}
                                 }
-                                (*c).flags |= 0x10 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x10u64;
+                                return 0i32;
                             }
                         }
                     }
@@ -5757,8 +5626,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                         current_block = 7209921709130718133;
                         match current_block {
                             13716905325739901580 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '-' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '-' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -5773,8 +5642,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     c,
                                     (*c).prompt_data,
                                     s,
-                                    1 as libc::c_int,
-                                ) == 0 as libc::c_int
+                                    1i32,
+                                ) == 0i32
                                 {
                                     status_prompt_clear(c);
                                 }
@@ -5786,29 +5655,25 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if idx < size {
                                     idx = idx.wrapping_add(1)
                                 }
-                                if idx >= 2 as libc::c_int as libc::c_ulong {
+                                if idx >= 2u64 {
                                     utf8_copy(
                                         &mut tmp,
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                         &mut tmp,
                                     );
                                     (*c).prompt_index = idx;
@@ -5844,7 +5709,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     oo,
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if status_prompt_in_list(
@@ -5855,7 +5720,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if !(status_prompt_in_list(
@@ -5900,8 +5765,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if options_get_number(
                                     oo,
                                     b"status-keys\x00" as *const u8 as *const libc::c_char,
-                                ) == 1 as libc::c_int as libc::c_longlong
-                                    && (*c).prompt_index != 0 as libc::c_int as libc::c_ulong
+                                ) == 1i64
+                                    && (*c).prompt_index != 0u64
                                 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
                                 }
@@ -5913,7 +5778,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
                                 idx = (*c).prompt_index;
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if status_prompt_in_list(
                                         ws,
@@ -5923,7 +5788,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if !(status_prompt_in_list(
                                         ws,
@@ -5938,9 +5803,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
                                     ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
-                                    (*c).prompt_index
-                                        .wrapping_sub(idx)
-                                        .wrapping_add(1 as libc::c_int as libc::c_ulong),
+                                    (*c).prompt_index.wrapping_sub(idx).wrapping_add(1u64),
                                 )
                                     as *mut Utf8Data;
                                 memcpy(
@@ -5954,7 +5817,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     (*c).prompt_buffer.offset(idx as isize) as *mut libc::c_void,
                                     (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                         as *const libc::c_void,
-                                    size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                    size.wrapping_add(1u64)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
                                             ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -5976,16 +5839,15 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                             10675534896202779322 => {
                                 if (*c).prompt_index < size {
                                     (*(*c).prompt_buffer.offset((*c).prompt_index as isize)).size =
-                                        0 as libc::c_int as u_char;
+                                        0u8;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
                                 }
                             }
                             7209921709130718133 => {
-                                (*(*c).prompt_buffer.offset(0 as libc::c_int as isize)).size =
-                                    0 as libc::c_int as u_char;
-                                (*c).prompt_index = 0 as libc::c_int as size_t;
+                                (*(*c).prompt_buffer.offset(0isize)).size = 0u8;
+                                (*c).prompt_index = 0u64;
                                 current_block = 368077705793071303;
                             }
                             11026770671687539224 => {
@@ -5995,9 +5857,9 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             as *mut libc::c_void,
                                         (*c).prompt_buffer
                                             .offset((*c).prompt_index as isize)
-                                            .offset(1 as libc::c_int as isize)
+                                            .offset(1isize)
                                             as *const libc::c_void,
-                                        size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                        size.wrapping_add(1u64)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
                                                 ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -6009,20 +5871,20 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             4303351861420576715 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index != 0u64 {
                                     if (*c).prompt_index == size {
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                         (*(*c).prompt_buffer.offset((*c).prompt_index as isize))
-                                            .size = 0 as libc::c_int as u_char
+                                            .size = 0u8
                                     } else {
                                         memmove(
                                             (*c).prompt_buffer
                                                 .offset((*c).prompt_index as isize)
-                                                .offset(-(1 as libc::c_int as isize))
+                                                .offset(-(1isize))
                                                 as *mut libc::c_void,
                                             (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                                 as *const libc::c_void,
-                                            size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                            size.wrapping_add(1u64)
                                                 .wrapping_sub((*c).prompt_index)
                                                 .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
@@ -6043,8 +5905,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             9649627425948382823 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
-                                    (*c).prompt_index = 0 as libc::c_int as size_t;
+                                if (*c).prompt_index != 0u64 {
+                                    (*c).prompt_index = 0u64;
                                     current_block = 16835199615365683821;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -6059,7 +5921,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             8595499525207474077 => {
-                                if (*c).prompt_index > 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index > 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     current_block = 16835199615365683821;
                                 } else {
@@ -6067,8 +5929,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             16592328677945139976 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '+' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '+' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -6103,16 +5965,16 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             c,
                                             (*c).prompt_data,
                                             0 as *const libc::c_char,
-                                            1 as libc::c_int,
-                                        ) == 0 as libc::c_int
+                                            1i32,
+                                        ) == 0i32
                                         {
                                             status_prompt_clear(c);
                                         }
                                     }
                                     _ => {}
                                 }
-                                (*c).flags |= 0x10 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x10u64;
+                                return 0i32;
                             }
                         }
                     }
@@ -6120,8 +5982,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                         current_block = 10675534896202779322;
                         match current_block {
                             13716905325739901580 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '-' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '-' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -6136,8 +5998,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     c,
                                     (*c).prompt_data,
                                     s,
-                                    1 as libc::c_int,
-                                ) == 0 as libc::c_int
+                                    1i32,
+                                ) == 0i32
                                 {
                                     status_prompt_clear(c);
                                 }
@@ -6149,29 +6011,25 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if idx < size {
                                     idx = idx.wrapping_add(1)
                                 }
-                                if idx >= 2 as libc::c_int as libc::c_ulong {
+                                if idx >= 2u64 {
                                     utf8_copy(
                                         &mut tmp,
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                         &mut tmp,
                                     );
                                     (*c).prompt_index = idx;
@@ -6207,7 +6065,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     oo,
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if status_prompt_in_list(
@@ -6218,7 +6076,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if !(status_prompt_in_list(
@@ -6263,8 +6121,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if options_get_number(
                                     oo,
                                     b"status-keys\x00" as *const u8 as *const libc::c_char,
-                                ) == 1 as libc::c_int as libc::c_longlong
-                                    && (*c).prompt_index != 0 as libc::c_int as libc::c_ulong
+                                ) == 1i64
+                                    && (*c).prompt_index != 0u64
                                 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
                                 }
@@ -6276,7 +6134,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
                                 idx = (*c).prompt_index;
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if status_prompt_in_list(
                                         ws,
@@ -6286,7 +6144,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if !(status_prompt_in_list(
                                         ws,
@@ -6301,9 +6159,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
                                     ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
-                                    (*c).prompt_index
-                                        .wrapping_sub(idx)
-                                        .wrapping_add(1 as libc::c_int as libc::c_ulong),
+                                    (*c).prompt_index.wrapping_sub(idx).wrapping_add(1u64),
                                 )
                                     as *mut Utf8Data;
                                 memcpy(
@@ -6317,7 +6173,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     (*c).prompt_buffer.offset(idx as isize) as *mut libc::c_void,
                                     (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                         as *const libc::c_void,
-                                    size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                    size.wrapping_add(1u64)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
                                             ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -6339,16 +6195,15 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                             10675534896202779322 => {
                                 if (*c).prompt_index < size {
                                     (*(*c).prompt_buffer.offset((*c).prompt_index as isize)).size =
-                                        0 as libc::c_int as u_char;
+                                        0u8;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
                                 }
                             }
                             7209921709130718133 => {
-                                (*(*c).prompt_buffer.offset(0 as libc::c_int as isize)).size =
-                                    0 as libc::c_int as u_char;
-                                (*c).prompt_index = 0 as libc::c_int as size_t;
+                                (*(*c).prompt_buffer.offset(0isize)).size = 0u8;
+                                (*c).prompt_index = 0u64;
                                 current_block = 368077705793071303;
                             }
                             11026770671687539224 => {
@@ -6358,9 +6213,9 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             as *mut libc::c_void,
                                         (*c).prompt_buffer
                                             .offset((*c).prompt_index as isize)
-                                            .offset(1 as libc::c_int as isize)
+                                            .offset(1isize)
                                             as *const libc::c_void,
-                                        size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                        size.wrapping_add(1u64)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
                                                 ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -6372,20 +6227,20 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             4303351861420576715 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index != 0u64 {
                                     if (*c).prompt_index == size {
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                         (*(*c).prompt_buffer.offset((*c).prompt_index as isize))
-                                            .size = 0 as libc::c_int as u_char
+                                            .size = 0u8
                                     } else {
                                         memmove(
                                             (*c).prompt_buffer
                                                 .offset((*c).prompt_index as isize)
-                                                .offset(-(1 as libc::c_int as isize))
+                                                .offset(-(1isize))
                                                 as *mut libc::c_void,
                                             (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                                 as *const libc::c_void,
-                                            size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                            size.wrapping_add(1u64)
                                                 .wrapping_sub((*c).prompt_index)
                                                 .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
@@ -6406,8 +6261,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             9649627425948382823 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
-                                    (*c).prompt_index = 0 as libc::c_int as size_t;
+                                if (*c).prompt_index != 0u64 {
+                                    (*c).prompt_index = 0u64;
                                     current_block = 16835199615365683821;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -6422,7 +6277,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             8595499525207474077 => {
-                                if (*c).prompt_index > 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index > 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     current_block = 16835199615365683821;
                                 } else {
@@ -6430,8 +6285,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             16592328677945139976 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '+' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '+' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -6466,16 +6321,16 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             c,
                                             (*c).prompt_data,
                                             0 as *const libc::c_char,
-                                            1 as libc::c_int,
-                                        ) == 0 as libc::c_int
+                                            1i32,
+                                        ) == 0i32
                                         {
                                             status_prompt_clear(c);
                                         }
                                     }
                                     _ => {}
                                 }
-                                (*c).flags |= 0x10 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x10u64;
+                                return 0i32;
                             }
                         }
                     }
@@ -6483,8 +6338,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                         current_block = 7307066281430299153;
                         match current_block {
                             13716905325739901580 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '-' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '-' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -6499,8 +6354,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     c,
                                     (*c).prompt_data,
                                     s,
-                                    1 as libc::c_int,
-                                ) == 0 as libc::c_int
+                                    1i32,
+                                ) == 0i32
                                 {
                                     status_prompt_clear(c);
                                 }
@@ -6512,29 +6367,25 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if idx < size {
                                     idx = idx.wrapping_add(1)
                                 }
-                                if idx >= 2 as libc::c_int as libc::c_ulong {
+                                if idx >= 2u64 {
                                     utf8_copy(
                                         &mut tmp,
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                         &mut tmp,
                                     );
                                     (*c).prompt_index = idx;
@@ -6570,7 +6421,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     oo,
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if status_prompt_in_list(
@@ -6581,7 +6432,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if !(status_prompt_in_list(
@@ -6626,8 +6477,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if options_get_number(
                                     oo,
                                     b"status-keys\x00" as *const u8 as *const libc::c_char,
-                                ) == 1 as libc::c_int as libc::c_longlong
-                                    && (*c).prompt_index != 0 as libc::c_int as libc::c_ulong
+                                ) == 1i64
+                                    && (*c).prompt_index != 0u64
                                 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
                                 }
@@ -6639,7 +6490,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
                                 idx = (*c).prompt_index;
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if status_prompt_in_list(
                                         ws,
@@ -6649,7 +6500,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if !(status_prompt_in_list(
                                         ws,
@@ -6664,9 +6515,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
                                     ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
-                                    (*c).prompt_index
-                                        .wrapping_sub(idx)
-                                        .wrapping_add(1 as libc::c_int as libc::c_ulong),
+                                    (*c).prompt_index.wrapping_sub(idx).wrapping_add(1u64),
                                 )
                                     as *mut Utf8Data;
                                 memcpy(
@@ -6680,7 +6529,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     (*c).prompt_buffer.offset(idx as isize) as *mut libc::c_void,
                                     (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                         as *const libc::c_void,
-                                    size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                    size.wrapping_add(1u64)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
                                             ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -6702,16 +6551,15 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                             10675534896202779322 => {
                                 if (*c).prompt_index < size {
                                     (*(*c).prompt_buffer.offset((*c).prompt_index as isize)).size =
-                                        0 as libc::c_int as u_char;
+                                        0u8;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
                                 }
                             }
                             7209921709130718133 => {
-                                (*(*c).prompt_buffer.offset(0 as libc::c_int as isize)).size =
-                                    0 as libc::c_int as u_char;
-                                (*c).prompt_index = 0 as libc::c_int as size_t;
+                                (*(*c).prompt_buffer.offset(0isize)).size = 0u8;
+                                (*c).prompt_index = 0u64;
                                 current_block = 368077705793071303;
                             }
                             11026770671687539224 => {
@@ -6721,9 +6569,9 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             as *mut libc::c_void,
                                         (*c).prompt_buffer
                                             .offset((*c).prompt_index as isize)
-                                            .offset(1 as libc::c_int as isize)
+                                            .offset(1isize)
                                             as *const libc::c_void,
-                                        size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                        size.wrapping_add(1u64)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
                                                 ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -6735,20 +6583,20 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             4303351861420576715 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index != 0u64 {
                                     if (*c).prompt_index == size {
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                         (*(*c).prompt_buffer.offset((*c).prompt_index as isize))
-                                            .size = 0 as libc::c_int as u_char
+                                            .size = 0u8
                                     } else {
                                         memmove(
                                             (*c).prompt_buffer
                                                 .offset((*c).prompt_index as isize)
-                                                .offset(-(1 as libc::c_int as isize))
+                                                .offset(-(1isize))
                                                 as *mut libc::c_void,
                                             (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                                 as *const libc::c_void,
-                                            size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                            size.wrapping_add(1u64)
                                                 .wrapping_sub((*c).prompt_index)
                                                 .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
@@ -6769,8 +6617,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             9649627425948382823 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
-                                    (*c).prompt_index = 0 as libc::c_int as size_t;
+                                if (*c).prompt_index != 0u64 {
+                                    (*c).prompt_index = 0u64;
                                     current_block = 16835199615365683821;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -6785,7 +6633,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             8595499525207474077 => {
-                                if (*c).prompt_index > 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index > 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     current_block = 16835199615365683821;
                                 } else {
@@ -6793,8 +6641,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             16592328677945139976 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '+' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '+' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -6829,16 +6677,16 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             c,
                                             (*c).prompt_data,
                                             0 as *const libc::c_char,
-                                            1 as libc::c_int,
-                                        ) == 0 as libc::c_int
+                                            1i32,
+                                        ) == 0i32
                                         {
                                             status_prompt_clear(c);
                                         }
                                     }
                                     _ => {}
                                 }
-                                (*c).flags |= 0x10 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x10u64;
+                                return 0i32;
                             }
                         }
                     }
@@ -6846,8 +6694,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                         current_block = 11057756935608885628;
                         match current_block {
                             13716905325739901580 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '-' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '-' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -6862,8 +6710,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     c,
                                     (*c).prompt_data,
                                     s,
-                                    1 as libc::c_int,
-                                ) == 0 as libc::c_int
+                                    1i32,
+                                ) == 0i32
                                 {
                                     status_prompt_clear(c);
                                 }
@@ -6875,29 +6723,25 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if idx < size {
                                     idx = idx.wrapping_add(1)
                                 }
-                                if idx >= 2 as libc::c_int as libc::c_ulong {
+                                if idx >= 2u64 {
                                     utf8_copy(
                                         &mut tmp,
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                         &mut tmp,
                                     );
                                     (*c).prompt_index = idx;
@@ -6933,7 +6777,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     oo,
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if status_prompt_in_list(
@@ -6944,7 +6788,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if !(status_prompt_in_list(
@@ -6989,8 +6833,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if options_get_number(
                                     oo,
                                     b"status-keys\x00" as *const u8 as *const libc::c_char,
-                                ) == 1 as libc::c_int as libc::c_longlong
-                                    && (*c).prompt_index != 0 as libc::c_int as libc::c_ulong
+                                ) == 1i64
+                                    && (*c).prompt_index != 0u64
                                 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
                                 }
@@ -7002,7 +6846,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
                                 idx = (*c).prompt_index;
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if status_prompt_in_list(
                                         ws,
@@ -7012,7 +6856,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if !(status_prompt_in_list(
                                         ws,
@@ -7027,9 +6871,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
                                     ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
-                                    (*c).prompt_index
-                                        .wrapping_sub(idx)
-                                        .wrapping_add(1 as libc::c_int as libc::c_ulong),
+                                    (*c).prompt_index.wrapping_sub(idx).wrapping_add(1u64),
                                 )
                                     as *mut Utf8Data;
                                 memcpy(
@@ -7043,7 +6885,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     (*c).prompt_buffer.offset(idx as isize) as *mut libc::c_void,
                                     (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                         as *const libc::c_void,
-                                    size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                    size.wrapping_add(1u64)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
                                             ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -7065,16 +6907,15 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                             10675534896202779322 => {
                                 if (*c).prompt_index < size {
                                     (*(*c).prompt_buffer.offset((*c).prompt_index as isize)).size =
-                                        0 as libc::c_int as u_char;
+                                        0u8;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
                                 }
                             }
                             7209921709130718133 => {
-                                (*(*c).prompt_buffer.offset(0 as libc::c_int as isize)).size =
-                                    0 as libc::c_int as u_char;
-                                (*c).prompt_index = 0 as libc::c_int as size_t;
+                                (*(*c).prompt_buffer.offset(0isize)).size = 0u8;
+                                (*c).prompt_index = 0u64;
                                 current_block = 368077705793071303;
                             }
                             11026770671687539224 => {
@@ -7084,9 +6925,9 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             as *mut libc::c_void,
                                         (*c).prompt_buffer
                                             .offset((*c).prompt_index as isize)
-                                            .offset(1 as libc::c_int as isize)
+                                            .offset(1isize)
                                             as *const libc::c_void,
-                                        size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                        size.wrapping_add(1u64)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
                                                 ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -7098,20 +6939,20 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             4303351861420576715 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index != 0u64 {
                                     if (*c).prompt_index == size {
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                         (*(*c).prompt_buffer.offset((*c).prompt_index as isize))
-                                            .size = 0 as libc::c_int as u_char
+                                            .size = 0u8
                                     } else {
                                         memmove(
                                             (*c).prompt_buffer
                                                 .offset((*c).prompt_index as isize)
-                                                .offset(-(1 as libc::c_int as isize))
+                                                .offset(-(1isize))
                                                 as *mut libc::c_void,
                                             (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                                 as *const libc::c_void,
-                                            size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                            size.wrapping_add(1u64)
                                                 .wrapping_sub((*c).prompt_index)
                                                 .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
@@ -7132,8 +6973,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             9649627425948382823 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
-                                    (*c).prompt_index = 0 as libc::c_int as size_t;
+                                if (*c).prompt_index != 0u64 {
+                                    (*c).prompt_index = 0u64;
                                     current_block = 16835199615365683821;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -7148,7 +6989,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             8595499525207474077 => {
-                                if (*c).prompt_index > 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index > 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     current_block = 16835199615365683821;
                                 } else {
@@ -7156,8 +6997,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             16592328677945139976 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '+' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '+' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -7192,16 +7033,16 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             c,
                                             (*c).prompt_data,
                                             0 as *const libc::c_char,
-                                            1 as libc::c_int,
-                                        ) == 0 as libc::c_int
+                                            1i32,
+                                        ) == 0i32
                                         {
                                             status_prompt_clear(c);
                                         }
                                     }
                                     _ => {}
                                 }
-                                (*c).flags |= 0x10 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x10u64;
+                                return 0i32;
                             }
                         }
                     }
@@ -7209,8 +7050,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                         current_block = 120937800574074383;
                         match current_block {
                             13716905325739901580 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '-' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '-' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -7225,8 +7066,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     c,
                                     (*c).prompt_data,
                                     s,
-                                    1 as libc::c_int,
-                                ) == 0 as libc::c_int
+                                    1i32,
+                                ) == 0i32
                                 {
                                     status_prompt_clear(c);
                                 }
@@ -7238,29 +7079,25 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if idx < size {
                                     idx = idx.wrapping_add(1)
                                 }
-                                if idx >= 2 as libc::c_int as libc::c_ulong {
+                                if idx >= 2u64 {
                                     utf8_copy(
                                         &mut tmp,
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                         &mut tmp,
                                     );
                                     (*c).prompt_index = idx;
@@ -7296,7 +7133,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     oo,
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if status_prompt_in_list(
@@ -7307,7 +7144,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if !(status_prompt_in_list(
@@ -7352,8 +7189,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if options_get_number(
                                     oo,
                                     b"status-keys\x00" as *const u8 as *const libc::c_char,
-                                ) == 1 as libc::c_int as libc::c_longlong
-                                    && (*c).prompt_index != 0 as libc::c_int as libc::c_ulong
+                                ) == 1i64
+                                    && (*c).prompt_index != 0u64
                                 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
                                 }
@@ -7365,7 +7202,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
                                 idx = (*c).prompt_index;
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if status_prompt_in_list(
                                         ws,
@@ -7375,7 +7212,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if !(status_prompt_in_list(
                                         ws,
@@ -7390,9 +7227,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
                                     ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
-                                    (*c).prompt_index
-                                        .wrapping_sub(idx)
-                                        .wrapping_add(1 as libc::c_int as libc::c_ulong),
+                                    (*c).prompt_index.wrapping_sub(idx).wrapping_add(1u64),
                                 )
                                     as *mut Utf8Data;
                                 memcpy(
@@ -7406,7 +7241,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     (*c).prompt_buffer.offset(idx as isize) as *mut libc::c_void,
                                     (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                         as *const libc::c_void,
-                                    size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                    size.wrapping_add(1u64)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
                                             ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -7428,16 +7263,15 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                             10675534896202779322 => {
                                 if (*c).prompt_index < size {
                                     (*(*c).prompt_buffer.offset((*c).prompt_index as isize)).size =
-                                        0 as libc::c_int as u_char;
+                                        0u8;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
                                 }
                             }
                             7209921709130718133 => {
-                                (*(*c).prompt_buffer.offset(0 as libc::c_int as isize)).size =
-                                    0 as libc::c_int as u_char;
-                                (*c).prompt_index = 0 as libc::c_int as size_t;
+                                (*(*c).prompt_buffer.offset(0isize)).size = 0u8;
+                                (*c).prompt_index = 0u64;
                                 current_block = 368077705793071303;
                             }
                             11026770671687539224 => {
@@ -7447,9 +7281,9 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             as *mut libc::c_void,
                                         (*c).prompt_buffer
                                             .offset((*c).prompt_index as isize)
-                                            .offset(1 as libc::c_int as isize)
+                                            .offset(1isize)
                                             as *const libc::c_void,
-                                        size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                        size.wrapping_add(1u64)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
                                                 ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -7461,20 +7295,20 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             4303351861420576715 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index != 0u64 {
                                     if (*c).prompt_index == size {
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                         (*(*c).prompt_buffer.offset((*c).prompt_index as isize))
-                                            .size = 0 as libc::c_int as u_char
+                                            .size = 0u8
                                     } else {
                                         memmove(
                                             (*c).prompt_buffer
                                                 .offset((*c).prompt_index as isize)
-                                                .offset(-(1 as libc::c_int as isize))
+                                                .offset(-(1isize))
                                                 as *mut libc::c_void,
                                             (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                                 as *const libc::c_void,
-                                            size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                            size.wrapping_add(1u64)
                                                 .wrapping_sub((*c).prompt_index)
                                                 .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
@@ -7495,8 +7329,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             9649627425948382823 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
-                                    (*c).prompt_index = 0 as libc::c_int as size_t;
+                                if (*c).prompt_index != 0u64 {
+                                    (*c).prompt_index = 0u64;
                                     current_block = 16835199615365683821;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -7511,7 +7345,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             8595499525207474077 => {
-                                if (*c).prompt_index > 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index > 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     current_block = 16835199615365683821;
                                 } else {
@@ -7519,8 +7353,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             16592328677945139976 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '+' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '+' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -7555,16 +7389,16 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             c,
                                             (*c).prompt_data,
                                             0 as *const libc::c_char,
-                                            1 as libc::c_int,
-                                        ) == 0 as libc::c_int
+                                            1i32,
+                                        ) == 0i32
                                         {
                                             status_prompt_clear(c);
                                         }
                                     }
                                     _ => {}
                                 }
-                                (*c).flags |= 0x10 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x10u64;
+                                return 0i32;
                             }
                         }
                     }
@@ -7572,8 +7406,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                         current_block = 11667326925293579197;
                         match current_block {
                             13716905325739901580 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '-' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '-' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -7588,8 +7422,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     c,
                                     (*c).prompt_data,
                                     s,
-                                    1 as libc::c_int,
-                                ) == 0 as libc::c_int
+                                    1i32,
+                                ) == 0i32
                                 {
                                     status_prompt_clear(c);
                                 }
@@ -7601,29 +7435,25 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if idx < size {
                                     idx = idx.wrapping_add(1)
                                 }
-                                if idx >= 2 as libc::c_int as libc::c_ulong {
+                                if idx >= 2u64 {
                                     utf8_copy(
                                         &mut tmp,
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                         &mut tmp,
                                     );
                                     (*c).prompt_index = idx;
@@ -7659,7 +7489,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     oo,
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if status_prompt_in_list(
@@ -7670,7 +7500,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if !(status_prompt_in_list(
@@ -7715,8 +7545,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if options_get_number(
                                     oo,
                                     b"status-keys\x00" as *const u8 as *const libc::c_char,
-                                ) == 1 as libc::c_int as libc::c_longlong
-                                    && (*c).prompt_index != 0 as libc::c_int as libc::c_ulong
+                                ) == 1i64
+                                    && (*c).prompt_index != 0u64
                                 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
                                 }
@@ -7728,7 +7558,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
                                 idx = (*c).prompt_index;
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if status_prompt_in_list(
                                         ws,
@@ -7738,7 +7568,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if !(status_prompt_in_list(
                                         ws,
@@ -7753,9 +7583,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
                                     ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
-                                    (*c).prompt_index
-                                        .wrapping_sub(idx)
-                                        .wrapping_add(1 as libc::c_int as libc::c_ulong),
+                                    (*c).prompt_index.wrapping_sub(idx).wrapping_add(1u64),
                                 )
                                     as *mut Utf8Data;
                                 memcpy(
@@ -7769,7 +7597,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     (*c).prompt_buffer.offset(idx as isize) as *mut libc::c_void,
                                     (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                         as *const libc::c_void,
-                                    size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                    size.wrapping_add(1u64)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
                                             ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -7791,16 +7619,15 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                             10675534896202779322 => {
                                 if (*c).prompt_index < size {
                                     (*(*c).prompt_buffer.offset((*c).prompt_index as isize)).size =
-                                        0 as libc::c_int as u_char;
+                                        0u8;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
                                 }
                             }
                             7209921709130718133 => {
-                                (*(*c).prompt_buffer.offset(0 as libc::c_int as isize)).size =
-                                    0 as libc::c_int as u_char;
-                                (*c).prompt_index = 0 as libc::c_int as size_t;
+                                (*(*c).prompt_buffer.offset(0isize)).size = 0u8;
+                                (*c).prompt_index = 0u64;
                                 current_block = 368077705793071303;
                             }
                             11026770671687539224 => {
@@ -7810,9 +7637,9 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             as *mut libc::c_void,
                                         (*c).prompt_buffer
                                             .offset((*c).prompt_index as isize)
-                                            .offset(1 as libc::c_int as isize)
+                                            .offset(1isize)
                                             as *const libc::c_void,
-                                        size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                        size.wrapping_add(1u64)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
                                                 ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -7824,20 +7651,20 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             4303351861420576715 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index != 0u64 {
                                     if (*c).prompt_index == size {
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                         (*(*c).prompt_buffer.offset((*c).prompt_index as isize))
-                                            .size = 0 as libc::c_int as u_char
+                                            .size = 0u8
                                     } else {
                                         memmove(
                                             (*c).prompt_buffer
                                                 .offset((*c).prompt_index as isize)
-                                                .offset(-(1 as libc::c_int as isize))
+                                                .offset(-(1isize))
                                                 as *mut libc::c_void,
                                             (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                                 as *const libc::c_void,
-                                            size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                            size.wrapping_add(1u64)
                                                 .wrapping_sub((*c).prompt_index)
                                                 .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
@@ -7858,8 +7685,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             9649627425948382823 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
-                                    (*c).prompt_index = 0 as libc::c_int as size_t;
+                                if (*c).prompt_index != 0u64 {
+                                    (*c).prompt_index = 0u64;
                                     current_block = 16835199615365683821;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -7874,7 +7701,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             8595499525207474077 => {
-                                if (*c).prompt_index > 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index > 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     current_block = 16835199615365683821;
                                 } else {
@@ -7882,8 +7709,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             16592328677945139976 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '+' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '+' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -7918,16 +7745,16 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             c,
                                             (*c).prompt_data,
                                             0 as *const libc::c_char,
-                                            1 as libc::c_int,
-                                        ) == 0 as libc::c_int
+                                            1i32,
+                                        ) == 0i32
                                         {
                                             status_prompt_clear(c);
                                         }
                                     }
                                     _ => {}
                                 }
-                                (*c).flags |= 0x10 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x10u64;
+                                return 0i32;
                             }
                         }
                     }
@@ -7935,8 +7762,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                         current_block = 11812164207322118286;
                         match current_block {
                             13716905325739901580 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '-' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '-' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -7951,8 +7778,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     c,
                                     (*c).prompt_data,
                                     s,
-                                    1 as libc::c_int,
-                                ) == 0 as libc::c_int
+                                    1i32,
+                                ) == 0i32
                                 {
                                     status_prompt_clear(c);
                                 }
@@ -7964,29 +7791,25 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if idx < size {
                                     idx = idx.wrapping_add(1)
                                 }
-                                if idx >= 2 as libc::c_int as libc::c_ulong {
+                                if idx >= 2u64 {
                                     utf8_copy(
                                         &mut tmp,
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                         &mut tmp,
                                     );
                                     (*c).prompt_index = idx;
@@ -8022,7 +7845,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     oo,
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if status_prompt_in_list(
@@ -8033,7 +7856,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if !(status_prompt_in_list(
@@ -8078,8 +7901,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if options_get_number(
                                     oo,
                                     b"status-keys\x00" as *const u8 as *const libc::c_char,
-                                ) == 1 as libc::c_int as libc::c_longlong
-                                    && (*c).prompt_index != 0 as libc::c_int as libc::c_ulong
+                                ) == 1i64
+                                    && (*c).prompt_index != 0u64
                                 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
                                 }
@@ -8091,7 +7914,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
                                 idx = (*c).prompt_index;
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if status_prompt_in_list(
                                         ws,
@@ -8101,7 +7924,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if !(status_prompt_in_list(
                                         ws,
@@ -8116,9 +7939,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
                                     ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
-                                    (*c).prompt_index
-                                        .wrapping_sub(idx)
-                                        .wrapping_add(1 as libc::c_int as libc::c_ulong),
+                                    (*c).prompt_index.wrapping_sub(idx).wrapping_add(1u64),
                                 )
                                     as *mut Utf8Data;
                                 memcpy(
@@ -8132,7 +7953,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     (*c).prompt_buffer.offset(idx as isize) as *mut libc::c_void,
                                     (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                         as *const libc::c_void,
-                                    size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                    size.wrapping_add(1u64)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
                                             ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -8154,16 +7975,15 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                             10675534896202779322 => {
                                 if (*c).prompt_index < size {
                                     (*(*c).prompt_buffer.offset((*c).prompt_index as isize)).size =
-                                        0 as libc::c_int as u_char;
+                                        0u8;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
                                 }
                             }
                             7209921709130718133 => {
-                                (*(*c).prompt_buffer.offset(0 as libc::c_int as isize)).size =
-                                    0 as libc::c_int as u_char;
-                                (*c).prompt_index = 0 as libc::c_int as size_t;
+                                (*(*c).prompt_buffer.offset(0isize)).size = 0u8;
+                                (*c).prompt_index = 0u64;
                                 current_block = 368077705793071303;
                             }
                             11026770671687539224 => {
@@ -8173,9 +7993,9 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             as *mut libc::c_void,
                                         (*c).prompt_buffer
                                             .offset((*c).prompt_index as isize)
-                                            .offset(1 as libc::c_int as isize)
+                                            .offset(1isize)
                                             as *const libc::c_void,
-                                        size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                        size.wrapping_add(1u64)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
                                                 ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -8187,20 +8007,20 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             4303351861420576715 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index != 0u64 {
                                     if (*c).prompt_index == size {
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                         (*(*c).prompt_buffer.offset((*c).prompt_index as isize))
-                                            .size = 0 as libc::c_int as u_char
+                                            .size = 0u8
                                     } else {
                                         memmove(
                                             (*c).prompt_buffer
                                                 .offset((*c).prompt_index as isize)
-                                                .offset(-(1 as libc::c_int as isize))
+                                                .offset(-(1isize))
                                                 as *mut libc::c_void,
                                             (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                                 as *const libc::c_void,
-                                            size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                            size.wrapping_add(1u64)
                                                 .wrapping_sub((*c).prompt_index)
                                                 .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
@@ -8221,8 +8041,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             9649627425948382823 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
-                                    (*c).prompt_index = 0 as libc::c_int as size_t;
+                                if (*c).prompt_index != 0u64 {
+                                    (*c).prompt_index = 0u64;
                                     current_block = 16835199615365683821;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -8237,7 +8057,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             8595499525207474077 => {
-                                if (*c).prompt_index > 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index > 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     current_block = 16835199615365683821;
                                 } else {
@@ -8245,8 +8065,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             16592328677945139976 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '+' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '+' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -8281,16 +8101,16 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             c,
                                             (*c).prompt_data,
                                             0 as *const libc::c_char,
-                                            1 as libc::c_int,
-                                        ) == 0 as libc::c_int
+                                            1i32,
+                                        ) == 0i32
                                         {
                                             status_prompt_clear(c);
                                         }
                                     }
                                     _ => {}
                                 }
-                                (*c).flags |= 0x10 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x10u64;
+                                return 0i32;
                             }
                         }
                     }
@@ -8298,8 +8118,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                         current_block = 8555501604137689390;
                         match current_block {
                             13716905325739901580 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '-' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '-' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -8314,8 +8134,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     c,
                                     (*c).prompt_data,
                                     s,
-                                    1 as libc::c_int,
-                                ) == 0 as libc::c_int
+                                    1i32,
+                                ) == 0i32
                                 {
                                     status_prompt_clear(c);
                                 }
@@ -8327,29 +8147,25 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if idx < size {
                                     idx = idx.wrapping_add(1)
                                 }
-                                if idx >= 2 as libc::c_int as libc::c_ulong {
+                                if idx >= 2u64 {
                                     utf8_copy(
                                         &mut tmp,
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                         &mut tmp,
                                     );
                                     (*c).prompt_index = idx;
@@ -8385,7 +8201,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     oo,
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if status_prompt_in_list(
@@ -8396,7 +8212,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if !(status_prompt_in_list(
@@ -8441,8 +8257,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if options_get_number(
                                     oo,
                                     b"status-keys\x00" as *const u8 as *const libc::c_char,
-                                ) == 1 as libc::c_int as libc::c_longlong
-                                    && (*c).prompt_index != 0 as libc::c_int as libc::c_ulong
+                                ) == 1i64
+                                    && (*c).prompt_index != 0u64
                                 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
                                 }
@@ -8454,7 +8270,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
                                 idx = (*c).prompt_index;
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if status_prompt_in_list(
                                         ws,
@@ -8464,7 +8280,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if !(status_prompt_in_list(
                                         ws,
@@ -8479,9 +8295,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
                                     ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
-                                    (*c).prompt_index
-                                        .wrapping_sub(idx)
-                                        .wrapping_add(1 as libc::c_int as libc::c_ulong),
+                                    (*c).prompt_index.wrapping_sub(idx).wrapping_add(1u64),
                                 )
                                     as *mut Utf8Data;
                                 memcpy(
@@ -8495,7 +8309,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     (*c).prompt_buffer.offset(idx as isize) as *mut libc::c_void,
                                     (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                         as *const libc::c_void,
-                                    size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                    size.wrapping_add(1u64)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
                                             ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -8517,16 +8331,15 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                             10675534896202779322 => {
                                 if (*c).prompt_index < size {
                                     (*(*c).prompt_buffer.offset((*c).prompt_index as isize)).size =
-                                        0 as libc::c_int as u_char;
+                                        0u8;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
                                 }
                             }
                             7209921709130718133 => {
-                                (*(*c).prompt_buffer.offset(0 as libc::c_int as isize)).size =
-                                    0 as libc::c_int as u_char;
-                                (*c).prompt_index = 0 as libc::c_int as size_t;
+                                (*(*c).prompt_buffer.offset(0isize)).size = 0u8;
+                                (*c).prompt_index = 0u64;
                                 current_block = 368077705793071303;
                             }
                             11026770671687539224 => {
@@ -8536,9 +8349,9 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             as *mut libc::c_void,
                                         (*c).prompt_buffer
                                             .offset((*c).prompt_index as isize)
-                                            .offset(1 as libc::c_int as isize)
+                                            .offset(1isize)
                                             as *const libc::c_void,
-                                        size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                        size.wrapping_add(1u64)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
                                                 ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -8550,20 +8363,20 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             4303351861420576715 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index != 0u64 {
                                     if (*c).prompt_index == size {
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                         (*(*c).prompt_buffer.offset((*c).prompt_index as isize))
-                                            .size = 0 as libc::c_int as u_char
+                                            .size = 0u8
                                     } else {
                                         memmove(
                                             (*c).prompt_buffer
                                                 .offset((*c).prompt_index as isize)
-                                                .offset(-(1 as libc::c_int as isize))
+                                                .offset(-(1isize))
                                                 as *mut libc::c_void,
                                             (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                                 as *const libc::c_void,
-                                            size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                            size.wrapping_add(1u64)
                                                 .wrapping_sub((*c).prompt_index)
                                                 .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
@@ -8584,8 +8397,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             9649627425948382823 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
-                                    (*c).prompt_index = 0 as libc::c_int as size_t;
+                                if (*c).prompt_index != 0u64 {
+                                    (*c).prompt_index = 0u64;
                                     current_block = 16835199615365683821;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -8600,7 +8413,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             8595499525207474077 => {
-                                if (*c).prompt_index > 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index > 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     current_block = 16835199615365683821;
                                 } else {
@@ -8608,8 +8421,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             16592328677945139976 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '+' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '+' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -8644,16 +8457,16 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             c,
                                             (*c).prompt_data,
                                             0 as *const libc::c_char,
-                                            1 as libc::c_int,
-                                        ) == 0 as libc::c_int
+                                            1i32,
+                                        ) == 0i32
                                         {
                                             status_prompt_clear(c);
                                         }
                                     }
                                     _ => {}
                                 }
-                                (*c).flags |= 0x10 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x10u64;
+                                return 0i32;
                             }
                         }
                     }
@@ -8661,8 +8474,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                         current_block = 6699258362909208477;
                         match current_block {
                             13716905325739901580 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '-' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '-' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -8677,8 +8490,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     c,
                                     (*c).prompt_data,
                                     s,
-                                    1 as libc::c_int,
-                                ) == 0 as libc::c_int
+                                    1i32,
+                                ) == 0i32
                                 {
                                     status_prompt_clear(c);
                                 }
@@ -8690,29 +8503,25 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if idx < size {
                                     idx = idx.wrapping_add(1)
                                 }
-                                if idx >= 2 as libc::c_int as libc::c_ulong {
+                                if idx >= 2u64 {
                                     utf8_copy(
                                         &mut tmp,
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                         &mut tmp,
                                     );
                                     (*c).prompt_index = idx;
@@ -8748,7 +8557,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     oo,
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if status_prompt_in_list(
@@ -8759,7 +8568,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if !(status_prompt_in_list(
@@ -8804,8 +8613,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if options_get_number(
                                     oo,
                                     b"status-keys\x00" as *const u8 as *const libc::c_char,
-                                ) == 1 as libc::c_int as libc::c_longlong
-                                    && (*c).prompt_index != 0 as libc::c_int as libc::c_ulong
+                                ) == 1i64
+                                    && (*c).prompt_index != 0u64
                                 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
                                 }
@@ -8817,7 +8626,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
                                 idx = (*c).prompt_index;
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if status_prompt_in_list(
                                         ws,
@@ -8827,7 +8636,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if !(status_prompt_in_list(
                                         ws,
@@ -8842,9 +8651,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
                                     ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
-                                    (*c).prompt_index
-                                        .wrapping_sub(idx)
-                                        .wrapping_add(1 as libc::c_int as libc::c_ulong),
+                                    (*c).prompt_index.wrapping_sub(idx).wrapping_add(1u64),
                                 )
                                     as *mut Utf8Data;
                                 memcpy(
@@ -8858,7 +8665,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     (*c).prompt_buffer.offset(idx as isize) as *mut libc::c_void,
                                     (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                         as *const libc::c_void,
-                                    size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                    size.wrapping_add(1u64)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
                                             ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -8880,16 +8687,15 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                             10675534896202779322 => {
                                 if (*c).prompt_index < size {
                                     (*(*c).prompt_buffer.offset((*c).prompt_index as isize)).size =
-                                        0 as libc::c_int as u_char;
+                                        0u8;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
                                 }
                             }
                             7209921709130718133 => {
-                                (*(*c).prompt_buffer.offset(0 as libc::c_int as isize)).size =
-                                    0 as libc::c_int as u_char;
-                                (*c).prompt_index = 0 as libc::c_int as size_t;
+                                (*(*c).prompt_buffer.offset(0isize)).size = 0u8;
+                                (*c).prompt_index = 0u64;
                                 current_block = 368077705793071303;
                             }
                             11026770671687539224 => {
@@ -8899,9 +8705,9 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             as *mut libc::c_void,
                                         (*c).prompt_buffer
                                             .offset((*c).prompt_index as isize)
-                                            .offset(1 as libc::c_int as isize)
+                                            .offset(1isize)
                                             as *const libc::c_void,
-                                        size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                        size.wrapping_add(1u64)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
                                                 ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -8913,20 +8719,20 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             4303351861420576715 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index != 0u64 {
                                     if (*c).prompt_index == size {
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                         (*(*c).prompt_buffer.offset((*c).prompt_index as isize))
-                                            .size = 0 as libc::c_int as u_char
+                                            .size = 0u8
                                     } else {
                                         memmove(
                                             (*c).prompt_buffer
                                                 .offset((*c).prompt_index as isize)
-                                                .offset(-(1 as libc::c_int as isize))
+                                                .offset(-(1isize))
                                                 as *mut libc::c_void,
                                             (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                                 as *const libc::c_void,
-                                            size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                            size.wrapping_add(1u64)
                                                 .wrapping_sub((*c).prompt_index)
                                                 .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
@@ -8947,8 +8753,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             9649627425948382823 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
-                                    (*c).prompt_index = 0 as libc::c_int as size_t;
+                                if (*c).prompt_index != 0u64 {
+                                    (*c).prompt_index = 0u64;
                                     current_block = 16835199615365683821;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -8963,7 +8769,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             8595499525207474077 => {
-                                if (*c).prompt_index > 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index > 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     current_block = 16835199615365683821;
                                 } else {
@@ -8971,8 +8777,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             16592328677945139976 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '+' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '+' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -9007,16 +8813,16 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             c,
                                             (*c).prompt_data,
                                             0 as *const libc::c_char,
-                                            1 as libc::c_int,
-                                        ) == 0 as libc::c_int
+                                            1i32,
+                                        ) == 0i32
                                         {
                                             status_prompt_clear(c);
                                         }
                                     }
                                     _ => {}
                                 }
-                                (*c).flags |= 0x10 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x10u64;
+                                return 0i32;
                             }
                         }
                     }
@@ -9024,8 +8830,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                         current_block = 14996222313512956680;
                         match current_block {
                             13716905325739901580 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '-' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '-' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -9040,8 +8846,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     c,
                                     (*c).prompt_data,
                                     s,
-                                    1 as libc::c_int,
-                                ) == 0 as libc::c_int
+                                    1i32,
+                                ) == 0i32
                                 {
                                     status_prompt_clear(c);
                                 }
@@ -9053,29 +8859,25 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if idx < size {
                                     idx = idx.wrapping_add(1)
                                 }
-                                if idx >= 2 as libc::c_int as libc::c_ulong {
+                                if idx >= 2u64 {
                                     utf8_copy(
                                         &mut tmp,
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                         &mut tmp,
                                     );
                                     (*c).prompt_index = idx;
@@ -9111,7 +8913,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     oo,
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if status_prompt_in_list(
@@ -9122,7 +8924,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if !(status_prompt_in_list(
@@ -9167,8 +8969,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if options_get_number(
                                     oo,
                                     b"status-keys\x00" as *const u8 as *const libc::c_char,
-                                ) == 1 as libc::c_int as libc::c_longlong
-                                    && (*c).prompt_index != 0 as libc::c_int as libc::c_ulong
+                                ) == 1i64
+                                    && (*c).prompt_index != 0u64
                                 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
                                 }
@@ -9180,7 +8982,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
                                 idx = (*c).prompt_index;
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if status_prompt_in_list(
                                         ws,
@@ -9190,7 +8992,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if !(status_prompt_in_list(
                                         ws,
@@ -9205,9 +9007,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
                                     ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
-                                    (*c).prompt_index
-                                        .wrapping_sub(idx)
-                                        .wrapping_add(1 as libc::c_int as libc::c_ulong),
+                                    (*c).prompt_index.wrapping_sub(idx).wrapping_add(1u64),
                                 )
                                     as *mut Utf8Data;
                                 memcpy(
@@ -9221,7 +9021,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     (*c).prompt_buffer.offset(idx as isize) as *mut libc::c_void,
                                     (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                         as *const libc::c_void,
-                                    size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                    size.wrapping_add(1u64)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
                                             ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -9243,16 +9043,15 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                             10675534896202779322 => {
                                 if (*c).prompt_index < size {
                                     (*(*c).prompt_buffer.offset((*c).prompt_index as isize)).size =
-                                        0 as libc::c_int as u_char;
+                                        0u8;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
                                 }
                             }
                             7209921709130718133 => {
-                                (*(*c).prompt_buffer.offset(0 as libc::c_int as isize)).size =
-                                    0 as libc::c_int as u_char;
-                                (*c).prompt_index = 0 as libc::c_int as size_t;
+                                (*(*c).prompt_buffer.offset(0isize)).size = 0u8;
+                                (*c).prompt_index = 0u64;
                                 current_block = 368077705793071303;
                             }
                             11026770671687539224 => {
@@ -9262,9 +9061,9 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             as *mut libc::c_void,
                                         (*c).prompt_buffer
                                             .offset((*c).prompt_index as isize)
-                                            .offset(1 as libc::c_int as isize)
+                                            .offset(1isize)
                                             as *const libc::c_void,
-                                        size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                        size.wrapping_add(1u64)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
                                                 ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -9276,20 +9075,20 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             4303351861420576715 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index != 0u64 {
                                     if (*c).prompt_index == size {
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                         (*(*c).prompt_buffer.offset((*c).prompt_index as isize))
-                                            .size = 0 as libc::c_int as u_char
+                                            .size = 0u8
                                     } else {
                                         memmove(
                                             (*c).prompt_buffer
                                                 .offset((*c).prompt_index as isize)
-                                                .offset(-(1 as libc::c_int as isize))
+                                                .offset(-(1isize))
                                                 as *mut libc::c_void,
                                             (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                                 as *const libc::c_void,
-                                            size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                            size.wrapping_add(1u64)
                                                 .wrapping_sub((*c).prompt_index)
                                                 .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
@@ -9310,8 +9109,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             9649627425948382823 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
-                                    (*c).prompt_index = 0 as libc::c_int as size_t;
+                                if (*c).prompt_index != 0u64 {
+                                    (*c).prompt_index = 0u64;
                                     current_block = 16835199615365683821;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -9326,7 +9125,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             8595499525207474077 => {
-                                if (*c).prompt_index > 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index > 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     current_block = 16835199615365683821;
                                 } else {
@@ -9334,8 +9133,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             16592328677945139976 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '+' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '+' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -9370,16 +9169,16 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             c,
                                             (*c).prompt_data,
                                             0 as *const libc::c_char,
-                                            1 as libc::c_int,
-                                        ) == 0 as libc::c_int
+                                            1i32,
+                                        ) == 0i32
                                         {
                                             status_prompt_clear(c);
                                         }
                                     }
                                     _ => {}
                                 }
-                                (*c).flags |= 0x10 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x10u64;
+                                return 0i32;
                             }
                         }
                     }
@@ -9387,8 +9186,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                         current_block = 8200438068734264111;
                         match current_block {
                             13716905325739901580 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '-' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '-' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -9403,8 +9202,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     c,
                                     (*c).prompt_data,
                                     s,
-                                    1 as libc::c_int,
-                                ) == 0 as libc::c_int
+                                    1i32,
+                                ) == 0i32
                                 {
                                     status_prompt_clear(c);
                                 }
@@ -9416,29 +9215,25 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if idx < size {
                                     idx = idx.wrapping_add(1)
                                 }
-                                if idx >= 2 as libc::c_int as libc::c_ulong {
+                                if idx >= 2u64 {
                                     utf8_copy(
                                         &mut tmp,
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                         &mut tmp,
                                     );
                                     (*c).prompt_index = idx;
@@ -9474,7 +9269,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     oo,
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if status_prompt_in_list(
@@ -9485,7 +9280,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if !(status_prompt_in_list(
@@ -9530,8 +9325,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if options_get_number(
                                     oo,
                                     b"status-keys\x00" as *const u8 as *const libc::c_char,
-                                ) == 1 as libc::c_int as libc::c_longlong
-                                    && (*c).prompt_index != 0 as libc::c_int as libc::c_ulong
+                                ) == 1i64
+                                    && (*c).prompt_index != 0u64
                                 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
                                 }
@@ -9543,7 +9338,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
                                 idx = (*c).prompt_index;
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if status_prompt_in_list(
                                         ws,
@@ -9553,7 +9348,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if !(status_prompt_in_list(
                                         ws,
@@ -9568,9 +9363,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
                                     ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
-                                    (*c).prompt_index
-                                        .wrapping_sub(idx)
-                                        .wrapping_add(1 as libc::c_int as libc::c_ulong),
+                                    (*c).prompt_index.wrapping_sub(idx).wrapping_add(1u64),
                                 )
                                     as *mut Utf8Data;
                                 memcpy(
@@ -9584,7 +9377,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     (*c).prompt_buffer.offset(idx as isize) as *mut libc::c_void,
                                     (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                         as *const libc::c_void,
-                                    size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                    size.wrapping_add(1u64)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
                                             ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -9606,16 +9399,15 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                             10675534896202779322 => {
                                 if (*c).prompt_index < size {
                                     (*(*c).prompt_buffer.offset((*c).prompt_index as isize)).size =
-                                        0 as libc::c_int as u_char;
+                                        0u8;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
                                 }
                             }
                             7209921709130718133 => {
-                                (*(*c).prompt_buffer.offset(0 as libc::c_int as isize)).size =
-                                    0 as libc::c_int as u_char;
-                                (*c).prompt_index = 0 as libc::c_int as size_t;
+                                (*(*c).prompt_buffer.offset(0isize)).size = 0u8;
+                                (*c).prompt_index = 0u64;
                                 current_block = 368077705793071303;
                             }
                             11026770671687539224 => {
@@ -9625,9 +9417,9 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             as *mut libc::c_void,
                                         (*c).prompt_buffer
                                             .offset((*c).prompt_index as isize)
-                                            .offset(1 as libc::c_int as isize)
+                                            .offset(1isize)
                                             as *const libc::c_void,
-                                        size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                        size.wrapping_add(1u64)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
                                                 ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -9639,20 +9431,20 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             4303351861420576715 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index != 0u64 {
                                     if (*c).prompt_index == size {
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                         (*(*c).prompt_buffer.offset((*c).prompt_index as isize))
-                                            .size = 0 as libc::c_int as u_char
+                                            .size = 0u8
                                     } else {
                                         memmove(
                                             (*c).prompt_buffer
                                                 .offset((*c).prompt_index as isize)
-                                                .offset(-(1 as libc::c_int as isize))
+                                                .offset(-(1isize))
                                                 as *mut libc::c_void,
                                             (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                                 as *const libc::c_void,
-                                            size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                            size.wrapping_add(1u64)
                                                 .wrapping_sub((*c).prompt_index)
                                                 .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
@@ -9673,8 +9465,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             9649627425948382823 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
-                                    (*c).prompt_index = 0 as libc::c_int as size_t;
+                                if (*c).prompt_index != 0u64 {
+                                    (*c).prompt_index = 0u64;
                                     current_block = 16835199615365683821;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -9689,7 +9481,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             8595499525207474077 => {
-                                if (*c).prompt_index > 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index > 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     current_block = 16835199615365683821;
                                 } else {
@@ -9697,8 +9489,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             16592328677945139976 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '+' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '+' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -9733,16 +9525,16 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             c,
                                             (*c).prompt_data,
                                             0 as *const libc::c_char,
-                                            1 as libc::c_int,
-                                        ) == 0 as libc::c_int
+                                            1i32,
+                                        ) == 0i32
                                         {
                                             status_prompt_clear(c);
                                         }
                                     }
                                     _ => {}
                                 }
-                                (*c).flags |= 0x10 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x10u64;
+                                return 0i32;
                             }
                         }
                     }
@@ -9750,8 +9542,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                         current_block = 17252179160093326629;
                         match current_block {
                             13716905325739901580 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '-' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '-' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -9766,8 +9558,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     c,
                                     (*c).prompt_data,
                                     s,
-                                    1 as libc::c_int,
-                                ) == 0 as libc::c_int
+                                    1i32,
+                                ) == 0i32
                                 {
                                     status_prompt_clear(c);
                                 }
@@ -9779,29 +9571,25 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if idx < size {
                                     idx = idx.wrapping_add(1)
                                 }
-                                if idx >= 2 as libc::c_int as libc::c_ulong {
+                                if idx >= 2u64 {
                                     utf8_copy(
                                         &mut tmp,
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                         &mut tmp,
                                     );
                                     (*c).prompt_index = idx;
@@ -9837,7 +9625,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     oo,
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if status_prompt_in_list(
@@ -9848,7 +9636,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if !(status_prompt_in_list(
@@ -9893,8 +9681,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if options_get_number(
                                     oo,
                                     b"status-keys\x00" as *const u8 as *const libc::c_char,
-                                ) == 1 as libc::c_int as libc::c_longlong
-                                    && (*c).prompt_index != 0 as libc::c_int as libc::c_ulong
+                                ) == 1i64
+                                    && (*c).prompt_index != 0u64
                                 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
                                 }
@@ -9906,7 +9694,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
                                 idx = (*c).prompt_index;
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if status_prompt_in_list(
                                         ws,
@@ -9916,7 +9704,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if !(status_prompt_in_list(
                                         ws,
@@ -9931,9 +9719,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
                                     ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
-                                    (*c).prompt_index
-                                        .wrapping_sub(idx)
-                                        .wrapping_add(1 as libc::c_int as libc::c_ulong),
+                                    (*c).prompt_index.wrapping_sub(idx).wrapping_add(1u64),
                                 )
                                     as *mut Utf8Data;
                                 memcpy(
@@ -9947,7 +9733,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     (*c).prompt_buffer.offset(idx as isize) as *mut libc::c_void,
                                     (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                         as *const libc::c_void,
-                                    size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                    size.wrapping_add(1u64)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
                                             ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -9969,16 +9755,15 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                             10675534896202779322 => {
                                 if (*c).prompt_index < size {
                                     (*(*c).prompt_buffer.offset((*c).prompt_index as isize)).size =
-                                        0 as libc::c_int as u_char;
+                                        0u8;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
                                 }
                             }
                             7209921709130718133 => {
-                                (*(*c).prompt_buffer.offset(0 as libc::c_int as isize)).size =
-                                    0 as libc::c_int as u_char;
-                                (*c).prompt_index = 0 as libc::c_int as size_t;
+                                (*(*c).prompt_buffer.offset(0isize)).size = 0u8;
+                                (*c).prompt_index = 0u64;
                                 current_block = 368077705793071303;
                             }
                             11026770671687539224 => {
@@ -9988,9 +9773,9 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             as *mut libc::c_void,
                                         (*c).prompt_buffer
                                             .offset((*c).prompt_index as isize)
-                                            .offset(1 as libc::c_int as isize)
+                                            .offset(1isize)
                                             as *const libc::c_void,
-                                        size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                        size.wrapping_add(1u64)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
                                                 ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -10002,20 +9787,20 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             4303351861420576715 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index != 0u64 {
                                     if (*c).prompt_index == size {
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                         (*(*c).prompt_buffer.offset((*c).prompt_index as isize))
-                                            .size = 0 as libc::c_int as u_char
+                                            .size = 0u8
                                     } else {
                                         memmove(
                                             (*c).prompt_buffer
                                                 .offset((*c).prompt_index as isize)
-                                                .offset(-(1 as libc::c_int as isize))
+                                                .offset(-(1isize))
                                                 as *mut libc::c_void,
                                             (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                                 as *const libc::c_void,
-                                            size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                            size.wrapping_add(1u64)
                                                 .wrapping_sub((*c).prompt_index)
                                                 .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
@@ -10036,8 +9821,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             9649627425948382823 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
-                                    (*c).prompt_index = 0 as libc::c_int as size_t;
+                                if (*c).prompt_index != 0u64 {
+                                    (*c).prompt_index = 0u64;
                                     current_block = 16835199615365683821;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -10052,7 +9837,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             8595499525207474077 => {
-                                if (*c).prompt_index > 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index > 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     current_block = 16835199615365683821;
                                 } else {
@@ -10060,8 +9845,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             16592328677945139976 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '+' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '+' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -10096,16 +9881,16 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             c,
                                             (*c).prompt_data,
                                             0 as *const libc::c_char,
-                                            1 as libc::c_int,
-                                        ) == 0 as libc::c_int
+                                            1i32,
+                                        ) == 0i32
                                         {
                                             status_prompt_clear(c);
                                         }
                                     }
                                     _ => {}
                                 }
-                                (*c).flags |= 0x10 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x10u64;
+                                return 0i32;
                             }
                         }
                     }
@@ -10113,8 +9898,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                         current_block = 13716905325739901580;
                         match current_block {
                             13716905325739901580 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '-' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '-' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -10129,8 +9914,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     c,
                                     (*c).prompt_data,
                                     s,
-                                    1 as libc::c_int,
-                                ) == 0 as libc::c_int
+                                    1i32,
+                                ) == 0i32
                                 {
                                     status_prompt_clear(c);
                                 }
@@ -10142,29 +9927,25 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if idx < size {
                                     idx = idx.wrapping_add(1)
                                 }
-                                if idx >= 2 as libc::c_int as libc::c_ulong {
+                                if idx >= 2u64 {
                                     utf8_copy(
                                         &mut tmp,
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                         &mut tmp,
                                     );
                                     (*c).prompt_index = idx;
@@ -10200,7 +9981,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     oo,
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if status_prompt_in_list(
@@ -10211,7 +9992,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if !(status_prompt_in_list(
@@ -10256,8 +10037,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if options_get_number(
                                     oo,
                                     b"status-keys\x00" as *const u8 as *const libc::c_char,
-                                ) == 1 as libc::c_int as libc::c_longlong
-                                    && (*c).prompt_index != 0 as libc::c_int as libc::c_ulong
+                                ) == 1i64
+                                    && (*c).prompt_index != 0u64
                                 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
                                 }
@@ -10269,7 +10050,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
                                 idx = (*c).prompt_index;
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if status_prompt_in_list(
                                         ws,
@@ -10279,7 +10060,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if !(status_prompt_in_list(
                                         ws,
@@ -10294,9 +10075,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
                                     ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
-                                    (*c).prompt_index
-                                        .wrapping_sub(idx)
-                                        .wrapping_add(1 as libc::c_int as libc::c_ulong),
+                                    (*c).prompt_index.wrapping_sub(idx).wrapping_add(1u64),
                                 )
                                     as *mut Utf8Data;
                                 memcpy(
@@ -10310,7 +10089,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     (*c).prompt_buffer.offset(idx as isize) as *mut libc::c_void,
                                     (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                         as *const libc::c_void,
-                                    size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                    size.wrapping_add(1u64)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
                                             ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -10332,16 +10111,15 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                             10675534896202779322 => {
                                 if (*c).prompt_index < size {
                                     (*(*c).prompt_buffer.offset((*c).prompt_index as isize)).size =
-                                        0 as libc::c_int as u_char;
+                                        0u8;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
                                 }
                             }
                             7209921709130718133 => {
-                                (*(*c).prompt_buffer.offset(0 as libc::c_int as isize)).size =
-                                    0 as libc::c_int as u_char;
-                                (*c).prompt_index = 0 as libc::c_int as size_t;
+                                (*(*c).prompt_buffer.offset(0isize)).size = 0u8;
+                                (*c).prompt_index = 0u64;
                                 current_block = 368077705793071303;
                             }
                             11026770671687539224 => {
@@ -10351,9 +10129,9 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             as *mut libc::c_void,
                                         (*c).prompt_buffer
                                             .offset((*c).prompt_index as isize)
-                                            .offset(1 as libc::c_int as isize)
+                                            .offset(1isize)
                                             as *const libc::c_void,
-                                        size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                        size.wrapping_add(1u64)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
                                                 ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -10365,20 +10143,20 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             4303351861420576715 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index != 0u64 {
                                     if (*c).prompt_index == size {
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                         (*(*c).prompt_buffer.offset((*c).prompt_index as isize))
-                                            .size = 0 as libc::c_int as u_char
+                                            .size = 0u8
                                     } else {
                                         memmove(
                                             (*c).prompt_buffer
                                                 .offset((*c).prompt_index as isize)
-                                                .offset(-(1 as libc::c_int as isize))
+                                                .offset(-(1isize))
                                                 as *mut libc::c_void,
                                             (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                                 as *const libc::c_void,
-                                            size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                            size.wrapping_add(1u64)
                                                 .wrapping_sub((*c).prompt_index)
                                                 .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
@@ -10399,8 +10177,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             9649627425948382823 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
-                                    (*c).prompt_index = 0 as libc::c_int as size_t;
+                                if (*c).prompt_index != 0u64 {
+                                    (*c).prompt_index = 0u64;
                                     current_block = 16835199615365683821;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -10415,7 +10193,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             8595499525207474077 => {
-                                if (*c).prompt_index > 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index > 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     current_block = 16835199615365683821;
                                 } else {
@@ -10423,8 +10201,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             16592328677945139976 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '+' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '+' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -10459,16 +10237,16 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             c,
                                             (*c).prompt_data,
                                             0 as *const libc::c_char,
-                                            1 as libc::c_int,
-                                        ) == 0 as libc::c_int
+                                            1i32,
+                                        ) == 0i32
                                         {
                                             status_prompt_clear(c);
                                         }
                                     }
                                     _ => {}
                                 }
-                                (*c).flags |= 0x10 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x10u64;
+                                return 0i32;
                             }
                         }
                     }
@@ -10476,8 +10254,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                         current_block = 16592328677945139976;
                         match current_block {
                             13716905325739901580 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '-' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '-' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -10492,8 +10270,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     c,
                                     (*c).prompt_data,
                                     s,
-                                    1 as libc::c_int,
-                                ) == 0 as libc::c_int
+                                    1i32,
+                                ) == 0i32
                                 {
                                     status_prompt_clear(c);
                                 }
@@ -10505,29 +10283,25 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if idx < size {
                                     idx = idx.wrapping_add(1)
                                 }
-                                if idx >= 2 as libc::c_int as libc::c_ulong {
+                                if idx >= 2u64 {
                                     utf8_copy(
                                         &mut tmp,
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(2u64) as isize),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                     );
                                     utf8_copy(
-                                        &mut *(*c).prompt_buffer.offset(
-                                            idx.wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                                                as isize,
-                                        ),
+                                        &mut *(*c)
+                                            .prompt_buffer
+                                            .offset(idx.wrapping_sub(1u64) as isize),
                                         &mut tmp,
                                     );
                                     (*c).prompt_index = idx;
@@ -10563,7 +10337,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     oo,
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if status_prompt_in_list(
@@ -10574,7 +10348,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                while (*c).prompt_index != 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     idx = (*c).prompt_index;
                                     if !(status_prompt_in_list(
@@ -10619,8 +10393,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 if options_get_number(
                                     oo,
                                     b"status-keys\x00" as *const u8 as *const libc::c_char,
-                                ) == 1 as libc::c_int as libc::c_longlong
-                                    && (*c).prompt_index != 0 as libc::c_int as libc::c_ulong
+                                ) == 1i64
+                                    && (*c).prompt_index != 0u64
                                 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1)
                                 }
@@ -10632,7 +10406,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     b"word-separators\x00" as *const u8 as *const libc::c_char,
                                 );
                                 idx = (*c).prompt_index;
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if status_prompt_in_list(
                                         ws,
@@ -10642,7 +10416,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                         break;
                                     }
                                 }
-                                while idx != 0 as libc::c_int as libc::c_ulong {
+                                while idx != 0u64 {
                                     idx = idx.wrapping_sub(1);
                                     if !(status_prompt_in_list(
                                         ws,
@@ -10657,9 +10431,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 free((*c).prompt_saved as *mut libc::c_void);
                                 (*c).prompt_saved = xcalloc(
                                     ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
-                                    (*c).prompt_index
-                                        .wrapping_sub(idx)
-                                        .wrapping_add(1 as libc::c_int as libc::c_ulong),
+                                    (*c).prompt_index.wrapping_sub(idx).wrapping_add(1u64),
                                 )
                                     as *mut Utf8Data;
                                 memcpy(
@@ -10673,7 +10445,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                     (*c).prompt_buffer.offset(idx as isize) as *mut libc::c_void,
                                     (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                         as *const libc::c_void,
-                                    size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                    size.wrapping_add(1u64)
                                         .wrapping_sub((*c).prompt_index)
                                         .wrapping_mul(
                                             ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -10695,16 +10467,15 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                             10675534896202779322 => {
                                 if (*c).prompt_index < size {
                                     (*(*c).prompt_buffer.offset((*c).prompt_index as isize)).size =
-                                        0 as libc::c_int as u_char;
+                                        0u8;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
                                 }
                             }
                             7209921709130718133 => {
-                                (*(*c).prompt_buffer.offset(0 as libc::c_int as isize)).size =
-                                    0 as libc::c_int as u_char;
-                                (*c).prompt_index = 0 as libc::c_int as size_t;
+                                (*(*c).prompt_buffer.offset(0isize)).size = 0u8;
+                                (*c).prompt_index = 0u64;
                                 current_block = 368077705793071303;
                             }
                             11026770671687539224 => {
@@ -10714,9 +10485,9 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             as *mut libc::c_void,
                                         (*c).prompt_buffer
                                             .offset((*c).prompt_index as isize)
-                                            .offset(1 as libc::c_int as isize)
+                                            .offset(1isize)
                                             as *const libc::c_void,
-                                        size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                        size.wrapping_add(1u64)
                                             .wrapping_sub((*c).prompt_index)
                                             .wrapping_mul(
                                                 ::std::mem::size_of::<Utf8Data>() as libc::c_ulong
@@ -10728,20 +10499,20 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             4303351861420576715 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index != 0u64 {
                                     if (*c).prompt_index == size {
                                         (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                         (*(*c).prompt_buffer.offset((*c).prompt_index as isize))
-                                            .size = 0 as libc::c_int as u_char
+                                            .size = 0u8
                                     } else {
                                         memmove(
                                             (*c).prompt_buffer
                                                 .offset((*c).prompt_index as isize)
-                                                .offset(-(1 as libc::c_int as isize))
+                                                .offset(-(1isize))
                                                 as *mut libc::c_void,
                                             (*c).prompt_buffer.offset((*c).prompt_index as isize)
                                                 as *const libc::c_void,
-                                            size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                                            size.wrapping_add(1u64)
                                                 .wrapping_sub((*c).prompt_index)
                                                 .wrapping_mul(::std::mem::size_of::<Utf8Data>()
                                                     as libc::c_ulong),
@@ -10762,8 +10533,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             9649627425948382823 => {
-                                if (*c).prompt_index != 0 as libc::c_int as libc::c_ulong {
-                                    (*c).prompt_index = 0 as libc::c_int as size_t;
+                                if (*c).prompt_index != 0u64 {
+                                    (*c).prompt_index = 0u64;
                                     current_block = 16835199615365683821;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -10778,7 +10549,7 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             8595499525207474077 => {
-                                if (*c).prompt_index > 0 as libc::c_int as libc::c_ulong {
+                                if (*c).prompt_index > 0u64 {
                                     (*c).prompt_index = (*c).prompt_index.wrapping_sub(1);
                                     current_block = 16835199615365683821;
                                 } else {
@@ -10786,8 +10557,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                 }
                             }
                             16592328677945139976 => {
-                                if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
-                                    prefix = '+' as i32 as libc::c_char;
+                                if (*c).prompt_flags & 0x4i32 != 0 {
+                                    prefix = '+' as libc::c_char;
                                     current_block = 368077705793071303;
                                 } else {
                                     current_block = 16835199615365683821;
@@ -10822,16 +10593,16 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                                             c,
                                             (*c).prompt_data,
                                             0 as *const libc::c_char,
-                                            1 as libc::c_int,
-                                        ) == 0 as libc::c_int
+                                            1i32,
+                                        ) == 0i32
                                         {
                                             status_prompt_clear(c);
                                         }
                                     }
                                     _ => {}
                                 }
-                                (*c).flags |= 0x10 as libc::c_int as libc::c_ulong;
-                                return 0 as libc::c_int;
+                                (*c).flags |= 0x10u64;
+                                return 0i32;
                             }
                         }
                     }
@@ -10844,19 +10615,17 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
     }
     match current_block {
         14272474440432613372 => {
-            if key <= 0x1f as libc::c_int as libc::c_ulonglong
-                || key >= 0x1000000000 as libc::c_ulonglong
-            {
-                return 0 as libc::c_int;
+            if key <= 0x1fu64 || key >= 0x1000000000u64 {
+                return 0i32;
             }
-            if key <= 0x7f as libc::c_int as libc::c_ulonglong {
+            if key <= 0x7fu64 {
                 utf8_set(&mut tmp, key as u_char);
             } else {
                 utf8_to_data(key as Utf8Char, &mut tmp);
             }
             (*c).prompt_buffer = xreallocarray(
                 (*c).prompt_buffer as *mut libc::c_void,
-                size.wrapping_add(2 as libc::c_int as libc::c_ulong),
+                size.wrapping_add(2u64),
                 ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
             ) as *mut Utf8Data;
             if (*c).prompt_index == size {
@@ -10865,15 +10634,14 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                     &mut tmp,
                 );
                 (*c).prompt_index = (*c).prompt_index.wrapping_add(1);
-                (*(*c).prompt_buffer.offset((*c).prompt_index as isize)).size =
-                    0 as libc::c_int as u_char
+                (*(*c).prompt_buffer.offset((*c).prompt_index as isize)).size = 0u8
             } else {
                 memmove(
                     (*c).prompt_buffer
                         .offset((*c).prompt_index as isize)
-                        .offset(1 as libc::c_int as isize) as *mut libc::c_void,
+                        .offset(1isize) as *mut libc::c_void,
                     (*c).prompt_buffer.offset((*c).prompt_index as isize) as *const libc::c_void,
-                    size.wrapping_add(1 as libc::c_int as libc::c_ulong)
+                    size.wrapping_add(1u64)
                         .wrapping_sub((*c).prompt_index)
                         .wrapping_mul(::std::mem::size_of::<Utf8Data>() as libc::c_ulong),
                 );
@@ -10883,16 +10651,16 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
                 );
                 (*c).prompt_index = (*c).prompt_index.wrapping_add(1)
             }
-            if (*c).prompt_flags & 0x1 as libc::c_int != 0 {
+            if (*c).prompt_flags & 0x1i32 != 0 {
                 s = utf8_tocstr((*c).prompt_buffer);
-                if strlen(s) != 1 as libc::c_int as libc::c_ulong {
+                if strlen(s) != 1u64 {
                     status_prompt_clear(c);
                 } else if (*c).prompt_inputcb.expect("non-null function pointer")(
                     c,
                     (*c).prompt_data,
                     s,
-                    1 as libc::c_int,
-                ) == 0 as libc::c_int
+                    1i32,
+                ) == 0i32
                 {
                     status_prompt_clear(c);
                 }
@@ -10901,8 +10669,8 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
         }
         _ => {}
     }
-    (*c).flags |= 0x10 as libc::c_int as libc::c_ulong;
-    if (*c).prompt_flags & 0x4 as libc::c_int != 0 {
+    (*c).flags |= 0x10u64;
+    if (*c).prompt_flags & 0x4i32 != 0 {
         s = utf8_tocstr((*c).prompt_buffer);
         xasprintf(
             &mut cp as *mut *mut libc::c_char,
@@ -10910,16 +10678,11 @@ pub unsafe extern "C" fn status_prompt_key(mut c: *mut client, mut key: key_code
             prefix as libc::c_int,
             s,
         );
-        (*c).prompt_inputcb.expect("non-null function pointer")(
-            c,
-            (*c).prompt_data,
-            cp,
-            0 as libc::c_int,
-        );
+        (*c).prompt_inputcb.expect("non-null function pointer")(c, (*c).prompt_data, cp, 0i32);
         free(cp as *mut libc::c_void);
         free(s as *mut libc::c_void);
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 /* Get previous line from the history. */
 unsafe extern "C" fn status_prompt_up_history(mut idx: *mut u_int) -> *const libc::c_char {
@@ -10927,7 +10690,7 @@ unsafe extern "C" fn status_prompt_up_history(mut idx: *mut u_int) -> *const lib
      * History runs from 0 to size - 1. Index is from 0 to size. Zero is
      * empty.
      */
-    if status_prompt_hsize == 0 as libc::c_int as libc::c_uint || *idx == status_prompt_hsize {
+    if status_prompt_hsize == 0u32 || *idx == status_prompt_hsize {
         return 0 as *const libc::c_char;
     }
     *idx = (*idx).wrapping_add(1);
@@ -10935,13 +10698,11 @@ unsafe extern "C" fn status_prompt_up_history(mut idx: *mut u_int) -> *const lib
 }
 /* Get next line from the history. */
 unsafe extern "C" fn status_prompt_down_history(mut idx: *mut u_int) -> *const libc::c_char {
-    if status_prompt_hsize == 0 as libc::c_int as libc::c_uint
-        || *idx == 0 as libc::c_int as libc::c_uint
-    {
+    if status_prompt_hsize == 0u32 || *idx == 0u32 {
         return b"\x00" as *const u8 as *const libc::c_char;
     }
     *idx = (*idx).wrapping_sub(1);
-    if *idx == 0 as libc::c_int as libc::c_uint {
+    if *idx == 0u32 {
         return b"\x00" as *const u8 as *const libc::c_char;
     }
     return *status_prompt_hlist.offset(status_prompt_hsize.wrapping_sub(*idx) as isize);
@@ -10949,35 +10710,32 @@ unsafe extern "C" fn status_prompt_down_history(mut idx: *mut u_int) -> *const l
 /* Add line to the history. */
 unsafe extern "C" fn status_prompt_add_history(mut line: *const libc::c_char) {
     let mut size: size_t = 0;
-    if status_prompt_hsize > 0 as libc::c_int as libc::c_uint
+    if status_prompt_hsize > 0u32
         && strcmp(
-            *status_prompt_hlist.offset(
-                status_prompt_hsize.wrapping_sub(1 as libc::c_int as libc::c_uint) as isize,
-            ),
+            *status_prompt_hlist.offset(status_prompt_hsize.wrapping_sub(1u32) as isize),
             line,
-        ) == 0 as libc::c_int
+        ) == 0i32
     {
         return;
     }
-    if status_prompt_hsize == 100 as libc::c_int as libc::c_uint {
-        free(*status_prompt_hlist.offset(0 as libc::c_int as isize) as *mut libc::c_void);
-        size = ((100 as libc::c_int - 1 as libc::c_int) as libc::c_ulong)
+    if status_prompt_hsize == 100u32 {
+        free(*status_prompt_hlist.offset(0isize) as *mut libc::c_void);
+        size = ((100i32 - 1i32) as libc::c_ulong)
             .wrapping_mul(::std::mem::size_of::<*mut libc::c_char>() as libc::c_ulong);
         memmove(
-            &mut *status_prompt_hlist.offset(0 as libc::c_int as isize) as *mut *mut libc::c_char
-                as *mut libc::c_void,
-            &mut *status_prompt_hlist.offset(1 as libc::c_int as isize) as *mut *mut libc::c_char
+            &mut *status_prompt_hlist.offset(0isize) as *mut *mut libc::c_char as *mut libc::c_void,
+            &mut *status_prompt_hlist.offset(1isize) as *mut *mut libc::c_char
                 as *const libc::c_void,
             size,
         );
-        let ref mut fresh0 = *status_prompt_hlist
-            .offset(status_prompt_hsize.wrapping_sub(1 as libc::c_int as libc::c_uint) as isize);
+        let ref mut fresh0 =
+            *status_prompt_hlist.offset(status_prompt_hsize.wrapping_sub(1u32) as isize);
         *fresh0 = xstrdup(line);
         return;
     }
     status_prompt_hlist = xreallocarray(
         status_prompt_hlist as *mut libc::c_void,
-        status_prompt_hsize.wrapping_add(1 as libc::c_int as libc::c_uint) as size_t,
+        status_prompt_hsize.wrapping_add(1u32) as size_t,
         ::std::mem::size_of::<*mut libc::c_char>() as libc::c_ulong,
     ) as *mut *mut libc::c_char;
     let fresh1 = status_prompt_hsize;
@@ -11010,13 +10768,13 @@ unsafe extern "C" fn status_prompt_complete_list(
         b"tiled\x00" as *const u8 as *const libc::c_char,
         0 as *const libc::c_char,
     ];
-    *size = 0 as libc::c_int as u_int;
+    *size = 0u32;
     cmdent = cmd_table.as_mut_ptr();
     while !(*cmdent).is_null() {
-        if strncmp((**cmdent).name, s, slen) == 0 as libc::c_int {
+        if strncmp((**cmdent).name, s, slen) == 0i32 {
             list = xreallocarray(
                 list as *mut libc::c_void,
-                (*size).wrapping_add(1 as libc::c_int as libc::c_uint) as size_t,
+                (*size).wrapping_add(1u32) as size_t,
                 ::std::mem::size_of::<*mut libc::c_char>() as libc::c_ulong,
             ) as *mut *mut libc::c_char;
             let fresh3 = *size;
@@ -11024,10 +10782,10 @@ unsafe extern "C" fn status_prompt_complete_list(
             let ref mut fresh4 = *list.offset(fresh3 as isize);
             *fresh4 = xstrdup((**cmdent).name)
         }
-        if !(**cmdent).alias.is_null() && strncmp((**cmdent).alias, s, slen) == 0 as libc::c_int {
+        if !(**cmdent).alias.is_null() && strncmp((**cmdent).alias, s, slen) == 0i32 {
             list = xreallocarray(
                 list as *mut libc::c_void,
-                (*size).wrapping_add(1 as libc::c_int as libc::c_uint) as size_t,
+                (*size).wrapping_add(1u32) as size_t,
                 ::std::mem::size_of::<*mut libc::c_char>() as libc::c_ulong,
             ) as *mut *mut libc::c_char;
             let fresh5 = *size;
@@ -11047,11 +10805,11 @@ unsafe extern "C" fn status_prompt_complete_list(
             value = (*options_array_item_value(a)).string;
             cp = strchr(value, '=' as i32);
             if !cp.is_null() {
-                valuelen = cp.wrapping_offset_from(value) as libc::c_long as size_t;
-                if !(slen > valuelen || strncmp(value, s, slen) != 0 as libc::c_int) {
+                valuelen = cp.wrapping_offset_from(value) as size_t;
+                if !(slen > valuelen || strncmp(value, s, slen) != 0i32) {
                     list = xreallocarray(
                         list as *mut libc::c_void,
-                        (*size).wrapping_add(1 as libc::c_int as libc::c_uint) as size_t,
+                        (*size).wrapping_add(1u32) as size_t,
                         ::std::mem::size_of::<*mut libc::c_char>() as libc::c_ulong,
                     ) as *mut *mut libc::c_char;
                     let fresh7 = *size;
@@ -11068,10 +10826,10 @@ unsafe extern "C" fn status_prompt_complete_list(
     }
     oe = options_table.as_ptr();
     while !(*oe).name.is_null() {
-        if strncmp((*oe).name, s, slen) == 0 as libc::c_int {
+        if strncmp((*oe).name, s, slen) == 0i32 {
             list = xreallocarray(
                 list as *mut libc::c_void,
-                (*size).wrapping_add(1 as libc::c_int as libc::c_uint) as size_t,
+                (*size).wrapping_add(1u32) as size_t,
                 ::std::mem::size_of::<*mut libc::c_char>() as libc::c_ulong,
             ) as *mut *mut libc::c_char;
             let fresh9 = *size;
@@ -11083,10 +10841,10 @@ unsafe extern "C" fn status_prompt_complete_list(
     }
     layout = layouts.as_mut_ptr();
     while !(*layout).is_null() {
-        if strncmp(*layout, s, slen) == 0 as libc::c_int {
+        if strncmp(*layout, s, slen) == 0i32 {
             list = xreallocarray(
                 list as *mut libc::c_void,
-                (*size).wrapping_add(1 as libc::c_int as libc::c_uint) as size_t,
+                (*size).wrapping_add(1u32) as size_t,
                 ::std::mem::size_of::<*mut libc::c_char>() as libc::c_ulong,
             ) as *mut *mut libc::c_char;
             let fresh11 = *size;
@@ -11106,25 +10864,21 @@ unsafe extern "C" fn status_prompt_complete_prefix(
     let mut out: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut i: u_int = 0;
     let mut j: size_t = 0;
-    if list.is_null() || size == 0 as libc::c_int as libc::c_uint {
+    if list.is_null() || size == 0u32 {
         return 0 as *mut libc::c_char;
     }
-    out = xstrdup(*list.offset(0 as libc::c_int as isize));
-    i = 1 as libc::c_int as u_int;
+    out = xstrdup(*list.offset(0isize));
+    i = 1u32;
     while i < size {
         j = strlen(*list.offset(i as isize));
         if j > strlen(out) {
             j = strlen(out)
         }
-        while j > 0 as libc::c_int as libc::c_ulong {
-            if *out.offset(j.wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize)
-                as libc::c_int
-                != *(*list.offset(i as isize))
-                    .offset(j.wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize)
-                    as libc::c_int
+        while j > 0u64 {
+            if *out.offset(j.wrapping_sub(1u64) as isize) as libc::c_int
+                != *(*list.offset(i as isize)).offset(j.wrapping_sub(1u64) as isize) as libc::c_int
             {
-                *out.offset(j.wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize) =
-                    '\u{0}' as i32 as libc::c_char
+                *out.offset(j.wrapping_sub(1u64) as isize) = '\u{0}' as libc::c_char
             }
             j = j.wrapping_sub(1)
         }
@@ -11143,8 +10897,8 @@ unsafe extern "C" fn status_prompt_menu_callback(
     let mut c: *mut client = (*spm).c;
     let mut i: u_int = 0;
     let mut s: *mut libc::c_char = 0 as *mut libc::c_char;
-    if key != 0xff000000000 as libc::c_ulonglong {
-        idx = (idx as libc::c_uint).wrapping_add((*spm).start) as u_int as u_int;
+    if key != 0xff000000000u64 {
+        idx = (idx).wrapping_add((*spm).start);
         if (*spm).flag as libc::c_int == '\u{0}' as i32 {
             s = xstrdup(*(*spm).list.offset(idx as isize))
         } else {
@@ -11155,17 +10909,17 @@ unsafe extern "C" fn status_prompt_menu_callback(
                 *(*spm).list.offset(idx as isize),
             );
         }
-        if (*c).prompt_flags & 0x20 as libc::c_int != 0 {
+        if (*c).prompt_flags & 0x20i32 != 0 {
             free((*c).prompt_buffer as *mut libc::c_void);
             (*c).prompt_buffer = utf8_fromcstr(s);
             (*c).prompt_index = utf8_strlen((*c).prompt_buffer);
-            (*c).flags |= 0x10 as libc::c_int as libc::c_ulong
+            (*c).flags |= 0x10u64
         } else if status_prompt_replace_complete(c, s) != 0 {
-            (*c).flags |= 0x10 as libc::c_int as libc::c_ulong
+            (*c).flags |= 0x10u64
         }
         free(s as *mut libc::c_void);
     }
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < (*spm).size {
         free(*(*spm).list.offset(i as isize) as *mut libc::c_void);
         i = i.wrapping_add(1)
@@ -11191,11 +10945,11 @@ unsafe extern "C" fn status_prompt_complete_list_menu(
     let mut height: u_int = 0;
     let mut i: u_int = 0;
     let mut py: u_int = 0;
-    if size <= 1 as libc::c_int as libc::c_uint {
-        return 0 as libc::c_int;
+    if size <= 1u32 {
+        return 0i32;
     }
-    if (*c).tty.sy.wrapping_sub(lines) < 3 as libc::c_int as libc::c_uint {
-        return 0 as libc::c_int;
+    if (*c).tty.sy.wrapping_sub(lines) < 3u32 {
+        return 0i32;
     }
     spm = xmalloc(::std::mem::size_of::<status_prompt_menu>() as libc::c_ulong)
         as *mut status_prompt_menu;
@@ -11203,13 +10957,9 @@ unsafe extern "C" fn status_prompt_complete_list_menu(
     (*spm).size = size;
     (*spm).list = list;
     (*spm).flag = flag;
-    height = (*c)
-        .tty
-        .sy
-        .wrapping_sub(lines)
-        .wrapping_sub(2 as libc::c_int as libc::c_uint);
-    if height > 10 as libc::c_int as libc::c_uint {
-        height = 10 as libc::c_int as u_int
+    height = (*c).tty.sy.wrapping_sub(lines).wrapping_sub(2u32);
+    if height > 10u32 {
+        height = 10u32
     }
     if height > size {
         height = size
@@ -11219,8 +10969,7 @@ unsafe extern "C" fn status_prompt_complete_list_menu(
     i = (*spm).start;
     while i < size {
         item.name = *list.offset(i as isize);
-        item.key =
-            ('0' as i32 as libc::c_uint).wrapping_add(i.wrapping_sub((*spm).start)) as key_code;
+        item.key = ('0' as libc::c_uint).wrapping_add(i.wrapping_sub((*spm).start)) as key_code;
         item.command = 0 as *const libc::c_char;
         menu_add_item(
             menu,
@@ -11234,27 +10983,21 @@ unsafe extern "C" fn status_prompt_complete_list_menu(
     if options_get_number(
         (*(*c).session).options,
         b"status-position\x00" as *const u8 as *const libc::c_char,
-    ) == 0 as libc::c_int as libc::c_longlong
+    ) == 0i64
     {
         py = lines
     } else {
-        py = (*c)
-            .tty
-            .sy
-            .wrapping_sub(3 as libc::c_int as libc::c_uint)
-            .wrapping_sub(height)
+        py = (*c).tty.sy.wrapping_sub(3u32).wrapping_sub(height)
     }
-    offset =
-        (offset as libc::c_uint).wrapping_add(utf8_cstrwidth((*c).prompt_string)) as u_int as u_int;
-    if offset > 2 as libc::c_int as libc::c_uint {
-        offset = (offset as libc::c_uint).wrapping_sub(2 as libc::c_int as libc::c_uint) as u_int
-            as u_int
+    offset = (offset).wrapping_add(utf8_cstrwidth((*c).prompt_string));
+    if offset > 2u32 {
+        offset = (offset).wrapping_sub(2u32)
     } else {
-        offset = 0 as libc::c_int as u_int
+        offset = 0u32
     }
     if menu_display(
         menu,
-        0x1 as libc::c_int | 0x2 as libc::c_int,
+        0x1i32 | 0x2i32,
         0 as *mut crate::cmd_queue::cmdq_item,
         offset,
         py,
@@ -11270,13 +11013,13 @@ unsafe extern "C" fn status_prompt_complete_list_menu(
                 ) -> (),
         ),
         spm as *mut libc::c_void,
-    ) != 0 as libc::c_int
+    ) != 0i32
     {
         menu_free(menu);
         free(spm as *mut libc::c_void);
-        return 0 as libc::c_int;
+        return 0i32;
     }
-    return 1 as libc::c_int;
+    return 1i32;
 }
 /* Show complete word menu. */
 unsafe extern "C" fn status_prompt_complete_window_menu(
@@ -11299,26 +11042,22 @@ unsafe extern "C" fn status_prompt_complete_window_menu(
     let mut lines: u_int = status_line_size(c);
     let mut height: u_int = 0;
     let mut py: u_int = 0;
-    let mut size: u_int = 0 as libc::c_int as u_int;
-    if (*c).tty.sy.wrapping_sub(lines) < 3 as libc::c_int as libc::c_uint {
+    let mut size: u_int = 0u32;
+    if (*c).tty.sy.wrapping_sub(lines) < 3u32 {
         return 0 as *mut libc::c_char;
     }
     spm = xmalloc(::std::mem::size_of::<status_prompt_menu>() as libc::c_ulong)
         as *mut status_prompt_menu;
     (*spm).c = c;
     (*spm).flag = flag;
-    height = (*c)
-        .tty
-        .sy
-        .wrapping_sub(lines)
-        .wrapping_sub(2 as libc::c_int as libc::c_uint);
-    if height > 10 as libc::c_int as libc::c_uint {
-        height = 10 as libc::c_int as u_int
+    height = (*c).tty.sy.wrapping_sub(lines).wrapping_sub(2u32);
+    if height > 10u32 {
+        height = 10u32
     }
-    (*spm).start = 0 as libc::c_int as u_int;
+    (*spm).start = 0u32;
     menu = menu_create(b"\x00" as *const u8 as *const libc::c_char);
     let mut current_block_26: u64;
-    wl = winlinks_RB_MINMAX(&mut (*s).windows, -(1 as libc::c_int));
+    wl = winlinks_RB_MINMAX(&mut (*s).windows, -(1i32));
     while !wl.is_null() {
         if !word.is_null() && *word as libc::c_int != '\u{0}' as i32 {
             xasprintf(
@@ -11326,7 +11065,7 @@ unsafe extern "C" fn status_prompt_complete_window_menu(
                 b"%d\x00" as *const u8 as *const libc::c_char,
                 (*wl).idx,
             );
-            if strncmp(tmp, word, strlen(word)) != 0 as libc::c_int {
+            if strncmp(tmp, word, strlen(word)) != 0i32 {
                 free(tmp as *mut libc::c_void);
                 current_block_26 = 13586036798005543211;
             } else {
@@ -11340,10 +11079,10 @@ unsafe extern "C" fn status_prompt_complete_window_menu(
             13797916685926291137 => {
                 list = xreallocarray(
                     list as *mut libc::c_void,
-                    size.wrapping_add(1 as libc::c_int as libc::c_uint) as size_t,
+                    size.wrapping_add(1u32) as size_t,
                     ::std::mem::size_of::<*mut libc::c_char>() as libc::c_ulong,
                 ) as *mut *mut libc::c_char;
-                if (*c).prompt_flags & 0x20 as libc::c_int != 0 {
+                if (*c).prompt_flags & 0x20i32 != 0 {
                     xasprintf(
                         &mut tmp as *mut *mut libc::c_char,
                         b"%d (%s)\x00" as *const u8 as *const libc::c_char,
@@ -11375,10 +11114,7 @@ unsafe extern "C" fn status_prompt_complete_window_menu(
                     );
                 }
                 item.name = tmp;
-                item.key = ('0' as i32 as libc::c_uint)
-                    .wrapping_add(size)
-                    .wrapping_sub(1 as libc::c_int as libc::c_uint)
-                    as key_code;
+                item.key = ('0' as libc::c_uint).wrapping_add(size).wrapping_sub(1u32) as key_code;
                 item.command = 0 as *const libc::c_char;
                 menu_add_item(
                     menu,
@@ -11396,22 +11132,22 @@ unsafe extern "C" fn status_prompt_complete_window_menu(
         }
         wl = winlinks_RB_NEXT(wl)
     }
-    if size == 0 as libc::c_int as libc::c_uint {
+    if size == 0u32 {
         menu_free(menu);
         return 0 as *mut libc::c_char;
     }
-    if size == 1 as libc::c_int as libc::c_uint {
+    if size == 1u32 {
         menu_free(menu);
         if flag as libc::c_int != '\u{0}' as i32 {
             xasprintf(
                 &mut tmp as *mut *mut libc::c_char,
                 b"-%c%s\x00" as *const u8 as *const libc::c_char,
                 flag as libc::c_int,
-                *list.offset(0 as libc::c_int as isize),
+                *list.offset(0isize),
             );
-            free(*list.offset(0 as libc::c_int as isize) as *mut libc::c_void);
+            free(*list.offset(0isize) as *mut libc::c_void);
         } else {
-            tmp = *list.offset(0 as libc::c_int as isize)
+            tmp = *list.offset(0isize)
         }
         free(list as *mut libc::c_void);
         return tmp;
@@ -11424,27 +11160,21 @@ unsafe extern "C" fn status_prompt_complete_window_menu(
     if options_get_number(
         (*(*c).session).options,
         b"status-position\x00" as *const u8 as *const libc::c_char,
-    ) == 0 as libc::c_int as libc::c_longlong
+    ) == 0i64
     {
         py = lines
     } else {
-        py = (*c)
-            .tty
-            .sy
-            .wrapping_sub(3 as libc::c_int as libc::c_uint)
-            .wrapping_sub(height)
+        py = (*c).tty.sy.wrapping_sub(3u32).wrapping_sub(height)
     }
-    offset =
-        (offset as libc::c_uint).wrapping_add(utf8_cstrwidth((*c).prompt_string)) as u_int as u_int;
-    if offset > 2 as libc::c_int as libc::c_uint {
-        offset = (offset as libc::c_uint).wrapping_sub(2 as libc::c_int as libc::c_uint) as u_int
-            as u_int
+    offset = (offset).wrapping_add(utf8_cstrwidth((*c).prompt_string));
+    if offset > 2u32 {
+        offset = (offset).wrapping_sub(2u32)
     } else {
-        offset = 0 as libc::c_int as u_int
+        offset = 0u32
     }
     if menu_display(
         menu,
-        0x1 as libc::c_int | 0x2 as libc::c_int,
+        0x1i32 | 0x2i32,
         0 as *mut crate::cmd_queue::cmdq_item,
         offset,
         py,
@@ -11460,7 +11190,7 @@ unsafe extern "C" fn status_prompt_complete_window_menu(
                 ) -> (),
         ),
         spm as *mut libc::c_void,
-    ) != 0 as libc::c_int
+    ) != 0i32
     {
         menu_free(menu);
         free(spm as *mut libc::c_void);
@@ -11488,14 +11218,12 @@ unsafe extern "C" fn status_prompt_complete_session(
     let mut out: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut tmp: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut n: [libc::c_char; 11] = [0; 11];
-    loop_0 = sessions_RB_MINMAX(&mut sessions, -(1 as libc::c_int));
+    loop_0 = sessions_RB_MINMAX(&mut sessions, -(1i32));
     while !loop_0.is_null() {
-        if *s as libc::c_int == '\u{0}' as i32
-            || strncmp((*loop_0).name, s, strlen(s)) == 0 as libc::c_int
-        {
+        if *s as libc::c_int == '\u{0}' as i32 || strncmp((*loop_0).name, s, strlen(s)) == 0i32 {
             *list = xreallocarray(
                 *list as *mut libc::c_void,
-                (*size).wrapping_add(2 as libc::c_int as libc::c_uint) as size_t,
+                (*size).wrapping_add(2u32) as size_t,
                 ::std::mem::size_of::<*mut libc::c_char>() as libc::c_ulong,
             ) as *mut *mut libc::c_char;
             let fresh15 = *size;
@@ -11512,16 +11240,16 @@ unsafe extern "C" fn status_prompt_complete_session(
                 b"%u\x00" as *const u8 as *const libc::c_char,
                 (*loop_0).id,
             );
-            if *s.offset(1 as libc::c_int as isize) as libc::c_int == '\u{0}' as i32
+            if *s.offset(1isize) as libc::c_int == '\u{0}' as i32
                 || strncmp(
                     n.as_mut_ptr(),
-                    s.offset(1 as libc::c_int as isize),
-                    strlen(s).wrapping_sub(1 as libc::c_int as libc::c_ulong),
-                ) == 0 as libc::c_int
+                    s.offset(1isize),
+                    strlen(s).wrapping_sub(1u64),
+                ) == 0i32
             {
                 *list = xreallocarray(
                     *list as *mut libc::c_void,
-                    (*size).wrapping_add(2 as libc::c_int as libc::c_uint) as size_t,
+                    (*size).wrapping_add(2u32) as size_t,
                     ::std::mem::size_of::<*mut libc::c_char>() as libc::c_ulong,
                 ) as *mut *mut libc::c_char;
                 let fresh16 = *size;
@@ -11561,73 +11289,58 @@ unsafe extern "C" fn status_prompt_complete(
     let mut list: *mut *mut libc::c_char = 0 as *mut *mut libc::c_char;
     let mut copy: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut out: *mut libc::c_char = 0 as *mut libc::c_char;
-    let mut flag: libc::c_char = '\u{0}' as i32 as libc::c_char;
-    let mut size: u_int = 0 as libc::c_int as u_int;
+    let mut flag: libc::c_char = '\u{0}' as libc::c_char;
+    let mut size: u_int = 0u32;
     let mut i: u_int = 0;
-    if *word as libc::c_int == '\u{0}' as i32
-        && (*c).prompt_flags & (0x40 as libc::c_int | 0x20 as libc::c_int) == 0 as libc::c_int
-    {
+    if *word as libc::c_int == '\u{0}' as i32 && (*c).prompt_flags & (0x40i32 | 0x20i32) == 0i32 {
         return 0 as *mut libc::c_char;
     }
-    if (*c).prompt_flags & (0x40 as libc::c_int | 0x20 as libc::c_int) == 0 as libc::c_int
-        && strncmp(
-            word,
-            b"-t\x00" as *const u8 as *const libc::c_char,
-            2 as libc::c_int as libc::c_ulong,
-        ) != 0 as libc::c_int
-        && strncmp(
-            word,
-            b"-s\x00" as *const u8 as *const libc::c_char,
-            2 as libc::c_int as libc::c_ulong,
-        ) != 0 as libc::c_int
+    if (*c).prompt_flags & (0x40i32 | 0x20i32) == 0i32
+        && strncmp(word, b"-t\x00" as *const u8 as *const libc::c_char, 2u64) != 0i32
+        && strncmp(word, b"-s\x00" as *const u8 as *const libc::c_char, 2u64) != 0i32
     {
-        list = status_prompt_complete_list(
-            &mut size,
-            word,
-            (offset == 0 as libc::c_int as libc::c_uint) as libc::c_int,
-        );
-        if size == 0 as libc::c_int as libc::c_uint {
+        list = status_prompt_complete_list(&mut size, word, (offset == 0u32) as libc::c_int);
+        if size == 0u32 {
             out = 0 as *mut libc::c_char
-        } else if size == 1 as libc::c_int as libc::c_uint {
+        } else if size == 1u32 {
             xasprintf(
                 &mut out as *mut *mut libc::c_char,
                 b"%s \x00" as *const u8 as *const libc::c_char,
-                *list.offset(0 as libc::c_int as isize),
+                *list.offset(0isize),
             );
         } else {
             out = status_prompt_complete_prefix(list, size)
         }
     } else {
-        if (*c).prompt_flags & (0x40 as libc::c_int | 0x20 as libc::c_int) != 0 {
+        if (*c).prompt_flags & (0x40i32 | 0x20i32) != 0 {
             s = word;
-            flag = '\u{0}' as i32 as libc::c_char
+            flag = '\u{0}' as libc::c_char
         } else {
-            s = word.offset(2 as libc::c_int as isize);
-            flag = *word.offset(1 as libc::c_int as isize);
-            offset = (offset as libc::c_uint).wrapping_add(2 as libc::c_int as libc::c_uint)
-                as u_int as u_int
+            s = word.offset(2isize);
+            flag = *word.offset(1isize);
+            offset = (offset).wrapping_add(2u32)
         }
         /* If this is a window completion, open the window menu. */
-        if (*c).prompt_flags & 0x20 as libc::c_int != 0 {
+        if (*c).prompt_flags & 0x20i32 != 0 {
             out = status_prompt_complete_window_menu(
                 c,
                 (*c).session,
                 s,
                 offset,
-                '\u{0}' as i32 as libc::c_char,
+                '\u{0}' as libc::c_char,
             )
         } else {
             colon = strchr(s, ':' as i32);
             /* If there is no colon, complete as a session. */
             if colon.is_null() {
                 out = status_prompt_complete_session(&mut list, &mut size, s, flag)
-            } else if strchr(colon.offset(1 as libc::c_int as isize), '.' as i32).is_null() {
+            } else if strchr(colon.offset(1isize), '.' as i32).is_null() {
                 if *s as libc::c_int == ':' as i32 {
                     session = (*c).session;
                     current_block = 2891135413264362348;
                 } else {
                     copy = xstrdup(s);
-                    *strchr(copy, ':' as i32) = '\u{0}' as i32 as libc::c_char;
+                    *strchr(copy, ':' as i32) = '\u{0}' as libc::c_char;
                     session = session_find(copy);
                     free(copy as *mut libc::c_void);
                     if session.is_null() {
@@ -11642,7 +11355,7 @@ unsafe extern "C" fn status_prompt_complete(
                         out = status_prompt_complete_window_menu(
                             c,
                             session,
-                            colon.offset(1 as libc::c_int as isize),
+                            colon.offset(1isize),
                             offset,
                             flag,
                         );
@@ -11654,7 +11367,7 @@ unsafe extern "C" fn status_prompt_complete(
             }
         }
     }
-    if size != 0 as libc::c_int as libc::c_uint {
+    if size != 0u32 {
         qsort(
             list as *mut libc::c_void,
             size as size_t,
@@ -11667,7 +11380,7 @@ unsafe extern "C" fn status_prompt_complete(
                     ) -> libc::c_int,
             ),
         );
-        i = 0 as libc::c_int as u_int;
+        i = 0u32;
         while i < size {
             log_debug(
                 b"complete %u: %s\x00" as *const u8 as *const libc::c_char,
@@ -11677,12 +11390,12 @@ unsafe extern "C" fn status_prompt_complete(
             i = i.wrapping_add(1)
         }
     }
-    if !out.is_null() && strcmp(word, out) == 0 as libc::c_int {
+    if !out.is_null() && strcmp(word, out) == 0i32 {
         free(out as *mut libc::c_void);
         out = 0 as *mut libc::c_char
     }
     if !out.is_null() || status_prompt_complete_list_menu(c, list, size, offset, flag) == 0 {
-        i = 0 as libc::c_int as u_int;
+        i = 0u32;
         while i < size {
             free(*list.offset(i as isize) as *mut libc::c_void);
             i = i.wrapping_add(1)

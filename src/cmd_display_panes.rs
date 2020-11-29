@@ -1156,8 +1156,8 @@ pub static mut cmd_display_panes_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"bd:t:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 1 as libc::c_int,
+                    lower: 0i32,
+                    upper: 1i32,
                 };
                 init
             },
@@ -1173,7 +1173,7 @@ pub static mut cmd_display_panes_entry: cmd_entry = {
                 type_0: CMD_FIND_PANE,
                 flags: 0,
             },
-            flags: 0x4 as libc::c_int | 0x10 as libc::c_int,
+            flags: 0x4i32 | 0x10i32,
             exec: Some(
                 cmd_display_panes_exec
                     as unsafe extern "C" fn(
@@ -1256,11 +1256,11 @@ unsafe extern "C" fn cmd_display_panes_draw_pane(
         && (*wp).xoff.wrapping_add((*wp).sx) > (*ctx).ox.wrapping_add((*ctx).sx)
     {
         /* Both left and right not visible. */
-        xoff = 0 as libc::c_int as u_int;
+        xoff = 0u32;
         sx = (*ctx).sx
     } else if (*wp).xoff < (*ctx).ox {
         /* Left not visible. */
-        xoff = 0 as libc::c_int as u_int;
+        xoff = 0u32;
         sx = (*wp).sx.wrapping_sub((*ctx).ox.wrapping_sub((*wp).xoff))
     } else {
         /* Right not visible. */
@@ -1277,11 +1277,11 @@ unsafe extern "C" fn cmd_display_panes_draw_pane(
         && (*wp).yoff.wrapping_add((*wp).sy) > (*ctx).oy.wrapping_add((*ctx).sy)
     {
         /* Both top and bottom not visible. */
-        yoff = 0 as libc::c_int as u_int;
+        yoff = 0u32;
         sy = (*ctx).sy
     } else if (*wp).yoff < (*ctx).oy {
         /* Top not visible. */
-        yoff = 0 as libc::c_int as u_int;
+        yoff = 0u32;
         sy = (*wp).sy.wrapping_sub((*ctx).oy.wrapping_sub((*wp).yoff))
     } else {
         /* Bottom not visible. */
@@ -1289,11 +1289,11 @@ unsafe extern "C" fn cmd_display_panes_draw_pane(
         sy = (*wp).sy.wrapping_sub(yoff)
     }
     if (*ctx).statustop != 0 {
-        yoff = (yoff as libc::c_uint).wrapping_add((*ctx).statuslines) as u_int as u_int
+        yoff = (yoff).wrapping_add((*ctx).statuslines)
     }
-    px = sx.wrapping_div(2 as libc::c_int as libc::c_uint);
-    py = sy.wrapping_div(2 as libc::c_int as libc::c_uint);
-    if window_pane_index(wp, &mut pane) != 0 as libc::c_int {
+    px = sx.wrapping_div(2u32);
+    py = sy.wrapping_div(2u32);
+    if window_pane_index(wp, &mut pane) != 0i32 {
         fatalx(b"index not found\x00" as *const u8 as *const libc::c_char);
     }
     len = xsnprintf(
@@ -1337,33 +1337,23 @@ unsafe extern "C" fn cmd_display_panes_draw_pane(
         (*wp).sx,
         (*wp).sy,
     ) as size_t;
-    if pane > 9 as libc::c_int as libc::c_uint && pane < 35 as libc::c_int as libc::c_uint {
+    if pane > 9u32 && pane < 35u32 {
         llen = xsnprintf(
             lbuf.as_mut_ptr(),
             ::std::mem::size_of::<[libc::c_char; 16]>() as libc::c_ulong,
             b"%c\x00" as *const u8 as *const libc::c_char,
-            ('a' as i32 as libc::c_uint)
-                .wrapping_add(pane.wrapping_sub(10 as libc::c_int as libc::c_uint)),
+            ('a' as libc::c_uint).wrapping_add(pane.wrapping_sub(10u32)),
         ) as size_t
     } else {
-        llen = 0 as libc::c_int as size_t
+        llen = 0u64
     }
-    if (sx as libc::c_ulong) < len.wrapping_mul(6 as libc::c_int as libc::c_ulong)
-        || sy < 5 as libc::c_int as libc::c_uint
-    {
+    if (sx as libc::c_ulong) < len.wrapping_mul(6u64) || sy < 5u32 {
         tty_attributes(tty, &mut fgc, &grid_default_cell, 0 as *mut libc::c_int);
-        if sx as libc::c_ulong
-            >= len
-                .wrapping_add(llen)
-                .wrapping_add(1 as libc::c_int as libc::c_ulong)
-        {
-            len = (len as libc::c_ulong)
-                .wrapping_add(llen.wrapping_add(1 as libc::c_int as libc::c_ulong))
-                as size_t as size_t;
+        if sx as libc::c_ulong >= len.wrapping_add(llen).wrapping_add(1u64) {
+            len = (len).wrapping_add(llen.wrapping_add(1u64));
             tty_cursor(
                 tty,
-                (xoff.wrapping_add(px) as libc::c_ulong)
-                    .wrapping_sub(len.wrapping_div(2 as libc::c_int as libc::c_ulong))
+                (xoff.wrapping_add(px) as libc::c_ulong).wrapping_sub(len.wrapping_div(2u64))
                     as u_int,
                 yoff.wrapping_add(py),
             );
@@ -1375,9 +1365,9 @@ unsafe extern "C" fn cmd_display_panes_draw_pane(
             );
             tty_putn(
                 tty,
-                b" \x00" as *const u8 as *const libc::c_char as *const libc::c_void,
-                1 as libc::c_int as size_t,
-                1 as libc::c_int as u_int,
+                b" \x00" as *const u8 as *const libc::c_void,
+                1u64,
+                1u32,
             );
             tty_putn(
                 tty,
@@ -1388,8 +1378,7 @@ unsafe extern "C" fn cmd_display_panes_draw_pane(
         } else {
             tty_cursor(
                 tty,
-                (xoff.wrapping_add(px) as libc::c_ulong)
-                    .wrapping_sub(len.wrapping_div(2 as libc::c_int as libc::c_ulong))
+                (xoff.wrapping_add(px) as libc::c_ulong).wrapping_sub(len.wrapping_div(2u64))
                     as u_int,
                 yoff.wrapping_add(py),
             );
@@ -1401,18 +1390,17 @@ unsafe extern "C" fn cmd_display_panes_draw_pane(
             );
         }
     } else {
-        px = (px as libc::c_ulong).wrapping_sub(len.wrapping_mul(3 as libc::c_int as libc::c_ulong))
-            as u_int as u_int;
-        py = (py as libc::c_uint).wrapping_sub(2 as libc::c_int as libc::c_uint) as u_int as u_int;
+        px = (px as libc::c_ulong).wrapping_sub(len.wrapping_mul(3u64)) as u_int;
+        py = (py).wrapping_sub(2u32);
         tty_attributes(tty, &mut bgc, &grid_default_cell, 0 as *mut libc::c_int);
         ptr = buf.as_mut_ptr();
         while *ptr as libc::c_int != '\u{0}' as i32 {
             if !((*ptr as libc::c_int) < '0' as i32 || *ptr as libc::c_int > '9' as i32) {
                 idx = (*ptr as libc::c_int - '0' as i32) as u_int;
-                j = 0 as libc::c_int as u_int;
-                while j < 5 as libc::c_int as libc::c_uint {
+                j = 0u32;
+                while j < 5u32 {
                     i = px;
-                    while i < px.wrapping_add(5 as libc::c_int as libc::c_uint) {
+                    while i < px.wrapping_add(5u32) {
                         tty_cursor(
                             tty,
                             xoff.wrapping_add(i),
@@ -1421,20 +1409,19 @@ unsafe extern "C" fn cmd_display_panes_draw_pane(
                         if window_clock_table[idx as usize][j as usize][i.wrapping_sub(px) as usize]
                             != 0
                         {
-                            tty_putc(tty, ' ' as i32 as u_char);
+                            tty_putc(tty, ' ' as u_char);
                         }
                         i = i.wrapping_add(1)
                     }
                     j = j.wrapping_add(1)
                 }
-                px = (px as libc::c_uint).wrapping_add(6 as libc::c_int as libc::c_uint) as u_int
-                    as u_int
+                px = (px).wrapping_add(6u32)
             }
             ptr = ptr.offset(1)
         }
-        if !(sy <= 6 as libc::c_int as libc::c_uint) {
+        if !(sy <= 6u32) {
             tty_attributes(tty, &mut fgc, &grid_default_cell, 0 as *mut libc::c_int);
-            if rlen != 0 as libc::c_int as libc::c_ulong && sx as libc::c_ulong >= rlen {
+            if rlen != 0u64 && sx as libc::c_ulong >= rlen {
                 tty_cursor(
                     tty,
                     (xoff.wrapping_add(sx) as libc::c_ulong).wrapping_sub(rlen) as u_int,
@@ -1447,17 +1434,14 @@ unsafe extern "C" fn cmd_display_panes_draw_pane(
                     rlen as u_int,
                 );
             }
-            if llen != 0 as libc::c_int as libc::c_ulong {
+            if llen != 0u64 {
                 tty_cursor(
                     tty,
-                    (xoff.wrapping_add(sx.wrapping_div(2 as libc::c_int as libc::c_uint))
-                        as libc::c_ulong)
-                        .wrapping_add(len.wrapping_mul(3 as libc::c_int as libc::c_ulong))
+                    (xoff.wrapping_add(sx.wrapping_div(2u32)) as libc::c_ulong)
+                        .wrapping_add(len.wrapping_mul(3u64))
                         .wrapping_sub(llen)
-                        .wrapping_sub(1 as libc::c_int as libc::c_ulong)
-                        as u_int,
-                    yoff.wrapping_add(py)
-                        .wrapping_add(5 as libc::c_int as libc::c_uint),
+                        .wrapping_sub(1u64) as u_int,
+                    yoff.wrapping_add(py).wrapping_add(5u32),
                 );
                 tty_putn(
                     tty,
@@ -1468,7 +1452,7 @@ unsafe extern "C" fn cmd_display_panes_draw_pane(
             }
         }
     }
-    tty_cursor(tty, 0 as libc::c_int as u_int, 0 as libc::c_int as u_int);
+    tty_cursor(tty, 0u32, 0u32);
 }
 unsafe extern "C" fn cmd_display_panes_draw(mut c: *mut client, mut ctx: *mut screen_redraw_ctx) {
     let mut w: *mut window = (*(*(*c).session).curw).window;
@@ -1513,23 +1497,19 @@ unsafe extern "C" fn cmd_display_panes_key(
         && (*event).key <= '9' as i32 as libc::c_ulonglong
     {
         index = (*event).key.wrapping_sub('0' as i32 as libc::c_ulonglong) as u_int
-    } else if (*event).key & 0xf00000000000 as libc::c_ulonglong
-        == 0 as libc::c_int as libc::c_ulonglong
-    {
-        key = (*event).key & 0xfffffffffff as libc::c_ulonglong;
+    } else if (*event).key & 0xf00000000000u64 == 0u64 {
+        key = (*event).key & 0xfffffffffffu64;
         if key >= 'a' as i32 as libc::c_ulonglong && key <= 'z' as i32 as libc::c_ulonglong {
-            index = (10 as libc::c_int as libc::c_ulonglong)
-                .wrapping_add(key.wrapping_sub('a' as i32 as libc::c_ulonglong))
-                as u_int
+            index = (10u64).wrapping_add(key.wrapping_sub('a' as i32 as libc::c_ulonglong)) as u_int
         } else {
-            return -(1 as libc::c_int);
+            return -(1i32);
         }
     } else {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     wp = window_pane_at_index(w, index);
     if wp.is_null() {
-        return 1 as libc::c_int;
+        return 1i32;
     }
     window_unzoom(w);
     xasprintf(
@@ -1537,7 +1517,7 @@ unsafe extern "C" fn cmd_display_panes_key(
         b"%%%u\x00" as *const u8 as *const libc::c_char,
         (*wp).id,
     );
-    cmd = cmd_template_replace((*cdata).command, expanded, 1 as libc::c_int);
+    cmd = cmd_template_replace((*cdata).command, expanded, 1i32);
     status = cmd_parse_and_append(
         cmd,
         0 as *mut cmd_parse_input,
@@ -1545,13 +1525,13 @@ unsafe extern "C" fn cmd_display_panes_key(
         0 as *mut crate::cmd_queue::cmdq_state,
         &mut error,
     );
-    if status as libc::c_uint == CMD_PARSE_ERROR as libc::c_int as libc::c_uint {
+    if status == CMD_PARSE_ERROR {
         cmdq_append(c, cmdq_get_error(error));
         free(error as *mut libc::c_void);
     }
     free(cmd as *mut libc::c_void);
     free(expanded as *mut libc::c_void);
-    return 1 as libc::c_int;
+    return 1i32;
 }
 /* $OpenBSD$ */
 /*
@@ -1585,14 +1565,12 @@ unsafe extern "C" fn cmd_display_panes_exec(
     if (*tc).overlay_draw.is_some() {
         return CMD_RETURN_NORMAL;
     }
-    if args_has(args, 'd' as i32 as u_char) != 0 {
+    if args_has(args, 'd' as u_char) != 0 {
         delay = args_strtonum(
             args,
-            'd' as i32 as u_char,
-            0 as libc::c_int as libc::c_longlong,
-            (2147483647 as libc::c_int as libc::c_uint)
-                .wrapping_mul(2 as libc::c_uint)
-                .wrapping_add(1 as libc::c_uint) as libc::c_longlong,
+            'd' as u_char,
+            0i64,
+            (2147483647u32).wrapping_mul(2u32).wrapping_add(1u32) as libc::c_longlong,
             &mut cause,
         ) as u_int;
         if !cause.is_null() {
@@ -1612,12 +1590,12 @@ unsafe extern "C" fn cmd_display_panes_exec(
     }
     cdata = xmalloc(::std::mem::size_of::<cmd_display_panes_data>() as libc::c_ulong)
         as *mut cmd_display_panes_data;
-    if (*args).argc != 0 as libc::c_int {
-        (*cdata).command = xstrdup(*(*args).argv.offset(0 as libc::c_int as isize))
+    if (*args).argc != 0i32 {
+        (*cdata).command = xstrdup(*(*args).argv.offset(0isize))
     } else {
         (*cdata).command = xstrdup(b"select-pane -t \'%%\'\x00" as *const u8 as *const libc::c_char)
     }
-    if args_has(args, 'b' as i32 as u_char) != 0 {
+    if args_has(args, 'b' as u_char) != 0 {
         (*cdata).item = 0 as *mut crate::cmd_queue::cmdq_item
     } else {
         (*cdata).item = item
@@ -1638,7 +1616,7 @@ unsafe extern "C" fn cmd_display_panes_exec(
         Some(cmd_display_panes_free as unsafe extern "C" fn(_: *mut client) -> ()),
         cdata as *mut libc::c_void,
     );
-    if args_has(args, 'b' as i32 as u_char) != 0 {
+    if args_has(args, 'b' as u_char) != 0 {
         return CMD_RETURN_NORMAL;
     }
     return CMD_RETURN_WAIT;

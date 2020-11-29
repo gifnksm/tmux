@@ -863,7 +863,7 @@ unsafe extern "C" fn lstat(
     mut __path: *const libc::c_char,
     mut __statbuf: *mut stat,
 ) -> libc::c_int {
-    return __lxstat(1 as libc::c_int, __path, __statbuf);
+    return __lxstat(1i32, __path, __statbuf);
 }
 /* $OpenBSD$ */
 /*
@@ -882,20 +882,16 @@ unsafe extern "C" fn lstat(
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 #[no_mangle]
-pub static mut global_options: *mut crate::options::options =
-    0 as *const crate::options::options as *mut crate::options::options;
+pub static mut global_options: *mut crate::options::options = 0 as *mut crate::options::options;
 /* server options */
 #[no_mangle]
-pub static mut global_s_options: *mut crate::options::options =
-    0 as *const crate::options::options as *mut crate::options::options;
+pub static mut global_s_options: *mut crate::options::options = 0 as *mut crate::options::options;
 /* session options */
 #[no_mangle]
-pub static mut global_w_options: *mut crate::options::options =
-    0 as *const crate::options::options as *mut crate::options::options;
+pub static mut global_w_options: *mut crate::options::options = 0 as *mut crate::options::options;
 /* window options */
 #[no_mangle]
-pub static mut global_environ: *mut crate::environ::environ =
-    0 as *const crate::environ::environ as *mut crate::environ::environ;
+pub static mut global_environ: *mut crate::environ::environ = 0 as *mut crate::environ::environ;
 #[no_mangle]
 pub static mut start_time: timeval = timeval {
     tv_sec: 0,
@@ -904,7 +900,7 @@ pub static mut start_time: timeval = timeval {
 #[no_mangle]
 pub static mut socket_path: *const libc::c_char = 0 as *const libc::c_char;
 #[no_mangle]
-pub static mut ptm_fd: libc::c_int = -(1 as libc::c_int);
+pub static mut ptm_fd: libc::c_int = -(1i32);
 #[no_mangle]
 pub static mut shell_command: *const libc::c_char = 0 as *const libc::c_char;
 unsafe extern "C" fn usage() -> ! {
@@ -912,7 +908,7 @@ unsafe extern "C" fn usage() -> ! {
             b"usage: %s [-2CDluvV] [-c shell-command] [-f file] [-L socket-name]\n            [-S socket-path] [-T features] [command [flags]]\n\x00"
                 as *const u8 as *const libc::c_char,
             getprogname()); /* can only have one socket! */
-    exit(1 as libc::c_int);
+    exit(1i32);
 }
 unsafe extern "C" fn getshell() -> *const libc::c_char {
     let mut pw: *mut passwd = 0 as *mut passwd;
@@ -930,15 +926,15 @@ unsafe extern "C" fn getshell() -> *const libc::c_char {
 #[no_mangle]
 pub unsafe extern "C" fn checkshell(mut shell: *const libc::c_char) -> libc::c_int {
     if shell.is_null() || *shell as libc::c_int != '/' as i32 {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     if areshell(shell) != 0 {
-        return 0 as libc::c_int;
+        return 0i32;
     }
-    if access(shell, 1 as libc::c_int) != 0 as libc::c_int {
-        return 0 as libc::c_int;
+    if access(shell, 1i32) != 0i32 {
+        return 0i32;
     }
-    return 1 as libc::c_int;
+    return 1i32;
 }
 unsafe extern "C" fn areshell(mut shell: *const libc::c_char) -> libc::c_int {
     let mut progname: *const libc::c_char = 0 as *const libc::c_char;
@@ -953,10 +949,10 @@ unsafe extern "C" fn areshell(mut shell: *const libc::c_char) -> libc::c_int {
     if *progname as libc::c_int == '-' as i32 {
         progname = progname.offset(1)
     }
-    if strcmp(ptr, progname) == 0 as libc::c_int {
-        return 1 as libc::c_int;
+    if strcmp(ptr, progname) == 0i32 {
+        return 1i32;
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 unsafe extern "C" fn expand_path(
     mut path: *const libc::c_char,
@@ -966,12 +962,7 @@ unsafe extern "C" fn expand_path(
     let mut name: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut end: *const libc::c_char = 0 as *const libc::c_char;
     let mut value: *mut environ_entry = 0 as *mut environ_entry;
-    if strncmp(
-        path,
-        b"~/\x00" as *const u8 as *const libc::c_char,
-        2 as libc::c_int as libc::c_ulong,
-    ) == 0 as libc::c_int
-    {
+    if strncmp(path, b"~/\x00" as *const u8 as *const libc::c_char, 2u64) == 0i32 {
         if home.is_null() {
             return 0 as *mut libc::c_char;
         }
@@ -979,19 +970,18 @@ unsafe extern "C" fn expand_path(
             &mut expanded as *mut *mut libc::c_char,
             b"%s%s\x00" as *const u8 as *const libc::c_char,
             home,
-            path.offset(1 as libc::c_int as isize),
+            path.offset(1isize),
         );
         return expanded;
     }
     if *path as libc::c_int == '$' as i32 {
         end = strchr(path, '/' as i32);
         if end.is_null() {
-            name = xstrdup(path.offset(1 as libc::c_int as isize))
+            name = xstrdup(path.offset(1isize))
         } else {
             name = xstrndup(
-                path.offset(1 as libc::c_int as isize),
-                (end.wrapping_offset_from(path) as libc::c_long - 1 as libc::c_int as libc::c_long)
-                    as size_t,
+                path.offset(1isize),
+                (end.wrapping_offset_from(path) as libc::c_long - 1i64) as size_t,
             )
         }
         value = environ_find(global_environ, name);
@@ -1026,7 +1016,7 @@ pub unsafe extern "C" fn expand_paths(
     let mut expanded: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut i: u_int = 0;
     *paths = 0 as *mut *mut libc::c_char;
-    *n = 0 as libc::c_int as u_int;
+    *n = 0u32;
     tmp = xstrdup(s);
     copy = tmp;
     loop {
@@ -1053,9 +1043,9 @@ pub unsafe extern "C" fn expand_paths(
             free(expanded as *mut libc::c_void);
         } else {
             free(expanded as *mut libc::c_void);
-            i = 0 as libc::c_int as u_int;
+            i = 0u32;
             while i < *n {
-                if strcmp(resolved.as_mut_ptr(), *(*paths).offset(i as isize)) == 0 as libc::c_int {
+                if strcmp(resolved.as_mut_ptr(), *(*paths).offset(i as isize)) == 0i32 {
                     break;
                 }
                 i = i.wrapping_add(1)
@@ -1070,7 +1060,7 @@ pub unsafe extern "C" fn expand_paths(
             } else {
                 *paths = xreallocarray(
                     *paths as *mut libc::c_void,
-                    (*n).wrapping_add(1 as libc::c_int as libc::c_uint) as size_t,
+                    (*n).wrapping_add(1u32) as size_t,
                     ::std::mem::size_of::<*mut *mut libc::c_char>() as libc::c_ulong,
                 ) as *mut *mut libc::c_char;
                 let fresh0 = *n;
@@ -1128,15 +1118,15 @@ unsafe extern "C" fn make_label(
         &mut paths,
         &mut n,
     );
-    if n == 0 as libc::c_int as libc::c_uint {
+    if n == 0u32 {
         xasprintf(
             cause,
             b"no suitable socket path\x00" as *const u8 as *const libc::c_char,
         );
         return 0 as *mut libc::c_char;
     }
-    path = *paths.offset(0 as libc::c_int as isize);
-    i = 1 as libc::c_int as u_int;
+    path = *paths.offset(0isize);
+    i = 1u32;
     while i < n {
         free(*paths.offset(i as isize) as *mut libc::c_void);
         i = i.wrapping_add(1)
@@ -1148,25 +1138,17 @@ unsafe extern "C" fn make_label(
         path,
         uid as libc::c_long,
     );
-    if !(mkdir(
-        base,
-        (0o400 as libc::c_int | 0o200 as libc::c_int | 0o100 as libc::c_int) as __mode_t,
-    ) != 0 as libc::c_int
-        && *__errno_location() != 17 as libc::c_int)
+    if !(mkdir(base, (0o400i32 | 0o200i32 | 0o100i32) as __mode_t) != 0i32
+        && *__errno_location() != 17i32)
     {
-        if !(lstat(base, &mut sb) != 0 as libc::c_int) {
-            if !(sb.st_mode & 0o170000 as libc::c_int as libc::c_uint
-                == 0o40000 as libc::c_int as libc::c_uint)
-            {
-                *__errno_location() = 20 as libc::c_int
+        if !(lstat(base, &mut sb) != 0i32) {
+            if !(sb.st_mode & 0o170000u32 == 0o40000u32) {
+                *__errno_location() = 20i32
             } else if sb.st_uid != uid
-                || sb.st_mode
-                    & ((0o400 as libc::c_int | 0o200 as libc::c_int | 0o100 as libc::c_int)
-                        >> 3 as libc::c_int
-                        >> 3 as libc::c_int) as libc::c_uint
-                    != 0 as libc::c_int as libc::c_uint
+                || sb.st_mode & ((0o400i32 | 0o200i32 | 0o100i32) >> 3i32 >> 3i32) as libc::c_uint
+                    != 0u32
             {
-                *__errno_location() = 13 as libc::c_int
+                *__errno_location() = 13i32
             } else {
                 xasprintf(
                     &mut path as *mut *mut libc::c_char,
@@ -1191,14 +1173,14 @@ unsafe extern "C" fn make_label(
 #[no_mangle]
 pub unsafe extern "C" fn setblocking(mut fd: libc::c_int, mut state: libc::c_int) {
     let mut mode: libc::c_int = 0;
-    mode = fcntl(fd, 3 as libc::c_int);
-    if mode != -(1 as libc::c_int) {
+    mode = fcntl(fd, 3i32);
+    if mode != -(1i32) {
         if state == 0 {
-            mode |= 0o4000 as libc::c_int
+            mode |= 0o4000i32
         } else {
-            mode &= !(0o4000 as libc::c_int)
+            mode &= !(0o4000i32)
         }
-        fcntl(fd, 4 as libc::c_int, mode);
+        fcntl(fd, 4i32, mode);
     };
 }
 #[no_mangle]
@@ -1211,13 +1193,12 @@ pub unsafe extern "C" fn get_timer() -> uint64_t {
      * We want a timestamp in milliseconds suitable for time measurement,
      * so prefer the monotonic clock.
      */
-    if clock_gettime(1 as libc::c_int, &mut ts) != 0 as libc::c_int {
-        clock_gettime(0 as libc::c_int, &mut ts);
+    if clock_gettime(1i32, &mut ts) != 0i32 {
+        clock_gettime(0i32, &mut ts);
     }
     return (ts.tv_sec as libc::c_ulonglong)
-        .wrapping_mul(1000 as libc::c_ulonglong)
-        .wrapping_add((ts.tv_nsec as libc::c_ulonglong).wrapping_div(1000000 as libc::c_ulonglong))
-        as uint64_t;
+        .wrapping_mul(1000u64)
+        .wrapping_add((ts.tv_nsec as libc::c_ulonglong).wrapping_div(1000000u64));
 }
 #[no_mangle]
 pub unsafe extern "C" fn sig2name(mut signo: libc::c_int) -> *const libc::c_char {
@@ -1258,7 +1239,7 @@ pub unsafe extern "C" fn find_cwd() -> *const libc::c_char {
     if realpath(cwd.as_mut_ptr(), resolved2.as_mut_ptr()).is_null() {
         return cwd.as_mut_ptr();
     }
-    if strcmp(resolved1.as_mut_ptr(), resolved2.as_mut_ptr()) != 0 as libc::c_int {
+    if strcmp(resolved1.as_mut_ptr(), resolved2.as_mut_ptr()) != 0i32 {
         return cwd.as_mut_ptr();
     }
     return pwd;
@@ -1295,49 +1276,33 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
     let mut cwd: *const libc::c_char = 0 as *const libc::c_char;
     let mut opt: libc::c_int = 0;
     let mut keys: libc::c_int = 0;
-    let mut feat: libc::c_int = 0 as libc::c_int;
-    let mut flags: uint64_t = 0 as libc::c_int as uint64_t;
+    let mut feat: libc::c_int = 0i32;
+    let mut flags: uint64_t = 0u64;
     let mut oe: *const options_table_entry = 0 as *const options_table_entry;
-    if setlocale(
-        0 as libc::c_int,
-        b"en_US.UTF-8\x00" as *const u8 as *const libc::c_char,
-    )
-    .is_null()
-        && setlocale(
-            0 as libc::c_int,
-            b"C.UTF-8\x00" as *const u8 as *const libc::c_char,
-        )
-        .is_null()
+    if setlocale(0i32, b"en_US.UTF-8\x00" as *const u8 as *const libc::c_char).is_null()
+        && setlocale(0i32, b"C.UTF-8\x00" as *const u8 as *const libc::c_char).is_null()
     {
-        if setlocale(
-            0 as libc::c_int,
-            b"\x00" as *const u8 as *const libc::c_char,
-        )
-        .is_null()
-        {
+        if setlocale(0i32, b"\x00" as *const u8 as *const libc::c_char).is_null() {
             errx(
-                1 as libc::c_int,
+                1i32,
                 b"invalid LC_ALL, LC_CTYPE or LANG\x00" as *const u8 as *const libc::c_char,
             );
         }
         s = nl_langinfo(CODESET as libc::c_int);
-        if strcasecmp(s, b"UTF-8\x00" as *const u8 as *const libc::c_char) != 0 as libc::c_int
-            && strcasecmp(s, b"UTF8\x00" as *const u8 as *const libc::c_char) != 0 as libc::c_int
+        if strcasecmp(s, b"UTF-8\x00" as *const u8 as *const libc::c_char) != 0i32
+            && strcasecmp(s, b"UTF8\x00" as *const u8 as *const libc::c_char) != 0i32
         {
             errx(
-                1 as libc::c_int,
+                1i32,
                 b"need UTF-8 locale (LC_CTYPE) but have %s\x00" as *const u8 as *const libc::c_char,
                 s,
             );
         }
     }
-    setlocale(
-        2 as libc::c_int,
-        b"\x00" as *const u8 as *const libc::c_char,
-    );
+    setlocale(2i32, b"\x00" as *const u8 as *const libc::c_char);
     tzset();
     if **argv as libc::c_int == '-' as i32 {
-        flags = 0x2 as libc::c_int as uint64_t
+        flags = 0x2u64
     }
     loop {
         opt = BSDgetopt(
@@ -1345,7 +1310,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
             argv,
             b"2c:CDdf:lL:qS:T:uUvV\x00" as *const u8 as *const libc::c_char,
         );
-        if !(opt != -(1 as libc::c_int)) {
+        if !(opt != -(1i32)) {
             break;
         }
         match opt {
@@ -1357,12 +1322,12 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                 );
             }
             99 => shell_command = BSDoptarg,
-            68 => flags |= 0x40000000 as libc::c_int as libc::c_ulong,
+            68 => flags |= 0x40000000u64,
             67 => {
-                if flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
-                    flags |= 0x4000 as libc::c_int as libc::c_ulong
+                if flags & 0x2000u64 != 0 {
+                    flags |= 0x4000u64
                 } else {
-                    flags |= 0x2000 as libc::c_int as libc::c_ulong
+                    flags |= 0x2000u64
                 }
             }
             102 => {
@@ -1374,9 +1339,9 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                     getprogname(),
                     getversion(),
                 );
-                exit(0 as libc::c_int);
+                exit(0i32);
             }
-            108 => flags |= 0x2 as libc::c_int as libc::c_ulong,
+            108 => flags |= 0x2u64,
             76 => {
                 free(label as *mut libc::c_void);
                 label = xstrdup(BSDoptarg)
@@ -1393,7 +1358,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                     b":,\x00" as *const u8 as *const libc::c_char,
                 );
             }
-            117 => flags |= 0x10000 as libc::c_int as libc::c_ulong,
+            117 => flags |= 0x10000u64,
             118 => {
                 log_add_level();
             }
@@ -1404,24 +1369,18 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
     }
     argc -= BSDoptind;
     argv = argv.offset(BSDoptind as isize);
-    if !shell_command.is_null() && argc != 0 as libc::c_int {
+    if !shell_command.is_null() && argc != 0i32 {
         usage();
     }
-    if flags & 0x40000000 as libc::c_int as libc::c_ulong != 0 && argc != 0 as libc::c_int {
+    if flags & 0x40000000u64 != 0 && argc != 0i32 {
         usage();
     }
     ptm_fd = getptmfd();
-    if ptm_fd == -(1 as libc::c_int) {
-        err(
-            1 as libc::c_int,
-            b"getptmfd\x00" as *const u8 as *const libc::c_char,
-        );
+    if ptm_fd == -(1i32) {
+        err(1i32, b"getptmfd\x00" as *const u8 as *const libc::c_char);
     }
-    if 0 as libc::c_int != 0 as libc::c_int {
-        err(
-            1 as libc::c_int,
-            b"pledge\x00" as *const u8 as *const libc::c_char,
-        );
+    if 0i32 != 0i32 {
+        err(1i32, b"pledge\x00" as *const u8 as *const libc::c_char);
     }
     /*
      * tmux is a UTF-8 terminal, so if TMUX is set, assume UTF-8.
@@ -1431,7 +1390,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
      * programs may be wrong.
      */
     if !getenv(b"TMUX\x00" as *const u8 as *const libc::c_char).is_null() {
-        flags |= 0x10000 as libc::c_int as libc::c_ulong
+        flags |= 0x10000u64
     } else {
         s = getenv(b"LC_ALL\x00" as *const u8 as *const libc::c_char);
         if s.is_null() || *s as libc::c_int == '\u{0}' as i32 {
@@ -1446,13 +1405,13 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
         if !strcasestr(s, b"UTF-8\x00" as *const u8 as *const libc::c_char).is_null()
             || !strcasestr(s, b"UTF8\x00" as *const u8 as *const libc::c_char).is_null()
         {
-            flags |= 0x10000 as libc::c_int as libc::c_ulong
+            flags |= 0x10000u64
         }
     }
     global_environ = environ_create();
     var = environ;
     while !(*var).is_null() {
-        environ_put(global_environ, *var, 0 as libc::c_int);
+        environ_put(global_environ, *var, 0i32);
         var = var.offset(1)
     }
     cwd = find_cwd();
@@ -1460,7 +1419,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
         environ_set(
             global_environ,
             b"PWD\x00" as *const u8 as *const libc::c_char,
-            0 as libc::c_int,
+            0i32,
             b"%s\x00" as *const u8 as *const libc::c_char,
             cwd,
         );
@@ -1470,13 +1429,13 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
     global_w_options = options_create(0 as *mut crate::options::options);
     oe = options_table.as_ptr();
     while !(*oe).name.is_null() {
-        if (*oe).scope & 0x1 as libc::c_int != 0 {
+        if (*oe).scope & 0x1i32 != 0 {
             options_default(global_options, oe);
         }
-        if (*oe).scope & 0x2 as libc::c_int != 0 {
+        if (*oe).scope & 0x2i32 != 0 {
             options_default(global_s_options, oe);
         }
-        if (*oe).scope & 0x4 as libc::c_int != 0 {
+        if (*oe).scope & 0x4i32 != 0 {
             options_default(global_w_options, oe);
         }
         oe = oe.offset(1)
@@ -1489,7 +1448,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
     options_set_string(
         global_s_options,
         b"default-shell\x00" as *const u8 as *const libc::c_char,
-        0 as libc::c_int,
+        0i32,
         b"%s\x00" as *const u8 as *const libc::c_char,
         shell,
     );
@@ -1502,17 +1461,17 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
         options_set_string(
             global_options,
             b"editor\x00" as *const u8 as *const libc::c_char,
-            0 as libc::c_int,
+            0i32,
             b"%s\x00" as *const u8 as *const libc::c_char,
             s,
         );
         if !strrchr(s, '/' as i32).is_null() {
-            s = strrchr(s, '/' as i32).offset(1 as libc::c_int as isize)
+            s = strrchr(s, '/' as i32).offset(1isize)
         }
         if !strstr(s, b"vi\x00" as *const u8 as *const libc::c_char).is_null() {
-            keys = 1 as libc::c_int
+            keys = 1i32
         } else {
-            keys = 0 as libc::c_int
+            keys = 0i32
         }
         options_set_number(
             global_s_options,
@@ -1535,7 +1494,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
         if !s.is_null() && *s as libc::c_int != '\u{0}' as i32 && *s as libc::c_int != ',' as i32 {
             path = xstrdup(s);
             *path.offset(strcspn(path, b",\x00" as *const u8 as *const libc::c_char) as isize) =
-                '\u{0}' as i32 as libc::c_char
+                '\u{0}' as libc::c_char
         }
     }
     if path.is_null() {
@@ -1549,9 +1508,9 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                 );
                 free(cause as *mut libc::c_void);
             }
-            exit(1 as libc::c_int);
+            exit(1i32);
         }
-        flags |= 0x8000000 as libc::c_int as libc::c_ulong
+        flags |= 0x8000000u64
     }
     socket_path = path;
     free(label as *mut libc::c_void);
@@ -1569,10 +1528,5 @@ pub fn main() {
         );
     }
     args.push(::std::ptr::null_mut());
-    unsafe {
-        ::std::process::exit(main_0(
-            (args.len() - 1) as libc::c_int,
-            args.as_mut_ptr() as *mut *mut libc::c_char,
-        ) as i32)
-    }
+    unsafe { ::std::process::exit(main_0((args.len() - 1) as libc::c_int, args.as_mut_ptr())) }
 }

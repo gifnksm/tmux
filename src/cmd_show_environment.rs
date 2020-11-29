@@ -1080,8 +1080,8 @@ pub static mut cmd_show_environment_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_33 {
                     template: b"hgst:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 1 as libc::c_int,
+                    lower: 0i32,
+                    upper: 1i32,
                 }; /* at most twice the size */
                 init
             },
@@ -1093,13 +1093,13 @@ pub static mut cmd_show_environment_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_SESSION,
-                    flags: 0x40 as libc::c_int,
+                    flags: 0x40i32,
                 };
                 init
             },
-            flags: 0x4 as libc::c_int,
+            flags: 0x4i32,
             exec: Some(
                 cmd_show_environment_exec
                     as unsafe extern "C" fn(
@@ -1118,11 +1118,7 @@ unsafe extern "C" fn cmd_show_environment_escape(
     let mut c: libc::c_char = 0;
     let mut out: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut ret: *mut libc::c_char = 0 as *mut libc::c_char;
-    ret = xmalloc(
-        strlen(value)
-            .wrapping_mul(2 as libc::c_int as libc::c_ulong)
-            .wrapping_add(1 as libc::c_int as libc::c_ulong),
-    ) as *mut libc::c_char;
+    ret = xmalloc(strlen(value).wrapping_mul(2u64).wrapping_add(1u64)) as *mut libc::c_char;
     out = ret;
     loop {
         let fresh0 = value;
@@ -1140,13 +1136,13 @@ unsafe extern "C" fn cmd_show_environment_escape(
         {
             let fresh1 = out;
             out = out.offset(1);
-            *fresh1 = '\\' as i32 as libc::c_char
+            *fresh1 = '\\' as libc::c_char
         }
         let fresh2 = out;
         out = out.offset(1);
         *fresh2 = c
     }
-    *out = '\u{0}' as i32 as libc::c_char;
+    *out = '\u{0}' as libc::c_char;
     return ret;
 }
 unsafe extern "C" fn cmd_show_environment_print(
@@ -1156,13 +1152,13 @@ unsafe extern "C" fn cmd_show_environment_print(
 ) {
     let mut args: *mut args = cmd_get_args(self_0);
     let mut escaped: *mut libc::c_char = 0 as *mut libc::c_char;
-    if args_has(args, 'h' as i32 as u_char) == 0 && (*envent).flags & 0x1 as libc::c_int != 0 {
+    if args_has(args, 'h' as u_char) == 0 && (*envent).flags & 0x1i32 != 0 {
         return;
     }
-    if args_has(args, 'h' as i32 as u_char) != 0 && !(*envent).flags & 0x1 as libc::c_int != 0 {
+    if args_has(args, 'h' as u_char) != 0 && !(*envent).flags & 0x1i32 != 0 {
         return;
     }
-    if args_has(args, 's' as i32 as u_char) == 0 {
+    if args_has(args, 's' as u_char) == 0 {
         if !(*envent).value.is_null() {
             cmdq_print(
                 item,
@@ -1225,7 +1221,7 @@ unsafe extern "C" fn cmd_show_environment_exec(
     let mut env: *mut crate::environ::environ = 0 as *mut crate::environ::environ;
     let mut envent: *mut environ_entry = 0 as *mut environ_entry;
     let mut tflag: *const libc::c_char = 0 as *const libc::c_char;
-    tflag = args_get(args, 't' as i32 as u_char);
+    tflag = args_get(args, 't' as u_char);
     if !tflag.is_null() {
         if (*target).s.is_null() {
             cmdq_error(
@@ -1236,11 +1232,11 @@ unsafe extern "C" fn cmd_show_environment_exec(
             return CMD_RETURN_ERROR;
         }
     }
-    if args_has(args, 'g' as i32 as u_char) != 0 {
+    if args_has(args, 'g' as u_char) != 0 {
         env = global_environ
     } else {
         if (*target).s.is_null() {
-            tflag = args_get(args, 't' as i32 as u_char);
+            tflag = args_get(args, 't' as u_char);
             if !tflag.is_null() {
                 cmdq_error(
                     item,
@@ -1257,13 +1253,13 @@ unsafe extern "C" fn cmd_show_environment_exec(
         }
         env = (*(*target).s).environ
     }
-    if (*args).argc != 0 as libc::c_int {
-        envent = environ_find(env, *(*args).argv.offset(0 as libc::c_int as isize));
+    if (*args).argc != 0i32 {
+        envent = environ_find(env, *(*args).argv.offset(0isize));
         if envent.is_null() {
             cmdq_error(
                 item,
                 b"unknown variable: %s\x00" as *const u8 as *const libc::c_char,
-                *(*args).argv.offset(0 as libc::c_int as isize),
+                *(*args).argv.offset(0isize),
             );
             return CMD_RETURN_ERROR;
         }

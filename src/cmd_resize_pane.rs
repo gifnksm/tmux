@@ -1092,8 +1092,8 @@ pub static mut cmd_resize_pane_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"DLMRTt:Ux:y:Z\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 1 as libc::c_int,
+                    lower: 0i32,
+                    upper: 1i32,
                 };
                 init
             },
@@ -1106,13 +1106,13 @@ pub static mut cmd_resize_pane_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_PANE,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0x4 as libc::c_int,
+            flags: 0x4i32,
             exec: Some(
                 cmd_resize_pane_exec
                     as unsafe extern "C" fn(
@@ -1161,23 +1161,23 @@ unsafe extern "C" fn cmd_resize_pane_exec(
     let mut x: libc::c_int = 0;
     let mut y: libc::c_int = 0;
     let mut gd: *mut grid = (*wp).base.grid;
-    if args_has(args, 'T' as i32 as u_char) != 0 {
+    if args_has(args, 'T' as u_char) != 0 {
         if !(*wp).modes.tqh_first.is_null() {
             return CMD_RETURN_NORMAL;
         }
         adjust = (*(*wp).base.grid)
             .sy
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
+            .wrapping_sub(1u32)
             .wrapping_sub((*wp).base.cy);
         if adjust > (*gd).hsize {
             adjust = (*gd).hsize
         }
         grid_remove_history(gd, adjust);
-        (*wp).base.cy = ((*wp).base.cy as libc::c_uint).wrapping_add(adjust) as u_int as u_int;
-        (*wp).flags |= 0x1 as libc::c_int;
+        (*wp).base.cy = ((*wp).base.cy).wrapping_add(adjust);
+        (*wp).flags |= 0x1i32;
         return CMD_RETURN_NORMAL;
     }
-    if args_has(args, 'M' as i32 as u_char) != 0 {
+    if args_has(args, 'M' as u_char) != 0 {
         if (*event).m.valid == 0 || cmd_mouse_window(&mut (*event).m, &mut s).is_null() {
             return CMD_RETURN_NORMAL;
         }
@@ -1191,8 +1191,8 @@ unsafe extern "C" fn cmd_resize_pane_exec(
         cmd_resize_pane_mouse_update(c, &mut (*event).m);
         return CMD_RETURN_NORMAL;
     }
-    if args_has(args, 'Z' as i32 as u_char) != 0 {
-        if (*w).flags & 0x8 as libc::c_int != 0 {
+    if args_has(args, 'Z' as u_char) != 0 {
+        if (*w).flags & 0x8i32 != 0 {
             window_unzoom(w);
         } else {
             window_zoom(wp);
@@ -1201,13 +1201,13 @@ unsafe extern "C" fn cmd_resize_pane_exec(
         return CMD_RETURN_NORMAL;
     }
     server_unzoom_window(w);
-    if (*args).argc == 0 as libc::c_int {
-        adjust = 1 as libc::c_int as u_int
+    if (*args).argc == 0i32 {
+        adjust = 1u32
     } else {
         adjust = strtonum(
-            *(*args).argv.offset(0 as libc::c_int as isize),
-            1 as libc::c_int as libc::c_longlong,
-            2147483647 as libc::c_int as libc::c_longlong,
+            *(*args).argv.offset(0isize),
+            1i64,
+            2147483647i64,
             &mut errstr,
         ) as u_int;
         if !errstr.is_null() {
@@ -1219,12 +1219,12 @@ unsafe extern "C" fn cmd_resize_pane_exec(
             return CMD_RETURN_ERROR;
         }
     }
-    if args_has(args, 'x' as i32 as u_char) != 0 {
+    if args_has(args, 'x' as u_char) != 0 {
         x = args_percentage(
             args,
-            'x' as i32 as u_char,
-            0 as libc::c_int as libc::c_longlong,
-            2147483647 as libc::c_int as libc::c_longlong,
+            'x' as u_char,
+            0i64,
+            2147483647i64,
             (*w).sx as libc::c_longlong,
             &mut cause,
         ) as libc::c_int;
@@ -1239,12 +1239,12 @@ unsafe extern "C" fn cmd_resize_pane_exec(
         }
         layout_resize_pane_to(wp, LAYOUT_LEFTRIGHT, x as u_int);
     }
-    if args_has(args, 'y' as i32 as u_char) != 0 {
+    if args_has(args, 'y' as u_char) != 0 {
         y = args_percentage(
             args,
-            'y' as i32 as u_char,
-            0 as libc::c_int as libc::c_longlong,
-            2147483647 as libc::c_int as libc::c_longlong,
+            'y' as u_char,
+            0i64,
+            2147483647i64,
             (*w).sy as libc::c_longlong,
             &mut cause,
         ) as libc::c_int;
@@ -1259,34 +1259,24 @@ unsafe extern "C" fn cmd_resize_pane_exec(
         }
         layout_resize_pane_to(wp, LAYOUT_TOPBOTTOM, y as u_int);
     }
-    if args_has(args, 'L' as i32 as u_char) != 0 {
+    if args_has(args, 'L' as u_char) != 0 {
         layout_resize_pane(
             wp,
             LAYOUT_LEFTRIGHT,
             adjust.wrapping_neg() as libc::c_int,
-            1 as libc::c_int,
+            1i32,
         );
-    } else if args_has(args, 'R' as i32 as u_char) != 0 {
-        layout_resize_pane(
-            wp,
-            LAYOUT_LEFTRIGHT,
-            adjust as libc::c_int,
-            1 as libc::c_int,
-        );
-    } else if args_has(args, 'U' as i32 as u_char) != 0 {
+    } else if args_has(args, 'R' as u_char) != 0 {
+        layout_resize_pane(wp, LAYOUT_LEFTRIGHT, adjust as libc::c_int, 1i32);
+    } else if args_has(args, 'U' as u_char) != 0 {
         layout_resize_pane(
             wp,
             LAYOUT_TOPBOTTOM,
             adjust.wrapping_neg() as libc::c_int,
-            1 as libc::c_int,
+            1i32,
         );
-    } else if args_has(args, 'D' as i32 as u_char) != 0 {
-        layout_resize_pane(
-            wp,
-            LAYOUT_TOPBOTTOM,
-            adjust as libc::c_int,
-            1 as libc::c_int,
-        );
+    } else if args_has(args, 'D' as u_char) != 0 {
+        layout_resize_pane(wp, LAYOUT_TOPBOTTOM, adjust as libc::c_int, 1i32);
     }
     server_redraw_window((*wl).window);
     return CMD_RETURN_NORMAL;
@@ -1299,18 +1289,18 @@ unsafe extern "C" fn cmd_resize_pane_mouse_update(mut c: *mut client, mut m: *mu
     let mut x: u_int = 0;
     let mut lx: u_int = 0;
     static mut offsets: [[libc::c_int; 2]; 5] = [
-        [0 as libc::c_int, 0 as libc::c_int],
-        [0 as libc::c_int, 1 as libc::c_int],
-        [1 as libc::c_int, 0 as libc::c_int],
-        [0 as libc::c_int, -(1 as libc::c_int)],
-        [-(1 as libc::c_int), 0 as libc::c_int],
+        [0i32, 0i32],
+        [0i32, 1i32],
+        [1i32, 0i32],
+        [0i32, -(1i32)],
+        [-(1i32), 0i32],
     ];
     let mut cells: [*mut layout_cell; 5] = [0 as *mut layout_cell; 5];
     let mut lc: *mut layout_cell = 0 as *mut layout_cell;
-    let mut ncells: u_int = 0 as libc::c_int as u_int;
+    let mut ncells: u_int = 0u32;
     let mut i: u_int = 0;
     let mut j: u_int = 0;
-    let mut resizes: u_int = 0 as libc::c_int as u_int;
+    let mut resizes: u_int = 0u32;
     let mut type_0: layout_type = LAYOUT_LEFTRIGHT;
     wl = cmd_mouse_window(m, 0 as *mut *mut session);
     if wl.is_null() {
@@ -1320,30 +1310,30 @@ unsafe extern "C" fn cmd_resize_pane_mouse_update(mut c: *mut client, mut m: *mu
     w = (*wl).window;
     y = (*m).y.wrapping_add((*m).oy);
     x = (*m).x.wrapping_add((*m).ox);
-    if (*m).statusat == 0 as libc::c_int && y >= (*m).statuslines {
-        y = (y as libc::c_uint).wrapping_sub((*m).statuslines) as u_int as u_int
-    } else if (*m).statusat > 0 as libc::c_int && y >= (*m).statusat as u_int {
-        y = ((*m).statusat - 1 as libc::c_int) as u_int
+    if (*m).statusat == 0i32 && y >= (*m).statuslines {
+        y = (y).wrapping_sub((*m).statuslines)
+    } else if (*m).statusat > 0i32 && y >= (*m).statusat as u_int {
+        y = ((*m).statusat - 1i32) as u_int
     }
     ly = (*m).ly.wrapping_add((*m).oy);
     lx = (*m).lx.wrapping_add((*m).ox);
-    if (*m).statusat == 0 as libc::c_int && ly >= (*m).statuslines {
-        ly = (ly as libc::c_uint).wrapping_sub((*m).statuslines) as u_int as u_int
-    } else if (*m).statusat > 0 as libc::c_int && ly >= (*m).statusat as u_int {
-        ly = ((*m).statusat - 1 as libc::c_int) as u_int
+    if (*m).statusat == 0i32 && ly >= (*m).statuslines {
+        ly = (ly).wrapping_sub((*m).statuslines)
+    } else if (*m).statusat > 0i32 && ly >= (*m).statusat as u_int {
+        ly = ((*m).statusat - 1i32) as u_int
     }
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while (i as libc::c_ulong)
         < (::std::mem::size_of::<[*mut layout_cell; 5]>() as libc::c_ulong)
             .wrapping_div(::std::mem::size_of::<*mut layout_cell>() as libc::c_ulong)
     {
         lc = layout_search_by_border(
             (*w).layout_root,
-            lx.wrapping_add(offsets[i as usize][0 as libc::c_int as usize] as libc::c_uint),
-            ly.wrapping_add(offsets[i as usize][1 as libc::c_int as usize] as libc::c_uint),
+            lx.wrapping_add(offsets[i as usize][0usize] as libc::c_uint),
+            ly.wrapping_add(offsets[i as usize][1usize] as libc::c_uint),
         );
         if !lc.is_null() {
-            j = 0 as libc::c_int as u_int;
+            j = 0u32;
             while j < ncells {
                 if cells[j as usize] == lc {
                     lc = 0 as *mut layout_cell;
@@ -1359,36 +1349,34 @@ unsafe extern "C" fn cmd_resize_pane_mouse_update(mut c: *mut client, mut m: *mu
         }
         i = i.wrapping_add(1)
     }
-    if ncells == 0 as libc::c_int as libc::c_uint {
+    if ncells == 0u32 {
         return;
     }
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < ncells {
         type_0 = (*(*cells[i as usize]).parent).type_0;
-        if y != ly && type_0 as libc::c_uint == LAYOUT_TOPBOTTOM as libc::c_int as libc::c_uint {
+        if y != ly && type_0 == LAYOUT_TOPBOTTOM {
             layout_resize_layout(
                 w,
                 cells[i as usize],
                 type_0,
                 y.wrapping_sub(ly) as libc::c_int,
-                0 as libc::c_int,
+                0i32,
             );
             resizes = resizes.wrapping_add(1)
-        } else if x != lx
-            && type_0 as libc::c_uint == LAYOUT_LEFTRIGHT as libc::c_int as libc::c_uint
-        {
+        } else if x != lx && type_0 == LAYOUT_LEFTRIGHT {
             layout_resize_layout(
                 w,
                 cells[i as usize],
                 type_0,
                 x.wrapping_sub(lx) as libc::c_int,
-                0 as libc::c_int,
+                0i32,
             );
             resizes = resizes.wrapping_add(1)
         }
         i = i.wrapping_add(1)
     }
-    if resizes != 0 as libc::c_int as libc::c_uint {
+    if resizes != 0u32 {
         server_redraw_window(w);
     };
 }

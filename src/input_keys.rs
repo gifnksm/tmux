@@ -1065,16 +1065,16 @@ unsafe extern "C" fn input_key_tree_RB_INSERT_COLOR(
     let mut tmp: *mut input_key_entry = 0 as *mut input_key_entry;
     loop {
         parent = (*elm).entry.rbe_parent;
-        if !(!parent.is_null() && (*parent).entry.rbe_color == 1 as libc::c_int) {
+        if !(!parent.is_null() && (*parent).entry.rbe_color == 1i32) {
             break;
         }
         gparent = (*parent).entry.rbe_parent;
         if parent == (*gparent).entry.rbe_left {
             tmp = (*gparent).entry.rbe_right;
-            if !tmp.is_null() && (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).entry.rbe_right == elm {
@@ -1100,8 +1100,8 @@ unsafe extern "C" fn input_key_tree_RB_INSERT_COLOR(
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 tmp = (*gparent).entry.rbe_left;
                 (*gparent).entry.rbe_left = (*tmp).entry.rbe_right;
                 if !(*gparent).entry.rbe_left.is_null() {
@@ -1123,10 +1123,10 @@ unsafe extern "C" fn input_key_tree_RB_INSERT_COLOR(
             }
         } else {
             tmp = (*gparent).entry.rbe_left;
-            if !tmp.is_null() && (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).entry.rbe_left == elm {
@@ -1152,8 +1152,8 @@ unsafe extern "C" fn input_key_tree_RB_INSERT_COLOR(
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 tmp = (*gparent).entry.rbe_right;
                 (*gparent).entry.rbe_right = (*tmp).entry.rbe_left;
                 if !(*gparent).entry.rbe_right.is_null() {
@@ -1175,7 +1175,7 @@ unsafe extern "C" fn input_key_tree_RB_INSERT_COLOR(
             }
         }
     }
-    (*(*head).rbh_root).entry.rbe_color = 0 as libc::c_int;
+    (*(*head).rbh_root).entry.rbe_color = 0i32;
 }
 unsafe extern "C" fn input_key_tree_RB_FIND(
     mut head: *mut input_key_tree,
@@ -1185,9 +1185,9 @@ unsafe extern "C" fn input_key_tree_RB_FIND(
     let mut comp: libc::c_int = 0;
     while !tmp.is_null() {
         comp = input_key_cmp(elm, tmp);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).entry.rbe_right
         } else {
             return tmp;
@@ -1201,14 +1201,14 @@ unsafe extern "C" fn input_key_tree_RB_INSERT(
 ) -> *mut input_key_entry {
     let mut tmp: *mut input_key_entry = 0 as *mut input_key_entry;
     let mut parent: *mut input_key_entry = 0 as *mut input_key_entry;
-    let mut comp: libc::c_int = 0 as libc::c_int;
+    let mut comp: libc::c_int = 0i32;
     tmp = (*head).rbh_root;
     while !tmp.is_null() {
         parent = tmp;
         comp = input_key_cmp(elm, parent);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).entry.rbe_right
         } else {
             return tmp;
@@ -1217,9 +1217,9 @@ unsafe extern "C" fn input_key_tree_RB_INSERT(
     (*elm).entry.rbe_parent = parent;
     (*elm).entry.rbe_right = 0 as *mut input_key_entry;
     (*elm).entry.rbe_left = (*elm).entry.rbe_right;
-    (*elm).entry.rbe_color = 1 as libc::c_int;
+    (*elm).entry.rbe_color = 1i32;
     if !parent.is_null() {
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             (*parent).entry.rbe_left = elm
         } else {
             (*parent).entry.rbe_right = elm
@@ -1238,7 +1238,7 @@ unsafe extern "C" fn input_key_tree_RB_MINMAX(
     let mut parent: *mut input_key_entry = 0 as *mut input_key_entry;
     while !tmp.is_null() {
         parent = tmp;
-        if val < 0 as libc::c_int {
+        if val < 0i32 {
             tmp = (*tmp).entry.rbe_left
         } else {
             tmp = (*tmp).entry.rbe_right
@@ -1268,7 +1268,7 @@ unsafe extern "C" fn input_key_tree_RB_NEXT(mut elm: *mut input_key_entry) -> *m
 #[no_mangle]
 pub static mut input_key_tree: input_key_tree = {
     let mut init = input_key_tree {
-        rbh_root: 0 as *const input_key_entry as *mut input_key_entry,
+        rbh_root: 0 as *mut input_key_entry,
     };
     init
 };
@@ -1276,12 +1276,12 @@ pub static mut input_key_tree: input_key_tree = {
 static mut input_key_defaults: [input_key_entry; 91] = [
     {
         let mut init = input_key_entry {
-            key: key_code_code::PASTE_START as libc::c_ulong as key_code,
+            key: key_code_code::PASTE_START,
             data: b"\x1b[200~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1289,12 +1289,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::PASTE_END as libc::c_ulong as key_code,
+            key: key_code_code::PASTE_END,
             data: b"\x1b[201~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1302,12 +1302,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::F1 as libc::c_ulong as key_code,
+            key: key_code_code::F1,
             data: b"\x1bOP\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1315,12 +1315,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::F2 as libc::c_ulong as key_code,
+            key: key_code_code::F2,
             data: b"\x1bOQ\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1328,12 +1328,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::F3 as libc::c_ulong as key_code,
+            key: key_code_code::F3,
             data: b"\x1bOR\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1341,12 +1341,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::F4 as libc::c_ulong as key_code,
+            key: key_code_code::F4,
             data: b"\x1bOS\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1354,12 +1354,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::F5 as libc::c_ulong as key_code,
+            key: key_code_code::F5,
             data: b"\x1b[15~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1367,12 +1367,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::F6 as libc::c_ulong as key_code,
+            key: key_code_code::F6,
             data: b"\x1b[17~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1380,12 +1380,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::F7 as libc::c_ulong as key_code,
+            key: key_code_code::F7,
             data: b"\x1b[18~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1393,12 +1393,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::F8 as libc::c_ulong as key_code,
+            key: key_code_code::F8,
             data: b"\x1b[19~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1406,12 +1406,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::F9 as libc::c_ulong as key_code,
+            key: key_code_code::F9,
             data: b"\x1b[20~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1419,12 +1419,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::F10 as libc::c_ulong as key_code,
+            key: key_code_code::F10,
             data: b"\x1b[21~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1432,12 +1432,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::F11 as libc::c_ulong as key_code,
+            key: key_code_code::F11,
             data: b"\x1b[23~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1445,12 +1445,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::F12 as libc::c_ulong as key_code,
+            key: key_code_code::F12,
             data: b"\x1b[24~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1458,13 +1458,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::F1 as libc::c_ulong as libc::c_ulonglong
-                | 0x400000000000 as libc::c_ulonglong,
+            key: key_code_code::F1 | 0x400000000000u64,
             data: b"\x1b[25~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1472,13 +1471,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::F2 as libc::c_ulong as libc::c_ulonglong
-                | 0x400000000000 as libc::c_ulonglong,
+            key: key_code_code::F2 | 0x400000000000u64,
             data: b"\x1b[26~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1486,13 +1484,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::F3 as libc::c_ulong as libc::c_ulonglong
-                | 0x400000000000 as libc::c_ulonglong,
+            key: key_code_code::F3 | 0x400000000000u64,
             data: b"\x1b[28~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1500,13 +1497,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::F4 as libc::c_ulong as libc::c_ulonglong
-                | 0x400000000000 as libc::c_ulonglong,
+            key: key_code_code::F4 | 0x400000000000u64,
             data: b"\x1b[29~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1514,13 +1510,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::F5 as libc::c_ulong as libc::c_ulonglong
-                | 0x400000000000 as libc::c_ulonglong,
+            key: key_code_code::F5 | 0x400000000000u64,
             data: b"\x1b[31~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1528,13 +1523,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::F6 as libc::c_ulong as libc::c_ulonglong
-                | 0x400000000000 as libc::c_ulonglong,
+            key: key_code_code::F6 | 0x400000000000u64,
             data: b"\x1b[32~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1542,13 +1536,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::F7 as libc::c_ulong as libc::c_ulonglong
-                | 0x400000000000 as libc::c_ulonglong,
+            key: key_code_code::F7 | 0x400000000000u64,
             data: b"\x1b[33~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1556,13 +1549,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::F8 as libc::c_ulong as libc::c_ulonglong
-                | 0x400000000000 as libc::c_ulonglong,
+            key: key_code_code::F8 | 0x400000000000u64,
             data: b"\x1b[34~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1570,12 +1562,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::IC as libc::c_ulong as key_code,
+            key: key_code_code::IC,
             data: b"\x1b[2~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1583,12 +1575,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::DC as libc::c_ulong as key_code,
+            key: key_code_code::DC,
             data: b"\x1b[3~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1596,12 +1588,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::HOME as libc::c_ulong as key_code,
+            key: key_code_code::HOME,
             data: b"\x1b[1~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1609,12 +1601,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::END as libc::c_ulong as key_code,
+            key: key_code_code::END,
             data: b"\x1b[4~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1622,12 +1614,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::NPAGE as libc::c_ulong as key_code,
+            key: key_code_code::NPAGE,
             data: b"\x1b[6~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1635,12 +1627,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::PPAGE as libc::c_ulong as key_code,
+            key: key_code_code::PPAGE,
             data: b"\x1b[5~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1648,12 +1640,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::BTAB as libc::c_ulong as key_code,
+            key: key_code_code::BTAB,
             data: b"\x1b[Z\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1661,13 +1653,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::UP as libc::c_ulong as libc::c_ulonglong
-                | 0x4000000000000 as libc::c_ulonglong,
+            key: key_code_code::UP | 0x4000000000000u64,
             data: b"\x1bOA\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1675,13 +1666,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::DOWN as libc::c_ulong as libc::c_ulonglong
-                | 0x4000000000000 as libc::c_ulonglong,
+            key: key_code_code::DOWN | 0x4000000000000u64,
             data: b"\x1bOB\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1689,13 +1679,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::RIGHT as libc::c_ulong as libc::c_ulonglong
-                | 0x4000000000000 as libc::c_ulonglong,
+            key: key_code_code::RIGHT | 0x4000000000000u64,
             data: b"\x1bOC\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1703,13 +1692,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::LEFT as libc::c_ulong as libc::c_ulonglong
-                | 0x4000000000000 as libc::c_ulonglong,
+            key: key_code_code::LEFT | 0x4000000000000u64,
             data: b"\x1bOD\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1717,12 +1705,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::UP as libc::c_ulong as key_code,
+            key: key_code_code::UP,
             data: b"\x1b[A\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1730,12 +1718,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::DOWN as libc::c_ulong as key_code,
+            key: key_code_code::DOWN,
             data: b"\x1b[B\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1743,12 +1731,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::RIGHT as libc::c_ulong as key_code,
+            key: key_code_code::RIGHT,
             data: b"\x1b[C\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1756,12 +1744,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::LEFT as libc::c_ulong as key_code,
+            key: key_code_code::LEFT,
             data: b"\x1b[D\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1769,13 +1757,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::KP_SLASH as libc::c_ulong as libc::c_ulonglong
-                | 0x2000000000000 as libc::c_ulonglong,
+            key: key_code_code::KP_SLASH | 0x2000000000000u64,
             data: b"\x1bOo\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1783,13 +1770,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::KP_STAR as libc::c_ulong as libc::c_ulonglong
-                | 0x2000000000000 as libc::c_ulonglong,
+            key: key_code_code::KP_STAR | 0x2000000000000u64,
             data: b"\x1bOj\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1797,13 +1783,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::KP_MINUS as libc::c_ulong as libc::c_ulonglong
-                | 0x2000000000000 as libc::c_ulonglong,
+            key: key_code_code::KP_MINUS | 0x2000000000000u64,
             data: b"\x1bOm\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1811,13 +1796,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::KP_SEVEN as libc::c_ulong as libc::c_ulonglong
-                | 0x2000000000000 as libc::c_ulonglong,
+            key: key_code_code::KP_SEVEN | 0x2000000000000u64,
             data: b"\x1bOw\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1825,13 +1809,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::KP_EIGHT as libc::c_ulong as libc::c_ulonglong
-                | 0x2000000000000 as libc::c_ulonglong,
+            key: key_code_code::KP_EIGHT | 0x2000000000000u64,
             data: b"\x1bOx\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1839,13 +1822,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::KP_NINE as libc::c_ulong as libc::c_ulonglong
-                | 0x2000000000000 as libc::c_ulonglong,
+            key: key_code_code::KP_NINE | 0x2000000000000u64,
             data: b"\x1bOy\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1853,13 +1835,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::KP_PLUS as libc::c_ulong as libc::c_ulonglong
-                | 0x2000000000000 as libc::c_ulonglong,
+            key: key_code_code::KP_PLUS | 0x2000000000000u64,
             data: b"\x1bOk\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1867,13 +1848,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::KP_FOUR as libc::c_ulong as libc::c_ulonglong
-                | 0x2000000000000 as libc::c_ulonglong,
+            key: key_code_code::KP_FOUR | 0x2000000000000u64,
             data: b"\x1bOt\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1881,13 +1861,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::KP_FIVE as libc::c_ulong as libc::c_ulonglong
-                | 0x2000000000000 as libc::c_ulonglong,
+            key: key_code_code::KP_FIVE | 0x2000000000000u64,
             data: b"\x1bOu\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1895,13 +1874,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::KP_SIX as libc::c_ulong as libc::c_ulonglong
-                | 0x2000000000000 as libc::c_ulonglong,
+            key: key_code_code::KP_SIX | 0x2000000000000u64,
             data: b"\x1bOv\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1909,13 +1887,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::KP_ONE as libc::c_ulong as libc::c_ulonglong
-                | 0x2000000000000 as libc::c_ulonglong,
+            key: key_code_code::KP_ONE | 0x2000000000000u64,
             data: b"\x1bOq\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1923,13 +1900,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::KP_TWO as libc::c_ulong as libc::c_ulonglong
-                | 0x2000000000000 as libc::c_ulonglong,
+            key: key_code_code::KP_TWO | 0x2000000000000u64,
             data: b"\x1bOr\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1937,13 +1913,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::KP_THREE as libc::c_ulong as libc::c_ulonglong
-                | 0x2000000000000 as libc::c_ulonglong,
+            key: key_code_code::KP_THREE | 0x2000000000000u64,
             data: b"\x1bOs\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1951,13 +1926,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::KP_ENTER as libc::c_ulong as libc::c_ulonglong
-                | 0x2000000000000 as libc::c_ulonglong,
+            key: key_code_code::KP_ENTER | 0x2000000000000u64,
             data: b"\x1bOM\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1965,13 +1939,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::KP_ZERO as libc::c_ulong as libc::c_ulonglong
-                | 0x2000000000000 as libc::c_ulonglong,
+            key: key_code_code::KP_ZERO | 0x2000000000000u64,
             data: b"\x1bOp\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1979,13 +1952,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::KP_PERIOD as libc::c_ulong as libc::c_ulonglong
-                | 0x2000000000000 as libc::c_ulonglong,
+            key: key_code_code::KP_PERIOD | 0x2000000000000u64,
             data: b"\x1bOn\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -1993,12 +1965,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::KP_SLASH as libc::c_ulong as key_code,
+            key: key_code_code::KP_SLASH,
             data: b"/\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2006,12 +1978,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::KP_STAR as libc::c_ulong as key_code,
+            key: key_code_code::KP_STAR,
             data: b"*\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2019,12 +1991,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::KP_MINUS as libc::c_ulong as key_code,
+            key: key_code_code::KP_MINUS,
             data: b"-\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2032,12 +2004,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::KP_SEVEN as libc::c_ulong as key_code,
+            key: key_code_code::KP_SEVEN,
             data: b"7\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2045,12 +2017,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::KP_EIGHT as libc::c_ulong as key_code,
+            key: key_code_code::KP_EIGHT,
             data: b"8\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2058,12 +2030,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::KP_NINE as libc::c_ulong as key_code,
+            key: key_code_code::KP_NINE,
             data: b"9\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2071,12 +2043,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::KP_PLUS as libc::c_ulong as key_code,
+            key: key_code_code::KP_PLUS,
             data: b"+\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2084,12 +2056,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::KP_FOUR as libc::c_ulong as key_code,
+            key: key_code_code::KP_FOUR,
             data: b"4\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2097,12 +2069,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::KP_FIVE as libc::c_ulong as key_code,
+            key: key_code_code::KP_FIVE,
             data: b"5\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2110,12 +2082,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::KP_SIX as libc::c_ulong as key_code,
+            key: key_code_code::KP_SIX,
             data: b"6\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2123,12 +2095,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::KP_ONE as libc::c_ulong as key_code,
+            key: key_code_code::KP_ONE,
             data: b"1\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2136,12 +2108,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::KP_TWO as libc::c_ulong as key_code,
+            key: key_code_code::KP_TWO,
             data: b"2\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2149,12 +2121,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::KP_THREE as libc::c_ulong as key_code,
+            key: key_code_code::KP_THREE,
             data: b"3\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2162,12 +2134,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::KP_ENTER as libc::c_ulong as key_code,
+            key: key_code_code::KP_ENTER,
             data: b"\n\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2175,12 +2147,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::KP_ZERO as libc::c_ulong as key_code,
+            key: key_code_code::KP_ZERO,
             data: b"0\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2188,12 +2160,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::KP_PERIOD as libc::c_ulong as key_code,
+            key: key_code_code::KP_PERIOD,
             data: b".\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2201,13 +2173,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::F1 as libc::c_ulong as libc::c_ulonglong
-                | 0x10000000000000 as libc::c_ulonglong,
+            key: key_code_code::F1 | 0x10000000000000u64,
             data: b"\x1b[1;_P\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2215,13 +2186,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::F2 as libc::c_ulong as libc::c_ulonglong
-                | 0x10000000000000 as libc::c_ulonglong,
+            key: key_code_code::F2 | 0x10000000000000u64,
             data: b"\x1b[1;_Q\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2229,13 +2199,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::F3 as libc::c_ulong as libc::c_ulonglong
-                | 0x10000000000000 as libc::c_ulonglong,
+            key: key_code_code::F3 | 0x10000000000000u64,
             data: b"\x1b[1;_R\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2243,13 +2212,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::F4 as libc::c_ulong as libc::c_ulonglong
-                | 0x10000000000000 as libc::c_ulonglong,
+            key: key_code_code::F4 | 0x10000000000000u64,
             data: b"\x1b[1;_S\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2257,13 +2225,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::F5 as libc::c_ulong as libc::c_ulonglong
-                | 0x10000000000000 as libc::c_ulonglong,
+            key: key_code_code::F5 | 0x10000000000000u64,
             data: b"\x1b[15;_~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2271,13 +2238,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::F6 as libc::c_ulong as libc::c_ulonglong
-                | 0x10000000000000 as libc::c_ulonglong,
+            key: key_code_code::F6 | 0x10000000000000u64,
             data: b"\x1b[17;_~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2285,13 +2251,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::F7 as libc::c_ulong as libc::c_ulonglong
-                | 0x10000000000000 as libc::c_ulonglong,
+            key: key_code_code::F7 | 0x10000000000000u64,
             data: b"\x1b[18;_~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2299,13 +2264,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::F8 as libc::c_ulong as libc::c_ulonglong
-                | 0x10000000000000 as libc::c_ulonglong,
+            key: key_code_code::F8 | 0x10000000000000u64,
             data: b"\x1b[19;_~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2313,13 +2277,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::F9 as libc::c_ulong as libc::c_ulonglong
-                | 0x10000000000000 as libc::c_ulonglong,
+            key: key_code_code::F9 | 0x10000000000000u64,
             data: b"\x1b[20;_~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2327,13 +2290,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::F10 as libc::c_ulong as libc::c_ulonglong
-                | 0x10000000000000 as libc::c_ulonglong,
+            key: key_code_code::F10 | 0x10000000000000u64,
             data: b"\x1b[21;_~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2341,13 +2303,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::F11 as libc::c_ulong as libc::c_ulonglong
-                | 0x10000000000000 as libc::c_ulonglong,
+            key: key_code_code::F11 | 0x10000000000000u64,
             data: b"\x1b[23;_~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2355,13 +2316,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::F12 as libc::c_ulong as libc::c_ulonglong
-                | 0x10000000000000 as libc::c_ulonglong,
+            key: key_code_code::F12 | 0x10000000000000u64,
             data: b"\x1b[24;_~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2369,13 +2329,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::UP as libc::c_ulong as libc::c_ulonglong
-                | 0x10000000000000 as libc::c_ulonglong,
+            key: key_code_code::UP | 0x10000000000000u64,
             data: b"\x1b[1;_A\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2383,13 +2342,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::DOWN as libc::c_ulong as libc::c_ulonglong
-                | 0x10000000000000 as libc::c_ulonglong,
+            key: key_code_code::DOWN | 0x10000000000000u64,
             data: b"\x1b[1;_B\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2397,13 +2355,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::RIGHT as libc::c_ulong as libc::c_ulonglong
-                | 0x10000000000000 as libc::c_ulonglong,
+            key: key_code_code::RIGHT | 0x10000000000000u64,
             data: b"\x1b[1;_C\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2411,13 +2368,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::LEFT as libc::c_ulong as libc::c_ulonglong
-                | 0x10000000000000 as libc::c_ulonglong,
+            key: key_code_code::LEFT | 0x10000000000000u64,
             data: b"\x1b[1;_D\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2425,13 +2381,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::HOME as libc::c_ulong as libc::c_ulonglong
-                | 0x10000000000000 as libc::c_ulonglong,
+            key: key_code_code::HOME | 0x10000000000000u64,
             data: b"\x1b[1;_H\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2439,13 +2394,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::END as libc::c_ulong as libc::c_ulonglong
-                | 0x10000000000000 as libc::c_ulonglong,
+            key: key_code_code::END | 0x10000000000000u64,
             data: b"\x1b[1;_F\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2453,13 +2407,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::PPAGE as libc::c_ulong as libc::c_ulonglong
-                | 0x10000000000000 as libc::c_ulonglong,
+            key: key_code_code::PPAGE | 0x10000000000000u64,
             data: b"\x1b[5;_~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2467,13 +2420,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::NPAGE as libc::c_ulong as libc::c_ulonglong
-                | 0x10000000000000 as libc::c_ulonglong,
+            key: key_code_code::NPAGE | 0x10000000000000u64,
             data: b"\x1b[6;_~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2481,13 +2433,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::IC as libc::c_ulong as libc::c_ulonglong
-                | 0x10000000000000 as libc::c_ulonglong,
+            key: key_code_code::IC | 0x10000000000000u64,
             data: b"\x1b[2;_~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2495,13 +2446,12 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
     {
         let mut init = input_key_entry {
-            key: key_code_code::DC as libc::c_ulong as libc::c_ulonglong
-                | 0x10000000000000 as libc::c_ulonglong,
+            key: key_code_code::DC | 0x10000000000000u64,
             data: b"\x1b[3;_~\x00" as *const u8 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2509,22 +2459,15 @@ static mut input_key_defaults: [input_key_entry; 91] = [
     },
 ];
 static mut input_key_modifiers: [key_code; 9] = [
-    0 as libc::c_int as key_code,
-    0 as libc::c_int as key_code,
-    0x400000000000 as libc::c_ulonglong,
-    0x100000000000 as libc::c_ulonglong | 0x8000000000000 as libc::c_ulonglong,
-    0x400000000000 as libc::c_ulonglong
-        | 0x100000000000 as libc::c_ulonglong
-        | 0x8000000000000 as libc::c_ulonglong,
-    0x200000000000 as libc::c_ulonglong,
-    0x400000000000 as libc::c_ulonglong | 0x200000000000 as libc::c_ulonglong,
-    0x100000000000 as libc::c_ulonglong
-        | 0x8000000000000 as libc::c_ulonglong
-        | 0x200000000000 as libc::c_ulonglong,
-    0x400000000000 as libc::c_ulonglong
-        | 0x100000000000 as libc::c_ulonglong
-        | 0x8000000000000 as libc::c_ulonglong
-        | 0x200000000000 as libc::c_ulonglong,
+    0u64,
+    0u64,
+    0x400000000000u64,
+    0x100000000000u64 | 0x8000000000000u64,
+    0x400000000000u64 | 0x100000000000u64 | 0x8000000000000u64,
+    0x200000000000u64,
+    0x400000000000u64 | 0x200000000000u64,
+    0x100000000000u64 | 0x8000000000000u64 | 0x200000000000u64,
+    0x400000000000u64 | 0x100000000000u64 | 0x8000000000000u64 | 0x200000000000u64,
 ];
 /* Tree of input keys. */
 /* Input key comparison function. */
@@ -2533,12 +2476,12 @@ unsafe extern "C" fn input_key_cmp(
     mut ike2: *mut input_key_entry,
 ) -> libc::c_int {
     if (*ike1).key < (*ike2).key {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     if (*ike1).key > (*ike2).key {
-        return 1 as libc::c_int;
+        return 1i32;
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 /* Look for key in tree. */
 unsafe extern "C" fn input_key_get(mut key: key_code) -> *mut input_key_entry {
@@ -2547,9 +2490,9 @@ unsafe extern "C" fn input_key_get(mut key: key_code) -> *mut input_key_entry {
             key: key,
             data: 0 as *const libc::c_char,
             entry: C2RustUnnamed_33 {
-                rbe_left: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_right: 0 as *const input_key_entry as *mut input_key_entry,
-                rbe_parent: 0 as *const input_key_entry as *mut input_key_entry,
+                rbe_left: 0 as *mut input_key_entry,
+                rbe_right: 0 as *mut input_key_entry,
+                rbe_parent: 0 as *mut input_key_entry,
                 rbe_color: 0,
             },
         };
@@ -2559,16 +2502,13 @@ unsafe extern "C" fn input_key_get(mut key: key_code) -> *mut input_key_entry {
 }
 /* Split a character into two UTF-8 bytes. */
 unsafe extern "C" fn input_key_split2(mut c: u_int, mut dst: *mut u_char) -> size_t {
-    if c > 0x7f as libc::c_int as libc::c_uint {
-        *dst.offset(0 as libc::c_int as isize) =
-            (c >> 6 as libc::c_int | 0xc0 as libc::c_int as libc::c_uint) as u_char;
-        *dst.offset(1 as libc::c_int as isize) = (c & 0x3f as libc::c_int as libc::c_uint
-            | 0x80 as libc::c_int as libc::c_uint)
-            as u_char;
-        return 2 as libc::c_int as size_t;
+    if c > 0x7fu32 {
+        *dst.offset(0isize) = (c >> 6i32 | 0xc0u32) as u_char;
+        *dst.offset(1isize) = (c & 0x3fu32 | 0x80u32) as u_char;
+        return 2u64;
     }
-    *dst.offset(0 as libc::c_int as isize) = c as u_char;
-    return 1 as libc::c_int as size_t;
+    *dst.offset(0isize) = c as u_char;
+    return 1u64;
 }
 /* Build input key tree. */
 #[no_mangle]
@@ -2579,27 +2519,27 @@ pub unsafe extern "C" fn input_key_build() {
     let mut j: u_int = 0;
     let mut data: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut key: key_code = 0;
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while (i as libc::c_ulong)
         < (::std::mem::size_of::<[input_key_entry; 91]>() as libc::c_ulong)
             .wrapping_div(::std::mem::size_of::<input_key_entry>() as libc::c_ulong)
     {
         ike = &mut *input_key_defaults.as_mut_ptr().offset(i as isize) as *mut input_key_entry;
-        if !(*ike).key & 0x10000000000000 as libc::c_ulonglong != 0 {
+        if !(*ike).key & 0x10000000000000u64 != 0 {
             input_key_tree_RB_INSERT(&mut input_key_tree, ike);
         } else {
-            j = 2 as libc::c_int as u_int;
+            j = 2u32;
             while (j as libc::c_ulong)
                 < (::std::mem::size_of::<[key_code; 9]>() as libc::c_ulong)
                     .wrapping_div(::std::mem::size_of::<key_code>() as libc::c_ulong)
             {
-                key = (*ike).key & !(0x10000000000000 as libc::c_ulonglong);
+                key = (*ike).key & !(0x10000000000000u64);
                 data = xstrdup((*ike).data);
                 *data
                     .offset(strcspn(data, b"_\x00" as *const u8 as *const libc::c_char) as isize) =
-                    ('0' as i32 as libc::c_uint).wrapping_add(j) as libc::c_char;
+                    ('0' as libc::c_uint).wrapping_add(j) as libc::c_char;
                 new = xcalloc(
-                    1 as libc::c_int as size_t,
+                    1u64,
                     ::std::mem::size_of::<input_key_entry>() as libc::c_ulong,
                 ) as *mut input_key_entry;
                 (*new).key = key | input_key_modifiers[j as usize];
@@ -2610,14 +2550,14 @@ pub unsafe extern "C" fn input_key_build() {
         }
         i = i.wrapping_add(1)
     }
-    ike = input_key_tree_RB_MINMAX(&mut input_key_tree, -(1 as libc::c_int));
+    ike = input_key_tree_RB_MINMAX(&mut input_key_tree, -(1i32));
     while !ike.is_null() {
         log_debug(
             b"%s: 0x%llx (%s) is %s\x00" as *const u8 as *const libc::c_char,
             (*::std::mem::transmute::<&[u8; 16], &[libc::c_char; 16]>(b"input_key_build\x00"))
                 .as_ptr(),
             (*ike).key,
-            key_string_lookup_key((*ike).key, 1 as libc::c_int),
+            key_string_lookup_key((*ike).key, 1i32),
             (*ike).data,
         );
         ike = input_key_tree_RB_NEXT(ike)
@@ -2630,23 +2570,21 @@ pub unsafe extern "C" fn input_key_pane(
     mut key: key_code,
     mut m: *mut mouse_event,
 ) -> libc::c_int {
-    if log_get_level() != 0 as libc::c_int {
+    if log_get_level() != 0i32 {
         log_debug(
             b"writing key 0x%llx (%s) to %%%u\x00" as *const u8 as *const libc::c_char,
             key,
-            key_string_lookup_key(key, 1 as libc::c_int),
+            key_string_lookup_key(key, 1i32),
             (*wp).id,
         );
     }
-    if key & 0xfffffffffff as libc::c_ulonglong
-        >= key_code_code::MOUSE as libc::c_ulong as libc::c_ulonglong
-        && (key & 0xfffffffffff as libc::c_ulonglong)
-            < key_code_code::BSPACE as libc::c_ulong as libc::c_ulonglong
+    if key & 0xfffffffffffu64 >= key_code_code::MOUSE
+        && (key & 0xfffffffffffu64) < key_code_code::BSPACE
     {
-        if !m.is_null() && (*m).wp != -(1 as libc::c_int) && (*m).wp as u_int == (*wp).id {
+        if !m.is_null() && (*m).wp != -(1i32) && (*m).wp as u_int == (*wp).id {
             input_key_mouse(wp, m);
         }
-        return 0 as libc::c_int;
+        return 0i32;
     }
     return input_key((*wp).screen, (*wp).event, key);
 }
@@ -2670,69 +2608,52 @@ pub unsafe extern "C" fn input_key(
     let mut tmp: [libc::c_char; 64] = [0; 64];
     let mut modifier: libc::c_char = 0;
     /* Mouse keys need a pane. */
-    if key & 0xfffffffffff as libc::c_ulonglong
-        >= key_code_code::MOUSE as libc::c_ulong as libc::c_ulonglong
-        && (key & 0xfffffffffff as libc::c_ulonglong)
-            < key_code_code::BSPACE as libc::c_ulong as libc::c_ulonglong
+    if key & 0xfffffffffffu64 >= key_code_code::MOUSE
+        && (key & 0xfffffffffffu64) < key_code_code::BSPACE
     {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     /* Literal keys go as themselves (can't be more than eight bits). */
-    if key & 0x1000000000000 as libc::c_ulonglong != 0 {
-        ud.data[0 as libc::c_int as usize] = key as u_char;
+    if key & 0x1000000000000u64 != 0 {
+        ud.data[0usize] = key as u_char;
         bufferevent_write(
             bev,
-            &mut *ud.data.as_mut_ptr().offset(0 as libc::c_int as isize) as *mut u_char
-                as *const libc::c_void,
-            1 as libc::c_int as size_t,
+            &mut *ud.data.as_mut_ptr().offset(0isize) as *mut u_char as *const libc::c_void,
+            1u64,
         );
-        return 0 as libc::c_int;
+        return 0i32;
     }
     /* Is this backspace? */
-    if key & 0xfffffffffff as libc::c_ulonglong
-        == key_code_code::BSPACE as libc::c_ulong as libc::c_ulonglong
-    {
+    if key & 0xfffffffffffu64 == key_code_code::BSPACE {
         newkey = options_get_number(
             global_options,
             b"backspace\x00" as *const u8 as *const libc::c_char,
         ) as key_code;
-        if newkey >= 0x7f as libc::c_int as libc::c_ulonglong {
+        if newkey >= 0x7fu64 {
             newkey = '\u{7f}' as i32 as key_code
         }
-        key = newkey
-            | key & (0xf00000000000 as libc::c_ulonglong | 0xff000000000000 as libc::c_ulonglong)
+        key = newkey | key & (0xf00000000000u64 | 0xff000000000000u64)
     }
     /*
      * If this is a normal 7-bit key, just send it, with a leading escape
      * if necessary. If it is a UTF-8 key, split it and send it.
      */
-    justkey = key & !(0x100000000000 as libc::c_ulonglong | 0x8000000000000 as libc::c_ulonglong);
-    if justkey <= 0x7f as libc::c_int as libc::c_ulonglong {
-        if key & 0x100000000000 as libc::c_ulonglong != 0 {
-            bufferevent_write(
-                bev,
-                b"\x1b\x00" as *const u8 as *const libc::c_char as *const libc::c_void,
-                1 as libc::c_int as size_t,
-            );
+    justkey = key & !(0x100000000000u64 | 0x8000000000000u64);
+    if justkey <= 0x7fu64 {
+        if key & 0x100000000000u64 != 0 {
+            bufferevent_write(bev, b"\x1b\x00" as *const u8 as *const libc::c_void, 1u64);
         }
-        ud.data[0 as libc::c_int as usize] = justkey as u_char;
+        ud.data[0usize] = justkey as u_char;
         bufferevent_write(
             bev,
-            &mut *ud.data.as_mut_ptr().offset(0 as libc::c_int as isize) as *mut u_char
-                as *const libc::c_void,
-            1 as libc::c_int as size_t,
+            &mut *ud.data.as_mut_ptr().offset(0isize) as *mut u_char as *const libc::c_void,
+            1u64,
         );
-        return 0 as libc::c_int;
+        return 0i32;
     }
-    if justkey > 0x7f as libc::c_int as libc::c_ulonglong
-        && justkey < 0x1000000000 as libc::c_ulonglong
-    {
-        if key & 0x100000000000 as libc::c_ulonglong != 0 {
-            bufferevent_write(
-                bev,
-                b"\x1b\x00" as *const u8 as *const libc::c_char as *const libc::c_void,
-                1 as libc::c_int as size_t,
-            );
+    if justkey > 0x7fu64 && justkey < 0x1000000000u64 {
+        if key & 0x100000000000u64 != 0 {
+            bufferevent_write(bev, b"\x1b\x00" as *const u8 as *const libc::c_void, 1u64);
         }
         utf8_to_data(justkey as Utf8Char, &mut ud);
         bufferevent_write(
@@ -2740,30 +2661,27 @@ pub unsafe extern "C" fn input_key(
             ud.data.as_mut_ptr() as *const libc::c_void,
             ud.size as size_t,
         );
-        return 0 as libc::c_int;
+        return 0i32;
     }
     /*
      * Look up in the tree. If not in application keypad or cursor mode,
      * remove the flags from the key.
      */
-    if !(*s).mode & 0x8 as libc::c_int != 0 {
-        key &= !(0x2000000000000 as libc::c_ulonglong)
+    if !(*s).mode & 0x8i32 != 0 {
+        key &= !(0x2000000000000u64)
     }
-    if !(*s).mode & 0x4 as libc::c_int != 0 {
-        key &= !(0x4000000000000 as libc::c_ulonglong)
+    if !(*s).mode & 0x4i32 != 0 {
+        key &= !(0x4000000000000u64)
     }
     ike = input_key_get(key);
-    if ike.is_null()
-        && key & 0x100000000000 as libc::c_ulonglong != 0
-        && !key & 0x8000000000000 as libc::c_ulonglong != 0
-    {
-        ike = input_key_get(key & !(0x100000000000 as libc::c_ulonglong))
+    if ike.is_null() && key & 0x100000000000u64 != 0 && !key & 0x8000000000000u64 != 0 {
+        ike = input_key_get(key & !(0x100000000000u64))
     }
-    if ike.is_null() && key & 0x4000000000000 as libc::c_ulonglong != 0 {
-        ike = input_key_get(key & !(0x4000000000000 as libc::c_ulonglong))
+    if ike.is_null() && key & 0x4000000000000u64 != 0 {
+        ike = input_key_get(key & !(0x4000000000000u64))
     }
-    if ike.is_null() && key & 0x2000000000000 as libc::c_ulonglong != 0 {
-        ike = input_key_get(key & !(0x2000000000000 as libc::c_ulonglong))
+    if ike.is_null() && key & 0x2000000000000u64 != 0 {
+        ike = input_key_get(key & !(0x2000000000000u64))
     }
     if !ike.is_null() {
         log_debug(
@@ -2771,77 +2689,55 @@ pub unsafe extern "C" fn input_key(
             key,
             (*ike).data,
         );
-        if key & 0x100000000000 as libc::c_ulonglong != 0
-            && !key & 0x8000000000000 as libc::c_ulonglong != 0
-        {
-            bufferevent_write(
-                bev,
-                b"\x1b\x00" as *const u8 as *const libc::c_char as *const libc::c_void,
-                1 as libc::c_int as size_t,
-            );
+        if key & 0x100000000000u64 != 0 && !key & 0x8000000000000u64 != 0 {
+            bufferevent_write(bev, b"\x1b\x00" as *const u8 as *const libc::c_void, 1u64);
         }
         bufferevent_write(bev, (*ike).data as *const libc::c_void, strlen((*ike).data));
-        return 0 as libc::c_int;
+        return 0i32;
     }
     /* No builtin key sequence; construct an extended key sequence. */
-    if !(*s).mode & 0x8000 as libc::c_int != 0 {
-        if key & 0xf00000000000 as libc::c_ulonglong != 0x200000000000 as libc::c_ulonglong {
+    if !(*s).mode & 0x8000i32 != 0 {
+        if key & 0xf00000000000u64 != 0x200000000000u64 {
             log_debug(
                 b"key 0x%llx missing\x00" as *const u8 as *const libc::c_char,
                 key,
             );
-            return -(1 as libc::c_int);
+            return -(1i32);
         } else {
-            justkey = key & 0xfffffffffff as libc::c_ulonglong;
+            justkey = key & 0xfffffffffffu64;
             match justkey {
-                32 | 50 => {
-                    key = 0 as libc::c_int as libc::c_ulonglong
-                        | key & !(0xfffffffffff as libc::c_ulonglong)
-                }
-                124 => {
-                    key = 28 as libc::c_int as libc::c_ulonglong
-                        | key & !(0xfffffffffff as libc::c_ulonglong)
-                }
-                54 => {
-                    key = 30 as libc::c_int as libc::c_ulonglong
-                        | key & !(0xfffffffffff as libc::c_ulonglong)
-                }
-                45 | 47 => {
-                    key = 31 as libc::c_int as libc::c_ulonglong
-                        | key & !(0xfffffffffff as libc::c_ulonglong)
-                }
-                63 => {
-                    key = 127 as libc::c_int as libc::c_ulonglong
-                        | key & !(0xfffffffffff as libc::c_ulonglong)
-                }
+                32 | 50 => key = 0u64 | key & !(0xfffffffffffu64),
+                124 => key = 28u64 | key & !(0xfffffffffffu64),
+                54 => key = 30u64 | key & !(0xfffffffffffu64),
+                45 | 47 => key = 31u64 | key & !(0xfffffffffffu64),
+                63 => key = 127u64 | key & !(0xfffffffffffu64),
                 _ => {
                     if justkey >= 'A' as i32 as libc::c_ulonglong
                         && justkey <= '_' as i32 as libc::c_ulonglong
                     {
                         key = justkey.wrapping_sub('A' as i32 as libc::c_ulonglong)
-                            | key & !(0xfffffffffff as libc::c_ulonglong)
+                            | key & !(0xfffffffffffu64)
                     } else if justkey >= 'a' as i32 as libc::c_ulonglong
                         && justkey <= '~' as i32 as libc::c_ulonglong
                     {
-                        key = justkey.wrapping_sub(96 as libc::c_int as libc::c_ulonglong)
-                            | key & !(0xfffffffffff as libc::c_ulonglong)
+                        key = justkey.wrapping_sub(96u64) | key & !(0xfffffffffffu64)
                     } else {
-                        return 0 as libc::c_int;
+                        return 0i32;
                     }
                 }
             }
-            return input_key(s, bev, key & !(0x200000000000 as libc::c_ulonglong));
+            return input_key(s, bev, key & !(0x200000000000u64));
         }
     } else {
-        outkey = key & 0xfffffffffff as libc::c_ulonglong;
-        match key & 0xf00000000000 as libc::c_ulonglong {
-            70368744177664 => modifier = '2' as i32 as libc::c_char,
-            17592186044416 => modifier = '3' as i32 as libc::c_char,
-            87960930222080 => modifier = '4' as i32 as libc::c_char,
-            35184372088832 => modifier = '5' as i32 as libc::c_char,
-            105553116266496 => modifier = '6' as i32 as libc::c_char,
-            52776558133248 => modifier = '7' as i32 as libc::c_char,
-            123145302310912 => modifier = '8' as i32 as libc::c_char,
+        outkey = key & 0xfffffffffffu64;
+        match key & 0xf00000000000u64 {
+            70368744177664 => modifier = '2' as libc::c_char,
+            17592186044416 => modifier = '3' as libc::c_char,
+            87960930222080 => modifier = '4' as libc::c_char,
+            35184372088832 => modifier = '5' as libc::c_char,
+            105553116266496 => modifier = '6' as libc::c_char,
+            52776558133248 => modifier = '7' as libc::c_char,
+            123145302310912 => modifier = '8' as libc::c_char,
             _ => {
                 fatalx(
                     b"invalid key modifiers: %llx\x00" as *const u8 as *const libc::c_char,
@@ -2861,7 +2757,7 @@ pub unsafe extern "C" fn input_key(
             tmp.as_mut_ptr() as *const libc::c_void,
             strlen(tmp.as_mut_ptr()),
         );
-        return 0 as libc::c_int;
+        return 0i32;
     };
 }
 /* Get mouse event string. */
@@ -2877,17 +2773,13 @@ pub unsafe extern "C" fn input_key_get_mouse(
     static mut buf: [libc::c_char; 40] = [0; 40];
     let mut len: size_t = 0;
     *rbuf = 0 as *const libc::c_char;
-    *rlen = 0 as libc::c_int as size_t;
+    *rlen = 0u64;
     /* If this pane is not in button or all mode, discard motion events. */
-    if (*m).b & 32 as libc::c_int as libc::c_uint != 0
-        && (*s).mode & (0x40 as libc::c_int | 0x1000 as libc::c_int) == 0 as libc::c_int
-    {
-        return 0 as libc::c_int;
+    if (*m).b & 32u32 != 0 && (*s).mode & (0x40i32 | 0x1000i32) == 0i32 {
+        return 0i32;
     }
-    if (*s).mode & (0x20 as libc::c_int | 0x40 as libc::c_int | 0x1000 as libc::c_int)
-        == 0 as libc::c_int
-    {
-        return 0 as libc::c_int;
+    if (*s).mode & (0x20i32 | 0x40i32 | 0x1000i32) == 0i32 {
+        return 0i32;
     }
     /*
      * If this event is a release event and not in all mode, discard it.
@@ -2895,19 +2787,16 @@ pub unsafe extern "C" fn input_key_get_mouse(
      * shown by the last character. Without SGR, we check if the last
      * buttons was also a release.
      */
-    if (*m).sgr_type != ' ' as i32 as libc::c_uint {
-        if (*m).sgr_b & 32 as libc::c_int as libc::c_uint != 0
-            && (*m).sgr_b & 3 as libc::c_int as libc::c_uint == 3 as libc::c_int as libc::c_uint
-            && !(*s).mode & 0x1000 as libc::c_int != 0
-        {
-            return 0 as libc::c_int;
+    if (*m).sgr_type != ' ' as libc::c_uint {
+        if (*m).sgr_b & 32u32 != 0 && (*m).sgr_b & 3u32 == 3u32 && !(*s).mode & 0x1000i32 != 0 {
+            return 0i32;
         }
-    } else if (*m).b & 32 as libc::c_int as libc::c_uint != 0
-        && (*m).b & 3 as libc::c_int as libc::c_uint == 3 as libc::c_int as libc::c_uint
-        && (*m).lb & 3 as libc::c_int as libc::c_uint == 3 as libc::c_int as libc::c_uint
-        && !(*s).mode & 0x1000 as libc::c_int != 0
+    } else if (*m).b & 32u32 != 0
+        && (*m).b & 3u32 == 3u32
+        && (*m).lb & 3u32 == 3u32
+        && !(*s).mode & 0x1000i32 != 0
     {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     /*
      * Use the SGR (1006) extension only if the application requested it
@@ -2918,43 +2807,43 @@ pub unsafe extern "C" fn input_key_get_mouse(
      * UTF-8 (1005) extension if the application requested, or to the
      * legacy format.
      */
-    if (*m).sgr_type != ' ' as i32 as libc::c_uint && (*s).mode & 0x200 as libc::c_int != 0 {
+    if (*m).sgr_type != ' ' as libc::c_uint && (*s).mode & 0x200i32 != 0 {
         len = xsnprintf(
             buf.as_mut_ptr(),
             ::std::mem::size_of::<[libc::c_char; 40]>() as libc::c_ulong,
             b"\x1b[<%u;%u;%u%c\x00" as *const u8 as *const libc::c_char,
             (*m).sgr_b,
-            x.wrapping_add(1 as libc::c_int as libc::c_uint),
-            y.wrapping_add(1 as libc::c_int as libc::c_uint),
+            x.wrapping_add(1u32),
+            y.wrapping_add(1u32),
             (*m).sgr_type,
         ) as size_t
-    } else if (*s).mode & 0x100 as libc::c_int != 0 {
-        if (*m).b > (0x7ff as libc::c_int - 32 as libc::c_int) as libc::c_uint
-            || x > (0x7ff as libc::c_int - 33 as libc::c_int) as libc::c_uint
-            || y > (0x7ff as libc::c_int - 33 as libc::c_int) as libc::c_uint
+    } else if (*s).mode & 0x100i32 != 0 {
+        if (*m).b > (0x7ffi32 - 32i32) as libc::c_uint
+            || x > (0x7ffi32 - 33i32) as libc::c_uint
+            || y > (0x7ffi32 - 33i32) as libc::c_uint
         {
-            return 0 as libc::c_int;
+            return 0i32;
         }
         len = xsnprintf(
             buf.as_mut_ptr(),
             ::std::mem::size_of::<[libc::c_char; 40]>() as libc::c_ulong,
             b"\x1b[M\x00" as *const u8 as *const libc::c_char,
         ) as size_t;
-        len = (len as libc::c_ulong).wrapping_add(input_key_split2(
-            (*m).b.wrapping_add(32 as libc::c_int as libc::c_uint),
+        len = (len).wrapping_add(input_key_split2(
+            (*m).b.wrapping_add(32u32),
             &mut *buf.as_mut_ptr().offset(len as isize) as *mut libc::c_char as *mut u_char,
-        )) as size_t as size_t;
-        len = (len as libc::c_ulong).wrapping_add(input_key_split2(
-            x.wrapping_add(33 as libc::c_int as libc::c_uint),
+        ));
+        len = (len).wrapping_add(input_key_split2(
+            x.wrapping_add(33u32),
             &mut *buf.as_mut_ptr().offset(len as isize) as *mut libc::c_char as *mut u_char,
-        )) as size_t as size_t;
-        len = (len as libc::c_ulong).wrapping_add(input_key_split2(
-            y.wrapping_add(33 as libc::c_int as libc::c_uint),
+        ));
+        len = (len).wrapping_add(input_key_split2(
+            y.wrapping_add(33u32),
             &mut *buf.as_mut_ptr().offset(len as isize) as *mut libc::c_char as *mut u_char,
-        )) as size_t as size_t
+        ))
     } else {
-        if (*m).b > 223 as libc::c_int as libc::c_uint {
-            return 0 as libc::c_int;
+        if (*m).b > 223u32 {
+            return 0i32;
         }
         len = xsnprintf(
             buf.as_mut_ptr(),
@@ -2963,18 +2852,17 @@ pub unsafe extern "C" fn input_key_get_mouse(
         ) as size_t;
         let fresh0 = len;
         len = len.wrapping_add(1);
-        buf[fresh0 as usize] =
-            (*m).b.wrapping_add(32 as libc::c_int as libc::c_uint) as libc::c_char;
+        buf[fresh0 as usize] = (*m).b.wrapping_add(32u32) as libc::c_char;
         let fresh1 = len;
         len = len.wrapping_add(1);
-        buf[fresh1 as usize] = x.wrapping_add(33 as libc::c_int as libc::c_uint) as libc::c_char;
+        buf[fresh1 as usize] = x.wrapping_add(33u32) as libc::c_char;
         let fresh2 = len;
         len = len.wrapping_add(1);
-        buf[fresh2 as usize] = y.wrapping_add(33 as libc::c_int as libc::c_uint) as libc::c_char
+        buf[fresh2 as usize] = y.wrapping_add(33u32) as libc::c_char
     }
     *rbuf = buf.as_mut_ptr();
     *rlen = len;
-    return 1 as libc::c_int;
+    return 1i32;
 }
 /* $OpenBSD$ */
 /*
@@ -3006,13 +2894,10 @@ unsafe extern "C" fn input_key_mouse(mut wp: *mut window_pane, mut m: *mut mouse
     let mut buf: *const libc::c_char = 0 as *const libc::c_char;
     let mut len: size_t = 0;
     /* Ignore events if no mouse mode or the pane is not visible. */
-    if (*m).ignore != 0
-        || (*s).mode & (0x20 as libc::c_int | 0x40 as libc::c_int | 0x1000 as libc::c_int)
-            == 0 as libc::c_int
-    {
+    if (*m).ignore != 0 || (*s).mode & (0x20i32 | 0x40i32 | 0x1000i32) == 0i32 {
         return;
     }
-    if cmd_mouse_at(wp, m, &mut x, &mut y, 0 as libc::c_int) != 0 as libc::c_int {
+    if cmd_mouse_at(wp, m, &mut x, &mut y, 0i32) != 0i32 {
         return;
     }
     if window_pane_visible(wp) == 0 {

@@ -1114,8 +1114,8 @@ pub static mut cmd_capture_pane_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"ab:CeE:JNpPqS:t:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -1129,13 +1129,13 @@ pub static mut cmd_capture_pane_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_PANE,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0x4 as libc::c_int,
+            flags: 0x4i32,
             exec: Some(
                 cmd_capture_pane_exec
                     as unsafe extern "C" fn(
@@ -1156,8 +1156,8 @@ pub static mut cmd_clear_history_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"t:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -1169,13 +1169,13 @@ pub static mut cmd_clear_history_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_PANE,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0x4 as libc::c_int,
+            flags: 0x4i32,
             exec: Some(
                 cmd_capture_pane_exec
                     as unsafe extern "C" fn(
@@ -1195,16 +1195,14 @@ unsafe extern "C" fn cmd_capture_pane_append(
 ) -> *mut libc::c_char {
     buf = xrealloc(
         buf as *mut libc::c_void,
-        (*len)
-            .wrapping_add(linelen)
-            .wrapping_add(1 as libc::c_int as libc::c_ulong),
+        (*len).wrapping_add(linelen).wrapping_add(1u64),
     ) as *mut libc::c_char;
     memcpy(
         buf.offset(*len as isize) as *mut libc::c_void,
         line as *const libc::c_void,
         linelen,
     );
-    *len = (*len as libc::c_ulong).wrapping_add(linelen) as size_t as size_t;
+    *len = (*len).wrapping_add(linelen);
     return buf;
 }
 unsafe extern "C" fn cmd_capture_pane_pending(
@@ -1222,17 +1220,17 @@ unsafe extern "C" fn cmd_capture_pane_pending(
     if pending.is_null() {
         return xstrdup(b"\x00" as *const u8 as *const libc::c_char);
     }
-    line = evbuffer_pullup(pending, -(1 as libc::c_int) as ssize_t) as *mut libc::c_char;
+    line = evbuffer_pullup(pending, -1i64) as *mut libc::c_char;
     linelen = evbuffer_get_length(pending);
     buf = xstrdup(b"\x00" as *const u8 as *const libc::c_char);
-    if args_has(args, 'C' as i32 as u_char) != 0 {
-        i = 0 as libc::c_int as u_int;
+    if args_has(args, 'C' as u_char) != 0 {
+        i = 0u32;
         while (i as libc::c_ulong) < linelen {
             if *line.offset(i as isize) as libc::c_int >= ' ' as i32
                 && *line.offset(i as isize) as libc::c_int != '\\' as i32
             {
-                tmp[0 as libc::c_int as usize] = *line.offset(i as isize);
-                tmp[1 as libc::c_int as usize] = '\u{0}' as i32 as libc::c_char
+                tmp[0usize] = *line.offset(i as isize);
+                tmp[1usize] = '\u{0}' as libc::c_char
             } else {
                 xsnprintf(
                     tmp.as_mut_ptr(),
@@ -1275,10 +1273,10 @@ unsafe extern "C" fn cmd_capture_pane_history(
     let mut Eflag: *const libc::c_char = 0 as *const libc::c_char;
     let mut linelen: size_t = 0;
     sx = (*(*wp).base.grid).sx;
-    if args_has(args, 'a' as i32 as u_char) != 0 {
+    if args_has(args, 'a' as u_char) != 0 {
         gd = (*wp).base.saved_grid;
         if gd.is_null() {
-            if args_has(args, 'q' as i32 as u_char) == 0 {
+            if args_has(args, 'q' as u_char) == 0 {
                 cmdq_error(
                     item,
                     b"no alternate screen\x00" as *const u8 as *const libc::c_char,
@@ -1290,76 +1288,50 @@ unsafe extern "C" fn cmd_capture_pane_history(
     } else {
         gd = (*wp).base.grid
     }
-    Sflag = args_get(args, 'S' as i32 as u_char);
-    if !Sflag.is_null()
-        && strcmp(Sflag, b"-\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int
-    {
-        top = 0 as libc::c_int as u_int
+    Sflag = args_get(args, 'S' as u_char);
+    if !Sflag.is_null() && strcmp(Sflag, b"-\x00" as *const u8 as *const libc::c_char) == 0i32 {
+        top = 0u32
     } else {
         n = args_strtonum(
             args,
-            'S' as i32 as u_char,
-            (-(2147483647 as libc::c_int) - 1 as libc::c_int) as libc::c_longlong,
-            32767 as libc::c_int as libc::c_longlong,
+            'S' as u_char,
+            (-(2147483647i32) - 1i32) as libc::c_longlong,
+            32767i64,
             &mut cause,
         ) as libc::c_int;
         if !cause.is_null() {
             top = (*gd).hsize;
             free(cause as *mut libc::c_void);
-        } else if n < 0 as libc::c_int && -n as u_int > (*gd).hsize {
-            top = 0 as libc::c_int as u_int
+        } else if n < 0i32 && -n as u_int > (*gd).hsize {
+            top = 0u32
         } else {
             top = (*gd).hsize.wrapping_add(n as libc::c_uint)
         }
-        if top
-            > (*gd)
-                .hsize
-                .wrapping_add((*gd).sy)
-                .wrapping_sub(1 as libc::c_int as libc::c_uint)
-        {
-            top = (*gd)
-                .hsize
-                .wrapping_add((*gd).sy)
-                .wrapping_sub(1 as libc::c_int as libc::c_uint)
+        if top > (*gd).hsize.wrapping_add((*gd).sy).wrapping_sub(1u32) {
+            top = (*gd).hsize.wrapping_add((*gd).sy).wrapping_sub(1u32)
         }
     }
-    Eflag = args_get(args, 'E' as i32 as u_char);
-    if !Eflag.is_null()
-        && strcmp(Eflag, b"-\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int
-    {
-        bottom = (*gd)
-            .hsize
-            .wrapping_add((*gd).sy)
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
+    Eflag = args_get(args, 'E' as u_char);
+    if !Eflag.is_null() && strcmp(Eflag, b"-\x00" as *const u8 as *const libc::c_char) == 0i32 {
+        bottom = (*gd).hsize.wrapping_add((*gd).sy).wrapping_sub(1u32)
     } else {
         n = args_strtonum(
             args,
-            'E' as i32 as u_char,
-            (-(2147483647 as libc::c_int) - 1 as libc::c_int) as libc::c_longlong,
-            32767 as libc::c_int as libc::c_longlong,
+            'E' as u_char,
+            (-(2147483647i32) - 1i32) as libc::c_longlong,
+            32767i64,
             &mut cause,
         ) as libc::c_int;
         if !cause.is_null() {
-            bottom = (*gd)
-                .hsize
-                .wrapping_add((*gd).sy)
-                .wrapping_sub(1 as libc::c_int as libc::c_uint);
+            bottom = (*gd).hsize.wrapping_add((*gd).sy).wrapping_sub(1u32);
             free(cause as *mut libc::c_void);
-        } else if n < 0 as libc::c_int && -n as u_int > (*gd).hsize {
-            bottom = 0 as libc::c_int as u_int
+        } else if n < 0i32 && -n as u_int > (*gd).hsize {
+            bottom = 0u32
         } else {
             bottom = (*gd).hsize.wrapping_add(n as libc::c_uint)
         }
-        if bottom
-            > (*gd)
-                .hsize
-                .wrapping_add((*gd).sy)
-                .wrapping_sub(1 as libc::c_int as libc::c_uint)
-        {
-            bottom = (*gd)
-                .hsize
-                .wrapping_add((*gd).sy)
-                .wrapping_sub(1 as libc::c_int as libc::c_uint)
+        if bottom > (*gd).hsize.wrapping_add((*gd).sy).wrapping_sub(1u32) {
+            bottom = (*gd).hsize.wrapping_add((*gd).sy).wrapping_sub(1u32)
         }
     }
     if bottom < top {
@@ -1367,16 +1339,16 @@ unsafe extern "C" fn cmd_capture_pane_history(
         bottom = top;
         top = tmp
     }
-    with_codes = args_has(args, 'e' as i32 as u_char);
-    escape_c0 = args_has(args, 'C' as i32 as u_char);
-    join_lines = args_has(args, 'J' as i32 as u_char);
-    no_trim = args_has(args, 'N' as i32 as u_char);
+    with_codes = args_has(args, 'e' as u_char);
+    escape_c0 = args_has(args, 'C' as u_char);
+    join_lines = args_has(args, 'J' as u_char);
+    no_trim = args_has(args, 'N' as u_char);
     buf = 0 as *mut libc::c_char;
     i = top;
     while i <= bottom {
         line = grid_string_cells(
             gd,
-            0 as libc::c_int as u_int,
+            0u32,
             i,
             sx,
             &mut gc,
@@ -1387,10 +1359,10 @@ unsafe extern "C" fn cmd_capture_pane_history(
         linelen = strlen(line);
         buf = cmd_capture_pane_append(buf, len, line, linelen);
         gl = grid_peek_line(gd, i);
-        if join_lines == 0 || (*gl).flags & 0x1 as libc::c_int == 0 {
+        if join_lines == 0 || (*gl).flags & 0x1i32 == 0 {
             let fresh0 = *len;
             *len = (*len).wrapping_add(1);
-            *buf.offset(fresh0 as isize) = '\n' as i32 as libc::c_char
+            *buf.offset(fresh0 as isize) = '\n' as libc::c_char
         }
         free(line as *mut libc::c_void);
         i = i.wrapping_add(1)
@@ -1432,8 +1404,8 @@ unsafe extern "C" fn cmd_capture_pane_exec(
         grid_clear_history((*wp).base.grid);
         return CMD_RETURN_NORMAL;
     }
-    len = 0 as libc::c_int as size_t;
-    if args_has(args, 'P' as i32 as u_char) != 0 {
+    len = 0u64;
+    if args_has(args, 'P' as u_char) != 0 {
         buf = cmd_capture_pane_pending(args, wp, &mut len)
     } else {
         buf = cmd_capture_pane_history(args, item, wp, &mut len)
@@ -1441,15 +1413,12 @@ unsafe extern "C" fn cmd_capture_pane_exec(
     if buf.is_null() {
         return CMD_RETURN_ERROR;
     }
-    if args_has(args, 'p' as i32 as u_char) != 0 {
-        if len > 0 as libc::c_int as libc::c_ulong
-            && *buf.offset(len.wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize)
-                as libc::c_int
-                == '\n' as i32
+    if args_has(args, 'p' as u_char) != 0 {
+        if len > 0u64 && *buf.offset(len.wrapping_sub(1u64) as isize) as libc::c_int == '\n' as i32
         {
             len = len.wrapping_sub(1)
         }
-        if (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
+        if (*c).flags & 0x2000u64 != 0 {
             control_write(
                 c,
                 b"%.*s\x00" as *const u8 as *const libc::c_char,
@@ -1471,10 +1440,10 @@ unsafe extern "C" fn cmd_capture_pane_exec(
         }
     } else {
         bufname = 0 as *const libc::c_char;
-        if args_has(args, 'b' as i32 as u_char) != 0 {
-            bufname = args_get(args, 'b' as i32 as u_char)
+        if args_has(args, 'b' as u_char) != 0 {
+            bufname = args_get(args, 'b' as u_char)
         }
-        if paste_set(buf, len, bufname, &mut cause) != 0 as libc::c_int {
+        if paste_set(buf, len, bufname, &mut cause) != 0i32 {
             cmdq_error(item, b"%s\x00" as *const u8 as *const libc::c_char, cause);
             free(cause as *mut libc::c_void);
             free(buf as *mut libc::c_void);

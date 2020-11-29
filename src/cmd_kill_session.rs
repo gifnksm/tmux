@@ -1064,8 +1064,8 @@ pub static mut cmd_kill_session_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"aCt:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -1077,13 +1077,13 @@ pub static mut cmd_kill_session_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_SESSION,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0 as libc::c_int,
+            flags: 0i32,
             exec: Some(
                 cmd_kill_session_exec
                     as unsafe extern "C" fn(
@@ -1127,26 +1127,25 @@ unsafe extern "C" fn cmd_kill_session_exec(
     let mut sloop: *mut session = 0 as *mut session;
     let mut stmp: *mut session = 0 as *mut session;
     let mut wl: *mut winlink = 0 as *mut winlink;
-    if args_has(args, 'C' as i32 as u_char) != 0 {
-        wl = winlinks_RB_MINMAX(&mut (*s).windows, -(1 as libc::c_int));
+    if args_has(args, 'C' as u_char) != 0 {
+        wl = winlinks_RB_MINMAX(&mut (*s).windows, -(1i32));
         while !wl.is_null() {
-            (*(*wl).window).flags &=
-                !(0x1 as libc::c_int | 0x2 as libc::c_int | 0x4 as libc::c_int);
-            (*wl).flags &= !(0x1 as libc::c_int | 0x2 as libc::c_int | 0x4 as libc::c_int);
+            (*(*wl).window).flags &= !(0x1i32 | 0x2i32 | 0x4i32);
+            (*wl).flags &= !(0x1i32 | 0x2i32 | 0x4i32);
             wl = winlinks_RB_NEXT(wl)
         }
         server_redraw_session(s);
-    } else if args_has(args, 'a' as i32 as u_char) != 0 {
-        sloop = sessions_RB_MINMAX(&mut sessions, -(1 as libc::c_int));
+    } else if args_has(args, 'a' as u_char) != 0 {
+        sloop = sessions_RB_MINMAX(&mut sessions, -(1i32));
         while !sloop.is_null() && {
             stmp = sessions_RB_NEXT(sloop);
-            (1 as libc::c_int) != 0
+            (1i32) != 0
         } {
             if sloop != s {
                 server_destroy_session(sloop);
                 session_destroy(
                     sloop,
-                    1 as libc::c_int,
+                    1i32,
                     (*::std::mem::transmute::<&[u8; 22], &[libc::c_char; 22]>(
                         b"cmd_kill_session_exec\x00",
                     ))
@@ -1159,7 +1158,7 @@ unsafe extern "C" fn cmd_kill_session_exec(
         server_destroy_session(s);
         session_destroy(
             s,
-            1 as libc::c_int,
+            1i32,
             (*::std::mem::transmute::<&[u8; 22], &[libc::c_char; 22]>(
                 b"cmd_kill_session_exec\x00",
             ))

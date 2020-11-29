@@ -1094,8 +1094,8 @@ pub static mut cmd_load_buffer_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"b:t:w\x00" as *const u8 as *const libc::c_char,
-                    lower: 1 as libc::c_int,
-                    upper: 1 as libc::c_int,
+                    lower: 1i32,
+                    upper: 1i32,
                 };
                 init
             },
@@ -1111,7 +1111,7 @@ pub static mut cmd_load_buffer_entry: cmd_entry = {
                 type_0: CMD_FIND_PANE,
                 flags: 0,
             },
-            flags: 0x4 as libc::c_int | 0x10 as libc::c_int | 0x20 as libc::c_int,
+            flags: 0x4i32 | 0x10i32 | 0x20i32,
             exec: Some(
                 cmd_load_buffer_exec
                     as unsafe extern "C" fn(
@@ -1134,34 +1134,28 @@ unsafe extern "C" fn cmd_load_buffer_done(
     let mut cdata: *mut cmd_load_buffer_data = data as *mut cmd_load_buffer_data;
     let mut tc: *mut client = (*cdata).client;
     let mut item: *mut crate::cmd_queue::cmdq_item = (*cdata).item;
-    let mut bdata: *mut libc::c_void =
-        evbuffer_pullup(buffer, -(1 as libc::c_int) as ssize_t) as *mut libc::c_void;
+    let mut bdata: *mut libc::c_void = evbuffer_pullup(buffer, -1i64) as *mut libc::c_void;
     let mut bsize: size_t = evbuffer_get_length(buffer);
     let mut copy: *mut libc::c_void = 0 as *mut libc::c_void;
     let mut cause: *mut libc::c_char = 0 as *mut libc::c_char;
     if closed == 0 {
         return;
     }
-    if error != 0 as libc::c_int {
+    if error != 0i32 {
         cmdq_error(
             item,
             b"%s: %s\x00" as *const u8 as *const libc::c_char,
             path,
             strerror(error),
         );
-    } else if bsize != 0 as libc::c_int as libc::c_ulong {
+    } else if bsize != 0u64 {
         copy = xmalloc(bsize);
         memcpy(copy, bdata, bsize);
-        if paste_set(copy as *mut libc::c_char, bsize, (*cdata).name, &mut cause)
-            != 0 as libc::c_int
-        {
+        if paste_set(copy as *mut libc::c_char, bsize, (*cdata).name, &mut cause) != 0i32 {
             cmdq_error(item, b"%s\x00" as *const u8 as *const libc::c_char, cause);
             free(cause as *mut libc::c_void);
             free(copy);
-        } else if !tc.is_null()
-            && !(*tc).session.is_null()
-            && !(*tc).flags & 0x200 as libc::c_int as libc::c_ulong != 0
-        {
+        } else if !tc.is_null() && !(*tc).session.is_null() && !(*tc).flags & 0x200u64 != 0 {
             tty_set_selection(&mut (*tc).tty, copy as *const libc::c_char, bsize);
         }
         if !tc.is_null() {
@@ -1198,21 +1192,21 @@ unsafe extern "C" fn cmd_load_buffer_exec(
     let mut args: *mut args = cmd_get_args(self_0);
     let mut tc: *mut client = cmdq_get_target_client(item);
     let mut cdata: *mut cmd_load_buffer_data = 0 as *mut cmd_load_buffer_data;
-    let mut bufname: *const libc::c_char = args_get(args, 'b' as i32 as u_char);
+    let mut bufname: *const libc::c_char = args_get(args, 'b' as u_char);
     let mut path: *mut libc::c_char = 0 as *mut libc::c_char;
     cdata = xcalloc(
-        1 as libc::c_int as size_t,
+        1u64,
         ::std::mem::size_of::<cmd_load_buffer_data>() as libc::c_ulong,
     ) as *mut cmd_load_buffer_data;
     (*cdata).item = item;
     if !bufname.is_null() {
         (*cdata).name = xstrdup(bufname)
     }
-    if args_has(args, 'w' as i32 as u_char) != 0 && !tc.is_null() {
+    if args_has(args, 'w' as u_char) != 0 && !tc.is_null() {
         (*cdata).client = tc;
         (*(*cdata).client).references += 1
     }
-    path = format_single_from_target(item, *(*args).argv.offset(0 as libc::c_int as isize));
+    path = format_single_from_target(item, *(*args).argv.offset(0isize));
     file_read(
         cmdq_get_client(item),
         path,

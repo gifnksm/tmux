@@ -1500,7 +1500,7 @@ pub type C2RustUnnamed_37 = libc::c_uint;
 pub type C2RustUnnamed_38 = libc::c_uint;
 #[inline]
 unsafe extern "C" fn tolower(mut __c: libc::c_int) -> libc::c_int {
-    return if __c >= -(128 as libc::c_int) && __c < 256 as libc::c_int {
+    return if __c >= -(128i32) && __c < 256i32 {
         *(*__ctype_tolower_loc()).offset(__c as isize)
     } else {
         __c
@@ -1609,7 +1609,7 @@ unsafe extern "C" fn window_copy_scroll_timer(
     let mut tv: timeval = {
         let mut init = timeval {
             tv_sec: 0,
-            tv_usec: 50000 as libc::c_int as __suseconds_t,
+            tv_usec: 50000i64,
         };
         init
     };
@@ -1617,16 +1617,12 @@ unsafe extern "C" fn window_copy_scroll_timer(
     if (*wp).modes.tqh_first != wme {
         return;
     }
-    if (*data).cy == 0 as libc::c_int as libc::c_uint {
+    if (*data).cy == 0u32 {
         event_add(&mut (*data).dragtimer, &mut tv);
-        window_copy_cursor_up(wme, 1 as libc::c_int);
-    } else if (*data).cy
-        == (*(*data).screen.grid)
-            .sy
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
-    {
+        window_copy_cursor_up(wme, 1i32);
+    } else if (*data).cy == (*(*data).screen.grid).sy.wrapping_sub(1u32) {
         event_add(&mut (*data).dragtimer, &mut tv);
-        window_copy_cursor_down(wme, 1 as libc::c_int);
+        window_copy_cursor_down(wme, 1i32);
     };
 }
 unsafe extern "C" fn window_copy_clone_screen(
@@ -1642,18 +1638,12 @@ unsafe extern "C" fn window_copy_clone_screen(
     let mut wx: u_int = 0;
     let mut wy: u_int = 0;
     let mut reflow: libc::c_int = 0;
-    dst = xcalloc(
-        1 as libc::c_int as size_t,
-        ::std::mem::size_of::<screen>() as libc::c_ulong,
-    ) as *mut screen;
+    dst = xcalloc(1u64, ::std::mem::size_of::<screen>() as libc::c_ulong) as *mut screen;
     sy = (*(*src).grid).hsize.wrapping_add((*(*src).grid).sy);
     if trim != 0 {
         while sy > (*(*src).grid).hsize {
-            gl = grid_peek_line(
-                (*src).grid,
-                sy.wrapping_sub(1 as libc::c_int as libc::c_uint),
-            );
-            if (*gl).cellused != 0 as libc::c_int as libc::c_uint {
+            gl = grid_peek_line((*src).grid, sy.wrapping_sub(1u32));
+            if (*gl).cellused != 0u32 {
                 break;
             }
             sy = sy.wrapping_sub(1)
@@ -1673,26 +1663,14 @@ unsafe extern "C" fn window_copy_clone_screen(
      * Ensure history is on for the backing grid so lines are not deleted
      * during resizing.
      */
-    (*(*dst).grid).flags |= 0x1 as libc::c_int;
-    grid_duplicate_lines(
-        (*dst).grid,
-        0 as libc::c_int as u_int,
-        (*src).grid,
-        0 as libc::c_int as u_int,
-        sy,
-    );
+    (*(*dst).grid).flags |= 0x1i32;
+    grid_duplicate_lines((*dst).grid, 0u32, (*src).grid, 0u32, sy);
     (*(*dst).grid).sy = sy.wrapping_sub((*(*src).grid).hsize);
     (*(*dst).grid).hsize = (*(*src).grid).hsize;
     (*(*dst).grid).hscrolled = (*(*src).grid).hscrolled;
-    if (*src).cy
-        > (*(*dst).grid)
-            .sy
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
-    {
-        (*dst).cx = 0 as libc::c_int as u_int;
-        (*dst).cy = (*(*dst).grid)
-            .sy
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
+    if (*src).cy > (*(*dst).grid).sy.wrapping_sub(1u32) {
+        (*dst).cx = 0u32;
+        (*dst).cy = (*(*dst).grid).sy.wrapping_sub(1u32)
     } else {
         (*dst).cx = (*src).cx;
         (*dst).cy = (*src).cy
@@ -1702,7 +1680,7 @@ unsafe extern "C" fn window_copy_clone_screen(
         *cy = (*(*dst).grid).hsize.wrapping_add((*dst).cy);
         reflow = ((*(*hint).grid).sx != (*(*dst).grid).sx) as libc::c_int
     } else {
-        reflow = 0 as libc::c_int
+        reflow = 0i32
     }
     if reflow != 0 {
         grid_wrap_position((*dst).grid, *cx, *cy, &mut wx, &mut wy);
@@ -1711,9 +1689,9 @@ unsafe extern "C" fn window_copy_clone_screen(
         dst,
         (*(*hint).grid).sx,
         (*(*hint).grid).sy,
-        1 as libc::c_int,
-        0 as libc::c_int,
-        0 as libc::c_int,
+        1i32,
+        0i32,
+        0i32,
     );
     if reflow != 0 {
         grid_unwrap_position((*dst).grid, cx, cy, wx, wy);
@@ -1727,7 +1705,7 @@ unsafe extern "C" fn window_copy_common_init(
     let mut data: *mut window_copy_mode_data = 0 as *mut window_copy_mode_data;
     let mut base: *mut screen = &mut (*wp).base;
     data = xcalloc(
-        1 as libc::c_int as size_t,
+        1u64,
         ::std::mem::size_of::<window_copy_mode_data>() as libc::c_ulong,
     ) as *mut window_copy_mode_data;
     (*wme).data = data as *mut libc::c_void;
@@ -1740,19 +1718,19 @@ unsafe extern "C" fn window_copy_common_init(
         (*data).searchstr = xstrdup((*wp).searchstr)
     } else {
         (*data).searchtype = WINDOW_COPY_OFF as libc::c_int;
-        (*data).searchregex = 0 as libc::c_int;
+        (*data).searchregex = 0i32;
         (*data).searchstr = 0 as *mut libc::c_char
     }
-    (*data).searcho = -(1 as libc::c_int);
+    (*data).searcho = -(1i32);
     (*data).searchy = (*data).searcho;
     (*data).searchx = (*data).searchy;
     (*data).jumptype = WINDOW_COPY_OFF as libc::c_int;
-    (*data).jumpchar = '\u{0}' as i32 as libc::c_char;
+    (*data).jumpchar = '\u{0}' as libc::c_char;
     screen_init(
         &mut (*data).screen,
         (*(*base).grid).sx,
         (*(*base).grid).sy,
-        0 as libc::c_int as u_int,
+        0u32,
     );
     (*data).modekeys = options_get_number(
         (*(*wp).window).options,
@@ -1760,8 +1738,8 @@ unsafe extern "C" fn window_copy_common_init(
     ) as libc::c_int;
     event_set(
         &mut (*data).dragtimer,
-        -(1 as libc::c_int),
-        0 as libc::c_int as libc::c_short,
+        -(1i32),
+        0i16,
         Some(
             window_copy_scroll_timer
                 as unsafe extern "C" fn(
@@ -1808,14 +1786,14 @@ unsafe extern "C" fn window_copy_init(
     );
     (*data).cx = cx;
     if cy < (*(*(*data).backing).grid).hsize {
-        (*data).cy = 0 as libc::c_int as u_int;
+        (*data).cy = 0u32;
         (*data).oy = (*(*(*data).backing).grid).hsize.wrapping_sub(cy)
     } else {
         (*data).cy = cy.wrapping_sub((*(*(*data).backing).grid).hsize);
-        (*data).oy = 0 as libc::c_int as u_int
+        (*data).oy = 0u32
     }
-    (*data).scroll_exit = args_has(args, 'e' as i32 as u_char);
-    (*data).hide_position = args_has(args, 'H' as i32 as u_char);
+    (*data).scroll_exit = args_has(args, 'e' as u_char);
+    (*data).hide_position = args_has(args, 'H' as u_char);
     (*data).screen.cx = (*data).cx;
     (*data).screen.cy = (*data).cy;
     (*data).mx = (*data).cx;
@@ -1823,9 +1801,9 @@ unsafe extern "C" fn window_copy_init(
         .hsize
         .wrapping_add((*data).cy)
         .wrapping_sub((*data).oy);
-    (*data).showmark = 0 as libc::c_int;
+    (*data).showmark = 0i32;
     screen_write_start(&mut ctx, &mut (*data).screen);
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < (*(*data).screen.grid).sy {
         window_copy_write_line(wme, &mut ctx, i);
         i = i.wrapping_add(1)
@@ -1834,7 +1812,7 @@ unsafe extern "C" fn window_copy_init(
         &mut ctx,
         (*data).cx as libc::c_int,
         (*data).cy as libc::c_int,
-        0 as libc::c_int,
+        0i32,
     );
     screen_write_stop(&mut ctx);
     return &mut (*data).screen;
@@ -1849,23 +1827,21 @@ unsafe extern "C" fn window_copy_view_init(
     let mut base: *mut screen = &mut (*wp).base;
     let mut s: *mut screen = 0 as *mut screen;
     data = window_copy_common_init(wme);
-    (*data).viewmode = 1 as libc::c_int;
+    (*data).viewmode = 1i32;
     s = xmalloc(::std::mem::size_of::<screen>() as libc::c_ulong) as *mut screen;
     (*data).backing = s;
     screen_init(
         s,
         (*(*base).grid).sx,
         (*(*base).grid).sy,
-        (2147483647 as libc::c_int as libc::c_uint)
-            .wrapping_mul(2 as libc::c_uint)
-            .wrapping_add(1 as libc::c_uint),
+        (2147483647u32).wrapping_mul(2u32).wrapping_add(1u32),
     );
     (*data).mx = (*data).cx;
     (*data).my = (*(*(*data).backing).grid)
         .hsize
         .wrapping_add((*data).cy)
         .wrapping_sub((*data).oy);
-    (*data).showmark = 0 as libc::c_int;
+    (*data).showmark = 0i32;
     return &mut (*data).screen;
 }
 unsafe extern "C" fn window_copy_free(mut wme: *mut window_mode_entry) {
@@ -1951,38 +1927,28 @@ pub unsafe extern "C" fn window_copy_vadd(
          * (so it's on a new line).
          */
         screen_write_carriagereturn(&mut back_ctx);
-        screen_write_linefeed(&mut back_ctx, 0 as libc::c_int, 8 as libc::c_int as u_int);
+        screen_write_linefeed(&mut back_ctx, 0i32, 8u32);
     } else {
-        (*data).backing_written = 1 as libc::c_int
+        (*data).backing_written = 1i32
     }
     old_cy = (*backing).cy;
-    screen_write_vnputs(
-        &mut back_ctx,
-        0 as libc::c_int as ssize_t,
-        &mut gc,
-        fmt,
-        ap.as_va_list(),
-    );
+    screen_write_vnputs(&mut back_ctx, 0i64, &mut gc, fmt, ap.as_va_list());
     screen_write_stop(&mut back_ctx);
-    (*data).oy = ((*data).oy as libc::c_uint)
-        .wrapping_add((*(*(*data).backing).grid).hsize.wrapping_sub(old_hsize))
-        as u_int as u_int;
+    (*data).oy =
+        ((*data).oy).wrapping_add((*(*(*data).backing).grid).hsize.wrapping_sub(old_hsize));
     screen_write_start_pane(&mut ctx, wp, &mut (*data).screen);
     /*
      * If the history has changed, draw the top line.
      * (If there's any history at all, it has changed.)
      */
     if (*(*(*data).backing).grid).hsize != 0 {
-        window_copy_redraw_lines(wme, 0 as libc::c_int as u_int, 1 as libc::c_int as u_int);
+        window_copy_redraw_lines(wme, 0u32, 1u32);
     }
     /* Write the new lines. */
     window_copy_redraw_lines(
         wme,
         old_cy,
-        (*backing)
-            .cy
-            .wrapping_sub(old_cy)
-            .wrapping_add(1 as libc::c_int as libc::c_uint),
+        (*backing).cy.wrapping_sub(old_cy).wrapping_add(1u32),
     );
     screen_write_stop(&mut ctx);
 }
@@ -2011,27 +1977,23 @@ unsafe extern "C" fn window_copy_pageup1(
         (*data).lastsx = ox
     }
     (*data).cx = (*data).lastcx;
-    n = 1 as libc::c_int as u_int;
-    if (*(*s).grid).sy > 2 as libc::c_int as libc::c_uint {
+    n = 1u32;
+    if (*(*s).grid).sy > 2u32 {
         if half_page != 0 {
-            n = (*(*s).grid)
-                .sy
-                .wrapping_div(2 as libc::c_int as libc::c_uint)
+            n = (*(*s).grid).sy.wrapping_div(2u32)
         } else {
-            n = (*(*s).grid)
-                .sy
-                .wrapping_sub(2 as libc::c_int as libc::c_uint)
+            n = (*(*s).grid).sy.wrapping_sub(2u32)
         }
     }
     if (*data).oy.wrapping_add(n) > (*(*(*data).backing).grid).hsize {
         (*data).oy = (*(*(*data).backing).grid).hsize;
         if (*data).cy < n {
-            (*data).cy = 0 as libc::c_int as u_int
+            (*data).cy = 0u32
         } else {
-            (*data).cy = ((*data).cy as libc::c_uint).wrapping_sub(n) as u_int as u_int
+            (*data).cy = ((*data).cy).wrapping_sub(n)
         }
     } else {
-        (*data).oy = ((*data).oy as libc::c_uint).wrapping_add(n) as u_int as u_int
+        (*data).oy = ((*data).oy).wrapping_add(n)
     }
     if (*data).screen.sel.is_null() || (*data).rectflag == 0 {
         py = (*(*(*data).backing).grid)
@@ -2044,9 +2006,9 @@ unsafe extern "C" fn window_copy_pageup1(
         }
     }
     if !(*data).searchmark.is_null() && (*data).timeout == 0 {
-        window_copy_search_marks(wme, 0 as *mut screen, (*data).searchregex, 1 as libc::c_int);
+        window_copy_search_marks(wme, 0 as *mut screen, (*data).searchregex, 1i32);
     }
-    window_copy_update_selection(wme, 1 as libc::c_int, 0 as libc::c_int);
+    window_copy_update_selection(wme, 1i32, 0i32);
     window_copy_redraw_screen(wme);
 }
 unsafe extern "C" fn window_copy_pagedown(
@@ -2071,30 +2033,23 @@ unsafe extern "C" fn window_copy_pagedown(
         (*data).lastsx = ox
     }
     (*data).cx = (*data).lastcx;
-    n = 1 as libc::c_int as u_int;
-    if (*(*s).grid).sy > 2 as libc::c_int as libc::c_uint {
+    n = 1u32;
+    if (*(*s).grid).sy > 2u32 {
         if half_page != 0 {
-            n = (*(*s).grid)
-                .sy
-                .wrapping_div(2 as libc::c_int as libc::c_uint)
+            n = (*(*s).grid).sy.wrapping_div(2u32)
         } else {
-            n = (*(*s).grid)
-                .sy
-                .wrapping_sub(2 as libc::c_int as libc::c_uint)
+            n = (*(*s).grid).sy.wrapping_sub(2u32)
         }
     }
     if (*data).oy < n {
-        (*data).oy = 0 as libc::c_int as u_int;
+        (*data).oy = 0u32;
         if (*data).cy.wrapping_add(n.wrapping_sub((*data).oy)) >= (*(*(*data).backing).grid).sy {
-            (*data).cy = (*(*(*data).backing).grid)
-                .sy
-                .wrapping_sub(1 as libc::c_int as libc::c_uint)
+            (*data).cy = (*(*(*data).backing).grid).sy.wrapping_sub(1u32)
         } else {
-            (*data).cy = ((*data).cy as libc::c_uint).wrapping_add(n.wrapping_sub((*data).oy))
-                as u_int as u_int
+            (*data).cy = ((*data).cy).wrapping_add(n.wrapping_sub((*data).oy))
         }
     } else {
-        (*data).oy = ((*data).oy as libc::c_uint).wrapping_sub(n) as u_int as u_int
+        (*data).oy = ((*data).oy).wrapping_sub(n)
     }
     if (*data).screen.sel.is_null() || (*data).rectflag == 0 {
         py = (*(*(*data).backing).grid)
@@ -2106,15 +2061,15 @@ unsafe extern "C" fn window_copy_pagedown(
             window_copy_cursor_end_of_line(wme);
         }
     }
-    if scroll_exit != 0 && (*data).oy == 0 as libc::c_int as libc::c_uint {
-        return 1 as libc::c_int;
+    if scroll_exit != 0 && (*data).oy == 0u32 {
+        return 1i32;
     }
     if !(*data).searchmark.is_null() && (*data).timeout == 0 {
-        window_copy_search_marks(wme, 0 as *mut screen, (*data).searchregex, 1 as libc::c_int);
+        window_copy_search_marks(wme, 0 as *mut screen, (*data).searchregex, 1i32);
     }
-    window_copy_update_selection(wme, 1 as libc::c_int, 0 as libc::c_int);
+    window_copy_update_selection(wme, 1i32, 0i32);
     window_copy_redraw_screen(wme);
-    return 0 as libc::c_int;
+    return 0i32;
 }
 unsafe extern "C" fn window_copy_previous_paragraph(mut wme: *mut window_mode_entry) {
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
@@ -2123,17 +2078,13 @@ unsafe extern "C" fn window_copy_previous_paragraph(mut wme: *mut window_mode_en
         .hsize
         .wrapping_add((*data).cy)
         .wrapping_sub((*data).oy);
-    while oy > 0 as libc::c_int as libc::c_uint
-        && window_copy_find_length(wme, oy) == 0 as libc::c_int as libc::c_uint
-    {
+    while oy > 0u32 && window_copy_find_length(wme, oy) == 0u32 {
         oy = oy.wrapping_sub(1)
     }
-    while oy > 0 as libc::c_int as libc::c_uint
-        && window_copy_find_length(wme, oy) > 0 as libc::c_int as libc::c_uint
-    {
+    while oy > 0u32 && window_copy_find_length(wme, oy) > 0u32 {
         oy = oy.wrapping_sub(1)
     }
-    window_copy_scroll_to(wme, 0 as libc::c_int as u_int, oy, 0 as libc::c_int);
+    window_copy_scroll_to(wme, 0u32, oy, 0i32);
 }
 unsafe extern "C" fn window_copy_next_paragraph(mut wme: *mut window_mode_entry) {
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
@@ -2148,15 +2099,15 @@ unsafe extern "C" fn window_copy_next_paragraph(mut wme: *mut window_mode_entry)
     maxy = (*(*(*data).backing).grid)
         .hsize
         .wrapping_add((*(*s).grid).sy)
-        .wrapping_sub(1 as libc::c_int as libc::c_uint);
-    while oy < maxy && window_copy_find_length(wme, oy) == 0 as libc::c_int as libc::c_uint {
+        .wrapping_sub(1u32);
+    while oy < maxy && window_copy_find_length(wme, oy) == 0u32 {
         oy = oy.wrapping_add(1)
     }
-    while oy < maxy && window_copy_find_length(wme, oy) > 0 as libc::c_int as libc::c_uint {
+    while oy < maxy && window_copy_find_length(wme, oy) > 0u32 {
         oy = oy.wrapping_add(1)
     }
     ox = window_copy_find_length(wme, oy);
-    window_copy_scroll_to(wme, ox, oy, 0 as libc::c_int);
+    window_copy_scroll_to(wme, ox, oy, 0i32);
 }
 #[no_mangle]
 pub unsafe extern "C" fn window_copy_get_word(
@@ -2236,8 +2187,7 @@ unsafe extern "C" fn window_copy_formats(
         ft,
         b"selection_present\x00" as *const u8 as *const libc::c_char,
         b"%d\x00" as *const u8 as *const libc::c_char,
-        ((*data).screen.sel != 0 as *mut libc::c_void as *mut crate::screen::screen_sel)
-            as libc::c_int,
+        ((*data).screen.sel != 0 as *mut crate::screen::screen_sel) as libc::c_int,
     );
     if !(*data).screen.sel.is_null() {
         format_add(
@@ -2268,22 +2218,21 @@ unsafe extern "C" fn window_copy_formats(
             ft,
             b"selection_active\x00" as *const u8 as *const libc::c_char,
             b"%d\x00" as *const u8 as *const libc::c_char,
-            ((*data).cursordrag as libc::c_uint != CURSORDRAG_NONE as libc::c_int as libc::c_uint)
-                as libc::c_int,
+            ((*data).cursordrag != CURSORDRAG_NONE) as libc::c_int,
         );
     } else {
         format_add(
             ft,
             b"selection_active\x00" as *const u8 as *const libc::c_char,
             b"%d\x00" as *const u8 as *const libc::c_char,
-            0 as libc::c_int,
+            0i32,
         );
     }
     format_add(
         ft,
         b"search_present\x00" as *const u8 as *const libc::c_char,
         b"%d\x00" as *const u8 as *const libc::c_char,
-        ((*data).searchmark != 0 as *mut libc::c_void as *mut u_char) as libc::c_int,
+        ((*data).searchmark != 0 as *mut u_char) as libc::c_int,
     );
     format_add_cb(
         ft,
@@ -2326,15 +2275,14 @@ unsafe extern "C" fn window_copy_size_changed(mut wme: *mut window_mode_entry) {
         written: 0,
         skipped: 0,
     };
-    let mut search: libc::c_int =
-        ((*data).searchmark != 0 as *mut libc::c_void as *mut u_char) as libc::c_int;
+    let mut search: libc::c_int = ((*data).searchmark != 0 as *mut u_char) as libc::c_int;
     window_copy_clear_selection(wme);
     window_copy_clear_marks(wme);
     screen_write_start(&mut ctx, s);
-    window_copy_write_lines(wme, &mut ctx, 0 as libc::c_int as u_int, (*(*s).grid).sy);
+    window_copy_write_lines(wme, &mut ctx, 0u32, (*(*s).grid).sy);
     screen_write_stop(&mut ctx);
     if search != 0 && (*data).timeout == 0 {
-        window_copy_search_marks(wme, 0 as *mut screen, (*data).searchregex, 0 as libc::c_int);
+        window_copy_search_marks(wme, 0 as *mut screen, (*data).searchregex, 0i32);
     }
     (*data).searchx = (*data).cx as libc::c_int;
     (*data).searchy = (*data).cy as libc::c_int;
@@ -2353,7 +2301,7 @@ unsafe extern "C" fn window_copy_resize(
     let mut wx: u_int = 0;
     let mut wy: u_int = 0;
     let mut reflow: libc::c_int = 0;
-    screen_resize(s, sx, sy, 0 as libc::c_int);
+    screen_resize(s, sx, sy, 0i32);
     cx = (*data).cx;
     cy = (*gd)
         .hsize
@@ -2363,24 +2311,17 @@ unsafe extern "C" fn window_copy_resize(
     if reflow != 0 {
         grid_wrap_position(gd, cx, cy, &mut wx, &mut wy);
     }
-    screen_resize_cursor(
-        (*data).backing,
-        sx,
-        sy,
-        1 as libc::c_int,
-        0 as libc::c_int,
-        0 as libc::c_int,
-    );
+    screen_resize_cursor((*data).backing, sx, sy, 1i32, 0i32, 0i32);
     if reflow != 0 {
         grid_unwrap_position(gd, &mut cx, &mut cy, wx, wy);
     }
     (*data).cx = cx;
     if cy < (*gd).hsize {
-        (*data).cy = 0 as libc::c_int as u_int;
+        (*data).cy = 0u32;
         (*data).oy = (*gd).hsize.wrapping_sub(cy)
     } else {
         (*data).cy = cy.wrapping_sub((*gd).hsize);
-        (*data).oy = 0 as libc::c_int as u_int
+        (*data).oy = 0u32
     }
     window_copy_size_changed(wme);
     window_copy_redraw_screen(wme);
@@ -2406,7 +2347,7 @@ unsafe extern "C" fn window_copy_key_table(mut wme: *mut window_mode_entry) -> *
     if options_get_number(
         (*(*wp).window).options,
         b"mode-keys\x00" as *const u8 as *const libc::c_char,
-    ) == 1 as libc::c_int as libc::c_longlong
+    ) == 1i64
     {
         return b"copy-mode-vi\x00" as *const u8 as *const libc::c_char;
     }
@@ -2419,10 +2360,10 @@ unsafe extern "C" fn window_copy_expand_search_string(
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
     let mut argument: *const libc::c_char = 0 as *const libc::c_char;
     let mut expanded: *mut libc::c_char = 0 as *mut libc::c_char;
-    if (*(*cs).args).argc == 2 as libc::c_int {
-        argument = *(*(*cs).args).argv.offset(1 as libc::c_int as isize);
+    if (*(*cs).args).argc == 2i32 {
+        argument = *(*(*cs).args).argv.offset(1isize);
         if *argument as libc::c_int != '\u{0}' as i32 {
-            if args_has((*cs).args, 'F' as i32 as u_char) != 0 {
+            if args_has((*cs).args, 'F' as u_char) != 0 {
                 expanded = format_single(
                     0 as *mut crate::cmd_queue::cmdq_item,
                     argument,
@@ -2433,7 +2374,7 @@ unsafe extern "C" fn window_copy_expand_search_string(
                 );
                 if *expanded as libc::c_int == '\u{0}' as i32 {
                     free(expanded as *mut libc::c_void);
-                    return 0 as libc::c_int;
+                    return 0i32;
                 }
                 free((*data).searchstr as *mut libc::c_void);
                 (*data).searchstr = expanded
@@ -2443,7 +2384,7 @@ unsafe extern "C" fn window_copy_expand_search_string(
             }
         }
     }
-    return 1 as libc::c_int;
+    return 1i32;
 }
 unsafe extern "C" fn window_copy_cmd_append_selection(
     mut cs: *mut window_copy_cmd_state,
@@ -2505,11 +2446,9 @@ unsafe extern "C" fn window_copy_cmd_bottom_line(
 ) -> window_copy_cmd_action {
     let mut wme: *mut window_mode_entry = (*cs).wme;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    (*data).cx = 0 as libc::c_int as u_int;
-    (*data).cy = (*(*data).screen.grid)
-        .sy
-        .wrapping_sub(1 as libc::c_int as libc::c_uint);
-    window_copy_update_selection(wme, 1 as libc::c_int, 0 as libc::c_int);
+    (*data).cx = 0u32;
+    (*data).cy = (*(*data).screen.grid).sy.wrapping_sub(1u32);
+    window_copy_update_selection(wme, 1i32, 0i32);
     return WINDOW_COPY_CMD_REDRAW;
 }
 unsafe extern "C" fn window_copy_cmd_cancel(
@@ -2534,10 +2473,10 @@ unsafe extern "C" fn window_copy_cmd_copy_end_of_line(
     let mut wp: *mut window_pane = (*wme).wp;
     let mut np: u_int = (*wme).prefix;
     let mut prefix: *mut libc::c_char = 0 as *mut libc::c_char;
-    if (*(*cs).args).argc == 2 as libc::c_int {
+    if (*(*cs).args).argc == 2i32 {
         prefix = format_single(
             0 as *mut crate::cmd_queue::cmdq_item,
-            *(*(*cs).args).argv.offset(1 as libc::c_int as isize),
+            *(*(*cs).args).argv.offset(1isize),
             c,
             s,
             wl,
@@ -2545,8 +2484,8 @@ unsafe extern "C" fn window_copy_cmd_copy_end_of_line(
         )
     }
     window_copy_start_selection(wme);
-    while np > 1 as libc::c_int as libc::c_uint {
-        window_copy_cursor_down(wme, 0 as libc::c_int);
+    while np > 1u32 {
+        window_copy_cursor_down(wme, 0i32);
         np = np.wrapping_sub(1)
     }
     window_copy_cursor_end_of_line(wme);
@@ -2569,10 +2508,10 @@ unsafe extern "C" fn window_copy_cmd_copy_line(
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
     let mut np: u_int = (*wme).prefix;
     let mut prefix: *mut libc::c_char = 0 as *mut libc::c_char;
-    if (*(*cs).args).argc == 2 as libc::c_int {
+    if (*(*cs).args).argc == 2i32 {
         prefix = format_single(
             0 as *mut crate::cmd_queue::cmdq_item,
-            *(*(*cs).args).argv.offset(1 as libc::c_int as isize),
+            *(*(*cs).args).argv.offset(1isize),
             c,
             s,
             wl,
@@ -2582,8 +2521,8 @@ unsafe extern "C" fn window_copy_cmd_copy_line(
     (*data).selflag = SEL_CHAR;
     window_copy_cursor_start_of_line(wme);
     window_copy_start_selection(wme);
-    while np > 1 as libc::c_int as libc::c_uint {
-        window_copy_cursor_down(wme, 0 as libc::c_int);
+    while np > 1u32 {
+        window_copy_cursor_down(wme, 0i32);
         np = np.wrapping_sub(1)
     }
     window_copy_cursor_end_of_line(wme);
@@ -2604,10 +2543,10 @@ unsafe extern "C" fn window_copy_cmd_copy_selection_no_clear(
     let mut wl: *mut winlink = (*cs).wl;
     let mut wp: *mut window_pane = (*wme).wp;
     let mut prefix: *mut libc::c_char = 0 as *mut libc::c_char;
-    if (*(*cs).args).argc == 2 as libc::c_int {
+    if (*(*cs).args).argc == 2i32 {
         prefix = format_single(
             0 as *mut crate::cmd_queue::cmdq_item,
-            *(*(*cs).args).argv.offset(1 as libc::c_int as isize),
+            *(*(*cs).args).argv.offset(1isize),
             c,
             s,
             wl,
@@ -2641,8 +2580,8 @@ unsafe extern "C" fn window_copy_cmd_cursor_down(
 ) -> window_copy_cmd_action {
     let mut wme: *mut window_mode_entry = (*cs).wme;
     let mut np: u_int = (*wme).prefix;
-    while np != 0 as libc::c_int as libc::c_uint {
-        window_copy_cursor_down(wme, 0 as libc::c_int);
+    while np != 0u32 {
+        window_copy_cursor_down(wme, 0i32);
         np = np.wrapping_sub(1)
     }
     return WINDOW_COPY_CMD_NOTHING;
@@ -2655,11 +2594,11 @@ unsafe extern "C" fn window_copy_cmd_cursor_down_and_cancel(
     let mut np: u_int = (*wme).prefix;
     let mut cy: u_int = 0;
     cy = (*data).cy;
-    while np != 0 as libc::c_int as libc::c_uint {
-        window_copy_cursor_down(wme, 0 as libc::c_int);
+    while np != 0u32 {
+        window_copy_cursor_down(wme, 0i32);
         np = np.wrapping_sub(1)
     }
-    if cy == (*data).cy && (*data).oy == 0 as libc::c_int as libc::c_uint {
+    if cy == (*data).cy && (*data).oy == 0u32 {
         return WINDOW_COPY_CMD_CANCEL;
     }
     return WINDOW_COPY_CMD_NOTHING;
@@ -2669,7 +2608,7 @@ unsafe extern "C" fn window_copy_cmd_cursor_left(
 ) -> window_copy_cmd_action {
     let mut wme: *mut window_mode_entry = (*cs).wme;
     let mut np: u_int = (*wme).prefix;
-    while np != 0 as libc::c_int as libc::c_uint {
+    while np != 0u32 {
         window_copy_cursor_left(wme);
         np = np.wrapping_sub(1)
     }
@@ -2680,8 +2619,8 @@ unsafe extern "C" fn window_copy_cmd_cursor_right(
 ) -> window_copy_cmd_action {
     let mut wme: *mut window_mode_entry = (*cs).wme;
     let mut np: u_int = (*wme).prefix;
-    while np != 0 as libc::c_int as libc::c_uint {
-        window_copy_cursor_right(wme, 0 as libc::c_int);
+    while np != 0u32 {
+        window_copy_cursor_right(wme, 0i32);
         np = np.wrapping_sub(1)
     }
     return WINDOW_COPY_CMD_NOTHING;
@@ -2691,8 +2630,8 @@ unsafe extern "C" fn window_copy_cmd_cursor_up(
 ) -> window_copy_cmd_action {
     let mut wme: *mut window_mode_entry = (*cs).wme;
     let mut np: u_int = (*wme).prefix;
-    while np != 0 as libc::c_int as libc::c_uint {
-        window_copy_cursor_up(wme, 0 as libc::c_int);
+    while np != 0u32 {
+        window_copy_cursor_up(wme, 0i32);
         np = np.wrapping_sub(1)
     }
     return WINDOW_COPY_CMD_NOTHING;
@@ -2710,8 +2649,8 @@ unsafe extern "C" fn window_copy_cmd_halfpage_down(
     let mut wme: *mut window_mode_entry = (*cs).wme;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
     let mut np: u_int = (*wme).prefix;
-    while np != 0 as libc::c_int as libc::c_uint {
-        if window_copy_pagedown(wme, 1 as libc::c_int, (*data).scroll_exit) != 0 {
+    while np != 0u32 {
+        if window_copy_pagedown(wme, 1i32, (*data).scroll_exit) != 0 {
             return WINDOW_COPY_CMD_CANCEL;
         }
         np = np.wrapping_sub(1)
@@ -2723,8 +2662,8 @@ unsafe extern "C" fn window_copy_cmd_halfpage_down_and_cancel(
 ) -> window_copy_cmd_action {
     let mut wme: *mut window_mode_entry = (*cs).wme;
     let mut np: u_int = (*wme).prefix;
-    while np != 0 as libc::c_int as libc::c_uint {
-        if window_copy_pagedown(wme, 1 as libc::c_int, 1 as libc::c_int) != 0 {
+    while np != 0u32 {
+        if window_copy_pagedown(wme, 1i32, 1i32) != 0 {
             return WINDOW_COPY_CMD_CANCEL;
         }
         np = np.wrapping_sub(1)
@@ -2736,8 +2675,8 @@ unsafe extern "C" fn window_copy_cmd_halfpage_up(
 ) -> window_copy_cmd_action {
     let mut wme: *mut window_mode_entry = (*cs).wme;
     let mut np: u_int = (*wme).prefix;
-    while np != 0 as libc::c_int as libc::c_uint {
-        window_copy_pageup1(wme, 1 as libc::c_int);
+    while np != 0u32 {
+        window_copy_pageup1(wme, 1i32);
         np = np.wrapping_sub(1)
     }
     return WINDOW_COPY_CMD_NOTHING;
@@ -2753,20 +2692,16 @@ unsafe extern "C" fn window_copy_cmd_history_bottom(
         .hsize
         .wrapping_add((*data).cy)
         .wrapping_sub((*data).oy);
-    if (*data).lineflag as libc::c_uint == LINE_SEL_RIGHT_LEFT as libc::c_int as libc::c_uint
-        && oy == (*data).endsely
-    {
+    if (*data).lineflag == LINE_SEL_RIGHT_LEFT && oy == (*data).endsely {
         window_copy_other_end(wme);
     }
-    (*data).cy = (*(*data).screen.grid)
-        .sy
-        .wrapping_sub(1 as libc::c_int as libc::c_uint);
+    (*data).cy = (*(*data).screen.grid).sy.wrapping_sub(1u32);
     (*data).cx = window_copy_find_length(wme, (*(*s).grid).hsize.wrapping_add((*data).cy));
-    (*data).oy = 0 as libc::c_int as u_int;
+    (*data).oy = 0u32;
     if !(*data).searchmark.is_null() && (*data).timeout == 0 {
-        window_copy_search_marks(wme, 0 as *mut screen, (*data).searchregex, 1 as libc::c_int);
+        window_copy_search_marks(wme, 0 as *mut screen, (*data).searchregex, 1i32);
     }
-    window_copy_update_selection(wme, 1 as libc::c_int, 0 as libc::c_int);
+    window_copy_update_selection(wme, 1i32, 0i32);
     return WINDOW_COPY_CMD_REDRAW;
 }
 unsafe extern "C" fn window_copy_cmd_history_top(
@@ -2779,18 +2714,16 @@ unsafe extern "C" fn window_copy_cmd_history_top(
         .hsize
         .wrapping_add((*data).cy)
         .wrapping_sub((*data).oy);
-    if (*data).lineflag as libc::c_uint == LINE_SEL_LEFT_RIGHT as libc::c_int as libc::c_uint
-        && oy == (*data).sely
-    {
+    if (*data).lineflag == LINE_SEL_LEFT_RIGHT && oy == (*data).sely {
         window_copy_other_end(wme);
     }
-    (*data).cy = 0 as libc::c_int as u_int;
-    (*data).cx = 0 as libc::c_int as u_int;
+    (*data).cy = 0u32;
+    (*data).cx = 0u32;
     (*data).oy = (*(*(*data).backing).grid).hsize;
     if !(*data).searchmark.is_null() && (*data).timeout == 0 {
-        window_copy_search_marks(wme, 0 as *mut screen, (*data).searchregex, 1 as libc::c_int);
+        window_copy_search_marks(wme, 0 as *mut screen, (*data).searchregex, 1i32);
     }
-    window_copy_update_selection(wme, 1 as libc::c_int, 0 as libc::c_int);
+    window_copy_update_selection(wme, 1i32, 0i32);
     return WINDOW_COPY_CMD_REDRAW;
 }
 unsafe extern "C" fn window_copy_cmd_jump_again(
@@ -2801,25 +2734,25 @@ unsafe extern "C" fn window_copy_cmd_jump_again(
     let mut np: u_int = (*wme).prefix;
     match (*data).jumptype {
         3 => {
-            while np != 0 as libc::c_int as libc::c_uint {
+            while np != 0u32 {
                 window_copy_cursor_jump(wme);
                 np = np.wrapping_sub(1)
             }
         }
         4 => {
-            while np != 0 as libc::c_int as libc::c_uint {
+            while np != 0u32 {
                 window_copy_cursor_jump_back(wme);
                 np = np.wrapping_sub(1)
             }
         }
         5 => {
-            while np != 0 as libc::c_int as libc::c_uint {
+            while np != 0u32 {
                 window_copy_cursor_jump_to(wme);
                 np = np.wrapping_sub(1)
             }
         }
         6 => {
-            while np != 0 as libc::c_int as libc::c_uint {
+            while np != 0u32 {
                 window_copy_cursor_jump_to_back(wme);
                 np = np.wrapping_sub(1)
             }
@@ -2836,25 +2769,25 @@ unsafe extern "C" fn window_copy_cmd_jump_reverse(
     let mut np: u_int = (*wme).prefix;
     match (*data).jumptype {
         3 => {
-            while np != 0 as libc::c_int as libc::c_uint {
+            while np != 0u32 {
                 window_copy_cursor_jump_back(wme);
                 np = np.wrapping_sub(1)
             }
         }
         4 => {
-            while np != 0 as libc::c_int as libc::c_uint {
+            while np != 0u32 {
                 window_copy_cursor_jump(wme);
                 np = np.wrapping_sub(1)
             }
         }
         5 => {
-            while np != 0 as libc::c_int as libc::c_uint {
+            while np != 0u32 {
                 window_copy_cursor_jump_to_back(wme);
                 np = np.wrapping_sub(1)
             }
         }
         6 => {
-            while np != 0 as libc::c_int as libc::c_uint {
+            while np != 0u32 {
                 window_copy_cursor_jump_to(wme);
                 np = np.wrapping_sub(1)
             }
@@ -2868,12 +2801,12 @@ unsafe extern "C" fn window_copy_cmd_middle_line(
 ) -> window_copy_cmd_action {
     let mut wme: *mut window_mode_entry = (*cs).wme;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    (*data).cx = 0 as libc::c_int as u_int;
+    (*data).cx = 0u32;
     (*data).cy = (*(*data).screen.grid)
         .sy
-        .wrapping_sub(1 as libc::c_int as libc::c_uint)
-        .wrapping_div(2 as libc::c_int as libc::c_uint);
-    window_copy_update_selection(wme, 1 as libc::c_int, 0 as libc::c_int);
+        .wrapping_sub(1u32)
+        .wrapping_div(2u32);
+    window_copy_update_selection(wme, 1i32, 0i32);
     return WINDOW_COPY_CMD_REDRAW;
 }
 unsafe extern "C" fn window_copy_cmd_previous_matching_bracket(
@@ -2909,7 +2842,7 @@ unsafe extern "C" fn window_copy_cmd_previous_matching_bracket(
         us: 0,
     };
     let mut failed: libc::c_int = 0;
-    while np != 0 as libc::c_int as libc::c_uint {
+    while np != 0u32 {
         /* Get cursor position and line length. */
         px = (*data).cx;
         py = (*(*s).grid)
@@ -2917,74 +2850,68 @@ unsafe extern "C" fn window_copy_cmd_previous_matching_bracket(
             .wrapping_add((*data).cy)
             .wrapping_sub((*data).oy);
         xx = window_copy_find_length(wme, py);
-        if xx == 0 as libc::c_int as libc::c_uint {
+        if xx == 0u32 {
             break;
         }
         /*
          * Get the current character. If not on a bracket, try the
          * previous. If still not, then behave like previous-word.
          */
-        tried = 0 as libc::c_int as libc::c_char;
+        tried = 0i8;
         loop {
             grid_get_cell((*s).grid, px, py, &mut gc);
-            if gc.data.size as libc::c_int != 1 as libc::c_int
-                || gc.flags as libc::c_int & 0x4 as libc::c_int != 0
-            {
+            if gc.data.size as libc::c_int != 1i32 || gc.flags as libc::c_int & 0x4i32 != 0 {
                 cp = 0 as *mut libc::c_char
             } else {
                 found = *gc.data.data.as_mut_ptr() as libc::c_char;
                 cp = strchr(close.as_mut_ptr(), found as libc::c_int)
             }
             if cp.is_null() {
-                if !((*data).modekeys == 0 as libc::c_int) {
+                if !((*data).modekeys == 0i32) {
                     break;
                 }
-                if tried == 0 && px > 0 as libc::c_int as libc::c_uint {
+                if tried == 0 && px > 0u32 {
                     px = px.wrapping_sub(1);
-                    tried = 1 as libc::c_int as libc::c_char
+                    tried = 1i8
                 } else {
                     window_copy_cursor_previous_word(
                         wme,
                         b"}]) \x00" as *const u8 as *const libc::c_char,
-                        1 as libc::c_int,
+                        1i32,
                     );
                     break;
                 }
             } else {
-                start = open[cp.wrapping_offset_from(close.as_mut_ptr()) as libc::c_long as usize];
+                start = open[cp.wrapping_offset_from(close.as_mut_ptr()) as usize];
                 /* Walk backward until the matching bracket is reached. */
-                n = 1 as libc::c_int as u_int;
-                failed = 0 as libc::c_int;
+                n = 1u32;
+                failed = 0i32;
                 loop {
-                    if px == 0 as libc::c_int as libc::c_uint {
-                        if py == 0 as libc::c_int as libc::c_uint {
-                            failed = 1 as libc::c_int;
+                    if px == 0u32 {
+                        if py == 0u32 {
+                            failed = 1i32;
                             break;
                         } else {
                             loop {
                                 py = py.wrapping_sub(1);
                                 xx = window_copy_find_length(wme, py);
-                                if !(xx == 0 as libc::c_int as libc::c_uint
-                                    && py > 0 as libc::c_int as libc::c_uint)
-                                {
+                                if !(xx == 0u32 && py > 0u32) {
                                     break;
                                 }
                             }
-                            if xx == 0 as libc::c_int as libc::c_uint
-                                && py == 0 as libc::c_int as libc::c_uint
-                            {
-                                failed = 1 as libc::c_int;
+                            if xx == 0u32 && py == 0u32 {
+                                failed = 1i32;
                                 break;
                             } else {
-                                px = xx.wrapping_sub(1 as libc::c_int as libc::c_uint)
+                                px = xx.wrapping_sub(1u32)
                             }
                         }
                     } else {
                         px = px.wrapping_sub(1)
                     }
                     grid_get_cell((*s).grid, px, py, &mut gc);
-                    if gc.data.size as libc::c_int == 1 as libc::c_int
-                        && !(gc.flags as libc::c_int) & 0x4 as libc::c_int != 0
+                    if gc.data.size as libc::c_int == 1i32
+                        && !(gc.flags as libc::c_int) & 0x4i32 != 0
                     {
                         if *gc.data.data.as_mut_ptr() as libc::c_int == found as libc::c_int {
                             n = n.wrapping_add(1)
@@ -2993,13 +2920,13 @@ unsafe extern "C" fn window_copy_cmd_previous_matching_bracket(
                             n = n.wrapping_sub(1)
                         }
                     }
-                    if !(n != 0 as libc::c_int as libc::c_uint) {
+                    if !(n != 0u32) {
                         break;
                     }
                 }
                 /* Move the cursor to the found location if any. */
                 if failed == 0 {
-                    window_copy_scroll_to(wme, px, py, 0 as libc::c_int);
+                    window_copy_scroll_to(wme, px, py, 0i32);
                 }
                 break;
             }
@@ -3045,7 +2972,7 @@ unsafe extern "C" fn window_copy_cmd_next_matching_bracket(
     };
     let mut failed: libc::c_int = 0;
     let mut gl: *mut grid_line = 0 as *mut grid_line;
-    's_33: while np != 0 as libc::c_int as libc::c_uint {
+    's_33: while np != 0u32 {
         /* Get cursor position and line length. */
         px = (*data).cx;
         py = (*(*s).grid)
@@ -3056,20 +2983,18 @@ unsafe extern "C" fn window_copy_cmd_next_matching_bracket(
         yy = (*(*s).grid)
             .hsize
             .wrapping_add((*(*s).grid).sy)
-            .wrapping_sub(1 as libc::c_int as libc::c_uint);
-        if xx == 0 as libc::c_int as libc::c_uint {
+            .wrapping_sub(1u32);
+        if xx == 0u32 {
             break;
         }
         /*
          * Get the current character. If not on a bracket, try the
          * next. If still not, then behave like next-word.
          */
-        tried = 0 as libc::c_int as libc::c_char;
+        tried = 0i8;
         loop {
             grid_get_cell((*s).grid, px, py, &mut gc);
-            if gc.data.size as libc::c_int != 1 as libc::c_int
-                || gc.flags as libc::c_int & 0x4 as libc::c_int != 0
-            {
+            if gc.data.size as libc::c_int != 1i32 || gc.flags as libc::c_int & 0x4i32 != 0 {
                 cp = 0 as *mut libc::c_char
             } else {
                 found = *gc.data.data.as_mut_ptr() as libc::c_char;
@@ -3079,13 +3004,13 @@ unsafe extern "C" fn window_copy_cmd_next_matching_bracket(
                  * return to the original cursor position.
                  */
                 cp = strchr(close.as_mut_ptr(), found as libc::c_int);
-                if !cp.is_null() && (*data).modekeys == 1 as libc::c_int {
+                if !cp.is_null() && (*data).modekeys == 1i32 {
                     sx = (*data).cx;
                     sy = (*(*s).grid)
                         .hsize
                         .wrapping_add((*data).cy)
                         .wrapping_sub((*data).oy);
-                    window_copy_scroll_to(wme, px, py, 0 as libc::c_int);
+                    window_copy_scroll_to(wme, px, py, 0i32);
                     window_copy_cmd_previous_matching_bracket(cs);
                     px = (*data).cx;
                     py = (*(*s).grid)
@@ -3093,15 +3018,15 @@ unsafe extern "C" fn window_copy_cmd_next_matching_bracket(
                         .wrapping_add((*data).cy)
                         .wrapping_sub((*data).oy);
                     grid_get_cell((*s).grid, px, py, &mut gc);
-                    if gc.data.size as libc::c_int == 1 as libc::c_int
-                        && !(gc.flags as libc::c_int) & 0x4 as libc::c_int != 0
+                    if gc.data.size as libc::c_int == 1i32
+                        && !(gc.flags as libc::c_int) & 0x4i32 != 0
                         && !strchr(
                             close.as_mut_ptr(),
                             *gc.data.data.as_mut_ptr() as libc::c_int,
                         )
                         .is_null()
                     {
-                        window_copy_scroll_to(wme, sx, sy, 0 as libc::c_int);
+                        window_copy_scroll_to(wme, sx, sy, 0i32);
                     }
                     break 's_33;
                 } else {
@@ -3109,15 +3034,15 @@ unsafe extern "C" fn window_copy_cmd_next_matching_bracket(
                 }
             }
             if cp.is_null() {
-                if (*data).modekeys == 0 as libc::c_int {
+                if (*data).modekeys == 0i32 {
                     if tried == 0 && px <= xx {
                         px = px.wrapping_add(1);
-                        tried = 1 as libc::c_int as libc::c_char
+                        tried = 1i8
                     } else {
                         window_copy_cursor_next_word_end(
                             wme,
                             b"{[( \x00" as *const u8 as *const libc::c_char,
-                            0 as libc::c_int,
+                            0i32,
                         );
                         break;
                     }
@@ -3126,31 +3051,31 @@ unsafe extern "C" fn window_copy_cmd_next_matching_bracket(
                         break;
                     }
                     gl = grid_get_line((*s).grid, py);
-                    if !(*gl).flags & 0x1 as libc::c_int != 0 {
+                    if !(*gl).flags & 0x1i32 != 0 {
                         break;
                     }
                     if (*gl).cellsize > (*(*s).grid).sx {
                         break;
                     }
-                    px = 0 as libc::c_int as u_int;
+                    px = 0u32;
                     py = py.wrapping_add(1);
                     xx = window_copy_find_length(wme, py)
                 } else {
                     px = px.wrapping_add(1)
                 }
             } else {
-                end = close[cp.wrapping_offset_from(open.as_mut_ptr()) as libc::c_long as usize];
+                end = close[cp.wrapping_offset_from(open.as_mut_ptr()) as usize];
                 /* For vi, continue searching for bracket until EOL. */
                 /* Walk forward until the matching bracket is reached. */
-                n = 1 as libc::c_int as u_int;
-                failed = 0 as libc::c_int;
+                n = 1u32;
+                failed = 0i32;
                 loop {
                     if px > xx {
                         if py == yy {
-                            failed = 1 as libc::c_int;
+                            failed = 1i32;
                             break;
                         } else {
-                            px = 0 as libc::c_int as u_int;
+                            px = 0u32;
                             py = py.wrapping_add(1);
                             xx = window_copy_find_length(wme, py)
                         }
@@ -3158,8 +3083,8 @@ unsafe extern "C" fn window_copy_cmd_next_matching_bracket(
                         px = px.wrapping_add(1)
                     }
                     grid_get_cell((*s).grid, px, py, &mut gc);
-                    if gc.data.size as libc::c_int == 1 as libc::c_int
-                        && !(gc.flags as libc::c_int) & 0x4 as libc::c_int != 0
+                    if gc.data.size as libc::c_int == 1i32
+                        && !(gc.flags as libc::c_int) & 0x4i32 != 0
                     {
                         if *gc.data.data.as_mut_ptr() as libc::c_int == found as libc::c_int {
                             n = n.wrapping_add(1)
@@ -3167,13 +3092,13 @@ unsafe extern "C" fn window_copy_cmd_next_matching_bracket(
                             n = n.wrapping_sub(1)
                         }
                     }
-                    if !(n != 0 as libc::c_int as libc::c_uint) {
+                    if !(n != 0u32) {
                         break;
                     }
                 }
                 /* Move the cursor to the found location if any. */
                 if failed == 0 {
-                    window_copy_scroll_to(wme, px, py, 0 as libc::c_int);
+                    window_copy_scroll_to(wme, px, py, 0i32);
                 }
                 break;
             }
@@ -3187,7 +3112,7 @@ unsafe extern "C" fn window_copy_cmd_next_paragraph(
 ) -> window_copy_cmd_action {
     let mut wme: *mut window_mode_entry = (*cs).wme;
     let mut np: u_int = (*wme).prefix;
-    while np != 0 as libc::c_int as libc::c_uint {
+    while np != 0u32 {
         window_copy_next_paragraph(wme);
         np = np.wrapping_sub(1)
     }
@@ -3198,7 +3123,7 @@ unsafe extern "C" fn window_copy_cmd_next_space(
 ) -> window_copy_cmd_action {
     let mut wme: *mut window_mode_entry = (*cs).wme;
     let mut np: u_int = (*wme).prefix;
-    while np != 0 as libc::c_int as libc::c_uint {
+    while np != 0u32 {
         window_copy_cursor_next_word(wme, b" \x00" as *const u8 as *const libc::c_char);
         np = np.wrapping_sub(1)
     }
@@ -3209,12 +3134,8 @@ unsafe extern "C" fn window_copy_cmd_next_space_end(
 ) -> window_copy_cmd_action {
     let mut wme: *mut window_mode_entry = (*cs).wme;
     let mut np: u_int = (*wme).prefix;
-    while np != 0 as libc::c_int as libc::c_uint {
-        window_copy_cursor_next_word_end(
-            wme,
-            b" \x00" as *const u8 as *const libc::c_char,
-            0 as libc::c_int,
-        );
+    while np != 0u32 {
+        window_copy_cursor_next_word_end(wme, b" \x00" as *const u8 as *const libc::c_char, 0i32);
         np = np.wrapping_sub(1)
     }
     return WINDOW_COPY_CMD_NOTHING;
@@ -3230,7 +3151,7 @@ unsafe extern "C" fn window_copy_cmd_next_word(
         (*s).options,
         b"word-separators\x00" as *const u8 as *const libc::c_char,
     );
-    while np != 0 as libc::c_int as libc::c_uint {
+    while np != 0u32 {
         window_copy_cursor_next_word(wme, ws);
         np = np.wrapping_sub(1)
     }
@@ -3247,8 +3168,8 @@ unsafe extern "C" fn window_copy_cmd_next_word_end(
         (*s).options,
         b"word-separators\x00" as *const u8 as *const libc::c_char,
     );
-    while np != 0 as libc::c_int as libc::c_uint {
-        window_copy_cursor_next_word_end(wme, ws, 0 as libc::c_int);
+    while np != 0u32 {
+        window_copy_cursor_next_word_end(wme, ws, 0i32);
         np = np.wrapping_sub(1)
     }
     return WINDOW_COPY_CMD_NOTHING;
@@ -3260,7 +3181,7 @@ unsafe extern "C" fn window_copy_cmd_other_end(
     let mut np: u_int = (*wme).prefix;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
     (*data).selflag = SEL_CHAR;
-    if np.wrapping_rem(2 as libc::c_int as libc::c_uint) != 0 as libc::c_int as libc::c_uint {
+    if np.wrapping_rem(2u32) != 0u32 {
         window_copy_other_end(wme);
     }
     return WINDOW_COPY_CMD_NOTHING;
@@ -3271,8 +3192,8 @@ unsafe extern "C" fn window_copy_cmd_page_down(
     let mut wme: *mut window_mode_entry = (*cs).wme;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
     let mut np: u_int = (*wme).prefix;
-    while np != 0 as libc::c_int as libc::c_uint {
-        if window_copy_pagedown(wme, 0 as libc::c_int, (*data).scroll_exit) != 0 {
+    while np != 0u32 {
+        if window_copy_pagedown(wme, 0i32, (*data).scroll_exit) != 0 {
             return WINDOW_COPY_CMD_CANCEL;
         }
         np = np.wrapping_sub(1)
@@ -3284,8 +3205,8 @@ unsafe extern "C" fn window_copy_cmd_page_down_and_cancel(
 ) -> window_copy_cmd_action {
     let mut wme: *mut window_mode_entry = (*cs).wme;
     let mut np: u_int = (*wme).prefix;
-    while np != 0 as libc::c_int as libc::c_uint {
-        if window_copy_pagedown(wme, 0 as libc::c_int, 1 as libc::c_int) != 0 {
+    while np != 0u32 {
+        if window_copy_pagedown(wme, 0i32, 1i32) != 0 {
             return WINDOW_COPY_CMD_CANCEL;
         }
         np = np.wrapping_sub(1)
@@ -3297,8 +3218,8 @@ unsafe extern "C" fn window_copy_cmd_page_up(
 ) -> window_copy_cmd_action {
     let mut wme: *mut window_mode_entry = (*cs).wme;
     let mut np: u_int = (*wme).prefix;
-    while np != 0 as libc::c_int as libc::c_uint {
-        window_copy_pageup1(wme, 0 as libc::c_int);
+    while np != 0u32 {
+        window_copy_pageup1(wme, 0i32);
         np = np.wrapping_sub(1)
     }
     return WINDOW_COPY_CMD_NOTHING;
@@ -3308,7 +3229,7 @@ unsafe extern "C" fn window_copy_cmd_previous_paragraph(
 ) -> window_copy_cmd_action {
     let mut wme: *mut window_mode_entry = (*cs).wme;
     let mut np: u_int = (*wme).prefix;
-    while np != 0 as libc::c_int as libc::c_uint {
+    while np != 0u32 {
         window_copy_previous_paragraph(wme);
         np = np.wrapping_sub(1)
     }
@@ -3319,12 +3240,8 @@ unsafe extern "C" fn window_copy_cmd_previous_space(
 ) -> window_copy_cmd_action {
     let mut wme: *mut window_mode_entry = (*cs).wme;
     let mut np: u_int = (*wme).prefix;
-    while np != 0 as libc::c_int as libc::c_uint {
-        window_copy_cursor_previous_word(
-            wme,
-            b" \x00" as *const u8 as *const libc::c_char,
-            1 as libc::c_int,
-        );
+    while np != 0u32 {
+        window_copy_cursor_previous_word(wme, b" \x00" as *const u8 as *const libc::c_char, 1i32);
         np = np.wrapping_sub(1)
     }
     return WINDOW_COPY_CMD_NOTHING;
@@ -3340,8 +3257,8 @@ unsafe extern "C" fn window_copy_cmd_previous_word(
         (*s).options,
         b"word-separators\x00" as *const u8 as *const libc::c_char,
     );
-    while np != 0 as libc::c_int as libc::c_uint {
-        window_copy_cursor_previous_word(wme, ws, 1 as libc::c_int);
+    while np != 0u32 {
+        window_copy_cursor_previous_word(wme, ws, 1i32);
         np = np.wrapping_sub(1)
     }
     return WINDOW_COPY_CMD_NOTHING;
@@ -3361,11 +3278,11 @@ unsafe extern "C" fn window_copy_cmd_scroll_down(
     let mut wme: *mut window_mode_entry = (*cs).wme;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
     let mut np: u_int = (*wme).prefix;
-    while np != 0 as libc::c_int as libc::c_uint {
-        window_copy_cursor_down(wme, 1 as libc::c_int);
+    while np != 0u32 {
+        window_copy_cursor_down(wme, 1i32);
         np = np.wrapping_sub(1)
     }
-    if (*data).scroll_exit != 0 && (*data).oy == 0 as libc::c_int as libc::c_uint {
+    if (*data).scroll_exit != 0 && (*data).oy == 0u32 {
         return WINDOW_COPY_CMD_CANCEL;
     }
     return WINDOW_COPY_CMD_NOTHING;
@@ -3376,11 +3293,11 @@ unsafe extern "C" fn window_copy_cmd_scroll_down_and_cancel(
     let mut wme: *mut window_mode_entry = (*cs).wme;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
     let mut np: u_int = (*wme).prefix;
-    while np != 0 as libc::c_int as libc::c_uint {
-        window_copy_cursor_down(wme, 1 as libc::c_int);
+    while np != 0u32 {
+        window_copy_cursor_down(wme, 1i32);
         np = np.wrapping_sub(1)
     }
-    if (*data).oy == 0 as libc::c_int as libc::c_uint {
+    if (*data).oy == 0u32 {
         return WINDOW_COPY_CMD_CANCEL;
     }
     return WINDOW_COPY_CMD_NOTHING;
@@ -3390,8 +3307,8 @@ unsafe extern "C" fn window_copy_cmd_scroll_up(
 ) -> window_copy_cmd_action {
     let mut wme: *mut window_mode_entry = (*cs).wme;
     let mut np: u_int = (*wme).prefix;
-    while np != 0 as libc::c_int as libc::c_uint {
-        window_copy_cursor_up(wme, 1 as libc::c_int);
+    while np != 0u32 {
+        window_copy_cursor_up(wme, 1i32);
         np = np.wrapping_sub(1)
     }
     return WINDOW_COPY_CMD_NOTHING;
@@ -3403,13 +3320,13 @@ unsafe extern "C" fn window_copy_cmd_search_again(
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
     let mut np: u_int = (*wme).prefix;
     if (*data).searchtype == WINDOW_COPY_SEARCHUP as libc::c_int {
-        while np != 0 as libc::c_int as libc::c_uint {
-            window_copy_search_up(wme, (*data).searchregex, 1 as libc::c_int);
+        while np != 0u32 {
+            window_copy_search_up(wme, (*data).searchregex, 1i32);
             np = np.wrapping_sub(1)
         }
     } else if (*data).searchtype == WINDOW_COPY_SEARCHDOWN as libc::c_int {
-        while np != 0 as libc::c_int as libc::c_uint {
-            window_copy_search_down(wme, (*data).searchregex, 1 as libc::c_int);
+        while np != 0u32 {
+            window_copy_search_down(wme, (*data).searchregex, 1i32);
             np = np.wrapping_sub(1)
         }
     }
@@ -3422,13 +3339,13 @@ unsafe extern "C" fn window_copy_cmd_search_reverse(
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
     let mut np: u_int = (*wme).prefix;
     if (*data).searchtype == WINDOW_COPY_SEARCHUP as libc::c_int {
-        while np != 0 as libc::c_int as libc::c_uint {
-            window_copy_search_down(wme, (*data).searchregex, 1 as libc::c_int);
+        while np != 0u32 {
+            window_copy_search_down(wme, (*data).searchregex, 1i32);
             np = np.wrapping_sub(1)
         }
     } else if (*data).searchtype == WINDOW_COPY_SEARCHDOWN as libc::c_int {
-        while np != 0 as libc::c_int as libc::c_uint {
-            window_copy_search_up(wme, (*data).searchregex, 1 as libc::c_int);
+        while np != 0u32 {
+            window_copy_search_up(wme, (*data).searchregex, 1i32);
             np = np.wrapping_sub(1)
         }
     }
@@ -3441,7 +3358,7 @@ unsafe extern "C" fn window_copy_cmd_select_line(
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
     let mut np: u_int = (*wme).prefix;
     (*data).lineflag = LINE_SEL_LEFT_RIGHT;
-    (*data).rectflag = 0 as libc::c_int;
+    (*data).rectflag = 0i32;
     (*data).selflag = SEL_LINE;
     (*data).dx = (*data).cx;
     (*data).dy = (*(*(*data).backing).grid)
@@ -3457,8 +3374,8 @@ unsafe extern "C" fn window_copy_cmd_select_line(
     (*data).endselrx = window_copy_find_length(wme, (*data).selry);
     (*data).endselry = (*data).selry;
     window_copy_start_selection(wme);
-    while np > 1 as libc::c_int as libc::c_uint {
-        window_copy_cursor_down(wme, 0 as libc::c_int);
+    while np > 1u32 {
+        window_copy_cursor_down(wme, 0i32);
         np = np.wrapping_sub(1)
     }
     window_copy_cursor_end_of_line(wme);
@@ -3473,7 +3390,7 @@ unsafe extern "C" fn window_copy_cmd_select_word(
     let mut px: u_int = 0;
     let mut py: u_int = 0;
     (*data).lineflag = LINE_SEL_LEFT_RIGHT;
-    (*data).rectflag = 0 as libc::c_int;
+    (*data).rectflag = 0i32;
     (*data).selflag = SEL_WORD;
     (*data).dx = (*data).cx;
     (*data).dy = (*(*(*data).backing).grid)
@@ -3484,7 +3401,7 @@ unsafe extern "C" fn window_copy_cmd_select_word(
         (*s).options,
         b"word-separators\x00" as *const u8 as *const libc::c_char,
     );
-    window_copy_cursor_previous_word(wme, (*data).ws, 0 as libc::c_int);
+    window_copy_cursor_previous_word(wme, (*data).ws, 0i32);
     px = (*data).cx;
     py = (*(*(*data).backing).grid)
         .hsize
@@ -3494,18 +3411,13 @@ unsafe extern "C" fn window_copy_cmd_select_word(
     (*data).selry = py;
     window_copy_start_selection(wme);
     if px >= window_copy_find_length(wme, py)
-        || window_copy_in_set(
-            wme,
-            px.wrapping_add(1 as libc::c_int as libc::c_uint),
-            py,
-            (*data).ws,
-        ) == 0
+        || window_copy_in_set(wme, px.wrapping_add(1u32), py, (*data).ws) == 0
     {
-        window_copy_cursor_next_word_end(wme, (*data).ws, 1 as libc::c_int);
+        window_copy_cursor_next_word_end(wme, (*data).ws, 1i32);
     } else {
         window_copy_update_cursor(wme, px, (*data).cy);
-        if window_copy_update_selection(wme, 1 as libc::c_int, 1 as libc::c_int) != 0 {
-            window_copy_redraw_lines(wme, (*data).cy, 1 as libc::c_int as u_int);
+        if window_copy_update_selection(wme, 1i32, 1i32) != 0 {
+            window_copy_redraw_lines(wme, (*data).cy, 1u32);
         }
     }
     (*data).endselrx = (*data).cx;
@@ -3527,7 +3439,7 @@ unsafe extern "C" fn window_copy_cmd_set_mark(
         .hsize
         .wrapping_add((*data).cy)
         .wrapping_sub((*data).oy);
-    (*data).showmark = 1 as libc::c_int;
+    (*data).showmark = 1i32;
     return WINDOW_COPY_CMD_REDRAW;
 }
 unsafe extern "C" fn window_copy_cmd_start_of_line(
@@ -3542,9 +3454,9 @@ unsafe extern "C" fn window_copy_cmd_top_line(
 ) -> window_copy_cmd_action {
     let mut wme: *mut window_mode_entry = (*cs).wme;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    (*data).cx = 0 as libc::c_int as u_int;
-    (*data).cy = 0 as libc::c_int as u_int;
-    window_copy_update_selection(wme, 1 as libc::c_int, 0 as libc::c_int);
+    (*data).cx = 0u32;
+    (*data).cy = 0u32;
+    window_copy_update_selection(wme, 1i32, 0i32);
     return WINDOW_COPY_CMD_REDRAW;
 }
 unsafe extern "C" fn window_copy_cmd_copy_pipe_no_clear(
@@ -3557,10 +3469,10 @@ unsafe extern "C" fn window_copy_cmd_copy_pipe_no_clear(
     let mut wp: *mut window_pane = (*wme).wp;
     let mut command: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut prefix: *mut libc::c_char = 0 as *mut libc::c_char;
-    if (*(*cs).args).argc == 3 as libc::c_int {
+    if (*(*cs).args).argc == 3i32 {
         prefix = format_single(
             0 as *mut crate::cmd_queue::cmdq_item,
-            *(*(*cs).args).argv.offset(2 as libc::c_int as isize),
+            *(*(*cs).args).argv.offset(2isize),
             c,
             s,
             wl,
@@ -3568,12 +3480,12 @@ unsafe extern "C" fn window_copy_cmd_copy_pipe_no_clear(
         )
     }
     if !s.is_null()
-        && (*(*cs).args).argc > 1 as libc::c_int
-        && **(*(*cs).args).argv.offset(1 as libc::c_int as isize) as libc::c_int != '\u{0}' as i32
+        && (*(*cs).args).argc > 1i32
+        && **(*(*cs).args).argv.offset(1isize) as libc::c_int != '\u{0}' as i32
     {
         command = format_single(
             0 as *mut crate::cmd_queue::cmdq_item,
-            *(*(*cs).args).argv.offset(1 as libc::c_int as isize),
+            *(*(*cs).args).argv.offset(1isize),
             c,
             s,
             wl,
@@ -3605,7 +3517,7 @@ unsafe extern "C" fn window_copy_cmd_goto_line(
     mut cs: *mut window_copy_cmd_state,
 ) -> window_copy_cmd_action {
     let mut wme: *mut window_mode_entry = (*cs).wme;
-    let mut argument: *const libc::c_char = *(*(*cs).args).argv.offset(1 as libc::c_int as isize);
+    let mut argument: *const libc::c_char = *(*(*cs).args).argv.offset(1isize);
     if *argument as libc::c_int != '\u{0}' as i32 {
         window_copy_goto_line(wme, argument);
     }
@@ -3617,11 +3529,11 @@ unsafe extern "C" fn window_copy_cmd_jump_backward(
     let mut wme: *mut window_mode_entry = (*cs).wme;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
     let mut np: u_int = (*wme).prefix;
-    let mut argument: *const libc::c_char = *(*(*cs).args).argv.offset(1 as libc::c_int as isize);
+    let mut argument: *const libc::c_char = *(*(*cs).args).argv.offset(1isize);
     if *argument as libc::c_int != '\u{0}' as i32 {
         (*data).jumptype = WINDOW_COPY_JUMPBACKWARD as libc::c_int;
         (*data).jumpchar = *argument;
-        while np != 0 as libc::c_int as libc::c_uint {
+        while np != 0u32 {
             window_copy_cursor_jump_back(wme);
             np = np.wrapping_sub(1)
         }
@@ -3634,11 +3546,11 @@ unsafe extern "C" fn window_copy_cmd_jump_forward(
     let mut wme: *mut window_mode_entry = (*cs).wme;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
     let mut np: u_int = (*wme).prefix;
-    let mut argument: *const libc::c_char = *(*(*cs).args).argv.offset(1 as libc::c_int as isize);
+    let mut argument: *const libc::c_char = *(*(*cs).args).argv.offset(1isize);
     if *argument as libc::c_int != '\u{0}' as i32 {
         (*data).jumptype = WINDOW_COPY_JUMPFORWARD as libc::c_int;
         (*data).jumpchar = *argument;
-        while np != 0 as libc::c_int as libc::c_uint {
+        while np != 0u32 {
             window_copy_cursor_jump(wme);
             np = np.wrapping_sub(1)
         }
@@ -3651,11 +3563,11 @@ unsafe extern "C" fn window_copy_cmd_jump_to_backward(
     let mut wme: *mut window_mode_entry = (*cs).wme;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
     let mut np: u_int = (*wme).prefix;
-    let mut argument: *const libc::c_char = *(*(*cs).args).argv.offset(1 as libc::c_int as isize);
+    let mut argument: *const libc::c_char = *(*(*cs).args).argv.offset(1isize);
     if *argument as libc::c_int != '\u{0}' as i32 {
         (*data).jumptype = WINDOW_COPY_JUMPTOBACKWARD as libc::c_int;
         (*data).jumpchar = *argument;
-        while np != 0 as libc::c_int as libc::c_uint {
+        while np != 0u32 {
             window_copy_cursor_jump_to_back(wme);
             np = np.wrapping_sub(1)
         }
@@ -3668,11 +3580,11 @@ unsafe extern "C" fn window_copy_cmd_jump_to_forward(
     let mut wme: *mut window_mode_entry = (*cs).wme;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
     let mut np: u_int = (*wme).prefix;
-    let mut argument: *const libc::c_char = *(*(*cs).args).argv.offset(1 as libc::c_int as isize);
+    let mut argument: *const libc::c_char = *(*(*cs).args).argv.offset(1isize);
     if *argument as libc::c_int != '\u{0}' as i32 {
         (*data).jumptype = WINDOW_COPY_JUMPTOFORWARD as libc::c_int;
         (*data).jumpchar = *argument;
-        while np != 0 as libc::c_int as libc::c_uint {
+        while np != 0u32 {
             window_copy_cursor_jump_to(wme);
             np = np.wrapping_sub(1)
         }
@@ -3697,10 +3609,10 @@ unsafe extern "C" fn window_copy_cmd_search_backward(
     }
     if !(*data).searchstr.is_null() {
         (*data).searchtype = WINDOW_COPY_SEARCHUP as libc::c_int;
-        (*data).searchregex = 1 as libc::c_int;
-        (*data).timeout = 0 as libc::c_int;
-        while np != 0 as libc::c_int as libc::c_uint {
-            window_copy_search_up(wme, 1 as libc::c_int, 0 as libc::c_int);
+        (*data).searchregex = 1i32;
+        (*data).timeout = 0i32;
+        while np != 0u32 {
+            window_copy_search_up(wme, 1i32, 0i32);
             np = np.wrapping_sub(1)
         }
     }
@@ -3717,10 +3629,10 @@ unsafe extern "C" fn window_copy_cmd_search_backward_text(
     }
     if !(*data).searchstr.is_null() {
         (*data).searchtype = WINDOW_COPY_SEARCHUP as libc::c_int;
-        (*data).searchregex = 0 as libc::c_int;
-        (*data).timeout = 0 as libc::c_int;
-        while np != 0 as libc::c_int as libc::c_uint {
-            window_copy_search_up(wme, 0 as libc::c_int, 0 as libc::c_int);
+        (*data).searchregex = 0i32;
+        (*data).timeout = 0i32;
+        while np != 0u32 {
+            window_copy_search_up(wme, 0i32, 0i32);
             np = np.wrapping_sub(1)
         }
     }
@@ -3737,10 +3649,10 @@ unsafe extern "C" fn window_copy_cmd_search_forward(
     }
     if !(*data).searchstr.is_null() {
         (*data).searchtype = WINDOW_COPY_SEARCHDOWN as libc::c_int;
-        (*data).searchregex = 1 as libc::c_int;
-        (*data).timeout = 0 as libc::c_int;
-        while np != 0 as libc::c_int as libc::c_uint {
-            window_copy_search_down(wme, 1 as libc::c_int, 0 as libc::c_int);
+        (*data).searchregex = 1i32;
+        (*data).timeout = 0i32;
+        while np != 0u32 {
+            window_copy_search_down(wme, 1i32, 0i32);
             np = np.wrapping_sub(1)
         }
     }
@@ -3757,10 +3669,10 @@ unsafe extern "C" fn window_copy_cmd_search_forward_text(
     }
     if !(*data).searchstr.is_null() {
         (*data).searchtype = WINDOW_COPY_SEARCHDOWN as libc::c_int;
-        (*data).searchregex = 0 as libc::c_int;
-        (*data).timeout = 0 as libc::c_int;
-        while np != 0 as libc::c_int as libc::c_uint {
-            window_copy_search_down(wme, 0 as libc::c_int, 0 as libc::c_int);
+        (*data).searchregex = 0i32;
+        (*data).timeout = 0i32;
+        while np != 0u32 {
+            window_copy_search_down(wme, 0i32, 0i32);
             np = np.wrapping_sub(1)
         }
     }
@@ -3771,19 +3683,19 @@ unsafe extern "C" fn window_copy_cmd_search_backward_incremental(
 ) -> window_copy_cmd_action {
     let mut wme: *mut window_mode_entry = (*cs).wme;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut argument: *const libc::c_char = *(*(*cs).args).argv.offset(1 as libc::c_int as isize);
+    let mut argument: *const libc::c_char = *(*(*cs).args).argv.offset(1isize);
     let mut ss: *const libc::c_char = (*data).searchstr;
     let mut prefix: libc::c_char = 0;
     let mut action: window_copy_cmd_action = WINDOW_COPY_CMD_NOTHING;
-    (*data).timeout = 0 as libc::c_int;
+    (*data).timeout = 0i32;
     let fresh0 = argument;
     argument = argument.offset(1);
     prefix = *fresh0;
-    if (*data).searchx == -(1 as libc::c_int) || (*data).searchy == -(1 as libc::c_int) {
+    if (*data).searchx == -(1i32) || (*data).searchy == -(1i32) {
         (*data).searchx = (*data).cx as libc::c_int;
         (*data).searchy = (*data).cy as libc::c_int;
         (*data).searcho = (*data).oy as libc::c_int
-    } else if !ss.is_null() && strcmp(argument, ss) != 0 as libc::c_int {
+    } else if !ss.is_null() && strcmp(argument, ss) != 0i32 {
         (*data).cx = (*data).searchx as u_int;
         (*data).cy = (*data).searchy as u_int;
         (*data).oy = (*data).searcho as u_int;
@@ -3796,20 +3708,20 @@ unsafe extern "C" fn window_copy_cmd_search_backward_incremental(
     match prefix as libc::c_int {
         61 | 45 => {
             (*data).searchtype = WINDOW_COPY_SEARCHUP as libc::c_int;
-            (*data).searchregex = 0 as libc::c_int;
+            (*data).searchregex = 0i32;
             free((*data).searchstr as *mut libc::c_void);
             (*data).searchstr = xstrdup(argument);
-            if window_copy_search_up(wme, 0 as libc::c_int, 1 as libc::c_int) == 0 {
+            if window_copy_search_up(wme, 0i32, 1i32) == 0 {
                 window_copy_clear_marks(wme);
                 return WINDOW_COPY_CMD_REDRAW;
             }
         }
         43 => {
             (*data).searchtype = WINDOW_COPY_SEARCHDOWN as libc::c_int;
-            (*data).searchregex = 0 as libc::c_int;
+            (*data).searchregex = 0i32;
             free((*data).searchstr as *mut libc::c_void);
             (*data).searchstr = xstrdup(argument);
-            if window_copy_search_down(wme, 0 as libc::c_int, 0 as libc::c_int) == 0 {
+            if window_copy_search_down(wme, 0i32, 0i32) == 0 {
                 window_copy_clear_marks(wme);
                 return WINDOW_COPY_CMD_REDRAW;
             }
@@ -3823,19 +3735,19 @@ unsafe extern "C" fn window_copy_cmd_search_forward_incremental(
 ) -> window_copy_cmd_action {
     let mut wme: *mut window_mode_entry = (*cs).wme;
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    let mut argument: *const libc::c_char = *(*(*cs).args).argv.offset(1 as libc::c_int as isize);
+    let mut argument: *const libc::c_char = *(*(*cs).args).argv.offset(1isize);
     let mut ss: *const libc::c_char = (*data).searchstr;
     let mut prefix: libc::c_char = 0;
     let mut action: window_copy_cmd_action = WINDOW_COPY_CMD_NOTHING;
-    (*data).timeout = 0 as libc::c_int;
+    (*data).timeout = 0i32;
     let fresh1 = argument;
     argument = argument.offset(1);
     prefix = *fresh1;
-    if (*data).searchx == -(1 as libc::c_int) || (*data).searchy == -(1 as libc::c_int) {
+    if (*data).searchx == -(1i32) || (*data).searchy == -(1i32) {
         (*data).searchx = (*data).cx as libc::c_int;
         (*data).searchy = (*data).cy as libc::c_int;
         (*data).searcho = (*data).oy as libc::c_int
-    } else if !ss.is_null() && strcmp(argument, ss) != 0 as libc::c_int {
+    } else if !ss.is_null() && strcmp(argument, ss) != 0i32 {
         (*data).cx = (*data).searchx as u_int;
         (*data).cy = (*data).searchy as u_int;
         (*data).oy = (*data).searcho as u_int;
@@ -3848,20 +3760,20 @@ unsafe extern "C" fn window_copy_cmd_search_forward_incremental(
     match prefix as libc::c_int {
         61 | 43 => {
             (*data).searchtype = WINDOW_COPY_SEARCHDOWN as libc::c_int;
-            (*data).searchregex = 0 as libc::c_int;
+            (*data).searchregex = 0i32;
             free((*data).searchstr as *mut libc::c_void);
             (*data).searchstr = xstrdup(argument);
-            if window_copy_search_down(wme, 0 as libc::c_int, 1 as libc::c_int) == 0 {
+            if window_copy_search_down(wme, 0i32, 1i32) == 0 {
                 window_copy_clear_marks(wme);
                 return WINDOW_COPY_CMD_REDRAW;
             }
         }
         45 => {
             (*data).searchtype = WINDOW_COPY_SEARCHUP as libc::c_int;
-            (*data).searchregex = 0 as libc::c_int;
+            (*data).searchregex = 0i32;
             free((*data).searchstr as *mut libc::c_void);
             (*data).searchstr = xstrdup(argument);
-            if window_copy_search_up(wme, 0 as libc::c_int, 1 as libc::c_int) == 0 {
+            if window_copy_search_up(wme, 0i32, 1i32) == 0 {
                 window_copy_clear_marks(wme);
                 return WINDOW_COPY_CMD_REDRAW;
             }
@@ -3896,8 +3808,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"append-selection\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_ALWAYS,
                 f: Some(
                     window_copy_cmd_append_selection
@@ -3911,8 +3823,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"append-selection-and-cancel\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_ALWAYS,
                 f: Some(
                     window_copy_cmd_append_selection_and_cancel
@@ -3926,8 +3838,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"back-to-indentation\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_ALWAYS,
                 f: Some(
                     window_copy_cmd_back_to_indentation
@@ -3941,8 +3853,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"begin-selection\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_ALWAYS,
                 f: Some(
                     window_copy_cmd_begin_selection
@@ -3956,8 +3868,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"bottom-line\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_EMACS_ONLY,
                 f: Some(
                     window_copy_cmd_bottom_line
@@ -3971,8 +3883,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"cancel\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_ALWAYS,
                 f: Some(
                     window_copy_cmd_cancel
@@ -3986,8 +3898,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"clear-selection\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_ALWAYS,
                 f: Some(
                     window_copy_cmd_clear_selection
@@ -4001,8 +3913,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"copy-end-of-line\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 1 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 1i32,
                 clear: WINDOW_COPY_CMD_CLEAR_ALWAYS,
                 f: Some(
                     window_copy_cmd_copy_end_of_line
@@ -4016,8 +3928,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"copy-line\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 1 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 1i32,
                 clear: WINDOW_COPY_CMD_CLEAR_ALWAYS,
                 f: Some(
                     window_copy_cmd_copy_line
@@ -4031,8 +3943,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"copy-pipe-no-clear\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 2 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 2i32,
                 clear: WINDOW_COPY_CMD_CLEAR_NEVER,
                 f: Some(
                     window_copy_cmd_copy_pipe_no_clear
@@ -4046,8 +3958,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"copy-pipe\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 2 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 2i32,
                 clear: WINDOW_COPY_CMD_CLEAR_ALWAYS,
                 f: Some(
                     window_copy_cmd_copy_pipe
@@ -4061,8 +3973,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"copy-pipe-and-cancel\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 2 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 2i32,
                 clear: WINDOW_COPY_CMD_CLEAR_ALWAYS,
                 f: Some(
                     window_copy_cmd_copy_pipe_and_cancel
@@ -4076,8 +3988,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"copy-selection-no-clear\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 1 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 1i32,
                 clear: WINDOW_COPY_CMD_CLEAR_NEVER,
                 f: Some(
                     window_copy_cmd_copy_selection_no_clear
@@ -4091,8 +4003,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"copy-selection\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 1 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 1i32,
                 clear: WINDOW_COPY_CMD_CLEAR_ALWAYS,
                 f: Some(
                     window_copy_cmd_copy_selection
@@ -4106,8 +4018,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"copy-selection-and-cancel\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 1 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 1i32,
                 clear: WINDOW_COPY_CMD_CLEAR_ALWAYS,
                 f: Some(
                     window_copy_cmd_copy_selection_and_cancel
@@ -4121,8 +4033,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"cursor-down\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_EMACS_ONLY,
                 f: Some(
                     window_copy_cmd_cursor_down
@@ -4136,8 +4048,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"cursor-down-and-cancel\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_ALWAYS,
                 f: Some(
                     window_copy_cmd_cursor_down_and_cancel
@@ -4151,8 +4063,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"cursor-left\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_EMACS_ONLY,
                 f: Some(
                     window_copy_cmd_cursor_left
@@ -4166,8 +4078,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"cursor-right\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_EMACS_ONLY,
                 f: Some(
                     window_copy_cmd_cursor_right
@@ -4181,8 +4093,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"cursor-up\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_EMACS_ONLY,
                 f: Some(
                     window_copy_cmd_cursor_up
@@ -4196,8 +4108,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"end-of-line\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_EMACS_ONLY,
                 f: Some(
                     window_copy_cmd_end_of_line
@@ -4211,8 +4123,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"goto-line\x00" as *const u8 as *const libc::c_char,
-                minargs: 1 as libc::c_int,
-                maxargs: 1 as libc::c_int,
+                minargs: 1i32,
+                maxargs: 1i32,
                 clear: WINDOW_COPY_CMD_CLEAR_EMACS_ONLY,
                 f: Some(
                     window_copy_cmd_goto_line
@@ -4226,8 +4138,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"halfpage-down\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_EMACS_ONLY,
                 f: Some(
                     window_copy_cmd_halfpage_down
@@ -4241,8 +4153,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"halfpage-down-and-cancel\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_ALWAYS,
                 f: Some(
                     window_copy_cmd_halfpage_down_and_cancel
@@ -4256,8 +4168,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"halfpage-up\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_EMACS_ONLY,
                 f: Some(
                     window_copy_cmd_halfpage_up
@@ -4271,8 +4183,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"history-bottom\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_EMACS_ONLY,
                 f: Some(
                     window_copy_cmd_history_bottom
@@ -4286,8 +4198,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"history-top\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_EMACS_ONLY,
                 f: Some(
                     window_copy_cmd_history_top
@@ -4301,8 +4213,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"jump-again\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_EMACS_ONLY,
                 f: Some(
                     window_copy_cmd_jump_again
@@ -4316,8 +4228,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"jump-backward\x00" as *const u8 as *const libc::c_char,
-                minargs: 1 as libc::c_int,
-                maxargs: 1 as libc::c_int,
+                minargs: 1i32,
+                maxargs: 1i32,
                 clear: WINDOW_COPY_CMD_CLEAR_EMACS_ONLY,
                 f: Some(
                     window_copy_cmd_jump_backward
@@ -4331,8 +4243,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"jump-forward\x00" as *const u8 as *const libc::c_char,
-                minargs: 1 as libc::c_int,
-                maxargs: 1 as libc::c_int,
+                minargs: 1i32,
+                maxargs: 1i32,
                 clear: WINDOW_COPY_CMD_CLEAR_EMACS_ONLY,
                 f: Some(
                     window_copy_cmd_jump_forward
@@ -4346,8 +4258,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"jump-reverse\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_EMACS_ONLY,
                 f: Some(
                     window_copy_cmd_jump_reverse
@@ -4361,8 +4273,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"jump-to-backward\x00" as *const u8 as *const libc::c_char,
-                minargs: 1 as libc::c_int,
-                maxargs: 1 as libc::c_int,
+                minargs: 1i32,
+                maxargs: 1i32,
                 clear: WINDOW_COPY_CMD_CLEAR_EMACS_ONLY,
                 f: Some(
                     window_copy_cmd_jump_to_backward
@@ -4376,8 +4288,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"jump-to-forward\x00" as *const u8 as *const libc::c_char,
-                minargs: 1 as libc::c_int,
-                maxargs: 1 as libc::c_int,
+                minargs: 1i32,
+                maxargs: 1i32,
                 clear: WINDOW_COPY_CMD_CLEAR_EMACS_ONLY,
                 f: Some(
                     window_copy_cmd_jump_to_forward
@@ -4391,8 +4303,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"jump-to-mark\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_ALWAYS,
                 f: Some(
                     window_copy_cmd_jump_to_mark
@@ -4406,8 +4318,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"middle-line\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_EMACS_ONLY,
                 f: Some(
                     window_copy_cmd_middle_line
@@ -4421,8 +4333,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"next-matching-bracket\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_ALWAYS,
                 f: Some(
                     window_copy_cmd_next_matching_bracket
@@ -4436,8 +4348,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"next-paragraph\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_EMACS_ONLY,
                 f: Some(
                     window_copy_cmd_next_paragraph
@@ -4451,8 +4363,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"next-space\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_EMACS_ONLY,
                 f: Some(
                     window_copy_cmd_next_space
@@ -4466,8 +4378,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"next-space-end\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_EMACS_ONLY,
                 f: Some(
                     window_copy_cmd_next_space_end
@@ -4481,8 +4393,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"next-word\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_EMACS_ONLY,
                 f: Some(
                     window_copy_cmd_next_word
@@ -4496,8 +4408,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"next-word-end\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_EMACS_ONLY,
                 f: Some(
                     window_copy_cmd_next_word_end
@@ -4511,8 +4423,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"other-end\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_EMACS_ONLY,
                 f: Some(
                     window_copy_cmd_other_end
@@ -4526,8 +4438,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"page-down\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_EMACS_ONLY,
                 f: Some(
                     window_copy_cmd_page_down
@@ -4541,8 +4453,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"page-down-and-cancel\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_ALWAYS,
                 f: Some(
                     window_copy_cmd_page_down_and_cancel
@@ -4556,8 +4468,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"page-up\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_EMACS_ONLY,
                 f: Some(
                     window_copy_cmd_page_up
@@ -4571,8 +4483,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"previous-matching-bracket\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_ALWAYS,
                 f: Some(
                     window_copy_cmd_previous_matching_bracket
@@ -4586,8 +4498,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"previous-paragraph\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_EMACS_ONLY,
                 f: Some(
                     window_copy_cmd_previous_paragraph
@@ -4601,8 +4513,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"previous-space\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_EMACS_ONLY,
                 f: Some(
                     window_copy_cmd_previous_space
@@ -4616,8 +4528,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"previous-word\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_EMACS_ONLY,
                 f: Some(
                     window_copy_cmd_previous_word
@@ -4631,8 +4543,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"rectangle-toggle\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_ALWAYS,
                 f: Some(
                     window_copy_cmd_rectangle_toggle
@@ -4646,8 +4558,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"refresh-from-pane\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_ALWAYS,
                 f: Some(
                     window_copy_cmd_refresh_from_pane
@@ -4661,8 +4573,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"scroll-down\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_EMACS_ONLY,
                 f: Some(
                     window_copy_cmd_scroll_down
@@ -4676,8 +4588,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"scroll-down-and-cancel\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_ALWAYS,
                 f: Some(
                     window_copy_cmd_scroll_down_and_cancel
@@ -4691,8 +4603,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"scroll-up\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_EMACS_ONLY,
                 f: Some(
                     window_copy_cmd_scroll_up
@@ -4706,8 +4618,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"search-again\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_ALWAYS,
                 f: Some(
                     window_copy_cmd_search_again
@@ -4721,8 +4633,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"search-backward\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 1 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 1i32,
                 clear: WINDOW_COPY_CMD_CLEAR_ALWAYS,
                 f: Some(
                     window_copy_cmd_search_backward
@@ -4736,8 +4648,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"search-backward-text\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 1 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 1i32,
                 clear: WINDOW_COPY_CMD_CLEAR_ALWAYS,
                 f: Some(
                     window_copy_cmd_search_backward_text
@@ -4751,8 +4663,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"search-backward-incremental\x00" as *const u8 as *const libc::c_char,
-                minargs: 1 as libc::c_int,
-                maxargs: 1 as libc::c_int,
+                minargs: 1i32,
+                maxargs: 1i32,
                 clear: WINDOW_COPY_CMD_CLEAR_ALWAYS,
                 f: Some(
                     window_copy_cmd_search_backward_incremental
@@ -4766,8 +4678,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"search-forward\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 1 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 1i32,
                 clear: WINDOW_COPY_CMD_CLEAR_ALWAYS,
                 f: Some(
                     window_copy_cmd_search_forward
@@ -4781,8 +4693,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"search-forward-text\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 1 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 1i32,
                 clear: WINDOW_COPY_CMD_CLEAR_ALWAYS,
                 f: Some(
                     window_copy_cmd_search_forward_text
@@ -4796,8 +4708,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"search-forward-incremental\x00" as *const u8 as *const libc::c_char,
-                minargs: 1 as libc::c_int,
-                maxargs: 1 as libc::c_int,
+                minargs: 1i32,
+                maxargs: 1i32,
                 clear: WINDOW_COPY_CMD_CLEAR_ALWAYS,
                 f: Some(
                     window_copy_cmd_search_forward_incremental
@@ -4811,8 +4723,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"search-reverse\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_ALWAYS,
                 f: Some(
                     window_copy_cmd_search_reverse
@@ -4826,8 +4738,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"select-line\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_ALWAYS,
                 f: Some(
                     window_copy_cmd_select_line
@@ -4841,8 +4753,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"select-word\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_ALWAYS,
                 f: Some(
                     window_copy_cmd_select_word
@@ -4856,8 +4768,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"set-mark\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_ALWAYS,
                 f: Some(
                     window_copy_cmd_set_mark
@@ -4871,8 +4783,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"start-of-line\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_EMACS_ONLY,
                 f: Some(
                     window_copy_cmd_start_of_line
@@ -4886,8 +4798,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"stop-selection\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_ALWAYS,
                 f: Some(
                     window_copy_cmd_stop_selection
@@ -4901,8 +4813,8 @@ static mut window_copy_cmd_table: [C2RustUnnamed_35; 68] = {
         {
             let mut init = C2RustUnnamed_35 {
                 command: b"top-line\x00" as *const u8 as *const libc::c_char,
-                minargs: 0 as libc::c_int,
-                maxargs: 0 as libc::c_int,
+                minargs: 0i32,
+                maxargs: 0i32,
                 clear: WINDOW_COPY_CMD_CLEAR_EMACS_ONLY,
                 f: Some(
                     window_copy_cmd_top_line
@@ -4937,11 +4849,11 @@ unsafe extern "C" fn window_copy_command(
     let mut command: *const libc::c_char = 0 as *const libc::c_char;
     let mut i: u_int = 0;
     let mut keys: libc::c_int = 0;
-    if (*args).argc == 0 as libc::c_int {
+    if (*args).argc == 0i32 {
         return;
     }
-    command = *(*args).argv.offset(0 as libc::c_int as isize);
-    if !m.is_null() && (*m).valid != 0 && (*m).b & 64 as libc::c_int as libc::c_uint == 0 {
+    command = *(*args).argv.offset(0isize);
+    if !m.is_null() && (*m).valid != 0 && (*m).b & 64u32 == 0 {
         window_copy_move_mouse(m);
     }
     cs.wme = wme;
@@ -4951,14 +4863,14 @@ unsafe extern "C" fn window_copy_command(
     cs.s = s;
     cs.wl = wl;
     action = WINDOW_COPY_CMD_NOTHING;
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while (i as libc::c_ulong)
         < (::std::mem::size_of::<[C2RustUnnamed_35; 68]>() as libc::c_ulong)
             .wrapping_div(::std::mem::size_of::<C2RustUnnamed_35>() as libc::c_ulong)
     {
-        if strcmp(window_copy_cmd_table[i as usize].command, command) == 0 as libc::c_int {
-            if ((*args).argc - 1 as libc::c_int) < window_copy_cmd_table[i as usize].minargs
-                || (*args).argc - 1 as libc::c_int > window_copy_cmd_table[i as usize].maxargs
+        if strcmp(window_copy_cmd_table[i as usize].command, command) == 0i32 {
+            if ((*args).argc - 1i32) < window_copy_cmd_table[i as usize].minargs
+                || (*args).argc - 1i32 > window_copy_cmd_table[i as usize].maxargs
             {
                 break;
             }
@@ -4974,35 +4886,33 @@ unsafe extern "C" fn window_copy_command(
     if strncmp(
         command,
         b"search-\x00" as *const u8 as *const libc::c_char,
-        7 as libc::c_int as libc::c_ulong,
-    ) != 0 as libc::c_int
+        7u64,
+    ) != 0i32
         && !(*data).searchmark.is_null()
     {
         keys = options_get_number(
             (*(*(*wme).wp).window).options,
             b"mode-keys\x00" as *const u8 as *const libc::c_char,
         ) as libc::c_int;
-        if clear as libc::c_uint == WINDOW_COPY_CMD_CLEAR_EMACS_ONLY as libc::c_int as libc::c_uint
-            && keys == 1 as libc::c_int
-        {
+        if clear == WINDOW_COPY_CMD_CLEAR_EMACS_ONLY && keys == 1i32 {
             clear = WINDOW_COPY_CMD_CLEAR_NEVER
         }
-        if clear as libc::c_uint != WINDOW_COPY_CMD_CLEAR_NEVER as libc::c_int as libc::c_uint {
+        if clear != WINDOW_COPY_CMD_CLEAR_NEVER {
             window_copy_clear_marks(wme);
-            (*data).searchy = -(1 as libc::c_int);
+            (*data).searchy = -(1i32);
             (*data).searchx = (*data).searchy
-        } else if (*data).searchthis != -(1 as libc::c_int) {
-            (*data).searchthis = -(1 as libc::c_int);
+        } else if (*data).searchthis != -(1i32) {
+            (*data).searchthis = -(1i32);
             action = WINDOW_COPY_CMD_REDRAW
         }
-        if action as libc::c_uint == WINDOW_COPY_CMD_NOTHING as libc::c_int as libc::c_uint {
+        if action == WINDOW_COPY_CMD_NOTHING {
             action = WINDOW_COPY_CMD_REDRAW
         }
     }
-    (*wme).prefix = 1 as libc::c_int as u_int;
-    if action as libc::c_uint == WINDOW_COPY_CMD_CANCEL as libc::c_int as libc::c_uint {
+    (*wme).prefix = 1u32;
+    if action == WINDOW_COPY_CMD_CANCEL {
         window_pane_reset_mode((*wme).wp);
-    } else if action as libc::c_uint == WINDOW_COPY_CMD_REDRAW as libc::c_int as libc::c_uint {
+    } else if action == WINDOW_COPY_CMD_REDRAW {
         window_copy_redraw_screen(wme);
     };
 }
@@ -5022,9 +4932,9 @@ unsafe extern "C" fn window_copy_scroll_to(
     {
         (*data).cy = py.wrapping_sub((*gd).hsize.wrapping_sub((*data).oy))
     } else {
-        gap = (*gd).sy.wrapping_div(4 as libc::c_int as libc::c_uint);
+        gap = (*gd).sy.wrapping_div(4u32);
         if py < (*gd).sy {
-            offset = 0 as libc::c_int as u_int;
+            offset = 0u32;
             (*data).cy = py
         } else if py > (*gd).hsize.wrapping_add((*gd).sy).wrapping_sub(gap) {
             offset = (*gd).hsize;
@@ -5036,9 +4946,9 @@ unsafe extern "C" fn window_copy_scroll_to(
         (*data).oy = (*gd).hsize.wrapping_sub(offset)
     }
     if no_redraw == 0 && !(*data).searchmark.is_null() && (*data).timeout == 0 {
-        window_copy_search_marks(wme, 0 as *mut screen, (*data).searchregex, 1 as libc::c_int);
+        window_copy_search_marks(wme, 0 as *mut screen, (*data).searchregex, 1i32);
     }
-    window_copy_update_selection(wme, 1 as libc::c_int, 0 as libc::c_int);
+    window_copy_update_selection(wme, 1i32, 0i32);
     if no_redraw == 0 {
         window_copy_redraw_screen(wme);
     };
@@ -5081,40 +4991,38 @@ unsafe extern "C" fn window_copy_search_compare(
     let mut sud: *const Utf8Data = 0 as *const Utf8Data;
     grid_get_cell(gd, px, py, &mut gc);
     ud = &mut gc.data;
-    grid_get_cell(sgd, spx, 0 as libc::c_int as u_int, &mut sgc);
+    grid_get_cell(sgd, spx, 0u32, &mut sgc);
     sud = &mut sgc.data;
     if (*ud).size as libc::c_int != (*sud).size as libc::c_int
         || (*ud).width as libc::c_int != (*sud).width as libc::c_int
     {
-        return 0 as libc::c_int;
+        return 0i32;
     }
-    if cis != 0 && (*ud).size as libc::c_int == 1 as libc::c_int {
+    if cis != 0 && (*ud).size as libc::c_int == 1i32 {
         return (({
             let mut __res: libc::c_int = 0;
-            if ::std::mem::size_of::<u_char>() as libc::c_ulong > 1 as libc::c_int as libc::c_ulong
-            {
+            if ::std::mem::size_of::<u_char>() as libc::c_ulong > 1u64 {
                 if 0 != 0 {
-                    let mut __c: libc::c_int = (*ud).data[0 as libc::c_int as usize] as libc::c_int;
-                    __res = if __c < -(128 as libc::c_int) || __c > 255 as libc::c_int {
+                    let mut __c: libc::c_int = (*ud).data[0usize] as libc::c_int;
+                    __res = if __c < -(128i32) || __c > 255i32 {
                         __c
                     } else {
                         *(*__ctype_tolower_loc()).offset(__c as isize)
                     }
                 } else {
-                    __res = tolower((*ud).data[0 as libc::c_int as usize] as libc::c_int)
+                    __res = tolower((*ud).data[0usize] as libc::c_int)
                 }
             } else {
-                __res = *(*__ctype_tolower_loc())
-                    .offset((*ud).data[0 as libc::c_int as usize] as libc::c_int as isize)
+                __res = *(*__ctype_tolower_loc()).offset((*ud).data[0usize] as libc::c_int as isize)
             }
             __res
-        }) == (*sud).data[0 as libc::c_int as usize] as libc::c_int) as libc::c_int;
+        }) == (*sud).data[0usize] as libc::c_int) as libc::c_int;
     }
     return (memcmp(
         (*ud).data.as_ptr() as *const libc::c_void,
         (*sud).data.as_ptr() as *const libc::c_void,
         (*ud).size as libc::c_ulong,
-    ) == 0 as libc::c_int) as libc::c_int;
+    ) == 0i32) as libc::c_int;
 }
 unsafe extern "C" fn window_copy_search_lr(
     mut gd: *mut grid,
@@ -5132,23 +5040,20 @@ unsafe extern "C" fn window_copy_search_lr(
     let mut endline: u_int = 0;
     let mut matched: libc::c_int = 0;
     let mut gl: *mut grid_line = 0 as *mut grid_line;
-    endline = (*gd)
-        .hsize
-        .wrapping_add((*gd).sy)
-        .wrapping_sub(1 as libc::c_int as libc::c_uint);
+    endline = (*gd).hsize.wrapping_add((*gd).sy).wrapping_sub(1u32);
     ax = first;
     while ax < last {
-        bx = 0 as libc::c_int as u_int;
+        bx = 0u32;
         while bx < (*sgd).sx {
             px = ax.wrapping_add(bx);
             pywrap = py;
             /* Wrap line. */
             while px >= (*gd).sx && pywrap < endline {
                 gl = grid_get_line(gd, pywrap);
-                if !(*gl).flags & 0x1 as libc::c_int != 0 {
+                if !(*gl).flags & 0x1i32 != 0 {
                     break;
                 }
-                px = (px as libc::c_uint).wrapping_sub((*gd).sx) as u_int as u_int;
+                px = (px).wrapping_sub((*gd).sx);
                 pywrap = pywrap.wrapping_add(1)
             }
             /* We have run off the end of the grid. */
@@ -5163,11 +5068,11 @@ unsafe extern "C" fn window_copy_search_lr(
         }
         if bx == (*sgd).sx {
             *ppx = ax;
-            return 1 as libc::c_int;
+            return 1i32;
         }
         ax = ax.wrapping_add(1)
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 unsafe extern "C" fn window_copy_search_rl(
     mut gd: *mut grid,
@@ -5185,25 +5090,20 @@ unsafe extern "C" fn window_copy_search_rl(
     let mut endline: u_int = 0;
     let mut matched: libc::c_int = 0;
     let mut gl: *mut grid_line = 0 as *mut grid_line;
-    endline = (*gd)
-        .hsize
-        .wrapping_add((*gd).sy)
-        .wrapping_sub(1 as libc::c_int as libc::c_uint);
+    endline = (*gd).hsize.wrapping_add((*gd).sy).wrapping_sub(1u32);
     ax = last;
     while ax > first {
-        bx = 0 as libc::c_int as u_int;
+        bx = 0u32;
         while bx < (*sgd).sx {
-            px = ax
-                .wrapping_sub(1 as libc::c_int as libc::c_uint)
-                .wrapping_add(bx);
+            px = ax.wrapping_sub(1u32).wrapping_add(bx);
             pywrap = py;
             /* Wrap line. */
             while px >= (*gd).sx && pywrap < endline {
                 gl = grid_get_line(gd, pywrap);
-                if !(*gl).flags & 0x1 as libc::c_int != 0 {
+                if !(*gl).flags & 0x1i32 != 0 {
                     break;
                 }
-                px = (px as libc::c_uint).wrapping_sub((*gd).sx) as u_int as u_int;
+                px = (px).wrapping_sub((*gd).sx);
                 pywrap = pywrap.wrapping_add(1)
             }
             /* We have run off the end of the grid. */
@@ -5217,12 +5117,12 @@ unsafe extern "C" fn window_copy_search_rl(
             bx = bx.wrapping_add(1)
         }
         if bx == (*sgd).sx {
-            *ppx = ax.wrapping_sub(1 as libc::c_int as libc::c_uint);
-            return 1 as libc::c_int;
+            *ppx = ax.wrapping_sub(1u32);
+            return 1i32;
         }
         ax = ax.wrapping_sub(1)
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 unsafe extern "C" fn window_copy_search_lr_regex(
     mut gd: *mut grid,
@@ -5233,13 +5133,13 @@ unsafe extern "C" fn window_copy_search_lr_regex(
     mut last: u_int,
     mut reg: *mut regex_t,
 ) -> libc::c_int {
-    let mut eflags: libc::c_int = 0 as libc::c_int;
+    let mut eflags: libc::c_int = 0i32;
     let mut endline: u_int = 0;
     let mut foundx: u_int = 0;
     let mut foundy: u_int = 0;
     let mut len: u_int = 0;
     let mut pywrap: u_int = 0;
-    let mut size: u_int = 1 as libc::c_int as u_int;
+    let mut size: u_int = 1u32;
     let mut buf: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut regmatch: regmatch_t = regmatch_t { rm_so: 0, rm_eo: 0 };
     let mut gl: *mut grid_line = 0 as *mut grid_line;
@@ -5248,41 +5148,29 @@ unsafe extern "C" fn window_copy_search_lr_regex(
      * character on a line.
      */
     if first >= last {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     /* Set flags for regex search. */
-    if first != 0 as libc::c_int as libc::c_uint {
-        eflags |= 1 as libc::c_int
+    if first != 0u32 {
+        eflags |= 1i32
     }
     /* Need to look at the entire string. */
     buf = xmalloc(size as size_t) as *mut libc::c_char;
-    *buf.offset(0 as libc::c_int as isize) = '\u{0}' as i32 as libc::c_char;
+    *buf.offset(0isize) = '\u{0}' as libc::c_char;
     buf = window_copy_stringify(gd, py, first, (*gd).sx, buf, &mut size);
     len = (*gd).sx.wrapping_sub(first);
-    endline = (*gd)
-        .hsize
-        .wrapping_add((*gd).sy)
-        .wrapping_sub(1 as libc::c_int as libc::c_uint);
+    endline = (*gd).hsize.wrapping_add((*gd).sy).wrapping_sub(1u32);
     pywrap = py;
     while !buf.is_null() && pywrap <= endline {
         gl = grid_get_line(gd, pywrap);
-        if !(*gl).flags & 0x1 as libc::c_int != 0 {
+        if !(*gl).flags & 0x1i32 != 0 {
             break;
         }
         pywrap = pywrap.wrapping_add(1);
-        buf = window_copy_stringify(
-            gd,
-            pywrap,
-            0 as libc::c_int as u_int,
-            (*gd).sx,
-            buf,
-            &mut size,
-        );
-        len = (len as libc::c_uint).wrapping_add((*gd).sx) as u_int as u_int
+        buf = window_copy_stringify(gd, pywrap, 0u32, (*gd).sx, buf, &mut size);
+        len = (len).wrapping_add((*gd).sx)
     }
-    if regexec(reg, buf, 1 as libc::c_int as size_t, &mut regmatch, eflags) == 0 as libc::c_int
-        && regmatch.rm_so != regmatch.rm_eo
-    {
+    if regexec(reg, buf, 1u64, &mut regmatch, eflags) == 0i32 && regmatch.rm_so != regmatch.rm_eo {
         foundx = first;
         foundy = py;
         window_copy_cstrtocellpos(
@@ -5294,7 +5182,7 @@ unsafe extern "C" fn window_copy_search_lr_regex(
         );
         if foundy == py && foundx < last {
             *ppx = foundx;
-            len = (len as libc::c_uint).wrapping_sub(foundx.wrapping_sub(first)) as u_int as u_int;
+            len = (len).wrapping_sub(foundx.wrapping_sub(first));
             window_copy_cstrtocellpos(
                 gd,
                 len,
@@ -5304,18 +5192,18 @@ unsafe extern "C" fn window_copy_search_lr_regex(
             );
             *psx = foundx;
             while foundy > py {
-                *psx = (*psx as libc::c_uint).wrapping_add((*gd).sx) as u_int as u_int;
+                *psx = (*psx).wrapping_add((*gd).sx);
                 foundy = foundy.wrapping_sub(1)
             }
-            *psx = (*psx as libc::c_uint).wrapping_sub(*ppx) as u_int as u_int;
+            *psx = (*psx).wrapping_sub(*ppx);
             free(buf as *mut libc::c_void);
-            return 1 as libc::c_int;
+            return 1i32;
         }
     }
     free(buf as *mut libc::c_void);
-    *ppx = 0 as libc::c_int as u_int;
-    *psx = 0 as libc::c_int as u_int;
-    return 0 as libc::c_int;
+    *ppx = 0u32;
+    *psx = 0u32;
+    return 0i32;
 }
 unsafe extern "C" fn window_copy_search_rl_regex(
     mut gd: *mut grid,
@@ -5326,51 +5214,41 @@ unsafe extern "C" fn window_copy_search_rl_regex(
     mut last: u_int,
     mut reg: *mut regex_t,
 ) -> libc::c_int {
-    let mut eflags: libc::c_int = 0 as libc::c_int;
+    let mut eflags: libc::c_int = 0i32;
     let mut endline: u_int = 0;
     let mut len: u_int = 0;
     let mut pywrap: u_int = 0;
-    let mut size: u_int = 1 as libc::c_int as u_int;
+    let mut size: u_int = 1u32;
     let mut buf: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut gl: *mut grid_line = 0 as *mut grid_line;
     /* Set flags for regex search. */
-    if first != 0 as libc::c_int as libc::c_uint {
-        eflags |= 1 as libc::c_int
+    if first != 0u32 {
+        eflags |= 1i32
     }
     /* Need to look at the entire string. */
     buf = xmalloc(size as size_t) as *mut libc::c_char;
-    *buf.offset(0 as libc::c_int as isize) = '\u{0}' as i32 as libc::c_char;
+    *buf.offset(0isize) = '\u{0}' as libc::c_char;
     buf = window_copy_stringify(gd, py, first, (*gd).sx, buf, &mut size);
     len = (*gd).sx.wrapping_sub(first);
-    endline = (*gd)
-        .hsize
-        .wrapping_add((*gd).sy)
-        .wrapping_sub(1 as libc::c_int as libc::c_uint);
+    endline = (*gd).hsize.wrapping_add((*gd).sy).wrapping_sub(1u32);
     pywrap = py;
     while !buf.is_null() && pywrap <= endline {
         gl = grid_get_line(gd, pywrap);
-        if !(*gl).flags & 0x1 as libc::c_int != 0 {
+        if !(*gl).flags & 0x1i32 != 0 {
             break;
         }
         pywrap = pywrap.wrapping_add(1);
-        buf = window_copy_stringify(
-            gd,
-            pywrap,
-            0 as libc::c_int as u_int,
-            (*gd).sx,
-            buf,
-            &mut size,
-        );
-        len = (len as libc::c_uint).wrapping_add((*gd).sx) as u_int as u_int
+        buf = window_copy_stringify(gd, pywrap, 0u32, (*gd).sx, buf, &mut size);
+        len = (len).wrapping_add((*gd).sx)
     }
     if window_copy_last_regex(gd, py, first, last, len, ppx, psx, buf, reg, eflags) != 0 {
         free(buf as *mut libc::c_void);
-        return 1 as libc::c_int;
+        return 1i32;
     }
     free(buf as *mut libc::c_void);
-    *ppx = 0 as libc::c_int as u_int;
-    *psx = 0 as libc::c_int as u_int;
-    return 0 as libc::c_int;
+    *ppx = 0u32;
+    *psx = 0u32;
+    return 0i32;
 }
 unsafe extern "C" fn window_copy_cellstring(
     mut gl: *const grid_line,
@@ -5387,19 +5265,19 @@ unsafe extern "C" fn window_copy_cellstring(
     let mut gce: *mut grid_cell_entry = 0 as *mut grid_cell_entry;
     let mut copy: *mut libc::c_char = 0 as *mut libc::c_char;
     if px >= (*gl).cellsize {
-        *size = 1 as libc::c_int as size_t;
-        *allocated = 0 as libc::c_int;
+        *size = 1u64;
+        *allocated = 0i32;
         return b" \x00" as *const u8 as *const libc::c_char;
     }
     gce = &mut *(*gl).celldata.offset(px as isize) as *mut grid_cell_entry;
-    if (*gce).flags as libc::c_int & 0x4 as libc::c_int != 0 {
-        *size = 0 as libc::c_int as size_t;
-        *allocated = 0 as libc::c_int;
+    if (*gce).flags as libc::c_int & 0x4i32 != 0 {
+        *size = 0u64;
+        *allocated = 0i32;
         return 0 as *const libc::c_char;
     }
-    if !((*gce).flags as libc::c_int) & 0x8 as libc::c_int != 0 {
-        *size = 1 as libc::c_int as size_t;
-        *allocated = 0 as libc::c_int;
+    if !((*gce).flags as libc::c_int) & 0x8i32 != 0 {
+        *size = 1u64;
+        *allocated = 0i32;
         return &mut (*gce).c2rust_unnamed.data.data as *mut u_char as *const libc::c_char;
     }
     utf8_to_data(
@@ -5407,7 +5285,7 @@ unsafe extern "C" fn window_copy_cellstring(
         &mut ud,
     );
     *size = ud.size as size_t;
-    *allocated = 1 as libc::c_int;
+    *allocated = 1i32;
     copy = xmalloc(ud.size as size_t) as *mut libc::c_char;
     memcpy(
         copy as *mut libc::c_void,
@@ -5432,21 +5310,14 @@ unsafe extern "C" fn window_copy_last_regex(
     let mut foundx: u_int = 0;
     let mut foundy: u_int = 0;
     let mut oldx: u_int = 0;
-    let mut px: u_int = 0 as libc::c_int as u_int;
+    let mut px: u_int = 0u32;
     let mut savepx: u_int = 0;
-    let mut savesx: u_int = 0 as libc::c_int as u_int;
+    let mut savesx: u_int = 0u32;
     let mut regmatch: regmatch_t = regmatch_t { rm_so: 0, rm_eo: 0 };
     foundx = first;
     foundy = py;
     oldx = first;
-    while regexec(
-        preg,
-        buf.offset(px as isize),
-        1 as libc::c_int as size_t,
-        &mut regmatch,
-        eflags,
-    ) == 0 as libc::c_int
-    {
+    while regexec(preg, buf.offset(px as isize), 1u64, &mut regmatch, eflags) == 0i32 {
         if regmatch.rm_so == regmatch.rm_eo {
             break;
         }
@@ -5460,7 +5331,7 @@ unsafe extern "C" fn window_copy_last_regex(
         if foundy > py || foundx >= last {
             break;
         }
-        len = (len as libc::c_uint).wrapping_sub(foundx.wrapping_sub(oldx)) as u_int as u_int;
+        len = (len).wrapping_sub(foundx.wrapping_sub(oldx));
         savepx = foundx;
         window_copy_cstrtocellpos(
             gd,
@@ -5473,26 +5344,26 @@ unsafe extern "C" fn window_copy_last_regex(
             *ppx = savepx;
             *psx = foundx;
             while foundy > py {
-                *psx = (*psx as libc::c_uint).wrapping_add((*gd).sx) as u_int as u_int;
+                *psx = (*psx).wrapping_add((*gd).sx);
                 foundy = foundy.wrapping_sub(1)
             }
-            *psx = (*psx as libc::c_uint).wrapping_sub(*ppx) as u_int as u_int;
-            return 1 as libc::c_int;
+            *psx = (*psx).wrapping_sub(*ppx);
+            return 1i32;
         } else {
             savesx = foundx.wrapping_sub(savepx);
-            len = (len as libc::c_uint).wrapping_sub(savesx) as u_int as u_int;
+            len = (len).wrapping_sub(savesx);
             oldx = foundx
         }
-        px = (px as libc::c_uint).wrapping_add(regmatch.rm_eo as libc::c_uint) as u_int as u_int
+        px = (px).wrapping_add(regmatch.rm_eo as libc::c_uint)
     }
-    if savesx > 0 as libc::c_int as libc::c_uint {
+    if savesx > 0u32 {
         *ppx = savepx;
         *psx = savesx;
-        return 1 as libc::c_int;
+        return 1i32;
     } else {
-        *ppx = 0 as libc::c_int as u_int;
-        *psx = 0 as libc::c_int as u_int;
-        return 0 as libc::c_int;
+        *ppx = 0u32;
+        *psx = 0u32;
+        return 0i32;
     };
 }
 /* Stringify line and append to input buffer. Caller frees. */
@@ -5509,26 +5380,24 @@ unsafe extern "C" fn window_copy_stringify(
     let mut newsize: u_int = *size;
     let mut gl: *const grid_line = 0 as *const grid_line;
     let mut d: *const libc::c_char = 0 as *const libc::c_char;
-    let mut bufsize: size_t = 1024 as libc::c_int as size_t;
+    let mut bufsize: size_t = 1024u64;
     let mut dlen: size_t = 0;
     let mut allocated: libc::c_int = 0;
     while bufsize < newsize as libc::c_ulong {
-        bufsize = (bufsize as libc::c_ulong).wrapping_mul(2 as libc::c_int as libc::c_ulong)
-            as size_t as size_t
+        bufsize = (bufsize).wrapping_mul(2u64)
     }
     buf = xrealloc(buf as *mut libc::c_void, bufsize) as *mut libc::c_char;
     gl = grid_peek_line(gd, py);
-    bx = (*size).wrapping_sub(1 as libc::c_int as libc::c_uint);
+    bx = (*size).wrapping_sub(1u32);
     ax = first;
     while ax < last {
         d = window_copy_cellstring(gl, ax, &mut dlen, &mut allocated);
-        newsize = (newsize as libc::c_ulong).wrapping_add(dlen) as u_int as u_int;
+        newsize = (newsize as libc::c_ulong).wrapping_add(dlen) as u_int;
         while bufsize < newsize as libc::c_ulong {
-            bufsize = (bufsize as libc::c_ulong).wrapping_mul(2 as libc::c_int as libc::c_ulong)
-                as size_t as size_t;
+            bufsize = (bufsize).wrapping_mul(2u64);
             buf = xrealloc(buf as *mut libc::c_void, bufsize) as *mut libc::c_char
         }
-        if dlen == 1 as libc::c_int as libc::c_ulong {
+        if dlen == 1u64 {
             let fresh2 = bx;
             bx = bx.wrapping_add(1);
             *buf.offset(fresh2 as isize) = *d
@@ -5538,15 +5407,14 @@ unsafe extern "C" fn window_copy_stringify(
                 d as *const libc::c_void,
                 dlen,
             );
-            bx = (bx as libc::c_ulong).wrapping_add(dlen) as u_int as u_int
+            bx = (bx as libc::c_ulong).wrapping_add(dlen) as u_int
         }
         if allocated != 0 {
             free(d as *mut libc::c_void);
         }
         ax = ax.wrapping_add(1)
     }
-    *buf.offset(newsize.wrapping_sub(1 as libc::c_int as libc::c_uint) as isize) =
-        '\u{0}' as i32 as libc::c_char;
+    *buf.offset(newsize.wrapping_sub(1u32) as isize) = '\u{0}' as libc::c_char;
     *size = newsize;
     return buf;
 }
@@ -5575,7 +5443,7 @@ unsafe extern "C" fn window_copy_cstrtocellpos(
         ncells as size_t,
         ::std::mem::size_of::<C2RustUnnamed_36>() as libc::c_ulong,
     ) as *mut C2RustUnnamed_36;
-    cell = 0 as libc::c_int as u_int;
+    cell = 0u32;
     px = *ppx;
     pywrap = *ppy;
     gl = grid_peek_line(gd, pywrap);
@@ -5590,28 +5458,28 @@ unsafe extern "C" fn window_copy_cstrtocellpos(
         cell = cell.wrapping_add(1);
         px = px.wrapping_add(1);
         if px == (*gd).sx {
-            px = 0 as libc::c_int as u_int;
+            px = 0u32;
             pywrap = pywrap.wrapping_add(1);
             gl = grid_peek_line(gd, pywrap)
         }
     }
     /* Locate starting cell. */
-    cell = 0 as libc::c_int as u_int;
+    cell = 0u32;
     len = strlen(str) as u_int;
     while cell < ncells {
         ccell = cell;
-        pos = 0 as libc::c_int as u_int;
-        match_0 = 1 as libc::c_int;
+        pos = 0u32;
+        match_0 = 1i32;
         while ccell < ncells {
             if *str.offset(pos as isize) as libc::c_int == '\u{0}' as i32 {
-                match_0 = 0 as libc::c_int;
+                match_0 = 0i32;
                 break;
             } else {
                 d = (*cells.offset(ccell as isize)).d;
                 dlen = (*cells.offset(ccell as isize)).dlen;
-                if dlen == 1 as libc::c_int as libc::c_ulong {
+                if dlen == 1u64 {
                     if *str.offset(pos as isize) as libc::c_int != *d as libc::c_int {
-                        match_0 = 0 as libc::c_int;
+                        match_0 = 0i32;
                         break;
                     } else {
                         pos = pos.wrapping_add(1)
@@ -5624,12 +5492,12 @@ unsafe extern "C" fn window_copy_cstrtocellpos(
                         str.offset(pos as isize) as *const libc::c_void,
                         d as *const libc::c_void,
                         dlen,
-                    ) != 0 as libc::c_int
+                    ) != 0i32
                     {
-                        match_0 = 0 as libc::c_int;
+                        match_0 = 0i32;
                         break;
                     } else {
-                        pos = (pos as libc::c_ulong).wrapping_add(dlen) as u_int as u_int
+                        pos = (pos as libc::c_ulong).wrapping_add(dlen) as u_int
                     }
                 }
                 ccell = ccell.wrapping_add(1)
@@ -5644,13 +5512,13 @@ unsafe extern "C" fn window_copy_cstrtocellpos(
     px = (*ppx).wrapping_add(cell);
     pywrap = *ppy;
     while px >= (*gd).sx {
-        px = (px as libc::c_uint).wrapping_sub((*gd).sx) as u_int as u_int;
+        px = (px).wrapping_sub((*gd).sx);
         pywrap = pywrap.wrapping_add(1)
     }
     *ppx = px;
     *ppy = pywrap;
     /* Free cell data. */
-    cell = 0 as libc::c_int as u_int;
+    cell = 0u32;
     while cell < ncells {
         if (*cells.offset(cell as isize)).allocated != 0 {
             free((*cells.offset(cell as isize)).d as *mut libc::c_void);
@@ -5665,27 +5533,23 @@ unsafe extern "C" fn window_copy_move_left(
     mut fy: *mut u_int,
     mut wrapflag: libc::c_int,
 ) {
-    if *fx == 0 as libc::c_int as libc::c_uint {
+    if *fx == 0u32 {
         /* left */
-        if *fy == 0 as libc::c_int as libc::c_uint {
+        if *fy == 0u32 {
             /* top */
             if wrapflag != 0 {
-                *fx = (*(*s).grid)
-                    .sx
-                    .wrapping_sub(1 as libc::c_int as libc::c_uint);
+                *fx = (*(*s).grid).sx.wrapping_sub(1u32);
                 *fy = (*(*s).grid)
                     .hsize
                     .wrapping_add((*(*s).grid).sy)
-                    .wrapping_sub(1 as libc::c_int as libc::c_uint)
+                    .wrapping_sub(1u32)
             }
             return;
         }
-        *fx = (*(*s).grid)
-            .sx
-            .wrapping_sub(1 as libc::c_int as libc::c_uint);
-        *fy = (*fy).wrapping_sub(1 as libc::c_int as libc::c_uint)
+        *fx = (*(*s).grid).sx.wrapping_sub(1u32);
+        *fy = (*fy).wrapping_sub(1u32)
     } else {
-        *fx = (*fx).wrapping_sub(1 as libc::c_int as libc::c_uint)
+        *fx = (*fx).wrapping_sub(1u32)
     };
 }
 unsafe extern "C" fn window_copy_is_lowercase(mut ptr: *const libc::c_char) -> libc::c_int {
@@ -5693,12 +5557,10 @@ unsafe extern "C" fn window_copy_is_lowercase(mut ptr: *const libc::c_char) -> l
         if *ptr as libc::c_int
             != ({
                 let mut __res: libc::c_int = 0;
-                if ::std::mem::size_of::<u_char>() as libc::c_ulong
-                    > 1 as libc::c_int as libc::c_ulong
-                {
+                if ::std::mem::size_of::<u_char>() as libc::c_ulong > 1u64 {
                     if 0 != 0 {
                         let mut __c: libc::c_int = *ptr as u_char as libc::c_int;
-                        __res = if __c < -(128 as libc::c_int) || __c > 255 as libc::c_int {
+                        __res = if __c < -(128i32) || __c > 255i32 {
                             __c
                         } else {
                             *(*__ctype_tolower_loc()).offset(__c as isize)
@@ -5712,11 +5574,11 @@ unsafe extern "C" fn window_copy_is_lowercase(mut ptr: *const libc::c_char) -> l
                 __res
             })
         {
-            return 0 as libc::c_int;
+            return 0i32;
         }
         ptr = ptr.offset(1)
     }
-    return 1 as libc::c_int;
+    return 1i32;
 }
 /*
  * Search for text stored in sgd starting from position fx,fy up to endline. If
@@ -5740,9 +5602,9 @@ unsafe extern "C" fn window_copy_search_jump(
     let mut i: u_int = 0;
     let mut px: u_int = 0;
     let mut sx: u_int = 0;
-    let mut ssize: u_int = 1 as libc::c_int as u_int;
-    let mut found: libc::c_int = 0 as libc::c_int;
-    let mut cflags: libc::c_int = 1 as libc::c_int;
+    let mut ssize: u_int = 1u32;
+    let mut found: libc::c_int = 0i32;
+    let mut cflags: libc::c_int = 1i32;
     let mut sbuf: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut reg: regex_t = regex_t {
         buffer: 0 as *mut re_dfa_t,
@@ -5757,21 +5619,14 @@ unsafe extern "C" fn window_copy_search_jump(
     };
     if regex != 0 {
         sbuf = xmalloc(ssize as size_t) as *mut libc::c_char;
-        *sbuf.offset(0 as libc::c_int as isize) = '\u{0}' as i32 as libc::c_char;
-        sbuf = window_copy_stringify(
-            sgd,
-            0 as libc::c_int as u_int,
-            0 as libc::c_int as u_int,
-            (*sgd).sx,
-            sbuf,
-            &mut ssize,
-        );
+        *sbuf.offset(0isize) = '\u{0}' as libc::c_char;
+        sbuf = window_copy_stringify(sgd, 0u32, 0u32, (*sgd).sx, sbuf, &mut ssize);
         if cis != 0 {
-            cflags |= (1 as libc::c_int) << 1 as libc::c_int
+            cflags |= (1i32) << 1i32
         }
-        if regcomp(&mut reg, sbuf, cflags) != 0 as libc::c_int {
+        if regcomp(&mut reg, sbuf, cflags) != 0i32 {
             free(sbuf as *mut libc::c_void);
-            return 0 as libc::c_int;
+            return 0i32;
         }
         free(sbuf as *mut libc::c_void);
     }
@@ -5793,21 +5648,21 @@ unsafe extern "C" fn window_copy_search_jump(
             if found != 0 {
                 break;
             }
-            fx = 0 as libc::c_int as u_int;
+            fx = 0u32;
             i = i.wrapping_add(1)
         }
     } else {
-        *foundlen = 0 as libc::c_int as u_int;
-        i = fy.wrapping_add(1 as libc::c_int as libc::c_uint);
+        *foundlen = 0u32;
+        i = fy.wrapping_add(1u32);
         while endline < i {
             if regex != 0 {
                 found = window_copy_search_rl_regex(
                     gd,
                     &mut px,
                     &mut sx,
-                    i.wrapping_sub(1 as libc::c_int as libc::c_uint),
-                    0 as libc::c_int as u_int,
-                    fx.wrapping_add(1 as libc::c_int as libc::c_uint),
+                    i.wrapping_sub(1u32),
+                    0u32,
+                    fx.wrapping_add(1u32),
                     &mut reg,
                 )
             } else {
@@ -5815,9 +5670,9 @@ unsafe extern "C" fn window_copy_search_jump(
                     gd,
                     sgd,
                     &mut px,
-                    i.wrapping_sub(1 as libc::c_int as libc::c_uint),
-                    0 as libc::c_int as u_int,
-                    fx.wrapping_add(1 as libc::c_int as libc::c_uint),
+                    i.wrapping_sub(1u32),
+                    0u32,
+                    fx.wrapping_add(1u32),
                     cis,
                 )
             }
@@ -5825,7 +5680,7 @@ unsafe extern "C" fn window_copy_search_jump(
                 i = i.wrapping_sub(1);
                 break;
             } else {
-                fx = (*gd).sx.wrapping_sub(1 as libc::c_int as libc::c_uint);
+                fx = (*gd).sx.wrapping_sub(1u32);
                 i = i.wrapping_sub(1)
             }
         }
@@ -5834,8 +5689,8 @@ unsafe extern "C" fn window_copy_search_jump(
         regfree(&mut reg);
     }
     if found != 0 {
-        window_copy_scroll_to(wme, px, i, 1 as libc::c_int);
-        return 1 as libc::c_int;
+        window_copy_scroll_to(wme, px, i, 1i32);
+        return 1i32;
     }
     if wrap != 0 {
         return window_copy_search_jump(
@@ -5843,27 +5698,24 @@ unsafe extern "C" fn window_copy_search_jump(
             gd,
             sgd,
             if direction != 0 {
-                0 as libc::c_int as libc::c_uint
+                0u32
             } else {
-                (*gd).sx.wrapping_sub(1 as libc::c_int as libc::c_uint)
+                (*gd).sx.wrapping_sub(1u32)
             },
             if direction != 0 {
-                0 as libc::c_int as libc::c_uint
+                0u32
             } else {
-                (*gd)
-                    .hsize
-                    .wrapping_add((*gd).sy)
-                    .wrapping_sub(1 as libc::c_int as libc::c_uint)
+                (*gd).hsize.wrapping_add((*gd).sy).wrapping_sub(1u32)
             },
             fy,
             cis,
-            0 as libc::c_int,
+            0i32,
             direction,
             regex,
             foundlen,
         );
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 /*
  * Search in for text searchstr. If direction is 0 then search up, otherwise
@@ -5941,15 +5793,15 @@ unsafe extern "C" fn window_copy_search(
             as libc::c_int
             == '\u{0}' as i32
     {
-        regex = 0 as libc::c_int
+        regex = 0i32
     }
     if (*data).timeout != 0 {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     if (*wp).searchstr.is_null() || (*wp).searchregex != regex {
-        visible_only = 0 as libc::c_int
+        visible_only = 0i32
     } else {
-        visible_only = (strcmp((*wp).searchstr, str) == 0 as libc::c_int) as libc::c_int
+        visible_only = (strcmp((*wp).searchstr, str) == 0i32) as libc::c_int
     }
     free((*wp).searchstr as *mut libc::c_void);
     (*wp).searchstr = xstrdup(str);
@@ -5962,13 +5814,13 @@ unsafe extern "C" fn window_copy_search(
     screen_init(
         &mut ss,
         screen_write_strlen(b"%s\x00" as *const u8 as *const libc::c_char, str) as u_int,
-        1 as libc::c_int as u_int,
-        0 as libc::c_int as u_int,
+        1u32,
+        0u32,
     );
     screen_write_start(&mut ctx, &mut ss);
     screen_write_nputs(
         &mut ctx as *mut screen_write_ctx,
-        -(1 as libc::c_int) as ssize_t,
+        -1i64,
         &grid_default_cell as *const GridCell,
         b"%s\x00" as *const u8 as *const libc::c_char,
         str,
@@ -5980,15 +5832,12 @@ unsafe extern "C" fn window_copy_search(
     ) as libc::c_int;
     cis = window_copy_is_lowercase(str);
     if direction != 0 {
-        endline = (*gd)
-            .hsize
-            .wrapping_add((*gd).sy)
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
+        endline = (*gd).hsize.wrapping_add((*gd).sy).wrapping_sub(1u32)
     } else {
         if again != 0 {
             window_copy_move_left(s, &mut fx, &mut fy, wrapflag);
         }
-        endline = 0 as libc::c_int as u_int
+        endline = 0u32
     }
     found = window_copy_search_jump(
         wme,
@@ -6005,10 +5854,10 @@ unsafe extern "C" fn window_copy_search(
     );
     if found != 0 {
         window_copy_search_marks(wme, &mut ss, regex, visible_only);
-        if foundlen != 0 as libc::c_int as libc::c_uint {
-            i = 0 as libc::c_int as u_int;
+        if foundlen != 0u32 {
+            i = 0u32;
             while i < foundlen {
-                window_copy_cursor_right(wme, 1 as libc::c_int);
+                window_copy_cursor_right(wme, 1i32);
                 i = i.wrapping_add(1)
             }
         }
@@ -6025,9 +5874,9 @@ unsafe extern "C" fn window_copy_visible_lines(
     let mut gd: *mut grid = (*(*data).backing).grid;
     let mut gl: *const grid_line = 0 as *const grid_line;
     *start = (*gd).hsize.wrapping_sub((*data).oy);
-    while *start > 0 as libc::c_int as libc::c_uint {
-        gl = grid_peek_line(gd, (*start).wrapping_sub(1 as libc::c_int as libc::c_uint));
-        if !(*gl).flags & 0x1 as libc::c_int != 0 {
+    while *start > 0u32 {
+        gl = grid_peek_line(gd, (*start).wrapping_sub(1u32));
+        if !(*gl).flags & 0x1i32 != 0 {
             break;
         }
         *start = (*start).wrapping_sub(1)
@@ -6043,22 +5892,22 @@ unsafe extern "C" fn window_copy_search_mark_at(
     let mut s: *mut screen = (*data).backing;
     let mut gd: *mut grid = (*s).grid;
     if py < (*gd).hsize.wrapping_sub((*data).oy) {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     if py
         > (*gd)
             .hsize
             .wrapping_sub((*data).oy)
             .wrapping_add((*gd).sy)
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
+            .wrapping_sub(1u32)
     {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     *at = py
         .wrapping_sub((*gd).hsize.wrapping_sub((*data).oy))
         .wrapping_mul((*gd).sx)
         .wrapping_add(px);
-    return 0 as libc::c_int;
+    return 0i32;
 }
 unsafe extern "C" fn window_copy_search_marks(
     mut wme: *mut window_mode_entry,
@@ -6117,16 +5966,16 @@ unsafe extern "C" fn window_copy_search_marks(
     let mut gd: *mut grid = (*s).grid;
     let mut found: libc::c_int = 0;
     let mut cis: libc::c_int = 0;
-    let mut which: libc::c_int = -(1 as libc::c_int);
-    let mut stopped: libc::c_int = 0 as libc::c_int;
-    let mut cflags: libc::c_int = 1 as libc::c_int;
+    let mut which: libc::c_int = -(1i32);
+    let mut stopped: libc::c_int = 0i32;
+    let mut cflags: libc::c_int = 1i32;
     let mut px: u_int = 0;
     let mut py: u_int = 0;
     let mut i: u_int = 0;
     let mut b: u_int = 0;
-    let mut nfound: u_int = 0 as libc::c_int as u_int;
+    let mut nfound: u_int = 0u32;
     let mut width: u_int = 0;
-    let mut ssize: u_int = 1 as libc::c_int as u_int;
+    let mut ssize: u_int = 1u32;
     let mut start: u_int = 0;
     let mut end: u_int = 0;
     let mut sbuf: *mut libc::c_char = 0 as *mut libc::c_char;
@@ -6141,7 +5990,7 @@ unsafe extern "C" fn window_copy_search_marks(
         can_be_null_regs_allocated_fastmap_accurate_no_sub_not_bol_not_eol_newline_anchor: [0; 1],
         c2rust_padding: [0; 7],
     };
-    let mut stop: uint64_t = 0 as libc::c_int as uint64_t;
+    let mut stop: uint64_t = 0u64;
     let mut tstart: uint64_t = 0;
     let mut t: uint64_t = 0;
     if ssp.is_null() {
@@ -6149,16 +5998,11 @@ unsafe extern "C" fn window_copy_search_marks(
             b"%s\x00" as *const u8 as *const libc::c_char,
             (*data).searchstr,
         ) as u_int;
-        screen_init(
-            &mut ss,
-            width,
-            1 as libc::c_int as u_int,
-            0 as libc::c_int as u_int,
-        );
+        screen_init(&mut ss, width, 1u32, 0u32);
         screen_write_start(&mut ctx, &mut ss);
         screen_write_nputs(
             &mut ctx as *mut screen_write_ctx,
-            -(1 as libc::c_int) as ssize_t,
+            -1i64,
             &grid_default_cell as *const GridCell,
             b"%s\x00" as *const u8 as *const libc::c_char,
             (*data).searchstr,
@@ -6171,21 +6015,14 @@ unsafe extern "C" fn window_copy_search_marks(
     cis = window_copy_is_lowercase((*data).searchstr);
     if regex != 0 {
         sbuf = xmalloc(ssize as size_t) as *mut libc::c_char;
-        *sbuf.offset(0 as libc::c_int as isize) = '\u{0}' as i32 as libc::c_char;
-        sbuf = window_copy_stringify(
-            (*ssp).grid,
-            0 as libc::c_int as u_int,
-            0 as libc::c_int as u_int,
-            (*(*ssp).grid).sx,
-            sbuf,
-            &mut ssize,
-        );
+        *sbuf.offset(0isize) = '\u{0}' as libc::c_char;
+        sbuf = window_copy_stringify((*ssp).grid, 0u32, 0u32, (*(*ssp).grid).sx, sbuf, &mut ssize);
         if cis != 0 {
-            cflags |= (1 as libc::c_int) << 1 as libc::c_int
+            cflags |= (1i32) << 1i32
         }
-        if regcomp(&mut reg, sbuf, cflags) != 0 as libc::c_int {
+        if regcomp(&mut reg, sbuf, cflags) != 0i32 {
             free(sbuf as *mut libc::c_void);
-            return 0 as libc::c_int;
+            return 0i32;
         }
         free(sbuf as *mut libc::c_void);
     }
@@ -6193,17 +6030,17 @@ unsafe extern "C" fn window_copy_search_marks(
     if visible_only != 0 {
         window_copy_visible_lines(data, &mut start, &mut end);
     } else {
-        start = 0 as libc::c_int as u_int;
+        start = 0u32;
         end = (*gd).hsize.wrapping_add((*gd).sy);
-        stop = get_timer().wrapping_add(200 as libc::c_int as libc::c_ulong)
+        stop = get_timer().wrapping_add(200u64)
     }
     loop {
         free((*data).searchmark as *mut libc::c_void);
         (*data).searchmark = xcalloc((*gd).sx as size_t, (*gd).sy as size_t) as *mut u_char;
-        (*data).searchgen = 1 as libc::c_int as u_char;
+        (*data).searchgen = 1u8;
         py = start;
         while py < end {
-            px = 0 as libc::c_int as u_int;
+            px = 0u32;
             loop {
                 if regex != 0 {
                     found = window_copy_search_lr_regex(
@@ -6234,7 +6071,7 @@ unsafe extern "C" fn window_copy_search_marks(
                 {
                     which = nfound as libc::c_int
                 }
-                if window_copy_search_mark_at(data, px, py, &mut b) == 0 as libc::c_int {
+                if window_copy_search_mark_at(data, px, py, &mut b) == 0i32 {
                     if b.wrapping_add(width) > (*gd).sx.wrapping_mul((*gd).sy) {
                         width = (*gd).sx.wrapping_mul((*gd).sy).wrapping_sub(b)
                     }
@@ -6243,22 +6080,20 @@ unsafe extern "C" fn window_copy_search_marks(
                         *(*data).searchmark.offset(i as isize) = (*data).searchgen;
                         i = i.wrapping_add(1)
                     }
-                    if (*data).searchgen as libc::c_int
-                        == 127 as libc::c_int * 2 as libc::c_int + 1 as libc::c_int
-                    {
-                        (*data).searchgen = 1 as libc::c_int as u_char
+                    if (*data).searchgen as libc::c_int == 127i32 * 2i32 + 1i32 {
+                        (*data).searchgen = 1u8
                     } else {
                         (*data).searchgen = (*data).searchgen.wrapping_add(1)
                     }
                 }
-                px = (px as libc::c_uint).wrapping_add(width) as u_int as u_int
+                px = (px).wrapping_add(width)
             }
             t = get_timer();
-            if t.wrapping_sub(tstart) > 10000 as libc::c_int as libc::c_ulong {
-                (*data).timeout = 1 as libc::c_int;
+            if t.wrapping_sub(tstart) > 10000u64 {
+                (*data).timeout = 1i32;
                 break;
-            } else if stop != 0 as libc::c_int as libc::c_ulong && t > stop {
-                stopped = 1 as libc::c_int;
+            } else if stop != 0u64 && t > stop {
+                stopped = 1i32;
                 break;
             } else {
                 py = py.wrapping_add(1)
@@ -6267,35 +6102,35 @@ unsafe extern "C" fn window_copy_search_marks(
         if (*data).timeout != 0 {
             window_copy_clear_marks(wme);
             break;
-        } else if stopped != 0 && stop != 0 as libc::c_int as libc::c_ulong {
+        } else if stopped != 0 && stop != 0u64 {
             /* Try again but just the visible context. */
             window_copy_visible_lines(data, &mut start, &mut end);
-            stop = 0 as libc::c_int as uint64_t
+            stop = 0u64
         } else {
             if visible_only == 0 {
                 if stopped != 0 {
-                    (*data).searchthis = -(1 as libc::c_int);
-                    if nfound > 1000 as libc::c_int as libc::c_uint {
-                        (*data).searchcount = 1000 as libc::c_int
-                    } else if nfound > 100 as libc::c_int as libc::c_uint {
-                        (*data).searchcount = 100 as libc::c_int
-                    } else if nfound > 10 as libc::c_int as libc::c_uint {
-                        (*data).searchcount = 10 as libc::c_int
+                    (*data).searchthis = -(1i32);
+                    if nfound > 1000u32 {
+                        (*data).searchcount = 1000i32
+                    } else if nfound > 100u32 {
+                        (*data).searchcount = 100i32
+                    } else if nfound > 10u32 {
+                        (*data).searchcount = 10i32
                     } else {
-                        (*data).searchcount = -(1 as libc::c_int)
+                        (*data).searchcount = -(1i32)
                     }
-                    (*data).searchmore = 1 as libc::c_int
+                    (*data).searchmore = 1i32
                 } else {
-                    if which != -(1 as libc::c_int) {
-                        (*data).searchthis = (1 as libc::c_int as libc::c_uint)
+                    if which != -(1i32) {
+                        (*data).searchthis = (1u32)
                             .wrapping_add(nfound)
                             .wrapping_sub(which as libc::c_uint)
                             as libc::c_int
                     } else {
-                        (*data).searchthis = -(1 as libc::c_int)
+                        (*data).searchthis = -(1i32)
                     }
                     (*data).searchcount = nfound as libc::c_int;
-                    (*data).searchmore = 0 as libc::c_int
+                    (*data).searchmore = 0i32
                 }
             }
             break;
@@ -6307,7 +6142,7 @@ unsafe extern "C" fn window_copy_search_marks(
     if regex != 0 {
         regfree(&mut reg);
     }
-    return 1 as libc::c_int;
+    return 1i32;
 }
 unsafe extern "C" fn window_copy_clear_marks(mut wme: *mut window_mode_entry) {
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
@@ -6319,14 +6154,14 @@ unsafe extern "C" fn window_copy_search_up(
     mut regex: libc::c_int,
     mut again: libc::c_int,
 ) -> libc::c_int {
-    return window_copy_search(wme, 0 as libc::c_int, regex, again);
+    return window_copy_search(wme, 0i32, regex, again);
 }
 unsafe extern "C" fn window_copy_search_down(
     mut wme: *mut window_mode_entry,
     mut regex: libc::c_int,
     mut again: libc::c_int,
 ) -> libc::c_int {
-    return window_copy_search(wme, 1 as libc::c_int, regex, again);
+    return window_copy_search(wme, 1i32, regex, again);
 }
 unsafe extern "C" fn window_copy_goto_line(
     mut wme: *mut window_mode_entry,
@@ -6335,20 +6170,15 @@ unsafe extern "C" fn window_copy_goto_line(
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
     let mut errstr: *const libc::c_char = 0 as *const libc::c_char;
     let mut lineno: libc::c_int = 0;
-    lineno = strtonum(
-        linestr,
-        -(1 as libc::c_int) as libc::c_longlong,
-        2147483647 as libc::c_int as libc::c_longlong,
-        &mut errstr,
-    ) as libc::c_int;
+    lineno = strtonum(linestr, -1i64, 2147483647i64, &mut errstr) as libc::c_int;
     if !errstr.is_null() {
         return;
     }
-    if lineno < 0 as libc::c_int || lineno as u_int > (*(*(*data).backing).grid).hsize {
+    if lineno < 0i32 || lineno as u_int > (*(*(*data).backing).grid).hsize {
         lineno = (*(*(*data).backing).grid).hsize as libc::c_int
     }
     (*data).oy = lineno as u_int;
-    window_copy_update_selection(wme, 1 as libc::c_int, 0 as libc::c_int);
+    window_copy_update_selection(wme, 1i32, 0i32);
     window_copy_redraw_screen(wme);
 }
 unsafe extern "C" fn window_copy_match_start_end(
@@ -6358,14 +6188,11 @@ unsafe extern "C" fn window_copy_match_start_end(
     mut end: *mut u_int,
 ) {
     let mut gd: *mut grid = (*(*data).backing).grid;
-    let mut last: u_int = (*gd)
-        .sy
-        .wrapping_mul((*gd).sx)
-        .wrapping_sub(1 as libc::c_int as libc::c_uint);
+    let mut last: u_int = (*gd).sy.wrapping_mul((*gd).sx).wrapping_sub(1u32);
     let mut mark: u_char = *(*data).searchmark.offset(at as isize);
     *end = at;
     *start = *end;
-    while *start != 0 as libc::c_int as libc::c_uint
+    while *start != 0u32
         && *(*data).searchmark.offset(*start as isize) as libc::c_int == mark as libc::c_int
     {
         *start = (*start).wrapping_sub(1)
@@ -6407,7 +6234,7 @@ unsafe extern "C" fn window_copy_match_at_cursor(
     let mut py: u_int = 0;
     let mut sx: u_int = (*(*(*data).backing).grid).sx;
     let mut buf: *mut libc::c_char = 0 as *mut libc::c_char;
-    let mut len: size_t = 0 as libc::c_int as size_t;
+    let mut len: size_t = 0u64;
     if (*data).searchmark.is_null() {
         return 0 as *mut libc::c_char;
     }
@@ -6415,10 +6242,10 @@ unsafe extern "C" fn window_copy_match_at_cursor(
         .hsize
         .wrapping_sub((*data).oy)
         .wrapping_add((*data).cy);
-    if window_copy_search_mark_at(data, (*data).cx, cy, &mut at) != 0 as libc::c_int {
+    if window_copy_search_mark_at(data, (*data).cx, cy, &mut at) != 0i32 {
         return 0 as *mut libc::c_char;
     }
-    if *(*data).searchmark.offset(at as isize) as libc::c_int == 0 as libc::c_int {
+    if *(*data).searchmark.offset(at as isize) as libc::c_int == 0i32 {
         return 0 as *mut libc::c_char;
     }
     window_copy_match_start_end(data, at, &mut start, &mut end);
@@ -6439,19 +6266,18 @@ unsafe extern "C" fn window_copy_match_at_cursor(
         buf = xrealloc(
             buf as *mut libc::c_void,
             len.wrapping_add(gc.data.size as libc::c_ulong)
-                .wrapping_add(1 as libc::c_int as libc::c_ulong),
+                .wrapping_add(1u64),
         ) as *mut libc::c_char;
         memcpy(
             buf.offset(len as isize) as *mut libc::c_void,
             gc.data.data.as_mut_ptr() as *const libc::c_void,
             gc.data.size as libc::c_ulong,
         );
-        len =
-            (len as libc::c_ulong).wrapping_add(gc.data.size as libc::c_ulong) as size_t as size_t;
+        len = (len).wrapping_add(gc.data.size as libc::c_ulong);
         at = at.wrapping_add(1)
     }
-    if len != 0 as libc::c_int as libc::c_ulong {
-        *buf.offset(len as isize) = '\u{0}' as i32 as libc::c_char
+    if len != 0u64 {
+        *buf.offset(len as isize) = '\u{0}' as libc::c_char
     }
     return buf;
 }
@@ -6471,12 +6297,12 @@ unsafe extern "C" fn window_copy_update_style(
     let mut cy: u_int = 0;
     let mut cursor: u_int = 0;
     let mut current: u_int = 0;
-    let mut inv: libc::c_int = 0 as libc::c_int;
-    let mut found: libc::c_int = 0 as libc::c_int;
+    let mut inv: libc::c_int = 0i32;
+    let mut found: libc::c_int = 0i32;
     if (*data).showmark != 0 && fy == (*data).my {
         (*gc).attr = (*mkgc).attr;
         if fx == (*data).mx {
-            inv = 1 as libc::c_int
+            inv = 1i32
         }
         if inv != 0 {
             (*gc).fg = (*mkgc).bg;
@@ -6489,24 +6315,24 @@ unsafe extern "C" fn window_copy_update_style(
     if (*data).searchmark.is_null() {
         return;
     }
-    if window_copy_search_mark_at(data, fx, fy, &mut current) != 0 as libc::c_int {
+    if window_copy_search_mark_at(data, fx, fy, &mut current) != 0i32 {
         return;
     }
     mark = *(*data).searchmark.offset(current as isize) as u_int;
-    if mark == 0 as libc::c_int as libc::c_uint {
+    if mark == 0u32 {
         return;
     }
     cy = (*(*(*data).backing).grid)
         .hsize
         .wrapping_sub((*data).oy)
         .wrapping_add((*data).cy);
-    if window_copy_search_mark_at(data, (*data).cx, cy, &mut cursor) == 0 as libc::c_int {
+    if window_copy_search_mark_at(data, (*data).cx, cy, &mut cursor) == 0i32 {
         if *(*data).searchmark.offset(cursor as isize) as libc::c_uint == mark {
-            found = 1 as libc::c_int
-        } else if cursor != 0 as libc::c_int as libc::c_uint {
+            found = 1i32
+        } else if cursor != 0u32 {
             cursor = cursor.wrapping_sub(1);
             if *(*data).searchmark.offset(cursor as isize) as libc::c_uint == mark {
-                found = 1 as libc::c_int
+                found = 1i32
             }
         }
         if found != 0 {
@@ -6559,8 +6385,8 @@ unsafe extern "C" fn window_copy_write_one(
         us: 0,
     };
     let mut fx: u_int = 0;
-    screen_write_cursormove(ctx, 0 as libc::c_int, py as libc::c_int, 0 as libc::c_int);
-    fx = 0 as libc::c_int as u_int;
+    screen_write_cursormove(ctx, 0i32, py as libc::c_int, 0i32);
+    fx = 0u32;
     while fx < nx {
         grid_get_cell(gd, fx, fy, &mut gc);
         if fx.wrapping_add(gc.data.width as libc::c_uint) <= nx {
@@ -6632,7 +6458,7 @@ unsafe extern "C" fn window_copy_write_line(
         us: 0,
     };
     let mut hdr: [libc::c_char; 512] = [0; 512];
-    let mut size: size_t = 0 as libc::c_int as size_t;
+    let mut size: size_t = 0u64;
     let mut hsize: u_int = (*(*(*data).backing).grid).hsize;
     style_apply(
         &mut gc,
@@ -6640,32 +6466,29 @@ unsafe extern "C" fn window_copy_write_line(
         b"mode-style\x00" as *const u8 as *const libc::c_char,
         0 as *mut crate::format::format_tree,
     );
-    gc.flags = (gc.flags as libc::c_int | 0x20 as libc::c_int) as u_char;
+    gc.flags = (gc.flags as libc::c_int | 0x20i32) as u_char;
     style_apply(
         &mut mgc,
         oo,
         b"copy-mode-match-style\x00" as *const u8 as *const libc::c_char,
         0 as *mut crate::format::format_tree,
     );
-    mgc.flags = (mgc.flags as libc::c_int | 0x20 as libc::c_int) as u_char;
+    mgc.flags = (mgc.flags as libc::c_int | 0x20i32) as u_char;
     style_apply(
         &mut cgc,
         oo,
         b"copy-mode-current-match-style\x00" as *const u8 as *const libc::c_char,
         0 as *mut crate::format::format_tree,
     );
-    cgc.flags = (cgc.flags as libc::c_int | 0x20 as libc::c_int) as u_char;
+    cgc.flags = (cgc.flags as libc::c_int | 0x20i32) as u_char;
     style_apply(
         &mut mkgc,
         oo,
         b"copy-mode-mark-style\x00" as *const u8 as *const libc::c_char,
         0 as *mut crate::format::format_tree,
     );
-    mkgc.flags = (mkgc.flags as libc::c_int | 0x20 as libc::c_int) as u_char;
-    if py == 0 as libc::c_int as libc::c_uint
-        && (*s).rupper < (*s).rlower
-        && (*data).hide_position == 0
-    {
+    mkgc.flags = (mkgc.flags as libc::c_int | 0x20i32) as u_char;
+    if py == 0u32 && (*s).rupper < (*s).rlower && (*data).hide_position == 0 {
         if (*data).searchmark.is_null() {
             if (*data).timeout != 0 {
                 size = xsnprintf(
@@ -6684,7 +6507,7 @@ unsafe extern "C" fn window_copy_write_line(
                     hsize,
                 ) as size_t
             }
-        } else if (*data).searchcount == -(1 as libc::c_int) {
+        } else if (*data).searchcount == -(1i32) {
             size = xsnprintf(
                 hdr.as_mut_ptr(),
                 ::std::mem::size_of::<[libc::c_char; 512]>() as libc::c_ulong,
@@ -6692,7 +6515,7 @@ unsafe extern "C" fn window_copy_write_line(
                 (*data).oy,
                 hsize,
             ) as size_t
-        } else if (*data).searchthis == -(1 as libc::c_int) {
+        } else if (*data).searchthis == -(1i32) {
             size = xsnprintf(
                 hdr.as_mut_ptr(),
                 ::std::mem::size_of::<[libc::c_char; 512]>() as libc::c_ulong,
@@ -6723,8 +6546,8 @@ unsafe extern "C" fn window_copy_write_line(
         screen_write_cursormove(
             ctx,
             ((*(*s).grid).sx as libc::c_ulong).wrapping_sub(size) as libc::c_int,
-            0 as libc::c_int,
-            0 as libc::c_int,
+            0i32,
+            0i32,
         );
         screen_write_puts(
             ctx,
@@ -6733,7 +6556,7 @@ unsafe extern "C" fn window_copy_write_line(
             hdr.as_mut_ptr(),
         );
     } else {
-        size = 0 as libc::c_int as size_t
+        size = 0u64
     }
     if size < (*(*s).grid).sx as libc::c_ulong {
         window_copy_write_one(
@@ -6750,13 +6573,11 @@ unsafe extern "C" fn window_copy_write_line(
     if py == (*data).cy && (*data).cx == (*(*s).grid).sx {
         screen_write_cursormove(
             ctx,
-            (*(*s).grid)
-                .sx
-                .wrapping_sub(1 as libc::c_int as libc::c_uint) as libc::c_int,
+            (*(*s).grid).sx.wrapping_sub(1u32) as libc::c_int,
             py as libc::c_int,
-            0 as libc::c_int,
+            0i32,
         );
-        screen_write_putc(ctx, &grid_default_cell, '$' as i32 as u_char);
+        screen_write_putc(ctx, &grid_default_cell, '$' as u_char);
     };
 }
 unsafe extern "C" fn window_copy_write_lines(
@@ -6793,23 +6614,13 @@ unsafe extern "C" fn window_copy_redraw_selection(
      * In word selection mode the first word on the line below the cursor
      * might be selected, so add this line to the redraw area.
      */
-    if (*data).selflag as libc::c_uint == SEL_WORD as libc::c_int as libc::c_uint {
+    if (*data).selflag == SEL_WORD {
         /* Last grid line in data coordinates. */
-        if end
-            < (*gd)
-                .sy
-                .wrapping_add((*data).oy)
-                .wrapping_sub(1 as libc::c_int as libc::c_uint)
-        {
+        if end < (*gd).sy.wrapping_add((*data).oy).wrapping_sub(1u32) {
             end = end.wrapping_add(1)
         }
     }
-    window_copy_redraw_lines(
-        wme,
-        start,
-        end.wrapping_sub(start)
-            .wrapping_add(1 as libc::c_int as libc::c_uint),
-    );
+    window_copy_redraw_lines(wme, start, end.wrapping_sub(start).wrapping_add(1u32));
 }
 unsafe extern "C" fn window_copy_redraw_lines(
     mut wme: *mut window_mode_entry,
@@ -6842,13 +6653,13 @@ unsafe extern "C" fn window_copy_redraw_lines(
         &mut ctx,
         (*data).cx as libc::c_int,
         (*data).cy as libc::c_int,
-        0 as libc::c_int,
+        0i32,
     );
     screen_write_stop(&mut ctx);
 }
 unsafe extern "C" fn window_copy_redraw_screen(mut wme: *mut window_mode_entry) {
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    window_copy_redraw_lines(wme, 0 as libc::c_int as u_int, (*(*data).screen.grid).sy);
+    window_copy_redraw_lines(wme, 0u32, (*(*data).screen.grid).sy);
 }
 unsafe extern "C" fn window_copy_synchronize_cursor_end(
     mut wme: *mut window_mode_entry,
@@ -6862,33 +6673,22 @@ unsafe extern "C" fn window_copy_synchronize_cursor_end(
         .hsize
         .wrapping_add((*data).cy)
         .wrapping_sub((*data).oy);
-    match (*data).selflag as libc::c_uint {
+    match (*data).selflag {
         1 => {
             xx = (*data).cx;
             if !(no_reset != 0) {
-                begin = 0 as libc::c_int;
+                begin = 0i32;
                 if (*data).dy > yy || (*data).dy == yy && (*data).dx > xx {
                     /* Right to left selection. */
-                    window_copy_cursor_previous_word_pos(
-                        wme,
-                        (*data).ws,
-                        0 as libc::c_int,
-                        &mut xx,
-                        &mut yy,
-                    );
-                    begin = 1 as libc::c_int;
+                    window_copy_cursor_previous_word_pos(wme, (*data).ws, 0i32, &mut xx, &mut yy);
+                    begin = 1i32;
                     /* Reset the end. */
                     (*data).endselx = (*data).endselrx;
                     (*data).endsely = (*data).endselry
                 } else {
                     /* Left to right selection. */
                     if xx >= window_copy_find_length(wme, yy)
-                        || window_copy_in_set(
-                            wme,
-                            xx.wrapping_add(1 as libc::c_int as libc::c_uint),
-                            yy,
-                            (*data).ws,
-                        ) == 0
+                        || window_copy_in_set(wme, xx.wrapping_add(1u32), yy, (*data).ws) == 0
                     {
                         window_copy_cursor_next_word_end_pos(wme, (*data).ws, &mut xx, &mut yy);
                     }
@@ -6902,11 +6702,11 @@ unsafe extern "C" fn window_copy_synchronize_cursor_end(
             if no_reset != 0 {
                 xx = (*data).cx
             } else {
-                begin = 0 as libc::c_int;
+                begin = 0i32;
                 if (*data).dy > yy {
                     /* Right to left selection. */
-                    xx = 0 as libc::c_int as u_int;
-                    begin = 1 as libc::c_int;
+                    xx = 0u32;
+                    begin = 1i32;
                     /* Reset the end. */
                     (*data).endselx = (*data).endselrx;
                     (*data).endsely = (*data).endselry
@@ -6935,12 +6735,12 @@ unsafe extern "C" fn window_copy_synchronize_cursor(
     mut no_reset: libc::c_int,
 ) {
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
-    match (*data).cursordrag as libc::c_uint {
+    match (*data).cursordrag {
         1 => {
-            window_copy_synchronize_cursor_end(wme, 0 as libc::c_int, no_reset);
+            window_copy_synchronize_cursor_end(wme, 0i32, no_reset);
         }
         2 => {
-            window_copy_synchronize_cursor_end(wme, 1 as libc::c_int, no_reset);
+            window_copy_synchronize_cursor_end(wme, 1i32, no_reset);
         }
         0 | _ => {}
     };
@@ -6973,17 +6773,17 @@ unsafe extern "C" fn window_copy_update_cursor(
     (*data).cx = cx;
     (*data).cy = cy;
     if old_cx == (*(*s).grid).sx {
-        window_copy_redraw_lines(wme, old_cy, 1 as libc::c_int as u_int);
+        window_copy_redraw_lines(wme, old_cy, 1u32);
     }
     if (*data).cx == (*(*s).grid).sx {
-        window_copy_redraw_lines(wme, (*data).cy, 1 as libc::c_int as u_int);
+        window_copy_redraw_lines(wme, (*data).cy, 1u32);
     } else {
         screen_write_start_pane(&mut ctx, wp, 0 as *mut screen);
         screen_write_cursormove(
             &mut ctx,
             (*data).cx as libc::c_int,
             (*data).cy as libc::c_int,
-            0 as libc::c_int,
+            0i32,
         );
         screen_write_stop(&mut ctx);
     };
@@ -6998,7 +6798,7 @@ unsafe extern "C" fn window_copy_start_selection(mut wme: *mut window_mode_entry
     (*data).endselx = (*data).selx;
     (*data).endsely = (*data).sely;
     (*data).cursordrag = CURSORDRAG_ENDSEL;
-    window_copy_set_selection(wme, 1 as libc::c_int, 0 as libc::c_int);
+    window_copy_set_selection(wme, 1i32, 0i32);
 }
 unsafe extern "C" fn window_copy_adjust_selection(
     mut wme: *mut window_mode_entry,
@@ -7017,25 +6817,18 @@ unsafe extern "C" fn window_copy_adjust_selection(
     if sy < ty {
         relpos = WINDOW_COPY_REL_POS_ABOVE as libc::c_int;
         if (*data).rectflag == 0 {
-            sx = 0 as libc::c_int as u_int
+            sx = 0u32
         }
-        sy = 0 as libc::c_int as u_int
-    } else if sy
-        > ty.wrapping_add((*(*s).grid).sy)
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
-    {
+        sy = 0u32
+    } else if sy > ty.wrapping_add((*(*s).grid).sy).wrapping_sub(1u32) {
         relpos = WINDOW_COPY_REL_POS_BELOW as libc::c_int;
         if (*data).rectflag == 0 {
-            sx = (*(*s).grid)
-                .sx
-                .wrapping_sub(1 as libc::c_int as libc::c_uint)
+            sx = (*(*s).grid).sx.wrapping_sub(1u32)
         }
-        sy = (*(*s).grid)
-            .sy
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
+        sy = (*(*s).grid).sy.wrapping_sub(1u32)
     } else {
         relpos = WINDOW_COPY_REL_POS_ON_SCREEN as libc::c_int;
-        sy = (sy as libc::c_uint).wrapping_sub(ty) as u_int as u_int
+        sy = (sy).wrapping_sub(ty)
     }
     *selx = sx;
     *sely = sy;
@@ -7048,10 +6841,8 @@ unsafe extern "C" fn window_copy_update_selection(
 ) -> libc::c_int {
     let mut data: *mut window_copy_mode_data = (*wme).data as *mut window_copy_mode_data;
     let mut s: *mut screen = &mut (*data).screen;
-    if (*s).sel.is_null()
-        && (*data).lineflag as libc::c_uint == LINE_SEL_NONE as libc::c_int as libc::c_uint
-    {
-        return 0 as libc::c_int;
+    if (*s).sel.is_null() && (*data).lineflag == LINE_SEL_NONE {
+        return 0i32;
     }
     return window_copy_set_selection(wme, may_redraw, no_reset);
 }
@@ -7096,7 +6887,7 @@ unsafe extern "C" fn window_copy_set_selection(
     /* Selection is outside of the current screen */
     if startrelpos == endrelpos && startrelpos != WINDOW_COPY_REL_POS_ON_SCREEN as libc::c_int {
         screen_hide_selection(s);
-        return 0 as libc::c_int;
+        return 0i32;
     }
     /* Set colours and selection. */
     style_apply(
@@ -7105,7 +6896,7 @@ unsafe extern "C" fn window_copy_set_selection(
         b"mode-style\x00" as *const u8 as *const libc::c_char,
         0 as *mut crate::format::format_tree,
     );
-    gc.flags = (gc.flags as libc::c_int | 0x20 as libc::c_int) as u_char;
+    gc.flags = (gc.flags as libc::c_int | 0x20i32) as u_char;
     screen_set_selection(
         s,
         sx,
@@ -7123,40 +6914,19 @@ unsafe extern "C" fn window_copy_set_selection(
          * of lines, and redraw just past that in both directions
          */
         cy = (*data).cy;
-        if (*data).cursordrag as libc::c_uint == CURSORDRAG_ENDSEL as libc::c_int as libc::c_uint {
+        if (*data).cursordrag == CURSORDRAG_ENDSEL {
             if sy < cy {
-                window_copy_redraw_lines(
-                    wme,
-                    sy,
-                    cy.wrapping_sub(sy)
-                        .wrapping_add(1 as libc::c_int as libc::c_uint),
-                );
+                window_copy_redraw_lines(wme, sy, cy.wrapping_sub(sy).wrapping_add(1u32));
             } else {
-                window_copy_redraw_lines(
-                    wme,
-                    cy,
-                    sy.wrapping_sub(cy)
-                        .wrapping_add(1 as libc::c_int as libc::c_uint),
-                );
+                window_copy_redraw_lines(wme, cy, sy.wrapping_sub(cy).wrapping_add(1u32));
             }
         } else if endsy < cy {
-            window_copy_redraw_lines(
-                wme,
-                endsy,
-                cy.wrapping_sub(endsy)
-                    .wrapping_add(1 as libc::c_int as libc::c_uint),
-            );
+            window_copy_redraw_lines(wme, endsy, cy.wrapping_sub(endsy).wrapping_add(1u32));
         } else {
-            window_copy_redraw_lines(
-                wme,
-                cy,
-                endsy
-                    .wrapping_sub(cy)
-                    .wrapping_add(1 as libc::c_int as libc::c_uint),
-            );
+            window_copy_redraw_lines(wme, cy, endsy.wrapping_sub(cy).wrapping_add(1u32));
         }
     }
-    return 1 as libc::c_int;
+    return 1i32;
 }
 unsafe extern "C" fn window_copy_get_selection(
     mut wme: *mut window_mode_entry,
@@ -7181,20 +6951,18 @@ unsafe extern "C" fn window_copy_get_selection(
     let mut restsx: u_int = 0;
     let mut selx: u_int = 0;
     let mut keys: libc::c_int = 0;
-    if (*data).screen.sel.is_null()
-        && (*data).lineflag as libc::c_uint == LINE_SEL_NONE as libc::c_int as libc::c_uint
-    {
+    if (*data).screen.sel.is_null() && (*data).lineflag == LINE_SEL_NONE {
         buf = window_copy_match_at_cursor(data);
         if !buf.is_null() {
             *len = strlen(buf)
         } else {
-            *len = 0 as libc::c_int as size_t
+            *len = 0u64
         }
         return buf as *mut libc::c_void;
     }
-    buf = xmalloc(1 as libc::c_int as size_t) as *mut libc::c_char;
-    off = 0 as libc::c_int as size_t;
-    *buf = '\u{0}' as i32 as libc::c_char;
+    buf = xmalloc(1u64) as *mut libc::c_char;
+    off = 0u64;
+    *buf = '\u{0}' as libc::c_char;
     /*
      * The selection extends from selx,sely to (adjusted) cx,cy on
      * the base screen.
@@ -7239,38 +7007,38 @@ unsafe extern "C" fn window_copy_get_selection(
          * Need to ignore the column with the cursor in it, which for
          * rectangular copy means knowing which side the cursor is on.
          */
-        if (*data).cursordrag as libc::c_uint == CURSORDRAG_ENDSEL as libc::c_int as libc::c_uint {
+        if (*data).cursordrag == CURSORDRAG_ENDSEL {
             selx = (*data).selx
         } else {
             selx = (*data).endselx
         }
         if selx < (*data).cx {
             /* Selection start is on the left. */
-            if keys == 0 as libc::c_int {
+            if keys == 0i32 {
                 lastex = (*data).cx;
                 restex = (*data).cx
             } else {
-                lastex = (*data).cx.wrapping_add(1 as libc::c_int as libc::c_uint);
-                restex = (*data).cx.wrapping_add(1 as libc::c_int as libc::c_uint)
+                lastex = (*data).cx.wrapping_add(1u32);
+                restex = (*data).cx.wrapping_add(1u32)
             }
             firstsx = selx;
             restsx = selx
         } else {
             /* Cursor is on the left. */
-            lastex = selx.wrapping_add(1 as libc::c_int as libc::c_uint);
-            restex = selx.wrapping_add(1 as libc::c_int as libc::c_uint);
+            lastex = selx.wrapping_add(1u32);
+            restex = selx.wrapping_add(1u32);
             firstsx = (*data).cx;
             restsx = (*data).cx
         }
     } else {
-        if keys == 0 as libc::c_int {
+        if keys == 0i32 {
             lastex = ex
         } else {
-            lastex = ex.wrapping_add(1 as libc::c_int as libc::c_uint)
+            lastex = ex.wrapping_add(1u32)
         }
         restex = xx;
         firstsx = sx;
-        restsx = 0 as libc::c_int as u_int
+        restsx = 0u32
     }
     /* Copy the lines. */
     i = sy;
@@ -7286,14 +7054,13 @@ unsafe extern "C" fn window_copy_get_selection(
         i = i.wrapping_add(1)
     }
     /* Don't bother if no data. */
-    if off == 0 as libc::c_int as libc::c_ulong {
+    if off == 0u64 {
         free(buf as *mut libc::c_void); /* remove final \n (unless at end in vi mode) */
-        *len = 0 as libc::c_int as size_t;
+        *len = 0u64;
         return 0 as *mut libc::c_void;
     }
-    if keys == 0 as libc::c_int || lastex <= ey_last {
-        off = (off as libc::c_ulong).wrapping_sub(1 as libc::c_int as libc::c_ulong) as size_t
-            as size_t
+    if keys == 0i32 || lastex <= ey_last {
+        off = (off).wrapping_sub(1u64)
     }
     *len = off;
     return buf as *mut libc::c_void;
@@ -7321,7 +7088,7 @@ unsafe extern "C" fn window_copy_copy_buffer(
     if options_get_number(
         global_options,
         b"set-clipboard\x00" as *const u8 as *const libc::c_char,
-    ) != 0 as libc::c_int as libc::c_longlong
+    ) != 0i64
     {
         screen_write_start_pane(&mut ctx, wp, 0 as *mut screen);
         screen_write_setselection(&mut ctx, buf as *mut u_char, len as u_int);
@@ -7358,9 +7125,9 @@ unsafe extern "C" fn window_copy_copy_pipe(
             None,
             None,
             0 as *mut libc::c_void,
-            0x1 as libc::c_int,
-            -(1 as libc::c_int),
-            -(1 as libc::c_int),
+            0x1i32,
+            -(1i32),
+            -(1i32),
         );
         bufferevent_write(job_get_event(job), buf, len);
     }
@@ -7407,7 +7174,7 @@ unsafe extern "C" fn window_copy_append_selection(mut wme: *mut window_mode_entr
     if options_get_number(
         global_options,
         b"set-clipboard\x00" as *const u8 as *const libc::c_char,
-    ) != 0 as libc::c_int as libc::c_longlong
+    ) != 0i64
     {
         screen_write_start_pane(&mut ctx, wp, 0 as *mut screen);
         screen_write_setselection(&mut ctx, buf as *mut u_char, len as u_int);
@@ -7431,9 +7198,9 @@ unsafe extern "C" fn window_copy_append_selection(mut wme: *mut window_mode_entr
             bufdata as *const libc::c_void,
             bufsize,
         );
-        len = (len as libc::c_ulong).wrapping_add(bufsize) as size_t as size_t
+        len = (len).wrapping_add(bufsize)
     }
-    if paste_set(buf, len, bufname, 0 as *mut *mut libc::c_char) != 0 as libc::c_int {
+    if paste_set(buf, len, bufname, 0 as *mut *mut libc::c_char) != 0i32 {
         free(buf as *mut libc::c_void);
     };
 }
@@ -7469,7 +7236,7 @@ unsafe extern "C" fn window_copy_copy_line(
     };
     let mut i: u_int = 0;
     let mut xx: u_int = 0;
-    let mut wrapped: u_int = 0 as libc::c_int as u_int;
+    let mut wrapped: u_int = 0u32;
     let mut s: *const libc::c_char = 0 as *const libc::c_char;
     if sx > ex {
         return;
@@ -7479,8 +7246,8 @@ unsafe extern "C" fn window_copy_copy_line(
      * on screen.
      */
     gl = grid_get_line(gd, sy);
-    if (*gl).flags & 0x1 as libc::c_int != 0 && (*gl).cellsize <= (*gd).sx {
-        wrapped = 1 as libc::c_int as u_int
+    if (*gl).flags & 0x1i32 != 0 && (*gl).cellsize <= (*gd).sx {
+        wrapped = 1u32
     }
     /* If the line was wrapped, don't strip spaces (use the full length). */
     if wrapped != 0 {
@@ -7498,12 +7265,10 @@ unsafe extern "C" fn window_copy_copy_line(
         i = sx;
         while i < ex {
             grid_get_cell(gd, i, sy, &mut gc);
-            if !(gc.flags as libc::c_int & 0x4 as libc::c_int != 0) {
+            if !(gc.flags as libc::c_int & 0x4i32 != 0) {
                 utf8_copy(&mut ud, &mut gc.data);
-                if ud.size as libc::c_int == 1 as libc::c_int
-                    && gc.attr as libc::c_int & 0x80 as libc::c_int != 0
-                {
-                    s = tty_acs_get(0 as *mut tty, ud.data[0 as libc::c_int as usize]);
+                if ud.size as libc::c_int == 1i32 && gc.attr as libc::c_int & 0x80i32 != 0 {
+                    s = tty_acs_get(0 as *mut tty, ud.data[0usize]);
                     if !s.is_null()
                         && strlen(s) <= ::std::mem::size_of::<[u_char; 21]>() as libc::c_ulong
                     {
@@ -7524,21 +7289,17 @@ unsafe extern "C" fn window_copy_copy_line(
                     ud.data.as_mut_ptr() as *const libc::c_void,
                     ud.size as libc::c_ulong,
                 );
-                *off = (*off as libc::c_ulong).wrapping_add(ud.size as libc::c_ulong) as size_t
-                    as size_t
+                *off = (*off).wrapping_add(ud.size as libc::c_ulong)
             }
             i = i.wrapping_add(1)
         }
     }
     /* Only add a newline if the line wasn't wrapped. */
     if wrapped == 0 || ex != xx {
-        *buf = xrealloc(
-            *buf as *mut libc::c_void,
-            (*off).wrapping_add(1 as libc::c_int as libc::c_ulong),
-        ) as *mut libc::c_char;
+        *buf = xrealloc(*buf as *mut libc::c_void, (*off).wrapping_add(1u64)) as *mut libc::c_char;
         let fresh4 = *off;
         *off = (*off).wrapping_add(1);
-        *(*buf).offset(fresh4 as isize) = '\n' as i32 as libc::c_char
+        *(*buf).offset(fresh4 as isize) = '\n' as libc::c_char
     };
 }
 unsafe extern "C" fn window_copy_clear_selection(mut wme: *mut window_mode_entry) {
@@ -7579,8 +7340,8 @@ unsafe extern "C" fn window_copy_in_set(
         us: 0,
     };
     grid_get_cell((*(*data).backing).grid, px, py, &mut gc);
-    if gc.flags as libc::c_int & 0x4 as libc::c_int != 0 {
-        return 0 as libc::c_int;
+    if gc.flags as libc::c_int & 0x4i32 != 0 {
+        return 0i32;
     }
     return utf8_cstrhas(set, &mut gc.data);
 }
@@ -7596,28 +7357,22 @@ unsafe extern "C" fn window_copy_cursor_start_of_line(mut wme: *mut window_mode_
     let mut back_s: *mut screen = (*data).backing;
     let mut gd: *mut grid = (*back_s).grid;
     let mut py: u_int = 0;
-    if (*data).cx == 0 as libc::c_int as libc::c_uint
-        && (*data).lineflag as libc::c_uint == LINE_SEL_NONE as libc::c_int as libc::c_uint
-    {
+    if (*data).cx == 0u32 && (*data).lineflag == LINE_SEL_NONE {
         py = (*(*back_s).grid)
             .hsize
             .wrapping_add((*data).cy)
             .wrapping_sub((*data).oy);
-        while py > 0 as libc::c_int as libc::c_uint
-            && (*grid_get_line(gd, py.wrapping_sub(1 as libc::c_int as libc::c_uint))).flags
-                & 0x1 as libc::c_int
-                != 0
-        {
-            window_copy_cursor_up(wme, 0 as libc::c_int);
+        while py > 0u32 && (*grid_get_line(gd, py.wrapping_sub(1u32))).flags & 0x1i32 != 0 {
+            window_copy_cursor_up(wme, 0i32);
             py = (*(*back_s).grid)
                 .hsize
                 .wrapping_add((*data).cy)
                 .wrapping_sub((*data).oy)
         }
     }
-    window_copy_update_cursor(wme, 0 as libc::c_int as u_int, (*data).cy);
-    if window_copy_update_selection(wme, 1 as libc::c_int, 0 as libc::c_int) != 0 {
-        window_copy_redraw_lines(wme, (*data).cy, 1 as libc::c_int as u_int);
+    window_copy_update_cursor(wme, 0u32, (*data).cy);
+    if window_copy_update_selection(wme, 1i32, 0i32) != 0 {
+        window_copy_redraw_lines(wme, (*data).cy, 1u32);
     };
 }
 unsafe extern "C" fn window_copy_cursor_back_to_indentation(mut wme: *mut window_mode_entry) {
@@ -7638,7 +7393,7 @@ unsafe extern "C" fn window_copy_cursor_back_to_indentation(mut wme: *mut window
         bg: 0,
         us: 0,
     };
-    px = 0 as libc::c_int as u_int;
+    px = 0u32;
     py = (*(*(*data).backing).grid)
         .hsize
         .wrapping_add((*data).cy)
@@ -7646,7 +7401,7 @@ unsafe extern "C" fn window_copy_cursor_back_to_indentation(mut wme: *mut window
     xx = window_copy_find_length(wme, py);
     while px < xx {
         grid_get_cell((*(*data).backing).grid, px, py, &mut gc);
-        if gc.data.size as libc::c_int != 1 as libc::c_int
+        if gc.data.size as libc::c_int != 1i32
             || *gc.data.data.as_mut_ptr() as libc::c_int != ' ' as i32
         {
             break;
@@ -7654,8 +7409,8 @@ unsafe extern "C" fn window_copy_cursor_back_to_indentation(mut wme: *mut window
         px = px.wrapping_add(1)
     }
     window_copy_update_cursor(wme, px, (*data).cy);
-    if window_copy_update_selection(wme, 1 as libc::c_int, 0 as libc::c_int) != 0 {
-        window_copy_redraw_lines(wme, (*data).cy, 1 as libc::c_int as u_int);
+    if window_copy_update_selection(wme, 1i32, 0i32) != 0 {
+        window_copy_redraw_lines(wme, (*data).cy, 1u32);
     };
 }
 unsafe extern "C" fn window_copy_cursor_end_of_line(mut wme: *mut window_mode_entry) {
@@ -7670,20 +7425,18 @@ unsafe extern "C" fn window_copy_cursor_end_of_line(mut wme: *mut window_mode_en
         .wrapping_add((*data).cy)
         .wrapping_sub((*data).oy);
     px = window_copy_find_length(wme, py);
-    if (*data).cx == px
-        && (*data).lineflag as libc::c_uint == LINE_SEL_NONE as libc::c_int as libc::c_uint
-    {
+    if (*data).cx == px && (*data).lineflag == LINE_SEL_NONE {
         if !(*data).screen.sel.is_null() && (*data).rectflag != 0 {
             px = (*(*back_s).grid).sx
         }
         gl = grid_get_line(gd, py);
-        if (*gl).flags & 0x1 as libc::c_int != 0 {
+        if (*gl).flags & 0x1i32 != 0 {
             while py < (*gd).sy.wrapping_add((*gd).hsize) {
                 gl = grid_get_line(gd, py);
-                if !(*gl).flags & 0x1 as libc::c_int != 0 {
+                if !(*gl).flags & 0x1i32 != 0 {
                     break;
                 }
-                window_copy_cursor_down(wme, 0 as libc::c_int);
+                window_copy_cursor_down(wme, 0i32);
                 py = (*(*back_s).grid)
                     .hsize
                     .wrapping_add((*data).cy)
@@ -7693,8 +7446,8 @@ unsafe extern "C" fn window_copy_cursor_end_of_line(mut wme: *mut window_mode_en
         }
     }
     window_copy_update_cursor(wme, px, (*data).cy);
-    if window_copy_update_selection(wme, 1 as libc::c_int, 0 as libc::c_int) != 0 {
-        window_copy_redraw_lines(wme, (*data).cy, 1 as libc::c_int as u_int);
+    if window_copy_update_selection(wme, 1i32, 0i32) != 0 {
+        window_copy_redraw_lines(wme, (*data).cy, 1u32);
     };
 }
 unsafe extern "C" fn window_copy_other_end(mut wme: *mut window_mode_entry) {
@@ -7705,25 +7458,22 @@ unsafe extern "C" fn window_copy_other_end(mut wme: *mut window_mode_entry) {
     let mut cy: u_int = 0;
     let mut yy: u_int = 0;
     let mut hsize: u_int = 0;
-    if (*s).sel.is_null()
-        && (*data).lineflag as libc::c_uint == LINE_SEL_NONE as libc::c_int as libc::c_uint
-    {
+    if (*s).sel.is_null() && (*data).lineflag == LINE_SEL_NONE {
         return;
     }
-    if (*data).lineflag as libc::c_uint == LINE_SEL_LEFT_RIGHT as libc::c_int as libc::c_uint {
+    if (*data).lineflag == LINE_SEL_LEFT_RIGHT {
         (*data).lineflag = LINE_SEL_RIGHT_LEFT
-    } else if (*data).lineflag as libc::c_uint == LINE_SEL_RIGHT_LEFT as libc::c_int as libc::c_uint
-    {
+    } else if (*data).lineflag == LINE_SEL_RIGHT_LEFT {
         (*data).lineflag = LINE_SEL_LEFT_RIGHT
     }
-    match (*data).cursordrag as libc::c_uint {
+    match (*data).cursordrag {
         0 | 2 => (*data).cursordrag = CURSORDRAG_ENDSEL,
         1 => (*data).cursordrag = CURSORDRAG_SEL,
         _ => {}
     }
     selx = (*data).endselx;
     sely = (*data).endsely;
-    if (*data).cursordrag as libc::c_uint == CURSORDRAG_SEL as libc::c_int as libc::c_uint {
+    if (*data).cursordrag == CURSORDRAG_SEL {
         selx = (*data).selx;
         sely = (*data).sely
     }
@@ -7737,20 +7487,18 @@ unsafe extern "C" fn window_copy_other_end(mut wme: *mut window_mode_entry) {
     if sely < hsize.wrapping_sub((*data).oy) {
         /* above */
         (*data).oy = hsize.wrapping_sub(sely);
-        (*data).cy = 0 as libc::c_int as u_int
+        (*data).cy = 0u32
     } else if sely > hsize.wrapping_sub((*data).oy).wrapping_add((*(*s).grid).sy) {
         /* below */
         (*data).oy = hsize
             .wrapping_sub(sely)
             .wrapping_add((*(*s).grid).sy)
-            .wrapping_sub(1 as libc::c_int as libc::c_uint);
-        (*data).cy = (*(*s).grid)
-            .sy
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
+            .wrapping_sub(1u32);
+        (*data).cy = (*(*s).grid).sy.wrapping_sub(1u32)
     } else {
         (*data).cy = cy.wrapping_add(sely).wrapping_sub(yy)
     }
-    window_copy_update_selection(wme, 1 as libc::c_int, 1 as libc::c_int);
+    window_copy_update_selection(wme, 1i32, 1i32);
     window_copy_redraw_screen(wme);
 }
 unsafe extern "C" fn window_copy_cursor_left(mut wme: *mut window_mode_entry) {
@@ -7775,24 +7523,20 @@ unsafe extern "C" fn window_copy_cursor_left(mut wme: *mut window_mode_entry) {
         .wrapping_add((*data).cy)
         .wrapping_sub((*data).oy);
     cx = (*data).cx;
-    while cx > 0 as libc::c_int as libc::c_uint {
+    while cx > 0u32 {
         grid_get_cell((*(*data).backing).grid, cx, py, &mut gc);
-        if !(gc.flags as libc::c_int) & 0x4 as libc::c_int != 0 {
+        if !(gc.flags as libc::c_int) & 0x4i32 != 0 {
             break;
         }
         cx = cx.wrapping_sub(1)
     }
-    if cx == 0 as libc::c_int as libc::c_uint && py > 0 as libc::c_int as libc::c_uint {
-        window_copy_cursor_up(wme, 0 as libc::c_int);
+    if cx == 0u32 && py > 0u32 {
+        window_copy_cursor_up(wme, 0i32);
         window_copy_cursor_end_of_line(wme);
-    } else if cx > 0 as libc::c_int as libc::c_uint {
-        window_copy_update_cursor(
-            wme,
-            cx.wrapping_sub(1 as libc::c_int as libc::c_uint),
-            (*data).cy,
-        );
-        if window_copy_update_selection(wme, 1 as libc::c_int, 0 as libc::c_int) != 0 {
-            window_copy_redraw_lines(wme, (*data).cy, 1 as libc::c_int as u_int);
+    } else if cx > 0u32 {
+        window_copy_update_cursor(wme, cx.wrapping_sub(1u32), (*data).cy);
+        if window_copy_update_selection(wme, 1i32, 0i32) != 0 {
+            window_copy_redraw_lines(wme, (*data).cy, 1u32);
         }
     };
 }
@@ -7826,7 +7570,7 @@ unsafe extern "C" fn window_copy_cursor_right(
     yy = (*(*(*data).backing).grid)
         .hsize
         .wrapping_add((*(*(*data).backing).grid).sy)
-        .wrapping_sub(1 as libc::c_int as libc::c_uint);
+        .wrapping_sub(1u32);
     if all != 0 || !(*data).screen.sel.is_null() && (*data).rectflag != 0 {
         px = (*(*data).screen.grid).sx
     } else {
@@ -7834,23 +7578,23 @@ unsafe extern "C" fn window_copy_cursor_right(
     }
     if (*data).cx >= px && py < yy {
         window_copy_cursor_start_of_line(wme);
-        window_copy_cursor_down(wme, 0 as libc::c_int);
+        window_copy_cursor_down(wme, 0i32);
     } else if (*data).cx < px {
-        cx = (*data).cx.wrapping_add(1 as libc::c_int as libc::c_uint);
+        cx = (*data).cx.wrapping_add(1u32);
         cy = (*(*(*data).backing).grid)
             .hsize
             .wrapping_add((*data).cy)
             .wrapping_sub((*data).oy);
         while cx < px {
             grid_get_cell((*(*data).backing).grid, cx, cy, &mut gc);
-            if !(gc.flags as libc::c_int) & 0x4 as libc::c_int != 0 {
+            if !(gc.flags as libc::c_int) & 0x4i32 != 0 {
                 break;
             }
             cx = cx.wrapping_add(1)
         }
         window_copy_update_cursor(wme, cx, (*data).cy);
-        if window_copy_update_selection(wme, 1 as libc::c_int, 0 as libc::c_int) != 0 {
-            window_copy_redraw_lines(wme, (*data).cy, 1 as libc::c_int as u_int);
+        if window_copy_update_selection(wme, 1i32, 0i32) != 0 {
+            window_copy_redraw_lines(wme, (*data).cy, 1u32);
         }
     };
 }
@@ -7873,40 +7617,26 @@ unsafe extern "C" fn window_copy_cursor_up(
         (*data).lastcx = (*data).cx;
         (*data).lastsx = ox
     }
-    if (*data).lineflag as libc::c_uint == LINE_SEL_LEFT_RIGHT as libc::c_int as libc::c_uint
-        && oy == (*data).sely
-    {
+    if (*data).lineflag == LINE_SEL_LEFT_RIGHT && oy == (*data).sely {
         window_copy_other_end(wme);
     }
-    if scroll_only != 0 || (*data).cy == 0 as libc::c_int as libc::c_uint {
+    if scroll_only != 0 || (*data).cy == 0u32 {
         (*data).cx = (*data).lastcx;
-        window_copy_scroll_down(wme, 1 as libc::c_int as u_int);
+        window_copy_scroll_down(wme, 1u32);
         if scroll_only != 0 {
-            if (*data).cy
-                == (*(*s).grid)
-                    .sy
-                    .wrapping_sub(1 as libc::c_int as libc::c_uint)
-            {
-                window_copy_redraw_lines(wme, (*data).cy, 1 as libc::c_int as u_int);
+            if (*data).cy == (*(*s).grid).sy.wrapping_sub(1u32) {
+                window_copy_redraw_lines(wme, (*data).cy, 1u32);
             } else {
-                window_copy_redraw_lines(wme, (*data).cy, 2 as libc::c_int as u_int);
+                window_copy_redraw_lines(wme, (*data).cy, 2u32);
             }
         }
     } else {
-        window_copy_update_cursor(
-            wme,
-            (*data).lastcx,
-            (*data).cy.wrapping_sub(1 as libc::c_int as libc::c_uint),
-        );
-        if window_copy_update_selection(wme, 1 as libc::c_int, 0 as libc::c_int) != 0 {
-            if (*data).cy
-                == (*(*s).grid)
-                    .sy
-                    .wrapping_sub(1 as libc::c_int as libc::c_uint)
-            {
-                window_copy_redraw_lines(wme, (*data).cy, 1 as libc::c_int as u_int);
+        window_copy_update_cursor(wme, (*data).lastcx, (*data).cy.wrapping_sub(1u32));
+        if window_copy_update_selection(wme, 1i32, 0i32) != 0 {
+            if (*data).cy == (*(*s).grid).sy.wrapping_sub(1u32) {
+                window_copy_redraw_lines(wme, (*data).cy, 1u32);
             } else {
-                window_copy_redraw_lines(wme, (*data).cy, 2 as libc::c_int as u_int);
+                window_copy_redraw_lines(wme, (*data).cy, 2u32);
             }
         }
     }
@@ -7920,10 +7650,9 @@ unsafe extern "C" fn window_copy_cursor_up(
             window_copy_cursor_end_of_line(wme);
         }
     }
-    if (*data).lineflag as libc::c_uint == LINE_SEL_LEFT_RIGHT as libc::c_int as libc::c_uint {
+    if (*data).lineflag == LINE_SEL_LEFT_RIGHT {
         window_copy_cursor_end_of_line(wme);
-    } else if (*data).lineflag as libc::c_uint == LINE_SEL_RIGHT_LEFT as libc::c_int as libc::c_uint
-    {
+    } else if (*data).lineflag == LINE_SEL_RIGHT_LEFT {
         window_copy_cursor_start_of_line(wme);
     };
 }
@@ -7946,38 +7675,19 @@ unsafe extern "C" fn window_copy_cursor_down(
         (*data).lastcx = (*data).cx;
         (*data).lastsx = ox
     }
-    if (*data).lineflag as libc::c_uint == LINE_SEL_RIGHT_LEFT as libc::c_int as libc::c_uint
-        && oy == (*data).endsely
-    {
+    if (*data).lineflag == LINE_SEL_RIGHT_LEFT && oy == (*data).endsely {
         window_copy_other_end(wme);
     }
-    if scroll_only != 0
-        || (*data).cy
-            == (*(*s).grid)
-                .sy
-                .wrapping_sub(1 as libc::c_int as libc::c_uint)
-    {
+    if scroll_only != 0 || (*data).cy == (*(*s).grid).sy.wrapping_sub(1u32) {
         (*data).cx = (*data).lastcx;
-        window_copy_scroll_up(wme, 1 as libc::c_int as u_int);
-        if scroll_only != 0 && (*data).cy > 0 as libc::c_int as libc::c_uint {
-            window_copy_redraw_lines(
-                wme,
-                (*data).cy.wrapping_sub(1 as libc::c_int as libc::c_uint),
-                2 as libc::c_int as u_int,
-            );
+        window_copy_scroll_up(wme, 1u32);
+        if scroll_only != 0 && (*data).cy > 0u32 {
+            window_copy_redraw_lines(wme, (*data).cy.wrapping_sub(1u32), 2u32);
         }
     } else {
-        window_copy_update_cursor(
-            wme,
-            (*data).lastcx,
-            (*data).cy.wrapping_add(1 as libc::c_int as libc::c_uint),
-        );
-        if window_copy_update_selection(wme, 1 as libc::c_int, 0 as libc::c_int) != 0 {
-            window_copy_redraw_lines(
-                wme,
-                (*data).cy.wrapping_sub(1 as libc::c_int as libc::c_uint),
-                2 as libc::c_int as u_int,
-            );
+        window_copy_update_cursor(wme, (*data).lastcx, (*data).cy.wrapping_add(1u32));
+        if window_copy_update_selection(wme, 1i32, 0i32) != 0 {
+            window_copy_redraw_lines(wme, (*data).cy.wrapping_sub(1u32), 2u32);
         }
     }
     if (*data).screen.sel.is_null() || (*data).rectflag == 0 {
@@ -7990,10 +7700,9 @@ unsafe extern "C" fn window_copy_cursor_down(
             window_copy_cursor_end_of_line(wme);
         }
     }
-    if (*data).lineflag as libc::c_uint == LINE_SEL_LEFT_RIGHT as libc::c_int as libc::c_uint {
+    if (*data).lineflag == LINE_SEL_LEFT_RIGHT {
         window_copy_cursor_end_of_line(wme);
-    } else if (*data).lineflag as libc::c_uint == LINE_SEL_RIGHT_LEFT as libc::c_int as libc::c_uint
-    {
+    } else if (*data).lineflag == LINE_SEL_RIGHT_LEFT {
         window_copy_cursor_start_of_line(wme);
     };
 }
@@ -8016,7 +7725,7 @@ unsafe extern "C" fn window_copy_cursor_jump(mut wme: *mut window_mode_entry) {
     let mut px: u_int = 0;
     let mut py: u_int = 0;
     let mut xx: u_int = 0;
-    px = (*data).cx.wrapping_add(1 as libc::c_int as libc::c_uint);
+    px = (*data).cx.wrapping_add(1u32);
     py = (*(*back_s).grid)
         .hsize
         .wrapping_add((*data).cy)
@@ -8024,13 +7733,13 @@ unsafe extern "C" fn window_copy_cursor_jump(mut wme: *mut window_mode_entry) {
     xx = window_copy_find_length(wme, py);
     while px < xx {
         grid_get_cell((*back_s).grid, px, py, &mut gc);
-        if gc.flags as libc::c_int & 0x4 as libc::c_int == 0
-            && gc.data.size as libc::c_int == 1 as libc::c_int
+        if gc.flags as libc::c_int & 0x4i32 == 0
+            && gc.data.size as libc::c_int == 1i32
             && *gc.data.data.as_mut_ptr() as libc::c_int == (*data).jumpchar as libc::c_int
         {
             window_copy_update_cursor(wme, px, (*data).cy);
-            if window_copy_update_selection(wme, 1 as libc::c_int, 0 as libc::c_int) != 0 {
-                window_copy_redraw_lines(wme, (*data).cy, 1 as libc::c_int as u_int);
+            if window_copy_update_selection(wme, 1i32, 0i32) != 0 {
+                window_copy_redraw_lines(wme, (*data).cy, 1u32);
             }
             return;
         }
@@ -8060,22 +7769,22 @@ unsafe extern "C" fn window_copy_cursor_jump_back(mut wme: *mut window_mode_entr
         .hsize
         .wrapping_add((*data).cy)
         .wrapping_sub((*data).oy);
-    if px > 0 as libc::c_int as libc::c_uint {
+    if px > 0u32 {
         px = px.wrapping_sub(1)
     }
     loop {
         grid_get_cell((*back_s).grid, px, py, &mut gc);
-        if gc.flags as libc::c_int & 0x4 as libc::c_int == 0
-            && gc.data.size as libc::c_int == 1 as libc::c_int
+        if gc.flags as libc::c_int & 0x4i32 == 0
+            && gc.data.size as libc::c_int == 1i32
             && *gc.data.data.as_mut_ptr() as libc::c_int == (*data).jumpchar as libc::c_int
         {
             window_copy_update_cursor(wme, px, (*data).cy);
-            if window_copy_update_selection(wme, 1 as libc::c_int, 0 as libc::c_int) != 0 {
-                window_copy_redraw_lines(wme, (*data).cy, 1 as libc::c_int as u_int);
+            if window_copy_update_selection(wme, 1i32, 0i32) != 0 {
+                window_copy_redraw_lines(wme, (*data).cy, 1u32);
             }
             return;
         }
-        if px == 0 as libc::c_int as libc::c_uint {
+        if px == 0u32 {
             break;
         }
         px = px.wrapping_sub(1)
@@ -8100,7 +7809,7 @@ unsafe extern "C" fn window_copy_cursor_jump_to(mut wme: *mut window_mode_entry)
     let mut px: u_int = 0;
     let mut py: u_int = 0;
     let mut xx: u_int = 0;
-    px = (*data).cx.wrapping_add(2 as libc::c_int as libc::c_uint);
+    px = (*data).cx.wrapping_add(2u32);
     py = (*(*back_s).grid)
         .hsize
         .wrapping_add((*data).cy)
@@ -8108,17 +7817,13 @@ unsafe extern "C" fn window_copy_cursor_jump_to(mut wme: *mut window_mode_entry)
     xx = window_copy_find_length(wme, py);
     while px < xx {
         grid_get_cell((*back_s).grid, px, py, &mut gc);
-        if gc.flags as libc::c_int & 0x4 as libc::c_int == 0
-            && gc.data.size as libc::c_int == 1 as libc::c_int
+        if gc.flags as libc::c_int & 0x4i32 == 0
+            && gc.data.size as libc::c_int == 1i32
             && *gc.data.data.as_mut_ptr() as libc::c_int == (*data).jumpchar as libc::c_int
         {
-            window_copy_update_cursor(
-                wme,
-                px.wrapping_sub(1 as libc::c_int as libc::c_uint),
-                (*data).cy,
-            );
-            if window_copy_update_selection(wme, 1 as libc::c_int, 0 as libc::c_int) != 0 {
-                window_copy_redraw_lines(wme, (*data).cy, 1 as libc::c_int as u_int);
+            window_copy_update_cursor(wme, px.wrapping_sub(1u32), (*data).cy);
+            if window_copy_update_selection(wme, 1i32, 0i32) != 0 {
+                window_copy_redraw_lines(wme, (*data).cy, 1u32);
             }
             return;
         }
@@ -8148,29 +7853,25 @@ unsafe extern "C" fn window_copy_cursor_jump_to_back(mut wme: *mut window_mode_e
         .hsize
         .wrapping_add((*data).cy)
         .wrapping_sub((*data).oy);
-    if px > 0 as libc::c_int as libc::c_uint {
+    if px > 0u32 {
         px = px.wrapping_sub(1)
     }
-    if px > 0 as libc::c_int as libc::c_uint {
+    if px > 0u32 {
         px = px.wrapping_sub(1)
     }
     loop {
         grid_get_cell((*back_s).grid, px, py, &mut gc);
-        if gc.flags as libc::c_int & 0x4 as libc::c_int == 0
-            && gc.data.size as libc::c_int == 1 as libc::c_int
+        if gc.flags as libc::c_int & 0x4i32 == 0
+            && gc.data.size as libc::c_int == 1i32
             && *gc.data.data.as_mut_ptr() as libc::c_int == (*data).jumpchar as libc::c_int
         {
-            window_copy_update_cursor(
-                wme,
-                px.wrapping_add(1 as libc::c_int as libc::c_uint),
-                (*data).cy,
-            );
-            if window_copy_update_selection(wme, 1 as libc::c_int, 0 as libc::c_int) != 0 {
-                window_copy_redraw_lines(wme, (*data).cy, 1 as libc::c_int as u_int);
+            window_copy_update_cursor(wme, px.wrapping_add(1u32), (*data).cy);
+            if window_copy_update_selection(wme, 1i32, 0i32) != 0 {
+                window_copy_redraw_lines(wme, (*data).cy, 1u32);
             }
             return;
         }
-        if px == 0 as libc::c_int as libc::c_uint {
+        if px == 0u32 {
             break;
         }
         px = px.wrapping_sub(1)
@@ -8186,7 +7887,7 @@ unsafe extern "C" fn window_copy_cursor_next_word(
     let mut py: u_int = 0;
     let mut xx: u_int = 0;
     let mut yy: u_int = 0;
-    let mut expected: libc::c_int = 0 as libc::c_int;
+    let mut expected: libc::c_int = 0i32;
     px = (*data).cx;
     py = (*(*back_s).grid)
         .hsize
@@ -8196,7 +7897,7 @@ unsafe extern "C" fn window_copy_cursor_next_word(
     yy = (*(*back_s).grid)
         .hsize
         .wrapping_add((*(*back_s).grid).sy)
-        .wrapping_sub(1 as libc::c_int as libc::c_uint);
+        .wrapping_sub(1u32);
     loop
     /*
      * First skip past any nonword characters and then any word characters.
@@ -8211,8 +7912,8 @@ unsafe extern "C" fn window_copy_cursor_next_word(
                 if py == yy {
                     return;
                 }
-                window_copy_cursor_down(wme, 0 as libc::c_int);
-                px = 0 as libc::c_int as u_int;
+                window_copy_cursor_down(wme, 0i32);
+                px = 0u32;
                 py = (*(*back_s).grid)
                     .hsize
                     .wrapping_add((*data).cy)
@@ -8223,13 +7924,13 @@ unsafe extern "C" fn window_copy_cursor_next_word(
             }
         }
         expected = (expected == 0) as libc::c_int;
-        if !(expected == 1 as libc::c_int) {
+        if !(expected == 1i32) {
             break;
         }
     }
     window_copy_update_cursor(wme, px, (*data).cy);
-    if window_copy_update_selection(wme, 1 as libc::c_int, 0 as libc::c_int) != 0 {
-        window_copy_redraw_lines(wme, (*data).cy, 1 as libc::c_int as u_int);
+    if window_copy_update_selection(wme, 1i32, 0i32) != 0 {
+        window_copy_redraw_lines(wme, (*data).cy, 1u32);
     };
 }
 unsafe extern "C" fn window_copy_cursor_next_word_end_pos(
@@ -8247,7 +7948,7 @@ unsafe extern "C" fn window_copy_cursor_next_word_end_pos(
     let mut xx: u_int = 0;
     let mut yy: u_int = 0;
     let mut keys: libc::c_int = 0;
-    let mut expected: libc::c_int = 1 as libc::c_int;
+    let mut expected: libc::c_int = 1i32;
     px = (*data).cx;
     py = (*(*back_s).grid)
         .hsize
@@ -8257,10 +7958,10 @@ unsafe extern "C" fn window_copy_cursor_next_word_end_pos(
     yy = (*(*back_s).grid)
         .hsize
         .wrapping_add((*(*back_s).grid).sy)
-        .wrapping_sub(1 as libc::c_int as libc::c_uint);
+        .wrapping_sub(1u32);
     keys =
         options_get_number(oo, b"mode-keys\x00" as *const u8 as *const libc::c_char) as libc::c_int;
-    if keys == 1 as libc::c_int && window_copy_in_set(wme, px, py, separators) == 0 {
+    if keys == 1i32 && window_copy_in_set(wme, px, py, separators) == 0 {
         px = px.wrapping_add(1)
     }
     loop
@@ -8278,18 +7979,18 @@ unsafe extern "C" fn window_copy_cursor_next_word_end_pos(
                     return;
                 }
                 py = py.wrapping_add(1);
-                px = 0 as libc::c_int as u_int;
+                px = 0u32;
                 xx = window_copy_find_length(wme, py)
             } else {
                 px = px.wrapping_add(1)
             }
         }
         expected = (expected == 0) as libc::c_int;
-        if !(expected == 0 as libc::c_int) {
+        if !(expected == 0i32) {
             break;
         }
     }
-    if keys == 1 as libc::c_int && px != 0 as libc::c_int as libc::c_uint {
+    if keys == 1i32 && px != 0u32 {
         px = px.wrapping_sub(1)
     }
     *ppx = px;
@@ -8309,7 +8010,7 @@ unsafe extern "C" fn window_copy_cursor_next_word_end(
     let mut xx: u_int = 0;
     let mut yy: u_int = 0;
     let mut keys: libc::c_int = 0;
-    let mut expected: libc::c_int = 1 as libc::c_int;
+    let mut expected: libc::c_int = 1i32;
     px = (*data).cx;
     py = (*(*back_s).grid)
         .hsize
@@ -8319,10 +8020,10 @@ unsafe extern "C" fn window_copy_cursor_next_word_end(
     yy = (*(*back_s).grid)
         .hsize
         .wrapping_add((*(*back_s).grid).sy)
-        .wrapping_sub(1 as libc::c_int as libc::c_uint);
+        .wrapping_sub(1u32);
     keys =
         options_get_number(oo, b"mode-keys\x00" as *const u8 as *const libc::c_char) as libc::c_int;
-    if keys == 1 as libc::c_int && window_copy_in_set(wme, px, py, separators) == 0 {
+    if keys == 1i32 && window_copy_in_set(wme, px, py, separators) == 0 {
         px = px.wrapping_add(1)
     }
     loop
@@ -8339,8 +8040,8 @@ unsafe extern "C" fn window_copy_cursor_next_word_end(
                 if py == yy {
                     return;
                 }
-                window_copy_cursor_down(wme, 0 as libc::c_int);
-                px = 0 as libc::c_int as u_int;
+                window_copy_cursor_down(wme, 0i32);
+                px = 0u32;
                 py = (*(*back_s).grid)
                     .hsize
                     .wrapping_add((*data).cy)
@@ -8351,16 +8052,16 @@ unsafe extern "C" fn window_copy_cursor_next_word_end(
             }
         }
         expected = (expected == 0) as libc::c_int;
-        if !(expected == 0 as libc::c_int) {
+        if !(expected == 0i32) {
             break;
         }
     }
-    if keys == 1 as libc::c_int && px != 0 as libc::c_int as libc::c_uint {
+    if keys == 1i32 && px != 0u32 {
         px = px.wrapping_sub(1)
     }
     window_copy_update_cursor(wme, px, (*data).cy);
-    if window_copy_update_selection(wme, 1 as libc::c_int, no_reset) != 0 {
-        window_copy_redraw_lines(wme, (*data).cy, 1 as libc::c_int as u_int);
+    if window_copy_update_selection(wme, 1i32, no_reset) != 0 {
+        window_copy_redraw_lines(wme, (*data).cy, 1u32);
     };
 }
 /* Compute the previous place where a word begins. */
@@ -8390,20 +8091,15 @@ unsafe extern "C" fn window_copy_cursor_previous_word_pos(
         match current_block {
             8236137900636309791 => {
                 /* Move back to the beginning of this word. */
-                while px > 0 as libc::c_int as libc::c_uint
-                    && window_copy_in_set(
-                        wme,
-                        px.wrapping_sub(1 as libc::c_int as libc::c_uint),
-                        py,
-                        separators,
-                    ) == 0
+                while px > 0u32
+                    && window_copy_in_set(wme, px.wrapping_sub(1u32), py, separators) == 0
                 {
                     px = px.wrapping_sub(1)
                 }
                 break;
             }
             _ => {
-                if px > 0 as libc::c_int as libc::c_uint {
+                if px > 0u32 {
                     px = px.wrapping_sub(1);
                     if window_copy_in_set(wme, px, py, separators) == 0 {
                         current_block = 8236137900636309791;
@@ -8411,27 +8107,19 @@ unsafe extern "C" fn window_copy_cursor_previous_word_pos(
                         current_block = 7502529970979898288;
                     }
                 } else {
-                    if py == 0 as libc::c_int as libc::c_uint
-                        || (*data).cy == 0 as libc::c_int as libc::c_uint
-                            && ((*(*(*data).backing).grid).hsize
-                                == 0 as libc::c_int as libc::c_uint
+                    if py == 0u32
+                        || (*data).cy == 0u32
+                            && ((*(*(*data).backing).grid).hsize == 0u32
                                 || (*data).oy
-                                    >= (*(*(*data).backing).grid)
-                                        .hsize
-                                        .wrapping_sub(1 as libc::c_int as libc::c_uint))
+                                    >= (*(*(*data).backing).grid).hsize.wrapping_sub(1u32))
                     {
                         break;
                     }
                     py = py.wrapping_sub(1);
                     px = window_copy_find_length(wme, py);
                     /* Stop if separator at EOL. */
-                    if px > 0 as libc::c_int as libc::c_uint
-                        && window_copy_in_set(
-                            wme,
-                            px.wrapping_sub(1 as libc::c_int as libc::c_uint),
-                            py,
-                            separators,
-                        ) != 0
+                    if px > 0u32
+                        && window_copy_in_set(wme, px.wrapping_sub(1u32), py, separators) != 0
                     {
                         current_block = 8236137900636309791;
                     } else {
@@ -8469,20 +8157,15 @@ unsafe extern "C" fn window_copy_cursor_previous_word(
         match current_block {
             17407779659766490442 => {
                 /* Move back to the beginning of this word. */
-                while px > 0 as libc::c_int as libc::c_uint
-                    && window_copy_in_set(
-                        wme,
-                        px.wrapping_sub(1 as libc::c_int as libc::c_uint),
-                        py,
-                        separators,
-                    ) == 0
+                while px > 0u32
+                    && window_copy_in_set(wme, px.wrapping_sub(1u32), py, separators) == 0
                 {
                     px = px.wrapping_sub(1)
                 }
                 break;
             }
             _ => {
-                if px > 0 as libc::c_int as libc::c_uint {
+                if px > 0u32 {
                     px = px.wrapping_sub(1);
                     if window_copy_in_set(wme, px, py, separators) == 0 {
                         current_block = 17407779659766490442;
@@ -8490,29 +8173,21 @@ unsafe extern "C" fn window_copy_cursor_previous_word(
                         current_block = 7502529970979898288;
                     }
                 } else {
-                    if (*data).cy == 0 as libc::c_int as libc::c_uint
-                        && ((*(*(*data).backing).grid).hsize == 0 as libc::c_int as libc::c_uint
-                            || (*data).oy
-                                >= (*(*(*data).backing).grid)
-                                    .hsize
-                                    .wrapping_sub(1 as libc::c_int as libc::c_uint))
+                    if (*data).cy == 0u32
+                        && ((*(*(*data).backing).grid).hsize == 0u32
+                            || (*data).oy >= (*(*(*data).backing).grid).hsize.wrapping_sub(1u32))
                     {
                         break;
                     }
-                    window_copy_cursor_up(wme, 0 as libc::c_int);
+                    window_copy_cursor_up(wme, 0i32);
                     py = (*(*(*data).backing).grid)
                         .hsize
                         .wrapping_add((*data).cy)
                         .wrapping_sub((*data).oy);
                     px = window_copy_find_length(wme, py);
                     /* Stop if separator at EOL. */
-                    if px > 0 as libc::c_int as libc::c_uint
-                        && window_copy_in_set(
-                            wme,
-                            px.wrapping_sub(1 as libc::c_int as libc::c_uint),
-                            py,
-                            separators,
-                        ) != 0
+                    if px > 0u32
+                        && window_copy_in_set(wme, px.wrapping_sub(1u32), py, separators) != 0
                     {
                         current_block = 17407779659766490442;
                     } else {
@@ -8523,8 +8198,8 @@ unsafe extern "C" fn window_copy_cursor_previous_word(
         }
     }
     window_copy_update_cursor(wme, px, (*data).cy);
-    if window_copy_update_selection(wme, 1 as libc::c_int, 0 as libc::c_int) != 0 {
-        window_copy_redraw_lines(wme, (*data).cy, 1 as libc::c_int as u_int);
+    if window_copy_update_selection(wme, 1i32, 0i32) != 0 {
+        window_copy_redraw_lines(wme, (*data).cy, 1u32);
     };
 }
 unsafe extern "C" fn window_copy_scroll_up(mut wme: *mut window_mode_entry, mut ny: u_int) {
@@ -8547,51 +8222,37 @@ unsafe extern "C" fn window_copy_scroll_up(mut wme: *mut window_mode_entry, mut 
     if (*data).oy < ny {
         ny = (*data).oy
     }
-    if ny == 0 as libc::c_int as libc::c_uint {
+    if ny == 0u32 {
         return;
     }
-    (*data).oy = ((*data).oy as libc::c_uint).wrapping_sub(ny) as u_int as u_int;
+    (*data).oy = ((*data).oy).wrapping_sub(ny);
     if !(*data).searchmark.is_null() && (*data).timeout == 0 {
-        window_copy_search_marks(wme, 0 as *mut screen, (*data).searchregex, 1 as libc::c_int);
+        window_copy_search_marks(wme, 0 as *mut screen, (*data).searchregex, 1i32);
     }
-    window_copy_update_selection(wme, 0 as libc::c_int, 0 as libc::c_int);
+    window_copy_update_selection(wme, 0i32, 0i32);
     screen_write_start_pane(&mut ctx, wp, 0 as *mut screen);
-    screen_write_cursormove(
-        &mut ctx,
-        0 as libc::c_int,
-        0 as libc::c_int,
-        0 as libc::c_int,
-    );
-    screen_write_deleteline(&mut ctx, ny, 8 as libc::c_int as u_int);
+    screen_write_cursormove(&mut ctx, 0i32, 0i32, 0i32);
+    screen_write_deleteline(&mut ctx, ny, 8u32);
     window_copy_write_lines(wme, &mut ctx, (*(*s).grid).sy.wrapping_sub(ny), ny);
-    window_copy_write_line(wme, &mut ctx, 0 as libc::c_int as u_int);
-    if (*(*s).grid).sy > 1 as libc::c_int as libc::c_uint {
-        window_copy_write_line(wme, &mut ctx, 1 as libc::c_int as u_int);
+    window_copy_write_line(wme, &mut ctx, 0u32);
+    if (*(*s).grid).sy > 1u32 {
+        window_copy_write_line(wme, &mut ctx, 1u32);
     }
-    if (*(*s).grid).sy > 3 as libc::c_int as libc::c_uint {
-        window_copy_write_line(
-            wme,
-            &mut ctx,
-            (*(*s).grid)
-                .sy
-                .wrapping_sub(2 as libc::c_int as libc::c_uint),
-        );
+    if (*(*s).grid).sy > 3u32 {
+        window_copy_write_line(wme, &mut ctx, (*(*s).grid).sy.wrapping_sub(2u32));
     }
     if !(*s).sel.is_null() && (*(*s).grid).sy > ny {
         window_copy_write_line(
             wme,
             &mut ctx,
-            (*(*s).grid)
-                .sy
-                .wrapping_sub(ny)
-                .wrapping_sub(1 as libc::c_int as libc::c_uint),
+            (*(*s).grid).sy.wrapping_sub(ny).wrapping_sub(1u32),
         );
     }
     screen_write_cursormove(
         &mut ctx,
         (*data).cx as libc::c_int,
         (*data).cy as libc::c_int,
-        0 as libc::c_int,
+        0i32,
     );
     screen_write_stop(&mut ctx);
 }
@@ -8618,34 +8279,29 @@ unsafe extern "C" fn window_copy_scroll_down(mut wme: *mut window_mode_entry, mu
     if (*data).oy > (*(*(*data).backing).grid).hsize.wrapping_sub(ny) {
         ny = (*(*(*data).backing).grid).hsize.wrapping_sub((*data).oy)
     }
-    if ny == 0 as libc::c_int as libc::c_uint {
+    if ny == 0u32 {
         return;
     }
-    (*data).oy = ((*data).oy as libc::c_uint).wrapping_add(ny) as u_int as u_int;
+    (*data).oy = ((*data).oy).wrapping_add(ny);
     if !(*data).searchmark.is_null() && (*data).timeout == 0 {
-        window_copy_search_marks(wme, 0 as *mut screen, (*data).searchregex, 1 as libc::c_int);
+        window_copy_search_marks(wme, 0 as *mut screen, (*data).searchregex, 1i32);
     }
-    window_copy_update_selection(wme, 0 as libc::c_int, 0 as libc::c_int);
+    window_copy_update_selection(wme, 0i32, 0i32);
     screen_write_start_pane(&mut ctx, wp, 0 as *mut screen);
-    screen_write_cursormove(
-        &mut ctx,
-        0 as libc::c_int,
-        0 as libc::c_int,
-        0 as libc::c_int,
-    );
-    screen_write_insertline(&mut ctx, ny, 8 as libc::c_int as u_int);
-    window_copy_write_lines(wme, &mut ctx, 0 as libc::c_int as u_int, ny);
+    screen_write_cursormove(&mut ctx, 0i32, 0i32, 0i32);
+    screen_write_insertline(&mut ctx, ny, 8u32);
+    window_copy_write_lines(wme, &mut ctx, 0u32, ny);
     if !(*s).sel.is_null() && (*(*s).grid).sy > ny {
         window_copy_write_line(wme, &mut ctx, ny);
-    } else if ny == 1 as libc::c_int as libc::c_uint {
+    } else if ny == 1u32 {
         /* nuke position */
-        window_copy_write_line(wme, &mut ctx, 1 as libc::c_int as u_int);
+        window_copy_write_line(wme, &mut ctx, 1u32);
     }
     screen_write_cursormove(
         &mut ctx,
         (*data).cx as libc::c_int,
         (*data).cy as libc::c_int,
-        0 as libc::c_int,
+        0i32,
     );
     screen_write_stop(&mut ctx);
 }
@@ -8662,7 +8318,7 @@ unsafe extern "C" fn window_copy_rectangle_toggle(mut wme: *mut window_mode_entr
     if (*data).cx > px {
         window_copy_update_cursor(wme, px, (*data).cy);
     }
-    window_copy_update_selection(wme, 1 as libc::c_int, 0 as libc::c_int);
+    window_copy_update_selection(wme, 1i32, 0i32);
     window_copy_redraw_screen(wme);
 }
 unsafe extern "C" fn window_copy_move_mouse(mut m: *mut mouse_event) {
@@ -8683,7 +8339,7 @@ unsafe extern "C" fn window_copy_move_mouse(mut m: *mut mouse_event) {
     {
         return;
     }
-    if cmd_mouse_at(wp, m, &mut x, &mut y, 0 as libc::c_int) != 0 as libc::c_int {
+    if cmd_mouse_at(wp, m, &mut x, &mut y, 0i32) != 0i32 {
         return;
     }
     window_copy_update_cursor(wme, x, y);
@@ -8712,7 +8368,7 @@ pub unsafe extern "C" fn window_copy_start_drag(mut c: *mut client, mut m: *mut 
     {
         return;
     }
-    if cmd_mouse_at(wp, m, &mut x, &mut y, 1 as libc::c_int) != 0 as libc::c_int {
+    if cmd_mouse_at(wp, m, &mut x, &mut y, 1i32) != 0i32 {
         return;
     }
     (*c).tty.mouse_drag_update = Some(
@@ -8729,25 +8385,17 @@ pub unsafe extern "C" fn window_copy_start_drag(mut c: *mut client, mut m: *mut 
     if x < (*data).selrx || x > (*data).endselrx || yg != (*data).selry {
         (*data).selflag = SEL_CHAR
     }
-    match (*data).selflag as libc::c_uint {
+    match (*data).selflag {
         1 => {
             if !(*data).ws.is_null() {
                 window_copy_update_cursor(wme, x, y);
-                window_copy_cursor_previous_word_pos(
-                    wme,
-                    (*data).ws,
-                    0 as libc::c_int,
-                    &mut x,
-                    &mut y,
-                );
-                y = (y as libc::c_uint)
-                    .wrapping_sub((*(*(*data).backing).grid).hsize.wrapping_sub((*data).oy))
-                    as u_int as u_int
+                window_copy_cursor_previous_word_pos(wme, (*data).ws, 0i32, &mut x, &mut y);
+                y = (y).wrapping_sub((*(*(*data).backing).grid).hsize.wrapping_sub((*data).oy))
             }
             window_copy_update_cursor(wme, x, y);
         }
         2 => {
-            window_copy_update_cursor(wme, 0 as libc::c_int as u_int, y);
+            window_copy_update_cursor(wme, 0u32, y);
         }
         0 => {
             window_copy_update_cursor(wme, x, y);
@@ -8769,7 +8417,7 @@ unsafe extern "C" fn window_copy_drag_update(mut c: *mut client, mut m: *mut mou
     let mut tv: timeval = {
         let mut init = timeval {
             tv_sec: 0,
-            tv_usec: 50000 as libc::c_int as __suseconds_t,
+            tv_usec: 50000i64,
         };
         init
     };
@@ -8791,26 +8439,22 @@ unsafe extern "C" fn window_copy_drag_update(mut c: *mut client, mut m: *mut mou
     }
     data = (*wme).data as *mut window_copy_mode_data;
     event_del(&mut (*data).dragtimer);
-    if cmd_mouse_at(wp, m, &mut x, &mut y, 0 as libc::c_int) != 0 as libc::c_int {
+    if cmd_mouse_at(wp, m, &mut x, &mut y, 0i32) != 0i32 {
         return;
     }
     old_cx = (*data).cx;
     old_cy = (*data).cy;
     window_copy_update_cursor(wme, x, y);
-    if window_copy_update_selection(wme, 1 as libc::c_int, 0 as libc::c_int) != 0 {
+    if window_copy_update_selection(wme, 1i32, 0i32) != 0 {
         window_copy_redraw_selection(wme, old_cy);
     }
     if old_cy != (*data).cy || old_cx == (*data).cx {
-        if y == 0 as libc::c_int as libc::c_uint {
+        if y == 0u32 {
             event_add(&mut (*data).dragtimer, &mut tv);
-            window_copy_cursor_up(wme, 1 as libc::c_int);
-        } else if y
-            == (*(*data).screen.grid)
-                .sy
-                .wrapping_sub(1 as libc::c_int as libc::c_uint)
-        {
+            window_copy_cursor_up(wme, 1i32);
+        } else if y == (*(*data).screen.grid).sy.wrapping_sub(1u32) {
             event_add(&mut (*data).dragtimer, &mut tv);
-            window_copy_cursor_down(wme, 1 as libc::c_int);
+            window_copy_cursor_down(wme, 1i32);
         }
     };
 }
@@ -8848,15 +8492,15 @@ unsafe extern "C" fn window_copy_jump_to_mark(mut wme: *mut window_mode_entry) {
         .wrapping_sub((*data).oy);
     (*data).cx = (*data).mx;
     if (*data).my < (*(*(*data).backing).grid).hsize {
-        (*data).cy = 0 as libc::c_int as u_int;
+        (*data).cy = 0u32;
         (*data).oy = (*(*(*data).backing).grid).hsize.wrapping_sub((*data).my)
     } else {
         (*data).cy = (*data).my.wrapping_sub((*(*(*data).backing).grid).hsize);
-        (*data).oy = 0 as libc::c_int as u_int
+        (*data).oy = 0u32
     }
     (*data).mx = tmx;
     (*data).my = tmy;
-    (*data).showmark = 1 as libc::c_int;
-    window_copy_update_selection(wme, 0 as libc::c_int, 0 as libc::c_int);
+    (*data).showmark = 1i32;
+    window_copy_update_selection(wme, 0i32, 0i32);
     window_copy_redraw_screen(wme);
 }

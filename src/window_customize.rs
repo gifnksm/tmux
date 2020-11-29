@@ -1515,7 +1515,7 @@ pub const WINDOW_CUSTOMIZE_KEY: window_customize_scope = 1;
 pub const WINDOW_CUSTOMIZE_NONE: window_customize_scope = 0;
 #[inline]
 unsafe extern "C" fn tolower(mut __c: libc::c_int) -> libc::c_int {
-    return if __c >= -(128 as libc::c_int) && __c < 256 as libc::c_int {
+    return if __c >= -(128i32) && __c < 256i32 {
         *(*__ctype_tolower_loc()).offset(__c as isize)
     } else {
         __c
@@ -1523,7 +1523,7 @@ unsafe extern "C" fn tolower(mut __c: libc::c_int) -> libc::c_int {
 }
 #[inline]
 unsafe extern "C" fn toupper(mut __c: libc::c_int) -> libc::c_int {
-    return if __c >= -(128 as libc::c_int) && __c < 256 as libc::c_int {
+    return if __c >= -(128i32) && __c < 256i32 {
         *(*__ctype_toupper_loc()).offset(__c as isize)
     } else {
         __c
@@ -1541,7 +1541,7 @@ static mut window_customize_menu_items: [menu_item; 9] = [
     {
         let mut init = menu_item {
             name: b"Expand\x00" as *const u8 as *const libc::c_char,
-            key: key_code_code::RIGHT as libc::c_ulong as key_code,
+            key: key_code_code::RIGHT,
             command: 0 as *const libc::c_char,
         };
         init
@@ -1549,7 +1549,7 @@ static mut window_customize_menu_items: [menu_item; 9] = [
     {
         let mut init = menu_item {
             name: b"\x00" as *const u8 as *const libc::c_char,
-            key: 0xff000000000 as libc::c_ulonglong,
+            key: 0xff000000000u64,
             command: 0 as *const libc::c_char,
         };
         init
@@ -1581,7 +1581,7 @@ static mut window_customize_menu_items: [menu_item; 9] = [
     {
         let mut init = menu_item {
             name: b"\x00" as *const u8 as *const libc::c_char,
-            key: 0xff000000000 as libc::c_ulonglong,
+            key: 0xff000000000u64,
             command: 0 as *const libc::c_char,
         };
         init
@@ -1597,7 +1597,7 @@ static mut window_customize_menu_items: [menu_item; 9] = [
     {
         let mut init = menu_item {
             name: 0 as *const libc::c_char,
-            key: 0xff000000000 as libc::c_ulonglong,
+            key: 0xff000000000u64,
             command: 0 as *const libc::c_char,
         };
         init
@@ -1661,18 +1661,15 @@ unsafe extern "C" fn window_customize_get_tag(
     }
     offset = ((oe as *mut libc::c_char)
         .wrapping_offset_from(options_table.as_ptr() as *mut libc::c_char)
-        as libc::c_long as libc::c_ulong)
+        as libc::c_ulong)
         .wrapping_div(::std::mem::size_of::<options_table_entry>() as libc::c_ulong);
-    return ((2 as libc::c_ulonglong) << 62 as libc::c_int
-        | (offset << 32 as libc::c_int) as libc::c_ulonglong
-        | ((idx + 1 as libc::c_int) << 1 as libc::c_int) as libc::c_ulonglong
-        | 1 as libc::c_int as libc::c_ulonglong) as uint64_t;
+    return (2u64) << 62i32 | offset << 32i32 | ((idx + 1i32) << 1i32) as libc::c_ulonglong | 1u64;
 }
 unsafe extern "C" fn window_customize_get_tree(
     mut scope: window_customize_scope,
     mut fs: *mut cmd_find_state,
 ) -> *mut crate::options::options {
-    match scope as libc::c_uint {
+    match scope {
         0 | 1 => return 0 as *mut crate::options::options,
         2 => return global_options,
         3 => return global_s_options,
@@ -1704,7 +1701,7 @@ unsafe extern "C" fn window_customize_check_item(
     if cmd_find_valid_state(&mut (*data).fs) != 0 {
         cmd_find_copy_state(fsp, &mut (*data).fs);
     } else {
-        cmd_find_from_pane(fsp, (*data).wp, 0 as libc::c_int);
+        cmd_find_from_pane(fsp, (*data).wp, 0i32);
     }
     return ((*item).oo == window_customize_get_tree((*item).scope, fsp)) as libc::c_int;
 }
@@ -1715,13 +1712,13 @@ unsafe extern "C" fn window_customize_get_key(
 ) -> libc::c_int {
     let mut kt: *mut key_table = 0 as *mut key_table;
     let mut bd: *mut key_binding = 0 as *mut key_binding;
-    kt = key_bindings_get_table((*item).table, 0 as libc::c_int);
+    kt = key_bindings_get_table((*item).table, 0i32);
     if kt.is_null() {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     bd = key_bindings_get(kt, (*item).key);
     if bd.is_null() {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     if !ktp.is_null() {
         *ktp = kt
@@ -1729,7 +1726,7 @@ unsafe extern "C" fn window_customize_get_key(
     if !bdp.is_null() {
         *bdp = bd
     }
-    return 1 as libc::c_int;
+    return 1i32;
 }
 unsafe extern "C" fn window_customize_scope_text(
     mut scope: window_customize_scope,
@@ -1737,7 +1734,7 @@ unsafe extern "C" fn window_customize_scope_text(
 ) -> *mut libc::c_char {
     let mut s: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut idx: u_int = 0;
-    match scope as libc::c_uint {
+    match scope {
         0 | 1 | 2 | 3 | 5 => s = xstrdup(b"\x00" as *const u8 as *const libc::c_char),
         7 => {
             window_pane_index((*fs).wp, &mut idx);
@@ -1771,16 +1768,14 @@ unsafe extern "C" fn window_customize_add_item(
     let mut item: *mut window_customize_itemdata = 0 as *mut window_customize_itemdata;
     (*data).item_list = xreallocarray(
         (*data).item_list as *mut libc::c_void,
-        (*data)
-            .item_size
-            .wrapping_add(1 as libc::c_int as libc::c_uint) as size_t,
+        (*data).item_size.wrapping_add(1u32) as size_t,
         ::std::mem::size_of::<*mut window_customize_itemdata>() as libc::c_ulong,
     ) as *mut *mut window_customize_itemdata;
     let fresh0 = (*data).item_size;
     (*data).item_size = (*data).item_size.wrapping_add(1);
     let ref mut fresh1 = *(*data).item_list.offset(fresh0 as isize);
     *fresh1 = xcalloc(
-        1 as libc::c_int as size_t,
+        1u64,
         ::std::mem::size_of::<window_customize_itemdata>() as libc::c_ulong,
     ) as *mut window_customize_itemdata;
     item = *fresh1;
@@ -1823,7 +1818,7 @@ unsafe extern "C" fn window_customize_build_array(
             b"%s\x00" as *const u8 as *const libc::c_char,
             name,
         );
-        value = options_to_string(o, idx as libc::c_int, 0 as libc::c_int);
+        value = options_to_string(o, idx as libc::c_int, 0i32);
         format_add(
             ft,
             b"option_value\x00" as *const u8 as *const libc::c_char,
@@ -1844,7 +1839,7 @@ unsafe extern "C" fn window_customize_build_array(
             tag,
             name,
             text,
-            -(1 as libc::c_int),
+            -(1i32),
         );
         free(text as *mut libc::c_void);
         free(name as *mut libc::c_void);
@@ -1868,20 +1863,20 @@ unsafe extern "C" fn window_customize_build_option(
     let mut text: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut expanded: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut value: *mut libc::c_char = 0 as *mut libc::c_char;
-    let mut global: libc::c_int = 0 as libc::c_int;
-    let mut array: libc::c_int = 0 as libc::c_int;
+    let mut global: libc::c_int = 0i32;
+    let mut array: libc::c_int = 0i32;
     let mut tag: uint64_t = 0;
-    if !oe.is_null() && (*oe).flags & 0x2 as libc::c_int != 0 {
+    if !oe.is_null() && (*oe).flags & 0x2i32 != 0 {
         return;
     }
-    if !oe.is_null() && (*oe).flags & 0x1 as libc::c_int != 0 {
-        array = 1 as libc::c_int
+    if !oe.is_null() && (*oe).flags & 0x1i32 != 0 {
+        array = 1i32
     }
-    if scope as libc::c_uint == WINDOW_CUSTOMIZE_SERVER as libc::c_int as libc::c_uint
-        || scope as libc::c_uint == WINDOW_CUSTOMIZE_GLOBAL_SESSION as libc::c_int as libc::c_uint
-        || scope as libc::c_uint == WINDOW_CUSTOMIZE_GLOBAL_WINDOW as libc::c_int as libc::c_uint
+    if scope == WINDOW_CUSTOMIZE_SERVER
+        || scope == WINDOW_CUSTOMIZE_GLOBAL_SESSION
+        || scope == WINDOW_CUSTOMIZE_GLOBAL_WINDOW
     {
-        global = 1 as libc::c_int
+        global = 1i32
     }
     if (*data).hide_global != 0 && global != 0 {
         return;
@@ -1928,7 +1923,7 @@ unsafe extern "C" fn window_customize_build_option(
         );
     }
     if array == 0 {
-        value = options_to_string(o, -(1 as libc::c_int), 0 as libc::c_int);
+        value = options_to_string(o, -(1i32), 0i32);
         format_add(
             ft,
             b"option_value\x00" as *const u8 as *const libc::c_char,
@@ -1949,13 +1944,13 @@ unsafe extern "C" fn window_customize_build_option(
     (*item).oo = oo;
     (*item).scope = scope;
     (*item).name = xstrdup(name);
-    (*item).idx = -(1 as libc::c_int);
+    (*item).idx = -(1i32);
     if array != 0 {
         text = 0 as *mut libc::c_char
     } else {
         text = format_expand(ft, (*data).format)
     }
-    tag = window_customize_get_tag(o, -(1 as libc::c_int), oe);
+    tag = window_customize_get_tag(o, -(1i32), oe);
     top = mode_tree_add(
         (*data).data,
         top,
@@ -1963,7 +1958,7 @@ unsafe extern "C" fn window_customize_build_option(
         tag,
         name,
         text,
-        0 as libc::c_int,
+        0i32,
     );
     free(text as *mut libc::c_void);
     if array != 0 {
@@ -1984,9 +1979,9 @@ unsafe extern "C" fn window_customize_find_user_options(
         if *name as libc::c_int != '@' as i32 {
             o = options_next(o)
         } else {
-            i = 0 as libc::c_int as u_int;
+            i = 0u32;
             while i < *size {
-                if strcmp(*(*list).offset(i as isize), name) == 0 as libc::c_int {
+                if strcmp(*(*list).offset(i as isize), name) == 0i32 {
                     break;
                 }
                 i = i.wrapping_add(1)
@@ -1996,7 +1991,7 @@ unsafe extern "C" fn window_customize_find_user_options(
             } else {
                 *list = xreallocarray(
                     *list as *mut libc::c_void,
-                    (*size).wrapping_add(1 as libc::c_int as libc::c_uint) as size_t,
+                    (*size).wrapping_add(1u32) as size_t,
                     ::std::mem::size_of::<*const libc::c_char>() as libc::c_ulong,
                 ) as *mut *const libc::c_char;
                 let fresh2 = *size;
@@ -2027,7 +2022,7 @@ unsafe extern "C" fn window_customize_build_options(
     let mut loop_0: *mut crate::options::options_entry = 0 as *mut crate::options::options_entry;
     let mut list: *mut *const libc::c_char = 0 as *mut *const libc::c_char;
     let mut name: *const libc::c_char = 0 as *const libc::c_char;
-    let mut size: u_int = 0 as libc::c_int as u_int;
+    let mut size: u_int = 0u32;
     let mut i: u_int = 0;
     let mut scope: window_customize_scope = WINDOW_CUSTOMIZE_NONE;
     top = mode_tree_add(
@@ -2037,7 +2032,7 @@ unsafe extern "C" fn window_customize_build_options(
         tag,
         title,
         0 as *const libc::c_char,
-        0 as libc::c_int,
+        0i32,
     );
     mode_tree_no_tag(top);
     /*
@@ -2052,7 +2047,7 @@ unsafe extern "C" fn window_customize_build_options(
     if !oo2.is_null() {
         window_customize_find_user_options(oo2, &mut list, &mut size); /* skip line */
     } /* skip line */
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < size {
         if !oo2.is_null() {
             o = options_get(oo0, *list.offset(i as isize))
@@ -2119,9 +2114,7 @@ unsafe extern "C" fn window_customize_build_keys(
     let mut expanded: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut flag: *const libc::c_char = 0 as *const libc::c_char;
     let mut tag: uint64_t = 0;
-    tag = ((1 as libc::c_ulonglong) << 62 as libc::c_int
-        | ((number as uint64_t) << 54 as libc::c_int) as libc::c_ulonglong
-        | 1 as libc::c_int as libc::c_ulonglong) as uint64_t;
+    tag = (1u64) << 62i32 | (number as uint64_t) << 54i32 | 1u64;
     xasprintf(
         &mut title as *mut *mut libc::c_char,
         b"Key Table - %s\x00" as *const u8 as *const libc::c_char,
@@ -2134,7 +2127,7 @@ unsafe extern "C" fn window_customize_build_keys(
         tag,
         title,
         0 as *const libc::c_char,
-        0 as libc::c_int,
+        0i32,
     );
     mode_tree_no_tag(top);
     free(title as *mut libc::c_void);
@@ -2155,7 +2148,7 @@ unsafe extern "C" fn window_customize_build_keys(
             ft,
             b"key\x00" as *const u8 as *const libc::c_char,
             b"%s\x00" as *const u8 as *const libc::c_char,
-            key_string_lookup_key((*bd).key, 0 as libc::c_int),
+            key_string_lookup_key((*bd).key, 0i32),
         );
         if !(*bd).note.is_null() {
             format_add(
@@ -2178,8 +2171,8 @@ unsafe extern "C" fn window_customize_build_keys(
         (*item).scope = WINDOW_CUSTOMIZE_KEY;
         (*item).table = xstrdup((*kt).name);
         (*item).key = (*bd).key;
-        (*item).name = xstrdup(key_string_lookup_key((*item).key, 0 as libc::c_int));
-        (*item).idx = -(1 as libc::c_int);
+        (*item).name = xstrdup(key_string_lookup_key((*item).key, 0i32));
+        (*item).idx = -(1i32);
         expanded = format_expand(ft, (*data).format);
         child = mode_tree_add(
             (*data).data,
@@ -2188,10 +2181,10 @@ unsafe extern "C" fn window_customize_build_keys(
             bd as uint64_t,
             expanded,
             0 as *const libc::c_char,
-            0 as libc::c_int,
+            0i32,
         );
         free(expanded as *mut libc::c_void);
-        tmp = cmd_list_print((*bd).cmdlist, 0 as libc::c_int);
+        tmp = cmd_list_print((*bd).cmdlist, 0i32);
         xasprintf(
             &mut text as *mut *mut libc::c_char,
             b"#[ignore]%s\x00" as *const u8 as *const libc::c_char,
@@ -2202,13 +2195,10 @@ unsafe extern "C" fn window_customize_build_keys(
             (*data).data,
             child,
             item as *mut libc::c_void,
-            (tag as libc::c_ulonglong
-                | (*bd).key << 3 as libc::c_int
-                | ((0 as libc::c_int) << 1 as libc::c_int) as libc::c_ulonglong
-                | 1 as libc::c_int as libc::c_ulonglong) as uint64_t,
+            tag | (*bd).key << 3i32 | ((0i32) << 1i32) as libc::c_ulonglong | 1u64,
             b"Command\x00" as *const u8 as *const libc::c_char,
             text,
-            -(1 as libc::c_int),
+            -(1i32),
         );
         mode_tree_draw_as_parent(mti);
         mode_tree_no_tag(mti);
@@ -2226,18 +2216,15 @@ unsafe extern "C" fn window_customize_build_keys(
             (*data).data,
             child,
             item as *mut libc::c_void,
-            (tag as libc::c_ulonglong
-                | (*bd).key << 3 as libc::c_int
-                | ((1 as libc::c_int) << 1 as libc::c_int) as libc::c_ulonglong
-                | 1 as libc::c_int as libc::c_ulonglong) as uint64_t,
+            tag | (*bd).key << 3i32 | ((1i32) << 1i32) as libc::c_ulonglong | 1u64,
             b"Note\x00" as *const u8 as *const libc::c_char,
             text,
-            -(1 as libc::c_int),
+            -(1i32),
         );
         mode_tree_draw_as_parent(mti);
         mode_tree_no_tag(mti);
         free(text as *mut libc::c_void);
-        if (*bd).flags & 0x1 as libc::c_int != 0 {
+        if (*bd).flags & 0x1i32 != 0 {
             flag = b"on\x00" as *const u8 as *const libc::c_char
         } else {
             flag = b"off\x00" as *const u8 as *const libc::c_char
@@ -2246,13 +2233,10 @@ unsafe extern "C" fn window_customize_build_keys(
             (*data).data,
             child,
             item as *mut libc::c_void,
-            (tag as libc::c_ulonglong
-                | (*bd).key << 3 as libc::c_int
-                | ((2 as libc::c_int) << 1 as libc::c_int) as libc::c_ulonglong
-                | 1 as libc::c_int as libc::c_ulonglong) as uint64_t,
+            tag | (*bd).key << 3i32 | ((2i32) << 1i32) as libc::c_ulonglong | 1u64,
             b"Repeat\x00" as *const u8 as *const libc::c_char,
             flag,
-            -(1 as libc::c_int),
+            -(1i32),
         );
         mode_tree_draw_as_parent(mti);
         mode_tree_no_tag(mti);
@@ -2279,18 +2263,18 @@ unsafe extern "C" fn window_customize_build(
     let mut ft: *mut crate::format::format_tree = 0 as *mut crate::format::format_tree;
     let mut i: u_int = 0;
     let mut kt: *mut key_table = 0 as *mut key_table;
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < (*data).item_size {
         window_customize_free_item(*(*data).item_list.offset(i as isize));
         i = i.wrapping_add(1)
     }
     free((*data).item_list as *mut libc::c_void);
     (*data).item_list = 0 as *mut *mut window_customize_itemdata;
-    (*data).item_size = 0 as libc::c_int as u_int;
+    (*data).item_size = 0u32;
     if cmd_find_valid_state(&mut (*data).fs) != 0 {
         cmd_find_copy_state(&mut fs, &mut (*data).fs);
     } else {
-        cmd_find_from_pane(&mut fs, (*data).wp, 0 as libc::c_int);
+        cmd_find_from_pane(&mut fs, (*data).wp, 0i32);
     }
     ft = format_create_from_state(
         0 as *mut crate::cmd_queue::cmdq_item,
@@ -2310,9 +2294,7 @@ unsafe extern "C" fn window_customize_build(
     window_customize_build_options(
         data,
         b"Server Options\x00" as *const u8 as *const libc::c_char,
-        ((3 as libc::c_ulonglong) << 62 as libc::c_int
-            | ((0x1 as libc::c_int) << 1 as libc::c_int) as libc::c_ulonglong
-            | 1 as libc::c_int as libc::c_ulonglong) as uint64_t,
+        (3u64) << 62i32 | ((0x1i32) << 1i32) as libc::c_ulonglong | 1u64,
         WINDOW_CUSTOMIZE_SERVER,
         global_options,
         WINDOW_CUSTOMIZE_NONE,
@@ -2326,9 +2308,7 @@ unsafe extern "C" fn window_customize_build(
     window_customize_build_options(
         data,
         b"Session Options\x00" as *const u8 as *const libc::c_char,
-        ((3 as libc::c_ulonglong) << 62 as libc::c_int
-            | ((0x2 as libc::c_int) << 1 as libc::c_int) as libc::c_ulonglong
-            | 1 as libc::c_int as libc::c_ulonglong) as uint64_t,
+        (3u64) << 62i32 | ((0x2i32) << 1i32) as libc::c_ulonglong | 1u64,
         WINDOW_CUSTOMIZE_GLOBAL_SESSION,
         global_s_options,
         WINDOW_CUSTOMIZE_SESSION,
@@ -2342,9 +2322,7 @@ unsafe extern "C" fn window_customize_build(
     window_customize_build_options(
         data,
         b"Window & Pane Options\x00" as *const u8 as *const libc::c_char,
-        ((3 as libc::c_ulonglong) << 62 as libc::c_int
-            | ((0x4 as libc::c_int) << 1 as libc::c_int) as libc::c_ulonglong
-            | 1 as libc::c_int as libc::c_ulonglong) as uint64_t,
+        (3u64) << 62i32 | ((0x4i32) << 1i32) as libc::c_ulonglong | 1u64,
         WINDOW_CUSTOMIZE_GLOBAL_WINDOW,
         global_w_options,
         WINDOW_CUSTOMIZE_WINDOW,
@@ -2361,13 +2339,13 @@ unsafe extern "C" fn window_customize_build(
         0 as *mut client,
         &mut fs,
     );
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     kt = key_bindings_first_table();
     while !kt.is_null() {
         if !(*kt).key_bindings.rbh_root.is_null() {
             window_customize_build_keys(data, kt, ft, filter, &mut fs, i);
             i = i.wrapping_add(1);
-            if i == 256 as libc::c_int as libc::c_uint {
+            if i == 256u32 {
                 break;
             }
         }
@@ -2400,9 +2378,7 @@ unsafe extern "C" fn window_customize_draw_key(
         note = b"There is no note for this key.\x00" as *const u8 as *const libc::c_char
     }
     if *note as libc::c_int != '\u{0}' as i32
-        && *note.offset(strlen(note).wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize)
-            as libc::c_int
-            != '.' as i32
+        && *note.offset(strlen(note).wrapping_sub(1u64) as isize) as libc::c_int != '.' as i32
     {
         period = b".\x00" as *const u8 as *const libc::c_char
     }
@@ -2411,7 +2387,7 @@ unsafe extern "C" fn window_customize_draw_key(
         cx,
         sx,
         sy,
-        0 as libc::c_int,
+        0i32,
         &grid_default_cell as *const GridCell,
         b"%s%s\x00" as *const u8 as *const libc::c_char,
         note,
@@ -2423,14 +2399,10 @@ unsafe extern "C" fn window_customize_draw_key(
     screen_write_cursormove(
         ctx,
         cx as libc::c_int,
-        (*s).cy.wrapping_add(1 as libc::c_int as libc::c_uint) as libc::c_int,
-        0 as libc::c_int,
+        (*s).cy.wrapping_add(1u32) as libc::c_int,
+        0i32,
     );
-    if (*s).cy
-        >= cy
-            .wrapping_add(sy)
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
-    {
+    if (*s).cy >= cy.wrapping_add(sy).wrapping_sub(1u32) {
         return;
     }
     if screen_write_text(
@@ -2438,7 +2410,7 @@ unsafe extern "C" fn window_customize_draw_key(
         cx,
         sx,
         sy.wrapping_sub((*s).cy.wrapping_sub(cy)),
-        0 as libc::c_int,
+        0i32,
         &grid_default_cell as *const GridCell,
         b"This key is in the %s table.\x00" as *const u8 as *const libc::c_char,
         (*kt).name,
@@ -2451,10 +2423,10 @@ unsafe extern "C" fn window_customize_draw_key(
         cx,
         sx,
         sy.wrapping_sub((*s).cy.wrapping_sub(cy)),
-        0 as libc::c_int,
+        0i32,
         &grid_default_cell as *const GridCell,
         b"This key %s repeat.\x00" as *const u8 as *const libc::c_char,
-        if (*bd).flags & 0x1 as libc::c_int != 0 {
+        if (*bd).flags & 0x1i32 != 0 {
             b"does\x00" as *const u8 as *const libc::c_char
         } else {
             b"does not\x00" as *const u8 as *const libc::c_char
@@ -2466,23 +2438,19 @@ unsafe extern "C" fn window_customize_draw_key(
     screen_write_cursormove(
         ctx,
         cx as libc::c_int,
-        (*s).cy.wrapping_add(1 as libc::c_int as libc::c_uint) as libc::c_int,
-        0 as libc::c_int,
+        (*s).cy.wrapping_add(1u32) as libc::c_int,
+        0i32,
     );
-    if (*s).cy
-        >= cy
-            .wrapping_add(sy)
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
-    {
+    if (*s).cy >= cy.wrapping_add(sy).wrapping_sub(1u32) {
         return;
     }
-    cmd = cmd_list_print((*bd).cmdlist, 0 as libc::c_int);
+    cmd = cmd_list_print((*bd).cmdlist, 0i32);
     if screen_write_text(
         ctx,
         cx,
         sx,
         sy.wrapping_sub((*s).cy.wrapping_sub(cy)),
-        0 as libc::c_int,
+        0i32,
         &grid_default_cell as *const GridCell,
         b"Command: %s\x00" as *const u8 as *const libc::c_char,
         cmd,
@@ -2493,14 +2461,14 @@ unsafe extern "C" fn window_customize_draw_key(
     }
     default_bd = key_bindings_get_default(kt, (*bd).key);
     if !default_bd.is_null() {
-        default_cmd = cmd_list_print((*default_bd).cmdlist, 0 as libc::c_int);
-        if strcmp(cmd, default_cmd) != 0 as libc::c_int
+        default_cmd = cmd_list_print((*default_bd).cmdlist, 0i32);
+        if strcmp(cmd, default_cmd) != 0i32
             && screen_write_text(
                 ctx,
                 cx,
                 sx,
                 sy.wrapping_sub((*s).cy.wrapping_sub(cy)),
-                0 as libc::c_int,
+                0i32,
                 &grid_default_cell as *const GridCell,
                 b"The default is: %s\x00" as *const u8 as *const libc::c_char,
                 default_cmd,
@@ -2596,7 +2564,7 @@ unsafe extern "C" fn window_customize_draw_option(
         cx,
         sx,
         sy,
-        0 as libc::c_int,
+        0i32,
         &grid_default_cell as *const GridCell,
         b"%s\x00" as *const u8 as *const libc::c_char,
         text,
@@ -2605,23 +2573,17 @@ unsafe extern "C" fn window_customize_draw_option(
         screen_write_cursormove(
             ctx,
             cx as libc::c_int,
-            (*s).cy.wrapping_add(1 as libc::c_int as libc::c_uint) as libc::c_int,
-            0 as libc::c_int,
+            (*s).cy.wrapping_add(1u32) as libc::c_int,
+            0i32,
         );
-        if !((*s).cy
-            >= cy
-                .wrapping_add(sy)
-                .wrapping_sub(1 as libc::c_int as libc::c_uint))
-        {
+        if !((*s).cy >= cy.wrapping_add(sy).wrapping_sub(1u32)) {
             if oe.is_null() {
                 text = b"user\x00" as *const u8 as *const libc::c_char
-            } else if (*oe).scope & (0x4 as libc::c_int | 0x8 as libc::c_int)
-                == 0x4 as libc::c_int | 0x8 as libc::c_int
-            {
+            } else if (*oe).scope & (0x4i32 | 0x8i32) == 0x4i32 | 0x8i32 {
                 text = b"window and pane\x00" as *const u8 as *const libc::c_char
-            } else if (*oe).scope & 0x4 as libc::c_int != 0 {
+            } else if (*oe).scope & 0x4i32 != 0 {
                 text = b"window\x00" as *const u8 as *const libc::c_char
-            } else if (*oe).scope & 0x2 as libc::c_int != 0 {
+            } else if (*oe).scope & 0x2i32 != 0 {
                 text = b"session\x00" as *const u8 as *const libc::c_char
             } else {
                 text = b"server\x00" as *const u8 as *const libc::c_char
@@ -2631,20 +2593,20 @@ unsafe extern "C" fn window_customize_draw_option(
                 cx,
                 sx,
                 sy.wrapping_sub((*s).cy.wrapping_sub(cy)),
-                0 as libc::c_int,
+                0i32,
                 &grid_default_cell as *const GridCell,
                 b"This is a %s option.\x00" as *const u8 as *const libc::c_char,
                 text,
             ) == 0)
             {
-                if !oe.is_null() && (*oe).flags & 0x1 as libc::c_int != 0 {
-                    if idx != -(1 as libc::c_int) {
+                if !oe.is_null() && (*oe).flags & 0x1i32 != 0 {
+                    if idx != -(1i32) {
                         if screen_write_text(
                             ctx,
                             cx,
                             sx,
                             sy.wrapping_sub((*s).cy.wrapping_sub(cy)),
-                            0 as libc::c_int,
+                            0i32,
                             &grid_default_cell as *const GridCell,
                             b"This is an array option, index %u.\x00" as *const u8
                                 as *const libc::c_char,
@@ -2660,7 +2622,7 @@ unsafe extern "C" fn window_customize_draw_option(
                         cx,
                         sx,
                         sy.wrapping_sub((*s).cy.wrapping_sub(cy)),
-                        0 as libc::c_int,
+                        0i32,
                         &grid_default_cell as *const GridCell,
                         b"This is an array option.\x00" as *const u8 as *const libc::c_char,
                     ) == 0
@@ -2672,7 +2634,7 @@ unsafe extern "C" fn window_customize_draw_option(
                     match current_block {
                         13498252046719513127 => {}
                         _ => {
-                            if idx == -(1 as libc::c_int) {
+                            if idx == -(1i32) {
                                 current_block = 13498252046719513127;
                             } else {
                                 current_block = 12997042908615822766;
@@ -2688,18 +2650,14 @@ unsafe extern "C" fn window_customize_draw_option(
                         screen_write_cursormove(
                             ctx,
                             cx as libc::c_int,
-                            (*s).cy.wrapping_add(1 as libc::c_int as libc::c_uint) as libc::c_int,
-                            0 as libc::c_int,
+                            (*s).cy.wrapping_add(1u32) as libc::c_int,
+                            0i32,
                         );
-                        if !((*s).cy
-                            >= cy
-                                .wrapping_add(sy)
-                                .wrapping_sub(1 as libc::c_int as libc::c_uint))
-                        {
-                            value = options_to_string(o, idx, 0 as libc::c_int);
-                            if !oe.is_null() && idx == -(1 as libc::c_int) {
+                        if !((*s).cy >= cy.wrapping_add(sy).wrapping_sub(1u32)) {
+                            value = options_to_string(o, idx, 0i32);
+                            if !oe.is_null() && idx == -(1i32) {
                                 default_value = options_default_to_string(oe);
-                                if strcmp(default_value, value) == 0 as libc::c_int {
+                                if strcmp(default_value, value) == 0i32 {
                                     free(default_value as *mut libc::c_void);
                                     default_value = 0 as *mut libc::c_char
                                 }
@@ -2709,7 +2667,7 @@ unsafe extern "C" fn window_customize_draw_option(
                                 cx,
                                 sx,
                                 sy.wrapping_sub((*s).cy.wrapping_sub(cy)),
-                                0 as libc::c_int,
+                                0i32,
                                 &grid_default_cell as *const GridCell,
                                 b"Option value: %s%s%s\x00" as *const u8 as *const libc::c_char,
                                 value,
@@ -2717,18 +2675,15 @@ unsafe extern "C" fn window_customize_draw_option(
                                 unit,
                             ) == 0)
                             {
-                                if oe.is_null()
-                                    || (*oe).type_0 as libc::c_uint
-                                        == OPTIONS_TABLE_STRING as libc::c_int as libc::c_uint
-                                {
+                                if oe.is_null() || (*oe).type_0 == OPTIONS_TABLE_STRING {
                                     expanded = format_expand(ft, value);
-                                    if strcmp(expanded, value) != 0 as libc::c_int {
+                                    if strcmp(expanded, value) != 0i32 {
                                         if screen_write_text(
                                             ctx,
                                             cx,
                                             sx,
                                             sy.wrapping_sub((*s).cy.wrapping_sub(cy)),
-                                            0 as libc::c_int,
+                                            0i32,
                                             &grid_default_cell as *const GridCell,
                                             b"This expands to: %s\x00" as *const u8
                                                 as *const libc::c_char,
@@ -2755,11 +2710,7 @@ unsafe extern "C" fn window_customize_draw_option(
                                 match current_block {
                                     13498252046719513127 => {}
                                     _ => {
-                                        if !oe.is_null()
-                                            && (*oe).type_0 as libc::c_uint
-                                                == OPTIONS_TABLE_CHOICE as libc::c_int
-                                                    as libc::c_uint
-                                        {
+                                        if !oe.is_null() && (*oe).type_0 == OPTIONS_TABLE_CHOICE {
                                             choice = (*oe).choices;
                                             while !(*choice).is_null() {
                                                 strlcat(
@@ -2776,15 +2727,14 @@ unsafe extern "C" fn window_customize_draw_option(
                                                 );
                                                 choice = choice.offset(1)
                                             }
-                                            choices[strlen(choices.as_mut_ptr())
-                                                .wrapping_sub(2 as libc::c_int as libc::c_ulong)
-                                                as usize] = '\u{0}' as i32 as libc::c_char;
+                                            choices[strlen(choices.as_mut_ptr()).wrapping_sub(2u64)
+                                                as usize] = '\u{0}' as libc::c_char;
                                             if screen_write_text(
                                                 ctx,
                                                 cx,
                                                 sx,
                                                 sy.wrapping_sub((*s).cy.wrapping_sub(cy)),
-                                                0 as libc::c_int,
+                                                0i32,
                                                 &grid_default_cell as *const GridCell,
                                                 b"Available values are: %s\x00" as *const u8
                                                     as *const libc::c_char,
@@ -2802,16 +2752,14 @@ unsafe extern "C" fn window_customize_draw_option(
                                             13498252046719513127 => {}
                                             _ => {
                                                 if !oe.is_null()
-                                                    && (*oe).type_0 as libc::c_uint
-                                                        == OPTIONS_TABLE_COLOUR as libc::c_int
-                                                            as libc::c_uint
+                                                    && (*oe).type_0 == OPTIONS_TABLE_COLOUR
                                                 {
                                                     if screen_write_text(
                                                         ctx,
                                                         cx,
                                                         sx,
                                                         sy.wrapping_sub((*s).cy.wrapping_sub(cy)),
-                                                        1 as libc::c_int,
+                                                        1i32,
                                                         &grid_default_cell as *const GridCell,
                                                         b"This is a colour option: \x00"
                                                             as *const u8
@@ -2837,7 +2785,7 @@ unsafe extern "C" fn window_customize_draw_option(
                                                             sy.wrapping_sub(
                                                                 (*s).cy.wrapping_sub(cy),
                                                             ),
-                                                            0 as libc::c_int,
+                                                            0i32,
                                                             &mut gc as *mut GridCell,
                                                             b"EXAMPLE\x00" as *const u8
                                                                 as *const libc::c_char,
@@ -2855,7 +2803,7 @@ unsafe extern "C" fn window_customize_draw_option(
                                                     13498252046719513127 => {}
                                                     _ => {
                                                         if !oe.is_null()
-                                                            && (*oe).flags & 0x4 as libc::c_int != 0
+                                                            && (*oe).flags & 0x4i32 != 0
                                                         {
                                                             if screen_write_text(
                                                                 ctx,
@@ -2864,7 +2812,7 @@ unsafe extern "C" fn window_customize_draw_option(
                                                                 sy.wrapping_sub(
                                                                     (*s).cy.wrapping_sub(cy),
                                                                 ),
-                                                                1 as libc::c_int,
+                                                                1i32,
                                                                 &grid_default_cell
                                                                     as *const GridCell,
                                                                 b"This is a style option: \x00"
@@ -2888,7 +2836,7 @@ unsafe extern "C" fn window_customize_draw_option(
                                                                     sy.wrapping_sub(
                                                                         (*s).cy.wrapping_sub(cy),
                                                                     ),
-                                                                    0 as libc::c_int,
+                                                                    0i32,
                                                                     &mut gc as *mut GridCell,
                                                                     b"EXAMPLE\x00" as *const u8
                                                                         as *const libc::c_char,
@@ -2912,9 +2860,7 @@ unsafe extern "C" fn window_customize_draw_option(
                                                                                          cx,
                                                                                          sx,
                                                                                          sy.wrapping_sub((*s).cy.wrapping_sub(cy)),
-                                                                                         0
-                                                                                             as
-                                                                                             libc::c_int,
+                                                                                         0i32,
                                                                                          &grid_default_cell
                                                                                              as
                                                                                              *const GridCell,
@@ -2946,30 +2892,20 @@ unsafe extern "C" fn window_customize_draw_option(
                                                                         screen_write_cursormove(
                                                                             ctx,
                                                                             cx as libc::c_int,
-                                                                            (*s).cy.wrapping_add(
-                                                                                1 as libc::c_int
-                                                                                    as libc::c_uint,
-                                                                            )
+                                                                            (*s).cy
+                                                                                .wrapping_add(1u32)
                                                                                 as libc::c_int,
-                                                                            0 as libc::c_int,
+                                                                            0i32,
                                                                         );
                                                                         if !((*s).cy
                                                                             > cy.wrapping_add(sy)
-                                                                                .wrapping_sub(
-                                                                                1 as libc::c_int
-                                                                                    as libc::c_uint,
-                                                                            ))
+                                                                                .wrapping_sub(1u32))
                                                                         {
                                                                             if !oe.is_null()
-                                                                                   &&
-                                                                                   (*oe).flags
-                                                                                       &
-                                                                                       0x1
-                                                                                           as
-                                                                                           libc::c_int
-                                                                                       !=
-                                                                                       0
-                                                                               {
+                                                                                && (*oe).flags
+                                                                                    & 0x1i32
+                                                                                    != 0
+                                                                            {
                                                                                 wo
                                                                                     =
                                                                                     0
@@ -2982,12 +2918,8 @@ unsafe extern "C" fn window_customize_draw_option(
                                                                                         *mut crate::options::options
                                                                             } else {
                                                                                 match (*item).scope
-                                                                                          as
-                                                                                          libc::c_uint
-                                                                                    {
-                                                                                    7
-                                                                                    =>
-                                                                                    {
+                                                                                {
+                                                                                    7 => {
                                                                                         wo
                                                                                             =
                                                                                             options_get_parent((*item).oo);
@@ -2995,11 +2927,7 @@ unsafe extern "C" fn window_customize_draw_option(
                                                                                             =
                                                                                             options_get_parent(wo)
                                                                                     }
-                                                                                    6
-                                                                                    |
-                                                                                    4
-                                                                                    =>
-                                                                                    {
+                                                                                    6 | 4 => {
                                                                                         wo
                                                                                             =
                                                                                             0
@@ -3009,9 +2937,7 @@ unsafe extern "C" fn window_customize_draw_option(
                                                                                             =
                                                                                             options_get_parent((*item).oo)
                                                                                     }
-                                                                                    _
-                                                                                    =>
-                                                                                    {
+                                                                                    _ => {
                                                                                         wo
                                                                                             =
                                                                                             0
@@ -3038,19 +2964,13 @@ unsafe extern "C" fn window_customize_draw_option(
                                                                                     value
                                                                                         =
                                                                                         options_to_string(parent,
-                                                                                                          -(1
-                                                                                                                as
-                                                                                                                libc::c_int),
-                                                                                                          0
-                                                                                                              as
-                                                                                                              libc::c_int);
+                                                                                                          -(1i32),
+                                                                                                          0i32);
                                                                                     if screen_write_text(ctx,
                                                                                                          (*s).cx,
                                                                                                          sx,
                                                                                                          sy.wrapping_sub((*s).cy.wrapping_sub(cy)),
-                                                                                                         0
-                                                                                                             as
-                                                                                                             libc::c_int,
+                                                                                                         0i32,
                                                                                                          &grid_default_cell
                                                                                                              as
                                                                                                              *const GridCell,
@@ -3108,19 +3028,13 @@ unsafe extern "C" fn window_customize_draw_option(
                                                                                             value
                                                                                                 =
                                                                                                 options_to_string(parent,
-                                                                                                                  -(1
-                                                                                                                        as
-                                                                                                                        libc::c_int),
-                                                                                                                  0
-                                                                                                                      as
-                                                                                                                      libc::c_int);
+                                                                                                                  -(1i32),
+                                                                                                                  0i32);
                                                                                             (screen_write_text(ctx,
                                                                                                                (*s).cx,
                                                                                                                sx,
                                                                                                                sy.wrapping_sub((*s).cy.wrapping_sub(cy)),
-                                                                                                               0
-                                                                                                                   as
-                                                                                                                   libc::c_int,
+                                                                                                               0i32,
                                                                                                                &grid_default_cell
                                                                                                                    as
                                                                                                                    *const GridCell,
@@ -3172,7 +3086,7 @@ unsafe extern "C" fn window_customize_draw(
     if item.is_null() {
         return;
     }
-    if (*item).scope as libc::c_uint == WINDOW_CUSTOMIZE_KEY as libc::c_int as libc::c_uint {
+    if (*item).scope == WINDOW_CUSTOMIZE_KEY {
         window_customize_draw_key(data, item, ctx, sx, sy);
     } else {
         window_customize_draw_option(data, item, ctx, sx, sy);
@@ -3203,7 +3117,7 @@ unsafe extern "C" fn window_customize_height(
     mut _modedata: *mut libc::c_void,
     mut _height: u_int,
 ) -> u_int {
-    return 12 as libc::c_int as u_int;
+    return 12u32;
 }
 /* $OpenBSD$ */
 /*
@@ -3230,23 +3144,23 @@ unsafe extern "C" fn window_customize_init(
     let mut data: *mut window_customize_modedata = 0 as *mut window_customize_modedata;
     let mut s: *mut screen = 0 as *mut screen;
     data = xcalloc(
-        1 as libc::c_int as size_t,
+        1u64,
         ::std::mem::size_of::<window_customize_modedata>() as libc::c_ulong,
     ) as *mut window_customize_modedata;
     (*wme).data = data as *mut libc::c_void;
     (*data).wp = wp;
-    (*data).references = 1 as libc::c_int;
+    (*data).references = 1i32;
     memcpy(
         &mut (*data).fs as *mut cmd_find_state as *mut libc::c_void,
         fs as *const libc::c_void,
         ::std::mem::size_of::<cmd_find_state>() as libc::c_ulong,
     );
-    if args.is_null() || args_has(args, 'F' as i32 as u_char) == 0 {
+    if args.is_null() || args_has(args, 'F' as u_char) == 0 {
         (*data).format =
             xstrdup(b"#{?is_option,#{?option_is_global,,#[reverse](#{option_scope})#[default] }#[ignore]#{option_value}#{?option_unit, #{option_unit},},#{key}}\x00"
                         as *const u8 as *const libc::c_char)
     } else {
-        (*data).format = xstrdup(args_get(args, 'F' as i32 as u_char))
+        (*data).format = xstrdup(args_get(args, 'F' as u_char))
     }
     (*data).data = mode_tree_start(
         wp,
@@ -3282,7 +3196,7 @@ unsafe extern "C" fn window_customize_init(
         data as *mut libc::c_void,
         window_customize_menu_items.as_ptr(),
         0 as *mut *const libc::c_char,
-        0 as libc::c_int as u_int,
+        0u32,
         &mut s,
     );
     mode_tree_zoom((*data).data, args);
@@ -3293,10 +3207,10 @@ unsafe extern "C" fn window_customize_init(
 unsafe extern "C" fn window_customize_destroy(mut data: *mut window_customize_modedata) {
     let mut i: u_int = 0;
     (*data).references -= 1;
-    if (*data).references != 0 as libc::c_int {
+    if (*data).references != 0i32 {
         return;
     }
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < (*data).item_size {
         window_customize_free_item(*(*data).item_list.offset(i as isize));
         i = i.wrapping_add(1)
@@ -3310,7 +3224,7 @@ unsafe extern "C" fn window_customize_free(mut wme: *mut window_mode_entry) {
     if data.is_null() {
         return;
     }
-    (*data).dead = 1 as libc::c_int;
+    (*data).dead = 1i32;
     mode_tree_free((*data).data);
     window_customize_destroy(data);
 }
@@ -3347,33 +3261,32 @@ unsafe extern "C" fn window_customize_set_option_callback(
     let mut cause: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut idx: libc::c_int = (*item).idx;
     if s.is_null() || *s as libc::c_int == '\u{0}' as i32 || (*data).dead != 0 {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     if item.is_null() || window_customize_check_item(data, item, 0 as *mut cmd_find_state) == 0 {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     o = options_get(oo, name);
     if o.is_null() {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     oe = options_table_entry(o);
-    if !oe.is_null() && (*oe).flags & 0x1 as libc::c_int != 0 {
-        if idx == -(1 as libc::c_int) {
-            idx = 0 as libc::c_int;
-            while idx < 2147483647 as libc::c_int {
+    if !oe.is_null() && (*oe).flags & 0x1i32 != 0 {
+        if idx == -(1i32) {
+            idx = 0i32;
+            while idx < 2147483647i32 {
                 if options_array_get(o, idx as u_int).is_null() {
                     break;
                 }
                 idx += 1
             }
         }
-        if options_array_set(o, idx as u_int, s, 0 as libc::c_int, &mut cause) != 0 as libc::c_int {
+        if options_array_set(o, idx as u_int, s, 0i32, &mut cause) != 0i32 {
             current_block = 229924417310053542;
         } else {
             current_block = 2668756484064249700;
         }
-    } else if options_from_string(oo, oe, name, s, 0 as libc::c_int, &mut cause) != 0 as libc::c_int
-    {
+    } else if options_from_string(oo, oe, name, s, 0i32, &mut cause) != 0i32 {
         current_block = 229924417310053542;
     } else {
         current_block = 2668756484064249700;
@@ -3382,12 +3295,10 @@ unsafe extern "C" fn window_customize_set_option_callback(
         229924417310053542 => {
             *cause = ({
                 let mut __res: libc::c_int = 0;
-                if ::std::mem::size_of::<u_char>() as libc::c_ulong
-                    > 1 as libc::c_int as libc::c_ulong
-                {
+                if ::std::mem::size_of::<u_char>() as libc::c_ulong > 1u64 {
                     if 0 != 0 {
                         let mut __c: libc::c_int = *cause as u_char as libc::c_int;
-                        __res = if __c < -(128 as libc::c_int) || __c > 255 as libc::c_int {
+                        __res = if __c < -(128i32) || __c > 255i32 {
                             __c
                         } else {
                             *(*__ctype_toupper_loc()).offset(__c as isize)
@@ -3403,20 +3314,20 @@ unsafe extern "C" fn window_customize_set_option_callback(
             }) as libc::c_char;
             status_message_set(
                 c,
-                -(1 as libc::c_int),
-                1 as libc::c_int,
+                -(1i32),
+                1i32,
                 b"%s\x00" as *const u8 as *const libc::c_char,
                 cause,
             );
             free(cause as *mut libc::c_void);
-            return 0 as libc::c_int;
+            return 0i32;
         }
         _ => {
             options_push_changes((*item).name);
             mode_tree_build((*data).data);
             mode_tree_draw((*data).data);
-            (*(*data).wp).flags |= 0x1 as libc::c_int;
-            return 0 as libc::c_int;
+            (*(*data).wp).flags |= 0x1i32;
+            return 0i32;
         }
     };
 }
@@ -3457,22 +3368,22 @@ unsafe extern "C" fn window_customize_set_option(
         return;
     }
     oe = options_table_entry(o);
-    if !oe.is_null() && !(*oe).scope & 0x8 as libc::c_int != 0 {
-        pane = 0 as libc::c_int
+    if !oe.is_null() && !(*oe).scope & 0x8i32 != 0 {
+        pane = 0i32
     }
-    if !oe.is_null() && (*oe).flags & 0x1 as libc::c_int != 0 {
+    if !oe.is_null() && (*oe).flags & 0x1i32 != 0 {
         scope = (*item).scope;
         oo = (*item).oo
     } else {
         if global != 0 {
-            match (*item).scope as libc::c_uint {
+            match (*item).scope {
                 0 | 1 | 2 | 3 | 5 => scope = (*item).scope,
                 4 => scope = WINDOW_CUSTOMIZE_GLOBAL_SESSION,
                 6 | 7 => scope = WINDOW_CUSTOMIZE_GLOBAL_WINDOW,
                 _ => {}
             }
         } else {
-            match (*item).scope as libc::c_uint {
+            match (*item).scope {
                 0 | 1 | 2 | 4 => scope = (*item).scope,
                 6 | 7 => {
                     if pane != 0 {
@@ -3492,27 +3403,19 @@ unsafe extern "C" fn window_customize_set_option(
                 _ => {}
             }
         }
-        if scope as libc::c_uint == (*item).scope as libc::c_uint {
+        if scope == (*item).scope {
             oo = (*item).oo
         } else {
             oo = window_customize_get_tree(scope, &mut fs)
         }
     }
-    if !oe.is_null()
-        && (*oe).type_0 as libc::c_uint == OPTIONS_TABLE_FLAG as libc::c_int as libc::c_uint
-    {
+    if !oe.is_null() && (*oe).type_0 == OPTIONS_TABLE_FLAG {
         flag = options_get_number(oo, name) as libc::c_int;
         options_set_number(oo, name, (flag == 0) as libc::c_int as libc::c_longlong);
-    } else if !oe.is_null()
-        && (*oe).type_0 as libc::c_uint == OPTIONS_TABLE_CHOICE as libc::c_int as libc::c_uint
-    {
+    } else if !oe.is_null() && (*oe).type_0 == OPTIONS_TABLE_CHOICE {
         choice = options_get_number(oo, name) as u_int;
-        if (*(*oe)
-            .choices
-            .offset(choice.wrapping_add(1 as libc::c_int as libc::c_uint) as isize))
-        .is_null()
-        {
-            choice = 0 as libc::c_int as u_int
+        if (*(*oe).choices.offset(choice.wrapping_add(1u32) as isize)).is_null() {
+            choice = 0u32
         } else {
             choice = choice.wrapping_add(1)
         }
@@ -3521,11 +3424,11 @@ unsafe extern "C" fn window_customize_set_option(
         text = window_customize_scope_text(scope, &mut fs);
         if *text as libc::c_int != '\u{0}' as i32 {
             space = b", for \x00" as *const u8 as *const libc::c_char
-        } else if scope as libc::c_uint != WINDOW_CUSTOMIZE_SERVER as libc::c_int as libc::c_uint {
+        } else if scope != WINDOW_CUSTOMIZE_SERVER {
             space = b", global\x00" as *const u8 as *const libc::c_char
         }
-        if !oe.is_null() && (*oe).flags & 0x1 as libc::c_int != 0 {
-            if idx == -(1 as libc::c_int) {
+        if !oe.is_null() && (*oe).flags & 0x1i32 != 0 {
+            if idx == -(1i32) {
                 xasprintf(
                     &mut prompt as *mut *mut libc::c_char,
                     b"(%s[+]%s%s) \x00" as *const u8 as *const libc::c_char,
@@ -3553,9 +3456,9 @@ unsafe extern "C" fn window_customize_set_option(
             );
         }
         free(text as *mut libc::c_void);
-        value = options_to_string(o, idx, 0 as libc::c_int);
+        value = options_to_string(o, idx, 0i32);
         new_item = xcalloc(
-            1 as libc::c_int as size_t,
+            1u64,
             ::std::mem::size_of::<window_customize_itemdata>() as libc::c_ulong,
         ) as *mut window_customize_itemdata;
         (*new_item).data = data;
@@ -3583,7 +3486,7 @@ unsafe extern "C" fn window_customize_set_option(
                     as unsafe extern "C" fn(_: *mut libc::c_void) -> (),
             ),
             new_item as *mut libc::c_void,
-            0x8 as libc::c_int,
+            0x8i32,
         );
         free(prompt as *mut libc::c_void);
         free(value as *mut libc::c_void);
@@ -3601,10 +3504,10 @@ unsafe extern "C" fn window_customize_unset_option(
     if o.is_null() {
         return;
     }
-    if (*item).idx != -(1 as libc::c_int)
+    if (*item).idx != -(1i32)
         && item == mode_tree_get_current((*data).data) as *mut window_customize_itemdata
     {
-        mode_tree_up((*data).data, 0 as libc::c_int);
+        mode_tree_up((*data).data, 0i32);
     }
     options_remove_or_default(o, (*item).idx, 0 as *mut *mut libc::c_char);
 }
@@ -3617,14 +3520,14 @@ unsafe extern "C" fn window_customize_reset_option(
     if item.is_null() || window_customize_check_item(data, item, 0 as *mut cmd_find_state) == 0 {
         return;
     }
-    if (*item).idx != -(1 as libc::c_int) {
+    if (*item).idx != -(1i32) {
         return;
     }
     oo = (*item).oo;
     while !oo.is_null() {
         o = options_get_only((*item).oo, (*item).name);
         if !o.is_null() {
-            options_remove_or_default(o, -(1 as libc::c_int), 0 as *mut *mut libc::c_char);
+            options_remove_or_default(o, -(1i32), 0 as *mut *mut libc::c_char);
         }
         oo = options_get_parent(oo)
     }
@@ -3641,13 +3544,13 @@ unsafe extern "C" fn window_customize_set_command_callback(
     let mut pr: *mut cmd_parse_result = 0 as *mut cmd_parse_result;
     let mut error: *mut libc::c_char = 0 as *mut libc::c_char;
     if s.is_null() || *s as libc::c_int == '\u{0}' as i32 || (*data).dead != 0 {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     if item.is_null() || window_customize_get_key(item, 0 as *mut *mut key_table, &mut bd) == 0 {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     pr = cmd_parse_from_string(s, 0 as *mut cmd_parse_input);
-    match (*pr).status as libc::c_uint {
+    match (*pr).status {
         0 => error = xstrdup(b"empty command\x00" as *const u8 as *const libc::c_char),
         1 => error = (*pr).error,
         2 | _ => {
@@ -3655,16 +3558,16 @@ unsafe extern "C" fn window_customize_set_command_callback(
             (*bd).cmdlist = (*pr).cmdlist;
             mode_tree_build((*data).data);
             mode_tree_draw((*data).data);
-            (*(*data).wp).flags |= 0x1 as libc::c_int;
-            return 0 as libc::c_int;
+            (*(*data).wp).flags |= 0x1i32;
+            return 0i32;
         }
     }
     *error = ({
         let mut __res: libc::c_int = 0;
-        if ::std::mem::size_of::<u_char>() as libc::c_ulong > 1 as libc::c_int as libc::c_ulong {
+        if ::std::mem::size_of::<u_char>() as libc::c_ulong > 1u64 {
             if 0 != 0 {
                 let mut __c: libc::c_int = *error as u_char as libc::c_int;
-                __res = if __c < -(128 as libc::c_int) || __c > 255 as libc::c_int {
+                __res = if __c < -(128i32) || __c > 255i32 {
                     __c
                 } else {
                     *(*__ctype_toupper_loc()).offset(__c as isize)
@@ -3679,13 +3582,13 @@ unsafe extern "C" fn window_customize_set_command_callback(
     }) as libc::c_char;
     status_message_set(
         c,
-        -(1 as libc::c_int),
-        1 as libc::c_int,
+        -(1i32),
+        1i32,
         b"%s\x00" as *const u8 as *const libc::c_char,
         error,
     );
     free(error as *mut libc::c_void);
-    return 0 as libc::c_int;
+    return 0i32;
 }
 unsafe extern "C" fn window_customize_set_note_callback(
     mut _c: *mut client,
@@ -3697,17 +3600,17 @@ unsafe extern "C" fn window_customize_set_note_callback(
     let mut data: *mut window_customize_modedata = (*item).data;
     let mut bd: *mut key_binding = 0 as *mut key_binding;
     if s.is_null() || *s as libc::c_int == '\u{0}' as i32 || (*data).dead != 0 {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     if item.is_null() || window_customize_get_key(item, 0 as *mut *mut key_table, &mut bd) == 0 {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     free((*bd).note as *mut libc::c_void);
     (*bd).note = xstrdup(s);
     mode_tree_build((*data).data);
     mode_tree_draw((*data).data);
-    (*(*data).wp).flags |= 0x1 as libc::c_int;
-    return 0 as libc::c_int;
+    (*(*data).wp).flags |= 0x1i32;
+    return 0i32;
 }
 unsafe extern "C" fn window_customize_set_key(
     mut c: *mut client,
@@ -3724,17 +3627,17 @@ unsafe extern "C" fn window_customize_set_key(
         return;
     }
     s = mode_tree_get_current_name((*data).data);
-    if strcmp(s, b"Repeat\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
-        (*bd).flags ^= 0x1 as libc::c_int
-    } else if strcmp(s, b"Command\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
+    if strcmp(s, b"Repeat\x00" as *const u8 as *const libc::c_char) == 0i32 {
+        (*bd).flags ^= 0x1i32
+    } else if strcmp(s, b"Command\x00" as *const u8 as *const libc::c_char) == 0i32 {
         xasprintf(
             &mut prompt as *mut *mut libc::c_char,
             b"(%s) \x00" as *const u8 as *const libc::c_char,
-            key_string_lookup_key(key, 0 as libc::c_int),
+            key_string_lookup_key(key, 0i32),
         );
-        value = cmd_list_print((*bd).cmdlist, 0 as libc::c_int);
+        value = cmd_list_print((*bd).cmdlist, 0i32);
         new_item = xcalloc(
-            1 as libc::c_int as size_t,
+            1u64,
             ::std::mem::size_of::<window_customize_itemdata>() as libc::c_ulong,
         ) as *mut window_customize_itemdata;
         (*new_item).data = data;
@@ -3761,18 +3664,18 @@ unsafe extern "C" fn window_customize_set_key(
                     as unsafe extern "C" fn(_: *mut libc::c_void) -> (),
             ),
             new_item as *mut libc::c_void,
-            0x8 as libc::c_int,
+            0x8i32,
         );
         free(prompt as *mut libc::c_void);
         free(value as *mut libc::c_void);
-    } else if strcmp(s, b"Note\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
+    } else if strcmp(s, b"Note\x00" as *const u8 as *const libc::c_char) == 0i32 {
         xasprintf(
             &mut prompt as *mut *mut libc::c_char,
             b"(%s) \x00" as *const u8 as *const libc::c_char,
-            key_string_lookup_key(key, 0 as libc::c_int),
+            key_string_lookup_key(key, 0i32),
         );
         new_item = xcalloc(
-            1 as libc::c_int as size_t,
+            1u64,
             ::std::mem::size_of::<window_customize_itemdata>() as libc::c_ulong,
         ) as *mut window_customize_itemdata;
         (*new_item).data = data;
@@ -3803,7 +3706,7 @@ unsafe extern "C" fn window_customize_set_key(
                     as unsafe extern "C" fn(_: *mut libc::c_void) -> (),
             ),
             new_item as *mut libc::c_void,
-            0x8 as libc::c_int,
+            0x8i32,
         );
         free(prompt as *mut libc::c_void);
     };
@@ -3819,7 +3722,7 @@ unsafe extern "C" fn window_customize_unset_key(
     }
     if item == mode_tree_get_current((*data).data) as *mut window_customize_itemdata {
         mode_tree_collapse_current((*data).data);
-        mode_tree_up((*data).data, 0 as libc::c_int);
+        mode_tree_up((*data).data, 0i32);
     }
     key_bindings_remove((*kt).name, (*bd).key);
 }
@@ -3840,7 +3743,7 @@ unsafe extern "C" fn window_customize_reset_key(
     if dd.is_null() && item == mode_tree_get_current((*data).data) as *mut window_customize_itemdata
     {
         mode_tree_collapse_current((*data).data);
-        mode_tree_up((*data).data, 0 as libc::c_int);
+        mode_tree_up((*data).data, 0i32);
     }
     key_bindings_reset((*kt).name, (*bd).key);
 }
@@ -3852,18 +3755,16 @@ unsafe extern "C" fn window_customize_change_each(
 ) {
     let mut data: *mut window_customize_modedata = modedata as *mut window_customize_modedata;
     let mut item: *mut window_customize_itemdata = itemdata as *mut window_customize_itemdata;
-    match (*data).change as libc::c_uint {
+    match (*data).change {
         0 => {
-            if (*item).scope as libc::c_uint == WINDOW_CUSTOMIZE_KEY as libc::c_int as libc::c_uint
-            {
+            if (*item).scope == WINDOW_CUSTOMIZE_KEY {
                 window_customize_unset_key(data, item);
             } else {
                 window_customize_unset_option(data, item);
             }
         }
         1 => {
-            if (*item).scope as libc::c_uint == WINDOW_CUSTOMIZE_KEY as libc::c_int as libc::c_uint
-            {
+            if (*item).scope == WINDOW_CUSTOMIZE_KEY {
                 window_customize_reset_key(data, item);
             } else {
                 window_customize_reset_option(data, item);
@@ -3871,7 +3772,7 @@ unsafe extern "C" fn window_customize_change_each(
         }
         _ => {}
     }
-    if (*item).scope as libc::c_uint != WINDOW_CUSTOMIZE_KEY as libc::c_int as libc::c_uint {
+    if (*item).scope != WINDOW_CUSTOMIZE_KEY {
         options_push_changes((*item).name);
     };
 }
@@ -3884,45 +3785,42 @@ unsafe extern "C" fn window_customize_change_current_callback(
     let mut data: *mut window_customize_modedata = modedata as *mut window_customize_modedata;
     let mut item: *mut window_customize_itemdata = 0 as *mut window_customize_itemdata;
     if s.is_null() || *s as libc::c_int == '\u{0}' as i32 || (*data).dead != 0 {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     if ({
         let mut __res: libc::c_int = 0;
-        if ::std::mem::size_of::<u_char>() as libc::c_ulong > 1 as libc::c_int as libc::c_ulong {
+        if ::std::mem::size_of::<u_char>() as libc::c_ulong > 1u64 {
             if 0 != 0 {
-                let mut __c: libc::c_int =
-                    *s.offset(0 as libc::c_int as isize) as u_char as libc::c_int;
-                __res = if __c < -(128 as libc::c_int) || __c > 255 as libc::c_int {
+                let mut __c: libc::c_int = *s.offset(0isize) as u_char as libc::c_int;
+                __res = if __c < -(128i32) || __c > 255i32 {
                     __c
                 } else {
                     *(*__ctype_tolower_loc()).offset(__c as isize)
                 }
             } else {
-                __res = tolower(*s.offset(0 as libc::c_int as isize) as u_char as libc::c_int)
+                __res = tolower(*s.offset(0isize) as u_char as libc::c_int)
             }
         } else {
             __res = *(*__ctype_tolower_loc())
-                .offset(*s.offset(0 as libc::c_int as isize) as u_char as libc::c_int as isize)
+                .offset(*s.offset(0isize) as u_char as libc::c_int as isize)
         }
         __res
     }) != 'y' as i32
-        || *s.offset(1 as libc::c_int as isize) as libc::c_int != '\u{0}' as i32
+        || *s.offset(1isize) as libc::c_int != '\u{0}' as i32
     {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     item = mode_tree_get_current((*data).data) as *mut window_customize_itemdata;
-    match (*data).change as libc::c_uint {
+    match (*data).change {
         0 => {
-            if (*item).scope as libc::c_uint == WINDOW_CUSTOMIZE_KEY as libc::c_int as libc::c_uint
-            {
+            if (*item).scope == WINDOW_CUSTOMIZE_KEY {
                 window_customize_unset_key(data, item);
             } else {
                 window_customize_unset_option(data, item);
             }
         }
         1 => {
-            if (*item).scope as libc::c_uint == WINDOW_CUSTOMIZE_KEY as libc::c_int as libc::c_uint
-            {
+            if (*item).scope == WINDOW_CUSTOMIZE_KEY {
                 window_customize_reset_key(data, item);
             } else {
                 window_customize_reset_option(data, item);
@@ -3930,13 +3828,13 @@ unsafe extern "C" fn window_customize_change_current_callback(
         }
         _ => {}
     }
-    if (*item).scope as libc::c_uint != WINDOW_CUSTOMIZE_KEY as libc::c_int as libc::c_uint {
+    if (*item).scope != WINDOW_CUSTOMIZE_KEY {
         options_push_changes((*item).name);
     }
     mode_tree_build((*data).data);
     mode_tree_draw((*data).data);
-    (*(*data).wp).flags |= 0x1 as libc::c_int;
-    return 0 as libc::c_int;
+    (*(*data).wp).flags |= 0x1i32;
+    return 0i32;
 }
 unsafe extern "C" fn window_customize_change_tagged_callback(
     mut c: *mut client,
@@ -3946,31 +3844,30 @@ unsafe extern "C" fn window_customize_change_tagged_callback(
 ) -> libc::c_int {
     let mut data: *mut window_customize_modedata = modedata as *mut window_customize_modedata;
     if s.is_null() || *s as libc::c_int == '\u{0}' as i32 || (*data).dead != 0 {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     if ({
         let mut __res: libc::c_int = 0;
-        if ::std::mem::size_of::<u_char>() as libc::c_ulong > 1 as libc::c_int as libc::c_ulong {
+        if ::std::mem::size_of::<u_char>() as libc::c_ulong > 1u64 {
             if 0 != 0 {
-                let mut __c: libc::c_int =
-                    *s.offset(0 as libc::c_int as isize) as u_char as libc::c_int;
-                __res = if __c < -(128 as libc::c_int) || __c > 255 as libc::c_int {
+                let mut __c: libc::c_int = *s.offset(0isize) as u_char as libc::c_int;
+                __res = if __c < -(128i32) || __c > 255i32 {
                     __c
                 } else {
                     *(*__ctype_tolower_loc()).offset(__c as isize)
                 }
             } else {
-                __res = tolower(*s.offset(0 as libc::c_int as isize) as u_char as libc::c_int)
+                __res = tolower(*s.offset(0isize) as u_char as libc::c_int)
             }
         } else {
             __res = *(*__ctype_tolower_loc())
-                .offset(*s.offset(0 as libc::c_int as isize) as u_char as libc::c_int as isize)
+                .offset(*s.offset(0isize) as u_char as libc::c_int as isize)
         }
         __res
     }) != 'y' as i32
-        || *s.offset(1 as libc::c_int as isize) as libc::c_int != '\u{0}' as i32
+        || *s.offset(1isize) as libc::c_int != '\u{0}' as i32
     {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     mode_tree_each_tagged(
         (*data).data,
@@ -3984,13 +3881,13 @@ unsafe extern "C" fn window_customize_change_tagged_callback(
                 ) -> (),
         ),
         c,
-        0xff000000000 as libc::c_ulonglong,
-        0 as libc::c_int,
+        0xff000000000u64,
+        0i32,
     );
     mode_tree_build((*data).data);
     mode_tree_draw((*data).data);
-    (*(*data).wp).flags |= 0x1 as libc::c_int;
-    return 0 as libc::c_int;
+    (*(*data).wp).flags |= 0x1i32;
+    return 0i32;
 }
 unsafe extern "C" fn window_customize_key(
     mut wme: *mut window_mode_entry,
@@ -4024,39 +3921,31 @@ unsafe extern "C" fn window_customize_key(
     match key {
         13 | 115 => {
             if !item.is_null() {
-                if (*item).scope as libc::c_uint
-                    == WINDOW_CUSTOMIZE_KEY as libc::c_int as libc::c_uint
-                {
+                if (*item).scope == WINDOW_CUSTOMIZE_KEY {
                     window_customize_set_key(c, data, item);
                 } else {
-                    window_customize_set_option(c, data, item, 0 as libc::c_int, 1 as libc::c_int);
+                    window_customize_set_option(c, data, item, 0i32, 1i32);
                     options_push_changes((*item).name);
                 }
                 mode_tree_build((*data).data);
             }
         }
         119 => {
-            if !(item.is_null()
-                || (*item).scope as libc::c_uint
-                    == WINDOW_CUSTOMIZE_KEY as libc::c_int as libc::c_uint)
-            {
-                window_customize_set_option(c, data, item, 0 as libc::c_int, 0 as libc::c_int);
+            if !(item.is_null() || (*item).scope == WINDOW_CUSTOMIZE_KEY) {
+                window_customize_set_option(c, data, item, 0i32, 0i32);
                 options_push_changes((*item).name);
                 mode_tree_build((*data).data);
             }
         }
         83 | 87 => {
-            if !(item.is_null()
-                || (*item).scope as libc::c_uint
-                    == WINDOW_CUSTOMIZE_KEY as libc::c_int as libc::c_uint)
-            {
-                window_customize_set_option(c, data, item, 1 as libc::c_int, 0 as libc::c_int);
+            if !(item.is_null() || (*item).scope == WINDOW_CUSTOMIZE_KEY) {
+                window_customize_set_option(c, data, item, 1i32, 0i32);
                 options_push_changes((*item).name);
                 mode_tree_build((*data).data);
             }
         }
         100 => {
-            if !(item.is_null() || (*item).idx != -(1 as libc::c_int)) {
+            if !(item.is_null() || (*item).idx != -(1i32)) {
                 xasprintf(
                     &mut prompt as *mut *mut libc::c_char,
                     b"Reset %s to default? \x00" as *const u8 as *const libc::c_char,
@@ -4083,14 +3972,14 @@ unsafe extern "C" fn window_customize_key(
                             as unsafe extern "C" fn(_: *mut libc::c_void) -> (),
                     ),
                     data as *mut libc::c_void,
-                    0x1 as libc::c_int | 0x8 as libc::c_int,
+                    0x1i32 | 0x8i32,
                 );
                 free(prompt as *mut libc::c_void);
             }
         }
         68 => {
             tagged = mode_tree_count_tagged((*data).data);
-            if !(tagged == 0 as libc::c_int as libc::c_uint) {
+            if !(tagged == 0u32) {
                 xasprintf(
                     &mut prompt as *mut *mut libc::c_char,
                     b"Reset %u tagged to default? \x00" as *const u8 as *const libc::c_char,
@@ -4117,7 +4006,7 @@ unsafe extern "C" fn window_customize_key(
                             as unsafe extern "C" fn(_: *mut libc::c_void) -> (),
                     ),
                     data as *mut libc::c_void,
-                    0x1 as libc::c_int | 0x8 as libc::c_int,
+                    0x1i32 | 0x8i32,
                 );
                 free(prompt as *mut libc::c_void);
             }
@@ -4125,7 +4014,7 @@ unsafe extern "C" fn window_customize_key(
         117 => {
             if !item.is_null() {
                 idx = (*item).idx;
-                if idx != -(1 as libc::c_int) {
+                if idx != -(1i32) {
                     xasprintf(
                         &mut prompt as *mut *mut libc::c_char,
                         b"Unset %s[%d]? \x00" as *const u8 as *const libc::c_char,
@@ -4160,14 +4049,14 @@ unsafe extern "C" fn window_customize_key(
                             as unsafe extern "C" fn(_: *mut libc::c_void) -> (),
                     ),
                     data as *mut libc::c_void,
-                    0x1 as libc::c_int | 0x8 as libc::c_int,
+                    0x1i32 | 0x8i32,
                 );
                 free(prompt as *mut libc::c_void);
             }
         }
         85 => {
             tagged = mode_tree_count_tagged((*data).data);
-            if !(tagged == 0 as libc::c_int as libc::c_uint) {
+            if !(tagged == 0u32) {
                 xasprintf(
                     &mut prompt as *mut *mut libc::c_char,
                     b"Unset %u tagged? \x00" as *const u8 as *const libc::c_char,
@@ -4194,7 +4083,7 @@ unsafe extern "C" fn window_customize_key(
                             as unsafe extern "C" fn(_: *mut libc::c_void) -> (),
                     ),
                     data as *mut libc::c_void,
-                    0x1 as libc::c_int | 0x8 as libc::c_int,
+                    0x1i32 | 0x8i32,
                 );
                 free(prompt as *mut libc::c_void);
             }
@@ -4209,6 +4098,6 @@ unsafe extern "C" fn window_customize_key(
         window_pane_reset_mode(wp);
     } else {
         mode_tree_draw((*data).data);
-        (*wp).flags |= 0x1 as libc::c_int
+        (*wp).flags |= 0x1i32
     };
 }

@@ -270,8 +270,8 @@ unsafe extern "C" fn closefrom_fallback(mut lowfd: libc::c_int) {
      */
     maxfd = sysconf(_SC_OPEN_MAX as libc::c_int);
     /* HAVE_SYSCONF */
-    if maxfd < 0 as libc::c_int as libc::c_long {
-        maxfd = 256 as libc::c_int as libc::c_long
+    if maxfd < 0i64 {
+        maxfd = 256i64
     }
     fd = lowfd as libc::c_long;
     while fd < maxfd {
@@ -295,7 +295,7 @@ pub unsafe extern "C" fn closefrom(mut lowfd: libc::c_int) {
         b"/proc/%ld/fd\x00" as *const u8 as *const libc::c_char,
         getpid() as libc::c_long,
     );
-    if len > 0 as libc::c_int
+    if len > 0i32
         && (len as size_t) < ::std::mem::size_of::<[libc::c_char; 4096]>() as libc::c_ulong
         && {
             dirp = opendir(fdpath.as_mut_ptr());
@@ -307,11 +307,11 @@ pub unsafe extern "C" fn closefrom(mut lowfd: libc::c_int) {
             if dent.is_null() {
                 break;
             }
-            fd = strtol((*dent).d_name.as_mut_ptr(), &mut endp, 10 as libc::c_int);
+            fd = strtol((*dent).d_name.as_mut_ptr(), &mut endp, 10i32);
             if (*dent).d_name.as_mut_ptr() != endp
                 && *endp as libc::c_int == '\u{0}' as i32
-                && fd >= 0 as libc::c_int as libc::c_long
-                && fd < 2147483647 as libc::c_int as libc::c_long
+                && fd >= 0i64
+                && fd < 2147483647i64
                 && fd >= lowfd as libc::c_long
                 && fd != dirfd(dirp) as libc::c_long
             {

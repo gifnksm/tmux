@@ -151,44 +151,30 @@ pub unsafe extern "C" fn grid_view_clear_history(mut gd: *mut grid, mut bg: u_in
     let mut yy: u_int = 0;
     let mut last: u_int = 0;
     /* Find the last used line. */
-    last = 0 as libc::c_int as u_int;
-    yy = 0 as libc::c_int as u_int;
+    last = 0u32;
+    yy = 0u32;
     while yy < (*gd).sy {
         gl = grid_get_line(gd, (*gd).hsize.wrapping_add(yy));
-        if (*gl).cellused != 0 as libc::c_int as libc::c_uint {
-            last = yy.wrapping_add(1 as libc::c_int as libc::c_uint)
+        if (*gl).cellused != 0u32 {
+            last = yy.wrapping_add(1u32)
         }
         yy = yy.wrapping_add(1)
     }
-    if last == 0 as libc::c_int as libc::c_uint {
-        grid_view_clear(
-            gd,
-            0 as libc::c_int as u_int,
-            0 as libc::c_int as u_int,
-            (*gd).sx,
-            (*gd).sy,
-            bg,
-        );
+    if last == 0u32 {
+        grid_view_clear(gd, 0u32, 0u32, (*gd).sx, (*gd).sy, bg);
         return;
     }
     /* Scroll the lines into the history. */
-    yy = 0 as libc::c_int as u_int;
+    yy = 0u32;
     while yy < last {
         grid_collect_history(gd);
         grid_scroll_history(gd, bg);
         yy = yy.wrapping_add(1)
     }
     if last < (*gd).sy {
-        grid_view_clear(
-            gd,
-            0 as libc::c_int as u_int,
-            0 as libc::c_int as u_int,
-            (*gd).sx,
-            (*gd).sy.wrapping_sub(last),
-            bg,
-        );
+        grid_view_clear(gd, 0u32, 0u32, (*gd).sx, (*gd).sy.wrapping_sub(last), bg);
     }
-    (*gd).hscrolled = 0 as libc::c_int as u_int;
+    (*gd).hscrolled = 0u32;
 }
 /* Clear area. */
 #[no_mangle]
@@ -212,11 +198,9 @@ pub unsafe extern "C" fn grid_view_scroll_region_up(
     mut rlower: u_int,
     mut bg: u_int,
 ) {
-    if (*gd).flags & 0x1 as libc::c_int != 0 {
+    if (*gd).flags & 0x1i32 != 0 {
         grid_collect_history(gd);
-        if rupper == 0 as libc::c_int as libc::c_uint
-            && rlower == (*gd).sy.wrapping_sub(1 as libc::c_int as libc::c_uint)
-        {
+        if rupper == 0u32 && rlower == (*gd).sy.wrapping_sub(1u32) {
             grid_scroll_history(gd, bg);
         } else {
             rupper = (*gd).hsize.wrapping_add(rupper);
@@ -229,7 +213,7 @@ pub unsafe extern "C" fn grid_view_scroll_region_up(
         grid_move_lines(
             gd,
             rupper,
-            rupper.wrapping_add(1 as libc::c_int as libc::c_uint),
+            rupper.wrapping_add(1u32),
             rlower.wrapping_sub(rupper),
             bg,
         );
@@ -247,7 +231,7 @@ pub unsafe extern "C" fn grid_view_scroll_region_down(
     rlower = (*gd).hsize.wrapping_add(rlower);
     grid_move_lines(
         gd,
-        rupper.wrapping_add(1 as libc::c_int as libc::c_uint),
+        rupper.wrapping_add(1u32),
         rupper,
         rlower.wrapping_sub(rupper),
         bg,
@@ -284,22 +268,11 @@ pub unsafe extern "C" fn grid_view_insert_lines_region(
     let mut ny2: u_int = 0;
     rlower = (*gd).hsize.wrapping_add(rlower);
     py = (*gd).hsize.wrapping_add(py);
-    ny2 = rlower
-        .wrapping_add(1 as libc::c_int as libc::c_uint)
-        .wrapping_sub(py)
-        .wrapping_sub(ny);
-    grid_move_lines(
-        gd,
-        rlower
-            .wrapping_add(1 as libc::c_int as libc::c_uint)
-            .wrapping_sub(ny2),
-        py,
-        ny2,
-        bg,
-    );
+    ny2 = rlower.wrapping_add(1u32).wrapping_sub(py).wrapping_sub(ny);
+    grid_move_lines(gd, rlower.wrapping_add(1u32).wrapping_sub(ny2), py, ny2, bg);
     grid_clear(
         gd,
-        0 as libc::c_int as u_int,
+        0u32,
         py.wrapping_add(ny2),
         (*gd).sx,
         ny.wrapping_sub(ny2),
@@ -326,7 +299,7 @@ pub unsafe extern "C" fn grid_view_delete_lines(
     );
     grid_clear(
         gd,
-        0 as libc::c_int as u_int,
+        0u32,
         sy.wrapping_sub(ny),
         (*gd).sx,
         py.wrapping_add(ny).wrapping_sub(sy.wrapping_sub(ny)),
@@ -345,14 +318,11 @@ pub unsafe extern "C" fn grid_view_delete_lines_region(
     let mut ny2: u_int = 0;
     rlower = (*gd).hsize.wrapping_add(rlower);
     py = (*gd).hsize.wrapping_add(py);
-    ny2 = rlower
-        .wrapping_add(1 as libc::c_int as libc::c_uint)
-        .wrapping_sub(py)
-        .wrapping_sub(ny);
+    ny2 = rlower.wrapping_add(1u32).wrapping_sub(py).wrapping_sub(ny);
     grid_move_lines(gd, py, py.wrapping_add(ny), ny2, bg);
     grid_clear(
         gd,
-        0 as libc::c_int as u_int,
+        0u32,
         py.wrapping_add(ny2),
         (*gd).sx,
         ny.wrapping_sub(ny2),
@@ -372,15 +342,8 @@ pub unsafe extern "C" fn grid_view_insert_cells(
     px = px;
     py = (*gd).hsize.wrapping_add(py);
     sx = (*gd).sx;
-    if px >= sx.wrapping_sub(1 as libc::c_int as libc::c_uint) {
-        grid_clear(
-            gd,
-            px,
-            py,
-            1 as libc::c_int as u_int,
-            1 as libc::c_int as u_int,
-            bg,
-        );
+    if px >= sx.wrapping_sub(1u32) {
+        grid_clear(gd, px, py, 1u32, 1u32, bg);
     } else {
         grid_move_cells(
             gd,
@@ -418,7 +381,7 @@ pub unsafe extern "C" fn grid_view_delete_cells(
         sx.wrapping_sub(nx),
         py,
         px.wrapping_add(nx).wrapping_sub(sx.wrapping_sub(nx)),
-        1 as libc::c_int as u_int,
+        1u32,
         bg,
     );
 }
@@ -432,14 +395,5 @@ pub unsafe extern "C" fn grid_view_string_cells(
 ) -> *mut libc::c_char {
     px = px;
     py = (*gd).hsize.wrapping_add(py);
-    return grid_string_cells(
-        gd,
-        px,
-        py,
-        nx,
-        0 as *mut *mut GridCell,
-        0 as libc::c_int,
-        0 as libc::c_int,
-        0 as libc::c_int,
-    );
+    return grid_string_cells(gd, px, py, nx, 0 as *mut *mut GridCell, 0i32, 0i32, 0i32);
 }

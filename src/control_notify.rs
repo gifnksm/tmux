@@ -1015,7 +1015,7 @@ pub unsafe extern "C" fn control_notify_pane_mode_changed(mut pane: libc::c_int)
     let mut c: *mut client = 0 as *mut client;
     c = clients.tqh_first;
     while !c.is_null() {
-        if !c.is_null() && (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
+        if !c.is_null() && (*c).flags & 0x2000u64 != 0 {
             control_write(
                 c,
                 b"%%pane-mode-changed %%%u\x00" as *const u8 as *const libc::c_char,
@@ -1037,9 +1037,7 @@ pub unsafe extern "C" fn control_notify_window_layout_changed(mut w: *mut window
             as *const u8 as *const libc::c_char;
     c = clients.tqh_first;
     while !c.is_null() {
-        if !(!(!c.is_null() && (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0)
-            || (*c).session.is_null())
-        {
+        if !(!(!c.is_null() && (*c).flags & 0x2000u64 != 0) || (*c).session.is_null()) {
             s = (*c).session;
             if !winlink_find_by_window_id(&mut (*s).windows, (*w).id).is_null() {
                 /*
@@ -1072,7 +1070,7 @@ pub unsafe extern "C" fn control_notify_window_pane_changed(mut w: *mut window) 
     let mut c: *mut client = 0 as *mut client;
     c = clients.tqh_first;
     while !c.is_null() {
-        if !c.is_null() && (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
+        if !c.is_null() && (*c).flags & 0x2000u64 != 0 {
             control_write(
                 c,
                 b"%%window-pane-changed @%u %%%u\x00" as *const u8 as *const libc::c_char,
@@ -1089,9 +1087,7 @@ pub unsafe extern "C" fn control_notify_window_unlinked(mut _s: *mut session, mu
     let mut cs: *mut session = 0 as *mut session;
     c = clients.tqh_first;
     while !c.is_null() {
-        if !(!(!c.is_null() && (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0)
-            || (*c).session.is_null())
-        {
+        if !(!(!c.is_null() && (*c).flags & 0x2000u64 != 0) || (*c).session.is_null()) {
             cs = (*c).session;
             if !winlink_find_by_window_id(&mut (*cs).windows, (*w).id).is_null() {
                 control_write(
@@ -1116,9 +1112,7 @@ pub unsafe extern "C" fn control_notify_window_linked(mut _s: *mut session, mut 
     let mut cs: *mut session = 0 as *mut session;
     c = clients.tqh_first;
     while !c.is_null() {
-        if !(!(!c.is_null() && (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0)
-            || (*c).session.is_null())
-        {
+        if !(!(!c.is_null() && (*c).flags & 0x2000u64 != 0) || (*c).session.is_null()) {
             cs = (*c).session;
             if !winlink_find_by_window_id(&mut (*cs).windows, (*w).id).is_null() {
                 control_write(
@@ -1143,9 +1137,7 @@ pub unsafe extern "C" fn control_notify_window_renamed(mut w: *mut window) {
     let mut cs: *mut session = 0 as *mut session;
     c = clients.tqh_first;
     while !c.is_null() {
-        if !(!(!c.is_null() && (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0)
-            || (*c).session.is_null())
-        {
+        if !(!(!c.is_null() && (*c).flags & 0x2000u64 != 0) || (*c).session.is_null()) {
             cs = (*c).session;
             if !winlink_find_by_window_id(&mut (*cs).windows, (*w).id).is_null() {
                 control_write(
@@ -1176,9 +1168,7 @@ pub unsafe extern "C" fn control_notify_client_session_changed(mut cc: *mut clie
     s = (*cc).session;
     c = clients.tqh_first;
     while !c.is_null() {
-        if !(!(!c.is_null() && (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0)
-            || (*c).session.is_null())
-        {
+        if !(!(!c.is_null() && (*c).flags & 0x2000u64 != 0) || (*c).session.is_null()) {
             if cc == c {
                 control_write(
                     c,
@@ -1204,7 +1194,7 @@ pub unsafe extern "C" fn control_notify_session_renamed(mut s: *mut session) {
     let mut c: *mut client = 0 as *mut client;
     c = clients.tqh_first;
     while !c.is_null() {
-        if !c.is_null() && (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
+        if !c.is_null() && (*c).flags & 0x2000u64 != 0 {
             control_write(
                 c,
                 b"%%session-renamed $%u %s\x00" as *const u8 as *const libc::c_char,
@@ -1220,7 +1210,7 @@ pub unsafe extern "C" fn control_notify_session_created(mut _s: *mut session) {
     let mut c: *mut client = 0 as *mut client;
     c = clients.tqh_first;
     while !c.is_null() {
-        if !c.is_null() && (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
+        if !c.is_null() && (*c).flags & 0x2000u64 != 0 {
             control_write(
                 c,
                 b"%%sessions-changed\x00" as *const u8 as *const libc::c_char,
@@ -1234,7 +1224,7 @@ pub unsafe extern "C" fn control_notify_session_closed(mut _s: *mut session) {
     let mut c: *mut client = 0 as *mut client;
     c = clients.tqh_first;
     while !c.is_null() {
-        if !c.is_null() && (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
+        if !c.is_null() && (*c).flags & 0x2000u64 != 0 {
             control_write(
                 c,
                 b"%%sessions-changed\x00" as *const u8 as *const libc::c_char,
@@ -1248,7 +1238,7 @@ pub unsafe extern "C" fn control_notify_session_window_changed(mut s: *mut sessi
     let mut c: *mut client = 0 as *mut client;
     c = clients.tqh_first;
     while !c.is_null() {
-        if !c.is_null() && (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
+        if !c.is_null() && (*c).flags & 0x2000u64 != 0 {
             control_write(
                 c,
                 b"%%session-window-changed $%u @%u\x00" as *const u8 as *const libc::c_char,

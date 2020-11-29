@@ -1112,8 +1112,8 @@ pub static mut cmd_display_message_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"acd:Ipt:F:v\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 1 as libc::c_int,
+                    lower: 0i32,
+                    upper: 1i32,
                 };
                 init
             },
@@ -1127,13 +1127,13 @@ pub static mut cmd_display_message_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_PANE,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0x4 as libc::c_int | 0x8 as libc::c_int | 0x20 as libc::c_int,
+            flags: 0x4i32 | 0x8i32 | 0x20i32,
             exec: Some(
                 cmd_display_message_exec
                     as unsafe extern "C" fn(
@@ -1172,32 +1172,30 @@ unsafe extern "C" fn cmd_display_message_exec(
     let mut template: *const libc::c_char = 0 as *const libc::c_char;
     let mut msg: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut cause: *mut libc::c_char = 0 as *mut libc::c_char;
-    let mut delay: libc::c_int = -(1 as libc::c_int);
+    let mut delay: libc::c_int = -(1i32);
     let mut ft: *mut crate::format::format_tree = 0 as *mut crate::format::format_tree;
     let mut flags: libc::c_int = 0;
-    if args_has(args, 'I' as i32 as u_char) != 0 {
-        if window_pane_start_input(wp, item, &mut cause) != 0 as libc::c_int {
+    if args_has(args, 'I' as u_char) != 0 {
+        if window_pane_start_input(wp, item, &mut cause) != 0i32 {
             cmdq_error(item, b"%s\x00" as *const u8 as *const libc::c_char, cause);
             free(cause as *mut libc::c_void);
             return CMD_RETURN_ERROR;
         }
         return CMD_RETURN_WAIT;
     }
-    if args_has(args, 'F' as i32 as u_char) != 0 && (*args).argc != 0 as libc::c_int {
+    if args_has(args, 'F' as u_char) != 0 && (*args).argc != 0i32 {
         cmdq_error(
             item,
             b"only one of -F or argument must be given\x00" as *const u8 as *const libc::c_char,
         );
         return CMD_RETURN_ERROR;
     }
-    if args_has(args, 'd' as i32 as u_char) != 0 {
+    if args_has(args, 'd' as u_char) != 0 {
         delay = args_strtonum(
             args,
-            'd' as i32 as u_char,
-            0 as libc::c_int as libc::c_longlong,
-            (2147483647 as libc::c_int as libc::c_uint)
-                .wrapping_mul(2 as libc::c_uint)
-                .wrapping_add(1 as libc::c_uint) as libc::c_longlong,
+            'd' as u_char,
+            0i64,
+            (2147483647u32).wrapping_mul(2u32).wrapping_add(1u32) as libc::c_longlong,
             &mut cause,
         ) as libc::c_int;
         if !cause.is_null() {
@@ -1210,9 +1208,9 @@ unsafe extern "C" fn cmd_display_message_exec(
             return CMD_RETURN_ERROR;
         }
     }
-    template = args_get(args, 'F' as i32 as u_char);
-    if (*args).argc != 0 as libc::c_int {
-        template = *(*args).argv.offset(0 as libc::c_int as isize)
+    template = args_get(args, 'F' as u_char);
+    if (*args).argc != 0i32 {
+        template = *(*args).argv.offset(0isize)
     }
     if template.is_null() {
         template =
@@ -1230,14 +1228,14 @@ unsafe extern "C" fn cmd_display_message_exec(
     } else {
         c = cmd_find_best_client(s)
     }
-    if args_has(args, 'v' as i32 as u_char) != 0 {
-        flags = 0x8 as libc::c_int
+    if args_has(args, 'v' as u_char) != 0 {
+        flags = 0x8i32
     } else {
-        flags = 0 as libc::c_int
+        flags = 0i32
     }
-    ft = format_create(cmdq_get_client(item), item, 0 as libc::c_int, flags);
+    ft = format_create(cmdq_get_client(item), item, 0i32, flags);
     format_defaults(ft, c, s, wl, wp);
-    if args_has(args, 'a' as i32 as u_char) != 0 {
+    if args_has(args, 'a' as u_char) != 0 {
         format_each(
             ft,
             Some(
@@ -1253,13 +1251,13 @@ unsafe extern "C" fn cmd_display_message_exec(
         return CMD_RETURN_NORMAL;
     }
     msg = format_expand_time(ft, template);
-    if args_has(args, 'p' as i32 as u_char) != 0 {
+    if args_has(args, 'p' as u_char) != 0 {
         cmdq_print(item, b"%s\x00" as *const u8 as *const libc::c_char, msg);
     } else if !tc.is_null() {
         status_message_set(
             tc,
             delay,
-            0 as libc::c_int,
+            0i32,
             b"%s\x00" as *const u8 as *const libc::c_char,
             msg,
         );

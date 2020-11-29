@@ -1054,7 +1054,7 @@ pub struct C2RustUnnamed_32 {
  */
 /* Find the bottom-right cell. */
 unsafe extern "C" fn layout_find_bottomright(mut lc: *mut layout_cell) -> *mut layout_cell {
-    if (*lc).type_0 as libc::c_uint == LAYOUT_WINDOWPANE as libc::c_int as libc::c_uint {
+    if (*lc).type_0 == LAYOUT_WINDOWPANE {
         return lc;
     }
     lc = *(*((*lc).cells.tqh_last as *mut layout_cells)).tqh_last;
@@ -1063,11 +1063,9 @@ unsafe extern "C" fn layout_find_bottomright(mut lc: *mut layout_cell) -> *mut l
 /* Calculate layout checksum. */
 unsafe extern "C" fn layout_checksum(mut layout: *const libc::c_char) -> u_short {
     let mut csum: u_short = 0;
-    csum = 0 as libc::c_int as u_short;
+    csum = 0u16;
     while *layout as libc::c_int != '\u{0}' as i32 {
-        csum = ((csum as libc::c_int >> 1 as libc::c_int)
-            + ((csum as libc::c_int & 1 as libc::c_int) << 15 as libc::c_int))
-            as u_short;
+        csum = ((csum as libc::c_int >> 1i32) + ((csum as libc::c_int & 1i32) << 15i32)) as u_short;
         csum = (csum as libc::c_int + *layout as libc::c_int) as u_short;
         layout = layout.offset(1)
     }
@@ -1078,12 +1076,12 @@ unsafe extern "C" fn layout_checksum(mut layout: *const libc::c_char) -> u_short
 pub unsafe extern "C" fn layout_dump(mut root: *mut layout_cell) -> *mut libc::c_char {
     let mut layout: [libc::c_char; 8192] = [0; 8192];
     let mut out: *mut libc::c_char = 0 as *mut libc::c_char;
-    *layout.as_mut_ptr() = '\u{0}' as i32 as libc::c_char;
+    *layout.as_mut_ptr() = '\u{0}' as libc::c_char;
     if layout_append(
         root,
         layout.as_mut_ptr(),
         ::std::mem::size_of::<[libc::c_char; 8192]>() as libc::c_ulong,
-    ) != 0 as libc::c_int
+    ) != 0i32
     {
         return 0 as *mut libc::c_char;
     }
@@ -1105,8 +1103,8 @@ unsafe extern "C" fn layout_append(
     let mut tmp: [libc::c_char; 64] = [0; 64];
     let mut tmplen: size_t = 0;
     let mut brackets: *const libc::c_char = b"][\x00" as *const u8 as *const libc::c_char;
-    if len == 0 as libc::c_int as libc::c_ulong {
-        return -(1 as libc::c_int);
+    if len == 0u64 {
+        return -(1i32);
     }
     if !(*lc).wp.is_null() {
         tmplen = xsnprintf(
@@ -1130,17 +1128,14 @@ unsafe extern "C" fn layout_append(
             (*lc).yoff,
         ) as size_t
     }
-    if tmplen
-        > (::std::mem::size_of::<[libc::c_char; 64]>() as libc::c_ulong)
-            .wrapping_sub(1 as libc::c_int as libc::c_ulong)
-    {
-        return -(1 as libc::c_int);
+    if tmplen > (::std::mem::size_of::<[libc::c_char; 64]>() as libc::c_ulong).wrapping_sub(1u64) {
+        return -(1i32);
     }
     if strlcat(buf, tmp.as_mut_ptr(), len) >= len {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     let mut current_block_21: u64;
-    match (*lc).type_0 as libc::c_uint {
+    match (*lc).type_0 {
         0 => {
             brackets = b"}{\x00" as *const u8 as *const libc::c_char;
             current_block_21 = 10584518304474786328;
@@ -1156,70 +1151,65 @@ unsafe extern "C" fn layout_append(
         10584518304474786328 =>
         /* FALLTHROUGH */
         {
-            if strlcat(buf, &*brackets.offset(1 as libc::c_int as isize), len) >= len {
-                return -(1 as libc::c_int);
+            if strlcat(buf, &*brackets.offset(1isize), len) >= len {
+                return -(1i32);
             }
             lcchild = (*lc).cells.tqh_first;
             while !lcchild.is_null() {
-                if layout_append(lcchild, buf, len) != 0 as libc::c_int {
-                    return -(1 as libc::c_int);
+                if layout_append(lcchild, buf, len) != 0i32 {
+                    return -(1i32);
                 }
                 if strlcat(buf, b",\x00" as *const u8 as *const libc::c_char, len) >= len {
-                    return -(1 as libc::c_int);
+                    return -(1i32);
                 }
                 lcchild = (*lcchild).entry.tqe_next
             }
-            *buf.offset(strlen(buf).wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize) =
-                *brackets.offset(0 as libc::c_int as isize)
+            *buf.offset(strlen(buf).wrapping_sub(1u64) as isize) = *brackets.offset(0isize)
         }
         _ => {}
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 /* Check layout sizes fit. */
 unsafe extern "C" fn layout_check(mut lc: *mut layout_cell) -> libc::c_int {
     let mut lcchild: *mut layout_cell = 0 as *mut layout_cell;
-    let mut n: u_int = 0 as libc::c_int as u_int;
-    match (*lc).type_0 as libc::c_uint {
+    let mut n: u_int = 0u32;
+    match (*lc).type_0 {
         0 => {
             lcchild = (*lc).cells.tqh_first;
             while !lcchild.is_null() {
                 if (*lcchild).sy != (*lc).sy {
-                    return 0 as libc::c_int;
+                    return 0i32;
                 }
                 if layout_check(lcchild) == 0 {
-                    return 0 as libc::c_int;
+                    return 0i32;
                 }
-                n = (n as libc::c_uint)
-                    .wrapping_add((*lcchild).sx.wrapping_add(1 as libc::c_int as libc::c_uint))
-                    as u_int as u_int;
+                n = (n).wrapping_add((*lcchild).sx.wrapping_add(1u32));
                 lcchild = (*lcchild).entry.tqe_next
             }
-            if n.wrapping_sub(1 as libc::c_int as libc::c_uint) != (*lc).sx {
-                return 0 as libc::c_int;
+            if n.wrapping_sub(1u32) != (*lc).sx {
+                return 0i32;
             }
         }
         1 => {
             lcchild = (*lc).cells.tqh_first;
             while !lcchild.is_null() {
                 if (*lcchild).sx != (*lc).sx {
-                    return 0 as libc::c_int;
+                    return 0i32;
                 }
                 if layout_check(lcchild) == 0 {
-                    return 0 as libc::c_int;
+                    return 0i32;
                 }
-                n = (n as libc::c_uint)
-                    .wrapping_add((*lcchild).sy.wrapping_add(1 as libc::c_int as libc::c_uint))
-                    as u_int as u_int;
+                n = (n).wrapping_add((*lcchild).sy.wrapping_add(1u32));
                 lcchild = (*lcchild).entry.tqe_next
             }
-            if n.wrapping_sub(1 as libc::c_int as libc::c_uint) != (*lc).sy {
-                return 0 as libc::c_int;
+            if n.wrapping_sub(1u32) != (*lc).sy {
+                return 0i32;
             }
         }
         2 | _ => {}
     }
-    return 1 as libc::c_int;
+    return 1i32;
 }
 /* Parse a layout string and arrange window as layout. */
 #[no_mangle]
@@ -1233,26 +1223,26 @@ pub unsafe extern "C" fn layout_parse(
     let mut wp: *mut window_pane = 0 as *mut window_pane;
     let mut npanes: u_int = 0;
     let mut ncells: u_int = 0;
-    let mut sx: u_int = 0 as libc::c_int as u_int;
-    let mut sy: u_int = 0 as libc::c_int as u_int;
+    let mut sx: u_int = 0u32;
+    let mut sy: u_int = 0u32;
     let mut csum: u_short = 0;
     /* Check validity. */
     if sscanf(
         layout,
         b"%hx,\x00" as *const u8 as *const libc::c_char,
         &mut csum as *mut u_short,
-    ) != 1 as libc::c_int
+    ) != 1i32
     {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
-    layout = layout.offset(5 as libc::c_int as isize);
+    layout = layout.offset(5isize);
     if csum as libc::c_int != layout_checksum(layout) as libc::c_int {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     /* Build the layout. */
     lc = layout_construct(0 as *mut layout_cell, &mut layout);
     if lc.is_null() {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     if *layout as libc::c_int != '\u{0}' as i32 {
         current_block = 9981732256371745227;
@@ -1263,7 +1253,7 @@ pub unsafe extern "C" fn layout_parse(
         match current_block {
             9981732256371745227 => {
                 layout_free_cell(lc);
-                return -(1 as libc::c_int);
+                return -(1i32);
             }
             _ =>
             /* Check this window will fit into the layout. */
@@ -1280,33 +1270,26 @@ pub unsafe extern "C" fn layout_parse(
                      * an incorrect top cell size - if it is larger than the top child then
                      * correct that (if this is still wrong the check code will catch it).
                      */
-                    match (*lc).type_0 as libc::c_uint {
+                    match (*lc).type_0 {
                         0 => {
                             lcchild = (*lc).cells.tqh_first;
                             while !lcchild.is_null() {
-                                sy = (*lcchild).sy.wrapping_add(1 as libc::c_int as libc::c_uint);
-                                sx = (sx as libc::c_uint).wrapping_add(
-                                    (*lcchild).sx.wrapping_add(1 as libc::c_int as libc::c_uint),
-                                ) as u_int as u_int;
+                                sy = (*lcchild).sy.wrapping_add(1u32);
+                                sx = (sx).wrapping_add((*lcchild).sx.wrapping_add(1u32));
                                 lcchild = (*lcchild).entry.tqe_next
                             }
                         }
                         1 => {
                             lcchild = (*lc).cells.tqh_first;
                             while !lcchild.is_null() {
-                                sx = (*lcchild).sx.wrapping_add(1 as libc::c_int as libc::c_uint);
-                                sy = (sy as libc::c_uint).wrapping_add(
-                                    (*lcchild).sy.wrapping_add(1 as libc::c_int as libc::c_uint),
-                                ) as u_int as u_int;
+                                sx = (*lcchild).sx.wrapping_add(1u32);
+                                sy = (sy).wrapping_add((*lcchild).sy.wrapping_add(1u32));
                                 lcchild = (*lcchild).entry.tqe_next
                             }
                         }
                         2 | _ => {}
                     }
-                    if (*lc).type_0 as libc::c_uint
-                        != LAYOUT_WINDOWPANE as libc::c_int as libc::c_uint
-                        && ((*lc).sx != sx || (*lc).sy != sy)
-                    {
+                    if (*lc).type_0 != LAYOUT_WINDOWPANE && ((*lc).sx != sx || (*lc).sy != sy) {
                         log_debug(
                             b"fix layout %u,%u to %u,%u\x00" as *const u8 as *const libc::c_char,
                             (*lc).sx,
@@ -1320,23 +1303,17 @@ pub unsafe extern "C" fn layout_parse(
                                 b"layout_parse\x00",
                             ))
                             .as_ptr(),
-                            0 as libc::c_int as u_int,
+                            0u32,
                         );
-                        (*lc).sx = sx.wrapping_sub(1 as libc::c_int as libc::c_uint);
-                        (*lc).sy = sy.wrapping_sub(1 as libc::c_int as libc::c_uint)
+                        (*lc).sx = sx.wrapping_sub(1u32);
+                        (*lc).sy = sy.wrapping_sub(1u32)
                     }
                     /* Check the new layout. */
                     if layout_check(lc) == 0 {
-                        return -(1 as libc::c_int);
+                        return -(1i32);
                     }
                     /* Resize to the layout size. */
-                    window_resize(
-                        w,
-                        (*lc).sx,
-                        (*lc).sy,
-                        -(1 as libc::c_int),
-                        -(1 as libc::c_int),
-                    );
+                    window_resize(w, (*lc).sx, (*lc).sy, -(1i32), -(1i32));
                     /* Destroy the old layout and swap to the new. */
                     layout_free_cell((*w).layout_root);
                     (*w).layout_root = lc;
@@ -1353,13 +1330,13 @@ pub unsafe extern "C" fn layout_parse(
                             b"layout_parse\x00",
                         ))
                         .as_ptr(),
-                        0 as libc::c_int as u_int,
+                        0u32,
                     );
                     notify_window(
                         b"window-layout-changed\x00" as *const u8 as *const libc::c_char,
                         w,
                     );
-                    return 0 as libc::c_int;
+                    return 0i32;
                 } else {
                     /* Fewer panes than cells - close the bottom right. */
                     lcchild = layout_find_bottomright(lc);
@@ -1373,7 +1350,7 @@ pub unsafe extern "C" fn layout_parse(
 /* Assign panes into cells. */
 unsafe extern "C" fn layout_assign(mut wp: *mut *mut window_pane, mut lc: *mut layout_cell) {
     let mut lcchild: *mut layout_cell = 0 as *mut layout_cell;
-    match (*lc).type_0 as libc::c_uint {
+    match (*lc).type_0 {
         2 => {
             layout_make_leaf(lc, *wp);
             *wp = (**wp).entry.tqe_next;
@@ -1404,7 +1381,7 @@ unsafe extern "C" fn layout_construct(
     let mut yoff: u_int = 0;
     let mut saved: *const libc::c_char = 0 as *const libc::c_char;
     if *(*__ctype_b_loc()).offset(**layout as u_char as libc::c_int as isize) as libc::c_int
-        & _ISdigit as libc::c_int as libc::c_ushort as libc::c_int
+        & _ISdigit as libc::c_ushort as libc::c_int
         == 0
     {
         return 0 as *mut layout_cell;
@@ -1416,12 +1393,12 @@ unsafe extern "C" fn layout_construct(
         &mut sy as *mut u_int,
         &mut xoff as *mut u_int,
         &mut yoff as *mut u_int,
-    ) != 4 as libc::c_int
+    ) != 4i32
     {
         return 0 as *mut layout_cell;
     }
     while *(*__ctype_b_loc()).offset(**layout as u_char as libc::c_int as isize) as libc::c_int
-        & _ISdigit as libc::c_int as libc::c_ushort as libc::c_int
+        & _ISdigit as libc::c_ushort as libc::c_int
         != 0
     {
         *layout = (*layout).offset(1)
@@ -1431,7 +1408,7 @@ unsafe extern "C" fn layout_construct(
     }
     *layout = (*layout).offset(1);
     while *(*__ctype_b_loc()).offset(**layout as u_char as libc::c_int as isize) as libc::c_int
-        & _ISdigit as libc::c_int as libc::c_ushort as libc::c_int
+        & _ISdigit as libc::c_ushort as libc::c_int
         != 0
     {
         *layout = (*layout).offset(1)
@@ -1441,7 +1418,7 @@ unsafe extern "C" fn layout_construct(
     }
     *layout = (*layout).offset(1);
     while *(*__ctype_b_loc()).offset(**layout as u_char as libc::c_int as isize) as libc::c_int
-        & _ISdigit as libc::c_int as libc::c_ushort as libc::c_int
+        & _ISdigit as libc::c_ushort as libc::c_int
         != 0
     {
         *layout = (*layout).offset(1)
@@ -1451,7 +1428,7 @@ unsafe extern "C" fn layout_construct(
     }
     *layout = (*layout).offset(1);
     while *(*__ctype_b_loc()).offset(**layout as u_char as libc::c_int as isize) as libc::c_int
-        & _ISdigit as libc::c_int as libc::c_ushort as libc::c_int
+        & _ISdigit as libc::c_ushort as libc::c_int
         != 0
     {
         *layout = (*layout).offset(1)
@@ -1460,7 +1437,7 @@ unsafe extern "C" fn layout_construct(
         saved = *layout;
         *layout = (*layout).offset(1);
         while *(*__ctype_b_loc()).offset(**layout as u_char as libc::c_int as isize) as libc::c_int
-            & _ISdigit as libc::c_int as libc::c_ushort as libc::c_int
+            & _ISdigit as libc::c_ushort as libc::c_int
             != 0
         {
             *layout = (*layout).offset(1)
@@ -1509,7 +1486,7 @@ unsafe extern "C" fn layout_construct(
                     current_block = 14072441030219150333;
                     continue;
                 }
-                match (*lc).type_0 as libc::c_uint {
+                match (*lc).type_0 {
                     0 => {
                         if **layout as libc::c_int != '}' as i32 {
                             current_block = 6881314151732327134;

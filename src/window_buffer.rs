@@ -1323,7 +1323,7 @@ static mut window_buffer_menu_items: [menu_item; 12] = [
     {
         let mut init = menu_item {
             name: b"\x00" as *const u8 as *const libc::c_char,
-            key: 0xff000000000 as libc::c_ulonglong,
+            key: 0xff000000000u64,
             command: 0 as *const libc::c_char,
         };
         init
@@ -1355,7 +1355,7 @@ static mut window_buffer_menu_items: [menu_item; 12] = [
     {
         let mut init = menu_item {
             name: b"\x00" as *const u8 as *const libc::c_char,
-            key: 0xff000000000 as libc::c_ulonglong,
+            key: 0xff000000000u64,
             command: 0 as *const libc::c_char,
         };
         init
@@ -1379,7 +1379,7 @@ static mut window_buffer_menu_items: [menu_item; 12] = [
     {
         let mut init = menu_item {
             name: b"\x00" as *const u8 as *const libc::c_char,
-            key: 0xff000000000 as libc::c_ulonglong,
+            key: 0xff000000000u64,
             command: 0 as *const libc::c_char,
         };
         init
@@ -1395,7 +1395,7 @@ static mut window_buffer_menu_items: [menu_item; 12] = [
     {
         let mut init = menu_item {
             name: 0 as *const libc::c_char,
-            key: 0xff000000000 as libc::c_ulonglong,
+            key: 0xff000000000u64,
             command: 0 as *const libc::c_char,
         };
         init
@@ -1444,24 +1444,21 @@ static mut window_buffer_sort_list: [*const libc::c_char; 3] = [
     b"name\x00" as *const u8 as *const libc::c_char,
     b"size\x00" as *const u8 as *const libc::c_char,
 ];
-static mut window_buffer_sort: *mut mode_tree_sort_criteria =
-    0 as *const mode_tree_sort_criteria as *mut mode_tree_sort_criteria;
+static mut window_buffer_sort: *mut mode_tree_sort_criteria = 0 as *mut mode_tree_sort_criteria;
 unsafe extern "C" fn window_buffer_add_item(
     mut data: *mut window_buffer_modedata,
 ) -> *mut window_buffer_itemdata {
     let mut item: *mut window_buffer_itemdata = 0 as *mut window_buffer_itemdata;
     (*data).item_list = xreallocarray(
         (*data).item_list as *mut libc::c_void,
-        (*data)
-            .item_size
-            .wrapping_add(1 as libc::c_int as libc::c_uint) as size_t,
+        (*data).item_size.wrapping_add(1u32) as size_t,
         ::std::mem::size_of::<*mut window_buffer_itemdata>() as libc::c_ulong,
     ) as *mut *mut window_buffer_itemdata;
     let fresh0 = (*data).item_size;
     (*data).item_size = (*data).item_size.wrapping_add(1);
     let ref mut fresh1 = *(*data).item_list.offset(fresh0 as isize);
     *fresh1 = xcalloc(
-        1 as libc::c_int as size_t,
+        1u64,
         ::std::mem::size_of::<window_buffer_itemdata>() as libc::c_ulong,
     ) as *mut window_buffer_itemdata;
     item = *fresh1;
@@ -1477,14 +1474,14 @@ unsafe extern "C" fn window_buffer_cmp(
 ) -> libc::c_int {
     let mut a: *const *const window_buffer_itemdata = a0 as *const *const window_buffer_itemdata;
     let mut b: *const *const window_buffer_itemdata = b0 as *const *const window_buffer_itemdata;
-    let mut result: libc::c_int = 0 as libc::c_int;
-    if (*window_buffer_sort).field == WINDOW_BUFFER_BY_TIME as libc::c_int as libc::c_uint {
+    let mut result: libc::c_int = 0i32;
+    if (*window_buffer_sort).field == WINDOW_BUFFER_BY_TIME {
         result = (**b).order.wrapping_sub((**a).order) as libc::c_int
-    } else if (*window_buffer_sort).field == WINDOW_BUFFER_BY_SIZE as libc::c_int as libc::c_uint {
+    } else if (*window_buffer_sort).field == WINDOW_BUFFER_BY_SIZE {
         result = (**b).size.wrapping_sub((**a).size) as libc::c_int
     }
     /* Use WINDOW_BUFFER_BY_NAME as default order and tie breaker. */
-    if result == 0 as libc::c_int {
+    if result == 0i32 {
         result = strcmp((**a).name, (**b).name)
     }
     if (*window_buffer_sort).reversed != 0 {
@@ -1508,14 +1505,14 @@ unsafe extern "C" fn window_buffer_build(
     let mut s: *mut session = 0 as *mut session;
     let mut wl: *mut winlink = 0 as *mut winlink;
     let mut wp: *mut window_pane = 0 as *mut window_pane;
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < (*data).item_size {
         window_buffer_free_item(*(*data).item_list.offset(i as isize));
         i = i.wrapping_add(1)
     }
     free((*data).item_list as *mut libc::c_void);
     (*data).item_list = 0 as *mut *mut window_buffer_itemdata;
-    (*data).item_size = 0 as libc::c_int as u_int;
+    (*data).item_size = 0u32;
     pb = 0 as *mut crate::paste::paste_buffer;
     loop {
         pb = paste_walk(pb);
@@ -1546,7 +1543,7 @@ unsafe extern "C" fn window_buffer_build(
         wp = (*data).fs.wp
     }
     let mut current_block_33: u64;
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < (*data).item_size {
         item = *(*data).item_list.offset(i as isize);
         pb = paste_get_name((*item).name);
@@ -1554,8 +1551,8 @@ unsafe extern "C" fn window_buffer_build(
             ft = format_create(
                 0 as *mut client,
                 0 as *mut crate::cmd_queue::cmdq_item,
-                0 as libc::c_int,
-                0 as libc::c_int,
+                0i32,
+                0i32,
             );
             format_defaults(ft, 0 as *mut client, s, wl, wp);
             format_defaults_paste_buffer(ft, pb);
@@ -1583,7 +1580,7 @@ unsafe extern "C" fn window_buffer_build(
                         (*item).order as uint64_t,
                         (*item).name,
                         text,
-                        -(1 as libc::c_int),
+                        -(1i32),
                     );
                     free(text as *mut libc::c_void);
                     format_free(ft);
@@ -1616,7 +1613,7 @@ unsafe extern "C" fn window_buffer_draw(
     }
     end = paste_buffer_data(pb, &mut psize);
     pdata = end;
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < sy {
         start = end;
         while end != pdata.offset(psize as isize) && *end as libc::c_int != '\n' as i32 {
@@ -1624,22 +1621,21 @@ unsafe extern "C" fn window_buffer_draw(
         }
         buf = xreallocarray(
             buf as *mut libc::c_void,
-            4 as libc::c_int as size_t,
-            (end.wrapping_offset_from(start) as libc::c_long + 1 as libc::c_int as libc::c_long)
-                as size_t,
+            4u64,
+            (end.wrapping_offset_from(start) as libc::c_long + 1i64) as size_t,
         ) as *mut libc::c_char;
         utf8_strvis(
             buf,
             start,
-            end.wrapping_offset_from(start) as libc::c_long as size_t,
-            0x1 as libc::c_int | 0x2 as libc::c_int | 0x8 as libc::c_int,
+            end.wrapping_offset_from(start) as size_t,
+            0x1i32 | 0x2i32 | 0x8i32,
         );
         if *buf as libc::c_int != '\u{0}' as i32 {
             screen_write_cursormove(
                 ctx,
                 cx as libc::c_int,
                 cy.wrapping_add(i) as libc::c_int,
-                0 as libc::c_int,
+                0i32,
             );
             screen_write_nputs(
                 ctx,
@@ -1668,10 +1664,10 @@ unsafe extern "C" fn window_buffer_search(
     let mut bufsize: size_t = 0;
     pb = paste_get_name((*item).name);
     if pb.is_null() {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     if !strstr((*item).name, ss).is_null() {
-        return 1 as libc::c_int;
+        return 1i32;
     }
     bufdata = paste_buffer_data(pb, &mut bufsize);
     return (memmem(
@@ -1727,23 +1723,23 @@ unsafe extern "C" fn window_buffer_init(
     let mut data: *mut window_buffer_modedata = 0 as *mut window_buffer_modedata;
     let mut s: *mut screen = 0 as *mut screen;
     data = xcalloc(
-        1 as libc::c_int as size_t,
+        1u64,
         ::std::mem::size_of::<window_buffer_modedata>() as libc::c_ulong,
     ) as *mut window_buffer_modedata;
     (*wme).data = data as *mut libc::c_void;
     (*data).wp = wp;
     cmd_find_copy_state(&mut (*data).fs, fs);
-    if args.is_null() || args_has(args, 'F' as i32 as u_char) == 0 {
+    if args.is_null() || args_has(args, 'F' as u_char) == 0 {
         (*data).format = xstrdup(
             b"#{t/p:buffer_created}: #{buffer_sample}\x00" as *const u8 as *const libc::c_char,
         )
     } else {
-        (*data).format = xstrdup(args_get(args, 'F' as i32 as u_char))
+        (*data).format = xstrdup(args_get(args, 'F' as u_char))
     }
-    if args.is_null() || (*args).argc == 0 as libc::c_int {
+    if args.is_null() || (*args).argc == 0i32 {
         (*data).command = xstrdup(b"paste-buffer -b \'%%\'\x00" as *const u8 as *const libc::c_char)
     } else {
-        (*data).command = xstrdup(*(*args).argv.offset(0 as libc::c_int as isize))
+        (*data).command = xstrdup(*(*args).argv.offset(0isize))
     }
     (*data).data = mode_tree_start(
         wp,
@@ -1800,7 +1796,7 @@ unsafe extern "C" fn window_buffer_free(mut wme: *mut window_mode_entry) {
         return;
     }
     mode_tree_free((*data).data);
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < (*data).item_size {
         window_buffer_free_item(*(*data).item_list.offset(i as isize));
         i = i.wrapping_add(1)
@@ -1828,7 +1824,7 @@ unsafe extern "C" fn window_buffer_do_delete(
     let mut item: *mut window_buffer_itemdata = itemdata as *mut window_buffer_itemdata;
     let mut pb: *mut crate::paste::paste_buffer = 0 as *mut crate::paste::paste_buffer;
     if item == mode_tree_get_current((*data).data) as *mut window_buffer_itemdata {
-        mode_tree_down((*data).data, 0 as libc::c_int);
+        mode_tree_down((*data).data, 0i32);
     }
     pb = paste_get_name((*item).name);
     if !pb.is_null() {
@@ -1863,7 +1859,7 @@ unsafe extern "C" fn window_buffer_edit_close_cb(
     let mut wp: *mut window_pane = 0 as *mut window_pane;
     let mut data: *mut window_buffer_modedata = 0 as *mut window_buffer_modedata;
     let mut wme: *mut window_mode_entry = 0 as *mut window_mode_entry;
-    if buf.is_null() || len == 0 as libc::c_int as libc::c_ulong {
+    if buf.is_null() || len == 0u64 {
         window_buffer_finish_edit(ed);
         return;
     }
@@ -1874,15 +1870,12 @@ unsafe extern "C" fn window_buffer_edit_close_cb(
     }
     oldbuf = paste_buffer_data(pb, &mut oldlen);
     if oldlen != '\u{0}' as i32 as libc::c_ulong
-        && *oldbuf.offset(oldlen.wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize)
-            as libc::c_int
-            != '\n' as i32
-        && *buf.offset(len.wrapping_sub(1 as libc::c_int as libc::c_ulong) as isize) as libc::c_int
-            == '\n' as i32
+        && *oldbuf.offset(oldlen.wrapping_sub(1u64) as isize) as libc::c_int != '\n' as i32
+        && *buf.offset(len.wrapping_sub(1u64) as isize) as libc::c_int == '\n' as i32
     {
         len = len.wrapping_sub(1)
     }
-    if len != 0 as libc::c_int as libc::c_ulong {
+    if len != 0u64 {
         paste_replace(pb, buf, len);
     }
     wp = window_pane_find_by_id((*ed).wp_id);
@@ -1893,7 +1886,7 @@ unsafe extern "C" fn window_buffer_edit_close_cb(
             mode_tree_build((*data).data);
             mode_tree_draw((*data).data);
         }
-        (*wp).flags |= 0x1 as libc::c_int
+        (*wp).flags |= 0x1i32
     }
     window_buffer_finish_edit(ed);
 }
@@ -1912,7 +1905,7 @@ unsafe extern "C" fn window_buffer_start_edit(
     }
     buf = paste_buffer_data(pb, &mut len);
     ed = xcalloc(
-        1 as libc::c_int as size_t,
+        1u64,
         ::std::mem::size_of::<window_buffer_editdata>() as libc::c_ulong,
     ) as *mut window_buffer_editdata;
     (*ed).wp_id = (*(*data).wp).id;
@@ -1931,7 +1924,7 @@ unsafe extern "C" fn window_buffer_start_edit(
                 ) -> (),
         ),
         ed as *mut libc::c_void,
-    ) != 0 as libc::c_int
+    ) != 0i32
     {
         window_buffer_finish_edit(ed);
     };
@@ -1974,7 +1967,7 @@ unsafe extern "C" fn window_buffer_key(
                 ),
                 c,
                 key,
-                0 as libc::c_int,
+                0i32,
             );
             mode_tree_build(mtd);
         }
@@ -1992,14 +1985,14 @@ unsafe extern "C" fn window_buffer_key(
                 ),
                 c,
                 key,
-                0 as libc::c_int,
+                0i32,
             );
-            finished = 1 as libc::c_int
+            finished = 1i32
         }
         112 | 13 => {
             item = mode_tree_get_current(mtd) as *mut window_buffer_itemdata;
             window_buffer_do_paste(data as *mut libc::c_void, item as *mut libc::c_void, c, key);
-            finished = 1 as libc::c_int
+            finished = 1i32
         }
         _ => {}
     }
@@ -2007,6 +2000,6 @@ unsafe extern "C" fn window_buffer_key(
         window_pane_reset_mode(wp);
     } else {
         mode_tree_draw(mtd);
-        (*wp).flags |= 0x1 as libc::c_int
+        (*wp).flags |= 0x1i32
     };
 }

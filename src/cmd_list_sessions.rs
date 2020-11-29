@@ -1089,8 +1089,8 @@ pub static mut cmd_list_sessions_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"F:f:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -1105,7 +1105,7 @@ pub static mut cmd_list_sessions_entry: cmd_entry = {
                 type_0: CMD_FIND_PANE,
                 flags: 0,
             },
-            flags: 0x4 as libc::c_int,
+            flags: 0x4i32,
             exec: Some(
                 cmd_list_sessions_exec
                     as unsafe extern "C" fn(
@@ -1130,22 +1130,17 @@ unsafe extern "C" fn cmd_list_sessions_exec(
     let mut line: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut expanded: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut flag: libc::c_int = 0;
-    template = args_get(args, 'F' as i32 as u_char);
+    template = args_get(args, 'F' as u_char);
     if template.is_null() {
         template =
             b"#{session_name}: #{session_windows} windows (created #{t:session_created})#{?session_grouped, (group ,}#{session_group}#{?session_grouped,),}#{?session_attached, (attached),}\x00"
                 as *const u8 as *const libc::c_char
     }
-    filter = args_get(args, 'f' as i32 as u_char);
-    n = 0 as libc::c_int as u_int;
-    s = sessions_RB_MINMAX(&mut sessions, -(1 as libc::c_int));
+    filter = args_get(args, 'f' as u_char);
+    n = 0u32;
+    s = sessions_RB_MINMAX(&mut sessions, -(1i32));
     while !s.is_null() {
-        ft = format_create(
-            cmdq_get_client(item),
-            item,
-            0 as libc::c_int,
-            0 as libc::c_int,
-        );
+        ft = format_create(cmdq_get_client(item), item, 0i32, 0i32);
         format_add(
             ft,
             b"line\x00" as *const u8 as *const libc::c_char,
@@ -1164,7 +1159,7 @@ unsafe extern "C" fn cmd_list_sessions_exec(
             flag = format_true(expanded);
             free(expanded as *mut libc::c_void);
         } else {
-            flag = 1 as libc::c_int
+            flag = 1i32
         }
         if flag != 0 {
             line = format_expand(ft, template);

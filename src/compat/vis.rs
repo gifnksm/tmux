@@ -42,41 +42,39 @@ pub unsafe extern "C" fn vis(
     mut nextc: libc::c_int,
 ) -> *mut libc::c_char {
     let mut current_block: u64;
-    if (c == '\\' as i32 || flag & 0x400 as libc::c_int == 0 as libc::c_int)
-        && (c as u_int
-            <= (127 as libc::c_int * 2 as libc::c_int + 1 as libc::c_int) as libc::c_uint
-            && c as u_char as libc::c_int & !(0x7f as libc::c_int) == 0 as libc::c_int
+    if (c == '\\' as i32 || flag & 0x400i32 == 0i32)
+        && (c as u_int <= (127i32 * 2i32 + 1i32) as libc::c_uint
+            && c as u_char as libc::c_int & !(0x7fi32) == 0i32
             && (c != '*' as i32 && c != '?' as i32 && c != '[' as i32 && c != '#' as i32
-                || flag & 0x100 as libc::c_int == 0 as libc::c_int)
+                || flag & 0x100i32 == 0i32)
             && *(*__ctype_b_loc()).offset(c as u_char as libc::c_int as isize) as libc::c_int
-                & _ISgraph as libc::c_int as libc::c_ushort as libc::c_int
+                & _ISgraph as libc::c_ushort as libc::c_int
                 != 0
-            || flag & 0x4 as libc::c_int == 0 as libc::c_int && c == ' ' as i32
-            || flag & 0x8 as libc::c_int == 0 as libc::c_int && c == '\t' as i32
-            || flag & 0x10 as libc::c_int == 0 as libc::c_int && c == '\n' as i32
-            || flag & 0x20 as libc::c_int != 0
+            || flag & 0x4i32 == 0i32 && c == ' ' as i32
+            || flag & 0x8i32 == 0i32 && c == '\t' as i32
+            || flag & 0x10i32 == 0i32 && c == '\n' as i32
+            || flag & 0x20i32 != 0
                 && (c == '\u{8}' as i32
                     || c == '\u{7}' as i32
                     || c == '\r' as i32
                     || *(*__ctype_b_loc()).offset(c as u_char as libc::c_int as isize)
                         as libc::c_int
-                        & _ISgraph as libc::c_int as libc::c_ushort as libc::c_int
+                        & _ISgraph as libc::c_ushort as libc::c_int
                         != 0))
     {
-        if c == '\"' as i32 && flag & 0x200 as libc::c_int != 0 as libc::c_int
-            || c == '\\' as i32 && flag & 0x40 as libc::c_int == 0 as libc::c_int
+        if c == '\"' as i32 && flag & 0x200i32 != 0i32 || c == '\\' as i32 && flag & 0x40i32 == 0i32
         {
             let fresh0 = dst;
             dst = dst.offset(1);
-            *fresh0 = '\\' as i32 as libc::c_char
+            *fresh0 = '\\' as libc::c_char
         }
         let fresh1 = dst;
         dst = dst.offset(1);
         *fresh1 = c as libc::c_char;
-        *dst = '\u{0}' as i32 as libc::c_char;
+        *dst = '\u{0}' as libc::c_char;
         return dst;
     }
-    if flag & 0x2 as libc::c_int != 0 {
+    if flag & 0x2i32 != 0 {
         match c {
             10 => {
                 current_block = 8121314696114196120;
@@ -84,83 +82,83 @@ pub unsafe extern "C" fn vis(
                     8121314696114196120 => {
                         let fresh2 = dst;
                         dst = dst.offset(1);
-                        *fresh2 = '\\' as i32 as libc::c_char;
+                        *fresh2 = '\\' as libc::c_char;
                         let fresh3 = dst;
                         dst = dst.offset(1);
-                        *fresh3 = 'n' as i32 as libc::c_char
+                        *fresh3 = 'n' as libc::c_char
                     }
                     5892893968624351926 => {
                         let fresh16 = dst;
                         dst = dst.offset(1);
-                        *fresh16 = '\\' as i32 as libc::c_char;
+                        *fresh16 = '\\' as libc::c_char;
                         let fresh17 = dst;
                         dst = dst.offset(1);
-                        *fresh17 = 's' as i32 as libc::c_char
+                        *fresh17 = 's' as libc::c_char
                     }
                     3692292822783516354 => {
                         let fresh14 = dst;
                         dst = dst.offset(1);
-                        *fresh14 = '\\' as i32 as libc::c_char;
+                        *fresh14 = '\\' as libc::c_char;
                         let fresh15 = dst;
                         dst = dst.offset(1);
-                        *fresh15 = 'f' as i32 as libc::c_char
+                        *fresh15 = 'f' as libc::c_char
                     }
                     13839326668931527616 => {
                         let fresh12 = dst;
                         dst = dst.offset(1);
-                        *fresh12 = '\\' as i32 as libc::c_char;
+                        *fresh12 = '\\' as libc::c_char;
                         let fresh13 = dst;
                         dst = dst.offset(1);
-                        *fresh13 = 't' as i32 as libc::c_char
+                        *fresh13 = 't' as libc::c_char
                     }
                     5310961604937924882 => {
                         let fresh10 = dst;
                         dst = dst.offset(1);
-                        *fresh10 = '\\' as i32 as libc::c_char;
+                        *fresh10 = '\\' as libc::c_char;
                         let fresh11 = dst;
                         dst = dst.offset(1);
-                        *fresh11 = 'v' as i32 as libc::c_char
+                        *fresh11 = 'v' as libc::c_char
                     }
                     6153397765503504804 => {
                         let fresh8 = dst;
                         dst = dst.offset(1);
-                        *fresh8 = '\\' as i32 as libc::c_char;
+                        *fresh8 = '\\' as libc::c_char;
                         let fresh9 = dst;
                         dst = dst.offset(1);
-                        *fresh9 = 'a' as i32 as libc::c_char
+                        *fresh9 = 'a' as libc::c_char
                     }
                     8337753555966048743 => {
                         let fresh6 = dst;
                         dst = dst.offset(1);
-                        *fresh6 = '\\' as i32 as libc::c_char;
+                        *fresh6 = '\\' as libc::c_char;
                         let fresh7 = dst;
                         dst = dst.offset(1);
-                        *fresh7 = 'b' as i32 as libc::c_char
+                        *fresh7 = 'b' as libc::c_char
                     }
                     2667368111120228261 => {
                         let fresh4 = dst;
                         dst = dst.offset(1);
-                        *fresh4 = '\\' as i32 as libc::c_char;
+                        *fresh4 = '\\' as libc::c_char;
                         let fresh5 = dst;
                         dst = dst.offset(1);
-                        *fresh5 = 'r' as i32 as libc::c_char
+                        *fresh5 = 'r' as libc::c_char
                     }
                     _ => {
                         let fresh18 = dst;
                         dst = dst.offset(1);
-                        *fresh18 = '\\' as i32 as libc::c_char;
+                        *fresh18 = '\\' as libc::c_char;
                         let fresh19 = dst;
                         dst = dst.offset(1);
-                        *fresh19 = '0' as i32 as libc::c_char;
+                        *fresh19 = '0' as libc::c_char;
                         if nextc as u_char as libc::c_int >= '0' as i32
                             && nextc as u_char as libc::c_int <= '7' as i32
                         {
                             let fresh20 = dst;
                             dst = dst.offset(1);
-                            *fresh20 = '0' as i32 as libc::c_char;
+                            *fresh20 = '0' as libc::c_char;
                             let fresh21 = dst;
                             dst = dst.offset(1);
-                            *fresh21 = '0' as i32 as libc::c_char
+                            *fresh21 = '0' as libc::c_char
                         }
                     }
                 }
@@ -172,83 +170,83 @@ pub unsafe extern "C" fn vis(
                     8121314696114196120 => {
                         let fresh2 = dst;
                         dst = dst.offset(1);
-                        *fresh2 = '\\' as i32 as libc::c_char;
+                        *fresh2 = '\\' as libc::c_char;
                         let fresh3 = dst;
                         dst = dst.offset(1);
-                        *fresh3 = 'n' as i32 as libc::c_char
+                        *fresh3 = 'n' as libc::c_char
                     }
                     5892893968624351926 => {
                         let fresh16 = dst;
                         dst = dst.offset(1);
-                        *fresh16 = '\\' as i32 as libc::c_char;
+                        *fresh16 = '\\' as libc::c_char;
                         let fresh17 = dst;
                         dst = dst.offset(1);
-                        *fresh17 = 's' as i32 as libc::c_char
+                        *fresh17 = 's' as libc::c_char
                     }
                     3692292822783516354 => {
                         let fresh14 = dst;
                         dst = dst.offset(1);
-                        *fresh14 = '\\' as i32 as libc::c_char;
+                        *fresh14 = '\\' as libc::c_char;
                         let fresh15 = dst;
                         dst = dst.offset(1);
-                        *fresh15 = 'f' as i32 as libc::c_char
+                        *fresh15 = 'f' as libc::c_char
                     }
                     13839326668931527616 => {
                         let fresh12 = dst;
                         dst = dst.offset(1);
-                        *fresh12 = '\\' as i32 as libc::c_char;
+                        *fresh12 = '\\' as libc::c_char;
                         let fresh13 = dst;
                         dst = dst.offset(1);
-                        *fresh13 = 't' as i32 as libc::c_char
+                        *fresh13 = 't' as libc::c_char
                     }
                     5310961604937924882 => {
                         let fresh10 = dst;
                         dst = dst.offset(1);
-                        *fresh10 = '\\' as i32 as libc::c_char;
+                        *fresh10 = '\\' as libc::c_char;
                         let fresh11 = dst;
                         dst = dst.offset(1);
-                        *fresh11 = 'v' as i32 as libc::c_char
+                        *fresh11 = 'v' as libc::c_char
                     }
                     6153397765503504804 => {
                         let fresh8 = dst;
                         dst = dst.offset(1);
-                        *fresh8 = '\\' as i32 as libc::c_char;
+                        *fresh8 = '\\' as libc::c_char;
                         let fresh9 = dst;
                         dst = dst.offset(1);
-                        *fresh9 = 'a' as i32 as libc::c_char
+                        *fresh9 = 'a' as libc::c_char
                     }
                     8337753555966048743 => {
                         let fresh6 = dst;
                         dst = dst.offset(1);
-                        *fresh6 = '\\' as i32 as libc::c_char;
+                        *fresh6 = '\\' as libc::c_char;
                         let fresh7 = dst;
                         dst = dst.offset(1);
-                        *fresh7 = 'b' as i32 as libc::c_char
+                        *fresh7 = 'b' as libc::c_char
                     }
                     2667368111120228261 => {
                         let fresh4 = dst;
                         dst = dst.offset(1);
-                        *fresh4 = '\\' as i32 as libc::c_char;
+                        *fresh4 = '\\' as libc::c_char;
                         let fresh5 = dst;
                         dst = dst.offset(1);
-                        *fresh5 = 'r' as i32 as libc::c_char
+                        *fresh5 = 'r' as libc::c_char
                     }
                     _ => {
                         let fresh18 = dst;
                         dst = dst.offset(1);
-                        *fresh18 = '\\' as i32 as libc::c_char;
+                        *fresh18 = '\\' as libc::c_char;
                         let fresh19 = dst;
                         dst = dst.offset(1);
-                        *fresh19 = '0' as i32 as libc::c_char;
+                        *fresh19 = '0' as libc::c_char;
                         if nextc as u_char as libc::c_int >= '0' as i32
                             && nextc as u_char as libc::c_int <= '7' as i32
                         {
                             let fresh20 = dst;
                             dst = dst.offset(1);
-                            *fresh20 = '0' as i32 as libc::c_char;
+                            *fresh20 = '0' as libc::c_char;
                             let fresh21 = dst;
                             dst = dst.offset(1);
-                            *fresh21 = '0' as i32 as libc::c_char
+                            *fresh21 = '0' as libc::c_char
                         }
                     }
                 }
@@ -260,83 +258,83 @@ pub unsafe extern "C" fn vis(
                     8121314696114196120 => {
                         let fresh2 = dst;
                         dst = dst.offset(1);
-                        *fresh2 = '\\' as i32 as libc::c_char;
+                        *fresh2 = '\\' as libc::c_char;
                         let fresh3 = dst;
                         dst = dst.offset(1);
-                        *fresh3 = 'n' as i32 as libc::c_char
+                        *fresh3 = 'n' as libc::c_char
                     }
                     5892893968624351926 => {
                         let fresh16 = dst;
                         dst = dst.offset(1);
-                        *fresh16 = '\\' as i32 as libc::c_char;
+                        *fresh16 = '\\' as libc::c_char;
                         let fresh17 = dst;
                         dst = dst.offset(1);
-                        *fresh17 = 's' as i32 as libc::c_char
+                        *fresh17 = 's' as libc::c_char
                     }
                     3692292822783516354 => {
                         let fresh14 = dst;
                         dst = dst.offset(1);
-                        *fresh14 = '\\' as i32 as libc::c_char;
+                        *fresh14 = '\\' as libc::c_char;
                         let fresh15 = dst;
                         dst = dst.offset(1);
-                        *fresh15 = 'f' as i32 as libc::c_char
+                        *fresh15 = 'f' as libc::c_char
                     }
                     13839326668931527616 => {
                         let fresh12 = dst;
                         dst = dst.offset(1);
-                        *fresh12 = '\\' as i32 as libc::c_char;
+                        *fresh12 = '\\' as libc::c_char;
                         let fresh13 = dst;
                         dst = dst.offset(1);
-                        *fresh13 = 't' as i32 as libc::c_char
+                        *fresh13 = 't' as libc::c_char
                     }
                     5310961604937924882 => {
                         let fresh10 = dst;
                         dst = dst.offset(1);
-                        *fresh10 = '\\' as i32 as libc::c_char;
+                        *fresh10 = '\\' as libc::c_char;
                         let fresh11 = dst;
                         dst = dst.offset(1);
-                        *fresh11 = 'v' as i32 as libc::c_char
+                        *fresh11 = 'v' as libc::c_char
                     }
                     6153397765503504804 => {
                         let fresh8 = dst;
                         dst = dst.offset(1);
-                        *fresh8 = '\\' as i32 as libc::c_char;
+                        *fresh8 = '\\' as libc::c_char;
                         let fresh9 = dst;
                         dst = dst.offset(1);
-                        *fresh9 = 'a' as i32 as libc::c_char
+                        *fresh9 = 'a' as libc::c_char
                     }
                     8337753555966048743 => {
                         let fresh6 = dst;
                         dst = dst.offset(1);
-                        *fresh6 = '\\' as i32 as libc::c_char;
+                        *fresh6 = '\\' as libc::c_char;
                         let fresh7 = dst;
                         dst = dst.offset(1);
-                        *fresh7 = 'b' as i32 as libc::c_char
+                        *fresh7 = 'b' as libc::c_char
                     }
                     2667368111120228261 => {
                         let fresh4 = dst;
                         dst = dst.offset(1);
-                        *fresh4 = '\\' as i32 as libc::c_char;
+                        *fresh4 = '\\' as libc::c_char;
                         let fresh5 = dst;
                         dst = dst.offset(1);
-                        *fresh5 = 'r' as i32 as libc::c_char
+                        *fresh5 = 'r' as libc::c_char
                     }
                     _ => {
                         let fresh18 = dst;
                         dst = dst.offset(1);
-                        *fresh18 = '\\' as i32 as libc::c_char;
+                        *fresh18 = '\\' as libc::c_char;
                         let fresh19 = dst;
                         dst = dst.offset(1);
-                        *fresh19 = '0' as i32 as libc::c_char;
+                        *fresh19 = '0' as libc::c_char;
                         if nextc as u_char as libc::c_int >= '0' as i32
                             && nextc as u_char as libc::c_int <= '7' as i32
                         {
                             let fresh20 = dst;
                             dst = dst.offset(1);
-                            *fresh20 = '0' as i32 as libc::c_char;
+                            *fresh20 = '0' as libc::c_char;
                             let fresh21 = dst;
                             dst = dst.offset(1);
-                            *fresh21 = '0' as i32 as libc::c_char
+                            *fresh21 = '0' as libc::c_char
                         }
                     }
                 }
@@ -348,83 +346,83 @@ pub unsafe extern "C" fn vis(
                     8121314696114196120 => {
                         let fresh2 = dst;
                         dst = dst.offset(1);
-                        *fresh2 = '\\' as i32 as libc::c_char;
+                        *fresh2 = '\\' as libc::c_char;
                         let fresh3 = dst;
                         dst = dst.offset(1);
-                        *fresh3 = 'n' as i32 as libc::c_char
+                        *fresh3 = 'n' as libc::c_char
                     }
                     5892893968624351926 => {
                         let fresh16 = dst;
                         dst = dst.offset(1);
-                        *fresh16 = '\\' as i32 as libc::c_char;
+                        *fresh16 = '\\' as libc::c_char;
                         let fresh17 = dst;
                         dst = dst.offset(1);
-                        *fresh17 = 's' as i32 as libc::c_char
+                        *fresh17 = 's' as libc::c_char
                     }
                     3692292822783516354 => {
                         let fresh14 = dst;
                         dst = dst.offset(1);
-                        *fresh14 = '\\' as i32 as libc::c_char;
+                        *fresh14 = '\\' as libc::c_char;
                         let fresh15 = dst;
                         dst = dst.offset(1);
-                        *fresh15 = 'f' as i32 as libc::c_char
+                        *fresh15 = 'f' as libc::c_char
                     }
                     13839326668931527616 => {
                         let fresh12 = dst;
                         dst = dst.offset(1);
-                        *fresh12 = '\\' as i32 as libc::c_char;
+                        *fresh12 = '\\' as libc::c_char;
                         let fresh13 = dst;
                         dst = dst.offset(1);
-                        *fresh13 = 't' as i32 as libc::c_char
+                        *fresh13 = 't' as libc::c_char
                     }
                     5310961604937924882 => {
                         let fresh10 = dst;
                         dst = dst.offset(1);
-                        *fresh10 = '\\' as i32 as libc::c_char;
+                        *fresh10 = '\\' as libc::c_char;
                         let fresh11 = dst;
                         dst = dst.offset(1);
-                        *fresh11 = 'v' as i32 as libc::c_char
+                        *fresh11 = 'v' as libc::c_char
                     }
                     6153397765503504804 => {
                         let fresh8 = dst;
                         dst = dst.offset(1);
-                        *fresh8 = '\\' as i32 as libc::c_char;
+                        *fresh8 = '\\' as libc::c_char;
                         let fresh9 = dst;
                         dst = dst.offset(1);
-                        *fresh9 = 'a' as i32 as libc::c_char
+                        *fresh9 = 'a' as libc::c_char
                     }
                     8337753555966048743 => {
                         let fresh6 = dst;
                         dst = dst.offset(1);
-                        *fresh6 = '\\' as i32 as libc::c_char;
+                        *fresh6 = '\\' as libc::c_char;
                         let fresh7 = dst;
                         dst = dst.offset(1);
-                        *fresh7 = 'b' as i32 as libc::c_char
+                        *fresh7 = 'b' as libc::c_char
                     }
                     2667368111120228261 => {
                         let fresh4 = dst;
                         dst = dst.offset(1);
-                        *fresh4 = '\\' as i32 as libc::c_char;
+                        *fresh4 = '\\' as libc::c_char;
                         let fresh5 = dst;
                         dst = dst.offset(1);
-                        *fresh5 = 'r' as i32 as libc::c_char
+                        *fresh5 = 'r' as libc::c_char
                     }
                     _ => {
                         let fresh18 = dst;
                         dst = dst.offset(1);
-                        *fresh18 = '\\' as i32 as libc::c_char;
+                        *fresh18 = '\\' as libc::c_char;
                         let fresh19 = dst;
                         dst = dst.offset(1);
-                        *fresh19 = '0' as i32 as libc::c_char;
+                        *fresh19 = '0' as libc::c_char;
                         if nextc as u_char as libc::c_int >= '0' as i32
                             && nextc as u_char as libc::c_int <= '7' as i32
                         {
                             let fresh20 = dst;
                             dst = dst.offset(1);
-                            *fresh20 = '0' as i32 as libc::c_char;
+                            *fresh20 = '0' as libc::c_char;
                             let fresh21 = dst;
                             dst = dst.offset(1);
-                            *fresh21 = '0' as i32 as libc::c_char
+                            *fresh21 = '0' as libc::c_char
                         }
                     }
                 }
@@ -436,83 +434,83 @@ pub unsafe extern "C" fn vis(
                     8121314696114196120 => {
                         let fresh2 = dst;
                         dst = dst.offset(1);
-                        *fresh2 = '\\' as i32 as libc::c_char;
+                        *fresh2 = '\\' as libc::c_char;
                         let fresh3 = dst;
                         dst = dst.offset(1);
-                        *fresh3 = 'n' as i32 as libc::c_char
+                        *fresh3 = 'n' as libc::c_char
                     }
                     5892893968624351926 => {
                         let fresh16 = dst;
                         dst = dst.offset(1);
-                        *fresh16 = '\\' as i32 as libc::c_char;
+                        *fresh16 = '\\' as libc::c_char;
                         let fresh17 = dst;
                         dst = dst.offset(1);
-                        *fresh17 = 's' as i32 as libc::c_char
+                        *fresh17 = 's' as libc::c_char
                     }
                     3692292822783516354 => {
                         let fresh14 = dst;
                         dst = dst.offset(1);
-                        *fresh14 = '\\' as i32 as libc::c_char;
+                        *fresh14 = '\\' as libc::c_char;
                         let fresh15 = dst;
                         dst = dst.offset(1);
-                        *fresh15 = 'f' as i32 as libc::c_char
+                        *fresh15 = 'f' as libc::c_char
                     }
                     13839326668931527616 => {
                         let fresh12 = dst;
                         dst = dst.offset(1);
-                        *fresh12 = '\\' as i32 as libc::c_char;
+                        *fresh12 = '\\' as libc::c_char;
                         let fresh13 = dst;
                         dst = dst.offset(1);
-                        *fresh13 = 't' as i32 as libc::c_char
+                        *fresh13 = 't' as libc::c_char
                     }
                     5310961604937924882 => {
                         let fresh10 = dst;
                         dst = dst.offset(1);
-                        *fresh10 = '\\' as i32 as libc::c_char;
+                        *fresh10 = '\\' as libc::c_char;
                         let fresh11 = dst;
                         dst = dst.offset(1);
-                        *fresh11 = 'v' as i32 as libc::c_char
+                        *fresh11 = 'v' as libc::c_char
                     }
                     6153397765503504804 => {
                         let fresh8 = dst;
                         dst = dst.offset(1);
-                        *fresh8 = '\\' as i32 as libc::c_char;
+                        *fresh8 = '\\' as libc::c_char;
                         let fresh9 = dst;
                         dst = dst.offset(1);
-                        *fresh9 = 'a' as i32 as libc::c_char
+                        *fresh9 = 'a' as libc::c_char
                     }
                     8337753555966048743 => {
                         let fresh6 = dst;
                         dst = dst.offset(1);
-                        *fresh6 = '\\' as i32 as libc::c_char;
+                        *fresh6 = '\\' as libc::c_char;
                         let fresh7 = dst;
                         dst = dst.offset(1);
-                        *fresh7 = 'b' as i32 as libc::c_char
+                        *fresh7 = 'b' as libc::c_char
                     }
                     2667368111120228261 => {
                         let fresh4 = dst;
                         dst = dst.offset(1);
-                        *fresh4 = '\\' as i32 as libc::c_char;
+                        *fresh4 = '\\' as libc::c_char;
                         let fresh5 = dst;
                         dst = dst.offset(1);
-                        *fresh5 = 'r' as i32 as libc::c_char
+                        *fresh5 = 'r' as libc::c_char
                     }
                     _ => {
                         let fresh18 = dst;
                         dst = dst.offset(1);
-                        *fresh18 = '\\' as i32 as libc::c_char;
+                        *fresh18 = '\\' as libc::c_char;
                         let fresh19 = dst;
                         dst = dst.offset(1);
-                        *fresh19 = '0' as i32 as libc::c_char;
+                        *fresh19 = '0' as libc::c_char;
                         if nextc as u_char as libc::c_int >= '0' as i32
                             && nextc as u_char as libc::c_int <= '7' as i32
                         {
                             let fresh20 = dst;
                             dst = dst.offset(1);
-                            *fresh20 = '0' as i32 as libc::c_char;
+                            *fresh20 = '0' as libc::c_char;
                             let fresh21 = dst;
                             dst = dst.offset(1);
-                            *fresh21 = '0' as i32 as libc::c_char
+                            *fresh21 = '0' as libc::c_char
                         }
                     }
                 }
@@ -524,83 +522,83 @@ pub unsafe extern "C" fn vis(
                     8121314696114196120 => {
                         let fresh2 = dst;
                         dst = dst.offset(1);
-                        *fresh2 = '\\' as i32 as libc::c_char;
+                        *fresh2 = '\\' as libc::c_char;
                         let fresh3 = dst;
                         dst = dst.offset(1);
-                        *fresh3 = 'n' as i32 as libc::c_char
+                        *fresh3 = 'n' as libc::c_char
                     }
                     5892893968624351926 => {
                         let fresh16 = dst;
                         dst = dst.offset(1);
-                        *fresh16 = '\\' as i32 as libc::c_char;
+                        *fresh16 = '\\' as libc::c_char;
                         let fresh17 = dst;
                         dst = dst.offset(1);
-                        *fresh17 = 's' as i32 as libc::c_char
+                        *fresh17 = 's' as libc::c_char
                     }
                     3692292822783516354 => {
                         let fresh14 = dst;
                         dst = dst.offset(1);
-                        *fresh14 = '\\' as i32 as libc::c_char;
+                        *fresh14 = '\\' as libc::c_char;
                         let fresh15 = dst;
                         dst = dst.offset(1);
-                        *fresh15 = 'f' as i32 as libc::c_char
+                        *fresh15 = 'f' as libc::c_char
                     }
                     13839326668931527616 => {
                         let fresh12 = dst;
                         dst = dst.offset(1);
-                        *fresh12 = '\\' as i32 as libc::c_char;
+                        *fresh12 = '\\' as libc::c_char;
                         let fresh13 = dst;
                         dst = dst.offset(1);
-                        *fresh13 = 't' as i32 as libc::c_char
+                        *fresh13 = 't' as libc::c_char
                     }
                     5310961604937924882 => {
                         let fresh10 = dst;
                         dst = dst.offset(1);
-                        *fresh10 = '\\' as i32 as libc::c_char;
+                        *fresh10 = '\\' as libc::c_char;
                         let fresh11 = dst;
                         dst = dst.offset(1);
-                        *fresh11 = 'v' as i32 as libc::c_char
+                        *fresh11 = 'v' as libc::c_char
                     }
                     6153397765503504804 => {
                         let fresh8 = dst;
                         dst = dst.offset(1);
-                        *fresh8 = '\\' as i32 as libc::c_char;
+                        *fresh8 = '\\' as libc::c_char;
                         let fresh9 = dst;
                         dst = dst.offset(1);
-                        *fresh9 = 'a' as i32 as libc::c_char
+                        *fresh9 = 'a' as libc::c_char
                     }
                     8337753555966048743 => {
                         let fresh6 = dst;
                         dst = dst.offset(1);
-                        *fresh6 = '\\' as i32 as libc::c_char;
+                        *fresh6 = '\\' as libc::c_char;
                         let fresh7 = dst;
                         dst = dst.offset(1);
-                        *fresh7 = 'b' as i32 as libc::c_char
+                        *fresh7 = 'b' as libc::c_char
                     }
                     2667368111120228261 => {
                         let fresh4 = dst;
                         dst = dst.offset(1);
-                        *fresh4 = '\\' as i32 as libc::c_char;
+                        *fresh4 = '\\' as libc::c_char;
                         let fresh5 = dst;
                         dst = dst.offset(1);
-                        *fresh5 = 'r' as i32 as libc::c_char
+                        *fresh5 = 'r' as libc::c_char
                     }
                     _ => {
                         let fresh18 = dst;
                         dst = dst.offset(1);
-                        *fresh18 = '\\' as i32 as libc::c_char;
+                        *fresh18 = '\\' as libc::c_char;
                         let fresh19 = dst;
                         dst = dst.offset(1);
-                        *fresh19 = '0' as i32 as libc::c_char;
+                        *fresh19 = '0' as libc::c_char;
                         if nextc as u_char as libc::c_int >= '0' as i32
                             && nextc as u_char as libc::c_int <= '7' as i32
                         {
                             let fresh20 = dst;
                             dst = dst.offset(1);
-                            *fresh20 = '0' as i32 as libc::c_char;
+                            *fresh20 = '0' as libc::c_char;
                             let fresh21 = dst;
                             dst = dst.offset(1);
-                            *fresh21 = '0' as i32 as libc::c_char
+                            *fresh21 = '0' as libc::c_char
                         }
                     }
                 }
@@ -612,83 +610,83 @@ pub unsafe extern "C" fn vis(
                     8121314696114196120 => {
                         let fresh2 = dst;
                         dst = dst.offset(1);
-                        *fresh2 = '\\' as i32 as libc::c_char;
+                        *fresh2 = '\\' as libc::c_char;
                         let fresh3 = dst;
                         dst = dst.offset(1);
-                        *fresh3 = 'n' as i32 as libc::c_char
+                        *fresh3 = 'n' as libc::c_char
                     }
                     5892893968624351926 => {
                         let fresh16 = dst;
                         dst = dst.offset(1);
-                        *fresh16 = '\\' as i32 as libc::c_char;
+                        *fresh16 = '\\' as libc::c_char;
                         let fresh17 = dst;
                         dst = dst.offset(1);
-                        *fresh17 = 's' as i32 as libc::c_char
+                        *fresh17 = 's' as libc::c_char
                     }
                     3692292822783516354 => {
                         let fresh14 = dst;
                         dst = dst.offset(1);
-                        *fresh14 = '\\' as i32 as libc::c_char;
+                        *fresh14 = '\\' as libc::c_char;
                         let fresh15 = dst;
                         dst = dst.offset(1);
-                        *fresh15 = 'f' as i32 as libc::c_char
+                        *fresh15 = 'f' as libc::c_char
                     }
                     13839326668931527616 => {
                         let fresh12 = dst;
                         dst = dst.offset(1);
-                        *fresh12 = '\\' as i32 as libc::c_char;
+                        *fresh12 = '\\' as libc::c_char;
                         let fresh13 = dst;
                         dst = dst.offset(1);
-                        *fresh13 = 't' as i32 as libc::c_char
+                        *fresh13 = 't' as libc::c_char
                     }
                     5310961604937924882 => {
                         let fresh10 = dst;
                         dst = dst.offset(1);
-                        *fresh10 = '\\' as i32 as libc::c_char;
+                        *fresh10 = '\\' as libc::c_char;
                         let fresh11 = dst;
                         dst = dst.offset(1);
-                        *fresh11 = 'v' as i32 as libc::c_char
+                        *fresh11 = 'v' as libc::c_char
                     }
                     6153397765503504804 => {
                         let fresh8 = dst;
                         dst = dst.offset(1);
-                        *fresh8 = '\\' as i32 as libc::c_char;
+                        *fresh8 = '\\' as libc::c_char;
                         let fresh9 = dst;
                         dst = dst.offset(1);
-                        *fresh9 = 'a' as i32 as libc::c_char
+                        *fresh9 = 'a' as libc::c_char
                     }
                     8337753555966048743 => {
                         let fresh6 = dst;
                         dst = dst.offset(1);
-                        *fresh6 = '\\' as i32 as libc::c_char;
+                        *fresh6 = '\\' as libc::c_char;
                         let fresh7 = dst;
                         dst = dst.offset(1);
-                        *fresh7 = 'b' as i32 as libc::c_char
+                        *fresh7 = 'b' as libc::c_char
                     }
                     2667368111120228261 => {
                         let fresh4 = dst;
                         dst = dst.offset(1);
-                        *fresh4 = '\\' as i32 as libc::c_char;
+                        *fresh4 = '\\' as libc::c_char;
                         let fresh5 = dst;
                         dst = dst.offset(1);
-                        *fresh5 = 'r' as i32 as libc::c_char
+                        *fresh5 = 'r' as libc::c_char
                     }
                     _ => {
                         let fresh18 = dst;
                         dst = dst.offset(1);
-                        *fresh18 = '\\' as i32 as libc::c_char;
+                        *fresh18 = '\\' as libc::c_char;
                         let fresh19 = dst;
                         dst = dst.offset(1);
-                        *fresh19 = '0' as i32 as libc::c_char;
+                        *fresh19 = '0' as libc::c_char;
                         if nextc as u_char as libc::c_int >= '0' as i32
                             && nextc as u_char as libc::c_int <= '7' as i32
                         {
                             let fresh20 = dst;
                             dst = dst.offset(1);
-                            *fresh20 = '0' as i32 as libc::c_char;
+                            *fresh20 = '0' as libc::c_char;
                             let fresh21 = dst;
                             dst = dst.offset(1);
-                            *fresh21 = '0' as i32 as libc::c_char
+                            *fresh21 = '0' as libc::c_char
                         }
                     }
                 }
@@ -700,83 +698,83 @@ pub unsafe extern "C" fn vis(
                     8121314696114196120 => {
                         let fresh2 = dst;
                         dst = dst.offset(1);
-                        *fresh2 = '\\' as i32 as libc::c_char;
+                        *fresh2 = '\\' as libc::c_char;
                         let fresh3 = dst;
                         dst = dst.offset(1);
-                        *fresh3 = 'n' as i32 as libc::c_char
+                        *fresh3 = 'n' as libc::c_char
                     }
                     5892893968624351926 => {
                         let fresh16 = dst;
                         dst = dst.offset(1);
-                        *fresh16 = '\\' as i32 as libc::c_char;
+                        *fresh16 = '\\' as libc::c_char;
                         let fresh17 = dst;
                         dst = dst.offset(1);
-                        *fresh17 = 's' as i32 as libc::c_char
+                        *fresh17 = 's' as libc::c_char
                     }
                     3692292822783516354 => {
                         let fresh14 = dst;
                         dst = dst.offset(1);
-                        *fresh14 = '\\' as i32 as libc::c_char;
+                        *fresh14 = '\\' as libc::c_char;
                         let fresh15 = dst;
                         dst = dst.offset(1);
-                        *fresh15 = 'f' as i32 as libc::c_char
+                        *fresh15 = 'f' as libc::c_char
                     }
                     13839326668931527616 => {
                         let fresh12 = dst;
                         dst = dst.offset(1);
-                        *fresh12 = '\\' as i32 as libc::c_char;
+                        *fresh12 = '\\' as libc::c_char;
                         let fresh13 = dst;
                         dst = dst.offset(1);
-                        *fresh13 = 't' as i32 as libc::c_char
+                        *fresh13 = 't' as libc::c_char
                     }
                     5310961604937924882 => {
                         let fresh10 = dst;
                         dst = dst.offset(1);
-                        *fresh10 = '\\' as i32 as libc::c_char;
+                        *fresh10 = '\\' as libc::c_char;
                         let fresh11 = dst;
                         dst = dst.offset(1);
-                        *fresh11 = 'v' as i32 as libc::c_char
+                        *fresh11 = 'v' as libc::c_char
                     }
                     6153397765503504804 => {
                         let fresh8 = dst;
                         dst = dst.offset(1);
-                        *fresh8 = '\\' as i32 as libc::c_char;
+                        *fresh8 = '\\' as libc::c_char;
                         let fresh9 = dst;
                         dst = dst.offset(1);
-                        *fresh9 = 'a' as i32 as libc::c_char
+                        *fresh9 = 'a' as libc::c_char
                     }
                     8337753555966048743 => {
                         let fresh6 = dst;
                         dst = dst.offset(1);
-                        *fresh6 = '\\' as i32 as libc::c_char;
+                        *fresh6 = '\\' as libc::c_char;
                         let fresh7 = dst;
                         dst = dst.offset(1);
-                        *fresh7 = 'b' as i32 as libc::c_char
+                        *fresh7 = 'b' as libc::c_char
                     }
                     2667368111120228261 => {
                         let fresh4 = dst;
                         dst = dst.offset(1);
-                        *fresh4 = '\\' as i32 as libc::c_char;
+                        *fresh4 = '\\' as libc::c_char;
                         let fresh5 = dst;
                         dst = dst.offset(1);
-                        *fresh5 = 'r' as i32 as libc::c_char
+                        *fresh5 = 'r' as libc::c_char
                     }
                     _ => {
                         let fresh18 = dst;
                         dst = dst.offset(1);
-                        *fresh18 = '\\' as i32 as libc::c_char;
+                        *fresh18 = '\\' as libc::c_char;
                         let fresh19 = dst;
                         dst = dst.offset(1);
-                        *fresh19 = '0' as i32 as libc::c_char;
+                        *fresh19 = '0' as libc::c_char;
                         if nextc as u_char as libc::c_int >= '0' as i32
                             && nextc as u_char as libc::c_int <= '7' as i32
                         {
                             let fresh20 = dst;
                             dst = dst.offset(1);
-                            *fresh20 = '0' as i32 as libc::c_char;
+                            *fresh20 = '0' as libc::c_char;
                             let fresh21 = dst;
                             dst = dst.offset(1);
-                            *fresh21 = '0' as i32 as libc::c_char
+                            *fresh21 = '0' as libc::c_char
                         }
                     }
                 }
@@ -788,83 +786,83 @@ pub unsafe extern "C" fn vis(
                     8121314696114196120 => {
                         let fresh2 = dst;
                         dst = dst.offset(1);
-                        *fresh2 = '\\' as i32 as libc::c_char;
+                        *fresh2 = '\\' as libc::c_char;
                         let fresh3 = dst;
                         dst = dst.offset(1);
-                        *fresh3 = 'n' as i32 as libc::c_char
+                        *fresh3 = 'n' as libc::c_char
                     }
                     5892893968624351926 => {
                         let fresh16 = dst;
                         dst = dst.offset(1);
-                        *fresh16 = '\\' as i32 as libc::c_char;
+                        *fresh16 = '\\' as libc::c_char;
                         let fresh17 = dst;
                         dst = dst.offset(1);
-                        *fresh17 = 's' as i32 as libc::c_char
+                        *fresh17 = 's' as libc::c_char
                     }
                     3692292822783516354 => {
                         let fresh14 = dst;
                         dst = dst.offset(1);
-                        *fresh14 = '\\' as i32 as libc::c_char;
+                        *fresh14 = '\\' as libc::c_char;
                         let fresh15 = dst;
                         dst = dst.offset(1);
-                        *fresh15 = 'f' as i32 as libc::c_char
+                        *fresh15 = 'f' as libc::c_char
                     }
                     13839326668931527616 => {
                         let fresh12 = dst;
                         dst = dst.offset(1);
-                        *fresh12 = '\\' as i32 as libc::c_char;
+                        *fresh12 = '\\' as libc::c_char;
                         let fresh13 = dst;
                         dst = dst.offset(1);
-                        *fresh13 = 't' as i32 as libc::c_char
+                        *fresh13 = 't' as libc::c_char
                     }
                     5310961604937924882 => {
                         let fresh10 = dst;
                         dst = dst.offset(1);
-                        *fresh10 = '\\' as i32 as libc::c_char;
+                        *fresh10 = '\\' as libc::c_char;
                         let fresh11 = dst;
                         dst = dst.offset(1);
-                        *fresh11 = 'v' as i32 as libc::c_char
+                        *fresh11 = 'v' as libc::c_char
                     }
                     6153397765503504804 => {
                         let fresh8 = dst;
                         dst = dst.offset(1);
-                        *fresh8 = '\\' as i32 as libc::c_char;
+                        *fresh8 = '\\' as libc::c_char;
                         let fresh9 = dst;
                         dst = dst.offset(1);
-                        *fresh9 = 'a' as i32 as libc::c_char
+                        *fresh9 = 'a' as libc::c_char
                     }
                     8337753555966048743 => {
                         let fresh6 = dst;
                         dst = dst.offset(1);
-                        *fresh6 = '\\' as i32 as libc::c_char;
+                        *fresh6 = '\\' as libc::c_char;
                         let fresh7 = dst;
                         dst = dst.offset(1);
-                        *fresh7 = 'b' as i32 as libc::c_char
+                        *fresh7 = 'b' as libc::c_char
                     }
                     2667368111120228261 => {
                         let fresh4 = dst;
                         dst = dst.offset(1);
-                        *fresh4 = '\\' as i32 as libc::c_char;
+                        *fresh4 = '\\' as libc::c_char;
                         let fresh5 = dst;
                         dst = dst.offset(1);
-                        *fresh5 = 'r' as i32 as libc::c_char
+                        *fresh5 = 'r' as libc::c_char
                     }
                     _ => {
                         let fresh18 = dst;
                         dst = dst.offset(1);
-                        *fresh18 = '\\' as i32 as libc::c_char;
+                        *fresh18 = '\\' as libc::c_char;
                         let fresh19 = dst;
                         dst = dst.offset(1);
-                        *fresh19 = '0' as i32 as libc::c_char;
+                        *fresh19 = '0' as libc::c_char;
                         if nextc as u_char as libc::c_int >= '0' as i32
                             && nextc as u_char as libc::c_int <= '7' as i32
                         {
                             let fresh20 = dst;
                             dst = dst.offset(1);
-                            *fresh20 = '0' as i32 as libc::c_char;
+                            *fresh20 = '0' as libc::c_char;
                             let fresh21 = dst;
                             dst = dst.offset(1);
-                            *fresh21 = '0' as i32 as libc::c_char
+                            *fresh21 = '0' as libc::c_char
                         }
                     }
                 }
@@ -879,49 +877,48 @@ pub unsafe extern "C" fn vis(
     }
     match current_block {
         1118134448028020070 => {
-            if c & 0o177 as libc::c_int == ' ' as i32
-                || flag & 0x1 as libc::c_int != 0
-                || flag & 0x100 as libc::c_int != 0
+            if c & 0o177i32 == ' ' as i32
+                || flag & 0x1i32 != 0
+                || flag & 0x100i32 != 0
                     && (c == '*' as i32 || c == '?' as i32 || c == '[' as i32 || c == '#' as i32)
             {
                 let fresh22 = dst;
                 dst = dst.offset(1);
-                *fresh22 = '\\' as i32 as libc::c_char;
+                *fresh22 = '\\' as libc::c_char;
                 let fresh23 = dst;
                 dst = dst.offset(1);
-                *fresh23 = ((c as u_char as libc::c_int >> 6 as libc::c_int & 0o7 as libc::c_int)
-                    + '0' as i32) as libc::c_char;
+                *fresh23 =
+                    ((c as u_char as libc::c_int >> 6i32 & 0o7i32) + '0' as i32) as libc::c_char;
                 let fresh24 = dst;
                 dst = dst.offset(1);
-                *fresh24 = ((c as u_char as libc::c_int >> 3 as libc::c_int & 0o7 as libc::c_int)
-                    + '0' as i32) as libc::c_char;
+                *fresh24 =
+                    ((c as u_char as libc::c_int >> 3i32 & 0o7i32) + '0' as i32) as libc::c_char;
                 let fresh25 = dst;
                 dst = dst.offset(1);
-                *fresh25 =
-                    ((c as u_char as libc::c_int & 0o7 as libc::c_int) + '0' as i32) as libc::c_char
+                *fresh25 = ((c as u_char as libc::c_int & 0o7i32) + '0' as i32) as libc::c_char
             } else {
-                if flag & 0x40 as libc::c_int == 0 as libc::c_int {
+                if flag & 0x40i32 == 0i32 {
                     let fresh26 = dst;
                     dst = dst.offset(1);
-                    *fresh26 = '\\' as i32 as libc::c_char
+                    *fresh26 = '\\' as libc::c_char
                 }
-                if c & 0o200 as libc::c_int != 0 {
-                    c &= 0o177 as libc::c_int;
+                if c & 0o200i32 != 0 {
+                    c &= 0o177i32;
                     let fresh27 = dst;
                     dst = dst.offset(1);
-                    *fresh27 = 'M' as i32 as libc::c_char
+                    *fresh27 = 'M' as libc::c_char
                 }
                 if *(*__ctype_b_loc()).offset(c as u_char as libc::c_int as isize) as libc::c_int
-                    & _IScntrl as libc::c_int as libc::c_ushort as libc::c_int
+                    & _IScntrl as libc::c_ushort as libc::c_int
                     != 0
                 {
                     let fresh28 = dst;
                     dst = dst.offset(1);
-                    *fresh28 = '^' as i32 as libc::c_char;
-                    if c == 0o177 as libc::c_int {
+                    *fresh28 = '^' as libc::c_char;
+                    if c == 0o177i32 {
                         let fresh29 = dst;
                         dst = dst.offset(1);
-                        *fresh29 = '?' as i32 as libc::c_char
+                        *fresh29 = '?' as libc::c_char
                     } else {
                         let fresh30 = dst;
                         dst = dst.offset(1);
@@ -930,7 +927,7 @@ pub unsafe extern "C" fn vis(
                 } else {
                     let fresh31 = dst;
                     dst = dst.offset(1);
-                    *fresh31 = '-' as i32 as libc::c_char;
+                    *fresh31 = '-' as libc::c_char;
                     let fresh32 = dst;
                     dst = dst.offset(1);
                     *fresh32 = c as libc::c_char
@@ -939,7 +936,7 @@ pub unsafe extern "C" fn vis(
         }
         _ => {}
     }
-    *dst = '\u{0}' as i32 as libc::c_char;
+    *dst = '\u{0}' as libc::c_char;
     return dst;
 }
 /*
@@ -972,8 +969,8 @@ pub unsafe extern "C" fn strvis(
         src = src.offset(1);
         dst = vis(dst, c as libc::c_int, flag, *src as libc::c_int)
     }
-    *dst = '\u{0}' as i32 as libc::c_char;
-    return dst.wrapping_offset_from(start) as libc::c_long as libc::c_int;
+    *dst = '\u{0}' as libc::c_char;
+    return dst.wrapping_offset_from(start) as libc::c_int;
 }
 #[no_mangle]
 pub unsafe extern "C" fn strnvis(
@@ -987,51 +984,48 @@ pub unsafe extern "C" fn strnvis(
     let mut tbuf: [libc::c_char; 5] = [0; 5];
     let mut c: libc::c_int = 0;
     let mut i: libc::c_int = 0;
-    i = 0 as libc::c_int;
+    i = 0i32;
     start = dst;
-    end = start
-        .offset(siz as isize)
-        .offset(-(1 as libc::c_int as isize));
+    end = start.offset(siz as isize).offset(-(1isize));
     loop {
         c = *src as libc::c_int;
         if !(c != 0 && dst < end) {
             break;
         }
-        if (c == '\\' as i32 || flag & 0x400 as libc::c_int == 0 as libc::c_int)
-            && (c as u_int
-                <= (127 as libc::c_int * 2 as libc::c_int + 1 as libc::c_int) as libc::c_uint
-                && c as u_char as libc::c_int & !(0x7f as libc::c_int) == 0 as libc::c_int
+        if (c == '\\' as i32 || flag & 0x400i32 == 0i32)
+            && (c as u_int <= (127i32 * 2i32 + 1i32) as libc::c_uint
+                && c as u_char as libc::c_int & !(0x7fi32) == 0i32
                 && (c != '*' as i32 && c != '?' as i32 && c != '[' as i32 && c != '#' as i32
-                    || flag & 0x100 as libc::c_int == 0 as libc::c_int)
+                    || flag & 0x100i32 == 0i32)
                 && *(*__ctype_b_loc()).offset(c as u_char as libc::c_int as isize) as libc::c_int
-                    & _ISgraph as libc::c_int as libc::c_ushort as libc::c_int
+                    & _ISgraph as libc::c_ushort as libc::c_int
                     != 0
-                || flag & 0x4 as libc::c_int == 0 as libc::c_int && c == ' ' as i32
-                || flag & 0x8 as libc::c_int == 0 as libc::c_int && c == '\t' as i32
-                || flag & 0x10 as libc::c_int == 0 as libc::c_int && c == '\n' as i32
-                || flag & 0x20 as libc::c_int != 0
+                || flag & 0x4i32 == 0i32 && c == ' ' as i32
+                || flag & 0x8i32 == 0i32 && c == '\t' as i32
+                || flag & 0x10i32 == 0i32 && c == '\n' as i32
+                || flag & 0x20i32 != 0
                     && (c == '\u{8}' as i32
                         || c == '\u{7}' as i32
                         || c == '\r' as i32
                         || *(*__ctype_b_loc()).offset(c as u_char as libc::c_int as isize)
                             as libc::c_int
-                            & _ISgraph as libc::c_int as libc::c_ushort as libc::c_int
+                            & _ISgraph as libc::c_ushort as libc::c_int
                             != 0))
         {
-            if c == '\"' as i32 && flag & 0x200 as libc::c_int != 0 as libc::c_int
-                || c == '\\' as i32 && flag & 0x40 as libc::c_int == 0 as libc::c_int
+            if c == '\"' as i32 && flag & 0x200i32 != 0i32
+                || c == '\\' as i32 && flag & 0x40i32 == 0i32
             {
                 /* need space for the extra '\\' */
-                if dst.offset(1 as libc::c_int as isize) >= end {
-                    i = 2 as libc::c_int;
+                if dst.offset(1isize) >= end {
+                    i = 2i32;
                     break;
                 } else {
                     let fresh33 = dst;
                     dst = dst.offset(1);
-                    *fresh33 = '\\' as i32 as libc::c_char
+                    *fresh33 = '\\' as libc::c_char
                 }
             }
-            i = 1 as libc::c_int;
+            i = 1i32;
             let fresh34 = dst;
             dst = dst.offset(1);
             *fresh34 = c as libc::c_char;
@@ -1039,8 +1033,7 @@ pub unsafe extern "C" fn strnvis(
         } else {
             src = src.offset(1);
             i = vis(tbuf.as_mut_ptr(), c, flag, *src as libc::c_int)
-                .wrapping_offset_from(tbuf.as_mut_ptr()) as libc::c_long
-                as libc::c_int;
+                .wrapping_offset_from(tbuf.as_mut_ptr()) as libc::c_int;
             if dst.offset(i as isize) <= end {
                 memcpy(
                     dst as *mut libc::c_void,
@@ -1054,8 +1047,8 @@ pub unsafe extern "C" fn strnvis(
             }
         }
     }
-    if siz > 0 as libc::c_int as libc::c_ulong {
-        *dst = '\u{0}' as i32 as libc::c_char
+    if siz > 0u64 {
+        *dst = '\u{0}' as libc::c_char
     }
     if dst.offset(i as isize) > end {
         loop
@@ -1068,12 +1061,11 @@ pub unsafe extern "C" fn strnvis(
             src = src.offset(1);
             dst = dst.offset(
                 vis(tbuf.as_mut_ptr(), c, flag, *src as libc::c_int)
-                    .wrapping_offset_from(tbuf.as_mut_ptr()) as libc::c_long
-                    as isize,
+                    .wrapping_offset_from(tbuf.as_mut_ptr()),
             )
         }
     }
-    return dst.wrapping_offset_from(start) as libc::c_long as libc::c_int;
+    return dst.wrapping_offset_from(start) as libc::c_int;
 }
 #[no_mangle]
 pub unsafe extern "C" fn stravis(
@@ -1084,19 +1076,13 @@ pub unsafe extern "C" fn stravis(
     let mut buf: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut len: libc::c_int = 0;
     let mut serrno: libc::c_int = 0;
-    buf = calloc(
-        4 as libc::c_int as libc::c_ulong,
-        strlen(src).wrapping_add(1 as libc::c_int as libc::c_ulong),
-    ) as *mut libc::c_char;
+    buf = calloc(4u64, strlen(src).wrapping_add(1u64)) as *mut libc::c_char;
     if buf.is_null() {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     len = strvis(buf, src, flag);
     serrno = *__errno_location();
-    *outp = realloc(
-        buf as *mut libc::c_void,
-        (len + 1 as libc::c_int) as libc::c_ulong,
-    ) as *mut libc::c_char;
+    *outp = realloc(buf as *mut libc::c_void, (len + 1i32) as libc::c_ulong) as *mut libc::c_char;
     if (*outp).is_null() {
         *outp = buf;
         *__errno_location() = serrno
@@ -1113,7 +1099,7 @@ pub unsafe extern "C" fn strvisx(
     let mut c: libc::c_char = 0;
     let mut start: *mut libc::c_char = 0 as *mut libc::c_char;
     start = dst;
-    while len > 1 as libc::c_int as libc::c_ulong {
+    while len > 1u64 {
         c = *src;
         src = src.offset(1);
         dst = vis(dst, c as libc::c_int, flag, *src as libc::c_int);
@@ -1122,6 +1108,6 @@ pub unsafe extern "C" fn strvisx(
     if len != 0 {
         dst = vis(dst, *src as libc::c_int, flag, '\u{0}' as i32)
     }
-    *dst = '\u{0}' as i32 as libc::c_char;
-    return dst.wrapping_offset_from(start) as libc::c_long as libc::c_int;
+    *dst = '\u{0}' as libc::c_char;
+    return dst.wrapping_offset_from(start) as libc::c_int;
 }

@@ -1407,7 +1407,7 @@ pub struct popup_editor {
 }
 unsafe extern "C" fn popup_redraw_cb(mut ttyctx: *const tty_ctx) {
     let mut pd: *mut popup_data = (*ttyctx).arg as *mut popup_data;
-    (*(*pd).c).flags |= 0x2000000 as libc::c_int as libc::c_ulong;
+    (*(*pd).c).flags |= 0x2000000u64;
 }
 unsafe extern "C" fn popup_set_client_cb(
     mut ttyctx: *mut tty_ctx,
@@ -1415,21 +1415,21 @@ unsafe extern "C" fn popup_set_client_cb(
 ) -> libc::c_int {
     let mut pd: *mut popup_data = (*ttyctx).arg as *mut popup_data;
     if c != (*pd).c {
-        return 0 as libc::c_int;
+        return 0i32;
     }
-    if (*(*pd).c).flags & 0x2000000 as libc::c_int as libc::c_ulong != 0 {
-        return 0 as libc::c_int;
+    if (*(*pd).c).flags & 0x2000000u64 != 0 {
+        return 0i32;
     }
-    (*ttyctx).bigger = 0 as libc::c_int;
-    (*ttyctx).wox = 0 as libc::c_int as u_int;
-    (*ttyctx).woy = 0 as libc::c_int as u_int;
+    (*ttyctx).bigger = 0i32;
+    (*ttyctx).wox = 0u32;
+    (*ttyctx).woy = 0u32;
     (*ttyctx).wsx = (*c).tty.sx;
     (*ttyctx).wsy = (*c).tty.sy;
-    (*ttyctx).rxoff = (*pd).px.wrapping_add(1 as libc::c_int as libc::c_uint);
+    (*ttyctx).rxoff = (*pd).px.wrapping_add(1u32);
     (*ttyctx).xoff = (*ttyctx).rxoff;
-    (*ttyctx).ryoff = (*pd).py.wrapping_add(1 as libc::c_int as libc::c_uint);
+    (*ttyctx).ryoff = (*pd).py.wrapping_add(1u32);
     (*ttyctx).yoff = (*ttyctx).ryoff;
-    return 1 as libc::c_int;
+    return 1i32;
 }
 unsafe extern "C" fn popup_init_ctx_cb(mut ctx: *mut screen_write_ctx, mut ttyctx: *mut tty_ctx) {
     let mut pd: *mut popup_data = (*ctx).arg as *mut popup_data;
@@ -1461,7 +1461,7 @@ unsafe extern "C" fn popup_write_screen(mut c: *mut client, mut pd: *mut popup_d
     let mut ft: *mut crate::format::format_tree = 0 as *mut crate::format::format_tree;
     let mut i: u_int = 0;
     let mut y: u_int = 0;
-    ft = format_create(c, item, 0 as libc::c_int, 0 as libc::c_int);
+    ft = format_create(c, item, 0i32, 0i32);
     if cmd_find_valid_state(&mut (*pd).fs) != 0 {
         format_defaults(ft, c, (*pd).fs.s, (*pd).fs.wl, (*pd).fs.wp);
     } else {
@@ -1474,11 +1474,11 @@ unsafe extern "C" fn popup_write_screen(mut c: *mut client, mut pd: *mut popup_d
         );
     }
     screen_write_start(&mut ctx, &mut (*pd).s);
-    screen_write_clearscreen(&mut ctx, 8 as libc::c_int as u_int);
-    y = 0 as libc::c_int as u_int;
-    i = 0 as libc::c_int as u_int;
+    screen_write_clearscreen(&mut ctx, 8u32);
+    y = 0u32;
+    i = 0u32;
     while i < (*pd).nlines {
-        if y == (*pd).sy.wrapping_sub(2 as libc::c_int as libc::c_uint) {
+        if y == (*pd).sy.wrapping_sub(2u32) {
             break;
         }
         next = xstrdup(*(*pd).lines.offset(i as isize));
@@ -1488,20 +1488,15 @@ unsafe extern "C" fn popup_write_screen(mut c: *mut client, mut pd: *mut popup_d
             if loop_0.is_null() {
                 break;
             }
-            if y == (*pd).sy.wrapping_sub(2 as libc::c_int as libc::c_uint) {
+            if y == (*pd).sy.wrapping_sub(2u32) {
                 break;
             }
             tmp = format_expand(ft, loop_0);
-            screen_write_cursormove(
-                &mut ctx,
-                0 as libc::c_int,
-                y as libc::c_int,
-                0 as libc::c_int,
-            );
+            screen_write_cursormove(&mut ctx, 0i32, y as libc::c_int, 0i32);
             format_draw(
                 &mut ctx,
                 &grid_default_cell,
-                (*pd).sx.wrapping_sub(2 as libc::c_int as libc::c_uint),
+                (*pd).sx.wrapping_sub(2u32),
                 tmp,
                 0 as *mut style_ranges,
             );
@@ -1512,12 +1507,7 @@ unsafe extern "C" fn popup_write_screen(mut c: *mut client, mut pd: *mut popup_d
         i = i.wrapping_add(1)
     }
     format_free(ft);
-    screen_write_cursormove(
-        &mut ctx,
-        0 as libc::c_int,
-        y as libc::c_int,
-        0 as libc::c_int,
-    );
+    screen_write_cursormove(&mut ctx, 0i32, y as libc::c_int, 0i32);
     screen_write_stop(&mut ctx);
 }
 unsafe extern "C" fn popup_mode_cb(
@@ -1529,14 +1519,8 @@ unsafe extern "C" fn popup_mode_cb(
     if (*pd).ictx.is_null() {
         return 0 as *mut screen;
     }
-    *cx = (*pd)
-        .px
-        .wrapping_add(1 as libc::c_int as libc::c_uint)
-        .wrapping_add((*pd).s.cx);
-    *cy = (*pd)
-        .py
-        .wrapping_add(1 as libc::c_int as libc::c_uint)
-        .wrapping_add((*pd).s.cy);
+    *cx = (*pd).px.wrapping_add(1u32).wrapping_add((*pd).s.cx);
+    *cy = (*pd).py.wrapping_add(1u32).wrapping_add((*pd).s.cy);
     return &mut (*pd).s;
 }
 unsafe extern "C" fn popup_check_cb(
@@ -1545,25 +1529,13 @@ unsafe extern "C" fn popup_check_cb(
     mut py: u_int,
 ) -> libc::c_int {
     let mut pd: *mut popup_data = (*c).overlay_data as *mut popup_data;
-    if px < (*pd).px
-        || px
-            > (*pd)
-                .px
-                .wrapping_add((*pd).sx)
-                .wrapping_sub(1 as libc::c_int as libc::c_uint)
-    {
-        return 1 as libc::c_int;
+    if px < (*pd).px || px > (*pd).px.wrapping_add((*pd).sx).wrapping_sub(1u32) {
+        return 1i32;
     }
-    if py < (*pd).py
-        || py
-            > (*pd)
-                .py
-                .wrapping_add((*pd).sy)
-                .wrapping_sub(1 as libc::c_int as libc::c_uint)
-    {
-        return 1 as libc::c_int;
+    if py < (*pd).py || py > (*pd).py.wrapping_add((*pd).sy).wrapping_sub(1u32) {
+        return 1i32;
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 unsafe extern "C" fn popup_draw_cb(mut c: *mut client, mut _ctx0: *mut screen_redraw_ctx) {
     let mut pd: *mut popup_data = (*c).overlay_data as *mut popup_data;
@@ -1617,32 +1589,27 @@ unsafe extern "C" fn popup_draw_cb(mut c: *mut client, mut _ctx0: *mut screen_re
     let mut i: u_int = 0;
     let mut px: u_int = (*pd).px;
     let mut py: u_int = (*pd).py;
-    screen_init(&mut s, (*pd).sx, (*pd).sy, 0 as libc::c_int as u_int);
+    screen_init(&mut s, (*pd).sx, (*pd).sy, 0u32);
     screen_write_start(&mut ctx, &mut s);
-    screen_write_clearscreen(&mut ctx, 8 as libc::c_int as u_int);
+    screen_write_clearscreen(&mut ctx, 8u32);
     screen_write_box(&mut ctx, (*pd).sx, (*pd).sy);
-    screen_write_cursormove(
-        &mut ctx,
-        1 as libc::c_int,
-        1 as libc::c_int,
-        0 as libc::c_int,
-    );
+    screen_write_cursormove(&mut ctx, 1i32, 1i32, 0i32);
     screen_write_fast_copy(
         &mut ctx,
         &mut (*pd).s,
-        0 as libc::c_int as u_int,
-        0 as libc::c_int as u_int,
-        (*pd).sx.wrapping_sub(2 as libc::c_int as libc::c_uint),
-        (*pd).sy.wrapping_sub(2 as libc::c_int as libc::c_uint),
+        0u32,
+        0u32,
+        (*pd).sx.wrapping_sub(2u32),
+        (*pd).sy.wrapping_sub(2u32),
     );
     screen_write_stop(&mut ctx);
     (*c).overlay_check = None;
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < (*pd).sy {
         tty_draw_line(
             tty,
             &mut s,
-            0 as libc::c_int as u_int,
+            0u32,
             i,
             (*pd).sx,
             px,
@@ -1679,7 +1646,7 @@ unsafe extern "C" fn popup_free_cb(mut c: *mut client) {
     if !(*pd).ictx.is_null() {
         input_free((*pd).ictx);
     }
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < (*pd).nlines {
         free(*(*pd).lines.offset(i as isize) as *mut libc::c_void);
         i = i.wrapping_add(1)
@@ -1696,18 +1663,18 @@ unsafe extern "C" fn popup_handle_drag(
 ) {
     let mut px: u_int = 0;
     let mut py: u_int = 0;
-    if (*m).b & 32 as libc::c_int as libc::c_uint == 0 {
+    if (*m).b & 32u32 == 0 {
         (*pd).dragging = OFF
-    } else if (*pd).dragging as libc::c_uint == MOVE as libc::c_int as libc::c_uint {
+    } else if (*pd).dragging == MOVE {
         if (*m).x < (*pd).dx {
-            px = 0 as libc::c_int as u_int
+            px = 0u32
         } else if (*m).x.wrapping_sub((*pd).dx).wrapping_add((*pd).sx) > (*c).tty.sx {
             px = (*c).tty.sx.wrapping_sub((*pd).sx)
         } else {
             px = (*m).x.wrapping_sub((*pd).dx)
         }
         if (*m).y < (*pd).dy {
-            py = 0 as libc::c_int as u_int
+            py = 0u32
         } else if (*m).y.wrapping_sub((*pd).dy).wrapping_add((*pd).sy) > (*c).tty.sy {
             py = (*c).tty.sy.wrapping_sub((*pd).sy)
         } else {
@@ -1718,28 +1685,28 @@ unsafe extern "C" fn popup_handle_drag(
         (*pd).dx = (*m).x.wrapping_sub((*pd).px);
         (*pd).dy = (*m).y.wrapping_sub((*pd).py);
         server_redraw_client(c);
-    } else if (*pd).dragging as libc::c_uint == SIZE as libc::c_int as libc::c_uint {
-        if (*m).x < (*pd).px.wrapping_add(3 as libc::c_int as libc::c_uint) {
+    } else if (*pd).dragging == SIZE {
+        if (*m).x < (*pd).px.wrapping_add(3u32) {
             return;
         }
-        if (*m).y < (*pd).py.wrapping_add(3 as libc::c_int as libc::c_uint) {
+        if (*m).y < (*pd).py.wrapping_add(3u32) {
             return;
         }
         (*pd).sx = (*m).x.wrapping_sub((*pd).px);
         (*pd).sy = (*m).y.wrapping_sub((*pd).py);
         screen_resize(
             &mut (*pd).s,
-            (*pd).sx.wrapping_sub(2 as libc::c_int as libc::c_uint),
-            (*pd).sy.wrapping_sub(2 as libc::c_int as libc::c_uint),
-            0 as libc::c_int,
+            (*pd).sx.wrapping_sub(2u32),
+            (*pd).sy.wrapping_sub(2u32),
+            0i32,
         );
         if (*pd).ictx.is_null() {
             popup_write_screen(c, pd);
         } else if !(*pd).job.is_null() {
             job_resize(
                 (*pd).job,
-                (*pd).sx.wrapping_sub(2 as libc::c_int as libc::c_uint),
-                (*pd).sy.wrapping_sub(2 as libc::c_int as libc::c_uint),
+                (*pd).sx.wrapping_sub(2u32),
+                (*pd).sy.wrapping_sub(2u32),
             );
         }
         server_redraw_client(c);
@@ -1757,57 +1724,35 @@ unsafe extern "C" fn popup_key_cb(mut c: *mut client, mut event: *mut key_event)
     let mut state: *mut crate::cmd_queue::cmdq_state = 0 as *mut crate::cmd_queue::cmdq_state;
     let mut status: cmd_parse_status = CMD_PARSE_EMPTY;
     let mut error: *mut libc::c_char = 0 as *mut libc::c_char;
-    if (*event).key & 0xfffffffffff as libc::c_ulonglong
-        >= key_code_code::MOUSE as libc::c_ulong as libc::c_ulonglong
-        && ((*event).key & 0xfffffffffff as libc::c_ulonglong)
-            < key_code_code::BSPACE as libc::c_ulong as libc::c_ulonglong
+    if (*event).key & 0xfffffffffffu64 >= key_code_code::MOUSE
+        && ((*event).key & 0xfffffffffffu64) < key_code_code::BSPACE
     {
-        if (*pd).dragging as libc::c_uint != OFF as libc::c_int as libc::c_uint {
+        if (*pd).dragging != OFF {
             popup_handle_drag(c, pd, m);
             current_block = 937408387176680137;
         } else {
             if (*m).x < (*pd).px
-                || (*m).x
-                    > (*pd)
-                        .px
-                        .wrapping_add((*pd).sx)
-                        .wrapping_sub(1 as libc::c_int as libc::c_uint)
+                || (*m).x > (*pd).px.wrapping_add((*pd).sx).wrapping_sub(1u32)
                 || (*m).y < (*pd).py
-                || (*m).y
-                    > (*pd)
-                        .py
-                        .wrapping_add((*pd).sy)
-                        .wrapping_sub(1 as libc::c_int as libc::c_uint)
+                || (*m).y > (*pd).py.wrapping_add((*pd).sy).wrapping_sub(1u32)
             {
-                if (*m).b & 3 as libc::c_int as libc::c_uint == 1 as libc::c_int as libc::c_uint {
-                    return 1 as libc::c_int;
+                if (*m).b & 3u32 == 1u32 {
+                    return 1i32;
                 }
-                return 0 as libc::c_int;
+                return 0i32;
             }
-            if (*m).b & 8 as libc::c_int as libc::c_uint != 0
+            if (*m).b & 8u32 != 0
                 || (*m).x == (*pd).px
-                || (*m).x
-                    == (*pd)
-                        .px
-                        .wrapping_add((*pd).sx)
-                        .wrapping_sub(1 as libc::c_int as libc::c_uint)
+                || (*m).x == (*pd).px.wrapping_add((*pd).sx).wrapping_sub(1u32)
                 || (*m).y == (*pd).py
-                || (*m).y
-                    == (*pd)
-                        .py
-                        .wrapping_add((*pd).sy)
-                        .wrapping_sub(1 as libc::c_int as libc::c_uint)
+                || (*m).y == (*pd).py.wrapping_add((*pd).sy).wrapping_sub(1u32)
             {
-                if (*m).b & 32 as libc::c_int as libc::c_uint == 0 {
+                if (*m).b & 32u32 == 0 {
                     current_block = 937408387176680137;
                 } else {
-                    if (*m).lb & 3 as libc::c_int as libc::c_uint
-                        == 0 as libc::c_int as libc::c_uint
-                    {
+                    if (*m).lb & 3u32 == 0u32 {
                         (*pd).dragging = MOVE
-                    } else if (*m).lb & 3 as libc::c_int as libc::c_uint
-                        == 2 as libc::c_int as libc::c_uint
-                    {
+                    } else if (*m).lb & 3u32 == 2u32 {
                         (*pd).dragging = SIZE
                     }
                     (*pd).dx = (*m).lx.wrapping_sub((*pd).px);
@@ -1824,25 +1769,22 @@ unsafe extern "C" fn popup_key_cb(mut c: *mut client, mut event: *mut key_event)
                 (*pd).lx = (*m).x;
                 (*pd).ly = (*m).y;
                 (*pd).lb = (*m).b;
-                return 0 as libc::c_int;
+                return 0i32;
             }
         }
     }
-    if !(*pd).ictx.is_null() && (*pd).flags & 0x1 as libc::c_int != 0 {
-        if ((*pd).flags & (0x2 as libc::c_int | 0x4 as libc::c_int) == 0 as libc::c_int
-            || (*pd).job.is_null())
+    if !(*pd).ictx.is_null() && (*pd).flags & 0x1i32 != 0 {
+        if ((*pd).flags & (0x2i32 | 0x4i32) == 0i32 || (*pd).job.is_null())
             && ((*event).key == '\u{1b}' as i32 as libc::c_ulonglong
                 || (*event).key == '\u{3}' as i32 as libc::c_ulonglong)
         {
-            return 1 as libc::c_int;
+            return 1i32;
         }
         if (*pd).job.is_null() {
-            return 0 as libc::c_int;
+            return 0i32;
         }
-        if (*event).key & 0xfffffffffff as libc::c_ulonglong
-            >= key_code_code::MOUSE as libc::c_ulong as libc::c_ulonglong
-            && ((*event).key & 0xfffffffffff as libc::c_ulonglong)
-                < key_code_code::BSPACE as libc::c_ulong as libc::c_ulonglong
+        if (*event).key & 0xfffffffffffu64 >= key_code_code::MOUSE
+            && ((*event).key & 0xfffffffffffu64) < key_code_code::BSPACE
         {
             /* Must be inside, checked already. */
             if input_key_get_mouse(
@@ -1854,23 +1796,18 @@ unsafe extern "C" fn popup_key_cb(mut c: *mut client, mut event: *mut key_event)
                 &mut len,
             ) == 0
             {
-                return 0 as libc::c_int;
+                return 0i32;
             } /* callback now owns buffer */
             bufferevent_write(job_get_event((*pd).job), buf as *const libc::c_void, len);
-            return 0 as libc::c_int;
+            return 0i32;
         }
         input_key(&mut (*pd).s, job_get_event((*pd).job), (*event).key);
-        return 0 as libc::c_int;
+        return 0i32;
     }
     if (*pd).cmd.is_null() {
-        return 1 as libc::c_int;
+        return 1i32;
     }
-    ft = format_create(
-        0 as *mut client,
-        (*pd).item,
-        0 as libc::c_int,
-        0 as libc::c_int,
-    );
+    ft = format_create(0 as *mut client, (*pd).item, 0i32, 0i32);
     if cmd_find_valid_state(fs) != 0 {
         format_defaults(ft, c, (*fs).s, (*fs).wl, (*fs).wp);
     } else {
@@ -1886,12 +1823,10 @@ unsafe extern "C" fn popup_key_cb(mut c: *mut client, mut event: *mut key_event)
         ft,
         b"popup_key\x00" as *const u8 as *const libc::c_char,
         b"%s\x00" as *const u8 as *const libc::c_char,
-        key_string_lookup_key((*event).key, 0 as libc::c_int),
+        key_string_lookup_key((*event).key, 0i32),
     );
-    if (*event).key & 0xfffffffffff as libc::c_ulonglong
-        >= key_code_code::MOUSE as libc::c_ulong as libc::c_ulonglong
-        && ((*event).key & 0xfffffffffff as libc::c_ulonglong)
-            < key_code_code::BSPACE as libc::c_ulong as libc::c_ulonglong
+    if (*event).key & 0xfffffffffffu64 >= key_code_code::MOUSE
+        && ((*event).key & 0xfffffffffffu64) < key_code_code::BSPACE
     {
         format_add(
             ft,
@@ -1918,28 +1853,27 @@ unsafe extern "C" fn popup_key_cb(mut c: *mut client, mut event: *mut key_event)
     } else {
         event = 0 as *mut key_event
     }
-    state = cmdq_new_state(&mut (*pd).fs, event, 0 as libc::c_int);
+    state = cmdq_new_state(&mut (*pd).fs, event, 0i32);
     status = cmd_parse_and_append(cmd, 0 as *mut cmd_parse_input, c, state, &mut error);
-    if status as libc::c_uint == CMD_PARSE_ERROR as libc::c_int as libc::c_uint {
+    if status == CMD_PARSE_ERROR {
         cmdq_append(c, cmdq_get_error(error));
         free(error as *mut libc::c_void);
     }
     cmdq_free_state(state);
-    return 1 as libc::c_int;
+    return 1i32;
 }
 unsafe extern "C" fn popup_job_update_cb(mut job: *mut crate::job::job) {
     let mut pd: *mut popup_data = job_get_data(job) as *mut popup_data;
     let mut evb: *mut evbuffer = (*job_get_event(job)).input;
     let mut c: *mut client = (*pd).c;
     let mut s: *mut screen = &mut (*pd).s;
-    let mut data: *mut libc::c_void =
-        evbuffer_pullup(evb, -(1 as libc::c_int) as ssize_t) as *mut libc::c_void;
+    let mut data: *mut libc::c_void = evbuffer_pullup(evb, -1i64) as *mut libc::c_void;
     let mut size: size_t = evbuffer_get_length(evb);
-    if size == 0 as libc::c_int as libc::c_ulong {
+    if size == 0u64 {
         return;
     }
     (*c).overlay_check = None;
-    (*c).tty.flags &= !(0x2 as libc::c_int);
+    (*c).tty.flags &= !(0x2i32);
     input_parse_screen(
         (*pd).ictx,
         s,
@@ -1951,7 +1885,7 @@ unsafe extern "C" fn popup_job_update_cb(mut job: *mut crate::job::job) {
         data as *mut u_char,
         size,
     );
-    (*c).tty.flags |= 0x2 as libc::c_int;
+    (*c).tty.flags |= 0x2i32;
     (*c).overlay_check = Some(
         popup_check_cb as unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int,
     );
@@ -1961,20 +1895,15 @@ unsafe extern "C" fn popup_job_complete_cb(mut job: *mut crate::job::job) {
     let mut pd: *mut popup_data = job_get_data(job) as *mut popup_data;
     let mut status: libc::c_int = 0;
     status = job_get_status((*pd).job);
-    if status & 0x7f as libc::c_int == 0 as libc::c_int {
-        (*pd).status = (status & 0xff00 as libc::c_int) >> 8 as libc::c_int
-    } else if ((status & 0x7f as libc::c_int) + 1 as libc::c_int) as libc::c_schar as libc::c_int
-        >> 1 as libc::c_int
-        > 0 as libc::c_int
-    {
-        (*pd).status = status & 0x7f as libc::c_int
+    if status & 0x7fi32 == 0i32 {
+        (*pd).status = (status & 0xff00i32) >> 8i32
+    } else if ((status & 0x7fi32) + 1i32) as libc::c_schar as libc::c_int >> 1i32 > 0i32 {
+        (*pd).status = status & 0x7fi32
     } else {
-        (*pd).status = 0 as libc::c_int
+        (*pd).status = 0i32
     }
     (*pd).job = 0 as *mut crate::job::job;
-    if (*pd).flags & 0x2 as libc::c_int != 0
-        || (*pd).flags & 0x4 as libc::c_int != 0 && (*pd).status == 0 as libc::c_int
-    {
+    if (*pd).flags & 0x2i32 != 0 || (*pd).flags & 0x4i32 != 0 && (*pd).status == 0i32 {
         server_client_clear_overlay((*pd).c);
     };
 }
@@ -1987,8 +1916,8 @@ pub unsafe extern "C" fn popup_height(
     let mut next: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut loop_0: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut i: u_int = 0;
-    let mut height: u_int = 0 as libc::c_int as u_int;
-    i = 0 as libc::c_int as u_int;
+    let mut height: u_int = 0u32;
+    i = 0u32;
     while i < nlines {
         next = xstrdup(*lines.offset(i as isize));
         copy = next;
@@ -2018,14 +1947,9 @@ pub unsafe extern "C" fn popup_width(
     let mut tmp: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut ft: *mut crate::format::format_tree = 0 as *mut crate::format::format_tree;
     let mut i: u_int = 0;
-    let mut width: u_int = 0 as libc::c_int as u_int;
+    let mut width: u_int = 0u32;
     let mut tmpwidth: u_int = 0;
-    ft = format_create(
-        cmdq_get_client(item),
-        item,
-        0 as libc::c_int,
-        0 as libc::c_int,
-    );
+    ft = format_create(cmdq_get_client(item), item, 0i32, 0i32);
     if !fs.is_null() && cmd_find_valid_state(fs) != 0 {
         format_defaults(ft, c, (*fs).s, (*fs).wl, (*fs).wp);
     } else {
@@ -2037,7 +1961,7 @@ pub unsafe extern "C" fn popup_width(
             0 as *mut window_pane,
         );
     }
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < nlines {
         next = xstrdup(*lines.offset(i as isize));
         copy = next;
@@ -2081,31 +2005,28 @@ pub unsafe extern "C" fn popup_display(
     let mut i: u_int = 0;
     let mut s: *mut session = 0 as *mut session;
     let mut jobflags: libc::c_int = 0;
-    if sx < 3 as libc::c_int as libc::c_uint || sy < 3 as libc::c_int as libc::c_uint {
-        return -(1 as libc::c_int);
+    if sx < 3u32 || sy < 3u32 {
+        return -(1i32);
     }
     if (*c).tty.sx < sx || (*c).tty.sy < sy {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
-    pd = xcalloc(
-        1 as libc::c_int as size_t,
-        ::std::mem::size_of::<popup_data>() as libc::c_ulong,
-    ) as *mut popup_data;
+    pd = xcalloc(1u64, ::std::mem::size_of::<popup_data>() as libc::c_ulong) as *mut popup_data;
     (*pd).item = item;
     (*pd).flags = flags;
     (*pd).c = c;
     (*(*pd).c).references += 1;
     (*pd).cb = cb;
     (*pd).arg = arg;
-    (*pd).status = 128 as libc::c_int + 1 as libc::c_int;
+    (*pd).status = 128i32 + 1i32;
     if !fs.is_null() {
         cmd_find_copy_state(&mut (*pd).fs, fs);
     }
     screen_init(
         &mut (*pd).s,
-        sx.wrapping_sub(2 as libc::c_int as libc::c_uint),
-        sy.wrapping_sub(2 as libc::c_int as libc::c_uint),
-        0 as libc::c_int as u_int,
+        sx.wrapping_sub(2u32),
+        sy.wrapping_sub(2u32),
+        0u32,
     );
     if !cmd.is_null() {
         (*pd).cmd = xstrdup(cmd)
@@ -2115,14 +2036,14 @@ pub unsafe extern "C" fn popup_display(
     (*pd).sx = sx;
     (*pd).sy = sy;
     (*pd).nlines = nlines;
-    if (*pd).nlines != 0 as libc::c_int as libc::c_uint {
+    if (*pd).nlines != 0u32 {
         (*pd).lines = xreallocarray(
             0 as *mut libc::c_void,
             (*pd).nlines as size_t,
             ::std::mem::size_of::<*mut libc::c_char>() as libc::c_ulong,
         ) as *mut *mut libc::c_char
     }
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < (*pd).nlines {
         let ref mut fresh0 = *(*pd).lines.offset(i as isize);
         *fresh0 = xstrdup(*lines.offset(i as isize));
@@ -2135,9 +2056,9 @@ pub unsafe extern "C" fn popup_display(
         } else {
             s = 0 as *mut session
         }
-        jobflags = 0x1 as libc::c_int | 0x4 as libc::c_int;
-        if flags & 0x1 as libc::c_int != 0 {
-            jobflags |= 0x2 as libc::c_int
+        jobflags = 0x1i32 | 0x4i32;
+        if flags & 0x1i32 != 0 {
+            jobflags |= 0x2i32
         }
         (*pd).job = job_run(
             shellcmd,
@@ -2148,14 +2069,14 @@ pub unsafe extern "C" fn popup_display(
             None,
             pd as *mut libc::c_void,
             jobflags,
-            (*pd).sx.wrapping_sub(2 as libc::c_int as libc::c_uint) as libc::c_int,
-            (*pd).sy.wrapping_sub(2 as libc::c_int as libc::c_uint) as libc::c_int,
+            (*pd).sx.wrapping_sub(2u32) as libc::c_int,
+            (*pd).sy.wrapping_sub(2u32) as libc::c_int,
         );
         (*pd).ictx = input_init(0 as *mut window_pane, job_get_event((*pd).job))
     }
     server_client_set_overlay(
         c,
-        0 as libc::c_int as u_int,
+        0u32,
         Some(
             popup_check_cb
                 as unsafe extern "C" fn(_: *mut client, _: u_int, _: u_int) -> libc::c_int,
@@ -2177,7 +2098,7 @@ pub unsafe extern "C" fn popup_display(
         Some(popup_free_cb as unsafe extern "C" fn(_: *mut client) -> ()),
         pd as *mut libc::c_void,
     );
-    return 0 as libc::c_int;
+    return 0i32;
 }
 unsafe extern "C" fn popup_editor_free(mut pe: *mut popup_editor) {
     unlink((*pe).path);
@@ -2188,37 +2109,28 @@ unsafe extern "C" fn popup_editor_close_cb(mut status: libc::c_int, mut arg: *mu
     let mut pe: *mut popup_editor = arg as *mut popup_editor;
     let mut f: *mut FILE = 0 as *mut FILE;
     let mut buf: *mut libc::c_char = 0 as *mut libc::c_char;
-    let mut len: off_t = 0 as libc::c_int as off_t;
-    if status != 0 as libc::c_int {
-        (*pe).cb.expect("non-null function pointer")(
-            0 as *mut libc::c_char,
-            0 as libc::c_int as size_t,
-            (*pe).arg,
-        );
+    let mut len: off_t = 0i64;
+    if status != 0i32 {
+        (*pe).cb.expect("non-null function pointer")(0 as *mut libc::c_char, 0u64, (*pe).arg);
         popup_editor_free(pe);
         return;
     }
     f = fopen((*pe).path, b"r\x00" as *const u8 as *const libc::c_char);
     if !f.is_null() {
-        fseeko(f, 0 as libc::c_int as __off_t, 2 as libc::c_int);
+        fseeko(f, 0i64, 2i32);
         len = ftello(f);
-        fseeko(f, 0 as libc::c_int as __off_t, 0 as libc::c_int);
-        if len == 0 as libc::c_int as libc::c_long
-            || len as uintmax_t > 18446744073709551615 as libc::c_ulong
+        fseeko(f, 0i64, 0i32);
+        if len == 0i64
+            || len as uintmax_t > 18446744073709551615u64
             || {
                 buf = malloc(len as libc::c_ulong) as *mut libc::c_char;
                 buf.is_null()
             }
-            || fread(
-                buf as *mut libc::c_void,
-                len as libc::c_ulong,
-                1 as libc::c_int as libc::c_ulong,
-                f,
-            ) != 1 as libc::c_int as libc::c_ulong
+            || fread(buf as *mut libc::c_void, len as libc::c_ulong, 1u64, f) != 1u64
         {
             free(buf as *mut libc::c_void);
             buf = 0 as *mut libc::c_char;
-            len = 0 as libc::c_int as off_t
+            len = 0i64
         }
         fclose(f);
     }
@@ -2249,51 +2161,34 @@ pub unsafe extern "C" fn popup_editor(
         b"editor\x00" as *const u8 as *const libc::c_char,
     );
     if *editor as libc::c_int == '\u{0}' as i32 {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     fd = mkstemp(path.as_mut_ptr());
-    if fd == -(1 as libc::c_int) {
-        return -(1 as libc::c_int);
+    if fd == -(1i32) {
+        return -(1i32);
     }
     f = fdopen(fd, b"w\x00" as *const u8 as *const libc::c_char);
-    if fwrite(
-        buf as *const libc::c_void,
-        len,
-        1 as libc::c_int as libc::c_ulong,
-        f,
-    ) != 1 as libc::c_int as libc::c_ulong
-    {
+    if fwrite(buf as *const libc::c_void, len, 1u64, f) != 1u64 {
         fclose(f);
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     fclose(f);
-    pe = xcalloc(
-        1 as libc::c_int as size_t,
-        ::std::mem::size_of::<popup_editor>() as libc::c_ulong,
-    ) as *mut popup_editor;
+    pe = xcalloc(1u64, ::std::mem::size_of::<popup_editor>() as libc::c_ulong) as *mut popup_editor;
     (*pe).path = xstrdup(path.as_mut_ptr());
     (*pe).cb = cb;
     (*pe).arg = arg;
-    sx = (*c)
-        .tty
-        .sx
-        .wrapping_mul(9 as libc::c_int as libc::c_uint)
-        .wrapping_div(10 as libc::c_int as libc::c_uint);
-    sy = (*c)
-        .tty
-        .sy
-        .wrapping_mul(9 as libc::c_int as libc::c_uint)
-        .wrapping_div(10 as libc::c_int as libc::c_uint);
+    sx = (*c).tty.sx.wrapping_mul(9u32).wrapping_div(10u32);
+    sy = (*c).tty.sy.wrapping_mul(9u32).wrapping_div(10u32);
     px = (*c)
         .tty
         .sx
-        .wrapping_div(2 as libc::c_int as libc::c_uint)
-        .wrapping_sub(sx.wrapping_div(2 as libc::c_int as libc::c_uint));
+        .wrapping_div(2u32)
+        .wrapping_sub(sx.wrapping_div(2u32));
     py = (*c)
         .tty
         .sy
-        .wrapping_div(2 as libc::c_int as libc::c_uint)
-        .wrapping_sub(sy.wrapping_div(2 as libc::c_int as libc::c_uint));
+        .wrapping_div(2u32)
+        .wrapping_sub(sy.wrapping_div(2u32));
     xasprintf(
         &mut cmd as *mut *mut libc::c_char,
         b"%s %s\x00" as *const u8 as *const libc::c_char,
@@ -2301,13 +2196,13 @@ pub unsafe extern "C" fn popup_editor(
         path.as_mut_ptr(),
     );
     if popup_display(
-        0x1 as libc::c_int | 0x2 as libc::c_int,
+        0x1i32 | 0x2i32,
         0 as *mut crate::cmd_queue::cmdq_item,
         px,
         py,
         sx,
         sy,
-        0 as libc::c_int as u_int,
+        0u32,
         0 as *mut *const libc::c_char,
         cmd,
         0 as *const libc::c_char,
@@ -2319,12 +2214,12 @@ pub unsafe extern "C" fn popup_editor(
                 as unsafe extern "C" fn(_: libc::c_int, _: *mut libc::c_void) -> (),
         ),
         pe as *mut libc::c_void,
-    ) != 0 as libc::c_int
+    ) != 0i32
     {
         popup_editor_free(pe);
         free(cmd as *mut libc::c_void);
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     free(cmd as *mut libc::c_void);
-    return 0 as libc::c_int;
+    return 0i32;
 }

@@ -1164,8 +1164,8 @@ pub static mut cmd_pipe_pane_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"IOot:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 1 as libc::c_int,
+                    lower: 0i32,
+                    upper: 1i32,
                 };
                 init
             },
@@ -1177,13 +1177,13 @@ pub static mut cmd_pipe_pane_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_PANE,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0x4 as libc::c_int,
+            flags: 0x4i32,
             exec: Some(
                 cmd_pipe_pane_exec
                     as unsafe extern "C" fn(
@@ -1236,19 +1236,17 @@ unsafe extern "C" fn cmd_pipe_pane_exec(
     let mut oldset: sigset_t = sigset_t { __val: [0; 16] };
     /* Destroy the old pipe. */
     old_fd = (*wp).pipe_fd;
-    if (*wp).pipe_fd != -(1 as libc::c_int) {
+    if (*wp).pipe_fd != -(1i32) {
         bufferevent_free((*wp).pipe_event);
         close((*wp).pipe_fd);
-        (*wp).pipe_fd = -(1 as libc::c_int);
+        (*wp).pipe_fd = -(1i32);
         if window_pane_destroy_ready(wp) != 0 {
-            server_destroy_pane(wp, 1 as libc::c_int);
+            server_destroy_pane(wp, 1i32);
             return CMD_RETURN_NORMAL;
         }
     }
     /* If no pipe command, that is enough. */
-    if (*args).argc == 0 as libc::c_int
-        || **(*args).argv.offset(0 as libc::c_int as isize) as libc::c_int == '\u{0}' as i32
-    {
+    if (*args).argc == 0i32 || **(*args).argv.offset(0isize) as libc::c_int == '\u{0}' as i32 {
         return CMD_RETURN_NORMAL;
     }
     /*
@@ -1257,25 +1255,19 @@ unsafe extern "C" fn cmd_pipe_pane_exec(
      *
      *	bind ^p pipep -o 'cat >>~/output'
      */
-    if args_has(args, 'o' as i32 as u_char) != 0 && old_fd != -(1 as libc::c_int) {
+    if args_has(args, 'o' as u_char) != 0 && old_fd != -(1i32) {
         return CMD_RETURN_NORMAL;
     }
     /* What do we want to do? Neither -I or -O is -O. */
-    if args_has(args, 'I' as i32 as u_char) != 0 {
-        in_0 = 1 as libc::c_int;
-        out = args_has(args, 'O' as i32 as u_char)
+    if args_has(args, 'I' as u_char) != 0 {
+        in_0 = 1i32;
+        out = args_has(args, 'O' as u_char)
     } else {
-        in_0 = 0 as libc::c_int;
-        out = 1 as libc::c_int
+        in_0 = 0i32;
+        out = 1i32
     }
     /* Open the new pipe. */
-    if socketpair(
-        1 as libc::c_int,
-        SOCK_STREAM as libc::c_int,
-        0 as libc::c_int,
-        pipe_fd.as_mut_ptr(),
-    ) != 0 as libc::c_int
-    {
+    if socketpair(1i32, SOCK_STREAM as libc::c_int, 0i32, pipe_fd.as_mut_ptr()) != 0i32 {
         cmdq_error(
             item,
             b"socketpair error: %s\x00" as *const u8 as *const libc::c_char,
@@ -1284,21 +1276,16 @@ unsafe extern "C" fn cmd_pipe_pane_exec(
         return CMD_RETURN_ERROR;
     }
     /* Expand the command. */
-    ft = format_create(
-        cmdq_get_client(item),
-        item,
-        0 as libc::c_int,
-        0 as libc::c_int,
-    );
+    ft = format_create(cmdq_get_client(item), item, 0i32, 0i32);
     format_defaults(ft, tc, s, wl, wp);
-    cmd = format_expand_time(ft, *(*args).argv.offset(0 as libc::c_int as isize));
+    cmd = format_expand_time(ft, *(*args).argv.offset(0isize));
     format_free(ft);
     /* Fork the child. */
     sigfillset(&mut set);
-    sigprocmask(0 as libc::c_int, &mut set, &mut oldset);
+    sigprocmask(0i32, &mut set, &mut oldset);
     match fork() {
         -1 => {
-            sigprocmask(2 as libc::c_int, &mut oldset, 0 as *mut sigset_t);
+            sigprocmask(2i32, &mut oldset, 0 as *mut sigset_t);
             cmdq_error(
                 item,
                 b"fork error: %s\x00" as *const u8 as *const libc::c_char,
@@ -1309,57 +1296,55 @@ unsafe extern "C" fn cmd_pipe_pane_exec(
         }
         0 => {
             /* Child process. */
-            proc_clear_signals(server_proc, 1 as libc::c_int);
-            sigprocmask(2 as libc::c_int, &mut oldset, 0 as *mut sigset_t);
-            close(pipe_fd[0 as libc::c_int as usize]);
+            proc_clear_signals(server_proc, 1i32);
+            sigprocmask(2i32, &mut oldset, 0 as *mut sigset_t);
+            close(pipe_fd[0usize]);
             null_fd = open(
                 b"/dev/null\x00" as *const u8 as *const libc::c_char,
-                0o1 as libc::c_int,
-                0 as libc::c_int,
+                0o1i32,
+                0i32,
             );
             if out != 0 {
-                if dup2(pipe_fd[1 as libc::c_int as usize], 0 as libc::c_int) == -(1 as libc::c_int)
-                {
-                    _exit(1 as libc::c_int);
+                if dup2(pipe_fd[1usize], 0i32) == -(1i32) {
+                    _exit(1i32);
                 }
-            } else if dup2(null_fd, 0 as libc::c_int) == -(1 as libc::c_int) {
-                _exit(1 as libc::c_int);
+            } else if dup2(null_fd, 0i32) == -(1i32) {
+                _exit(1i32);
             }
             if in_0 != 0 {
-                if dup2(pipe_fd[1 as libc::c_int as usize], 1 as libc::c_int) == -(1 as libc::c_int)
-                {
-                    _exit(1 as libc::c_int);
+                if dup2(pipe_fd[1usize], 1i32) == -(1i32) {
+                    _exit(1i32);
                 }
-                if pipe_fd[1 as libc::c_int as usize] != 1 as libc::c_int {
-                    close(pipe_fd[1 as libc::c_int as usize]);
+                if pipe_fd[1usize] != 1i32 {
+                    close(pipe_fd[1usize]);
                 }
-            } else if dup2(null_fd, 1 as libc::c_int) == -(1 as libc::c_int) {
-                _exit(1 as libc::c_int);
+            } else if dup2(null_fd, 1i32) == -(1i32) {
+                _exit(1i32);
             }
-            if dup2(null_fd, 2 as libc::c_int) == -(1 as libc::c_int) {
-                _exit(1 as libc::c_int);
+            if dup2(null_fd, 2i32) == -(1i32) {
+                _exit(1i32);
             }
-            closefrom(2 as libc::c_int + 1 as libc::c_int);
+            closefrom(2i32 + 1i32);
             execl(
                 b"/bin/sh\x00" as *const u8 as *const libc::c_char,
                 b"sh\x00" as *const u8 as *const libc::c_char,
                 b"-c\x00" as *const u8 as *const libc::c_char,
                 cmd,
-                0 as *mut libc::c_void as *mut libc::c_char,
+                0 as *mut libc::c_char,
             );
-            _exit(1 as libc::c_int);
+            _exit(1i32);
         }
         _ => {
             /* Parent process. */
-            sigprocmask(2 as libc::c_int, &mut oldset, 0 as *mut sigset_t);
-            close(pipe_fd[1 as libc::c_int as usize]);
-            (*wp).pipe_fd = pipe_fd[0 as libc::c_int as usize];
+            sigprocmask(2i32, &mut oldset, 0 as *mut sigset_t);
+            close(pipe_fd[1usize]);
+            (*wp).pipe_fd = pipe_fd[0usize];
             memcpy(
                 wpo as *mut libc::c_void,
                 &mut (*wp).offset as *mut window_pane_offset as *const libc::c_void,
                 ::std::mem::size_of::<window_pane_offset>() as libc::c_ulong,
             );
-            setblocking((*wp).pipe_fd, 0 as libc::c_int);
+            setblocking((*wp).pipe_fd, 0i32);
             (*wp).pipe_event = bufferevent_new(
                 (*wp).pipe_fd,
                 Some(
@@ -1384,10 +1369,10 @@ unsafe extern "C" fn cmd_pipe_pane_exec(
                 fatalx(b"out of memory\x00" as *const u8 as *const libc::c_char);
             }
             if out != 0 {
-                bufferevent_enable((*wp).pipe_event, 0x4 as libc::c_int as libc::c_short);
+                bufferevent_enable((*wp).pipe_event, 0x4i16);
             }
             if in_0 != 0 {
-                bufferevent_enable((*wp).pipe_event, 0x2 as libc::c_int as libc::c_short);
+                bufferevent_enable((*wp).pipe_event, 0x2i16);
             }
             free(cmd as *mut libc::c_void);
             return CMD_RETURN_NORMAL;
@@ -1409,12 +1394,12 @@ unsafe extern "C" fn cmd_pipe_pane_read_callback(
     );
     bufferevent_write(
         (*wp).event,
-        evbuffer_pullup(evb, -(1 as libc::c_int) as ssize_t) as *const libc::c_void,
+        evbuffer_pullup(evb, -1i64) as *const libc::c_void,
         available,
     );
     evbuffer_drain(evb, available);
     if window_pane_destroy_ready(wp) != 0 {
-        server_destroy_pane(wp, 1 as libc::c_int);
+        server_destroy_pane(wp, 1i32);
     };
 }
 unsafe extern "C" fn cmd_pipe_pane_write_callback(
@@ -1427,7 +1412,7 @@ unsafe extern "C" fn cmd_pipe_pane_write_callback(
         (*wp).id,
     );
     if window_pane_destroy_ready(wp) != 0 {
-        server_destroy_pane(wp, 1 as libc::c_int);
+        server_destroy_pane(wp, 1i32);
     };
 }
 unsafe extern "C" fn cmd_pipe_pane_error_callback(
@@ -1442,8 +1427,8 @@ unsafe extern "C" fn cmd_pipe_pane_error_callback(
     );
     bufferevent_free((*wp).pipe_event);
     close((*wp).pipe_fd);
-    (*wp).pipe_fd = -(1 as libc::c_int);
+    (*wp).pipe_fd = -(1i32);
     if window_pane_destroy_ready(wp) != 0 {
-        server_destroy_pane(wp, 1 as libc::c_int);
+        server_destroy_pane(wp, 1i32);
     };
 }

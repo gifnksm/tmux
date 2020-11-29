@@ -1088,8 +1088,8 @@ pub static mut cmd_respawn_window_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"c:e:kt:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: -(1 as libc::c_int),
+                    lower: 0i32,
+                    upper: -(1i32),
                 };
                 init
             },
@@ -1102,13 +1102,13 @@ pub static mut cmd_respawn_window_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_WINDOW,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0 as libc::c_int,
+            flags: 0i32,
             exec: Some(
                 cmd_respawn_window_exec
                     as unsafe extern "C" fn(
@@ -1168,7 +1168,7 @@ unsafe extern "C" fn cmd_respawn_window_exec(
     let mut value: *mut crate::arguments::args_value = 0 as *mut crate::arguments::args_value;
     memset(
         &mut sc as *mut spawn_context as *mut libc::c_void,
-        0 as libc::c_int,
+        0i32,
         ::std::mem::size_of::<spawn_context>() as libc::c_ulong,
     );
     sc.item = item;
@@ -1179,16 +1179,16 @@ unsafe extern "C" fn cmd_respawn_window_exec(
     sc.argc = (*args).argc;
     sc.argv = (*args).argv;
     sc.environ = environ_create();
-    add = args_first_value(args, 'e' as i32 as u_char, &mut value);
+    add = args_first_value(args, 'e' as u_char, &mut value);
     while !add.is_null() {
-        environ_put(sc.environ, add, 0 as libc::c_int);
+        environ_put(sc.environ, add, 0i32);
         add = args_next_value(&mut value)
     }
-    sc.idx = -(1 as libc::c_int);
-    sc.cwd = args_get(args, 'c' as i32 as u_char);
-    sc.flags = 0x4 as libc::c_int;
-    if args_has(args, 'k' as i32 as u_char) != 0 {
-        sc.flags |= 0x1 as libc::c_int
+    sc.idx = -(1i32);
+    sc.cwd = args_get(args, 'c' as u_char);
+    sc.flags = 0x4i32;
+    if args_has(args, 'k' as u_char) != 0 {
+        sc.flags |= 0x1i32
     }
     if spawn_window(&mut sc, &mut cause).is_null() {
         cmdq_error(

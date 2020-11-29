@@ -1069,8 +1069,8 @@ pub static mut cmd_list_buffers_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"F:f:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -1085,7 +1085,7 @@ pub static mut cmd_list_buffers_entry: cmd_entry = {
                 type_0: CMD_FIND_PANE,
                 flags: 0,
             },
-            flags: 0x4 as libc::c_int,
+            flags: 0x4i32,
             exec: Some(
                 cmd_list_buffers_exec
                     as unsafe extern "C" fn(
@@ -1109,31 +1109,26 @@ unsafe extern "C" fn cmd_list_buffers_exec(
     let mut line: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut expanded: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut flag: libc::c_int = 0;
-    template = args_get(args, 'F' as i32 as u_char);
+    template = args_get(args, 'F' as u_char);
     if template.is_null() {
         template = b"#{buffer_name}: #{buffer_size} bytes: \"#{buffer_sample}\"\x00" as *const u8
             as *const libc::c_char
     }
-    filter = args_get(args, 'f' as i32 as u_char);
+    filter = args_get(args, 'f' as u_char);
     pb = 0 as *mut crate::paste::paste_buffer;
     loop {
         pb = paste_walk(pb);
         if pb.is_null() {
             break;
         }
-        ft = format_create(
-            cmdq_get_client(item),
-            item,
-            0 as libc::c_int,
-            0 as libc::c_int,
-        );
+        ft = format_create(cmdq_get_client(item), item, 0i32, 0i32);
         format_defaults_paste_buffer(ft, pb);
         if !filter.is_null() {
             expanded = format_expand(ft, filter);
             flag = format_true(expanded);
             free(expanded as *mut libc::c_void);
         } else {
-            flag = 1 as libc::c_int
+            flag = 1i32
         }
         if flag != 0 {
             line = format_expand(ft, template);

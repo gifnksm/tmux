@@ -1152,8 +1152,8 @@ pub static mut cmd_source_file_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"Fnqv\x00" as *const u8 as *const libc::c_char,
-                    lower: 1 as libc::c_int,
-                    upper: -(1 as libc::c_int),
+                    lower: 1i32,
+                    upper: -(1i32),
                 };
                 init
             },
@@ -1168,7 +1168,7 @@ pub static mut cmd_source_file_entry: cmd_entry = {
                 type_0: CMD_FIND_PANE,
                 flags: 0,
             },
-            flags: 0 as libc::c_int,
+            flags: 0i32,
             exec: Some(
                 cmd_source_file_exec
                     as unsafe extern "C" fn(
@@ -1193,10 +1193,8 @@ unsafe extern "C" fn cmd_source_file_complete(
 ) {
     let mut new_item: *mut crate::cmd_queue::cmdq_item = 0 as *mut crate::cmd_queue::cmdq_item;
     if cfg_finished != 0 {
-        if (*cdata).retval as libc::c_int == CMD_RETURN_ERROR as libc::c_int
-            && (*c).session.is_null()
-        {
-            (*c).retval = 1 as libc::c_int
+        if (*cdata).retval == CMD_RETURN_ERROR && (*c).session.is_null() {
+            (*c).retval = 1i32
         }
         new_item = cmdq_get_callback1(
             b"cmd_source_file_complete_cb\x00" as *const u8 as *const libc::c_char,
@@ -1224,22 +1222,21 @@ unsafe extern "C" fn cmd_source_file_done(
 ) {
     let mut cdata: *mut cmd_source_file_data = data as *mut cmd_source_file_data;
     let mut item: *mut crate::cmd_queue::cmdq_item = (*cdata).item;
-    let mut bdata: *mut libc::c_void =
-        evbuffer_pullup(buffer, -(1 as libc::c_int) as ssize_t) as *mut libc::c_void;
+    let mut bdata: *mut libc::c_void = evbuffer_pullup(buffer, -1i64) as *mut libc::c_void;
     let mut bsize: size_t = evbuffer_get_length(buffer);
     let mut n: u_int = 0;
     let mut new_item: *mut crate::cmd_queue::cmdq_item = 0 as *mut crate::cmd_queue::cmdq_item;
     if closed == 0 {
         return;
     }
-    if error != 0 as libc::c_int {
+    if error != 0i32 {
         cmdq_error(
             item,
             b"%s: %s\x00" as *const u8 as *const libc::c_char,
             path,
             strerror(error),
         );
-    } else if bsize != 0 as libc::c_int as libc::c_ulong {
+    } else if bsize != 0u64 {
         if load_cfg_from_buffer(
             bdata,
             bsize,
@@ -1248,7 +1245,7 @@ unsafe extern "C" fn cmd_source_file_done(
             (*cdata).after,
             (*cdata).flags,
             &mut new_item,
-        ) < 0 as libc::c_int
+        ) < 0i32
         {
             (*cdata).retval = CMD_RETURN_ERROR
         } else if !new_item.is_null() {
@@ -1291,9 +1288,7 @@ unsafe extern "C" fn cmd_source_file_add(
     );
     (*cdata).files = xreallocarray(
         (*cdata).files as *mut libc::c_void,
-        (*cdata)
-            .nfiles
-            .wrapping_add(1 as libc::c_int as libc::c_uint) as size_t,
+        (*cdata).nfiles.wrapping_add(1u32) as size_t,
         ::std::mem::size_of::<*mut libc::c_char>() as libc::c_ulong,
     ) as *mut *mut libc::c_char;
     let fresh0 = (*cdata).nfiles;
@@ -1348,34 +1343,34 @@ unsafe extern "C" fn cmd_source_file_exec(
     let mut result: libc::c_int = 0;
     let mut j: u_int = 0;
     cdata = xcalloc(
-        1 as libc::c_int as size_t,
+        1u64,
         ::std::mem::size_of::<cmd_source_file_data>() as libc::c_ulong,
     ) as *mut cmd_source_file_data;
     (*cdata).item = item;
-    if args_has(args, 'q' as i32 as u_char) != 0 {
-        (*cdata).flags |= 0x1 as libc::c_int
+    if args_has(args, 'q' as u_char) != 0 {
+        (*cdata).flags |= 0x1i32
     }
-    if args_has(args, 'n' as i32 as u_char) != 0 {
-        (*cdata).flags |= 0x2 as libc::c_int
+    if args_has(args, 'n' as u_char) != 0 {
+        (*cdata).flags |= 0x2i32
     }
-    if args_has(args, 'v' as i32 as u_char) != 0 {
-        (*cdata).flags |= 0x8 as libc::c_int
+    if args_has(args, 'v' as u_char) != 0 {
+        (*cdata).flags |= 0x8i32
     }
     utf8_stravis(
         &mut cwd,
         server_client_get_cwd(c, 0 as *mut session),
-        0x100 as libc::c_int,
+        0x100i32,
     );
-    i = 0 as libc::c_int;
+    i = 0i32;
     while i < (*args).argc {
-        if args_has(args, 'F' as i32 as u_char) != 0 {
+        if args_has(args, 'F' as u_char) != 0 {
             free(expand as *mut libc::c_void);
             expand = format_single_from_target(item, *(*args).argv.offset(i as isize));
             path = expand
         } else {
             path = *(*args).argv.offset(i as isize)
         }
-        if strcmp(path, b"-\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
+        if strcmp(path, b"-\x00" as *const u8 as *const libc::c_char) == 0i32 {
             cmd_source_file_add(cdata, b"-\x00" as *const u8 as *const libc::c_char);
         } else {
             if *path as libc::c_int == '/' as i32 {
@@ -1396,15 +1391,15 @@ unsafe extern "C" fn cmd_source_file_exec(
                 .as_ptr(),
                 pattern,
             );
-            result = glob(pattern, 0 as libc::c_int, None, &mut g);
-            if result != 0 as libc::c_int {
-                if result != 3 as libc::c_int || !(*cdata).flags & 0x1 as libc::c_int != 0 {
-                    if result == 3 as libc::c_int {
-                        error = strerror(2 as libc::c_int)
-                    } else if result == 1 as libc::c_int {
-                        error = strerror(12 as libc::c_int)
+            result = glob(pattern, 0i32, None, &mut g);
+            if result != 0i32 {
+                if result != 3i32 || !(*cdata).flags & 0x1i32 != 0 {
+                    if result == 3i32 {
+                        error = strerror(2i32)
+                    } else if result == 1i32 {
+                        error = strerror(12i32)
                     } else {
-                        error = strerror(22 as libc::c_int)
+                        error = strerror(22i32)
                     }
                     cmdq_error(
                         item,
@@ -1418,7 +1413,7 @@ unsafe extern "C" fn cmd_source_file_exec(
             } else {
                 free(expand as *mut libc::c_void);
                 free(pattern as *mut libc::c_void);
-                j = 0 as libc::c_int as u_int;
+                j = 0u32;
                 while (j as libc::c_ulong) < g.gl_pathc {
                     cmd_source_file_add(cdata, *g.gl_pathv.offset(j as isize));
                     j = j.wrapping_add(1)
@@ -1429,10 +1424,10 @@ unsafe extern "C" fn cmd_source_file_exec(
     }
     (*cdata).after = item;
     (*cdata).retval = retval;
-    if (*cdata).nfiles != 0 as libc::c_int as libc::c_uint {
+    if (*cdata).nfiles != 0u32 {
         file_read(
             c,
-            *(*cdata).files.offset(0 as libc::c_int as isize),
+            *(*cdata).files.offset(0isize),
             Some(
                 cmd_source_file_done
                     as unsafe extern "C" fn(

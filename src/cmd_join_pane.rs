@@ -1106,8 +1106,8 @@ pub static mut cmd_join_pane_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"bdfhvp:l:s:t:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -1115,21 +1115,21 @@ pub static mut cmd_join_pane_entry: cmd_entry = {
                 as *const libc::c_char,
             source: {
                 let mut init = cmd_entry_flag {
-                    flag: 's' as i32 as libc::c_char,
+                    flag: 's' as libc::c_char,
                     type_0: CMD_FIND_PANE,
-                    flags: 0x8 as libc::c_int,
+                    flags: 0x8i32,
                 };
                 init
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_PANE,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0 as libc::c_int,
+            flags: 0i32,
             exec: Some(
                 cmd_join_pane_exec
                     as unsafe extern "C" fn(
@@ -1150,8 +1150,8 @@ pub static mut cmd_move_pane_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"bdfhvp:l:s:t:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -1159,21 +1159,21 @@ pub static mut cmd_move_pane_entry: cmd_entry = {
                 as *const libc::c_char,
             source: {
                 let mut init = cmd_entry_flag {
-                    flag: 's' as i32 as libc::c_char,
+                    flag: 's' as libc::c_char,
                     type_0: CMD_FIND_PANE,
-                    flags: 0x8 as libc::c_int,
+                    flags: 0x8i32,
                 };
                 init
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_PANE,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0 as libc::c_int,
+            flags: 0i32,
             exec: Some(
                 cmd_join_pane_exec
                     as unsafe extern "C" fn(
@@ -1245,51 +1245,43 @@ unsafe extern "C" fn cmd_join_pane_exec(
         return CMD_RETURN_ERROR;
     }
     type_0 = LAYOUT_TOPBOTTOM;
-    if args_has(args, 'h' as i32 as u_char) != 0 {
+    if args_has(args, 'h' as u_char) != 0 {
         type_0 = LAYOUT_LEFTRIGHT
     }
-    size = -(1 as libc::c_int);
-    if args_has(args, 'l' as i32 as u_char) != 0 {
-        if type_0 as libc::c_uint == LAYOUT_TOPBOTTOM as libc::c_int as libc::c_uint {
+    size = -(1i32);
+    if args_has(args, 'l' as u_char) != 0 {
+        if type_0 == LAYOUT_TOPBOTTOM {
             size = args_percentage(
                 args,
-                'l' as i32 as u_char,
-                0 as libc::c_int as libc::c_longlong,
-                2147483647 as libc::c_int as libc::c_longlong,
+                'l' as u_char,
+                0i64,
+                2147483647i64,
                 (*dst_wp).sy as libc::c_longlong,
                 &mut cause,
             ) as libc::c_int
         } else {
             size = args_percentage(
                 args,
-                'l' as i32 as u_char,
-                0 as libc::c_int as libc::c_longlong,
-                2147483647 as libc::c_int as libc::c_longlong,
+                'l' as u_char,
+                0i64,
+                2147483647i64,
                 (*dst_wp).sx as libc::c_longlong,
                 &mut cause,
             ) as libc::c_int
         }
-    } else if args_has(args, 'p' as i32 as u_char) != 0 {
-        percentage = args_strtonum(
-            args,
-            'p' as i32 as u_char,
-            0 as libc::c_int as libc::c_longlong,
-            100 as libc::c_int as libc::c_longlong,
-            &mut cause,
-        ) as libc::c_int;
+    } else if args_has(args, 'p' as u_char) != 0 {
+        percentage = args_strtonum(args, 'p' as u_char, 0i64, 100i64, &mut cause) as libc::c_int;
         if cause.is_null() {
-            if type_0 as libc::c_uint == LAYOUT_TOPBOTTOM as libc::c_int as libc::c_uint {
+            if type_0 == LAYOUT_TOPBOTTOM {
                 size = (*dst_wp)
                     .sy
                     .wrapping_mul(percentage as libc::c_uint)
-                    .wrapping_div(100 as libc::c_int as libc::c_uint)
-                    as libc::c_int
+                    .wrapping_div(100u32) as libc::c_int
             } else {
                 size = (*dst_wp)
                     .sx
                     .wrapping_mul(percentage as libc::c_uint)
-                    .wrapping_div(100 as libc::c_int as libc::c_uint)
-                    as libc::c_int
+                    .wrapping_div(100u32) as libc::c_int
             }
         }
     }
@@ -1302,12 +1294,12 @@ unsafe extern "C" fn cmd_join_pane_exec(
         free(cause as *mut libc::c_void);
         return CMD_RETURN_ERROR;
     }
-    flags = 0 as libc::c_int;
-    if args_has(args, 'b' as i32 as u_char) != 0 {
-        flags |= 0x8 as libc::c_int
+    flags = 0i32;
+    if args_has(args, 'b' as u_char) != 0 {
+        flags |= 0x8i32
     }
-    if args_has(args, 'f' as i32 as u_char) != 0 {
-        flags |= 0x20 as libc::c_int
+    if args_has(args, 'f' as u_char) != 0 {
+        flags |= 0x20i32
     }
     lc = layout_split_pane(dst_wp, type_0, size, flags);
     if lc.is_null() {
@@ -1328,7 +1320,7 @@ unsafe extern "C" fn cmd_join_pane_exec(
     *(*src_wp).entry.tqe_prev = (*src_wp).entry.tqe_next;
     (*src_wp).window = dst_w;
     options_set_parent((*src_wp).options, (*dst_w).options);
-    (*src_wp).flags |= 0x1000 as libc::c_int;
+    (*src_wp).flags |= 0x1000i32;
     (*src_wp).entry.tqe_next = (*dst_wp).entry.tqe_next;
     if !(*src_wp).entry.tqe_next.is_null() {
         (*(*src_wp).entry.tqe_next).entry.tqe_prev = &mut (*src_wp).entry.tqe_next
@@ -1341,16 +1333,16 @@ unsafe extern "C" fn cmd_join_pane_exec(
     recalculate_sizes();
     server_redraw_window(src_w);
     server_redraw_window(dst_w);
-    if args_has(args, 'd' as i32 as u_char) == 0 {
-        window_set_active_pane(dst_w, src_wp, 1 as libc::c_int);
+    if args_has(args, 'd' as u_char) == 0 {
+        window_set_active_pane(dst_w, src_wp, 1i32);
         session_select(dst_s, dst_idx);
-        cmd_find_from_session(current, dst_s, 0 as libc::c_int);
+        cmd_find_from_session(current, dst_s, 0i32);
         server_redraw_session(dst_s);
     } else {
         server_status_session(dst_s);
     }
-    if window_count_panes(src_w) == 0 as libc::c_int as libc::c_uint {
-        server_kill_window(src_w, 1 as libc::c_int);
+    if window_count_panes(src_w) == 0u32 {
+        server_kill_window(src_w, 1i32);
     } else {
         notify_window(
             b"window-layout-changed\x00" as *const u8 as *const libc::c_char,

@@ -1145,8 +1145,8 @@ pub static mut cmd_attach_session_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"c:dEf:rt:x\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -1162,7 +1162,7 @@ pub static mut cmd_attach_session_entry: cmd_entry = {
                 type_0: CMD_FIND_PANE,
                 flags: 0,
             },
-            flags: 0x1 as libc::c_int,
+            flags: 0x1i32,
             exec: Some(
                 cmd_attach_session_exec
                     as unsafe extern "C" fn(
@@ -1204,7 +1204,7 @@ pub unsafe extern "C" fn cmd_attach_session(
     let mut wp: *mut window_pane = 0 as *mut window_pane;
     let mut cwd: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut cause: *mut libc::c_char = 0 as *mut libc::c_char;
-    let mut msgtype: Msgtype = 0 as Msgtype;
+    let mut msgtype: Msgtype = 0u32;
     if sessions.rbh_root.is_null() {
         cmdq_error(item, b"no sessions\x00" as *const u8 as *const libc::c_char);
         return CMD_RETURN_ERROR;
@@ -1226,12 +1226,12 @@ pub unsafe extern "C" fn cmd_attach_session(
             != '\u{0}' as i32
     {
         type_0 = CMD_FIND_PANE;
-        flags = 0 as libc::c_int
+        flags = 0i32
     } else {
         type_0 = CMD_FIND_SESSION;
-        flags = 0x1 as libc::c_int
+        flags = 0x1i32
     }
-    if cmd_find_target(&mut target, item, tflag, type_0, flags) != 0 as libc::c_int {
+    if cmd_find_target(&mut target, item, tflag, type_0, flags) != 0i32 {
         return CMD_RETURN_ERROR;
     }
     s = target.s;
@@ -1239,13 +1239,13 @@ pub unsafe extern "C" fn cmd_attach_session(
     wp = target.wp;
     if !wl.is_null() {
         if !wp.is_null() {
-            window_set_active_pane((*wp).window, wp, 1 as libc::c_int);
+            window_set_active_pane((*wp).window, wp, 1i32);
         }
         session_set_current(s, wl);
         if !wp.is_null() {
-            cmd_find_from_winlink_pane(current, wl, wp, 0 as libc::c_int);
+            cmd_find_from_winlink_pane(current, wl, wp, 0i32);
         } else {
-            cmd_find_from_winlink(current, wl, 0 as libc::c_int);
+            cmd_find_from_winlink(current, wl, 0i32);
         }
     }
     if !cflag.is_null() {
@@ -1257,7 +1257,7 @@ pub unsafe extern "C" fn cmd_attach_session(
         server_client_set_flags(c, fflag);
     }
     if rflag != 0 {
-        (*c).flags |= (0x800 as libc::c_int | 0x20000 as libc::c_int) as libc::c_ulong
+        (*c).flags |= (0x800i32 | 0x20000i32) as libc::c_ulong
     }
     (*c).last_session = (*c).session;
     if !(*c).session.is_null() {
@@ -1279,7 +1279,7 @@ pub unsafe extern "C" fn cmd_attach_session(
             environ_update((*s).options, (*c).environ, (*s).environ);
         }
         (*c).session = s;
-        if !cmdq_get_flags(item) & 0x1 as libc::c_int != 0 {
+        if !cmdq_get_flags(item) & 0x1i32 != 0 {
             server_client_set_key_table(c, 0 as *const libc::c_char);
         }
         tty_update_client_offset(c);
@@ -1291,10 +1291,10 @@ pub unsafe extern "C" fn cmd_attach_session(
         session_update_activity(s, 0 as *mut timeval);
         gettimeofday(&mut (*s).last_attached_time, 0 as *mut libc::c_void);
         server_redraw_client(c);
-        (*(*s).curw).flags &= !(0x1 as libc::c_int | 0x2 as libc::c_int | 0x4 as libc::c_int);
+        (*(*s).curw).flags &= !(0x1i32 | 0x2i32 | 0x4i32);
         (*(*(*s).curw).window).latest = c as *mut libc::c_void
     } else {
-        if server_client_open(c, &mut cause) != 0 as libc::c_int {
+        if server_client_open(c, &mut cause) != 0i32 {
             cmdq_error(
                 item,
                 b"open terminal failed: %s\x00" as *const u8 as *const libc::c_char,
@@ -1331,22 +1331,22 @@ pub unsafe extern "C" fn cmd_attach_session(
         session_update_activity(s, 0 as *mut timeval);
         gettimeofday(&mut (*s).last_attached_time, 0 as *mut libc::c_void);
         server_redraw_client(c);
-        (*(*s).curw).flags &= !(0x1 as libc::c_int | 0x2 as libc::c_int | 0x4 as libc::c_int);
+        (*(*s).curw).flags &= !(0x1i32 | 0x2i32 | 0x4i32);
         (*(*(*s).curw).window).latest = c as *mut libc::c_void;
-        if !(*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
+        if !(*c).flags & 0x2000u64 != 0 {
             proc_send(
                 (*c).peer,
                 msgtype_code::READY,
-                -(1 as libc::c_int),
+                -(1i32),
                 0 as *const libc::c_void,
-                0 as libc::c_int as size_t,
+                0u64,
             );
         }
         notify_client(
             b"client-attached\x00" as *const u8 as *const libc::c_char,
             c,
         );
-        (*c).flags |= 0x80 as libc::c_int as libc::c_ulong
+        (*c).flags |= 0x80u64
     }
     recalculate_sizes();
     alerts_check_session(s);
@@ -1379,12 +1379,12 @@ unsafe extern "C" fn cmd_attach_session_exec(
     let mut args: *mut args = cmd_get_args(self_0);
     return cmd_attach_session(
         item,
-        args_get(args, 't' as i32 as u_char),
-        args_has(args, 'd' as i32 as u_char),
-        args_has(args, 'x' as i32 as u_char),
-        args_has(args, 'r' as i32 as u_char),
-        args_get(args, 'c' as i32 as u_char),
-        args_has(args, 'E' as i32 as u_char),
-        args_get(args, 'f' as i32 as u_char),
+        args_get(args, 't' as u_char),
+        args_has(args, 'd' as u_char),
+        args_has(args, 'x' as u_char),
+        args_has(args, 'r' as u_char),
+        args_get(args, 'c' as u_char),
+        args_has(args, 'E' as u_char),
+        args_get(args, 'f' as u_char),
     );
 }

@@ -1059,8 +1059,8 @@ pub static mut cmd_rename_window_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"t:\x00" as *const u8 as *const libc::c_char,
-                    lower: 1 as libc::c_int,
-                    upper: 1 as libc::c_int,
+                    lower: 1i32,
+                    upper: 1i32,
                 };
                 init
             },
@@ -1072,13 +1072,13 @@ pub static mut cmd_rename_window_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_WINDOW,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0x4 as libc::c_int,
+            flags: 0x4i32,
             exec: Some(
                 cmd_rename_window_exec
                     as unsafe extern "C" fn(
@@ -1117,12 +1117,12 @@ unsafe extern "C" fn cmd_rename_window_exec(
     let mut target: *mut cmd_find_state = cmdq_get_target(item);
     let mut wl: *mut winlink = (*target).wl;
     let mut newname: *mut libc::c_char = 0 as *mut libc::c_char;
-    newname = format_single_from_target(item, *(*args).argv.offset(0 as libc::c_int as isize));
+    newname = format_single_from_target(item, *(*args).argv.offset(0isize));
     window_set_name((*wl).window, newname);
     options_set_number(
         (*(*wl).window).options,
         b"automatic-rename\x00" as *const u8 as *const libc::c_char,
-        0 as libc::c_int as libc::c_longlong,
+        0i64,
     );
     server_redraw_window_borders((*wl).window);
     server_status_window((*wl).window);

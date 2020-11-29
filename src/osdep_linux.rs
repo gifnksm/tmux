@@ -104,7 +104,7 @@ pub unsafe extern "C" fn osdep_get_name(
     let mut ch: libc::c_int = 0;
     let mut pgrp: pid_t = 0;
     pgrp = tcgetpgrp(fd);
-    if pgrp == -(1 as libc::c_int) {
+    if pgrp == -(1i32) {
         return 0 as *mut libc::c_char;
     }
     xasprintf(
@@ -118,26 +118,23 @@ pub unsafe extern "C" fn osdep_get_name(
         return 0 as *mut libc::c_char;
     }
     free(path as *mut libc::c_void);
-    len = 0 as libc::c_int as size_t;
+    len = 0u64;
     buf = 0 as *mut libc::c_char;
     loop {
         ch = fgetc(f);
-        if !(ch != -(1 as libc::c_int)) {
+        if !(ch != -(1i32)) {
             break;
         }
         if ch == '\u{0}' as i32 {
             break;
         }
-        buf = xrealloc(
-            buf as *mut libc::c_void,
-            len.wrapping_add(2 as libc::c_int as libc::c_ulong),
-        ) as *mut libc::c_char;
+        buf = xrealloc(buf as *mut libc::c_void, len.wrapping_add(2u64)) as *mut libc::c_char;
         let fresh0 = len;
         len = len.wrapping_add(1);
         *buf.offset(fresh0 as isize) = ch as libc::c_char
     }
     if !buf.is_null() {
-        *buf.offset(len as isize) = '\u{0}' as i32 as libc::c_char
+        *buf.offset(len as isize) = '\u{0}' as libc::c_char
     }
     fclose(f);
     return buf;
@@ -150,7 +147,7 @@ pub unsafe extern "C" fn osdep_get_cwd(mut fd: libc::c_int) -> *mut libc::c_char
     let mut sid: pid_t = 0;
     let mut n: ssize_t = 0;
     pgrp = tcgetpgrp(fd);
-    if pgrp == -(1 as libc::c_int) {
+    if pgrp == -(1i32) {
         return 0 as *mut libc::c_char;
     }
     xasprintf(
@@ -158,25 +155,19 @@ pub unsafe extern "C" fn osdep_get_cwd(mut fd: libc::c_int) -> *mut libc::c_char
         b"/proc/%lld/cwd\x00" as *const u8 as *const libc::c_char,
         pgrp as libc::c_longlong,
     );
-    n = readlink(path, target.as_mut_ptr(), 4096 as libc::c_int as size_t);
+    n = readlink(path, target.as_mut_ptr(), 4096u64);
     free(path as *mut libc::c_void);
-    if n == -(1 as libc::c_int) as libc::c_long
-        && ioctl(
-            fd,
-            0x5429 as libc::c_int as libc::c_ulong,
-            &mut sid as *mut pid_t,
-        ) != -(1 as libc::c_int)
-    {
+    if n == -1i64 && ioctl(fd, 0x5429u64, &mut sid as *mut pid_t) != -(1i32) {
         xasprintf(
             &mut path as *mut *mut libc::c_char,
             b"/proc/%lld/cwd\x00" as *const u8 as *const libc::c_char,
             sid as libc::c_longlong,
         );
-        n = readlink(path, target.as_mut_ptr(), 4096 as libc::c_int as size_t);
+        n = readlink(path, target.as_mut_ptr(), 4096u64);
         free(path as *mut libc::c_void);
     }
-    if n > 0 as libc::c_int as libc::c_long {
-        target[n as usize] = '\u{0}' as i32 as libc::c_char;
+    if n > 0i64 {
+        target[n as usize] = '\u{0}' as libc::c_char;
         return target.as_mut_ptr();
     }
     return 0 as *mut libc::c_char;
@@ -188,7 +179,7 @@ pub unsafe extern "C" fn osdep_event_init() -> *mut event_base {
     setenv(
         b"EVENT_NOEPOLL\x00" as *const u8 as *const libc::c_char,
         b"1\x00" as *const u8 as *const libc::c_char,
-        1 as libc::c_int,
+        1i32,
     );
     base = event_init();
     unsetenv(b"EVENT_NOEPOLL\x00" as *const u8 as *const libc::c_char);

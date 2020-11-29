@@ -73,17 +73,17 @@ pub unsafe extern "C" fn getdtablecount() -> libc::c_int {
         gl_lstat: None,
         gl_stat: None,
     };
-    let mut n: libc::c_int = 0 as libc::c_int;
+    let mut n: libc::c_int = 0i32;
     if snprintf(
         path.as_mut_ptr(),
         ::std::mem::size_of::<[libc::c_char; 4096]>() as libc::c_ulong,
         b"/proc/%ld/fd/*\x00" as *const u8 as *const libc::c_char,
         getpid() as libc::c_long,
-    ) < 0 as libc::c_int
+    ) < 0i32
     {
         fatal(b"snprintf overflow\x00" as *const u8 as *const libc::c_char);
     }
-    if glob(path.as_mut_ptr(), 0 as libc::c_int, None, &mut g) == 0 as libc::c_int {
+    if glob(path.as_mut_ptr(), 0i32, None, &mut g) == 0i32 {
         n = g.gl_pathc as libc::c_int
     }
     globfree(&mut g);

@@ -103,10 +103,10 @@ static mut paste_next_index: u_int = 0;
 static mut paste_next_order: u_int = 0;
 static mut paste_num_automatic: u_int = 0;
 static mut paste_by_name: paste_name_tree = paste_name_tree {
-    rbh_root: 0 as *const paste_buffer as *mut paste_buffer,
+    rbh_root: 0 as *mut paste_buffer,
 };
 static mut paste_by_time: paste_time_tree = paste_time_tree {
-    rbh_root: 0 as *const paste_buffer as *mut paste_buffer,
+    rbh_root: 0 as *mut paste_buffer,
 };
 unsafe extern "C" fn paste_name_tree_RB_FIND(
     mut head: *mut paste_name_tree,
@@ -116,9 +116,9 @@ unsafe extern "C" fn paste_name_tree_RB_FIND(
     let mut comp: libc::c_int = 0;
     while !tmp.is_null() {
         comp = paste_cmp_names(elm, tmp);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).name_entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).name_entry.rbe_right
         } else {
             return tmp;
@@ -135,16 +135,16 @@ unsafe extern "C" fn paste_name_tree_RB_INSERT_COLOR(
     let mut tmp: *mut paste_buffer = 0 as *mut paste_buffer;
     loop {
         parent = (*elm).name_entry.rbe_parent;
-        if !(!parent.is_null() && (*parent).name_entry.rbe_color == 1 as libc::c_int) {
+        if !(!parent.is_null() && (*parent).name_entry.rbe_color == 1i32) {
             break;
         }
         gparent = (*parent).name_entry.rbe_parent;
         if parent == (*gparent).name_entry.rbe_left {
             tmp = (*gparent).name_entry.rbe_right;
-            if !tmp.is_null() && (*tmp).name_entry.rbe_color == 1 as libc::c_int {
-                (*tmp).name_entry.rbe_color = 0 as libc::c_int;
-                (*parent).name_entry.rbe_color = 0 as libc::c_int;
-                (*gparent).name_entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).name_entry.rbe_color == 1i32 {
+                (*tmp).name_entry.rbe_color = 0i32;
+                (*parent).name_entry.rbe_color = 0i32;
+                (*gparent).name_entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).name_entry.rbe_right == elm {
@@ -170,8 +170,8 @@ unsafe extern "C" fn paste_name_tree_RB_INSERT_COLOR(
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).name_entry.rbe_color = 0 as libc::c_int;
-                (*gparent).name_entry.rbe_color = 1 as libc::c_int;
+                (*parent).name_entry.rbe_color = 0i32;
+                (*gparent).name_entry.rbe_color = 1i32;
                 tmp = (*gparent).name_entry.rbe_left;
                 (*gparent).name_entry.rbe_left = (*tmp).name_entry.rbe_right;
                 if !(*gparent).name_entry.rbe_left.is_null() {
@@ -193,10 +193,10 @@ unsafe extern "C" fn paste_name_tree_RB_INSERT_COLOR(
             }
         } else {
             tmp = (*gparent).name_entry.rbe_left;
-            if !tmp.is_null() && (*tmp).name_entry.rbe_color == 1 as libc::c_int {
-                (*tmp).name_entry.rbe_color = 0 as libc::c_int;
-                (*parent).name_entry.rbe_color = 0 as libc::c_int;
-                (*gparent).name_entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).name_entry.rbe_color == 1i32 {
+                (*tmp).name_entry.rbe_color = 0i32;
+                (*parent).name_entry.rbe_color = 0i32;
+                (*gparent).name_entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).name_entry.rbe_left == elm {
@@ -222,8 +222,8 @@ unsafe extern "C" fn paste_name_tree_RB_INSERT_COLOR(
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).name_entry.rbe_color = 0 as libc::c_int;
-                (*gparent).name_entry.rbe_color = 1 as libc::c_int;
+                (*parent).name_entry.rbe_color = 0i32;
+                (*gparent).name_entry.rbe_color = 1i32;
                 tmp = (*gparent).name_entry.rbe_right;
                 (*gparent).name_entry.rbe_right = (*tmp).name_entry.rbe_left;
                 if !(*gparent).name_entry.rbe_right.is_null() {
@@ -245,7 +245,7 @@ unsafe extern "C" fn paste_name_tree_RB_INSERT_COLOR(
             }
         }
     }
-    (*(*head).rbh_root).name_entry.rbe_color = 0 as libc::c_int;
+    (*(*head).rbh_root).name_entry.rbe_color = 0i32;
 }
 unsafe extern "C" fn paste_name_tree_RB_INSERT(
     mut head: *mut paste_name_tree,
@@ -253,14 +253,14 @@ unsafe extern "C" fn paste_name_tree_RB_INSERT(
 ) -> *mut paste_buffer {
     let mut tmp: *mut paste_buffer = 0 as *mut paste_buffer;
     let mut parent: *mut paste_buffer = 0 as *mut paste_buffer;
-    let mut comp: libc::c_int = 0 as libc::c_int;
+    let mut comp: libc::c_int = 0i32;
     tmp = (*head).rbh_root;
     while !tmp.is_null() {
         parent = tmp;
         comp = paste_cmp_names(elm, parent);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).name_entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).name_entry.rbe_right
         } else {
             return tmp;
@@ -269,9 +269,9 @@ unsafe extern "C" fn paste_name_tree_RB_INSERT(
     (*elm).name_entry.rbe_parent = parent;
     (*elm).name_entry.rbe_right = 0 as *mut paste_buffer;
     (*elm).name_entry.rbe_left = (*elm).name_entry.rbe_right;
-    (*elm).name_entry.rbe_color = 1 as libc::c_int;
+    (*elm).name_entry.rbe_color = 1i32;
     if !parent.is_null() {
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             (*parent).name_entry.rbe_left = elm
         } else {
             (*parent).name_entry.rbe_right = elm
@@ -369,7 +369,7 @@ unsafe extern "C" fn paste_name_tree_RB_REMOVE(
         }
         _ => {}
     }
-    if color == 0 as libc::c_int {
+    if color == 0i32 {
         paste_name_tree_RB_REMOVE_COLOR(head, parent, child);
     }
     return old;
@@ -380,14 +380,12 @@ unsafe extern "C" fn paste_name_tree_RB_REMOVE_COLOR(
     mut elm: *mut paste_buffer,
 ) {
     let mut tmp: *mut paste_buffer = 0 as *mut paste_buffer;
-    while (elm.is_null() || (*elm).name_entry.rbe_color == 0 as libc::c_int)
-        && elm != (*head).rbh_root
-    {
+    while (elm.is_null() || (*elm).name_entry.rbe_color == 0i32) && elm != (*head).rbh_root {
         if (*parent).name_entry.rbe_left == elm {
             tmp = (*parent).name_entry.rbe_right;
-            if (*tmp).name_entry.rbe_color == 1 as libc::c_int {
-                (*tmp).name_entry.rbe_color = 0 as libc::c_int;
-                (*parent).name_entry.rbe_color = 1 as libc::c_int;
+            if (*tmp).name_entry.rbe_color == 1i32 {
+                (*tmp).name_entry.rbe_color = 0i32;
+                (*parent).name_entry.rbe_color = 1i32;
                 tmp = (*parent).name_entry.rbe_right;
                 (*parent).name_entry.rbe_right = (*tmp).name_entry.rbe_left;
                 if !(*parent).name_entry.rbe_right.is_null() {
@@ -409,23 +407,23 @@ unsafe extern "C" fn paste_name_tree_RB_REMOVE_COLOR(
                 tmp = (*parent).name_entry.rbe_right
             }
             if ((*tmp).name_entry.rbe_left.is_null()
-                || (*(*tmp).name_entry.rbe_left).name_entry.rbe_color == 0 as libc::c_int)
+                || (*(*tmp).name_entry.rbe_left).name_entry.rbe_color == 0i32)
                 && ((*tmp).name_entry.rbe_right.is_null()
-                    || (*(*tmp).name_entry.rbe_right).name_entry.rbe_color == 0 as libc::c_int)
+                    || (*(*tmp).name_entry.rbe_right).name_entry.rbe_color == 0i32)
             {
-                (*tmp).name_entry.rbe_color = 1 as libc::c_int;
+                (*tmp).name_entry.rbe_color = 1i32;
                 elm = parent;
                 parent = (*elm).name_entry.rbe_parent
             } else {
                 if (*tmp).name_entry.rbe_right.is_null()
-                    || (*(*tmp).name_entry.rbe_right).name_entry.rbe_color == 0 as libc::c_int
+                    || (*(*tmp).name_entry.rbe_right).name_entry.rbe_color == 0i32
                 {
                     let mut oleft: *mut paste_buffer = 0 as *mut paste_buffer;
                     oleft = (*tmp).name_entry.rbe_left;
                     if !oleft.is_null() {
-                        (*oleft).name_entry.rbe_color = 0 as libc::c_int
+                        (*oleft).name_entry.rbe_color = 0i32
                     }
-                    (*tmp).name_entry.rbe_color = 1 as libc::c_int;
+                    (*tmp).name_entry.rbe_color = 1i32;
                     oleft = (*tmp).name_entry.rbe_left;
                     (*tmp).name_entry.rbe_left = (*oleft).name_entry.rbe_right;
                     if !(*tmp).name_entry.rbe_left.is_null() {
@@ -447,9 +445,9 @@ unsafe extern "C" fn paste_name_tree_RB_REMOVE_COLOR(
                     tmp = (*parent).name_entry.rbe_right
                 }
                 (*tmp).name_entry.rbe_color = (*parent).name_entry.rbe_color;
-                (*parent).name_entry.rbe_color = 0 as libc::c_int;
+                (*parent).name_entry.rbe_color = 0i32;
                 if !(*tmp).name_entry.rbe_right.is_null() {
-                    (*(*tmp).name_entry.rbe_right).name_entry.rbe_color = 0 as libc::c_int
+                    (*(*tmp).name_entry.rbe_right).name_entry.rbe_color = 0i32
                 }
                 tmp = (*parent).name_entry.rbe_right;
                 (*parent).name_entry.rbe_right = (*tmp).name_entry.rbe_left;
@@ -474,9 +472,9 @@ unsafe extern "C" fn paste_name_tree_RB_REMOVE_COLOR(
             }
         } else {
             tmp = (*parent).name_entry.rbe_left;
-            if (*tmp).name_entry.rbe_color == 1 as libc::c_int {
-                (*tmp).name_entry.rbe_color = 0 as libc::c_int;
-                (*parent).name_entry.rbe_color = 1 as libc::c_int;
+            if (*tmp).name_entry.rbe_color == 1i32 {
+                (*tmp).name_entry.rbe_color = 0i32;
+                (*parent).name_entry.rbe_color = 1i32;
                 tmp = (*parent).name_entry.rbe_left;
                 (*parent).name_entry.rbe_left = (*tmp).name_entry.rbe_right;
                 if !(*parent).name_entry.rbe_left.is_null() {
@@ -498,23 +496,23 @@ unsafe extern "C" fn paste_name_tree_RB_REMOVE_COLOR(
                 tmp = (*parent).name_entry.rbe_left
             }
             if ((*tmp).name_entry.rbe_left.is_null()
-                || (*(*tmp).name_entry.rbe_left).name_entry.rbe_color == 0 as libc::c_int)
+                || (*(*tmp).name_entry.rbe_left).name_entry.rbe_color == 0i32)
                 && ((*tmp).name_entry.rbe_right.is_null()
-                    || (*(*tmp).name_entry.rbe_right).name_entry.rbe_color == 0 as libc::c_int)
+                    || (*(*tmp).name_entry.rbe_right).name_entry.rbe_color == 0i32)
             {
-                (*tmp).name_entry.rbe_color = 1 as libc::c_int;
+                (*tmp).name_entry.rbe_color = 1i32;
                 elm = parent;
                 parent = (*elm).name_entry.rbe_parent
             } else {
                 if (*tmp).name_entry.rbe_left.is_null()
-                    || (*(*tmp).name_entry.rbe_left).name_entry.rbe_color == 0 as libc::c_int
+                    || (*(*tmp).name_entry.rbe_left).name_entry.rbe_color == 0i32
                 {
                     let mut oright: *mut paste_buffer = 0 as *mut paste_buffer;
                     oright = (*tmp).name_entry.rbe_right;
                     if !oright.is_null() {
-                        (*oright).name_entry.rbe_color = 0 as libc::c_int
+                        (*oright).name_entry.rbe_color = 0i32
                     }
-                    (*tmp).name_entry.rbe_color = 1 as libc::c_int;
+                    (*tmp).name_entry.rbe_color = 1i32;
                     oright = (*tmp).name_entry.rbe_right;
                     (*tmp).name_entry.rbe_right = (*oright).name_entry.rbe_left;
                     if !(*tmp).name_entry.rbe_right.is_null() {
@@ -536,9 +534,9 @@ unsafe extern "C" fn paste_name_tree_RB_REMOVE_COLOR(
                     tmp = (*parent).name_entry.rbe_left
                 }
                 (*tmp).name_entry.rbe_color = (*parent).name_entry.rbe_color;
-                (*parent).name_entry.rbe_color = 0 as libc::c_int;
+                (*parent).name_entry.rbe_color = 0i32;
                 if !(*tmp).name_entry.rbe_left.is_null() {
-                    (*(*tmp).name_entry.rbe_left).name_entry.rbe_color = 0 as libc::c_int
+                    (*(*tmp).name_entry.rbe_left).name_entry.rbe_color = 0i32
                 }
                 tmp = (*parent).name_entry.rbe_left;
                 (*parent).name_entry.rbe_left = (*tmp).name_entry.rbe_right;
@@ -564,7 +562,7 @@ unsafe extern "C" fn paste_name_tree_RB_REMOVE_COLOR(
         }
     }
     if !elm.is_null() {
-        (*elm).name_entry.rbe_color = 0 as libc::c_int
+        (*elm).name_entry.rbe_color = 0i32
     };
 }
 unsafe extern "C" fn paste_time_tree_RB_PREV(mut elm: *mut paste_buffer) -> *mut paste_buffer {
@@ -593,14 +591,14 @@ unsafe extern "C" fn paste_time_tree_RB_INSERT(
 ) -> *mut paste_buffer {
     let mut tmp: *mut paste_buffer = 0 as *mut paste_buffer;
     let mut parent: *mut paste_buffer = 0 as *mut paste_buffer;
-    let mut comp: libc::c_int = 0 as libc::c_int;
+    let mut comp: libc::c_int = 0i32;
     tmp = (*head).rbh_root;
     while !tmp.is_null() {
         parent = tmp;
         comp = paste_cmp_times(elm, parent);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).time_entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).time_entry.rbe_right
         } else {
             return tmp;
@@ -609,9 +607,9 @@ unsafe extern "C" fn paste_time_tree_RB_INSERT(
     (*elm).time_entry.rbe_parent = parent;
     (*elm).time_entry.rbe_right = 0 as *mut paste_buffer;
     (*elm).time_entry.rbe_left = (*elm).time_entry.rbe_right;
-    (*elm).time_entry.rbe_color = 1 as libc::c_int;
+    (*elm).time_entry.rbe_color = 1i32;
     if !parent.is_null() {
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             (*parent).time_entry.rbe_left = elm
         } else {
             (*parent).time_entry.rbe_right = elm
@@ -631,16 +629,16 @@ unsafe extern "C" fn paste_time_tree_RB_INSERT_COLOR(
     let mut tmp: *mut paste_buffer = 0 as *mut paste_buffer;
     loop {
         parent = (*elm).time_entry.rbe_parent;
-        if !(!parent.is_null() && (*parent).time_entry.rbe_color == 1 as libc::c_int) {
+        if !(!parent.is_null() && (*parent).time_entry.rbe_color == 1i32) {
             break;
         }
         gparent = (*parent).time_entry.rbe_parent;
         if parent == (*gparent).time_entry.rbe_left {
             tmp = (*gparent).time_entry.rbe_right;
-            if !tmp.is_null() && (*tmp).time_entry.rbe_color == 1 as libc::c_int {
-                (*tmp).time_entry.rbe_color = 0 as libc::c_int;
-                (*parent).time_entry.rbe_color = 0 as libc::c_int;
-                (*gparent).time_entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).time_entry.rbe_color == 1i32 {
+                (*tmp).time_entry.rbe_color = 0i32;
+                (*parent).time_entry.rbe_color = 0i32;
+                (*gparent).time_entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).time_entry.rbe_right == elm {
@@ -666,8 +664,8 @@ unsafe extern "C" fn paste_time_tree_RB_INSERT_COLOR(
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).time_entry.rbe_color = 0 as libc::c_int;
-                (*gparent).time_entry.rbe_color = 1 as libc::c_int;
+                (*parent).time_entry.rbe_color = 0i32;
+                (*gparent).time_entry.rbe_color = 1i32;
                 tmp = (*gparent).time_entry.rbe_left;
                 (*gparent).time_entry.rbe_left = (*tmp).time_entry.rbe_right;
                 if !(*gparent).time_entry.rbe_left.is_null() {
@@ -689,10 +687,10 @@ unsafe extern "C" fn paste_time_tree_RB_INSERT_COLOR(
             }
         } else {
             tmp = (*gparent).time_entry.rbe_left;
-            if !tmp.is_null() && (*tmp).time_entry.rbe_color == 1 as libc::c_int {
-                (*tmp).time_entry.rbe_color = 0 as libc::c_int;
-                (*parent).time_entry.rbe_color = 0 as libc::c_int;
-                (*gparent).time_entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).time_entry.rbe_color == 1i32 {
+                (*tmp).time_entry.rbe_color = 0i32;
+                (*parent).time_entry.rbe_color = 0i32;
+                (*gparent).time_entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).time_entry.rbe_left == elm {
@@ -718,8 +716,8 @@ unsafe extern "C" fn paste_time_tree_RB_INSERT_COLOR(
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).time_entry.rbe_color = 0 as libc::c_int;
-                (*gparent).time_entry.rbe_color = 1 as libc::c_int;
+                (*parent).time_entry.rbe_color = 0i32;
+                (*gparent).time_entry.rbe_color = 1i32;
                 tmp = (*gparent).time_entry.rbe_right;
                 (*gparent).time_entry.rbe_right = (*tmp).time_entry.rbe_left;
                 if !(*gparent).time_entry.rbe_right.is_null() {
@@ -741,7 +739,7 @@ unsafe extern "C" fn paste_time_tree_RB_INSERT_COLOR(
             }
         }
     }
-    (*(*head).rbh_root).time_entry.rbe_color = 0 as libc::c_int;
+    (*(*head).rbh_root).time_entry.rbe_color = 0i32;
 }
 unsafe extern "C" fn paste_time_tree_RB_REMOVE_COLOR(
     mut head: *mut paste_time_tree,
@@ -749,14 +747,12 @@ unsafe extern "C" fn paste_time_tree_RB_REMOVE_COLOR(
     mut elm: *mut paste_buffer,
 ) {
     let mut tmp: *mut paste_buffer = 0 as *mut paste_buffer;
-    while (elm.is_null() || (*elm).time_entry.rbe_color == 0 as libc::c_int)
-        && elm != (*head).rbh_root
-    {
+    while (elm.is_null() || (*elm).time_entry.rbe_color == 0i32) && elm != (*head).rbh_root {
         if (*parent).time_entry.rbe_left == elm {
             tmp = (*parent).time_entry.rbe_right;
-            if (*tmp).time_entry.rbe_color == 1 as libc::c_int {
-                (*tmp).time_entry.rbe_color = 0 as libc::c_int;
-                (*parent).time_entry.rbe_color = 1 as libc::c_int;
+            if (*tmp).time_entry.rbe_color == 1i32 {
+                (*tmp).time_entry.rbe_color = 0i32;
+                (*parent).time_entry.rbe_color = 1i32;
                 tmp = (*parent).time_entry.rbe_right;
                 (*parent).time_entry.rbe_right = (*tmp).time_entry.rbe_left;
                 if !(*parent).time_entry.rbe_right.is_null() {
@@ -778,23 +774,23 @@ unsafe extern "C" fn paste_time_tree_RB_REMOVE_COLOR(
                 tmp = (*parent).time_entry.rbe_right
             }
             if ((*tmp).time_entry.rbe_left.is_null()
-                || (*(*tmp).time_entry.rbe_left).time_entry.rbe_color == 0 as libc::c_int)
+                || (*(*tmp).time_entry.rbe_left).time_entry.rbe_color == 0i32)
                 && ((*tmp).time_entry.rbe_right.is_null()
-                    || (*(*tmp).time_entry.rbe_right).time_entry.rbe_color == 0 as libc::c_int)
+                    || (*(*tmp).time_entry.rbe_right).time_entry.rbe_color == 0i32)
             {
-                (*tmp).time_entry.rbe_color = 1 as libc::c_int;
+                (*tmp).time_entry.rbe_color = 1i32;
                 elm = parent;
                 parent = (*elm).time_entry.rbe_parent
             } else {
                 if (*tmp).time_entry.rbe_right.is_null()
-                    || (*(*tmp).time_entry.rbe_right).time_entry.rbe_color == 0 as libc::c_int
+                    || (*(*tmp).time_entry.rbe_right).time_entry.rbe_color == 0i32
                 {
                     let mut oleft: *mut paste_buffer = 0 as *mut paste_buffer;
                     oleft = (*tmp).time_entry.rbe_left;
                     if !oleft.is_null() {
-                        (*oleft).time_entry.rbe_color = 0 as libc::c_int
+                        (*oleft).time_entry.rbe_color = 0i32
                     }
-                    (*tmp).time_entry.rbe_color = 1 as libc::c_int;
+                    (*tmp).time_entry.rbe_color = 1i32;
                     oleft = (*tmp).time_entry.rbe_left;
                     (*tmp).time_entry.rbe_left = (*oleft).time_entry.rbe_right;
                     if !(*tmp).time_entry.rbe_left.is_null() {
@@ -816,9 +812,9 @@ unsafe extern "C" fn paste_time_tree_RB_REMOVE_COLOR(
                     tmp = (*parent).time_entry.rbe_right
                 }
                 (*tmp).time_entry.rbe_color = (*parent).time_entry.rbe_color;
-                (*parent).time_entry.rbe_color = 0 as libc::c_int;
+                (*parent).time_entry.rbe_color = 0i32;
                 if !(*tmp).time_entry.rbe_right.is_null() {
-                    (*(*tmp).time_entry.rbe_right).time_entry.rbe_color = 0 as libc::c_int
+                    (*(*tmp).time_entry.rbe_right).time_entry.rbe_color = 0i32
                 }
                 tmp = (*parent).time_entry.rbe_right;
                 (*parent).time_entry.rbe_right = (*tmp).time_entry.rbe_left;
@@ -843,9 +839,9 @@ unsafe extern "C" fn paste_time_tree_RB_REMOVE_COLOR(
             }
         } else {
             tmp = (*parent).time_entry.rbe_left;
-            if (*tmp).time_entry.rbe_color == 1 as libc::c_int {
-                (*tmp).time_entry.rbe_color = 0 as libc::c_int;
-                (*parent).time_entry.rbe_color = 1 as libc::c_int;
+            if (*tmp).time_entry.rbe_color == 1i32 {
+                (*tmp).time_entry.rbe_color = 0i32;
+                (*parent).time_entry.rbe_color = 1i32;
                 tmp = (*parent).time_entry.rbe_left;
                 (*parent).time_entry.rbe_left = (*tmp).time_entry.rbe_right;
                 if !(*parent).time_entry.rbe_left.is_null() {
@@ -867,23 +863,23 @@ unsafe extern "C" fn paste_time_tree_RB_REMOVE_COLOR(
                 tmp = (*parent).time_entry.rbe_left
             }
             if ((*tmp).time_entry.rbe_left.is_null()
-                || (*(*tmp).time_entry.rbe_left).time_entry.rbe_color == 0 as libc::c_int)
+                || (*(*tmp).time_entry.rbe_left).time_entry.rbe_color == 0i32)
                 && ((*tmp).time_entry.rbe_right.is_null()
-                    || (*(*tmp).time_entry.rbe_right).time_entry.rbe_color == 0 as libc::c_int)
+                    || (*(*tmp).time_entry.rbe_right).time_entry.rbe_color == 0i32)
             {
-                (*tmp).time_entry.rbe_color = 1 as libc::c_int;
+                (*tmp).time_entry.rbe_color = 1i32;
                 elm = parent;
                 parent = (*elm).time_entry.rbe_parent
             } else {
                 if (*tmp).time_entry.rbe_left.is_null()
-                    || (*(*tmp).time_entry.rbe_left).time_entry.rbe_color == 0 as libc::c_int
+                    || (*(*tmp).time_entry.rbe_left).time_entry.rbe_color == 0i32
                 {
                     let mut oright: *mut paste_buffer = 0 as *mut paste_buffer;
                     oright = (*tmp).time_entry.rbe_right;
                     if !oright.is_null() {
-                        (*oright).time_entry.rbe_color = 0 as libc::c_int
+                        (*oright).time_entry.rbe_color = 0i32
                     }
-                    (*tmp).time_entry.rbe_color = 1 as libc::c_int;
+                    (*tmp).time_entry.rbe_color = 1i32;
                     oright = (*tmp).time_entry.rbe_right;
                     (*tmp).time_entry.rbe_right = (*oright).time_entry.rbe_left;
                     if !(*tmp).time_entry.rbe_right.is_null() {
@@ -905,9 +901,9 @@ unsafe extern "C" fn paste_time_tree_RB_REMOVE_COLOR(
                     tmp = (*parent).time_entry.rbe_left
                 }
                 (*tmp).time_entry.rbe_color = (*parent).time_entry.rbe_color;
-                (*parent).time_entry.rbe_color = 0 as libc::c_int;
+                (*parent).time_entry.rbe_color = 0i32;
                 if !(*tmp).time_entry.rbe_left.is_null() {
-                    (*(*tmp).time_entry.rbe_left).time_entry.rbe_color = 0 as libc::c_int
+                    (*(*tmp).time_entry.rbe_left).time_entry.rbe_color = 0i32
                 }
                 tmp = (*parent).time_entry.rbe_left;
                 (*parent).time_entry.rbe_left = (*tmp).time_entry.rbe_right;
@@ -933,7 +929,7 @@ unsafe extern "C" fn paste_time_tree_RB_REMOVE_COLOR(
         }
     }
     if !elm.is_null() {
-        (*elm).time_entry.rbe_color = 0 as libc::c_int
+        (*elm).time_entry.rbe_color = 0i32
     };
 }
 unsafe extern "C" fn paste_time_tree_RB_REMOVE(
@@ -1023,7 +1019,7 @@ unsafe extern "C" fn paste_time_tree_RB_REMOVE(
         }
         _ => {}
     }
-    if color == 0 as libc::c_int {
+    if color == 0i32 {
         paste_time_tree_RB_REMOVE_COLOR(head, parent, child);
     }
     return old;
@@ -1036,7 +1032,7 @@ unsafe extern "C" fn paste_time_tree_RB_MINMAX(
     let mut parent: *mut paste_buffer = 0 as *mut paste_buffer;
     while !tmp.is_null() {
         parent = tmp;
-        if val < 0 as libc::c_int {
+        if val < 0i32 {
             tmp = (*tmp).time_entry.rbe_left
         } else {
             tmp = (*tmp).time_entry.rbe_right
@@ -1075,12 +1071,12 @@ unsafe extern "C" fn paste_cmp_times(
     mut b: *const paste_buffer,
 ) -> libc::c_int {
     if (*a).order > (*b).order {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     if (*a).order < (*b).order {
-        return 1 as libc::c_int;
+        return 1i32;
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 /* Get paste buffer name. */
 #[no_mangle]
@@ -1112,7 +1108,7 @@ pub unsafe extern "C" fn paste_buffer_data(
 #[no_mangle]
 pub unsafe extern "C" fn paste_walk(mut pb: *mut paste_buffer) -> *mut paste_buffer {
     if pb.is_null() {
-        return paste_time_tree_RB_MINMAX(&mut paste_by_time, -(1 as libc::c_int));
+        return paste_time_tree_RB_MINMAX(&mut paste_by_time, -(1i32));
     }
     return paste_time_tree_RB_NEXT(pb);
 }
@@ -1120,7 +1116,7 @@ pub unsafe extern "C" fn paste_walk(mut pb: *mut paste_buffer) -> *mut paste_buf
 #[no_mangle]
 pub unsafe extern "C" fn paste_get_top(mut name: *mut *const libc::c_char) -> *mut paste_buffer {
     let mut pb: *mut paste_buffer = 0 as *mut paste_buffer;
-    pb = paste_time_tree_RB_MINMAX(&mut paste_by_time, -(1 as libc::c_int));
+    pb = paste_time_tree_RB_MINMAX(&mut paste_by_time, -(1i32));
     if pb.is_null() {
         return 0 as *mut paste_buffer;
     }
@@ -1186,7 +1182,7 @@ pub unsafe extern "C" fn paste_add(
     if prefix.is_null() {
         prefix = b"buffer\x00" as *const u8 as *const libc::c_char
     }
-    if size == 0 as libc::c_int as libc::c_ulong {
+    if size == 0u64 {
         free(data as *mut libc::c_void);
         return;
     }
@@ -1194,10 +1190,10 @@ pub unsafe extern "C" fn paste_add(
         global_options,
         b"buffer-limit\x00" as *const u8 as *const libc::c_char,
     ) as u_int;
-    pb = paste_time_tree_RB_MINMAX(&mut paste_by_time, 1 as libc::c_int);
+    pb = paste_time_tree_RB_MINMAX(&mut paste_by_time, 1i32);
     while !pb.is_null() && {
         pb1 = paste_time_tree_RB_PREV(pb);
-        (1 as libc::c_int) != 0
+        (1i32) != 0
     } {
         if paste_num_automatic < limit {
             break;
@@ -1224,7 +1220,7 @@ pub unsafe extern "C" fn paste_add(
     }
     (*pb).data = data;
     (*pb).size = size;
-    (*pb).automatic = 1 as libc::c_int;
+    (*pb).automatic = 1i32;
     paste_num_automatic = paste_num_automatic.wrapping_add(1);
     (*pb).created = time(0 as *mut time_t);
     let fresh0 = paste_next_order;
@@ -1249,13 +1245,13 @@ pub unsafe extern "C" fn paste_rename(
         if !cause.is_null() {
             *cause = xstrdup(b"no buffer\x00" as *const u8 as *const libc::c_char)
         }
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     if newname.is_null() || *newname as libc::c_int == '\u{0}' as i32 {
         if !cause.is_null() {
             *cause = xstrdup(b"new name is empty\x00" as *const u8 as *const libc::c_char)
         }
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     pb = paste_get_name(oldname);
     if pb.is_null() {
@@ -1266,7 +1262,7 @@ pub unsafe extern "C" fn paste_rename(
                 oldname,
             );
         }
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     pb_new = paste_get_name(newname);
     if !pb_new.is_null() {
@@ -1277,7 +1273,7 @@ pub unsafe extern "C" fn paste_rename(
                 newname,
             );
         }
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     paste_name_tree_RB_REMOVE(&mut paste_by_name, pb);
     free((*pb).name as *mut libc::c_void);
@@ -1285,9 +1281,9 @@ pub unsafe extern "C" fn paste_rename(
     if (*pb).automatic != 0 {
         paste_num_automatic = paste_num_automatic.wrapping_sub(1)
     }
-    (*pb).automatic = 0 as libc::c_int;
+    (*pb).automatic = 0i32;
     paste_name_tree_RB_INSERT(&mut paste_by_name, pb);
-    return 0 as libc::c_int;
+    return 0i32;
 }
 /*
  * Add or replace an item in the store. Note that the caller is responsible for
@@ -1305,25 +1301,25 @@ pub unsafe extern "C" fn paste_set(
     if !cause.is_null() {
         *cause = 0 as *mut libc::c_char
     }
-    if size == 0 as libc::c_int as libc::c_ulong {
+    if size == 0u64 {
         free(data as *mut libc::c_void);
-        return 0 as libc::c_int;
+        return 0i32;
     }
     if name.is_null() {
         paste_add(0 as *const libc::c_char, data, size);
-        return 0 as libc::c_int;
+        return 0i32;
     }
     if *name as libc::c_int == '\u{0}' as i32 {
         if !cause.is_null() {
             *cause = xstrdup(b"empty buffer name\x00" as *const u8 as *const libc::c_char)
         }
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     pb = xmalloc(::std::mem::size_of::<paste_buffer>() as libc::c_ulong) as *mut paste_buffer;
     (*pb).name = xstrdup(name);
     (*pb).data = data;
     (*pb).size = size;
-    (*pb).automatic = 0 as libc::c_int;
+    (*pb).automatic = 0i32;
     let fresh1 = paste_next_order;
     paste_next_order = paste_next_order.wrapping_add(1);
     (*pb).order = fresh1;
@@ -1334,7 +1330,7 @@ pub unsafe extern "C" fn paste_set(
     }
     paste_name_tree_RB_INSERT(&mut paste_by_name, pb);
     paste_time_tree_RB_INSERT(&mut paste_by_time, pb);
-    return 0 as libc::c_int;
+    return 0i32;
 }
 /* Set paste data without otherwise changing it. */
 #[no_mangle]
@@ -1353,24 +1349,19 @@ pub unsafe extern "C" fn paste_make_sample(mut pb: *mut paste_buffer) -> *mut li
     let mut buf: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut len: size_t = 0;
     let mut used: size_t = 0;
-    let flags: libc::c_int =
-        0x1 as libc::c_int | 0x2 as libc::c_int | 0x8 as libc::c_int | 0x10 as libc::c_int;
-    let width: size_t = 200 as libc::c_int as size_t;
+    let flags: libc::c_int = 0x1i32 | 0x2i32 | 0x8i32 | 0x10i32;
+    let width: size_t = 200u64;
     len = (*pb).size;
     if len > width {
         len = width
     }
-    buf = xreallocarray(
-        0 as *mut libc::c_void,
-        len,
-        (4 as libc::c_int + 4 as libc::c_int) as size_t,
-    ) as *mut libc::c_char;
+    buf = xreallocarray(0 as *mut libc::c_void, len, (4i32 + 4i32) as size_t) as *mut libc::c_char;
     used = utf8_strvis(buf, (*pb).data, len, flags) as size_t;
     if (*pb).size > width || used > width {
         strlcpy(
             buf.offset(width as isize),
             b"...\x00" as *const u8 as *const libc::c_char,
-            4 as libc::c_int as libc::c_ulong,
+            4u64,
         );
     }
     return buf;

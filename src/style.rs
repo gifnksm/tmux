@@ -1082,11 +1082,7 @@ pub struct style {
 }
 #[inline]
 unsafe extern "C" fn atoi(mut __nptr: *const libc::c_char) -> libc::c_int {
-    return strtol(
-        __nptr,
-        0 as *mut libc::c_void as *mut *mut libc::c_char,
-        10 as libc::c_int,
-    ) as libc::c_int;
+    return strtol(__nptr, 0 as *mut *mut libc::c_char, 10i32) as libc::c_int;
 }
 /* $OpenBSD$ */
 /*
@@ -1114,7 +1110,7 @@ static mut style_default: style = {
                 data: {
                     let mut init = Utf8Data {
                         data: [
-                            ' ' as i32 as u_char,
+                            ' ' as u_char,
                             0,
                             0,
                             0,
@@ -1136,26 +1132,26 @@ static mut style_default: style = {
                             0,
                             0,
                         ],
-                        have: 0 as libc::c_int as u_char,
-                        size: 1 as libc::c_int as u_char,
-                        width: 1 as libc::c_int as u_char,
+                        have: 0u8,
+                        size: 1u8,
+                        width: 1u8,
                     };
                     init
                 },
-                attr: 0 as libc::c_int as u_short,
-                flags: 0 as libc::c_int as u_char,
-                fg: 8 as libc::c_int,
-                bg: 8 as libc::c_int,
-                us: 0 as libc::c_int,
+                attr: 0u16,
+                flags: 0u8,
+                fg: 8i32,
+                bg: 8i32,
+                us: 0i32,
             };
             init
         },
-        ignore: 0 as libc::c_int,
-        fill: 8 as libc::c_int,
+        ignore: 0i32,
+        fill: 8i32,
         align: STYLE_ALIGN_DEFAULT,
         list: STYLE_LIST_OFF,
         range_type: STYLE_RANGE_NONE,
-        range_argument: 0 as libc::c_int as u_int,
+        range_argument: 0u32,
         default_type: STYLE_DEFAULT_BASE,
     };
     init
@@ -1202,7 +1198,7 @@ pub unsafe extern "C" fn style_parse(
     let mut value: libc::c_int = 0;
     let mut end: size_t = 0;
     if *in_0 as libc::c_int == '\u{0}' as i32 {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     style_copy(&mut saved, sy);
     log_debug(
@@ -1221,9 +1217,7 @@ pub unsafe extern "C" fn style_parse(
             break;
         }
         end = strcspn(in_0, delimiters.as_ptr());
-        if end
-            > (::std::mem::size_of::<[libc::c_char; 256]>() as libc::c_ulong)
-                .wrapping_sub(1 as libc::c_int as libc::c_ulong)
+        if end > (::std::mem::size_of::<[libc::c_char; 256]>() as libc::c_ulong).wrapping_sub(1u64)
         {
             current_block = 13061046559241396907;
             break;
@@ -1233,7 +1227,7 @@ pub unsafe extern "C" fn style_parse(
             in_0 as *const libc::c_void,
             end,
         );
-        tmp[end as usize] = '\u{0}' as i32 as libc::c_char;
+        tmp[end as usize] = '\u{0}' as libc::c_char;
         log_debug(
             b"%s: %s\x00" as *const u8 as *const libc::c_char,
             (*::std::mem::transmute::<&[u8; 12], &[libc::c_char; 12]>(b"style_parse\x00")).as_ptr(),
@@ -1242,7 +1236,7 @@ pub unsafe extern "C" fn style_parse(
         if strcasecmp(
             tmp.as_mut_ptr(),
             b"default\x00" as *const u8 as *const libc::c_char,
-        ) == 0 as libc::c_int
+        ) == 0i32
         {
             (*sy).gc.fg = (*base).fg;
             (*sy).gc.bg = (*base).bg;
@@ -1251,62 +1245,62 @@ pub unsafe extern "C" fn style_parse(
         } else if strcasecmp(
             tmp.as_mut_ptr(),
             b"ignore\x00" as *const u8 as *const libc::c_char,
-        ) == 0 as libc::c_int
+        ) == 0i32
         {
-            (*sy).ignore = 1 as libc::c_int
+            (*sy).ignore = 1i32
         } else if strcasecmp(
             tmp.as_mut_ptr(),
             b"noignore\x00" as *const u8 as *const libc::c_char,
-        ) == 0 as libc::c_int
+        ) == 0i32
         {
-            (*sy).ignore = 0 as libc::c_int
+            (*sy).ignore = 0i32
         } else if strcasecmp(
             tmp.as_mut_ptr(),
             b"push-default\x00" as *const u8 as *const libc::c_char,
-        ) == 0 as libc::c_int
+        ) == 0i32
         {
             (*sy).default_type = STYLE_DEFAULT_PUSH
         } else if strcasecmp(
             tmp.as_mut_ptr(),
             b"pop-default\x00" as *const u8 as *const libc::c_char,
-        ) == 0 as libc::c_int
+        ) == 0i32
         {
             (*sy).default_type = STYLE_DEFAULT_POP
         } else if strcasecmp(
             tmp.as_mut_ptr(),
             b"nolist\x00" as *const u8 as *const libc::c_char,
-        ) == 0 as libc::c_int
+        ) == 0i32
         {
             (*sy).list = STYLE_LIST_OFF
         } else if strncasecmp(
             tmp.as_mut_ptr(),
             b"list=\x00" as *const u8 as *const libc::c_char,
-            5 as libc::c_int as libc::c_ulong,
-        ) == 0 as libc::c_int
+            5u64,
+        ) == 0i32
         {
             if strcasecmp(
-                tmp.as_mut_ptr().offset(5 as libc::c_int as isize),
+                tmp.as_mut_ptr().offset(5isize),
                 b"on\x00" as *const u8 as *const libc::c_char,
-            ) == 0 as libc::c_int
+            ) == 0i32
             {
                 (*sy).list = STYLE_LIST_ON
             } else if strcasecmp(
-                tmp.as_mut_ptr().offset(5 as libc::c_int as isize),
+                tmp.as_mut_ptr().offset(5isize),
                 b"focus\x00" as *const u8 as *const libc::c_char,
-            ) == 0 as libc::c_int
+            ) == 0i32
             {
                 (*sy).list = STYLE_LIST_FOCUS
             } else if strcasecmp(
-                tmp.as_mut_ptr().offset(5 as libc::c_int as isize),
+                tmp.as_mut_ptr().offset(5isize),
                 b"left-marker\x00" as *const u8 as *const libc::c_char,
-            ) == 0 as libc::c_int
+            ) == 0i32
             {
                 (*sy).list = STYLE_LIST_LEFT_MARKER
             } else {
                 if !(strcasecmp(
-                    tmp.as_mut_ptr().offset(5 as libc::c_int as isize),
+                    tmp.as_mut_ptr().offset(5isize),
                     b"right-marker\x00" as *const u8 as *const libc::c_char,
-                ) == 0 as libc::c_int)
+                ) == 0i32)
                 {
                     current_block = 13061046559241396907;
                     break;
@@ -1316,25 +1310,22 @@ pub unsafe extern "C" fn style_parse(
         } else if strcasecmp(
             tmp.as_mut_ptr(),
             b"norange\x00" as *const u8 as *const libc::c_char,
-        ) == 0 as libc::c_int
+        ) == 0i32
         {
             (*sy).range_type = style_default.range_type;
-            (*sy).range_argument = style_default.range_type as u_int
-        } else if end > 6 as libc::c_int as libc::c_ulong
+            (*sy).range_argument = style_default.range_type
+        } else if end > 6u64
             && strncasecmp(
                 tmp.as_mut_ptr(),
                 b"range=\x00" as *const u8 as *const libc::c_char,
-                6 as libc::c_int as libc::c_ulong,
-            ) == 0 as libc::c_int
+                6u64,
+            ) == 0i32
         {
-            found = strchr(
-                tmp.as_mut_ptr().offset(6 as libc::c_int as isize),
-                '|' as i32,
-            );
+            found = strchr(tmp.as_mut_ptr().offset(6isize), '|' as i32);
             if !found.is_null() {
                 let fresh0 = found;
                 found = found.offset(1);
-                *fresh0 = '\u{0}' as i32 as libc::c_char;
+                *fresh0 = '\u{0}' as libc::c_char;
                 if *found as libc::c_int == '\u{0}' as i32 {
                     current_block = 13061046559241396907;
                     break;
@@ -1343,7 +1334,7 @@ pub unsafe extern "C" fn style_parse(
                 while *cp as libc::c_int != '\u{0}' as i32 {
                     if *(*__ctype_b_loc()).offset(*cp as u_char as libc::c_int as isize)
                         as libc::c_int
-                        & _ISdigit as libc::c_int as libc::c_ushort as libc::c_int
+                        & _ISdigit as libc::c_ushort as libc::c_int
                         == 0
                     {
                         current_block = 13061046559241396907;
@@ -1353,31 +1344,31 @@ pub unsafe extern "C" fn style_parse(
                 }
             }
             if strcasecmp(
-                tmp.as_mut_ptr().offset(6 as libc::c_int as isize),
+                tmp.as_mut_ptr().offset(6isize),
                 b"left\x00" as *const u8 as *const libc::c_char,
-            ) == 0 as libc::c_int
+            ) == 0i32
             {
                 if !found.is_null() {
                     current_block = 13061046559241396907;
                     break;
                 }
                 (*sy).range_type = STYLE_RANGE_LEFT;
-                (*sy).range_argument = 0 as libc::c_int as u_int
+                (*sy).range_argument = 0u32
             } else if strcasecmp(
-                tmp.as_mut_ptr().offset(6 as libc::c_int as isize),
+                tmp.as_mut_ptr().offset(6isize),
                 b"right\x00" as *const u8 as *const libc::c_char,
-            ) == 0 as libc::c_int
+            ) == 0i32
             {
                 if !found.is_null() {
                     current_block = 13061046559241396907;
                     break;
                 }
                 (*sy).range_type = STYLE_RANGE_RIGHT;
-                (*sy).range_argument = 0 as libc::c_int as u_int
+                (*sy).range_argument = 0u32
             } else if strcasecmp(
-                tmp.as_mut_ptr().offset(6 as libc::c_int as isize),
+                tmp.as_mut_ptr().offset(6isize),
                 b"window\x00" as *const u8 as *const libc::c_char,
-            ) == 0 as libc::c_int
+            ) == 0i32
             {
                 if found.is_null() {
                     current_block = 13061046559241396907;
@@ -1389,66 +1380,66 @@ pub unsafe extern "C" fn style_parse(
         } else if strcasecmp(
             tmp.as_mut_ptr(),
             b"noalign\x00" as *const u8 as *const libc::c_char,
-        ) == 0 as libc::c_int
+        ) == 0i32
         {
             (*sy).align = style_default.align
-        } else if end > 6 as libc::c_int as libc::c_ulong
+        } else if end > 6u64
             && strncasecmp(
                 tmp.as_mut_ptr(),
                 b"align=\x00" as *const u8 as *const libc::c_char,
-                6 as libc::c_int as libc::c_ulong,
-            ) == 0 as libc::c_int
+                6u64,
+            ) == 0i32
         {
             if strcasecmp(
-                tmp.as_mut_ptr().offset(6 as libc::c_int as isize),
+                tmp.as_mut_ptr().offset(6isize),
                 b"left\x00" as *const u8 as *const libc::c_char,
-            ) == 0 as libc::c_int
+            ) == 0i32
             {
                 (*sy).align = STYLE_ALIGN_LEFT
             } else if strcasecmp(
-                tmp.as_mut_ptr().offset(6 as libc::c_int as isize),
+                tmp.as_mut_ptr().offset(6isize),
                 b"centre\x00" as *const u8 as *const libc::c_char,
-            ) == 0 as libc::c_int
+            ) == 0i32
             {
                 (*sy).align = STYLE_ALIGN_CENTRE
             } else {
                 if !(strcasecmp(
-                    tmp.as_mut_ptr().offset(6 as libc::c_int as isize),
+                    tmp.as_mut_ptr().offset(6isize),
                     b"right\x00" as *const u8 as *const libc::c_char,
-                ) == 0 as libc::c_int)
+                ) == 0i32)
                 {
                     current_block = 13061046559241396907;
                     break;
                 }
                 (*sy).align = STYLE_ALIGN_RIGHT
             }
-        } else if end > 5 as libc::c_int as libc::c_ulong
+        } else if end > 5u64
             && strncasecmp(
                 tmp.as_mut_ptr(),
                 b"fill=\x00" as *const u8 as *const libc::c_char,
-                5 as libc::c_int as libc::c_ulong,
-            ) == 0 as libc::c_int
+                5u64,
+            ) == 0i32
         {
-            value = colour_fromstring(tmp.as_mut_ptr().offset(5 as libc::c_int as isize));
-            if value == -(1 as libc::c_int) {
+            value = colour_fromstring(tmp.as_mut_ptr().offset(5isize));
+            if value == -(1i32) {
                 current_block = 13061046559241396907;
                 break;
             }
             (*sy).fill = value
-        } else if end > 3 as libc::c_int as libc::c_ulong
+        } else if end > 3u64
             && strncasecmp(
-                tmp.as_mut_ptr().offset(1 as libc::c_int as isize),
+                tmp.as_mut_ptr().offset(1isize),
                 b"g=\x00" as *const u8 as *const libc::c_char,
-                2 as libc::c_int as libc::c_ulong,
-            ) == 0 as libc::c_int
+                2u64,
+            ) == 0i32
         {
-            value = colour_fromstring(tmp.as_mut_ptr().offset(3 as libc::c_int as isize));
-            if value == -(1 as libc::c_int) {
+            value = colour_fromstring(tmp.as_mut_ptr().offset(3isize));
+            if value == -(1i32) {
                 current_block = 13061046559241396907;
                 break;
             }
             if *in_0 as libc::c_int == 'f' as i32 || *in_0 as libc::c_int == 'F' as i32 {
-                if value != 8 as libc::c_int {
+                if value != 8i32 {
                     (*sy).gc.fg = value
                 } else {
                     (*sy).gc.fg = (*base).fg
@@ -1458,7 +1449,7 @@ pub unsafe extern "C" fn style_parse(
                     current_block = 13061046559241396907;
                     break;
                 }
-                if value != 8 as libc::c_int {
+                if value != 8i32 {
                     (*sy).gc.bg = value
                 } else {
                     (*sy).gc.bg = (*base).bg
@@ -1467,25 +1458,25 @@ pub unsafe extern "C" fn style_parse(
         } else if strcasecmp(
             tmp.as_mut_ptr(),
             b"none\x00" as *const u8 as *const libc::c_char,
-        ) == 0 as libc::c_int
+        ) == 0i32
         {
-            (*sy).gc.attr = 0 as libc::c_int as u_short
-        } else if end > 2 as libc::c_int as libc::c_ulong
+            (*sy).gc.attr = 0u16
+        } else if end > 2u64
             && strncasecmp(
                 tmp.as_mut_ptr(),
                 b"no\x00" as *const u8 as *const libc::c_char,
-                2 as libc::c_int as libc::c_ulong,
-            ) == 0 as libc::c_int
+                2u64,
+            ) == 0i32
         {
-            value = attributes_fromstring(tmp.as_mut_ptr().offset(2 as libc::c_int as isize));
-            if value == -(1 as libc::c_int) {
+            value = attributes_fromstring(tmp.as_mut_ptr().offset(2isize));
+            if value == -(1i32) {
                 current_block = 13061046559241396907;
                 break;
             }
             (*sy).gc.attr = ((*sy).gc.attr as libc::c_int & !value) as u_short
         } else {
             value = attributes_fromstring(tmp.as_mut_ptr());
-            if value == -(1 as libc::c_int) {
+            if value == -(1i32) {
                 current_block = 13061046559241396907;
                 break;
             }
@@ -1500,10 +1491,10 @@ pub unsafe extern "C" fn style_parse(
         }
     }
     match current_block {
-        7416055328783156979 => return 0 as libc::c_int,
+        7416055328783156979 => return 0i32,
         _ => {
             style_copy(sy, &mut saved);
-            return -(1 as libc::c_int);
+            return -(1i32);
         }
     };
 }
@@ -1511,24 +1502,20 @@ pub unsafe extern "C" fn style_parse(
 #[no_mangle]
 pub unsafe extern "C" fn style_tostring(mut sy: *mut style) -> *const libc::c_char {
     let mut gc: *mut GridCell = &mut (*sy).gc;
-    let mut off: libc::c_int = 0 as libc::c_int;
+    let mut off: libc::c_int = 0i32;
     let mut comma: *const libc::c_char = b"\x00" as *const u8 as *const libc::c_char;
     let mut tmp: *const libc::c_char = b"\x00" as *const u8 as *const libc::c_char;
     static mut s: [libc::c_char; 256] = [0; 256];
     let mut b: [libc::c_char; 16] = [0; 16];
-    *s.as_mut_ptr() = '\u{0}' as i32 as libc::c_char;
-    if (*sy).list as libc::c_uint != STYLE_LIST_OFF as libc::c_int as libc::c_uint {
-        if (*sy).list as libc::c_uint == STYLE_LIST_ON as libc::c_int as libc::c_uint {
+    *s.as_mut_ptr() = '\u{0}' as libc::c_char;
+    if (*sy).list != STYLE_LIST_OFF {
+        if (*sy).list == STYLE_LIST_ON {
             tmp = b"on\x00" as *const u8 as *const libc::c_char
-        } else if (*sy).list as libc::c_uint == STYLE_LIST_FOCUS as libc::c_int as libc::c_uint {
+        } else if (*sy).list == STYLE_LIST_FOCUS {
             tmp = b"focus\x00" as *const u8 as *const libc::c_char
-        } else if (*sy).list as libc::c_uint
-            == STYLE_LIST_LEFT_MARKER as libc::c_int as libc::c_uint
-        {
+        } else if (*sy).list == STYLE_LIST_LEFT_MARKER {
             tmp = b"left-marker\x00" as *const u8 as *const libc::c_char
-        } else if (*sy).list as libc::c_uint
-            == STYLE_LIST_RIGHT_MARKER as libc::c_int as libc::c_uint
-        {
+        } else if (*sy).list == STYLE_LIST_RIGHT_MARKER {
             tmp = b"right-marker\x00" as *const u8 as *const libc::c_char
         }
         off += xsnprintf(
@@ -1541,16 +1528,12 @@ pub unsafe extern "C" fn style_tostring(mut sy: *mut style) -> *const libc::c_ch
         );
         comma = b",\x00" as *const u8 as *const libc::c_char
     }
-    if (*sy).range_type as libc::c_uint != STYLE_RANGE_NONE as libc::c_int as libc::c_uint {
-        if (*sy).range_type as libc::c_uint == STYLE_RANGE_LEFT as libc::c_int as libc::c_uint {
+    if (*sy).range_type != STYLE_RANGE_NONE {
+        if (*sy).range_type == STYLE_RANGE_LEFT {
             tmp = b"left\x00" as *const u8 as *const libc::c_char
-        } else if (*sy).range_type as libc::c_uint
-            == STYLE_RANGE_RIGHT as libc::c_int as libc::c_uint
-        {
+        } else if (*sy).range_type == STYLE_RANGE_RIGHT {
             tmp = b"right\x00" as *const u8 as *const libc::c_char
-        } else if (*sy).range_type as libc::c_uint
-            == STYLE_RANGE_WINDOW as libc::c_int as libc::c_uint
-        {
+        } else if (*sy).range_type == STYLE_RANGE_WINDOW {
             snprintf(
                 b.as_mut_ptr(),
                 ::std::mem::size_of::<[libc::c_char; 16]>() as libc::c_ulong,
@@ -1569,12 +1552,12 @@ pub unsafe extern "C" fn style_tostring(mut sy: *mut style) -> *const libc::c_ch
         );
         comma = b",\x00" as *const u8 as *const libc::c_char
     }
-    if (*sy).align as libc::c_uint != STYLE_ALIGN_DEFAULT as libc::c_int as libc::c_uint {
-        if (*sy).align as libc::c_uint == STYLE_ALIGN_LEFT as libc::c_int as libc::c_uint {
+    if (*sy).align != STYLE_ALIGN_DEFAULT {
+        if (*sy).align == STYLE_ALIGN_LEFT {
             tmp = b"left\x00" as *const u8 as *const libc::c_char
-        } else if (*sy).align as libc::c_uint == STYLE_ALIGN_CENTRE as libc::c_int as libc::c_uint {
+        } else if (*sy).align == STYLE_ALIGN_CENTRE {
             tmp = b"centre\x00" as *const u8 as *const libc::c_char
-        } else if (*sy).align as libc::c_uint == STYLE_ALIGN_RIGHT as libc::c_int as libc::c_uint {
+        } else if (*sy).align == STYLE_ALIGN_RIGHT {
             tmp = b"right\x00" as *const u8 as *const libc::c_char
         }
         off += xsnprintf(
@@ -1587,12 +1570,10 @@ pub unsafe extern "C" fn style_tostring(mut sy: *mut style) -> *const libc::c_ch
         );
         comma = b",\x00" as *const u8 as *const libc::c_char
     }
-    if (*sy).default_type as libc::c_uint != STYLE_DEFAULT_BASE as libc::c_int as libc::c_uint {
-        if (*sy).default_type as libc::c_uint == STYLE_DEFAULT_PUSH as libc::c_int as libc::c_uint {
+    if (*sy).default_type != STYLE_DEFAULT_BASE {
+        if (*sy).default_type == STYLE_DEFAULT_PUSH {
             tmp = b"push-default\x00" as *const u8 as *const libc::c_char
-        } else if (*sy).default_type as libc::c_uint
-            == STYLE_DEFAULT_POP as libc::c_int as libc::c_uint
-        {
+        } else if (*sy).default_type == STYLE_DEFAULT_POP {
             tmp = b"pop-default\x00" as *const u8 as *const libc::c_char
         }
         off += xsnprintf(
@@ -1605,7 +1586,7 @@ pub unsafe extern "C" fn style_tostring(mut sy: *mut style) -> *const libc::c_ch
         );
         comma = b",\x00" as *const u8 as *const libc::c_char
     }
-    if (*sy).fill != 8 as libc::c_int {
+    if (*sy).fill != 8i32 {
         off += xsnprintf(
             s.as_mut_ptr().offset(off as isize),
             (::std::mem::size_of::<[libc::c_char; 256]>() as libc::c_ulong)
@@ -1616,7 +1597,7 @@ pub unsafe extern "C" fn style_tostring(mut sy: *mut style) -> *const libc::c_ch
         );
         comma = b",\x00" as *const u8 as *const libc::c_char
     }
-    if (*gc).fg != 8 as libc::c_int {
+    if (*gc).fg != 8i32 {
         off += xsnprintf(
             s.as_mut_ptr().offset(off as isize),
             (::std::mem::size_of::<[libc::c_char; 256]>() as libc::c_ulong)
@@ -1627,7 +1608,7 @@ pub unsafe extern "C" fn style_tostring(mut sy: *mut style) -> *const libc::c_ch
         );
         comma = b",\x00" as *const u8 as *const libc::c_char
     }
-    if (*gc).bg != 8 as libc::c_int {
+    if (*gc).bg != 8i32 {
         off += xsnprintf(
             s.as_mut_ptr().offset(off as isize),
             (::std::mem::size_of::<[libc::c_char; 256]>() as libc::c_ulong)
@@ -1638,7 +1619,7 @@ pub unsafe extern "C" fn style_tostring(mut sy: *mut style) -> *const libc::c_ch
         );
         comma = b",\x00" as *const u8 as *const libc::c_char
     }
-    if (*gc).attr as libc::c_int != 0 as libc::c_int {
+    if (*gc).attr as libc::c_int != 0i32 {
         xsnprintf(
             s.as_mut_ptr().offset(off as isize),
             (::std::mem::size_of::<[libc::c_char; 256]>() as libc::c_ulong)
@@ -1668,8 +1649,8 @@ pub unsafe extern "C" fn style_add(
         ft0 = format_create(
             0 as *mut client,
             0 as *mut crate::cmd_queue::cmdq_item,
-            0 as libc::c_int,
-            0x4 as libc::c_int,
+            0i32,
+            0x4i32,
         );
         ft = ft0
     }
@@ -1677,10 +1658,10 @@ pub unsafe extern "C" fn style_add(
     if sy.is_null() {
         sy = &mut style_default
     }
-    if (*sy).gc.fg != 8 as libc::c_int {
+    if (*sy).gc.fg != 8i32 {
         (*gc).fg = (*sy).gc.fg
     }
-    if (*sy).gc.bg != 8 as libc::c_int {
+    if (*sy).gc.bg != 8i32 {
         (*gc).bg = (*sy).gc.bg
     }
     (*gc).attr = ((*gc).attr as libc::c_int | (*sy).gc.attr as libc::c_int) as u_short;

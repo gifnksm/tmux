@@ -1088,8 +1088,8 @@ pub struct C2RustUnnamed_32 {
 static mut alerts_fired: libc::c_int = 0;
 // Initialized in run_static_initializers
 static mut alerts_list: C2RustUnnamed_32 = C2RustUnnamed_32 {
-    tqh_first: 0 as *const window as *mut window,
-    tqh_last: 0 as *const *mut window as *mut *mut window,
+    tqh_first: 0 as *mut window,
+    tqh_last: 0 as *mut *mut window,
 };
 unsafe extern "C" fn alerts_timer(
     mut _fd: libc::c_int,
@@ -1101,7 +1101,7 @@ unsafe extern "C" fn alerts_timer(
         b"@%u alerts timer expired\x00" as *const u8 as *const libc::c_char,
         (*w).id,
     );
-    alerts_queue(w, 0x4 as libc::c_int);
+    alerts_queue(w, 0x4i32);
 }
 unsafe extern "C" fn alerts_callback(
     mut _fd: libc::c_int,
@@ -1114,7 +1114,7 @@ unsafe extern "C" fn alerts_callback(
     w = alerts_list.tqh_first;
     while !w.is_null() && {
         w1 = (*w).alerts_entry.tqe_next;
-        (1 as libc::c_int) != 0
+        (1i32) != 0
     } {
         alerts = alerts_check_all(w);
         log_debug(
@@ -1122,14 +1122,14 @@ unsafe extern "C" fn alerts_callback(
             (*w).id,
             alerts,
         );
-        (*w).alerts_queued = 0 as libc::c_int;
+        (*w).alerts_queued = 0i32;
         if !(*w).alerts_entry.tqe_next.is_null() {
             (*(*w).alerts_entry.tqe_next).alerts_entry.tqe_prev = (*w).alerts_entry.tqe_prev
         } else {
             alerts_list.tqh_last = (*w).alerts_entry.tqe_prev
         }
         *(*w).alerts_entry.tqe_prev = (*w).alerts_entry.tqe_next;
-        (*w).flags &= !(0x1 as libc::c_int | 0x2 as libc::c_int | 0x4 as libc::c_int);
+        (*w).flags &= !(0x1i32 | 0x2i32 | 0x4i32);
         window_remove_ref(
             w,
             (*::std::mem::transmute::<&[u8; 16], &[libc::c_char; 16]>(b"alerts_callback\x00"))
@@ -1137,7 +1137,7 @@ unsafe extern "C" fn alerts_callback(
         );
         w = w1
     }
-    alerts_fired = 0 as libc::c_int;
+    alerts_fired = 0i32;
 }
 unsafe extern "C" fn alerts_action_applies(
     mut wl: *mut winlink,
@@ -1150,16 +1150,16 @@ unsafe extern "C" fn alerts_action_applies(
      * window and other means only for windows other than the current.
      */
     action = options_get_number((*(*wl).session).options, name) as libc::c_int;
-    if action == 1 as libc::c_int {
-        return 1 as libc::c_int;
+    if action == 1i32 {
+        return 1i32;
     }
-    if action == 2 as libc::c_int {
+    if action == 2i32 {
         return (wl == (*(*wl).session).curw) as libc::c_int;
     }
-    if action == 3 as libc::c_int {
+    if action == 3i32 {
         return (wl != (*(*wl).session).curw) as libc::c_int;
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 unsafe extern "C" fn alerts_check_all(mut w: *mut window) -> libc::c_int {
     let mut alerts: libc::c_int = 0;
@@ -1171,46 +1171,46 @@ unsafe extern "C" fn alerts_check_all(mut w: *mut window) -> libc::c_int {
 #[no_mangle]
 pub unsafe extern "C" fn alerts_check_session(mut s: *mut session) {
     let mut wl: *mut winlink = 0 as *mut winlink;
-    wl = winlinks_RB_MINMAX(&mut (*s).windows, -(1 as libc::c_int));
+    wl = winlinks_RB_MINMAX(&mut (*s).windows, -(1i32));
     while !wl.is_null() {
         alerts_check_all((*wl).window);
         wl = winlinks_RB_NEXT(wl)
     }
 }
 unsafe extern "C" fn alerts_enabled(mut w: *mut window, mut flags: libc::c_int) -> libc::c_int {
-    if flags & 0x1 as libc::c_int != 0 {
+    if flags & 0x1i32 != 0 {
         if options_get_number(
             (*w).options,
             b"monitor-bell\x00" as *const u8 as *const libc::c_char,
         ) != 0
         {
-            return 1 as libc::c_int;
+            return 1i32;
         }
     }
-    if flags & 0x2 as libc::c_int != 0 {
+    if flags & 0x2i32 != 0 {
         if options_get_number(
             (*w).options,
             b"monitor-activity\x00" as *const u8 as *const libc::c_char,
         ) != 0
         {
-            return 1 as libc::c_int;
+            return 1i32;
         }
     }
-    if flags & 0x4 as libc::c_int != 0 {
+    if flags & 0x4i32 != 0 {
         if options_get_number(
             (*w).options,
             b"monitor-silence\x00" as *const u8 as *const libc::c_char,
-        ) != 0 as libc::c_int as libc::c_longlong
+        ) != 0i64
         {
-            return 1 as libc::c_int;
+            return 1i32;
         }
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn alerts_reset_all() {
     let mut w: *mut window = 0 as *mut window;
-    w = windows_RB_MINMAX(&mut windows, -(1 as libc::c_int));
+    w = windows_RB_MINMAX(&mut windows, -(1i32));
     while !w.is_null() {
         alerts_reset(w);
         w = windows_RB_NEXT(w)
@@ -1224,8 +1224,8 @@ unsafe extern "C" fn alerts_reset(mut w: *mut window) {
     if event_initialized(&mut (*w).alerts_timer) == 0 {
         event_set(
             &mut (*w).alerts_timer,
-            -(1 as libc::c_int),
-            0 as libc::c_int as libc::c_short,
+            -(1i32),
+            0i16,
             Some(
                 alerts_timer
                     as unsafe extern "C" fn(
@@ -1237,20 +1237,20 @@ unsafe extern "C" fn alerts_reset(mut w: *mut window) {
             w as *mut libc::c_void,
         );
     }
-    (*w).flags &= !(0x4 as libc::c_int);
+    (*w).flags &= !(0x4i32);
     event_del(&mut (*w).alerts_timer);
-    tv.tv_usec = 0 as libc::c_int as __suseconds_t;
+    tv.tv_usec = 0i64;
     tv.tv_sec = tv.tv_usec;
     tv.tv_sec = options_get_number(
         (*w).options,
         b"monitor-silence\x00" as *const u8 as *const libc::c_char,
-    ) as __time_t;
+    );
     log_debug(
         b"@%u alerts timer reset %u\x00" as *const u8 as *const libc::c_char,
         (*w).id,
         tv.tv_sec as u_int,
     );
-    if tv.tv_sec != 0 as libc::c_int as libc::c_long {
+    if tv.tv_sec != 0i64 {
         event_add(&mut (*w).alerts_timer, &mut tv);
     };
 }
@@ -1267,7 +1267,7 @@ pub unsafe extern "C" fn alerts_queue(mut w: *mut window, mut flags: libc::c_int
     }
     if alerts_enabled(w, flags) != 0 {
         if (*w).alerts_queued == 0 {
-            (*w).alerts_queued = 1 as libc::c_int;
+            (*w).alerts_queued = 1i32;
             (*w).alerts_entry.tqe_next = 0 as *mut window;
             (*w).alerts_entry.tqe_prev = alerts_list.tqh_last;
             *alerts_list.tqh_last = w;
@@ -1284,8 +1284,8 @@ pub unsafe extern "C" fn alerts_queue(mut w: *mut window, mut flags: libc::c_int
                 (*w).id,
             );
             event_once(
-                -(1 as libc::c_int),
-                0x1 as libc::c_int as libc::c_short,
+                -(1i32),
+                0x1i16,
                 Some(
                     alerts_callback
                         as unsafe extern "C" fn(
@@ -1297,26 +1297,26 @@ pub unsafe extern "C" fn alerts_queue(mut w: *mut window, mut flags: libc::c_int
                 0 as *mut libc::c_void,
                 0 as *const timeval,
             );
-            alerts_fired = 1 as libc::c_int
+            alerts_fired = 1i32
         }
     };
 }
 unsafe extern "C" fn alerts_check_bell(mut w: *mut window) -> libc::c_int {
     let mut wl: *mut winlink = 0 as *mut winlink;
     let mut s: *mut session = 0 as *mut session;
-    if !(*w).flags & 0x1 as libc::c_int != 0 {
-        return 0 as libc::c_int;
+    if !(*w).flags & 0x1i32 != 0 {
+        return 0i32;
     }
     if options_get_number(
         (*w).options,
         b"monitor-bell\x00" as *const u8 as *const libc::c_char,
     ) == 0
     {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     wl = (*w).winlinks.tqh_first;
     while !wl.is_null() {
-        (*(*wl).session).flags &= !(0x2 as libc::c_int);
+        (*(*wl).session).flags &= !(0x2i32);
         wl = (*wl).wentry.tqe_next
     }
     wl = (*w).winlinks.tqh_first;
@@ -1326,15 +1326,15 @@ unsafe extern "C" fn alerts_check_bell(mut w: *mut window) -> libc::c_int {
          * not check WINLINK_BELL).
          */
         s = (*wl).session;
-        if (*s).curw != wl || (*s).attached == 0 as libc::c_int as libc::c_uint {
-            (*wl).flags |= 0x1 as libc::c_int;
+        if (*s).curw != wl || (*s).attached == 0u32 {
+            (*wl).flags |= 0x1i32;
             server_status_session(s);
         }
         if !(alerts_action_applies(wl, b"bell-action\x00" as *const u8 as *const libc::c_char) == 0)
         {
             notify_winlink(b"alert-bell\x00" as *const u8 as *const libc::c_char, wl);
-            if !((*s).flags & 0x2 as libc::c_int != 0) {
-                (*s).flags |= 0x2 as libc::c_int;
+            if !((*s).flags & 0x2i32 != 0) {
+                (*s).flags |= 0x2i32;
                 alerts_set_message(
                     wl,
                     b"Bell\x00" as *const u8 as *const libc::c_char,
@@ -1344,32 +1344,32 @@ unsafe extern "C" fn alerts_check_bell(mut w: *mut window) -> libc::c_int {
         }
         wl = (*wl).wentry.tqe_next
     }
-    return 0x1 as libc::c_int;
+    return 0x1i32;
 }
 unsafe extern "C" fn alerts_check_activity(mut w: *mut window) -> libc::c_int {
     let mut wl: *mut winlink = 0 as *mut winlink;
     let mut s: *mut session = 0 as *mut session;
-    if !(*w).flags & 0x2 as libc::c_int != 0 {
-        return 0 as libc::c_int;
+    if !(*w).flags & 0x2i32 != 0 {
+        return 0i32;
     }
     if options_get_number(
         (*w).options,
         b"monitor-activity\x00" as *const u8 as *const libc::c_char,
     ) == 0
     {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     wl = (*w).winlinks.tqh_first;
     while !wl.is_null() {
-        (*(*wl).session).flags &= !(0x2 as libc::c_int);
+        (*(*wl).session).flags &= !(0x2i32);
         wl = (*wl).wentry.tqe_next
     }
     wl = (*w).winlinks.tqh_first;
     while !wl.is_null() {
-        if !((*wl).flags & 0x2 as libc::c_int != 0) {
+        if !((*wl).flags & 0x2i32 != 0) {
             s = (*wl).session;
-            if (*s).curw != wl || (*s).attached == 0 as libc::c_int as libc::c_uint {
-                (*wl).flags |= 0x2 as libc::c_int;
+            if (*s).curw != wl || (*s).attached == 0u32 {
+                (*wl).flags |= 0x2i32;
                 server_status_session(s);
             }
             if !(alerts_action_applies(
@@ -1381,8 +1381,8 @@ unsafe extern "C" fn alerts_check_activity(mut w: *mut window) -> libc::c_int {
                     b"alert-activity\x00" as *const u8 as *const libc::c_char,
                     wl,
                 );
-                if !((*s).flags & 0x2 as libc::c_int != 0) {
-                    (*s).flags |= 0x2 as libc::c_int;
+                if !((*s).flags & 0x2i32 != 0) {
+                    (*s).flags |= 0x2i32;
                     alerts_set_message(
                         wl,
                         b"Activity\x00" as *const u8 as *const libc::c_char,
@@ -1393,32 +1393,32 @@ unsafe extern "C" fn alerts_check_activity(mut w: *mut window) -> libc::c_int {
         }
         wl = (*wl).wentry.tqe_next
     }
-    return 0x2 as libc::c_int;
+    return 0x2i32;
 }
 unsafe extern "C" fn alerts_check_silence(mut w: *mut window) -> libc::c_int {
     let mut wl: *mut winlink = 0 as *mut winlink;
     let mut s: *mut session = 0 as *mut session;
-    if !(*w).flags & 0x4 as libc::c_int != 0 {
-        return 0 as libc::c_int;
+    if !(*w).flags & 0x4i32 != 0 {
+        return 0i32;
     }
     if options_get_number(
         (*w).options,
         b"monitor-silence\x00" as *const u8 as *const libc::c_char,
-    ) == 0 as libc::c_int as libc::c_longlong
+    ) == 0i64
     {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     wl = (*w).winlinks.tqh_first;
     while !wl.is_null() {
-        (*(*wl).session).flags &= !(0x2 as libc::c_int);
+        (*(*wl).session).flags &= !(0x2i32);
         wl = (*wl).wentry.tqe_next
     }
     wl = (*w).winlinks.tqh_first;
     while !wl.is_null() {
-        if !((*wl).flags & 0x4 as libc::c_int != 0) {
+        if !((*wl).flags & 0x4i32 != 0) {
             s = (*wl).session;
-            if (*s).curw != wl || (*s).attached == 0 as libc::c_int as libc::c_uint {
-                (*wl).flags |= 0x4 as libc::c_int;
+            if (*s).curw != wl || (*s).attached == 0u32 {
+                (*wl).flags |= 0x4i32;
                 server_status_session(s);
             }
             if !(alerts_action_applies(
@@ -1427,8 +1427,8 @@ unsafe extern "C" fn alerts_check_silence(mut w: *mut window) -> libc::c_int {
             ) == 0)
             {
                 notify_winlink(b"alert-silence\x00" as *const u8 as *const libc::c_char, wl);
-                if !((*s).flags & 0x2 as libc::c_int != 0) {
-                    (*s).flags |= 0x2 as libc::c_int;
+                if !((*s).flags & 0x2i32 != 0) {
+                    (*s).flags |= 0x2i32;
                     alerts_set_message(
                         wl,
                         b"Silence\x00" as *const u8 as *const libc::c_char,
@@ -1439,7 +1439,7 @@ unsafe extern "C" fn alerts_check_silence(mut w: *mut window) -> libc::c_int {
         }
         wl = (*wl).wentry.tqe_next
     }
-    return 0x4 as libc::c_int;
+    return 0x4i32;
 }
 unsafe extern "C" fn alerts_set_message(
     mut wl: *mut winlink,
@@ -1460,26 +1460,24 @@ unsafe extern "C" fn alerts_set_message(
     visual = options_get_number((*(*wl).session).options, option) as libc::c_int;
     c = clients.tqh_first;
     while !c.is_null() {
-        if !((*c).session != (*wl).session
-            || (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0)
-        {
-            if visual == 0 as libc::c_int || visual == 2 as libc::c_int {
+        if !((*c).session != (*wl).session || (*c).flags & 0x2000u64 != 0) {
+            if visual == 0i32 || visual == 2i32 {
                 tty_putcode(&mut (*c).tty, tty_code_code::BEL);
             }
-            if !(visual == 0 as libc::c_int) {
+            if !(visual == 0i32) {
                 if (*(*c).session).curw == wl {
                     status_message_set(
                         c,
-                        -(1 as libc::c_int),
-                        1 as libc::c_int,
+                        -(1i32),
+                        1i32,
                         b"%s in current window\x00" as *const u8 as *const libc::c_char,
                         type_0,
                     );
                 } else {
                     status_message_set(
                         c,
-                        -(1 as libc::c_int),
-                        1 as libc::c_int,
+                        -(1i32),
+                        1i32,
                         b"%s in window %d\x00" as *const u8 as *const libc::c_char,
                         type_0,
                         (*wl).idx,

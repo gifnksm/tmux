@@ -60,8 +60,8 @@ pub static mut cmd_kill_server_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed {
                     template: b"\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -76,7 +76,7 @@ pub static mut cmd_kill_server_entry: cmd_entry = {
                 type_0: CMD_FIND_PANE,
                 flags: 0,
             },
-            flags: 0 as libc::c_int,
+            flags: 0i32,
             exec: Some(
                 cmd_kill_server_exec
                     as unsafe extern "C" fn(
@@ -97,8 +97,8 @@ pub static mut cmd_start_server_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed {
                     template: b"\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -113,7 +113,7 @@ pub static mut cmd_start_server_entry: cmd_entry = {
                 type_0: CMD_FIND_PANE,
                 flags: 0,
             },
-            flags: 0x1 as libc::c_int,
+            flags: 0x1i32,
             exec: Some(
                 cmd_kill_server_exec
                     as unsafe extern "C" fn(
@@ -149,7 +149,7 @@ unsafe extern "C" fn cmd_kill_server_exec(
     mut _item: *mut crate::cmd_queue::cmdq_item,
 ) -> cmd_retval {
     if cmd_get_entry(self_0) == &cmd_kill_server_entry as *const cmd_entry {
-        kill(getpid(), 15 as libc::c_int);
+        kill(getpid(), 15i32);
     }
     return CMD_RETURN_NORMAL;
 }

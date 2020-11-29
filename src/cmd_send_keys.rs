@@ -1108,8 +1108,8 @@ pub static mut cmd_send_keys_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"FHlMN:Rt:X\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: -(1 as libc::c_int),
+                    lower: 0i32,
+                    upper: -(1i32),
                 };
                 init
             },
@@ -1122,13 +1122,13 @@ pub static mut cmd_send_keys_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_PANE,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0x4 as libc::c_int,
+            flags: 0x4i32,
             exec: Some(
                 cmd_send_keys_exec
                     as unsafe extern "C" fn(
@@ -1149,8 +1149,8 @@ pub static mut cmd_send_prefix_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"2t:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -1162,13 +1162,13 @@ pub static mut cmd_send_prefix_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_PANE,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0x4 as libc::c_int,
+            flags: 0x4i32,
             exec: Some(
                 cmd_send_keys_exec
                     as unsafe extern "C" fn(
@@ -1195,16 +1195,16 @@ unsafe extern "C" fn cmd_send_keys_inject_key(
     let mut bd: *mut key_binding = 0 as *mut key_binding;
     wme = (*wp).modes.tqh_first;
     if wme.is_null() || (*(*wme).mode).key_table.is_none() {
-        if window_pane_key(wp, tc, s, wl, key, 0 as *mut mouse_event) != 0 as libc::c_int {
+        if window_pane_key(wp, tc, s, wl, key, 0 as *mut mouse_event) != 0i32 {
             return 0 as *mut crate::cmd_queue::cmdq_item;
         }
         return item;
     }
     table = key_bindings_get_table(
         (*(*wme).mode).key_table.expect("non-null function pointer")(wme),
-        1 as libc::c_int,
+        1i32,
     );
-    bd = key_bindings_get(table, key & !(0xff000000000000 as libc::c_ulonglong));
+    bd = key_bindings_get(table, key & !(0xff000000000000u64));
     if !bd.is_null() {
         (*table).references = (*table).references.wrapping_add(1);
         after = key_bindings_dispatch(bd, after, tc, 0 as *mut key_event, target);
@@ -1226,45 +1226,39 @@ unsafe extern "C" fn cmd_send_keys_inject_string(
     let mut endptr: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut n: libc::c_long = 0;
     let mut literal: libc::c_int = 0;
-    if args_has(args, 'H' as i32 as u_char) != 0 {
-        n = strtol(s, &mut endptr, 16 as libc::c_int);
+    if args_has(args, 'H' as u_char) != 0 {
+        n = strtol(s, &mut endptr, 16i32);
         if *s as libc::c_int == '\u{0}' as i32
-            || n < 0 as libc::c_int as libc::c_long
-            || n > 0xff as libc::c_int as libc::c_long
+            || n < 0i64
+            || n > 0xffi64
             || *endptr as libc::c_int != '\u{0}' as i32
         {
             return item;
         }
-        return cmd_send_keys_inject_key(
-            item,
-            after,
-            0x1000000000000 as libc::c_ulonglong | n as libc::c_ulonglong,
-        );
+        return cmd_send_keys_inject_key(item, after, 0x1000000000000u64 | n as libc::c_ulonglong);
     }
-    literal = args_has(args, 'l' as i32 as u_char);
+    literal = args_has(args, 'l' as u_char);
     if literal == 0 {
         key = key_string_lookup_string(s);
-        if key != 0xff000000000 as libc::c_ulonglong && key != 0xfe000000000 as libc::c_ulonglong {
+        if key != 0xff000000000u64 && key != 0xfe000000000u64 {
             after = cmd_send_keys_inject_key(item, after, key);
             if !after.is_null() {
                 return after;
             }
         }
-        literal = 1 as libc::c_int
+        literal = 1i32
     }
     if literal != 0 {
         ud = utf8_fromcstr(s);
         let mut current_block_20: u64;
         loop_0 = ud;
-        while (*loop_0).size as libc::c_int != 0 as libc::c_int {
-            if (*loop_0).size as libc::c_int == 1 as libc::c_int
-                && (*loop_0).data[0 as libc::c_int as usize] as libc::c_int <= 0x7f as libc::c_int
+        while (*loop_0).size as libc::c_int != 0i32 {
+            if (*loop_0).size as libc::c_int == 1i32
+                && (*loop_0).data[0usize] as libc::c_int <= 0x7fi32
             {
-                key = (*loop_0).data[0 as libc::c_int as usize] as key_code;
+                key = (*loop_0).data[0usize] as key_code;
                 current_block_20 = 7172762164747879670;
-            } else if utf8_from_data(loop_0, &mut uc) as libc::c_uint
-                != utf8_state::DONE as libc::c_int as libc::c_uint
-            {
+            } else if utf8_from_data(loop_0, &mut uc) != utf8_state::DONE {
                 current_block_20 = 4808432441040389987;
             } else {
                 key = uc as key_code;
@@ -1315,16 +1309,14 @@ unsafe extern "C" fn cmd_send_keys_exec(
     let mut after: *mut crate::cmd_queue::cmdq_item = item;
     let mut i: libc::c_int = 0;
     let mut key: key_code = 0;
-    let mut np: u_int = 1 as libc::c_int as u_int;
+    let mut np: u_int = 1u32;
     let mut cause: *mut libc::c_char = 0 as *mut libc::c_char;
-    if args_has(args, 'N' as i32 as u_char) != 0 {
+    if args_has(args, 'N' as u_char) != 0 {
         np = args_strtonum(
             args,
-            'N' as i32 as u_char,
-            1 as libc::c_int as libc::c_longlong,
-            (2147483647 as libc::c_int as libc::c_uint)
-                .wrapping_mul(2 as libc::c_uint)
-                .wrapping_add(1 as libc::c_uint) as libc::c_longlong,
+            'N' as u_char,
+            1i64,
+            (2147483647u32).wrapping_mul(2u32).wrapping_add(1u32) as libc::c_longlong,
             &mut cause,
         ) as u_int;
         if !cause.is_null() {
@@ -1336,9 +1328,7 @@ unsafe extern "C" fn cmd_send_keys_exec(
             free(cause as *mut libc::c_void);
             return CMD_RETURN_ERROR;
         }
-        if !wme.is_null()
-            && (args_has(args, 'X' as i32 as u_char) != 0 || (*args).argc == 0 as libc::c_int)
-        {
+        if !wme.is_null() && (args_has(args, 'X' as u_char) != 0 || (*args).argc == 0i32) {
             if (*(*wme).mode).command.is_none() {
                 cmdq_error(
                     item,
@@ -1349,7 +1339,7 @@ unsafe extern "C" fn cmd_send_keys_exec(
             (*wme).prefix = np
         }
     }
-    if args_has(args, 'X' as i32 as u_char) != 0 {
+    if args_has(args, 'X' as u_char) != 0 {
         if wme.is_null() || (*(*wme).mode).command.is_none() {
             cmdq_error(
                 item,
@@ -1363,7 +1353,7 @@ unsafe extern "C" fn cmd_send_keys_exec(
         (*(*wme).mode).command.expect("non-null function pointer")(wme, tc, s, wl, args, m);
         return CMD_RETURN_NORMAL;
     }
-    if args_has(args, 'M' as i32 as u_char) != 0 {
+    if args_has(args, 'M' as u_char) != 0 {
         wp = cmd_mouse_pane(m, &mut s, 0 as *mut *mut winlink);
         if wp.is_null() {
             cmdq_error(
@@ -1376,7 +1366,7 @@ unsafe extern "C" fn cmd_send_keys_exec(
         return CMD_RETURN_NORMAL;
     }
     if cmd_get_entry(self_0) == &cmd_send_prefix_entry as *const cmd_entry {
-        if args_has(args, '2' as i32 as u_char) != 0 {
+        if args_has(args, '2' as u_char) != 0 {
             key = options_get_number(
                 (*s).options,
                 b"prefix2\x00" as *const u8 as *const libc::c_char,
@@ -1390,12 +1380,12 @@ unsafe extern "C" fn cmd_send_keys_exec(
         cmd_send_keys_inject_key(item, item, key);
         return CMD_RETURN_NORMAL;
     }
-    if args_has(args, 'R' as i32 as u_char) != 0 {
+    if args_has(args, 'R' as u_char) != 0 {
         window_pane_reset_palette(wp);
-        input_reset((*wp).ictx, 1 as libc::c_int);
+        input_reset((*wp).ictx, 1i32);
     }
-    while np != 0 as libc::c_int as libc::c_uint {
-        i = 0 as libc::c_int;
+    while np != 0u32 {
+        i = 0i32;
         while i < (*args).argc {
             after = cmd_send_keys_inject_string(item, after, args, i);
             i += 1

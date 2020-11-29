@@ -1150,8 +1150,8 @@ pub static mut cmd_select_pane_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"DdegLlMmP:RT:t:UZ\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -1164,13 +1164,13 @@ pub static mut cmd_select_pane_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_PANE,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0 as libc::c_int,
+            flags: 0i32,
             exec: Some(
                 cmd_select_pane_exec
                     as unsafe extern "C" fn(
@@ -1191,8 +1191,8 @@ pub static mut cmd_last_pane_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"det:Z\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -1204,13 +1204,13 @@ pub static mut cmd_last_pane_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_WINDOW,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0 as libc::c_int,
+            flags: 0i32,
             exec: Some(
                 cmd_select_pane_exec
                     as unsafe extern "C" fn(
@@ -1230,15 +1230,15 @@ unsafe extern "C" fn cmd_select_pane_redraw(mut w: *mut window) {
      */
     c = clients.tqh_first;
     while !c.is_null() {
-        if !((*c).session.is_null() || (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0) {
+        if !((*c).session.is_null() || (*c).flags & 0x2000u64 != 0) {
             if (*(*(*c).session).curw).window == w && tty_window_bigger(&mut (*c).tty) != 0 {
                 server_redraw_client(c);
             } else {
                 if (*(*(*c).session).curw).window == w {
-                    (*c).flags |= 0x400 as libc::c_int as libc::c_ulong
+                    (*c).flags |= 0x400u64
                 }
                 if session_has((*c).session, w) != 0 {
-                    (*c).flags |= 0x10 as libc::c_int as libc::c_ulong
+                    (*c).flags |= 0x10u64
                 }
             }
         }
@@ -1284,11 +1284,9 @@ unsafe extern "C" fn cmd_select_pane_exec(
     let mut title: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut style: *const libc::c_char = 0 as *const libc::c_char;
     let mut o: *mut crate::options::options_entry = 0 as *mut crate::options::options_entry;
-    if entry == &cmd_last_pane_entry as *const cmd_entry
-        || args_has(args, 'l' as i32 as u_char) != 0
-    {
+    if entry == &cmd_last_pane_entry as *const cmd_entry || args_has(args, 'l' as u_char) != 0 {
         lastwp = (*w).last;
-        if lastwp.is_null() && window_count_panes(w) == 2 as libc::c_int as libc::c_uint {
+        if lastwp.is_null() && window_count_panes(w) == 2u32 {
             lastwp = *(*((*(*w).active).entry.tqe_prev as *mut window_panes)).tqh_last;
             if lastwp.is_null() {
                 lastwp = (*(*w).active).entry.tqe_next
@@ -1301,17 +1299,17 @@ unsafe extern "C" fn cmd_select_pane_exec(
             );
             return CMD_RETURN_ERROR;
         }
-        if args_has(args, 'e' as i32 as u_char) != 0 {
-            (*lastwp).flags &= !(0x40 as libc::c_int)
-        } else if args_has(args, 'd' as i32 as u_char) != 0 {
-            (*lastwp).flags |= 0x40 as libc::c_int
+        if args_has(args, 'e' as u_char) != 0 {
+            (*lastwp).flags &= !(0x40i32)
+        } else if args_has(args, 'd' as u_char) != 0 {
+            (*lastwp).flags |= 0x40i32
         } else {
-            if window_push_zoom(w, args_has(args, 'Z' as i32 as u_char)) != 0 {
+            if window_push_zoom(w, args_has(args, 'Z' as u_char)) != 0 {
                 server_redraw_window(w);
             }
             window_redraw_active_switch(w, lastwp);
-            if window_set_active_pane(w, lastwp, 1 as libc::c_int) != 0 {
-                cmd_find_from_winlink(current, wl, 0 as libc::c_int);
+            if window_set_active_pane(w, lastwp, 1i32) != 0 {
+                cmd_find_from_winlink(current, wl, 0i32);
                 cmd_select_pane_redraw(w);
             }
             if window_pop_zoom(w) != 0 {
@@ -1320,8 +1318,8 @@ unsafe extern "C" fn cmd_select_pane_exec(
         }
         return CMD_RETURN_NORMAL;
     }
-    if args_has(args, 'm' as i32 as u_char) != 0 || args_has(args, 'M' as i32 as u_char) != 0 {
-        if args_has(args, 'm' as i32 as u_char) != 0 && window_pane_visible(wp) == 0 {
+    if args_has(args, 'm' as u_char) != 0 || args_has(args, 'M' as u_char) != 0 {
+        if args_has(args, 'm' as u_char) != 0 && window_pane_visible(wp) == 0 {
             return CMD_RETURN_NORMAL;
         }
         if server_check_marked() != 0 {
@@ -1329,7 +1327,7 @@ unsafe extern "C" fn cmd_select_pane_exec(
         } else {
             lastwp = 0 as *mut window_pane
         }
-        if args_has(args, 'M' as i32 as u_char) != 0 || server_is_marked(s, wl, wp) != 0 {
+        if args_has(args, 'M' as u_char) != 0 || server_is_marked(s, wl, wp) != 0 {
             server_clear_marked();
         } else {
             server_set_marked(s, wl, wp);
@@ -1345,12 +1343,12 @@ unsafe extern "C" fn cmd_select_pane_exec(
         }
         return CMD_RETURN_NORMAL;
     }
-    style = args_get(args, 'P' as i32 as u_char);
+    style = args_get(args, 'P' as u_char);
     if !style.is_null() {
         o = options_set_string(
             oo,
             b"window-style\x00" as *const u8 as *const libc::c_char,
-            0 as libc::c_int,
+            0i32,
             b"%s\x00" as *const u8 as *const libc::c_char,
             style,
         );
@@ -1365,13 +1363,13 @@ unsafe extern "C" fn cmd_select_pane_exec(
         options_set_string(
             oo,
             b"window-active-style\x00" as *const u8 as *const libc::c_char,
-            0 as libc::c_int,
+            0i32,
             b"%s\x00" as *const u8 as *const libc::c_char,
             style,
         );
-        (*wp).flags |= 0x1 as libc::c_int | 0x1000 as libc::c_int
+        (*wp).flags |= 0x1i32 | 0x1000i32
     }
-    if args_has(args, 'g' as i32 as u_char) != 0 {
+    if args_has(args, 'g' as u_char) != 0 {
         cmdq_print(
             item,
             b"%s\x00" as *const u8 as *const libc::c_char,
@@ -1379,36 +1377,36 @@ unsafe extern "C" fn cmd_select_pane_exec(
         );
         return CMD_RETURN_NORMAL;
     }
-    if args_has(args, 'L' as i32 as u_char) != 0 {
-        window_push_zoom(w, 1 as libc::c_int);
+    if args_has(args, 'L' as u_char) != 0 {
+        window_push_zoom(w, 1i32);
         wp = window_pane_find_left(wp);
         window_pop_zoom(w);
-    } else if args_has(args, 'R' as i32 as u_char) != 0 {
-        window_push_zoom(w, 1 as libc::c_int);
+    } else if args_has(args, 'R' as u_char) != 0 {
+        window_push_zoom(w, 1i32);
         wp = window_pane_find_right(wp);
         window_pop_zoom(w);
-    } else if args_has(args, 'U' as i32 as u_char) != 0 {
-        window_push_zoom(w, 1 as libc::c_int);
+    } else if args_has(args, 'U' as u_char) != 0 {
+        window_push_zoom(w, 1i32);
         wp = window_pane_find_up(wp);
         window_pop_zoom(w);
-    } else if args_has(args, 'D' as i32 as u_char) != 0 {
-        window_push_zoom(w, 1 as libc::c_int);
+    } else if args_has(args, 'D' as u_char) != 0 {
+        window_push_zoom(w, 1i32);
         wp = window_pane_find_down(wp);
         window_pop_zoom(w);
     }
     if wp.is_null() {
         return CMD_RETURN_NORMAL;
     }
-    if args_has(args, 'e' as i32 as u_char) != 0 {
-        (*wp).flags &= !(0x40 as libc::c_int);
+    if args_has(args, 'e' as u_char) != 0 {
+        (*wp).flags &= !(0x40i32);
         return CMD_RETURN_NORMAL;
     }
-    if args_has(args, 'd' as i32 as u_char) != 0 {
-        (*wp).flags |= 0x40 as libc::c_int;
+    if args_has(args, 'd' as u_char) != 0 {
+        (*wp).flags |= 0x40i32;
         return CMD_RETURN_NORMAL;
     }
-    if args_has(args, 'T' as i32 as u_char) != 0 {
-        title = format_single_from_target(item, args_get(args, 'T' as i32 as u_char));
+    if args_has(args, 'T' as u_char) != 0 {
+        title = format_single_from_target(item, args_get(args, 'T' as u_char));
         if screen_set_title(&mut (*wp).base, title) != 0 {
             notify_pane(
                 b"pane-title-changed\x00" as *const u8 as *const libc::c_char,
@@ -1420,10 +1418,7 @@ unsafe extern "C" fn cmd_select_pane_exec(
         free(title as *mut libc::c_void);
         return CMD_RETURN_NORMAL;
     }
-    if !c.is_null()
-        && !(*c).session.is_null()
-        && (*c).flags as libc::c_ulonglong & 0x80000000 as libc::c_ulonglong != 0
-    {
+    if !c.is_null() && !(*c).session.is_null() && (*c).flags & 0x80000000u64 != 0 {
         activewp = server_client_get_pane(c)
     } else {
         activewp = (*w).active
@@ -1431,17 +1426,14 @@ unsafe extern "C" fn cmd_select_pane_exec(
     if wp == activewp {
         return CMD_RETURN_NORMAL;
     }
-    if window_push_zoom(w, args_has(args, 'Z' as i32 as u_char)) != 0 {
+    if window_push_zoom(w, args_has(args, 'Z' as u_char)) != 0 {
         server_redraw_window(w);
     }
     window_redraw_active_switch(w, wp);
-    if !c.is_null()
-        && !(*c).session.is_null()
-        && (*c).flags as libc::c_ulonglong & 0x80000000 as libc::c_ulonglong != 0
-    {
+    if !c.is_null() && !(*c).session.is_null() && (*c).flags & 0x80000000u64 != 0 {
         server_client_set_pane(c, wp);
-    } else if window_set_active_pane(w, wp, 1 as libc::c_int) != 0 {
-        cmd_find_from_winlink_pane(current, wl, wp, 0 as libc::c_int);
+    } else if window_set_active_pane(w, wp, 1i32) != 0 {
+        cmd_find_from_winlink_pane(current, wl, wp, 0i32);
     }
     cmdq_insert_hook(
         s,

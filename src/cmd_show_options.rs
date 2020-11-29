@@ -1150,8 +1150,8 @@ pub static mut cmd_show_options_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"AgHpqst:vw\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 1 as libc::c_int,
+                    lower: 0i32,
+                    upper: 1i32,
                 };
                 init
             },
@@ -1163,13 +1163,13 @@ pub static mut cmd_show_options_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_PANE,
-                    flags: 0x40 as libc::c_int,
+                    flags: 0x40i32,
                 };
                 init
             },
-            flags: 0x4 as libc::c_int,
+            flags: 0x4i32,
             exec: Some(
                 cmd_show_options_exec
                     as unsafe extern "C" fn(
@@ -1190,8 +1190,8 @@ pub static mut cmd_show_window_options_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"gvt:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 1 as libc::c_int,
+                    lower: 0i32,
+                    upper: 1i32,
                 };
                 init
             },
@@ -1203,13 +1203,13 @@ pub static mut cmd_show_window_options_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_WINDOW,
-                    flags: 0x40 as libc::c_int,
+                    flags: 0x40i32,
                 };
                 init
             },
-            flags: 0x4 as libc::c_int,
+            flags: 0x4i32,
             exec: Some(
                 cmd_show_options_exec
                     as unsafe extern "C" fn(
@@ -1230,8 +1230,8 @@ pub static mut cmd_show_hooks_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"gpt:w\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 1 as libc::c_int,
+                    lower: 0i32,
+                    upper: 1i32,
                 };
                 init
             },
@@ -1243,13 +1243,13 @@ pub static mut cmd_show_hooks_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_PANE,
-                    flags: 0x40 as libc::c_int,
+                    flags: 0x40i32,
                 };
                 init
             },
-            flags: 0x4 as libc::c_int,
+            flags: 0x4i32,
             exec: Some(
                 cmd_show_options_exec
                     as unsafe extern "C" fn(
@@ -1298,10 +1298,10 @@ unsafe extern "C" fn cmd_show_options_exec(
     let mut o: *mut crate::options::options_entry = 0 as *mut crate::options::options_entry;
     window = (cmd_get_entry(self_0) == &cmd_show_window_options_entry as *const cmd_entry)
         as libc::c_int;
-    if (*args).argc == 0 as libc::c_int {
+    if (*args).argc == 0i32 {
         scope = options_scope_from_flags(args, window, target, &mut oo, &mut cause);
-        if scope == 0 as libc::c_int {
-            if args_has(args, 'q' as i32 as u_char) != 0 {
+        if scope == 0i32 {
+            if args_has(args, 'q' as u_char) != 0 {
                 return CMD_RETURN_NORMAL;
             }
             cmdq_error(item, b"%s\x00" as *const u8 as *const libc::c_char, cause);
@@ -1310,10 +1310,10 @@ unsafe extern "C" fn cmd_show_options_exec(
         }
         return cmd_show_options_all(self_0, item, scope, oo);
     }
-    argument = format_single_from_target(item, *(*args).argv.offset(0 as libc::c_int as isize));
+    argument = format_single_from_target(item, *(*args).argv.offset(0isize));
     name = options_match(argument, &mut idx, &mut ambiguous);
     if name.is_null() {
-        if !(args_has(args, 'q' as i32 as u_char) != 0) {
+        if !(args_has(args, 'q' as u_char) != 0) {
             if ambiguous != 0 {
                 cmdq_error(
                     item,
@@ -1330,18 +1330,18 @@ unsafe extern "C" fn cmd_show_options_exec(
         }
     } else {
         scope = options_scope_from_name(args, window, name, target, &mut oo, &mut cause);
-        if scope == 0 as libc::c_int {
-            if !(args_has(args, 'q' as i32 as u_char) != 0) {
+        if scope == 0i32 {
+            if !(args_has(args, 'q' as u_char) != 0) {
                 cmdq_error(item, b"%s\x00" as *const u8 as *const libc::c_char, cause);
                 free(cause as *mut libc::c_void);
             }
         } else {
             o = options_get_only(oo, name);
-            if args_has(args, 'A' as i32 as u_char) != 0 && o.is_null() {
+            if args_has(args, 'A' as u_char) != 0 && o.is_null() {
                 o = options_get(oo, name);
-                parent = 1 as libc::c_int
+                parent = 1i32
             } else {
-                parent = 0 as libc::c_int
+                parent = 0i32
             }
             if !o.is_null() {
                 cmd_show_options_print(self_0, item, o, idx, parent);
@@ -1369,7 +1369,7 @@ unsafe extern "C" fn cmd_show_options_print(
     let mut value: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut tmp: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut escaped: *mut libc::c_char = 0 as *mut libc::c_char;
-    if idx != -(1 as libc::c_int) {
+    if idx != -(1i32) {
         xasprintf(
             &mut tmp as *mut *mut libc::c_char,
             b"%s[%d]\x00" as *const u8 as *const libc::c_char,
@@ -1380,7 +1380,7 @@ unsafe extern "C" fn cmd_show_options_print(
     } else if options_is_array(o) != 0 {
         a = options_array_first(o);
         if a.is_null() {
-            if args_has(args, 'v' as i32 as u_char) == 0 {
+            if args_has(args, 'v' as u_char) == 0 {
                 cmdq_print(item, b"%s\x00" as *const u8 as *const libc::c_char, name);
             }
             return;
@@ -1392,8 +1392,8 @@ unsafe extern "C" fn cmd_show_options_print(
         }
         return;
     }
-    value = options_to_string(o, idx, 0 as libc::c_int);
-    if args_has(args, 'v' as i32 as u_char) != 0 {
+    value = options_to_string(o, idx, 0i32);
+    if args_has(args, 'v' as u_char) != 0 {
         cmdq_print(item, b"%s\x00" as *const u8 as *const libc::c_char, value);
     } else if options_is_string(o) != 0 {
         escaped = args_escape(value);
@@ -1448,7 +1448,7 @@ unsafe extern "C" fn cmd_show_options_all(
     o = options_first(oo);
     while !o.is_null() {
         if options_table_entry(o).is_null() {
-            cmd_show_options_print(self_0, item, o, -(1 as libc::c_int), 0 as libc::c_int);
+            cmd_show_options_print(self_0, item, o, -(1i32), 0i32);
         }
         o = options_next(o)
     }
@@ -1457,37 +1457,37 @@ unsafe extern "C" fn cmd_show_options_all(
     while !(*oe).name.is_null() {
         if !(!(*oe).scope & scope != 0) {
             if !(cmd_get_entry(self_0) != &cmd_show_hooks_entry as *const cmd_entry
-                && args_has(args, 'H' as i32 as u_char) == 0
-                && (*oe).flags & 0x2 as libc::c_int != 0
+                && args_has(args, 'H' as u_char) == 0
+                && (*oe).flags & 0x2i32 != 0
                 || cmd_get_entry(self_0) == &cmd_show_hooks_entry as *const cmd_entry
-                    && !(*oe).flags & 0x2 as libc::c_int != 0)
+                    && !(*oe).flags & 0x2i32 != 0)
             {
                 o = options_get_only(oo, (*oe).name);
                 if o.is_null() {
-                    if args_has(args, 'A' as i32 as u_char) == 0 {
+                    if args_has(args, 'A' as u_char) == 0 {
                         current_block_26 = 2868539653012386629;
                     } else {
                         o = options_get(oo, (*oe).name);
                         if o.is_null() {
                             current_block_26 = 2868539653012386629;
                         } else {
-                            parent = 1 as libc::c_int;
+                            parent = 1i32;
                             current_block_26 = 5601891728916014340;
                         }
                     }
                 } else {
-                    parent = 0 as libc::c_int;
+                    parent = 0i32;
                     current_block_26 = 5601891728916014340;
                 }
                 match current_block_26 {
                     2868539653012386629 => {}
                     _ => {
                         if options_is_array(o) == 0 {
-                            cmd_show_options_print(self_0, item, o, -(1 as libc::c_int), parent);
+                            cmd_show_options_print(self_0, item, o, -(1i32), parent);
                         } else {
                             a = options_array_first(o);
                             if a.is_null() {
-                                if args_has(args, 'v' as i32 as u_char) == 0 {
+                                if args_has(args, 'v' as u_char) == 0 {
                                     name = options_name(o);
                                     if parent != 0 {
                                         cmdq_print(

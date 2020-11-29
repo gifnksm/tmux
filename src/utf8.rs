@@ -148,10 +148,10 @@ unsafe extern "C" fn utf8_data_cmp(
     mut ui2: *mut utf8_item,
 ) -> libc::c_int {
     if ((*ui1).size as libc::c_int) < (*ui2).size as libc::c_int {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     if (*ui1).size as libc::c_int > (*ui2).size as libc::c_int {
-        return 1 as libc::c_int;
+        return 1i32;
     }
     return memcmp(
         (*ui1).data.as_mut_ptr() as *const libc::c_void,
@@ -167,9 +167,9 @@ unsafe extern "C" fn utf8_data_tree_RB_FIND(
     let mut comp: libc::c_int = 0;
     while !tmp.is_null() {
         comp = utf8_data_cmp(elm, tmp);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).data_entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).data_entry.rbe_right
         } else {
             return tmp;
@@ -186,16 +186,16 @@ unsafe extern "C" fn utf8_data_tree_RB_INSERT_COLOR(
     let mut tmp: *mut utf8_item = 0 as *mut utf8_item;
     loop {
         parent = (*elm).data_entry.rbe_parent;
-        if !(!parent.is_null() && (*parent).data_entry.rbe_color == 1 as libc::c_int) {
+        if !(!parent.is_null() && (*parent).data_entry.rbe_color == 1i32) {
             break;
         }
         gparent = (*parent).data_entry.rbe_parent;
         if parent == (*gparent).data_entry.rbe_left {
             tmp = (*gparent).data_entry.rbe_right;
-            if !tmp.is_null() && (*tmp).data_entry.rbe_color == 1 as libc::c_int {
-                (*tmp).data_entry.rbe_color = 0 as libc::c_int;
-                (*parent).data_entry.rbe_color = 0 as libc::c_int;
-                (*gparent).data_entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).data_entry.rbe_color == 1i32 {
+                (*tmp).data_entry.rbe_color = 0i32;
+                (*parent).data_entry.rbe_color = 0i32;
+                (*gparent).data_entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).data_entry.rbe_right == elm {
@@ -221,8 +221,8 @@ unsafe extern "C" fn utf8_data_tree_RB_INSERT_COLOR(
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).data_entry.rbe_color = 0 as libc::c_int;
-                (*gparent).data_entry.rbe_color = 1 as libc::c_int;
+                (*parent).data_entry.rbe_color = 0i32;
+                (*gparent).data_entry.rbe_color = 1i32;
                 tmp = (*gparent).data_entry.rbe_left;
                 (*gparent).data_entry.rbe_left = (*tmp).data_entry.rbe_right;
                 if !(*gparent).data_entry.rbe_left.is_null() {
@@ -244,10 +244,10 @@ unsafe extern "C" fn utf8_data_tree_RB_INSERT_COLOR(
             }
         } else {
             tmp = (*gparent).data_entry.rbe_left;
-            if !tmp.is_null() && (*tmp).data_entry.rbe_color == 1 as libc::c_int {
-                (*tmp).data_entry.rbe_color = 0 as libc::c_int;
-                (*parent).data_entry.rbe_color = 0 as libc::c_int;
-                (*gparent).data_entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).data_entry.rbe_color == 1i32 {
+                (*tmp).data_entry.rbe_color = 0i32;
+                (*parent).data_entry.rbe_color = 0i32;
+                (*gparent).data_entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).data_entry.rbe_left == elm {
@@ -273,8 +273,8 @@ unsafe extern "C" fn utf8_data_tree_RB_INSERT_COLOR(
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).data_entry.rbe_color = 0 as libc::c_int;
-                (*gparent).data_entry.rbe_color = 1 as libc::c_int;
+                (*parent).data_entry.rbe_color = 0i32;
+                (*gparent).data_entry.rbe_color = 1i32;
                 tmp = (*gparent).data_entry.rbe_right;
                 (*gparent).data_entry.rbe_right = (*tmp).data_entry.rbe_left;
                 if !(*gparent).data_entry.rbe_right.is_null() {
@@ -296,7 +296,7 @@ unsafe extern "C" fn utf8_data_tree_RB_INSERT_COLOR(
             }
         }
     }
-    (*(*head).rbh_root).data_entry.rbe_color = 0 as libc::c_int;
+    (*(*head).rbh_root).data_entry.rbe_color = 0i32;
 }
 unsafe extern "C" fn utf8_data_tree_RB_INSERT(
     mut head: *mut utf8_data_tree,
@@ -304,14 +304,14 @@ unsafe extern "C" fn utf8_data_tree_RB_INSERT(
 ) -> *mut utf8_item {
     let mut tmp: *mut utf8_item = 0 as *mut utf8_item;
     let mut parent: *mut utf8_item = 0 as *mut utf8_item;
-    let mut comp: libc::c_int = 0 as libc::c_int;
+    let mut comp: libc::c_int = 0i32;
     tmp = (*head).rbh_root;
     while !tmp.is_null() {
         parent = tmp;
         comp = utf8_data_cmp(elm, parent);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).data_entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).data_entry.rbe_right
         } else {
             return tmp;
@@ -320,9 +320,9 @@ unsafe extern "C" fn utf8_data_tree_RB_INSERT(
     (*elm).data_entry.rbe_parent = parent;
     (*elm).data_entry.rbe_right = 0 as *mut utf8_item;
     (*elm).data_entry.rbe_left = (*elm).data_entry.rbe_right;
-    (*elm).data_entry.rbe_color = 1 as libc::c_int;
+    (*elm).data_entry.rbe_color = 1i32;
     if !parent.is_null() {
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             (*parent).data_entry.rbe_left = elm
         } else {
             (*parent).data_entry.rbe_right = elm
@@ -335,7 +335,7 @@ unsafe extern "C" fn utf8_data_tree_RB_INSERT(
 }
 static mut utf8_data_tree: utf8_data_tree = {
     let mut init = utf8_data_tree {
-        rbh_root: 0 as *const utf8_item as *mut utf8_item,
+        rbh_root: 0 as *mut utf8_item,
     };
     init
 };
@@ -344,12 +344,12 @@ unsafe extern "C" fn utf8_index_cmp(
     mut ui2: *mut utf8_item,
 ) -> libc::c_int {
     if (*ui1).index < (*ui2).index {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     if (*ui1).index > (*ui2).index {
-        return 1 as libc::c_int;
+        return 1i32;
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 unsafe extern "C" fn utf8_index_tree_RB_FIND(
     mut head: *mut utf8_index_tree,
@@ -359,9 +359,9 @@ unsafe extern "C" fn utf8_index_tree_RB_FIND(
     let mut comp: libc::c_int = 0;
     while !tmp.is_null() {
         comp = utf8_index_cmp(elm, tmp);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).index_entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).index_entry.rbe_right
         } else {
             return tmp;
@@ -375,14 +375,14 @@ unsafe extern "C" fn utf8_index_tree_RB_INSERT(
 ) -> *mut utf8_item {
     let mut tmp: *mut utf8_item = 0 as *mut utf8_item;
     let mut parent: *mut utf8_item = 0 as *mut utf8_item;
-    let mut comp: libc::c_int = 0 as libc::c_int;
+    let mut comp: libc::c_int = 0i32;
     tmp = (*head).rbh_root;
     while !tmp.is_null() {
         parent = tmp;
         comp = utf8_index_cmp(elm, parent);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).index_entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).index_entry.rbe_right
         } else {
             return tmp;
@@ -391,9 +391,9 @@ unsafe extern "C" fn utf8_index_tree_RB_INSERT(
     (*elm).index_entry.rbe_parent = parent;
     (*elm).index_entry.rbe_right = 0 as *mut utf8_item;
     (*elm).index_entry.rbe_left = (*elm).index_entry.rbe_right;
-    (*elm).index_entry.rbe_color = 1 as libc::c_int;
+    (*elm).index_entry.rbe_color = 1i32;
     if !parent.is_null() {
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             (*parent).index_entry.rbe_left = elm
         } else {
             (*parent).index_entry.rbe_right = elm
@@ -413,16 +413,16 @@ unsafe extern "C" fn utf8_index_tree_RB_INSERT_COLOR(
     let mut tmp: *mut utf8_item = 0 as *mut utf8_item;
     loop {
         parent = (*elm).index_entry.rbe_parent;
-        if !(!parent.is_null() && (*parent).index_entry.rbe_color == 1 as libc::c_int) {
+        if !(!parent.is_null() && (*parent).index_entry.rbe_color == 1i32) {
             break;
         }
         gparent = (*parent).index_entry.rbe_parent;
         if parent == (*gparent).index_entry.rbe_left {
             tmp = (*gparent).index_entry.rbe_right;
-            if !tmp.is_null() && (*tmp).index_entry.rbe_color == 1 as libc::c_int {
-                (*tmp).index_entry.rbe_color = 0 as libc::c_int;
-                (*parent).index_entry.rbe_color = 0 as libc::c_int;
-                (*gparent).index_entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).index_entry.rbe_color == 1i32 {
+                (*tmp).index_entry.rbe_color = 0i32;
+                (*parent).index_entry.rbe_color = 0i32;
+                (*gparent).index_entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).index_entry.rbe_right == elm {
@@ -448,8 +448,8 @@ unsafe extern "C" fn utf8_index_tree_RB_INSERT_COLOR(
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).index_entry.rbe_color = 0 as libc::c_int;
-                (*gparent).index_entry.rbe_color = 1 as libc::c_int;
+                (*parent).index_entry.rbe_color = 0i32;
+                (*gparent).index_entry.rbe_color = 1i32;
                 tmp = (*gparent).index_entry.rbe_left;
                 (*gparent).index_entry.rbe_left = (*tmp).index_entry.rbe_right;
                 if !(*gparent).index_entry.rbe_left.is_null() {
@@ -471,10 +471,10 @@ unsafe extern "C" fn utf8_index_tree_RB_INSERT_COLOR(
             }
         } else {
             tmp = (*gparent).index_entry.rbe_left;
-            if !tmp.is_null() && (*tmp).index_entry.rbe_color == 1 as libc::c_int {
-                (*tmp).index_entry.rbe_color = 0 as libc::c_int;
-                (*parent).index_entry.rbe_color = 0 as libc::c_int;
-                (*gparent).index_entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).index_entry.rbe_color == 1i32 {
+                (*tmp).index_entry.rbe_color = 0i32;
+                (*parent).index_entry.rbe_color = 0i32;
+                (*gparent).index_entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).index_entry.rbe_left == elm {
@@ -500,8 +500,8 @@ unsafe extern "C" fn utf8_index_tree_RB_INSERT_COLOR(
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).index_entry.rbe_color = 0 as libc::c_int;
-                (*gparent).index_entry.rbe_color = 1 as libc::c_int;
+                (*parent).index_entry.rbe_color = 0i32;
+                (*gparent).index_entry.rbe_color = 1i32;
                 tmp = (*gparent).index_entry.rbe_right;
                 (*gparent).index_entry.rbe_right = (*tmp).index_entry.rbe_left;
                 if !(*gparent).index_entry.rbe_right.is_null() {
@@ -523,11 +523,11 @@ unsafe extern "C" fn utf8_index_tree_RB_INSERT_COLOR(
             }
         }
     }
-    (*(*head).rbh_root).index_entry.rbe_color = 0 as libc::c_int;
+    (*(*head).rbh_root).index_entry.rbe_color = 0i32;
 }
 static mut utf8_index_tree: utf8_index_tree = {
     let mut init = utf8_index_tree {
-        rbh_root: 0 as *const utf8_item as *mut utf8_item,
+        rbh_root: 0 as *mut utf8_item,
     };
     init
 };
@@ -602,15 +602,12 @@ unsafe extern "C" fn utf8_put_item(
             data,
             *index,
         );
-        return 0 as libc::c_int;
+        return 0i32;
     }
-    if utf8_next_index == (0xffffff as libc::c_int + 1 as libc::c_int) as libc::c_uint {
-        return -(1 as libc::c_int);
+    if utf8_next_index == (0xffffffi32 + 1i32) as libc::c_uint {
+        return -(1i32);
     }
-    ui = xcalloc(
-        1 as libc::c_int as size_t,
-        ::std::mem::size_of::<utf8_item>() as libc::c_ulong,
-    ) as *mut utf8_item;
+    ui = xcalloc(1u64, ::std::mem::size_of::<utf8_item>() as libc::c_ulong) as *mut utf8_item;
     let fresh0 = utf8_next_index;
     utf8_next_index = utf8_next_index.wrapping_add(1);
     (*ui).index = fresh0;
@@ -630,7 +627,7 @@ unsafe extern "C" fn utf8_put_item(
         data,
         *index,
     );
-    return 0 as libc::c_int;
+    return 0i32;
 }
 /* Get UTF-8 character from data. */
 #[no_mangle]
@@ -640,23 +637,23 @@ pub unsafe extern "C" fn utf8_from_data(
 ) -> Utf8State {
     let mut current_block: u64;
     let mut index: u_int = 0;
-    if (*ud).width as libc::c_int > 2 as libc::c_int {
+    if (*ud).width as libc::c_int > 2i32 {
         fatalx(
             b"invalid UTF-8 width: %u\x00" as *const u8 as *const libc::c_char,
             (*ud).width as libc::c_int,
         );
     }
-    if !((*ud).size as libc::c_int > 21 as libc::c_int) {
-        if (*ud).size as libc::c_int <= 3 as libc::c_int {
-            index = ((*ud).data[2 as libc::c_int as usize] as Utf8Char) << 16 as libc::c_int
-                | ((*ud).data[1 as libc::c_int as usize] as Utf8Char) << 8 as libc::c_int
-                | (*ud).data[0 as libc::c_int as usize] as Utf8Char;
+    if !((*ud).size as libc::c_int > 21i32) {
+        if (*ud).size as libc::c_int <= 3i32 {
+            index = ((*ud).data[2usize] as Utf8Char) << 16i32
+                | ((*ud).data[1usize] as Utf8Char) << 8i32
+                | (*ud).data[0usize] as Utf8Char;
             current_block = 10879442775620481940;
         } else if utf8_put_item(
             (*ud).data.as_ptr() as *const libc::c_char,
             (*ud).size as size_t,
             &mut index,
-        ) != 0 as libc::c_int
+        ) != 0i32
         {
             current_block = 8721612281967708268;
         } else {
@@ -665,9 +662,8 @@ pub unsafe extern "C" fn utf8_from_data(
         match current_block {
             8721612281967708268 => {}
             _ => {
-                *uc = ((*ud).size as Utf8Char) << 24 as libc::c_int
-                    | ((*ud).width as Utf8Char).wrapping_add(1 as libc::c_int as libc::c_uint)
-                        << 29 as libc::c_int
+                *uc = ((*ud).size as Utf8Char) << 24i32
+                    | ((*ud).width as Utf8Char).wrapping_add(1u32) << 29i32
                     | index;
                 log_debug(
                     b"%s: (%d %d %.*s) -> %08x\x00" as *const u8 as *const libc::c_char,
@@ -685,20 +681,12 @@ pub unsafe extern "C" fn utf8_from_data(
             }
         }
     }
-    if (*ud).width as libc::c_int == 0 as libc::c_int {
-        *uc = (0 as libc::c_int as Utf8Char) << 24 as libc::c_int
-            | (0 as libc::c_int as Utf8Char).wrapping_add(1 as libc::c_int as libc::c_uint)
-                << 29 as libc::c_int
-    } else if (*ud).width as libc::c_int == 1 as libc::c_int {
-        *uc = (1 as libc::c_int as Utf8Char) << 24 as libc::c_int
-            | (1 as libc::c_int as Utf8Char).wrapping_add(1 as libc::c_int as libc::c_uint)
-                << 29 as libc::c_int
-            | 0x20 as libc::c_int as libc::c_uint
+    if (*ud).width as libc::c_int == 0i32 {
+        *uc = (0u32) << 24i32 | (0u32).wrapping_add(1u32) << 29i32
+    } else if (*ud).width as libc::c_int == 1i32 {
+        *uc = (1u32) << 24i32 | (1u32).wrapping_add(1u32) << 29i32 | 0x20u32
     } else {
-        *uc = (1 as libc::c_int as Utf8Char) << 24 as libc::c_int
-            | (1 as libc::c_int as Utf8Char).wrapping_add(1 as libc::c_int as libc::c_uint)
-                << 29 as libc::c_int
-            | 0x2020 as libc::c_int as libc::c_uint
+        *uc = (1u32) << 24i32 | (1u32).wrapping_add(1u32) << 29i32 | 0x2020u32
     }
     return utf8_state::ERROR;
 }
@@ -709,20 +697,18 @@ pub unsafe extern "C" fn utf8_to_data(mut uc: Utf8Char, mut ud: *mut Utf8Data) {
     let mut index: u_int = 0;
     memset(
         ud as *mut libc::c_void,
-        0 as libc::c_int,
+        0i32,
         ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
     );
-    (*ud).have = (uc >> 24 as libc::c_int & 0x1f as libc::c_int as libc::c_uint) as u_char;
+    (*ud).have = (uc >> 24i32 & 0x1fu32) as u_char;
     (*ud).size = (*ud).have;
-    (*ud).width =
-        (uc >> 29 as libc::c_int).wrapping_sub(1 as libc::c_int as libc::c_uint) as u_char;
-    if (*ud).size as libc::c_int <= 3 as libc::c_int {
-        (*ud).data[2 as libc::c_int as usize] = (uc >> 16 as libc::c_int) as u_char;
-        (*ud).data[1 as libc::c_int as usize] =
-            (uc >> 8 as libc::c_int & 0xff as libc::c_int as libc::c_uint) as u_char;
-        (*ud).data[0 as libc::c_int as usize] = (uc & 0xff as libc::c_int as libc::c_uint) as u_char
+    (*ud).width = (uc >> 29i32).wrapping_sub(1u32) as u_char;
+    if (*ud).size as libc::c_int <= 3i32 {
+        (*ud).data[2usize] = (uc >> 16i32) as u_char;
+        (*ud).data[1usize] = (uc >> 8i32 & 0xffu32) as u_char;
+        (*ud).data[0usize] = (uc & 0xffu32) as u_char
     } else {
-        index = uc & 0xffffff as libc::c_int as libc::c_uint;
+        index = uc & 0xffffffu32;
         ui = utf8_item_by_index(index);
         if ui.is_null() {
             memset(
@@ -751,10 +737,7 @@ pub unsafe extern "C" fn utf8_to_data(mut uc: Utf8Char, mut ud: *mut Utf8Data) {
 /* Get UTF-8 character from a single ASCII character. */
 #[no_mangle]
 pub unsafe extern "C" fn utf8_build_one(mut ch: u_char) -> Utf8Char {
-    return (1 as libc::c_int as Utf8Char) << 24 as libc::c_int
-        | (1 as libc::c_int as Utf8Char).wrapping_add(1 as libc::c_int as libc::c_uint)
-            << 29 as libc::c_int
-        | ch as libc::c_uint;
+    return (1u32) << 24i32 | (1u32).wrapping_add(1u32) << 29i32 | ch as libc::c_uint;
 }
 /* Set a single character. */
 #[no_mangle]
@@ -762,31 +745,11 @@ pub unsafe extern "C" fn utf8_set(mut ud: *mut Utf8Data, mut ch: u_char) {
     static mut empty: Utf8Data = {
         let mut init = Utf8Data {
             data: [
-                0 as libc::c_int as u_char,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
+                0u8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             ],
-            have: 1 as libc::c_int as u_char,
-            size: 1 as libc::c_int as u_char,
-            width: 1 as libc::c_int as u_char,
+            have: 1u8,
+            size: 1u8,
+            width: 1u8,
         };
         init
     };
@@ -808,7 +771,7 @@ pub unsafe extern "C" fn utf8_copy(mut to: *mut Utf8Data, mut from: *const Utf8D
     );
     i = (*to).size as u_int;
     while (i as libc::c_ulong) < ::std::mem::size_of::<[u_char; 21]>() as libc::c_ulong {
-        (*to).data[i as usize] = '\u{0}' as i32 as u_char;
+        (*to).data[i as usize] = '\u{0}' as u_char;
         i = i.wrapping_add(1)
     }
 }
@@ -838,7 +801,7 @@ unsafe extern "C" fn utf8_width(mut ud: *mut Utf8Data, mut width: *mut libc::c_i
         _ => {}
     }
     *width = wcwidth(wc);
-    if *width >= 0 as libc::c_int && *width <= 0xff as libc::c_int {
+    if *width >= 0i32 && *width <= 0xffi32 {
         return utf8_state::DONE;
     }
     log_debug(
@@ -855,8 +818,8 @@ unsafe extern "C" fn utf8_width(mut ud: *mut Utf8Data, mut width: *mut libc::c_i
      * ideally we would block, but this is no worse than sending the same
      * to the terminal without tmux.
      */
-    if *width < 0 as libc::c_int {
-        *width = 1 as libc::c_int;
+    if *width < 0i32 {
+        *width = 1i32;
         return utf8_state::DONE;
     }
     return utf8_state::ERROR;
@@ -872,15 +835,15 @@ unsafe extern "C" fn utf8_width(mut ud: *mut Utf8Data, mut width: *mut libc::c_i
 pub unsafe extern "C" fn utf8_open(mut ud: *mut Utf8Data, mut ch: u_char) -> Utf8State {
     memset(
         ud as *mut libc::c_void,
-        0 as libc::c_int,
+        0i32,
         ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
     );
-    if ch as libc::c_int >= 0xc2 as libc::c_int && ch as libc::c_int <= 0xdf as libc::c_int {
-        (*ud).size = 2 as libc::c_int as u_char
-    } else if ch as libc::c_int >= 0xe0 as libc::c_int && ch as libc::c_int <= 0xef as libc::c_int {
-        (*ud).size = 3 as libc::c_int as u_char
-    } else if ch as libc::c_int >= 0xf0 as libc::c_int && ch as libc::c_int <= 0xf4 as libc::c_int {
-        (*ud).size = 4 as libc::c_int as u_char
+    if ch as libc::c_int >= 0xc2i32 && ch as libc::c_int <= 0xdfi32 {
+        (*ud).size = 2u8
+    } else if ch as libc::c_int >= 0xe0i32 && ch as libc::c_int <= 0xefi32 {
+        (*ud).size = 3u8
+    } else if ch as libc::c_int >= 0xf0i32 && ch as libc::c_int <= 0xf4i32 {
+        (*ud).size = 4u8
     } else {
         return utf8_state::ERROR;
     }
@@ -897,10 +860,8 @@ pub unsafe extern "C" fn utf8_append(mut ud: *mut Utf8Data, mut ch: u_char) -> U
     if (*ud).size as libc::c_ulong > ::std::mem::size_of::<[u_char; 21]>() as libc::c_ulong {
         fatalx(b"UTF-8 character size too large\x00" as *const u8 as *const libc::c_char);
     }
-    if (*ud).have as libc::c_int != 0 as libc::c_int
-        && ch as libc::c_int & 0xc0 as libc::c_int != 0x80 as libc::c_int
-    {
-        (*ud).width = 0xff as libc::c_int as u_char
+    if (*ud).have as libc::c_int != 0i32 && ch as libc::c_int & 0xc0i32 != 0x80i32 {
+        (*ud).width = 0xffu8
     }
     let fresh1 = (*ud).have;
     (*ud).have = (*ud).have.wrapping_add(1);
@@ -908,11 +869,10 @@ pub unsafe extern "C" fn utf8_append(mut ud: *mut Utf8Data, mut ch: u_char) -> U
     if (*ud).have as libc::c_int != (*ud).size as libc::c_int {
         return utf8_state::MORE;
     }
-    if (*ud).width as libc::c_int == 0xff as libc::c_int {
+    if (*ud).width as libc::c_int == 0xffi32 {
         return utf8_state::ERROR;
     }
-    if utf8_width(ud, &mut width) as libc::c_uint != utf8_state::DONE as libc::c_int as libc::c_uint
-    {
+    if utf8_width(ud, &mut width) != utf8_state::DONE {
         return utf8_state::ERROR;
     }
     (*ud).width = width as u_char;
@@ -942,19 +902,17 @@ pub unsafe extern "C" fn utf8_strvis(
     let mut i: size_t = 0;
     while src < end {
         more = utf8_open(&mut ud, *src as u_char);
-        if more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint {
+        if more == utf8_state::MORE {
             loop {
                 src = src.offset(1);
-                if !(src < end
-                    && more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint)
-                {
+                if !(src < end && more == utf8_state::MORE) {
                     break;
                 }
                 more = utf8_append(&mut ud, *src as u_char)
             }
-            if more as libc::c_uint == utf8_state::DONE as libc::c_int as libc::c_uint {
+            if more == utf8_state::DONE {
                 /* UTF-8 character finished. */
-                i = 0 as libc::c_int as size_t;
+                i = 0u64;
                 while i < ud.size as libc::c_ulong {
                     let fresh2 = dst;
                     dst = dst.offset(1);
@@ -967,43 +925,40 @@ pub unsafe extern "C" fn utf8_strvis(
                 src = src.offset(-(ud.have as libc::c_int as isize))
             }
         }
-        if *src.offset(0 as libc::c_int as isize) as libc::c_int == '$' as i32
-            && src < end.offset(-(1 as libc::c_int as isize))
-        {
-            if *(*__ctype_b_loc())
-                .offset(*src.offset(1 as libc::c_int as isize) as u_char as libc::c_int as isize)
+        if *src.offset(0isize) as libc::c_int == '$' as i32 && src < end.offset(-(1isize)) {
+            if *(*__ctype_b_loc()).offset(*src.offset(1isize) as u_char as libc::c_int as isize)
                 as libc::c_int
-                & _ISalpha as libc::c_int as libc::c_ushort as libc::c_int
+                & _ISalpha as libc::c_ushort as libc::c_int
                 != 0
-                || *src.offset(1 as libc::c_int as isize) as libc::c_int == '_' as i32
-                || *src.offset(1 as libc::c_int as isize) as libc::c_int == '{' as i32
+                || *src.offset(1isize) as libc::c_int == '_' as i32
+                || *src.offset(1isize) as libc::c_int == '{' as i32
             {
                 let fresh3 = dst;
                 dst = dst.offset(1);
-                *fresh3 = '\\' as i32 as libc::c_char
+                *fresh3 = '\\' as libc::c_char
             }
             let fresh4 = dst;
             dst = dst.offset(1);
-            *fresh4 = '$' as i32 as libc::c_char
-        } else if src < end.offset(-(1 as libc::c_int as isize)) {
+            *fresh4 = '$' as libc::c_char
+        } else if src < end.offset(-(1isize)) {
             dst = vis(
                 dst,
-                *src.offset(0 as libc::c_int as isize) as libc::c_int,
+                *src.offset(0isize) as libc::c_int,
                 flag,
-                *src.offset(1 as libc::c_int as isize) as libc::c_int,
+                *src.offset(1isize) as libc::c_int,
             )
         } else if src < end {
             dst = vis(
                 dst,
-                *src.offset(0 as libc::c_int as isize) as libc::c_int,
+                *src.offset(0isize) as libc::c_int,
                 flag,
                 '\u{0}' as i32,
             )
         }
         src = src.offset(1)
     }
-    *dst = '\u{0}' as i32 as libc::c_char;
-    return dst.wrapping_offset_from(start) as libc::c_long as libc::c_int;
+    *dst = '\u{0}' as libc::c_char;
+    return dst.wrapping_offset_from(start) as libc::c_int;
 }
 /* Same as utf8_strvis but allocate the buffer. */
 #[no_mangle]
@@ -1014,14 +969,10 @@ pub unsafe extern "C" fn utf8_stravis(
 ) -> libc::c_int {
     let mut buf: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut len: libc::c_int = 0;
-    buf = xreallocarray(
-        0 as *mut libc::c_void,
-        4 as libc::c_int as size_t,
-        strlen(src).wrapping_add(1 as libc::c_int as libc::c_ulong),
-    ) as *mut libc::c_char;
+    buf = xreallocarray(0 as *mut libc::c_void, 4u64, strlen(src).wrapping_add(1u64))
+        as *mut libc::c_char;
     len = utf8_strvis(buf, src, strlen(src), flag);
-    *dst =
-        xrealloc(buf as *mut libc::c_void, (len + 1 as libc::c_int) as size_t) as *mut libc::c_char;
+    *dst = xrealloc(buf as *mut libc::c_void, (len + 1i32) as size_t) as *mut libc::c_char;
     return len;
 }
 /* Same as utf8_strvis but allocate the buffer. */
@@ -1034,14 +985,10 @@ pub unsafe extern "C" fn utf8_stravisx(
 ) -> libc::c_int {
     let mut buf: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut len: libc::c_int = 0;
-    buf = xreallocarray(
-        0 as *mut libc::c_void,
-        4 as libc::c_int as size_t,
-        srclen.wrapping_add(1 as libc::c_int as libc::c_ulong),
-    ) as *mut libc::c_char;
+    buf =
+        xreallocarray(0 as *mut libc::c_void, 4u64, srclen.wrapping_add(1u64)) as *mut libc::c_char;
     len = utf8_strvis(buf, src, srclen, flag);
-    *dst =
-        xrealloc(buf as *mut libc::c_void, (len + 1 as libc::c_int) as size_t) as *mut libc::c_char;
+    *dst = xrealloc(buf as *mut libc::c_void, (len + 1i32) as size_t) as *mut libc::c_char;
     return len;
 }
 /* Does this string contain anything that isn't valid UTF-8? */
@@ -1058,29 +1005,26 @@ pub unsafe extern "C" fn utf8_isvalid(mut s: *const libc::c_char) -> libc::c_int
     end = s.offset(strlen(s) as isize);
     while s < end {
         more = utf8_open(&mut ud, *s as u_char);
-        if more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint {
+        if more == utf8_state::MORE {
             loop {
                 s = s.offset(1);
-                if !(s < end
-                    && more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint)
-                {
+                if !(s < end && more == utf8_state::MORE) {
                     break;
                 }
                 more = utf8_append(&mut ud, *s as u_char)
             }
-            if more as libc::c_uint == utf8_state::DONE as libc::c_int as libc::c_uint {
+            if more == utf8_state::DONE {
                 continue;
             }
-            return 0 as libc::c_int;
+            return 0i32;
         } else {
-            if (*s as libc::c_int) < 0x20 as libc::c_int || *s as libc::c_int > 0x7e as libc::c_int
-            {
-                return 0 as libc::c_int;
+            if (*s as libc::c_int) < 0x20i32 || *s as libc::c_int > 0x7ei32 {
+                return 0i32;
             }
             s = s.offset(1)
         }
     }
-    return 1 as libc::c_int;
+    return 1i32;
 }
 /*
  * Sanitize a string, changing any UTF-8 characters to '_'. Caller should free
@@ -1090,7 +1034,7 @@ pub unsafe extern "C" fn utf8_isvalid(mut s: *const libc::c_char) -> libc::c_int
 #[no_mangle]
 pub unsafe extern "C" fn utf8_sanitize(mut src: *const libc::c_char) -> *mut libc::c_char {
     let mut dst: *mut libc::c_char = 0 as *mut libc::c_char;
-    let mut n: size_t = 0 as libc::c_int as size_t;
+    let mut n: size_t = 0u64;
     let mut more: Utf8State = utf8_state::MORE;
     let mut ud: Utf8Data = Utf8Data {
         data: [0; 21],
@@ -1102,31 +1046,29 @@ pub unsafe extern "C" fn utf8_sanitize(mut src: *const libc::c_char) -> *mut lib
     while *src as libc::c_int != '\u{0}' as i32 {
         dst = xreallocarray(
             dst as *mut libc::c_void,
-            n.wrapping_add(1 as libc::c_int as libc::c_ulong),
+            n.wrapping_add(1u64),
             ::std::mem::size_of::<libc::c_char>() as libc::c_ulong,
         ) as *mut libc::c_char;
         more = utf8_open(&mut ud, *src as u_char);
-        if more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint {
+        if more == utf8_state::MORE {
             loop {
                 src = src.offset(1);
-                if !(*src as libc::c_int != '\u{0}' as i32
-                    && more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint)
-                {
+                if !(*src as libc::c_int != '\u{0}' as i32 && more == utf8_state::MORE) {
                     break;
                 }
                 more = utf8_append(&mut ud, *src as u_char)
             }
-            if more as libc::c_uint == utf8_state::DONE as libc::c_int as libc::c_uint {
+            if more == utf8_state::DONE {
                 dst = xreallocarray(
                     dst as *mut libc::c_void,
                     n.wrapping_add(ud.width as libc::c_ulong),
                     ::std::mem::size_of::<libc::c_char>() as libc::c_ulong,
                 ) as *mut libc::c_char;
-                i = 0 as libc::c_int as u_int;
+                i = 0u32;
                 while i < ud.width as libc::c_uint {
                     let fresh5 = n;
                     n = n.wrapping_add(1);
-                    *dst.offset(fresh5 as isize) = '_' as i32 as libc::c_char;
+                    *dst.offset(fresh5 as isize) = '_' as libc::c_char;
                     i = i.wrapping_add(1)
                 }
                 continue;
@@ -1134,32 +1076,31 @@ pub unsafe extern "C" fn utf8_sanitize(mut src: *const libc::c_char) -> *mut lib
                 src = src.offset(-(ud.have as libc::c_int as isize))
             }
         }
-        if *src as libc::c_int > 0x1f as libc::c_int && (*src as libc::c_int) < 0x7f as libc::c_int
-        {
+        if *src as libc::c_int > 0x1fi32 && (*src as libc::c_int) < 0x7fi32 {
             let fresh6 = n;
             n = n.wrapping_add(1);
             *dst.offset(fresh6 as isize) = *src
         } else {
             let fresh7 = n;
             n = n.wrapping_add(1);
-            *dst.offset(fresh7 as isize) = '_' as i32 as libc::c_char
+            *dst.offset(fresh7 as isize) = '_' as libc::c_char
         }
         src = src.offset(1)
     }
     dst = xreallocarray(
         dst as *mut libc::c_void,
-        n.wrapping_add(1 as libc::c_int as libc::c_ulong),
+        n.wrapping_add(1u64),
         ::std::mem::size_of::<libc::c_char>() as libc::c_ulong,
     ) as *mut libc::c_char;
-    *dst.offset(n as isize) = '\u{0}' as i32 as libc::c_char;
+    *dst.offset(n as isize) = '\u{0}' as libc::c_char;
     return dst;
 }
 /* Get UTF-8 buffer length. */
 #[no_mangle]
 pub unsafe extern "C" fn utf8_strlen(mut s: *const Utf8Data) -> size_t {
     let mut i: size_t = 0;
-    i = 0 as libc::c_int as size_t;
-    while (*s.offset(i as isize)).size as libc::c_int != 0 as libc::c_int {
+    i = 0u64;
+    while (*s.offset(i as isize)).size as libc::c_int != 0i32 {
         /* nothing */
         i = i.wrapping_add(1)
     }
@@ -1169,14 +1110,13 @@ pub unsafe extern "C" fn utf8_strlen(mut s: *const Utf8Data) -> size_t {
 #[no_mangle]
 pub unsafe extern "C" fn utf8_strwidth(mut s: *const Utf8Data, mut n: ssize_t) -> u_int {
     let mut i: ssize_t = 0;
-    let mut width: u_int = 0 as libc::c_int as u_int;
-    i = 0 as libc::c_int as ssize_t;
-    while (*s.offset(i as isize)).size as libc::c_int != 0 as libc::c_int {
-        if n != -(1 as libc::c_int) as libc::c_long && n == i {
+    let mut width: u_int = 0u32;
+    i = 0i64;
+    while (*s.offset(i as isize)).size as libc::c_int != 0i32 {
+        if n != -1i64 && n == i {
             break;
         }
-        width = (width as libc::c_uint).wrapping_add((*s.offset(i as isize)).width as libc::c_uint)
-            as u_int as u_int;
+        width = (width).wrapping_add((*s.offset(i as isize)).width as libc::c_uint);
         i += 1
     }
     return width;
@@ -1188,26 +1128,24 @@ pub unsafe extern "C" fn utf8_strwidth(mut s: *const Utf8Data, mut n: ssize_t) -
 #[no_mangle]
 pub unsafe extern "C" fn utf8_fromcstr(mut src: *const libc::c_char) -> *mut Utf8Data {
     let mut dst: *mut Utf8Data = 0 as *mut Utf8Data;
-    let mut n: size_t = 0 as libc::c_int as size_t;
+    let mut n: size_t = 0u64;
     let mut more: Utf8State = utf8_state::MORE;
     while *src as libc::c_int != '\u{0}' as i32 {
         dst = xreallocarray(
             dst as *mut libc::c_void,
-            n.wrapping_add(1 as libc::c_int as libc::c_ulong),
+            n.wrapping_add(1u64),
             ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
         ) as *mut Utf8Data;
         more = utf8_open(&mut *dst.offset(n as isize), *src as u_char);
-        if more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint {
+        if more == utf8_state::MORE {
             loop {
                 src = src.offset(1);
-                if !(*src as libc::c_int != '\u{0}' as i32
-                    && more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint)
-                {
+                if !(*src as libc::c_int != '\u{0}' as i32 && more == utf8_state::MORE) {
                     break;
                 }
                 more = utf8_append(&mut *dst.offset(n as isize), *src as u_char)
             }
-            if more as libc::c_uint == utf8_state::DONE as libc::c_int as libc::c_uint {
+            if more == utf8_state::DONE {
                 n = n.wrapping_add(1);
                 continue;
             } else {
@@ -1220,37 +1158,33 @@ pub unsafe extern "C" fn utf8_fromcstr(mut src: *const libc::c_char) -> *mut Utf
     }
     dst = xreallocarray(
         dst as *mut libc::c_void,
-        n.wrapping_add(1 as libc::c_int as libc::c_ulong),
+        n.wrapping_add(1u64),
         ::std::mem::size_of::<Utf8Data>() as libc::c_ulong,
     ) as *mut Utf8Data;
-    (*dst.offset(n as isize)).size = 0 as libc::c_int as u_char;
+    (*dst.offset(n as isize)).size = 0u8;
     return dst;
 }
 /* Convert from a buffer of UTF-8 characters into a string. Caller frees. */
 #[no_mangle]
 pub unsafe extern "C" fn utf8_tocstr(mut src: *mut Utf8Data) -> *mut libc::c_char {
     let mut dst: *mut libc::c_char = 0 as *mut libc::c_char;
-    let mut n: size_t = 0 as libc::c_int as size_t;
-    while (*src).size as libc::c_int != 0 as libc::c_int {
+    let mut n: size_t = 0u64;
+    while (*src).size as libc::c_int != 0i32 {
         dst = xreallocarray(
             dst as *mut libc::c_void,
             n.wrapping_add((*src).size as libc::c_ulong),
-            1 as libc::c_int as size_t,
+            1u64,
         ) as *mut libc::c_char;
         memcpy(
             dst.offset(n as isize) as *mut libc::c_void,
             (*src).data.as_mut_ptr() as *const libc::c_void,
             (*src).size as libc::c_ulong,
         );
-        n = (n as libc::c_ulong).wrapping_add((*src).size as libc::c_ulong) as size_t as size_t;
+        n = (n).wrapping_add((*src).size as libc::c_ulong);
         src = src.offset(1)
     }
-    dst = xreallocarray(
-        dst as *mut libc::c_void,
-        n.wrapping_add(1 as libc::c_int as libc::c_ulong),
-        1 as libc::c_int as size_t,
-    ) as *mut libc::c_char;
-    *dst.offset(n as isize) = '\u{0}' as i32 as libc::c_char;
+    dst = xreallocarray(dst as *mut libc::c_void, n.wrapping_add(1u64), 1u64) as *mut libc::c_char;
+    *dst.offset(n as isize) = '\u{0}' as libc::c_char;
     return dst;
 }
 /* Get width of UTF-8 string. */
@@ -1264,28 +1198,25 @@ pub unsafe extern "C" fn utf8_cstrwidth(mut s: *const libc::c_char) -> u_int {
     };
     let mut width: u_int = 0;
     let mut more: Utf8State = utf8_state::MORE;
-    width = 0 as libc::c_int as u_int;
+    width = 0u32;
     while *s as libc::c_int != '\u{0}' as i32 {
         more = utf8_open(&mut tmp, *s as u_char);
-        if more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint {
+        if more == utf8_state::MORE {
             loop {
                 s = s.offset(1);
-                if !(*s as libc::c_int != '\u{0}' as i32
-                    && more as libc::c_uint == utf8_state::MORE as libc::c_int as libc::c_uint)
-                {
+                if !(*s as libc::c_int != '\u{0}' as i32 && more == utf8_state::MORE) {
                     break;
                 }
                 more = utf8_append(&mut tmp, *s as u_char)
             }
-            if more as libc::c_uint == utf8_state::DONE as libc::c_int as libc::c_uint {
-                width = (width as libc::c_uint).wrapping_add(tmp.width as libc::c_uint) as u_int
-                    as u_int;
+            if more == utf8_state::DONE {
+                width = (width).wrapping_add(tmp.width as libc::c_uint);
                 continue;
             } else {
                 s = s.offset(-(tmp.have as libc::c_int as isize))
             }
         }
-        if *s as libc::c_int > 0x1f as libc::c_int && *s as libc::c_int != 0x7f as libc::c_int {
+        if *s as libc::c_int > 0x1fi32 && *s as libc::c_int != 0x7fi32 {
             width = width.wrapping_add(1)
         }
         s = s.offset(1)
@@ -1308,7 +1239,7 @@ pub unsafe extern "C" fn utf8_padcstr(
     }
     slen = strlen(s);
     out = xmalloc(
-        slen.wrapping_add(1 as libc::c_int as libc::c_ulong)
+        slen.wrapping_add(1u64)
             .wrapping_add(width.wrapping_sub(n) as libc::c_ulong),
     ) as *mut libc::c_char;
     memcpy(out as *mut libc::c_void, s as *const libc::c_void, slen);
@@ -1316,10 +1247,10 @@ pub unsafe extern "C" fn utf8_padcstr(
     while i < width {
         let fresh8 = slen;
         slen = slen.wrapping_add(1);
-        *out.offset(fresh8 as isize) = ' ' as i32 as libc::c_char;
+        *out.offset(fresh8 as isize) = ' ' as libc::c_char;
         i = i.wrapping_add(1)
     }
-    *out.offset(slen as isize) = '\u{0}' as i32 as libc::c_char;
+    *out.offset(slen as isize) = '\u{0}' as libc::c_char;
     return out;
 }
 /* Pad UTF-8 string to width on the right. Caller frees. */
@@ -1338,12 +1269,12 @@ pub unsafe extern "C" fn utf8_rpadcstr(
     }
     slen = strlen(s);
     out = xmalloc(
-        slen.wrapping_add(1 as libc::c_int as libc::c_ulong)
+        slen.wrapping_add(1u64)
             .wrapping_add(width.wrapping_sub(n) as libc::c_ulong),
     ) as *mut libc::c_char;
-    i = 0 as libc::c_int as u_int;
+    i = 0u32;
     while i < width.wrapping_sub(n) {
-        *out.offset(i as isize) = ' ' as i32 as libc::c_char;
+        *out.offset(i as isize) = ' ' as libc::c_char;
         i = i.wrapping_add(1)
     }
     memcpy(
@@ -1351,7 +1282,7 @@ pub unsafe extern "C" fn utf8_rpadcstr(
         s as *const libc::c_void,
         slen,
     );
-    *out.offset((i as libc::c_ulong).wrapping_add(slen) as isize) = '\u{0}' as i32 as libc::c_char;
+    *out.offset((i as libc::c_ulong).wrapping_add(slen) as isize) = '\u{0}' as libc::c_char;
     return out;
 }
 #[no_mangle]
@@ -1361,18 +1292,18 @@ pub unsafe extern "C" fn utf8_cstrhas(
 ) -> libc::c_int {
     let mut copy: *mut Utf8Data = 0 as *mut Utf8Data;
     let mut loop_0: *mut Utf8Data = 0 as *mut Utf8Data;
-    let mut found: libc::c_int = 0 as libc::c_int;
+    let mut found: libc::c_int = 0i32;
     copy = utf8_fromcstr(s);
     loop_0 = copy;
-    while (*loop_0).size as libc::c_int != 0 as libc::c_int {
+    while (*loop_0).size as libc::c_int != 0i32 {
         if !((*loop_0).size as libc::c_int != (*ud).size as libc::c_int) {
             if memcmp(
                 (*loop_0).data.as_mut_ptr() as *const libc::c_void,
                 (*ud).data.as_ptr() as *const libc::c_void,
                 (*loop_0).size as libc::c_ulong,
-            ) == 0 as libc::c_int
+            ) == 0i32
             {
-                found = 1 as libc::c_int;
+                found = 1i32;
                 break;
             }
         }

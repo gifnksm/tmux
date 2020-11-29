@@ -1055,8 +1055,8 @@ pub static mut cmd_kill_pane_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"at:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -1068,13 +1068,13 @@ pub static mut cmd_kill_pane_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_PANE,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0x4 as libc::c_int,
+            flags: 0x4i32,
             exec: Some(
                 cmd_kill_pane_exec
                     as unsafe extern "C" fn(
@@ -1115,12 +1115,12 @@ unsafe extern "C" fn cmd_kill_pane_exec(
     let mut loopwp: *mut window_pane = 0 as *mut window_pane;
     let mut tmpwp: *mut window_pane = 0 as *mut window_pane;
     let mut wp: *mut window_pane = (*target).wp;
-    if args_has(args, 'a' as i32 as u_char) != 0 {
+    if args_has(args, 'a' as u_char) != 0 {
         server_unzoom_window((*wl).window);
         loopwp = (*(*wl).window).panes.tqh_first;
         while !loopwp.is_null() && {
             tmpwp = (*loopwp).entry.tqe_next;
-            (1 as libc::c_int) != 0
+            (1i32) != 0
         } {
             if !(loopwp == wp) {
                 server_client_remove_pane(loopwp);

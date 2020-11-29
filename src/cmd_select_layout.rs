@@ -1070,8 +1070,8 @@ pub static mut cmd_select_layout_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"Enopt:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 1 as libc::c_int,
+                    lower: 0i32,
+                    upper: 1i32,
                 };
                 init
             },
@@ -1084,13 +1084,13 @@ pub static mut cmd_select_layout_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_PANE,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0x4 as libc::c_int,
+            flags: 0x4i32,
             exec: Some(
                 cmd_select_layout_exec
                     as unsafe extern "C" fn(
@@ -1111,8 +1111,8 @@ pub static mut cmd_next_layout_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"t:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -1124,13 +1124,13 @@ pub static mut cmd_next_layout_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_WINDOW,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0x4 as libc::c_int,
+            flags: 0x4i32,
             exec: Some(
                 cmd_select_layout_exec
                     as unsafe extern "C" fn(
@@ -1151,8 +1151,8 @@ pub static mut cmd_previous_layout_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"t:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -1164,13 +1164,13 @@ pub static mut cmd_previous_layout_entry: cmd_entry = {
             },
             target: {
                 let mut init = cmd_entry_flag {
-                    flag: 't' as i32 as libc::c_char,
+                    flag: 't' as libc::c_char,
                     type_0: CMD_FIND_WINDOW,
-                    flags: 0 as libc::c_int,
+                    flags: 0i32,
                 };
                 init
             },
-            flags: 0x4 as libc::c_int,
+            flags: 0x4i32,
             exec: Some(
                 cmd_select_layout_exec
                     as unsafe extern "C" fn(
@@ -1218,13 +1218,13 @@ unsafe extern "C" fn cmd_select_layout_exec(
     let mut layout: libc::c_int = 0;
     server_unzoom_window(w);
     next = (cmd_get_entry(self_0) == &cmd_next_layout_entry as *const cmd_entry) as libc::c_int;
-    if args_has(args, 'n' as i32 as u_char) != 0 {
-        next = 1 as libc::c_int
+    if args_has(args, 'n' as u_char) != 0 {
+        next = 1i32
     }
     previous =
         (cmd_get_entry(self_0) == &cmd_previous_layout_entry as *const cmd_entry) as libc::c_int;
-    if args_has(args, 'p' as i32 as u_char) != 0 {
-        previous = 1 as libc::c_int
+    if args_has(args, 'p' as u_char) != 0 {
+        previous = 1i32
     }
     oldlayout = (*w).old_layout;
     (*w).old_layout = layout_dump((*w).layout_root);
@@ -1234,16 +1234,16 @@ unsafe extern "C" fn cmd_select_layout_exec(
         } else {
             layout_set_previous(w);
         }
-    } else if args_has(args, 'E' as i32 as u_char) != 0 {
+    } else if args_has(args, 'E' as u_char) != 0 {
         layout_spread_out(wp);
     } else {
-        if args_has(args, 'o' as i32 as u_char) == 0 {
-            if (*args).argc == 0 as libc::c_int {
+        if args_has(args, 'o' as u_char) == 0 {
+            if (*args).argc == 0i32 {
                 layout = (*w).lastlayout
             } else {
-                layout = layout_set_lookup(*(*args).argv.offset(0 as libc::c_int as isize))
+                layout = layout_set_lookup(*(*args).argv.offset(0isize))
             }
-            if layout != -(1 as libc::c_int) {
+            if layout != -(1i32) {
                 layout_set_select(w, layout as u_int);
                 current_block = 9678350773491451590;
             } else {
@@ -1255,15 +1255,15 @@ unsafe extern "C" fn cmd_select_layout_exec(
         match current_block {
             9678350773491451590 => {}
             _ => {
-                if (*args).argc != 0 as libc::c_int {
-                    layoutname = *(*args).argv.offset(0 as libc::c_int as isize)
-                } else if args_has(args, 'o' as i32 as u_char) != 0 {
+                if (*args).argc != 0i32 {
+                    layoutname = *(*args).argv.offset(0isize)
+                } else if args_has(args, 'o' as u_char) != 0 {
                     layoutname = oldlayout
                 } else {
                     layoutname = 0 as *const libc::c_char
                 }
                 if !layoutname.is_null() {
-                    if layout_parse(w, layoutname) == -(1 as libc::c_int) {
+                    if layout_parse(w, layoutname) == -(1i32) {
                         cmdq_error(
                             item,
                             b"can\'t set layout: %s\x00" as *const u8 as *const libc::c_char,

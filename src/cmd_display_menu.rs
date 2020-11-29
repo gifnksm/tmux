@@ -1175,10 +1175,9 @@ pub static mut cmd_display_menu_entry: cmd_entry = {
                                                                as *const u8 as
                                                                *const libc::c_char,
                                                        lower:
-                                                           1 as libc::c_int,
+                                                           1i32,
                                                        upper:
-                                                           -(1 as
-                                                                 libc::c_int),};
+                                                           -(1i32),};
                                   init
                               },
                           usage:
@@ -1191,15 +1190,13 @@ pub static mut cmd_display_menu_entry: cmd_entry = {
                           target:
                               {
                                   let mut init =
-                                      cmd_entry_flag{flag:
-                                                         't' as i32 as
-                                                             libc::c_char,
+                                      cmd_entry_flag{flag: 't' as libc::c_char,
                                                      type_0: CMD_FIND_PANE,
                                                      flags:
-                                                         0 as libc::c_int,};
+                                                         0i32,};
                                   init
                               },
-                          flags: 0x4 as libc::c_int | 0x8 as libc::c_int,
+                          flags: 0x4i32 | 0x8i32,
                           exec:
                               Some(cmd_display_menu_exec as
                                        unsafe extern "C" fn(_: *mut crate::cmd::cmd,
@@ -1226,10 +1223,9 @@ pub static mut cmd_display_popup_entry: cmd_entry = {
                                                                as *const u8 as
                                                                *const libc::c_char,
                                                        lower:
-                                                           0 as libc::c_int,
+                                                           0i32,
                                                        upper:
-                                                           -(1 as
-                                                                 libc::c_int),};
+                                                           -(1i32),};
                                   init
                               },
                           usage:
@@ -1242,15 +1238,13 @@ pub static mut cmd_display_popup_entry: cmd_entry = {
                           target:
                               {
                                   let mut init =
-                                      cmd_entry_flag{flag:
-                                                         't' as i32 as
-                                                             libc::c_char,
+                                      cmd_entry_flag{flag: 't' as libc::c_char,
                                                      type_0: CMD_FIND_PANE,
                                                      flags:
-                                                         0 as libc::c_int,};
+                                                         0i32,};
                                   init
                               },
-                          flags: 0x4 as libc::c_int | 0x8 as libc::c_int,
+                          flags: 0x4i32 | 0x8i32,
                           exec:
                               Some(cmd_display_popup_exec as
                                        unsafe extern "C" fn(_: *mut crate::cmd::cmd,
@@ -1285,12 +1279,12 @@ unsafe extern "C" fn cmd_display_menu_get_position(
     let mut sy: u_int = 0;
     let mut lines: u_int = 0;
     lines = status_line_size(tc);
-    line = 0 as libc::c_int as u_int;
+    line = 0u32;
     while line < lines {
         ranges = &mut (*(*tc).status.entries.as_mut_ptr().offset(line as isize)).ranges;
         sr = (*ranges).tqh_first;
         while !sr.is_null() {
-            if (*sr).type_0 as libc::c_uint == STYLE_RANGE_WINDOW as libc::c_int as libc::c_uint {
+            if (*sr).type_0 == STYLE_RANGE_WINDOW {
                 break;
             }
             sr = (*sr).entry.tqe_next
@@ -1301,49 +1295,37 @@ unsafe extern "C" fn cmd_display_menu_get_position(
         line = line.wrapping_add(1)
     }
     if line == lines {
-        ranges = &mut (*(*tc)
-            .status
-            .entries
-            .as_mut_ptr()
-            .offset(0 as libc::c_int as isize))
-        .ranges
+        ranges = &mut (*(*tc).status.entries.as_mut_ptr().offset(0isize)).ranges
     }
-    xp = args_get(args, 'x' as i32 as u_char);
-    if xp.is_null() || strcmp(xp, b"C\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int
-    {
+    xp = args_get(args, 'x' as u_char);
+    if xp.is_null() || strcmp(xp, b"C\x00" as *const u8 as *const libc::c_char) == 0i32 {
         *px = (*tty)
             .sx
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
-            .wrapping_div(2 as libc::c_int as libc::c_uint)
-            .wrapping_sub(w.wrapping_div(2 as libc::c_int as libc::c_uint))
-    } else if strcmp(xp, b"R\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
-        *px = (*tty).sx.wrapping_sub(1 as libc::c_int as libc::c_uint)
-    } else if strcmp(xp, b"P\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
+            .wrapping_sub(1u32)
+            .wrapping_div(2u32)
+            .wrapping_sub(w.wrapping_div(2u32))
+    } else if strcmp(xp, b"R\x00" as *const u8 as *const libc::c_char) == 0i32 {
+        *px = (*tty).sx.wrapping_sub(1u32)
+    } else if strcmp(xp, b"P\x00" as *const u8 as *const libc::c_char) == 0i32 {
         tty_window_offset(&mut (*tc).tty, &mut ox, &mut oy, &mut sx, &mut sy);
         if (*wp).xoff >= ox {
             *px = (*wp).xoff.wrapping_sub(ox)
         } else {
-            *px = 0 as libc::c_int as u_int
+            *px = 0u32
         }
-    } else if strcmp(xp, b"M\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
-        if (*event).m.valid != 0 && (*event).m.x > w.wrapping_div(2 as libc::c_int as libc::c_uint)
-        {
-            *px = (*event)
-                .m
-                .x
-                .wrapping_sub(w.wrapping_div(2 as libc::c_int as libc::c_uint))
+    } else if strcmp(xp, b"M\x00" as *const u8 as *const libc::c_char) == 0i32 {
+        if (*event).m.valid != 0 && (*event).m.x > w.wrapping_div(2u32) {
+            *px = (*event).m.x.wrapping_sub(w.wrapping_div(2u32))
         } else {
-            *px = 0 as libc::c_int as u_int
+            *px = 0u32
         }
-    } else if strcmp(xp, b"W\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
-        if status_at_line(tc) == -(1 as libc::c_int) {
-            *px = 0 as libc::c_int as u_int
+    } else if strcmp(xp, b"W\x00" as *const u8 as *const libc::c_char) == 0i32 {
+        if status_at_line(tc) == -(1i32) {
+            *px = 0u32
         } else {
             sr = (*ranges).tqh_first;
             while !sr.is_null() {
-                if !((*sr).type_0 as libc::c_uint
-                    != STYLE_RANGE_WINDOW as libc::c_int as libc::c_uint)
-                {
+                if !((*sr).type_0 != STYLE_RANGE_WINDOW) {
                     if (*sr).argument == (*wl).idx as u_int {
                         break;
                     }
@@ -1353,77 +1335,74 @@ unsafe extern "C" fn cmd_display_menu_get_position(
             if !sr.is_null() {
                 *px = (*sr).start
             } else {
-                *px = 0 as libc::c_int as u_int
+                *px = 0u32
             }
         }
     } else {
-        *px = strtoul(xp, 0 as *mut *mut libc::c_char, 10 as libc::c_int) as u_int
+        *px = strtoul(xp, 0 as *mut *mut libc::c_char, 10i32) as u_int
     }
     if (*px).wrapping_add(w) >= (*tty).sx {
         *px = (*tty).sx.wrapping_sub(w)
     }
-    yp = args_get(args, 'y' as i32 as u_char);
-    if yp.is_null() || strcmp(yp, b"C\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int
-    {
+    yp = args_get(args, 'y' as u_char);
+    if yp.is_null() || strcmp(yp, b"C\x00" as *const u8 as *const libc::c_char) == 0i32 {
         *py = (*tty)
             .sy
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
-            .wrapping_div(2 as libc::c_int as libc::c_uint)
-            .wrapping_add(h.wrapping_div(2 as libc::c_int as libc::c_uint))
-    } else if strcmp(yp, b"P\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
+            .wrapping_sub(1u32)
+            .wrapping_div(2u32)
+            .wrapping_add(h.wrapping_div(2u32))
+    } else if strcmp(yp, b"P\x00" as *const u8 as *const libc::c_char) == 0i32 {
         tty_window_offset(&mut (*tc).tty, &mut ox, &mut oy, &mut sx, &mut sy);
         if (*wp).yoff.wrapping_add((*wp).sy) >= oy {
             *py = (*wp).yoff.wrapping_add((*wp).sy).wrapping_sub(oy)
         } else {
-            *py = 0 as libc::c_int as u_int
+            *py = 0u32
         }
-    } else if strcmp(yp, b"M\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
+    } else if strcmp(yp, b"M\x00" as *const u8 as *const libc::c_char) == 0i32 {
         if (*event).m.valid != 0 {
             *py = (*event).m.y.wrapping_add(h)
         } else {
-            *py = 0 as libc::c_int as u_int
+            *py = 0u32
         }
-    } else if strcmp(yp, b"S\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
+    } else if strcmp(yp, b"S\x00" as *const u8 as *const libc::c_char) == 0i32 {
         if options_get_number(
             (*s).options,
             b"status-position\x00" as *const u8 as *const libc::c_char,
-        ) == 0 as libc::c_int as libc::c_longlong
+        ) == 0i64
         {
-            if lines != 0 as libc::c_int as libc::c_uint {
+            if lines != 0u32 {
                 *py = lines.wrapping_add(h)
             } else {
-                *py = 0 as libc::c_int as u_int
+                *py = 0u32
             }
-        } else if lines != 0 as libc::c_int as libc::c_uint {
+        } else if lines != 0u32 {
             *py = (*tty).sy.wrapping_sub(lines)
         } else {
             *py = (*tty).sy
         }
-    } else if strcmp(yp, b"W\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
+    } else if strcmp(yp, b"W\x00" as *const u8 as *const libc::c_char) == 0i32 {
         if options_get_number(
             (*s).options,
             b"status-position\x00" as *const u8 as *const libc::c_char,
-        ) == 0 as libc::c_int as libc::c_longlong
+        ) == 0i64
         {
-            if lines != 0 as libc::c_int as libc::c_uint {
-                *py = line
-                    .wrapping_add(1 as libc::c_int as libc::c_uint)
-                    .wrapping_add(h)
+            if lines != 0u32 {
+                *py = line.wrapping_add(1u32).wrapping_add(h)
             } else {
-                *py = 0 as libc::c_int as u_int
+                *py = 0u32
             }
-        } else if lines != 0 as libc::c_int as libc::c_uint {
+        } else if lines != 0u32 {
             *py = (*tty).sy.wrapping_sub(lines).wrapping_add(line)
         } else {
             *py = (*tty).sy
         }
     } else {
-        *py = strtoul(yp, 0 as *mut *mut libc::c_char, 10 as libc::c_int) as u_int
+        *py = strtoul(yp, 0 as *mut *mut libc::c_char, 10i32) as u_int
     }
     if *py < h {
-        *py = 0 as libc::c_int as u_int
+        *py = 0u32
     } else {
-        *py = (*py as libc::c_uint).wrapping_sub(h) as u_int as u_int
+        *py = (*py).wrapping_sub(h)
     }
     if (*py).wrapping_add(h) >= (*tty).sy {
         *py = (*tty).sy.wrapping_sub(h)
@@ -1465,20 +1444,20 @@ unsafe extern "C" fn cmd_display_menu_exec(
     let mut key: *const libc::c_char = 0 as *const libc::c_char;
     let mut title: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut name: *mut libc::c_char = 0 as *mut libc::c_char;
-    let mut flags: libc::c_int = 0 as libc::c_int;
+    let mut flags: libc::c_int = 0i32;
     let mut i: libc::c_int = 0;
     let mut px: u_int = 0;
     let mut py: u_int = 0;
     if (*tc).overlay_draw.is_some() {
         return CMD_RETURN_NORMAL;
     }
-    if args_has(args, 'T' as i32 as u_char) != 0 {
-        title = format_single_from_target(item, args_get(args, 'T' as i32 as u_char))
+    if args_has(args, 'T' as u_char) != 0 {
+        title = format_single_from_target(item, args_get(args, 'T' as u_char))
     } else {
         title = xstrdup(b"\x00" as *const u8 as *const libc::c_char)
     }
     menu = menu_create(title);
-    i = 0 as libc::c_int;
+    i = 0i32;
     while i != (*args).argc {
         /* nothing */
         let fresh0 = i;
@@ -1487,7 +1466,7 @@ unsafe extern "C" fn cmd_display_menu_exec(
         if *name as libc::c_int == '\u{0}' as i32 {
             menu_add_item(menu, 0 as *const menu_item, item, tc, target);
         } else {
-            if (*args).argc - i < 2 as libc::c_int {
+            if (*args).argc - i < 2i32 {
                 cmdq_error(
                     item,
                     b"not enough arguments\x00" as *const u8 as *const libc::c_char,
@@ -1515,7 +1494,7 @@ unsafe extern "C" fn cmd_display_menu_exec(
         );
         return CMD_RETURN_ERROR;
     }
-    if (*menu).count == 0 as libc::c_int as libc::c_uint {
+    if (*menu).count == 0u32 {
         menu_free(menu);
         return CMD_RETURN_NORMAL;
     }
@@ -1525,14 +1504,14 @@ unsafe extern "C" fn cmd_display_menu_exec(
         args,
         &mut px,
         &mut py,
-        (*menu).width.wrapping_add(4 as libc::c_int as libc::c_uint),
-        (*menu).count.wrapping_add(2 as libc::c_int as libc::c_uint),
+        (*menu).width.wrapping_add(4u32),
+        (*menu).count.wrapping_add(2u32),
     );
-    if args_has(args, 'O' as i32 as u_char) != 0 {
-        flags |= 0x4 as libc::c_int
+    if args_has(args, 'O' as u_char) != 0 {
+        flags |= 0x4i32
     }
     if (*event).m.valid == 0 {
-        flags |= 0x1 as libc::c_int
+        flags |= 0x1i32
     }
     if menu_display(
         menu,
@@ -1544,7 +1523,7 @@ unsafe extern "C" fn cmd_display_menu_exec(
         target,
         None,
         0 as *mut libc::c_void,
-    ) != 0 as libc::c_int
+    ) != 0i32
     {
         return CMD_RETURN_NORMAL;
     }
@@ -1564,36 +1543,36 @@ unsafe extern "C" fn cmd_display_popup_exec(
     let mut shellcmd: *const libc::c_char = 0 as *const libc::c_char;
     let mut cwd: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut cause: *mut libc::c_char = 0 as *mut libc::c_char;
-    let mut flags: libc::c_int = 0 as libc::c_int;
+    let mut flags: libc::c_int = 0i32;
     let mut px: u_int = 0;
     let mut py: u_int = 0;
     let mut w: u_int = 0;
     let mut h: u_int = 0;
-    let mut nlines: u_int = 0 as libc::c_int as u_int;
-    if args_has(args, 'C' as i32 as u_char) != 0 {
+    let mut nlines: u_int = 0u32;
+    if args_has(args, 'C' as u_char) != 0 {
         server_client_clear_overlay(tc);
         return CMD_RETURN_NORMAL;
     }
     if (*tc).overlay_draw.is_some() {
         return CMD_RETURN_NORMAL;
     }
-    if (*args).argc >= 1 as libc::c_int {
-        cmd = *(*args).argv.offset(0 as libc::c_int as isize)
+    if (*args).argc >= 1i32 {
+        cmd = *(*args).argv.offset(0isize)
     }
-    if (*args).argc >= 2 as libc::c_int {
-        lines = ((*args).argv as *mut *const libc::c_char).offset(1 as libc::c_int as isize);
-        nlines = ((*args).argc - 1 as libc::c_int) as u_int
+    if (*args).argc >= 2i32 {
+        lines = ((*args).argv as *mut *const libc::c_char).offset(1isize);
+        nlines = ((*args).argc - 1i32) as u_int
     }
-    if nlines != 0 as libc::c_int as libc::c_uint {
-        h = popup_height(nlines, lines).wrapping_add(2 as libc::c_int as libc::c_uint)
+    if nlines != 0u32 {
+        h = popup_height(nlines, lines).wrapping_add(2u32)
     } else {
-        h = (*tty).sy.wrapping_div(2 as libc::c_int as libc::c_uint)
+        h = (*tty).sy.wrapping_div(2u32)
     }
-    if args_has(args, 'h' as i32 as u_char) != 0 {
+    if args_has(args, 'h' as u_char) != 0 {
         h = args_percentage(
             args,
-            'h' as i32 as u_char,
-            1 as libc::c_int as libc::c_longlong,
+            'h' as u_char,
+            1i64,
             (*tty).sy as libc::c_longlong,
             (*tty).sy as libc::c_longlong,
             &mut cause,
@@ -1608,17 +1587,16 @@ unsafe extern "C" fn cmd_display_popup_exec(
             return CMD_RETURN_ERROR;
         }
     }
-    if nlines != 0 as libc::c_int as libc::c_uint {
-        w = popup_width(item, nlines, lines, tc, target)
-            .wrapping_add(2 as libc::c_int as libc::c_uint)
+    if nlines != 0u32 {
+        w = popup_width(item, nlines, lines, tc, target).wrapping_add(2u32)
     } else {
-        w = (*tty).sx.wrapping_div(2 as libc::c_int as libc::c_uint)
+        w = (*tty).sx.wrapping_div(2u32)
     }
-    if args_has(args, 'w' as i32 as u_char) != 0 {
+    if args_has(args, 'w' as u_char) != 0 {
         w = args_percentage(
             args,
-            'w' as i32 as u_char,
-            1 as libc::c_int as libc::c_longlong,
+            'w' as u_char,
+            1i64,
             (*tty).sx as libc::c_longlong,
             (*tty).sx as libc::c_longlong,
             &mut cause,
@@ -1633,30 +1611,30 @@ unsafe extern "C" fn cmd_display_popup_exec(
             return CMD_RETURN_ERROR;
         }
     }
-    if w > (*tty).sx.wrapping_sub(1 as libc::c_int as libc::c_uint) {
-        w = (*tty).sx.wrapping_sub(1 as libc::c_int as libc::c_uint)
+    if w > (*tty).sx.wrapping_sub(1u32) {
+        w = (*tty).sx.wrapping_sub(1u32)
     }
-    if h > (*tty).sy.wrapping_sub(1 as libc::c_int as libc::c_uint) {
-        h = (*tty).sy.wrapping_sub(1 as libc::c_int as libc::c_uint)
+    if h > (*tty).sy.wrapping_sub(1u32) {
+        h = (*tty).sy.wrapping_sub(1u32)
     }
     cmd_display_menu_get_position(tc, item, args, &mut px, &mut py, w, h);
-    value = args_get(args, 'd' as i32 as u_char);
+    value = args_get(args, 'd' as u_char);
     if !value.is_null() {
         cwd = format_single_from_target(item, value)
     } else {
         cwd = xstrdup(server_client_get_cwd(tc, (*target).s))
     }
-    value = args_get(args, 'R' as i32 as u_char);
+    value = args_get(args, 'R' as u_char);
     if !value.is_null() {
         shellcmd = format_single_from_target(item, value)
     }
-    if args_has(args, 'K' as i32 as u_char) != 0 {
-        flags |= 0x1 as libc::c_int
+    if args_has(args, 'K' as u_char) != 0 {
+        flags |= 0x1i32
     }
-    if args_has(args, 'E' as i32 as u_char) > 1 as libc::c_int {
-        flags |= 0x4 as libc::c_int
-    } else if args_has(args, 'E' as i32 as u_char) != 0 {
-        flags |= 0x2 as libc::c_int
+    if args_has(args, 'E' as u_char) > 1i32 {
+        flags |= 0x4i32
+    } else if args_has(args, 'E' as u_char) != 0 {
+        flags |= 0x2i32
     }
     if popup_display(
         flags,
@@ -1674,7 +1652,7 @@ unsafe extern "C" fn cmd_display_popup_exec(
         target,
         None,
         0 as *mut libc::c_void,
-    ) != 0 as libc::c_int
+    ) != 0i32
     {
         return CMD_RETURN_NORMAL;
     }

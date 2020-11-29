@@ -1088,8 +1088,8 @@ pub static mut cmd_save_buffer_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"ab:\x00" as *const u8 as *const libc::c_char,
-                    lower: 1 as libc::c_int,
-                    upper: 1 as libc::c_int,
+                    lower: 1i32,
+                    upper: 1i32,
                 };
                 init
             },
@@ -1104,7 +1104,7 @@ pub static mut cmd_save_buffer_entry: cmd_entry = {
                 type_0: CMD_FIND_PANE,
                 flags: 0,
             },
-            flags: 0x4 as libc::c_int,
+            flags: 0x4i32,
             exec: Some(
                 cmd_save_buffer_exec
                     as unsafe extern "C" fn(
@@ -1125,8 +1125,8 @@ pub static mut cmd_show_buffer_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"b:\x00" as *const u8 as *const libc::c_char,
-                    lower: 0 as libc::c_int,
-                    upper: 0 as libc::c_int,
+                    lower: 0i32,
+                    upper: 0i32,
                 };
                 init
             },
@@ -1141,7 +1141,7 @@ pub static mut cmd_show_buffer_entry: cmd_entry = {
                 type_0: CMD_FIND_PANE,
                 flags: 0,
             },
-            flags: 0x4 as libc::c_int,
+            flags: 0x4i32,
             exec: Some(
                 cmd_save_buffer_exec
                     as unsafe extern "C" fn(
@@ -1165,7 +1165,7 @@ unsafe extern "C" fn cmd_save_buffer_done(
     if closed == 0 {
         return;
     }
-    if error != 0 as libc::c_int {
+    if error != 0i32 {
         cmdq_error(
             item,
             b"%s: %s\x00" as *const u8 as *const libc::c_char,
@@ -1202,7 +1202,7 @@ unsafe extern "C" fn cmd_save_buffer_exec(
     let mut c: *mut client = cmdq_get_client(item);
     let mut pb: *mut crate::paste::paste_buffer = 0 as *mut crate::paste::paste_buffer;
     let mut flags: libc::c_int = 0;
-    let mut bufname: *const libc::c_char = args_get(args, 'b' as i32 as u_char);
+    let mut bufname: *const libc::c_char = args_get(args, 'b' as u_char);
     let mut bufdata: *const libc::c_char = 0 as *const libc::c_char;
     let mut bufsize: size_t = 0;
     let mut path: *mut libc::c_char = 0 as *mut libc::c_char;
@@ -1226,25 +1226,20 @@ unsafe extern "C" fn cmd_save_buffer_exec(
     }
     bufdata = paste_buffer_data(pb, &mut bufsize);
     if cmd_get_entry(self_0) == &cmd_show_buffer_entry as *const cmd_entry {
-        if !(*c).session.is_null() || (*c).flags & 0x2000 as libc::c_int as libc::c_ulong != 0 {
-            utf8_stravisx(
-                &mut tmp,
-                bufdata,
-                bufsize,
-                0x1 as libc::c_int | 0x2 as libc::c_int | 0x8 as libc::c_int,
-            );
+        if !(*c).session.is_null() || (*c).flags & 0x2000u64 != 0 {
+            utf8_stravisx(&mut tmp, bufdata, bufsize, 0x1i32 | 0x2i32 | 0x8i32);
             cmdq_print(item, b"%s\x00" as *const u8 as *const libc::c_char, tmp);
             free(tmp as *mut libc::c_void);
             return CMD_RETURN_NORMAL;
         }
         path = xstrdup(b"-\x00" as *const u8 as *const libc::c_char)
     } else {
-        path = format_single_from_target(item, *(*args).argv.offset(0 as libc::c_int as isize))
+        path = format_single_from_target(item, *(*args).argv.offset(0isize))
     }
-    if args_has(args, 'a' as i32 as u_char) != 0 {
-        flags = 0o2000 as libc::c_int
+    if args_has(args, 'a' as u_char) != 0 {
+        flags = 0o2000i32
     } else {
-        flags = 0 as libc::c_int
+        flags = 0i32
     }
     file_write(
         cmdq_get_client(item),

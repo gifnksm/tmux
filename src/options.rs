@@ -1347,12 +1347,12 @@ unsafe extern "C" fn options_array_cmp(
     mut a2: *mut options_array_item,
 ) -> libc::c_int {
     if (*a1).index < (*a2).index {
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     if (*a1).index > (*a2).index {
-        return 1 as libc::c_int;
+        return 1i32;
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 unsafe extern "C" fn options_array_RB_MINMAX(
     mut head: *mut options_array,
@@ -1362,7 +1362,7 @@ unsafe extern "C" fn options_array_RB_MINMAX(
     let mut parent: *mut options_array_item = 0 as *mut options_array_item;
     while !tmp.is_null() {
         parent = tmp;
-        if val < 0 as libc::c_int {
+        if val < 0i32 {
             tmp = (*tmp).entry.rbe_left
         } else {
             tmp = (*tmp).entry.rbe_right
@@ -1397,12 +1397,12 @@ unsafe extern "C" fn options_array_RB_REMOVE_COLOR(
     mut elm: *mut options_array_item,
 ) {
     let mut tmp: *mut options_array_item = 0 as *mut options_array_item;
-    while (elm.is_null() || (*elm).entry.rbe_color == 0 as libc::c_int) && elm != (*head).rbh_root {
+    while (elm.is_null() || (*elm).entry.rbe_color == 0i32) && elm != (*head).rbh_root {
         if (*parent).entry.rbe_left == elm {
             tmp = (*parent).entry.rbe_right;
-            if (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 1 as libc::c_int;
+            if (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 1i32;
                 tmp = (*parent).entry.rbe_right;
                 (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
                 if !(*parent).entry.rbe_right.is_null() {
@@ -1423,24 +1423,23 @@ unsafe extern "C" fn options_array_RB_REMOVE_COLOR(
                 !(*tmp).entry.rbe_parent.is_null();
                 tmp = (*parent).entry.rbe_right
             }
-            if ((*tmp).entry.rbe_left.is_null()
-                || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int)
+            if ((*tmp).entry.rbe_left.is_null() || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32)
                 && ((*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int)
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32)
             {
-                (*tmp).entry.rbe_color = 1 as libc::c_int;
+                (*tmp).entry.rbe_color = 1i32;
                 elm = parent;
                 parent = (*elm).entry.rbe_parent
             } else {
                 if (*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32
                 {
                     let mut oleft: *mut options_array_item = 0 as *mut options_array_item;
                     oleft = (*tmp).entry.rbe_left;
                     if !oleft.is_null() {
-                        (*oleft).entry.rbe_color = 0 as libc::c_int
+                        (*oleft).entry.rbe_color = 0i32
                     }
-                    (*tmp).entry.rbe_color = 1 as libc::c_int;
+                    (*tmp).entry.rbe_color = 1i32;
                     oleft = (*tmp).entry.rbe_left;
                     (*tmp).entry.rbe_left = (*oleft).entry.rbe_right;
                     if !(*tmp).entry.rbe_left.is_null() {
@@ -1462,9 +1461,9 @@ unsafe extern "C" fn options_array_RB_REMOVE_COLOR(
                     tmp = (*parent).entry.rbe_right
                 }
                 (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
                 if !(*tmp).entry.rbe_right.is_null() {
-                    (*(*tmp).entry.rbe_right).entry.rbe_color = 0 as libc::c_int
+                    (*(*tmp).entry.rbe_right).entry.rbe_color = 0i32
                 }
                 tmp = (*parent).entry.rbe_right;
                 (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
@@ -1489,9 +1488,9 @@ unsafe extern "C" fn options_array_RB_REMOVE_COLOR(
             }
         } else {
             tmp = (*parent).entry.rbe_left;
-            if (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 1 as libc::c_int;
+            if (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 1i32;
                 tmp = (*parent).entry.rbe_left;
                 (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
                 if !(*parent).entry.rbe_left.is_null() {
@@ -1512,24 +1511,23 @@ unsafe extern "C" fn options_array_RB_REMOVE_COLOR(
                 !(*tmp).entry.rbe_parent.is_null();
                 tmp = (*parent).entry.rbe_left
             }
-            if ((*tmp).entry.rbe_left.is_null()
-                || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int)
+            if ((*tmp).entry.rbe_left.is_null() || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32)
                 && ((*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int)
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32)
             {
-                (*tmp).entry.rbe_color = 1 as libc::c_int;
+                (*tmp).entry.rbe_color = 1i32;
                 elm = parent;
                 parent = (*elm).entry.rbe_parent
             } else {
                 if (*tmp).entry.rbe_left.is_null()
-                    || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int
+                    || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32
                 {
                     let mut oright: *mut options_array_item = 0 as *mut options_array_item;
                     oright = (*tmp).entry.rbe_right;
                     if !oright.is_null() {
-                        (*oright).entry.rbe_color = 0 as libc::c_int
+                        (*oright).entry.rbe_color = 0i32
                     }
-                    (*tmp).entry.rbe_color = 1 as libc::c_int;
+                    (*tmp).entry.rbe_color = 1i32;
                     oright = (*tmp).entry.rbe_right;
                     (*tmp).entry.rbe_right = (*oright).entry.rbe_left;
                     if !(*tmp).entry.rbe_right.is_null() {
@@ -1551,9 +1549,9 @@ unsafe extern "C" fn options_array_RB_REMOVE_COLOR(
                     tmp = (*parent).entry.rbe_left
                 }
                 (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
                 if !(*tmp).entry.rbe_left.is_null() {
-                    (*(*tmp).entry.rbe_left).entry.rbe_color = 0 as libc::c_int
+                    (*(*tmp).entry.rbe_left).entry.rbe_color = 0i32
                 }
                 tmp = (*parent).entry.rbe_left;
                 (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
@@ -1579,7 +1577,7 @@ unsafe extern "C" fn options_array_RB_REMOVE_COLOR(
         }
     }
     if !elm.is_null() {
-        (*elm).entry.rbe_color = 0 as libc::c_int
+        (*elm).entry.rbe_color = 0i32
     };
 }
 unsafe extern "C" fn options_array_RB_REMOVE(
@@ -1669,7 +1667,7 @@ unsafe extern "C" fn options_array_RB_REMOVE(
         }
         _ => {}
     }
-    if color == 0 as libc::c_int {
+    if color == 0i32 {
         options_array_RB_REMOVE_COLOR(head, parent, child);
     }
     return old;
@@ -1680,14 +1678,14 @@ unsafe extern "C" fn options_array_RB_INSERT(
 ) -> *mut options_array_item {
     let mut tmp: *mut options_array_item = 0 as *mut options_array_item;
     let mut parent: *mut options_array_item = 0 as *mut options_array_item;
-    let mut comp: libc::c_int = 0 as libc::c_int;
+    let mut comp: libc::c_int = 0i32;
     tmp = (*head).rbh_root;
     while !tmp.is_null() {
         parent = tmp;
         comp = options_array_cmp(elm, parent);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).entry.rbe_right
         } else {
             return tmp;
@@ -1696,9 +1694,9 @@ unsafe extern "C" fn options_array_RB_INSERT(
     (*elm).entry.rbe_parent = parent;
     (*elm).entry.rbe_right = 0 as *mut options_array_item;
     (*elm).entry.rbe_left = (*elm).entry.rbe_right;
-    (*elm).entry.rbe_color = 1 as libc::c_int;
+    (*elm).entry.rbe_color = 1i32;
     if !parent.is_null() {
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             (*parent).entry.rbe_left = elm
         } else {
             (*parent).entry.rbe_right = elm
@@ -1717,9 +1715,9 @@ unsafe extern "C" fn options_array_RB_FIND(
     let mut comp: libc::c_int = 0;
     while !tmp.is_null() {
         comp = options_array_cmp(elm, tmp);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).entry.rbe_right
         } else {
             return tmp;
@@ -1736,16 +1734,16 @@ unsafe extern "C" fn options_array_RB_INSERT_COLOR(
     let mut tmp: *mut options_array_item = 0 as *mut options_array_item;
     loop {
         parent = (*elm).entry.rbe_parent;
-        if !(!parent.is_null() && (*parent).entry.rbe_color == 1 as libc::c_int) {
+        if !(!parent.is_null() && (*parent).entry.rbe_color == 1i32) {
             break;
         }
         gparent = (*parent).entry.rbe_parent;
         if parent == (*gparent).entry.rbe_left {
             tmp = (*gparent).entry.rbe_right;
-            if !tmp.is_null() && (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).entry.rbe_right == elm {
@@ -1771,8 +1769,8 @@ unsafe extern "C" fn options_array_RB_INSERT_COLOR(
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 tmp = (*gparent).entry.rbe_left;
                 (*gparent).entry.rbe_left = (*tmp).entry.rbe_right;
                 if !(*gparent).entry.rbe_left.is_null() {
@@ -1794,10 +1792,10 @@ unsafe extern "C" fn options_array_RB_INSERT_COLOR(
             }
         } else {
             tmp = (*gparent).entry.rbe_left;
-            if !tmp.is_null() && (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).entry.rbe_left == elm {
@@ -1823,8 +1821,8 @@ unsafe extern "C" fn options_array_RB_INSERT_COLOR(
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 tmp = (*gparent).entry.rbe_right;
                 (*gparent).entry.rbe_right = (*tmp).entry.rbe_left;
                 if !(*gparent).entry.rbe_right.is_null() {
@@ -1846,7 +1844,7 @@ unsafe extern "C" fn options_array_RB_INSERT_COLOR(
             }
         }
     }
-    (*(*head).rbh_root).entry.rbe_color = 0 as libc::c_int;
+    (*(*head).rbh_root).entry.rbe_color = 0i32;
 }
 unsafe extern "C" fn options_tree_RB_MINMAX(
     mut head: *mut options_tree,
@@ -1856,7 +1854,7 @@ unsafe extern "C" fn options_tree_RB_MINMAX(
     let mut parent: *mut options_entry = 0 as *mut options_entry;
     while !tmp.is_null() {
         parent = tmp;
-        if val < 0 as libc::c_int {
+        if val < 0i32 {
             tmp = (*tmp).entry.rbe_left
         } else {
             tmp = (*tmp).entry.rbe_right
@@ -1872,9 +1870,9 @@ unsafe extern "C" fn options_tree_RB_FIND(
     let mut comp: libc::c_int = 0;
     while !tmp.is_null() {
         comp = options_cmp(elm, tmp);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).entry.rbe_right
         } else {
             return tmp;
@@ -1891,16 +1889,16 @@ unsafe extern "C" fn options_tree_RB_INSERT_COLOR(
     let mut tmp: *mut options_entry = 0 as *mut options_entry;
     loop {
         parent = (*elm).entry.rbe_parent;
-        if !(!parent.is_null() && (*parent).entry.rbe_color == 1 as libc::c_int) {
+        if !(!parent.is_null() && (*parent).entry.rbe_color == 1i32) {
             break;
         }
         gparent = (*parent).entry.rbe_parent;
         if parent == (*gparent).entry.rbe_left {
             tmp = (*gparent).entry.rbe_right;
-            if !tmp.is_null() && (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).entry.rbe_right == elm {
@@ -1926,8 +1924,8 @@ unsafe extern "C" fn options_tree_RB_INSERT_COLOR(
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 tmp = (*gparent).entry.rbe_left;
                 (*gparent).entry.rbe_left = (*tmp).entry.rbe_right;
                 if !(*gparent).entry.rbe_left.is_null() {
@@ -1949,10 +1947,10 @@ unsafe extern "C" fn options_tree_RB_INSERT_COLOR(
             }
         } else {
             tmp = (*gparent).entry.rbe_left;
-            if !tmp.is_null() && (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+            if !tmp.is_null() && (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 elm = gparent
             } else {
                 if (*parent).entry.rbe_left == elm {
@@ -1978,8 +1976,8 @@ unsafe extern "C" fn options_tree_RB_INSERT_COLOR(
                     parent = elm;
                     elm = tmp
                 }
-                (*parent).entry.rbe_color = 0 as libc::c_int;
-                (*gparent).entry.rbe_color = 1 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
+                (*gparent).entry.rbe_color = 1i32;
                 tmp = (*gparent).entry.rbe_right;
                 (*gparent).entry.rbe_right = (*tmp).entry.rbe_left;
                 if !(*gparent).entry.rbe_right.is_null() {
@@ -2001,7 +1999,7 @@ unsafe extern "C" fn options_tree_RB_INSERT_COLOR(
             }
         }
     }
-    (*(*head).rbh_root).entry.rbe_color = 0 as libc::c_int;
+    (*(*head).rbh_root).entry.rbe_color = 0i32;
 }
 unsafe extern "C" fn options_tree_RB_INSERT(
     mut head: *mut options_tree,
@@ -2009,14 +2007,14 @@ unsafe extern "C" fn options_tree_RB_INSERT(
 ) -> *mut options_entry {
     let mut tmp: *mut options_entry = 0 as *mut options_entry;
     let mut parent: *mut options_entry = 0 as *mut options_entry;
-    let mut comp: libc::c_int = 0 as libc::c_int;
+    let mut comp: libc::c_int = 0i32;
     tmp = (*head).rbh_root;
     while !tmp.is_null() {
         parent = tmp;
         comp = options_cmp(elm, parent);
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             tmp = (*tmp).entry.rbe_left
-        } else if comp > 0 as libc::c_int {
+        } else if comp > 0i32 {
             tmp = (*tmp).entry.rbe_right
         } else {
             return tmp;
@@ -2025,9 +2023,9 @@ unsafe extern "C" fn options_tree_RB_INSERT(
     (*elm).entry.rbe_parent = parent;
     (*elm).entry.rbe_right = 0 as *mut options_entry;
     (*elm).entry.rbe_left = (*elm).entry.rbe_right;
-    (*elm).entry.rbe_color = 1 as libc::c_int;
+    (*elm).entry.rbe_color = 1i32;
     if !parent.is_null() {
-        if comp < 0 as libc::c_int {
+        if comp < 0i32 {
             (*parent).entry.rbe_left = elm
         } else {
             (*parent).entry.rbe_right = elm
@@ -2125,7 +2123,7 @@ unsafe extern "C" fn options_tree_RB_REMOVE(
         }
         _ => {}
     }
-    if color == 0 as libc::c_int {
+    if color == 0i32 {
         options_tree_RB_REMOVE_COLOR(head, parent, child);
     }
     return old;
@@ -2136,12 +2134,12 @@ unsafe extern "C" fn options_tree_RB_REMOVE_COLOR(
     mut elm: *mut options_entry,
 ) {
     let mut tmp: *mut options_entry = 0 as *mut options_entry;
-    while (elm.is_null() || (*elm).entry.rbe_color == 0 as libc::c_int) && elm != (*head).rbh_root {
+    while (elm.is_null() || (*elm).entry.rbe_color == 0i32) && elm != (*head).rbh_root {
         if (*parent).entry.rbe_left == elm {
             tmp = (*parent).entry.rbe_right;
-            if (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 1 as libc::c_int;
+            if (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 1i32;
                 tmp = (*parent).entry.rbe_right;
                 (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
                 if !(*parent).entry.rbe_right.is_null() {
@@ -2162,24 +2160,23 @@ unsafe extern "C" fn options_tree_RB_REMOVE_COLOR(
                 !(*tmp).entry.rbe_parent.is_null();
                 tmp = (*parent).entry.rbe_right
             }
-            if ((*tmp).entry.rbe_left.is_null()
-                || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int)
+            if ((*tmp).entry.rbe_left.is_null() || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32)
                 && ((*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int)
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32)
             {
-                (*tmp).entry.rbe_color = 1 as libc::c_int;
+                (*tmp).entry.rbe_color = 1i32;
                 elm = parent;
                 parent = (*elm).entry.rbe_parent
             } else {
                 if (*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32
                 {
                     let mut oleft: *mut options_entry = 0 as *mut options_entry;
                     oleft = (*tmp).entry.rbe_left;
                     if !oleft.is_null() {
-                        (*oleft).entry.rbe_color = 0 as libc::c_int
+                        (*oleft).entry.rbe_color = 0i32
                     }
-                    (*tmp).entry.rbe_color = 1 as libc::c_int;
+                    (*tmp).entry.rbe_color = 1i32;
                     oleft = (*tmp).entry.rbe_left;
                     (*tmp).entry.rbe_left = (*oleft).entry.rbe_right;
                     if !(*tmp).entry.rbe_left.is_null() {
@@ -2201,9 +2198,9 @@ unsafe extern "C" fn options_tree_RB_REMOVE_COLOR(
                     tmp = (*parent).entry.rbe_right
                 }
                 (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
                 if !(*tmp).entry.rbe_right.is_null() {
-                    (*(*tmp).entry.rbe_right).entry.rbe_color = 0 as libc::c_int
+                    (*(*tmp).entry.rbe_right).entry.rbe_color = 0i32
                 }
                 tmp = (*parent).entry.rbe_right;
                 (*parent).entry.rbe_right = (*tmp).entry.rbe_left;
@@ -2228,9 +2225,9 @@ unsafe extern "C" fn options_tree_RB_REMOVE_COLOR(
             }
         } else {
             tmp = (*parent).entry.rbe_left;
-            if (*tmp).entry.rbe_color == 1 as libc::c_int {
-                (*tmp).entry.rbe_color = 0 as libc::c_int;
-                (*parent).entry.rbe_color = 1 as libc::c_int;
+            if (*tmp).entry.rbe_color == 1i32 {
+                (*tmp).entry.rbe_color = 0i32;
+                (*parent).entry.rbe_color = 1i32;
                 tmp = (*parent).entry.rbe_left;
                 (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
                 if !(*parent).entry.rbe_left.is_null() {
@@ -2251,24 +2248,23 @@ unsafe extern "C" fn options_tree_RB_REMOVE_COLOR(
                 !(*tmp).entry.rbe_parent.is_null();
                 tmp = (*parent).entry.rbe_left
             }
-            if ((*tmp).entry.rbe_left.is_null()
-                || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int)
+            if ((*tmp).entry.rbe_left.is_null() || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32)
                 && ((*tmp).entry.rbe_right.is_null()
-                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0 as libc::c_int)
+                    || (*(*tmp).entry.rbe_right).entry.rbe_color == 0i32)
             {
-                (*tmp).entry.rbe_color = 1 as libc::c_int;
+                (*tmp).entry.rbe_color = 1i32;
                 elm = parent;
                 parent = (*elm).entry.rbe_parent
             } else {
                 if (*tmp).entry.rbe_left.is_null()
-                    || (*(*tmp).entry.rbe_left).entry.rbe_color == 0 as libc::c_int
+                    || (*(*tmp).entry.rbe_left).entry.rbe_color == 0i32
                 {
                     let mut oright: *mut options_entry = 0 as *mut options_entry;
                     oright = (*tmp).entry.rbe_right;
                     if !oright.is_null() {
-                        (*oright).entry.rbe_color = 0 as libc::c_int
+                        (*oright).entry.rbe_color = 0i32
                     }
-                    (*tmp).entry.rbe_color = 1 as libc::c_int;
+                    (*tmp).entry.rbe_color = 1i32;
                     oright = (*tmp).entry.rbe_right;
                     (*tmp).entry.rbe_right = (*oright).entry.rbe_left;
                     if !(*tmp).entry.rbe_right.is_null() {
@@ -2290,9 +2286,9 @@ unsafe extern "C" fn options_tree_RB_REMOVE_COLOR(
                     tmp = (*parent).entry.rbe_left
                 }
                 (*tmp).entry.rbe_color = (*parent).entry.rbe_color;
-                (*parent).entry.rbe_color = 0 as libc::c_int;
+                (*parent).entry.rbe_color = 0i32;
                 if !(*tmp).entry.rbe_left.is_null() {
-                    (*(*tmp).entry.rbe_left).entry.rbe_color = 0 as libc::c_int
+                    (*(*tmp).entry.rbe_left).entry.rbe_color = 0i32
                 }
                 tmp = (*parent).entry.rbe_left;
                 (*parent).entry.rbe_left = (*tmp).entry.rbe_right;
@@ -2318,7 +2314,7 @@ unsafe extern "C" fn options_tree_RB_REMOVE_COLOR(
         }
     }
     if !elm.is_null() {
-        (*elm).entry.rbe_color = 0 as libc::c_int
+        (*elm).entry.rbe_color = 0i32
     };
 }
 unsafe extern "C" fn options_tree_RB_NEXT(mut elm: *mut options_entry) -> *mut options_entry {
@@ -2350,7 +2346,7 @@ unsafe extern "C" fn options_map_name(mut name: *const libc::c_char) -> *const l
     let mut map: *const options_name_map = 0 as *const options_name_map;
     map = options_other_names.as_ptr();
     while !(*map).from.is_null() {
-        if strcmp((*map).from, name) == 0 as libc::c_int {
+        if strcmp((*map).from, name) == 0i32 {
             return (*map).to;
         }
         map = map.offset(1)
@@ -2378,15 +2374,11 @@ unsafe extern "C" fn options_parent_table_entry(
     return (*o).tableentry;
 }
 unsafe extern "C" fn options_value_free(mut o: *mut options_entry, mut ov: *mut options_value) {
-    if (*o).tableentry.is_null()
-        || (*(*o).tableentry).type_0 as libc::c_uint
-            == OPTIONS_TABLE_STRING as libc::c_int as libc::c_uint
-    {
+    if (*o).tableentry.is_null() || (*(*o).tableentry).type_0 == OPTIONS_TABLE_STRING {
         free((*ov).string as *mut libc::c_void);
     }
     if !(*o).tableentry.is_null()
-        && (*(*o).tableentry).type_0 as libc::c_uint
-            == OPTIONS_TABLE_COMMAND as libc::c_int as libc::c_uint
+        && (*(*o).tableentry).type_0 == OPTIONS_TABLE_COMMAND
         && !(*ov).cmdlist.is_null()
     {
         cmd_list_free((*ov).cmdlist);
@@ -2398,25 +2390,17 @@ unsafe extern "C" fn options_value_to_string(
     mut numeric: libc::c_int,
 ) -> *mut libc::c_char {
     let mut s: *mut libc::c_char = 0 as *mut libc::c_char;
-    if !(*o).tableentry.is_null()
-        && (*(*o).tableentry).type_0 as libc::c_uint
-            == OPTIONS_TABLE_COMMAND as libc::c_int as libc::c_uint
-    {
-        return cmd_list_print((*ov).cmdlist, 0 as libc::c_int);
+    if !(*o).tableentry.is_null() && (*(*o).tableentry).type_0 == OPTIONS_TABLE_COMMAND {
+        return cmd_list_print((*ov).cmdlist, 0i32);
     }
     if !(*o).tableentry.is_null()
-        && ((*(*o).tableentry).type_0 as libc::c_uint
-            == OPTIONS_TABLE_NUMBER as libc::c_int as libc::c_uint
-            || (*(*o).tableentry).type_0 as libc::c_uint
-                == OPTIONS_TABLE_KEY as libc::c_int as libc::c_uint
-            || (*(*o).tableentry).type_0 as libc::c_uint
-                == OPTIONS_TABLE_COLOUR as libc::c_int as libc::c_uint
-            || (*(*o).tableentry).type_0 as libc::c_uint
-                == OPTIONS_TABLE_FLAG as libc::c_int as libc::c_uint
-            || (*(*o).tableentry).type_0 as libc::c_uint
-                == OPTIONS_TABLE_CHOICE as libc::c_int as libc::c_uint)
+        && ((*(*o).tableentry).type_0 == OPTIONS_TABLE_NUMBER
+            || (*(*o).tableentry).type_0 == OPTIONS_TABLE_KEY
+            || (*(*o).tableentry).type_0 == OPTIONS_TABLE_COLOUR
+            || (*(*o).tableentry).type_0 == OPTIONS_TABLE_FLAG
+            || (*(*o).tableentry).type_0 == OPTIONS_TABLE_CHOICE)
     {
-        match (*(*o).tableentry).type_0 as libc::c_uint {
+        match (*(*o).tableentry).type_0 {
             1 => {
                 xasprintf(
                     &mut s as *mut *mut libc::c_char,
@@ -2424,12 +2408,7 @@ unsafe extern "C" fn options_value_to_string(
                     (*ov).number,
                 );
             }
-            2 => {
-                s = xstrdup(key_string_lookup_key(
-                    (*ov).number as key_code,
-                    0 as libc::c_int,
-                ))
-            }
+            2 => s = xstrdup(key_string_lookup_key((*ov).number as key_code, 0i32)),
             3 => s = xstrdup(colour_tostring((*ov).number as libc::c_int)),
             4 => {
                 if numeric != 0 {
@@ -2454,10 +2433,7 @@ unsafe extern "C" fn options_value_to_string(
         }
         return s;
     }
-    if (*o).tableentry.is_null()
-        || (*(*o).tableentry).type_0 as libc::c_uint
-            == OPTIONS_TABLE_STRING as libc::c_int as libc::c_uint
-    {
+    if (*o).tableentry.is_null() || (*(*o).tableentry).type_0 == OPTIONS_TABLE_STRING {
         return xstrdup((*ov).string);
     }
     return xstrdup(b"\x00" as *const u8 as *const libc::c_char);
@@ -2465,10 +2441,7 @@ unsafe extern "C" fn options_value_to_string(
 #[no_mangle]
 pub unsafe extern "C" fn options_create(mut parent: *mut options) -> *mut options {
     let mut oo: *mut options = 0 as *mut options;
-    oo = xcalloc(
-        1 as libc::c_int as size_t,
-        ::std::mem::size_of::<options>() as libc::c_ulong,
-    ) as *mut options;
+    oo = xcalloc(1u64, ::std::mem::size_of::<options>() as libc::c_ulong) as *mut options;
     (*oo).tree.rbh_root = 0 as *mut options_entry;
     (*oo).parent = parent;
     return oo;
@@ -2477,10 +2450,10 @@ pub unsafe extern "C" fn options_create(mut parent: *mut options) -> *mut option
 pub unsafe extern "C" fn options_free(mut oo: *mut options) {
     let mut o: *mut options_entry = 0 as *mut options_entry;
     let mut tmp: *mut options_entry = 0 as *mut options_entry;
-    o = options_tree_RB_MINMAX(&mut (*oo).tree, -(1 as libc::c_int));
+    o = options_tree_RB_MINMAX(&mut (*oo).tree, -(1i32));
     while !o.is_null() && {
         tmp = options_tree_RB_NEXT(o);
-        (1 as libc::c_int) != 0
+        (1i32) != 0
     } {
         options_remove(o);
         o = tmp
@@ -2497,7 +2470,7 @@ pub unsafe extern "C" fn options_set_parent(mut oo: *mut options, mut parent: *m
 }
 #[no_mangle]
 pub unsafe extern "C" fn options_first(mut oo: *mut options) -> *mut options_entry {
-    return options_tree_RB_MINMAX(&mut (*oo).tree, -(1 as libc::c_int));
+    return options_tree_RB_MINMAX(&mut (*oo).tree, -(1i32));
 }
 #[no_mangle]
 pub unsafe extern "C" fn options_next(mut o: *mut options_entry) -> *mut options_entry {
@@ -2580,7 +2553,7 @@ pub unsafe extern "C" fn options_empty(
     let mut o: *mut options_entry = 0 as *mut options_entry;
     o = options_add(oo, (*oe).name);
     (*o).tableentry = oe;
-    if (*oe).flags & 0x1 as libc::c_int != 0 {
+    if (*oe).flags & 0x1i32 != 0 {
         (*o).value.array.rbh_root = 0 as *mut options_array_item
     }
     return o;
@@ -2595,25 +2568,25 @@ pub unsafe extern "C" fn options_default(
     let mut i: u_int = 0;
     o = options_empty(oo, oe);
     ov = &mut (*o).value;
-    if (*oe).flags & 0x1 as libc::c_int != 0 {
+    if (*oe).flags & 0x1i32 != 0 {
         if (*oe).default_arr.is_null() {
             options_array_assign(o, (*oe).default_str, 0 as *mut *mut libc::c_char);
             return o;
         }
-        i = 0 as libc::c_int as u_int;
+        i = 0u32;
         while !(*(*oe).default_arr.offset(i as isize)).is_null() {
             options_array_set(
                 o,
                 i,
                 *(*oe).default_arr.offset(i as isize),
-                0 as libc::c_int,
+                0i32,
                 0 as *mut *mut libc::c_char,
             );
             i = i.wrapping_add(1)
         }
         return o;
     }
-    match (*oe).type_0 as libc::c_uint {
+    match (*oe).type_0 {
         0 => (*ov).string = xstrdup((*oe).default_str),
         _ => (*ov).number = (*oe).default_num,
     }
@@ -2624,7 +2597,7 @@ pub unsafe extern "C" fn options_default_to_string(
     mut oe: *const options_table_entry,
 ) -> *mut libc::c_char {
     let mut s: *mut libc::c_char = 0 as *mut libc::c_char;
-    match (*oe).type_0 as libc::c_uint {
+    match (*oe).type_0 {
         0 | 6 => s = xstrdup((*oe).default_str),
         1 => {
             xasprintf(
@@ -2633,12 +2606,7 @@ pub unsafe extern "C" fn options_default_to_string(
                 (*oe).default_num,
             );
         }
-        2 => {
-            s = xstrdup(key_string_lookup_key(
-                (*oe).default_num as key_code,
-                0 as libc::c_int,
-            ))
-        }
+        2 => s = xstrdup(key_string_lookup_key((*oe).default_num as key_code, 0i32)),
         3 => s = xstrdup(colour_tostring((*oe).default_num as libc::c_int)),
         4 => {
             s = xstrdup(if (*oe).default_num != 0 {
@@ -2662,7 +2630,7 @@ unsafe extern "C" fn options_add(
         options_remove(o);
     }
     o = xcalloc(
-        1 as libc::c_int as size_t,
+        1u64,
         ::std::mem::size_of::<options_entry>() as libc::c_ulong,
     ) as *mut options_entry;
     (*o).owner = oo;
@@ -2672,7 +2640,7 @@ unsafe extern "C" fn options_add(
 }
 unsafe extern "C" fn options_remove(mut o: *mut options_entry) {
     let mut oo: *mut options = (*o).owner;
-    if !(*o).tableentry.is_null() && (*(*o).tableentry).flags & 0x1 as libc::c_int != 0 {
+    if !(*o).tableentry.is_null() && (*(*o).tableentry).flags & 0x1i32 != 0 {
         options_array_clear(o);
     } else {
         options_value_free(o, &mut (*o).value);
@@ -2720,7 +2688,7 @@ unsafe extern "C" fn options_array_new(
 ) -> *mut options_array_item {
     let mut a: *mut options_array_item = 0 as *mut options_array_item;
     a = xcalloc(
-        1 as libc::c_int as size_t,
+        1u64,
         ::std::mem::size_of::<options_array_item>() as libc::c_ulong,
     ) as *mut options_array_item;
     (*a).index = idx;
@@ -2736,13 +2704,13 @@ unsafe extern "C" fn options_array_free(mut o: *mut options_entry, mut a: *mut o
 pub unsafe extern "C" fn options_array_clear(mut o: *mut options_entry) {
     let mut a: *mut options_array_item = 0 as *mut options_array_item;
     let mut a1: *mut options_array_item = 0 as *mut options_array_item;
-    if !(!(*o).tableentry.is_null() && (*(*o).tableentry).flags & 0x1 as libc::c_int != 0) {
+    if !(!(*o).tableentry.is_null() && (*(*o).tableentry).flags & 0x1i32 != 0) {
         return;
     }
-    a = options_array_RB_MINMAX(&mut (*o).value.array, -(1 as libc::c_int));
+    a = options_array_RB_MINMAX(&mut (*o).value.array, -(1i32));
     while !a.is_null() && {
         a1 = options_array_RB_NEXT(a);
-        (1 as libc::c_int) != 0
+        (1i32) != 0
     } {
         options_array_free(o, a);
         a = a1
@@ -2754,7 +2722,7 @@ pub unsafe extern "C" fn options_array_get(
     mut idx: u_int,
 ) -> *mut options_value {
     let mut a: *mut options_array_item = 0 as *mut options_array_item;
-    if !(!(*o).tableentry.is_null() && (*(*o).tableentry).flags & 0x1 as libc::c_int != 0) {
+    if !(!(*o).tableentry.is_null() && (*(*o).tableentry).flags & 0x1i32 != 0) {
         return 0 as *mut options_value;
     }
     a = options_array_item(o, idx);
@@ -2774,30 +2742,27 @@ pub unsafe extern "C" fn options_array_set(
     let mut a: *mut options_array_item = 0 as *mut options_array_item;
     let mut new: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut pr: *mut cmd_parse_result = 0 as *mut cmd_parse_result;
-    if !(!(*o).tableentry.is_null() && (*(*o).tableentry).flags & 0x1 as libc::c_int != 0) {
+    if !(!(*o).tableentry.is_null() && (*(*o).tableentry).flags & 0x1i32 != 0) {
         if !cause.is_null() {
             *cause = xstrdup(b"not an array\x00" as *const u8 as *const libc::c_char)
         }
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     if value.is_null() {
         a = options_array_item(o, idx);
         if !a.is_null() {
             options_array_free(o, a);
         }
-        return 0 as libc::c_int;
+        return 0i32;
     }
-    if !(*o).tableentry.is_null()
-        && (*(*o).tableentry).type_0 as libc::c_uint
-            == OPTIONS_TABLE_COMMAND as libc::c_int as libc::c_uint
-    {
+    if !(*o).tableentry.is_null() && (*(*o).tableentry).type_0 == OPTIONS_TABLE_COMMAND {
         pr = cmd_parse_from_string(value, 0 as *mut cmd_parse_input);
-        match (*pr).status as libc::c_uint {
+        match (*pr).status {
             0 => {
                 if !cause.is_null() {
                     *cause = xstrdup(b"empty command\x00" as *const u8 as *const libc::c_char)
                 }
-                return -(1 as libc::c_int);
+                return -(1i32);
             }
             1 => {
                 if !cause.is_null() {
@@ -2805,7 +2770,7 @@ pub unsafe extern "C" fn options_array_set(
                 } else {
                     free((*pr).error as *mut libc::c_void);
                 }
-                return -(1 as libc::c_int);
+                return -(1i32);
             }
             2 | _ => {}
         }
@@ -2816,12 +2781,9 @@ pub unsafe extern "C" fn options_array_set(
             options_value_free(o, &mut (*a).value);
         }
         (*a).value.cmdlist = (*pr).cmdlist;
-        return 0 as libc::c_int;
+        return 0i32;
     }
-    if (*o).tableentry.is_null()
-        || (*(*o).tableentry).type_0 as libc::c_uint
-            == OPTIONS_TABLE_STRING as libc::c_int as libc::c_uint
-    {
+    if (*o).tableentry.is_null() || (*(*o).tableentry).type_0 == OPTIONS_TABLE_STRING {
         a = options_array_item(o, idx);
         if !a.is_null() && append != 0 {
             xasprintf(
@@ -2839,12 +2801,12 @@ pub unsafe extern "C" fn options_array_set(
             options_value_free(o, &mut (*a).value);
         }
         (*a).value.string = new;
-        return 0 as libc::c_int;
+        return 0i32;
     }
     if !cause.is_null() {
         *cause = xstrdup(b"wrong array type\x00" as *const u8 as *const libc::c_char)
     }
-    return -(1 as libc::c_int);
+    return -(1i32);
 }
 #[no_mangle]
 pub unsafe extern "C" fn options_array_assign(
@@ -2863,23 +2825,19 @@ pub unsafe extern "C" fn options_array_assign(
     }
     if *separator as libc::c_int == '\u{0}' as i32 {
         if *s as libc::c_int == '\u{0}' as i32 {
-            return 0 as libc::c_int;
+            return 0i32;
         }
-        i = 0 as libc::c_int as u_int;
-        while i
-            < (2147483647 as libc::c_int as libc::c_uint)
-                .wrapping_mul(2 as libc::c_uint)
-                .wrapping_add(1 as libc::c_uint)
-        {
+        i = 0u32;
+        while i < (2147483647u32).wrapping_mul(2u32).wrapping_add(1u32) {
             if options_array_item(o, i).is_null() {
                 break;
             }
             i = i.wrapping_add(1)
         }
-        return options_array_set(o, i, s, 0 as libc::c_int, cause);
+        return options_array_set(o, i, s, 0i32, cause);
     }
     if *s as libc::c_int == '\u{0}' as i32 {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     string = xstrdup(s);
     copy = string;
@@ -2891,37 +2849,30 @@ pub unsafe extern "C" fn options_array_assign(
         if *next as libc::c_int == '\u{0}' as i32 {
             continue;
         }
-        i = 0 as libc::c_int as u_int;
-        while i
-            < (2147483647 as libc::c_int as libc::c_uint)
-                .wrapping_mul(2 as libc::c_uint)
-                .wrapping_add(1 as libc::c_uint)
-        {
+        i = 0u32;
+        while i < (2147483647u32).wrapping_mul(2u32).wrapping_add(1u32) {
             if options_array_item(o, i).is_null() {
                 break;
             }
             i = i.wrapping_add(1)
         }
-        if i == (2147483647 as libc::c_int as libc::c_uint)
-            .wrapping_mul(2 as libc::c_uint)
-            .wrapping_add(1 as libc::c_uint)
-        {
+        if i == (2147483647u32).wrapping_mul(2u32).wrapping_add(1u32) {
             break;
         }
-        if options_array_set(o, i, next, 0 as libc::c_int, cause) != 0 as libc::c_int {
+        if options_array_set(o, i, next, 0i32, cause) != 0i32 {
             free(copy as *mut libc::c_void);
-            return -(1 as libc::c_int);
+            return -(1i32);
         }
     }
     free(copy as *mut libc::c_void);
-    return 0 as libc::c_int;
+    return 0i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn options_array_first(mut o: *mut options_entry) -> *mut options_array_item {
-    if !(!(*o).tableentry.is_null() && (*(*o).tableentry).flags & 0x1 as libc::c_int != 0) {
+    if !(!(*o).tableentry.is_null() && (*(*o).tableentry).flags & 0x1i32 != 0) {
         return 0 as *mut options_array_item;
     }
-    return options_array_RB_MINMAX(&mut (*o).value.array, -(1 as libc::c_int));
+    return options_array_RB_MINMAX(&mut (*o).value.array, -(1i32));
 }
 #[no_mangle]
 pub unsafe extern "C" fn options_array_next(
@@ -2941,14 +2892,12 @@ pub unsafe extern "C" fn options_array_item_value(
 }
 #[no_mangle]
 pub unsafe extern "C" fn options_is_array(mut o: *mut options_entry) -> libc::c_int {
-    return (!(*o).tableentry.is_null() && (*(*o).tableentry).flags & 0x1 as libc::c_int != 0)
-        as libc::c_int;
+    return (!(*o).tableentry.is_null() && (*(*o).tableentry).flags & 0x1i32 != 0) as libc::c_int;
 }
 #[no_mangle]
 pub unsafe extern "C" fn options_is_string(mut o: *mut options_entry) -> libc::c_int {
-    return ((*o).tableentry.is_null()
-        || (*(*o).tableentry).type_0 as libc::c_uint
-            == OPTIONS_TABLE_STRING as libc::c_int as libc::c_uint) as libc::c_int;
+    return ((*o).tableentry.is_null() || (*(*o).tableentry).type_0 == OPTIONS_TABLE_STRING)
+        as libc::c_int;
 }
 #[no_mangle]
 pub unsafe extern "C" fn options_to_string(
@@ -2957,8 +2906,8 @@ pub unsafe extern "C" fn options_to_string(
     mut numeric: libc::c_int,
 ) -> *mut libc::c_char {
     let mut a: *mut options_array_item = 0 as *mut options_array_item;
-    if !(*o).tableentry.is_null() && (*(*o).tableentry).flags & 0x1 as libc::c_int != 0 {
-        if idx == -(1 as libc::c_int) {
+    if !(*o).tableentry.is_null() && (*(*o).tableentry).flags & 0x1i32 != 0 {
+        if idx == -(1i32) {
             return xstrdup(b"\x00" as *const u8 as *const libc::c_char);
         }
         a = options_array_item(o, idx as u_int);
@@ -2983,28 +2932,25 @@ pub unsafe extern "C" fn options_parse(
     copy = xstrdup(name);
     cp = strchr(copy, '[' as i32);
     if cp.is_null() {
-        *idx = -(1 as libc::c_int);
+        *idx = -(1i32);
         return copy;
     }
-    end = strchr(cp.offset(1 as libc::c_int as isize), ']' as i32);
+    end = strchr(cp.offset(1isize), ']' as i32);
     if end.is_null()
-        || *end.offset(1 as libc::c_int as isize) as libc::c_int != '\u{0}' as i32
-        || *(*__ctype_b_loc())
-            .offset(*end.offset(-(1 as libc::c_int) as isize) as u_char as libc::c_int as isize)
+        || *end.offset(1isize) as libc::c_int != '\u{0}' as i32
+        || *(*__ctype_b_loc()).offset(*end.offset(-1isize) as u_char as libc::c_int as isize)
             as libc::c_int
-            & _ISdigit as libc::c_int as libc::c_ushort as libc::c_int
+            & _ISdigit as libc::c_ushort as libc::c_int
             == 0
     {
         free(copy as *mut libc::c_void);
         return 0 as *mut libc::c_char;
     }
-    if sscanf(cp, b"[%d]\x00" as *const u8 as *const libc::c_char, idx) != 1 as libc::c_int
-        || *idx < 0 as libc::c_int
-    {
+    if sscanf(cp, b"[%d]\x00" as *const u8 as *const libc::c_char, idx) != 1i32 || *idx < 0i32 {
         free(copy as *mut libc::c_void);
         return 0 as *mut libc::c_char;
     }
-    *cp = '\u{0}' as i32 as libc::c_char;
+    *cp = '\u{0}' as libc::c_char;
     return copy;
 }
 #[no_mangle]
@@ -3044,7 +2990,7 @@ pub unsafe extern "C" fn options_match(
         return 0 as *mut libc::c_char;
     }
     if *parsed as libc::c_int == '@' as i32 {
-        *ambiguous = 0 as libc::c_int;
+        *ambiguous = 0i32;
         return parsed;
     }
     name = options_map_name(parsed);
@@ -3052,13 +2998,13 @@ pub unsafe extern "C" fn options_match(
     found = 0 as *const options_table_entry;
     oe = options_table.as_ptr();
     while !(*oe).name.is_null() {
-        if strcmp((*oe).name, name) == 0 as libc::c_int {
+        if strcmp((*oe).name, name) == 0i32 {
             found = oe;
             break;
         } else {
-            if strncmp((*oe).name, name, namelen) == 0 as libc::c_int {
+            if strncmp((*oe).name, name, namelen) == 0i32 {
                 if !found.is_null() {
-                    *ambiguous = 1 as libc::c_int;
+                    *ambiguous = 1i32;
                     free(parsed as *mut libc::c_void);
                     return 0 as *mut libc::c_char;
                 }
@@ -3069,7 +3015,7 @@ pub unsafe extern "C" fn options_match(
     }
     free(parsed as *mut libc::c_void);
     if found.is_null() {
-        *ambiguous = 0 as libc::c_int;
+        *ambiguous = 0i32;
         return 0 as *mut libc::c_char;
     }
     return xstrdup((*found).name);
@@ -3088,7 +3034,7 @@ pub unsafe extern "C" fn options_match_get(
     if name.is_null() {
         return 0 as *mut options_entry;
     }
-    *ambiguous = 0 as libc::c_int;
+    *ambiguous = 0i32;
     if only != 0 {
         o = options_get_only(oo, name)
     } else {
@@ -3110,10 +3056,7 @@ pub unsafe extern "C" fn options_get_string(
             name,
         );
     }
-    if !((*o).tableentry.is_null()
-        || (*(*o).tableentry).type_0 as libc::c_uint
-            == OPTIONS_TABLE_STRING as libc::c_int as libc::c_uint)
-    {
+    if !((*o).tableentry.is_null() || (*(*o).tableentry).type_0 == OPTIONS_TABLE_STRING) {
         fatalx(
             b"option %s is not a string\x00" as *const u8 as *const libc::c_char,
             name,
@@ -3135,16 +3078,11 @@ pub unsafe extern "C" fn options_get_number(
         );
     }
     if !(!(*o).tableentry.is_null()
-        && ((*(*o).tableentry).type_0 as libc::c_uint
-            == OPTIONS_TABLE_NUMBER as libc::c_int as libc::c_uint
-            || (*(*o).tableentry).type_0 as libc::c_uint
-                == OPTIONS_TABLE_KEY as libc::c_int as libc::c_uint
-            || (*(*o).tableentry).type_0 as libc::c_uint
-                == OPTIONS_TABLE_COLOUR as libc::c_int as libc::c_uint
-            || (*(*o).tableentry).type_0 as libc::c_uint
-                == OPTIONS_TABLE_FLAG as libc::c_int as libc::c_uint
-            || (*(*o).tableentry).type_0 as libc::c_uint
-                == OPTIONS_TABLE_CHOICE as libc::c_int as libc::c_uint))
+        && ((*(*o).tableentry).type_0 == OPTIONS_TABLE_NUMBER
+            || (*(*o).tableentry).type_0 == OPTIONS_TABLE_KEY
+            || (*(*o).tableentry).type_0 == OPTIONS_TABLE_COLOUR
+            || (*(*o).tableentry).type_0 == OPTIONS_TABLE_FLAG
+            || (*(*o).tableentry).type_0 == OPTIONS_TABLE_CHOICE))
     {
         fatalx(
             b"option %s is not a number\x00" as *const u8 as *const libc::c_char,
@@ -3171,9 +3109,7 @@ pub unsafe extern "C" fn options_set_string(
     o = options_get_only(oo, name);
     if !o.is_null()
         && append != 0
-        && ((*o).tableentry.is_null()
-            || (*(*o).tableentry).type_0 as libc::c_uint
-                == OPTIONS_TABLE_STRING as libc::c_int as libc::c_uint)
+        && ((*o).tableentry.is_null() || (*(*o).tableentry).type_0 == OPTIONS_TABLE_STRING)
     {
         if *name as libc::c_int != '@' as i32 {
             separator = (*(*o).tableentry).separator;
@@ -3200,10 +3136,7 @@ pub unsafe extern "C" fn options_set_string(
             return 0 as *mut options_entry;
         }
     }
-    if !((*o).tableentry.is_null()
-        || (*(*o).tableentry).type_0 as libc::c_uint
-            == OPTIONS_TABLE_STRING as libc::c_int as libc::c_uint)
-    {
+    if !((*o).tableentry.is_null() || (*(*o).tableentry).type_0 == OPTIONS_TABLE_STRING) {
         fatalx(
             b"option %s is not a string\x00" as *const u8 as *const libc::c_char,
             name,
@@ -3211,7 +3144,7 @@ pub unsafe extern "C" fn options_set_string(
     }
     free((*o).value.string as *mut libc::c_void);
     (*o).value.string = value;
-    (*o).cached = 0 as libc::c_int;
+    (*o).cached = 0i32;
     return o;
 }
 #[no_mangle]
@@ -3235,16 +3168,11 @@ pub unsafe extern "C" fn options_set_number(
         }
     }
     if !(!(*o).tableentry.is_null()
-        && ((*(*o).tableentry).type_0 as libc::c_uint
-            == OPTIONS_TABLE_NUMBER as libc::c_int as libc::c_uint
-            || (*(*o).tableentry).type_0 as libc::c_uint
-                == OPTIONS_TABLE_KEY as libc::c_int as libc::c_uint
-            || (*(*o).tableentry).type_0 as libc::c_uint
-                == OPTIONS_TABLE_COLOUR as libc::c_int as libc::c_uint
-            || (*(*o).tableentry).type_0 as libc::c_uint
-                == OPTIONS_TABLE_FLAG as libc::c_int as libc::c_uint
-            || (*(*o).tableentry).type_0 as libc::c_uint
-                == OPTIONS_TABLE_CHOICE as libc::c_int as libc::c_uint))
+        && ((*(*o).tableentry).type_0 == OPTIONS_TABLE_NUMBER
+            || (*(*o).tableentry).type_0 == OPTIONS_TABLE_KEY
+            || (*(*o).tableentry).type_0 == OPTIONS_TABLE_COLOUR
+            || (*(*o).tableentry).type_0 == OPTIONS_TABLE_FLAG
+            || (*(*o).tableentry).type_0 == OPTIONS_TABLE_CHOICE))
     {
         fatalx(
             b"option %s is not a number\x00" as *const u8 as *const libc::c_char,
@@ -3266,15 +3194,15 @@ pub unsafe extern "C" fn options_scope_from_name(
     let mut s: *mut session = (*fs).s;
     let mut wl: *mut winlink = (*fs).wl;
     let mut wp: *mut window_pane = (*fs).wp;
-    let mut target: *const libc::c_char = args_get(args, 't' as i32 as u_char);
+    let mut target: *const libc::c_char = args_get(args, 't' as u_char);
     let mut oe: *const options_table_entry = 0 as *const options_table_entry;
-    let mut scope: libc::c_int = 0 as libc::c_int;
+    let mut scope: libc::c_int = 0i32;
     if *name as libc::c_int == '@' as i32 {
         return options_scope_from_flags(args, window, fs, oo, cause);
     }
     oe = options_table.as_ptr();
     while !(*oe).name.is_null() {
-        if strcmp((*oe).name, name) == 0 as libc::c_int {
+        if strcmp((*oe).name, name) == 0i32 {
             break;
         }
         oe = oe.offset(1)
@@ -3285,19 +3213,19 @@ pub unsafe extern "C" fn options_scope_from_name(
             b"unknown option: %s\x00" as *const u8 as *const libc::c_char,
             name,
         );
-        return 0 as libc::c_int;
+        return 0i32;
     }
     let mut current_block_38: u64;
     match (*oe).scope {
         1 => {
             *oo = global_options;
-            scope = 0x1 as libc::c_int;
+            scope = 0x1i32;
             current_block_38 = 6717214610478484138;
         }
         2 => {
-            if args_has(args, 'g' as i32 as u_char) != 0 {
+            if args_has(args, 'g' as u_char) != 0 {
                 *oo = global_s_options;
-                scope = 0x2 as libc::c_int
+                scope = 0x2i32
             } else if s.is_null() && !target.is_null() {
                 xasprintf(
                     cause,
@@ -3311,12 +3239,12 @@ pub unsafe extern "C" fn options_scope_from_name(
                 );
             } else {
                 *oo = (*s).options;
-                scope = 0x2 as libc::c_int
+                scope = 0x2i32
             }
             current_block_38 = 6717214610478484138;
         }
         12 => {
-            if args_has(args, 'p' as i32 as u_char) != 0 {
+            if args_has(args, 'p' as u_char) != 0 {
                 if wp.is_null() && !target.is_null() {
                     xasprintf(
                         cause,
@@ -3330,7 +3258,7 @@ pub unsafe extern "C" fn options_scope_from_name(
                     );
                 } else {
                     *oo = (*wp).options;
-                    scope = 0x8 as libc::c_int
+                    scope = 0x8i32
                 }
                 current_block_38 = 6717214610478484138;
             } else {
@@ -3348,9 +3276,9 @@ pub unsafe extern "C" fn options_scope_from_name(
         15958660329489593307 =>
         /* FALLTHROUGH */
         {
-            if args_has(args, 'g' as i32 as u_char) != 0 {
+            if args_has(args, 'g' as u_char) != 0 {
                 *oo = global_w_options;
-                scope = 0x4 as libc::c_int
+                scope = 0x4i32
             } else if wl.is_null() && !target.is_null() {
                 xasprintf(
                     cause,
@@ -3364,7 +3292,7 @@ pub unsafe extern "C" fn options_scope_from_name(
                 );
             } else {
                 *oo = (*(*wl).window).options;
-                scope = 0x4 as libc::c_int
+                scope = 0x4i32
             }
         }
         _ => {}
@@ -3382,12 +3310,12 @@ pub unsafe extern "C" fn options_scope_from_flags(
     let mut s: *mut session = (*fs).s;
     let mut wl: *mut winlink = (*fs).wl;
     let mut wp: *mut window_pane = (*fs).wp;
-    let mut target: *const libc::c_char = args_get(args, 't' as i32 as u_char);
-    if args_has(args, 's' as i32 as u_char) != 0 {
+    let mut target: *const libc::c_char = args_get(args, 't' as u_char);
+    if args_has(args, 's' as u_char) != 0 {
         *oo = global_options;
-        return 0x1 as libc::c_int;
+        return 0x1i32;
     }
-    if args_has(args, 'p' as i32 as u_char) != 0 {
+    if args_has(args, 'p' as u_char) != 0 {
         if wp.is_null() {
             if !target.is_null() {
                 xasprintf(
@@ -3401,14 +3329,14 @@ pub unsafe extern "C" fn options_scope_from_flags(
                     b"no current pane\x00" as *const u8 as *const libc::c_char,
                 );
             }
-            return 0 as libc::c_int;
+            return 0i32;
         }
         *oo = (*wp).options;
-        return 0x8 as libc::c_int;
-    } else if window != 0 || args_has(args, 'w' as i32 as u_char) != 0 {
-        if args_has(args, 'g' as i32 as u_char) != 0 {
+        return 0x8i32;
+    } else if window != 0 || args_has(args, 'w' as u_char) != 0 {
+        if args_has(args, 'g' as u_char) != 0 {
             *oo = global_w_options;
-            return 0x4 as libc::c_int;
+            return 0x4i32;
         }
         if wl.is_null() {
             if !target.is_null() {
@@ -3423,14 +3351,14 @@ pub unsafe extern "C" fn options_scope_from_flags(
                     b"no current window\x00" as *const u8 as *const libc::c_char,
                 );
             }
-            return 0 as libc::c_int;
+            return 0i32;
         }
         *oo = (*(*wl).window).options;
-        return 0x4 as libc::c_int;
+        return 0x4i32;
     } else {
-        if args_has(args, 'g' as i32 as u_char) != 0 {
+        if args_has(args, 'g' as u_char) != 0 {
             *oo = global_s_options;
-            return 0x2 as libc::c_int;
+            return 0x2i32;
         }
         if s.is_null() {
             if !target.is_null() {
@@ -3445,10 +3373,10 @@ pub unsafe extern "C" fn options_scope_from_flags(
                     b"no current session\x00" as *const u8 as *const libc::c_char,
                 );
             }
-            return 0 as libc::c_int;
+            return 0i32;
         }
         *oo = (*s).options;
-        return 0x2 as libc::c_int;
+        return 0x2i32;
     };
 }
 #[no_mangle]
@@ -3462,9 +3390,7 @@ pub unsafe extern "C" fn options_string_to_style(
     let mut expanded: *mut libc::c_char = 0 as *mut libc::c_char;
     o = options_get(oo, name);
     if o.is_null()
-        || !((*o).tableentry.is_null()
-            || (*(*o).tableentry).type_0 as libc::c_uint
-                == OPTIONS_TABLE_STRING as libc::c_int as libc::c_uint)
+        || !((*o).tableentry.is_null() || (*(*o).tableentry).type_0 == OPTIONS_TABLE_STRING)
     {
         return 0 as *mut style;
     }
@@ -3481,15 +3407,15 @@ pub unsafe extern "C" fn options_string_to_style(
     );
     style_set(&mut (*o).style, &grid_default_cell);
     (*o).cached = (strstr(s, b"#{\x00" as *const u8 as *const libc::c_char)
-        == 0 as *mut libc::c_void as *mut libc::c_char) as libc::c_int;
+        == 0 as *mut libc::c_char) as libc::c_int;
     if !ft.is_null() && (*o).cached == 0 {
         expanded = format_expand(ft, s);
-        if style_parse(&mut (*o).style, &grid_default_cell, expanded) != 0 as libc::c_int {
+        if style_parse(&mut (*o).style, &grid_default_cell, expanded) != 0i32 {
             free(expanded as *mut libc::c_void);
             return 0 as *mut style;
         }
         free(expanded as *mut libc::c_void);
-    } else if style_parse(&mut (*o).style, &grid_default_cell, s) != 0 as libc::c_int {
+    } else if style_parse(&mut (*o).style, &grid_default_cell, s) != 0i32 {
         return 0 as *mut style;
     }
     return &mut (*o).style;
@@ -3522,12 +3448,12 @@ unsafe extern "C" fn options_from_string_check(
         default_type: STYLE_DEFAULT_BASE,
     };
     if oe.is_null() {
-        return 0 as libc::c_int;
+        return 0i32;
     }
     if strcmp(
         (*oe).name,
         b"default-shell\x00" as *const u8 as *const libc::c_char,
-    ) == 0 as libc::c_int
+    ) == 0i32
         && checkshell(value) == 0
     {
         xasprintf(
@@ -3535,30 +3461,28 @@ unsafe extern "C" fn options_from_string_check(
             b"not a suitable shell: %s\x00" as *const u8 as *const libc::c_char,
             value,
         );
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
-    if !(*oe).pattern.is_null()
-        && fnmatch((*oe).pattern, value, 0 as libc::c_int) != 0 as libc::c_int
-    {
+    if !(*oe).pattern.is_null() && fnmatch((*oe).pattern, value, 0i32) != 0i32 {
         xasprintf(
             cause,
             b"value is invalid: %s\x00" as *const u8 as *const libc::c_char,
             value,
         );
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
-    if (*oe).flags & 0x4 as libc::c_int != 0
+    if (*oe).flags & 0x4i32 != 0
         && strstr(value, b"#{\x00" as *const u8 as *const libc::c_char).is_null()
-        && style_parse(&mut sy, &grid_default_cell, value) != 0 as libc::c_int
+        && style_parse(&mut sy, &grid_default_cell, value) != 0i32
     {
         xasprintf(
             cause,
             b"invalid style: %s\x00" as *const u8 as *const libc::c_char,
             value,
         );
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }
 unsafe extern "C" fn options_from_string_flag(
     mut oo: *mut options,
@@ -3569,26 +3493,26 @@ unsafe extern "C" fn options_from_string_flag(
     let mut flag: libc::c_int = 0;
     if value.is_null() || *value as libc::c_int == '\u{0}' as i32 {
         flag = (options_get_number(oo, name) == 0) as libc::c_int
-    } else if strcmp(value, b"1\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int
-        || strcasecmp(value, b"on\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int
-        || strcasecmp(value, b"yes\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int
+    } else if strcmp(value, b"1\x00" as *const u8 as *const libc::c_char) == 0i32
+        || strcasecmp(value, b"on\x00" as *const u8 as *const libc::c_char) == 0i32
+        || strcasecmp(value, b"yes\x00" as *const u8 as *const libc::c_char) == 0i32
     {
-        flag = 1 as libc::c_int
-    } else if strcmp(value, b"0\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int
-        || strcasecmp(value, b"off\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int
-        || strcasecmp(value, b"no\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int
+        flag = 1i32
+    } else if strcmp(value, b"0\x00" as *const u8 as *const libc::c_char) == 0i32
+        || strcasecmp(value, b"off\x00" as *const u8 as *const libc::c_char) == 0i32
+        || strcasecmp(value, b"no\x00" as *const u8 as *const libc::c_char) == 0i32
     {
-        flag = 0 as libc::c_int
+        flag = 0i32
     } else {
         xasprintf(
             cause,
             b"bad value: %s\x00" as *const u8 as *const libc::c_char,
             value,
         );
-        return -(1 as libc::c_int);
+        return -(1i32);
     }
     options_set_number(oo, name, flag as libc::c_longlong);
-    return 0 as libc::c_int;
+    return 0i32;
 }
 unsafe extern "C" fn options_from_string_choice(
     mut oe: *const options_table_entry,
@@ -3599,33 +3523,33 @@ unsafe extern "C" fn options_from_string_choice(
 ) -> libc::c_int {
     let mut cp: *mut *const libc::c_char = 0 as *mut *const libc::c_char;
     let mut n: libc::c_int = 0;
-    let mut choice: libc::c_int = -(1 as libc::c_int);
+    let mut choice: libc::c_int = -(1i32);
     if value.is_null() {
         choice = options_get_number(oo, name) as libc::c_int;
-        if choice < 2 as libc::c_int {
+        if choice < 2i32 {
             choice = (choice == 0) as libc::c_int
         }
     } else {
-        n = 0 as libc::c_int;
+        n = 0i32;
         cp = (*oe).choices;
         while !(*cp).is_null() {
-            if strcmp(*cp, value) == 0 as libc::c_int {
+            if strcmp(*cp, value) == 0i32 {
                 choice = n
             }
             n += 1;
             cp = cp.offset(1)
         }
-        if choice == -(1 as libc::c_int) {
+        if choice == -(1i32) {
             xasprintf(
                 cause,
                 b"unknown value: %s\x00" as *const u8 as *const libc::c_char,
                 value,
             );
-            return -(1 as libc::c_int);
+            return -(1i32);
         }
     }
     options_set_number(oo, name, choice as libc::c_longlong);
-    return 0 as libc::c_int;
+    return 0i32;
 }
 #[no_mangle]
 pub unsafe extern "C" fn options_from_string(
@@ -3644,14 +3568,14 @@ pub unsafe extern "C" fn options_from_string(
     let mut key: key_code = 0;
     if !oe.is_null() {
         if value.is_null()
-            && (*oe).type_0 as libc::c_uint != OPTIONS_TABLE_FLAG as libc::c_int as libc::c_uint
-            && (*oe).type_0 as libc::c_uint != OPTIONS_TABLE_CHOICE as libc::c_int as libc::c_uint
+            && (*oe).type_0 != OPTIONS_TABLE_FLAG
+            && (*oe).type_0 != OPTIONS_TABLE_CHOICE
         {
             xasprintf(
                 cause,
                 b"empty value\x00" as *const u8 as *const libc::c_char,
             );
-            return -(1 as libc::c_int);
+            return -(1i32);
         }
         type_0 = (*oe).type_0
     } else {
@@ -3660,11 +3584,11 @@ pub unsafe extern "C" fn options_from_string(
                 cause,
                 b"bad option name\x00" as *const u8 as *const libc::c_char,
             );
-            return -(1 as libc::c_int);
+            return -(1i32);
         }
         type_0 = OPTIONS_TABLE_STRING
     }
-    match type_0 as libc::c_uint {
+    match type_0 {
         0 => {
             old = xstrdup(options_get_string(oo, name));
             options_set_string(
@@ -3675,19 +3599,19 @@ pub unsafe extern "C" fn options_from_string(
                 value,
             );
             new = options_get_string(oo, name);
-            if options_from_string_check(oe, new, cause) != 0 as libc::c_int {
+            if options_from_string_check(oe, new, cause) != 0i32 {
                 options_set_string(
                     oo,
                     name,
-                    0 as libc::c_int,
+                    0i32,
                     b"%s\x00" as *const u8 as *const libc::c_char,
                     old,
                 );
                 free(old as *mut libc::c_void);
-                return -(1 as libc::c_int);
+                return -(1i32);
             }
             free(old as *mut libc::c_void);
-            return 0 as libc::c_int;
+            return 0i32;
         }
         1 => {
             number = strtonum(
@@ -3703,42 +3627,42 @@ pub unsafe extern "C" fn options_from_string(
                     errstr,
                     value,
                 );
-                return -(1 as libc::c_int);
+                return -(1i32);
             }
             options_set_number(oo, name, number);
-            return 0 as libc::c_int;
+            return 0i32;
         }
         2 => {
             key = key_string_lookup_string(value);
-            if key == 0xfe000000000 as libc::c_ulonglong {
+            if key == 0xfe000000000u64 {
                 xasprintf(
                     cause,
                     b"bad key: %s\x00" as *const u8 as *const libc::c_char,
                     value,
                 );
-                return -(1 as libc::c_int);
+                return -(1i32);
             }
             options_set_number(oo, name, key as libc::c_longlong);
-            return 0 as libc::c_int;
+            return 0i32;
         }
         3 => {
             number = colour_fromstring(value) as libc::c_longlong;
-            if number == -(1 as libc::c_int) as libc::c_longlong {
+            if number == -1i64 {
                 xasprintf(
                     cause,
                     b"bad colour: %s\x00" as *const u8 as *const libc::c_char,
                     value,
                 );
-                return -(1 as libc::c_int);
+                return -(1i32);
             }
             options_set_number(oo, name, number);
-            return 0 as libc::c_int;
+            return 0i32;
         }
         4 => return options_from_string_flag(oo, name, value, cause),
         5 => return options_from_string_choice(oe, oo, name, value, cause),
         6 | _ => {}
     }
-    return -(1 as libc::c_int);
+    return -(1i32);
 }
 #[no_mangle]
 pub unsafe extern "C" fn options_push_changes(mut name: *const libc::c_char) {
@@ -3749,9 +3673,9 @@ pub unsafe extern "C" fn options_push_changes(mut name: *const libc::c_char) {
     if strcmp(
         name,
         b"automatic-rename\x00" as *const u8 as *const libc::c_char,
-    ) == 0 as libc::c_int
+    ) == 0i32
     {
-        w = windows_RB_MINMAX(&mut windows, -(1 as libc::c_int));
+        w = windows_RB_MINMAX(&mut windows, -(1i32));
         while !w.is_null() {
             if !(*w).active.is_null() {
                 if options_get_number(
@@ -3759,70 +3683,70 @@ pub unsafe extern "C" fn options_push_changes(mut name: *const libc::c_char) {
                     b"automatic-rename\x00" as *const u8 as *const libc::c_char,
                 ) != 0
                 {
-                    (*(*w).active).flags |= 0x80 as libc::c_int
+                    (*(*w).active).flags |= 0x80i32
                 }
             }
             w = windows_RB_NEXT(w)
         }
     }
-    if strcmp(name, b"key-table\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
+    if strcmp(name, b"key-table\x00" as *const u8 as *const libc::c_char) == 0i32 {
         loop_0 = clients.tqh_first;
         while !loop_0.is_null() {
             server_client_set_key_table(loop_0, 0 as *const libc::c_char);
             loop_0 = (*loop_0).entry.tqe_next
         }
     }
-    if strcmp(name, b"user-keys\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int {
+    if strcmp(name, b"user-keys\x00" as *const u8 as *const libc::c_char) == 0i32 {
         loop_0 = clients.tqh_first;
         while !loop_0.is_null() {
-            if (*loop_0).tty.flags & 0x20 as libc::c_int != 0 {
+            if (*loop_0).tty.flags & 0x20i32 != 0 {
                 tty_keys_build(&mut (*loop_0).tty);
             }
             loop_0 = (*loop_0).entry.tqe_next
         }
     }
-    if strcmp(name, b"status\x00" as *const u8 as *const libc::c_char) == 0 as libc::c_int
+    if strcmp(name, b"status\x00" as *const u8 as *const libc::c_char) == 0i32
         || strcmp(
             name,
             b"status-interval\x00" as *const u8 as *const libc::c_char,
-        ) == 0 as libc::c_int
+        ) == 0i32
     {
         status_timer_start_all();
     }
     if strcmp(
         name,
         b"monitor-silence\x00" as *const u8 as *const libc::c_char,
-    ) == 0 as libc::c_int
+    ) == 0i32
     {
         alerts_reset_all();
     }
     if strcmp(
         name,
         b"window-style\x00" as *const u8 as *const libc::c_char,
-    ) == 0 as libc::c_int
+    ) == 0i32
         || strcmp(
             name,
             b"window-active-style\x00" as *const u8 as *const libc::c_char,
-        ) == 0 as libc::c_int
+        ) == 0i32
     {
-        wp = window_pane_tree_RB_MINMAX(&mut all_window_panes, -(1 as libc::c_int));
+        wp = window_pane_tree_RB_MINMAX(&mut all_window_panes, -(1i32));
         while !wp.is_null() {
-            (*wp).flags |= 0x1000 as libc::c_int;
+            (*wp).flags |= 0x1000i32;
             wp = window_pane_tree_RB_NEXT(wp)
         }
     }
     if strcmp(
         name,
         b"pane-border-status\x00" as *const u8 as *const libc::c_char,
-    ) == 0 as libc::c_int
+    ) == 0i32
     {
-        w = windows_RB_MINMAX(&mut windows, -(1 as libc::c_int));
+        w = windows_RB_MINMAX(&mut windows, -(1i32));
         while !w.is_null() {
             layout_fix_panes(w);
             w = windows_RB_NEXT(w)
         }
     }
-    s = sessions_RB_MINMAX(&mut sessions, -(1 as libc::c_int));
+    s = sessions_RB_MINMAX(&mut sessions, -(1i32));
     while !s.is_null() {
         status_update_cache(s);
         s = sessions_RB_NEXT(s)
@@ -3843,7 +3767,7 @@ pub unsafe extern "C" fn options_remove_or_default(
     mut cause: *mut *mut libc::c_char,
 ) -> libc::c_int {
     let mut oo: *mut options = (*o).owner;
-    if idx == -(1 as libc::c_int) {
+    if idx == -(1i32) {
         if !(*o).tableentry.is_null()
             && (oo == global_options || oo == global_s_options || oo == global_w_options)
         {
@@ -3851,15 +3775,8 @@ pub unsafe extern "C" fn options_remove_or_default(
         } else {
             options_remove(o);
         }
-    } else if options_array_set(
-        o,
-        idx as u_int,
-        0 as *const libc::c_char,
-        0 as libc::c_int,
-        cause,
-    ) != 0 as libc::c_int
-    {
-        return -(1 as libc::c_int);
+    } else if options_array_set(o, idx as u_int, 0 as *const libc::c_char, 0i32, cause) != 0i32 {
+        return -(1i32);
     }
-    return 0 as libc::c_int;
+    return 0i32;
 }

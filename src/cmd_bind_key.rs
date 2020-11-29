@@ -1090,8 +1090,8 @@ pub static mut cmd_bind_key_entry: cmd_entry = {
             args: {
                 let mut init = C2RustUnnamed_32 {
                     template: b"nrN:T:\x00" as *const u8 as *const libc::c_char,
-                    lower: 1 as libc::c_int,
-                    upper: -(1 as libc::c_int),
+                    lower: 1i32,
+                    upper: -(1i32),
                 };
                 init
             },
@@ -1107,7 +1107,7 @@ pub static mut cmd_bind_key_entry: cmd_entry = {
                 type_0: CMD_FIND_PANE,
                 flags: 0,
             },
-            flags: 0x4 as libc::c_int,
+            flags: 0x4i32,
             exec: Some(
                 cmd_bind_key_exec
                     as unsafe extern "C" fn(
@@ -1145,42 +1145,39 @@ unsafe extern "C" fn cmd_bind_key_exec(
     let mut args: *mut args = cmd_get_args(self_0);
     let mut key: key_code = 0;
     let mut tablename: *const libc::c_char = 0 as *const libc::c_char;
-    let mut note: *const libc::c_char = args_get(args, 'N' as i32 as u_char);
+    let mut note: *const libc::c_char = args_get(args, 'N' as u_char);
     let mut pr: *mut cmd_parse_result = 0 as *mut cmd_parse_result;
     let mut argv: *mut *mut libc::c_char = (*args).argv;
     let mut argc: libc::c_int = (*args).argc;
     let mut repeat: libc::c_int = 0;
-    key = key_string_lookup_string(*argv.offset(0 as libc::c_int as isize));
-    if key == 0xff000000000 as libc::c_ulonglong || key == 0xfe000000000 as libc::c_ulonglong {
+    key = key_string_lookup_string(*argv.offset(0isize));
+    if key == 0xff000000000u64 || key == 0xfe000000000u64 {
         cmdq_error(
             item,
             b"unknown key: %s\x00" as *const u8 as *const libc::c_char,
-            *argv.offset(0 as libc::c_int as isize),
+            *argv.offset(0isize),
         );
         return CMD_RETURN_ERROR;
     }
-    if args_has(args, 'T' as i32 as u_char) != 0 {
-        tablename = args_get(args, 'T' as i32 as u_char)
-    } else if args_has(args, 'n' as i32 as u_char) != 0 {
+    if args_has(args, 'T' as u_char) != 0 {
+        tablename = args_get(args, 'T' as u_char)
+    } else if args_has(args, 'n' as u_char) != 0 {
         tablename = b"root\x00" as *const u8 as *const libc::c_char
     } else {
         tablename = b"prefix\x00" as *const u8 as *const libc::c_char
     }
-    repeat = args_has(args, 'r' as i32 as u_char);
-    if argc != 1 as libc::c_int {
-        if argc == 2 as libc::c_int {
-            pr = cmd_parse_from_string(
-                *argv.offset(1 as libc::c_int as isize),
-                0 as *mut cmd_parse_input,
-            )
+    repeat = args_has(args, 'r' as u_char);
+    if argc != 1i32 {
+        if argc == 2i32 {
+            pr = cmd_parse_from_string(*argv.offset(1isize), 0 as *mut cmd_parse_input)
         } else {
             pr = cmd_parse_from_arguments(
-                argc - 1 as libc::c_int,
-                argv.offset(1 as libc::c_int as isize),
+                argc - 1i32,
+                argv.offset(1isize),
                 0 as *mut cmd_parse_input,
             )
         }
-        match (*pr).status as libc::c_uint {
+        match (*pr).status {
             0 => {
                 cmdq_error(
                     item,
