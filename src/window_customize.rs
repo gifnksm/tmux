@@ -1,4 +1,4 @@
-use crate::{key_code::code as key_code_code, utf8::Utf8Data};
+use crate::{grid::Cell as GridCell, key_code::code as key_code_code, utf8::Utf8Data};
 use ::libc;
 
 extern "C" {
@@ -198,7 +198,7 @@ extern "C" {
         _: libc::c_int,
     );
     #[no_mangle]
-    static grid_default_cell: grid_cell;
+    static grid_default_cell: crate::grid::Cell;
     #[no_mangle]
     fn screen_write_text(
         _: *mut screen_write_ctx,
@@ -206,7 +206,7 @@ extern "C" {
         _: u_int,
         _: u_int,
         _: libc::c_int,
-        _: *const grid_cell,
+        _: *const crate::grid::Cell,
         _: *const libc::c_char,
         _: ...
     ) -> libc::c_int;
@@ -289,7 +289,7 @@ extern "C" {
     fn mode_tree_count_tagged(_: *mut crate::mode_tree::mode_tree_data) -> u_int;
     #[no_mangle]
     fn style_apply(
-        _: *mut grid_cell,
+        _: *mut crate::grid::Cell,
         _: *mut crate::options::options,
         _: *const libc::c_char,
         _: *mut crate::format::format_tree,
@@ -662,22 +662,11 @@ pub struct screen {
     pub saved_cx: u_int,
     pub saved_cy: u_int,
     pub saved_grid: *mut grid,
-    pub saved_cell: grid_cell,
+    pub saved_cell: crate::grid::Cell,
     pub saved_flags: libc::c_int,
     pub tabs: *mut bitstr_t,
     pub sel: *mut crate::screen::screen_sel,
     pub write_list: *mut crate::screen_write::screen_write_collect_line,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct grid_cell {
-    pub data: crate::utf8::Utf8Data,
-    pub attr: u_short,
-    pub flags: u_char,
-    pub fg: libc::c_int,
-    pub bg: libc::c_int,
-    pub us: libc::c_int,
 }
 
 #[repr(C)]
@@ -938,8 +927,8 @@ pub struct window_pane {
     pub resize_timer: event,
     pub force_timer: event,
     pub ictx: *mut crate::input::input_ctx,
-    pub cached_gc: grid_cell,
-    pub cached_active_gc: grid_cell,
+    pub cached_gc: crate::grid::Cell,
+    pub cached_active_gc: crate::grid::Cell,
     pub palette: *mut libc::c_int,
     pub pipe_fd: libc::c_int,
     pub pipe_event: *mut bufferevent,
@@ -954,7 +943,7 @@ pub struct window_pane {
     pub written: size_t,
     pub skipped: size_t,
     pub border_gc_set: libc::c_int,
-    pub border_gc: grid_cell,
+    pub border_gc: crate::grid::Cell,
     pub entry: C2RustUnnamed_22,
     pub tree_entry: C2RustUnnamed_21,
 }
@@ -1152,7 +1141,7 @@ pub struct status_line {
     pub screen: screen,
     pub active: *mut screen,
     pub references: libc::c_int,
-    pub style: grid_cell,
+    pub style: crate::grid::Cell,
     pub entries: [status_line_entry; 5],
 }
 
@@ -1222,8 +1211,8 @@ pub struct tty {
     pub timer: event,
     pub discarded: size_t,
     pub tio: termios,
-    pub cell: grid_cell,
-    pub last_cell: grid_cell,
+    pub cell: crate::grid::Cell,
+    pub last_cell: crate::grid::Cell,
     pub flags: libc::c_int,
     pub term: *mut tty_term,
     pub mouse_last_x: u_int,
@@ -1313,7 +1302,7 @@ pub struct tty_ctx {
     pub redraw_cb: tty_ctx_redraw_cb,
     pub set_client_cb: tty_ctx_set_client_cb,
     pub arg: *mut libc::c_void,
-    pub cell: *const grid_cell,
+    pub cell: *const crate::grid::Cell,
     pub wrapped: libc::c_int,
     pub num: u_int,
     pub ptr: *mut libc::c_void,
@@ -1328,7 +1317,7 @@ pub struct tty_ctx {
     pub sx: u_int,
     pub sy: u_int,
     pub bg: u_int,
-    pub defaults: grid_cell,
+    pub defaults: crate::grid::Cell,
     pub palette: *mut libc::c_int,
     pub bigger: libc::c_int,
     pub wox: u_int,
@@ -1358,7 +1347,7 @@ pub const STYLE_DEFAULT_BASE: style_default_type = 0;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct style {
-    pub gc: grid_cell,
+    pub gc: crate::grid::Cell,
     pub ignore: libc::c_int,
     pub fill: libc::c_int,
     pub align: style_align,
@@ -2423,7 +2412,7 @@ unsafe extern "C" fn window_customize_draw_key(
         sx,
         sy,
         0 as libc::c_int,
-        &grid_default_cell as *const grid_cell,
+        &grid_default_cell as *const GridCell,
         b"%s%s\x00" as *const u8 as *const libc::c_char,
         note,
         period,
@@ -2450,7 +2439,7 @@ unsafe extern "C" fn window_customize_draw_key(
         sx,
         sy.wrapping_sub((*s).cy.wrapping_sub(cy)),
         0 as libc::c_int,
-        &grid_default_cell as *const grid_cell,
+        &grid_default_cell as *const GridCell,
         b"This key is in the %s table.\x00" as *const u8 as *const libc::c_char,
         (*kt).name,
     ) == 0
@@ -2463,7 +2452,7 @@ unsafe extern "C" fn window_customize_draw_key(
         sx,
         sy.wrapping_sub((*s).cy.wrapping_sub(cy)),
         0 as libc::c_int,
-        &grid_default_cell as *const grid_cell,
+        &grid_default_cell as *const GridCell,
         b"This key %s repeat.\x00" as *const u8 as *const libc::c_char,
         if (*bd).flags & 0x1 as libc::c_int != 0 {
             b"does\x00" as *const u8 as *const libc::c_char
@@ -2494,7 +2483,7 @@ unsafe extern "C" fn window_customize_draw_key(
         sx,
         sy.wrapping_sub((*s).cy.wrapping_sub(cy)),
         0 as libc::c_int,
-        &grid_default_cell as *const grid_cell,
+        &grid_default_cell as *const GridCell,
         b"Command: %s\x00" as *const u8 as *const libc::c_char,
         cmd,
     ) == 0
@@ -2512,7 +2501,7 @@ unsafe extern "C" fn window_customize_draw_key(
                 sx,
                 sy.wrapping_sub((*s).cy.wrapping_sub(cy)),
                 0 as libc::c_int,
-                &grid_default_cell as *const grid_cell,
+                &grid_default_cell as *const GridCell,
                 b"The default is: %s\x00" as *const u8 as *const libc::c_char,
                 default_cmd,
             ) == 0
@@ -2542,7 +2531,7 @@ unsafe extern "C" fn window_customize_draw_option(
     let mut go: *mut crate::options::options = 0 as *mut crate::options::options;
     let mut wo: *mut crate::options::options = 0 as *mut crate::options::options;
     let mut oe: *const options_table_entry = 0 as *const options_table_entry;
-    let mut gc: grid_cell = grid_cell {
+    let mut gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -2608,7 +2597,7 @@ unsafe extern "C" fn window_customize_draw_option(
         sx,
         sy,
         0 as libc::c_int,
-        &grid_default_cell as *const grid_cell,
+        &grid_default_cell as *const GridCell,
         b"%s\x00" as *const u8 as *const libc::c_char,
         text,
     ) == 0)
@@ -2643,7 +2632,7 @@ unsafe extern "C" fn window_customize_draw_option(
                 sx,
                 sy.wrapping_sub((*s).cy.wrapping_sub(cy)),
                 0 as libc::c_int,
-                &grid_default_cell as *const grid_cell,
+                &grid_default_cell as *const GridCell,
                 b"This is a %s option.\x00" as *const u8 as *const libc::c_char,
                 text,
             ) == 0)
@@ -2656,7 +2645,7 @@ unsafe extern "C" fn window_customize_draw_option(
                             sx,
                             sy.wrapping_sub((*s).cy.wrapping_sub(cy)),
                             0 as libc::c_int,
-                            &grid_default_cell as *const grid_cell,
+                            &grid_default_cell as *const GridCell,
                             b"This is an array option, index %u.\x00" as *const u8
                                 as *const libc::c_char,
                             idx,
@@ -2672,7 +2661,7 @@ unsafe extern "C" fn window_customize_draw_option(
                         sx,
                         sy.wrapping_sub((*s).cy.wrapping_sub(cy)),
                         0 as libc::c_int,
-                        &grid_default_cell as *const grid_cell,
+                        &grid_default_cell as *const GridCell,
                         b"This is an array option.\x00" as *const u8 as *const libc::c_char,
                     ) == 0
                     {
@@ -2721,7 +2710,7 @@ unsafe extern "C" fn window_customize_draw_option(
                                 sx,
                                 sy.wrapping_sub((*s).cy.wrapping_sub(cy)),
                                 0 as libc::c_int,
-                                &grid_default_cell as *const grid_cell,
+                                &grid_default_cell as *const GridCell,
                                 b"Option value: %s%s%s\x00" as *const u8 as *const libc::c_char,
                                 value,
                                 space,
@@ -2740,7 +2729,7 @@ unsafe extern "C" fn window_customize_draw_option(
                                             sx,
                                             sy.wrapping_sub((*s).cy.wrapping_sub(cy)),
                                             0 as libc::c_int,
-                                            &grid_default_cell as *const grid_cell,
+                                            &grid_default_cell as *const GridCell,
                                             b"This expands to: %s\x00" as *const u8
                                                 as *const libc::c_char,
                                             expanded,
@@ -2796,7 +2785,7 @@ unsafe extern "C" fn window_customize_draw_option(
                                                 sx,
                                                 sy.wrapping_sub((*s).cy.wrapping_sub(cy)),
                                                 0 as libc::c_int,
-                                                &grid_default_cell as *const grid_cell,
+                                                &grid_default_cell as *const GridCell,
                                                 b"Available values are: %s\x00" as *const u8
                                                     as *const libc::c_char,
                                                 choices.as_mut_ptr(),
@@ -2823,7 +2812,7 @@ unsafe extern "C" fn window_customize_draw_option(
                                                         sx,
                                                         sy.wrapping_sub((*s).cy.wrapping_sub(cy)),
                                                         1 as libc::c_int,
-                                                        &grid_default_cell as *const grid_cell,
+                                                        &grid_default_cell as *const GridCell,
                                                         b"This is a colour option: \x00"
                                                             as *const u8
                                                             as *const libc::c_char,
@@ -2832,11 +2821,11 @@ unsafe extern "C" fn window_customize_draw_option(
                                                         current_block = 13498252046719513127;
                                                     } else {
                                                         memcpy(
-                                                            &mut gc as *mut grid_cell
+                                                            &mut gc as *mut GridCell
                                                                 as *mut libc::c_void,
-                                                            &grid_default_cell as *const grid_cell
+                                                            &grid_default_cell as *const GridCell
                                                                 as *const libc::c_void,
-                                                            ::std::mem::size_of::<grid_cell>()
+                                                            ::std::mem::size_of::<GridCell>()
                                                                 as libc::c_ulong,
                                                         );
                                                         gc.fg = options_get_number((*item).oo, name)
@@ -2849,7 +2838,7 @@ unsafe extern "C" fn window_customize_draw_option(
                                                                 (*s).cy.wrapping_sub(cy),
                                                             ),
                                                             0 as libc::c_int,
-                                                            &mut gc as *mut grid_cell,
+                                                            &mut gc as *mut GridCell,
                                                             b"EXAMPLE\x00" as *const u8
                                                                 as *const libc::c_char,
                                                         ) == 0
@@ -2877,7 +2866,7 @@ unsafe extern "C" fn window_customize_draw_option(
                                                                 ),
                                                                 1 as libc::c_int,
                                                                 &grid_default_cell
-                                                                    as *const grid_cell,
+                                                                    as *const GridCell,
                                                                 b"This is a style option: \x00"
                                                                     as *const u8
                                                                     as *const libc::c_char,
@@ -2900,7 +2889,7 @@ unsafe extern "C" fn window_customize_draw_option(
                                                                         (*s).cy.wrapping_sub(cy),
                                                                     ),
                                                                     0 as libc::c_int,
-                                                                    &mut gc as *mut grid_cell,
+                                                                    &mut gc as *mut GridCell,
                                                                     b"EXAMPLE\x00" as *const u8
                                                                         as *const libc::c_char,
                                                                 ) == 0
@@ -2928,7 +2917,7 @@ unsafe extern "C" fn window_customize_draw_option(
                                                                                              libc::c_int,
                                                                                          &grid_default_cell
                                                                                              as
-                                                                                             *const grid_cell,
+                                                                                             *const GridCell,
                                                                                          b"The default is: %s%s%s\x00"
                                                                                              as
                                                                                              *const u8
@@ -3064,7 +3053,7 @@ unsafe extern "C" fn window_customize_draw_option(
                                                                                                              libc::c_int,
                                                                                                          &grid_default_cell
                                                                                                              as
-                                                                                                             *const grid_cell,
+                                                                                                             *const GridCell,
                                                                                                          b"Window value (from window %u): %s%s%s\x00"
                                                                                                              as
                                                                                                              *const u8
@@ -3134,7 +3123,7 @@ unsafe extern "C" fn window_customize_draw_option(
                                                                                                                    libc::c_int,
                                                                                                                &grid_default_cell
                                                                                                                    as
-                                                                                                                   *const grid_cell,
+                                                                                                                   *const GridCell,
                                                                                                                b"Global value: %s%s%s\x00"
                                                                                                                    as
                                                                                                                    *const u8

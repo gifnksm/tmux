@@ -1,4 +1,5 @@
 use crate::{
+    grid::Cell as GridCell,
     msg::code as msgtype_code,
     tty_code::{code as tty_code_code, Code as TtyCode},
     utf8::Utf8Data,
@@ -85,12 +86,12 @@ extern "C" {
     fn screen_write_nputs(
         _: *mut screen_write_ctx,
         _: ssize_t,
-        _: *const grid_cell,
+        _: *const crate::grid::Cell,
         _: *const libc::c_char,
         _: ...
     );
     #[no_mangle]
-    static grid_default_cell: grid_cell;
+    static grid_default_cell: crate::grid::Cell;
     #[no_mangle]
     fn screen_write_linefeed(_: *mut screen_write_ctx, _: libc::c_int, _: u_int);
     #[no_mangle]
@@ -525,22 +526,11 @@ pub struct screen {
     pub saved_cx: u_int,
     pub saved_cy: u_int,
     pub saved_grid: *mut grid,
-    pub saved_cell: grid_cell,
+    pub saved_cell: crate::grid::Cell,
     pub saved_flags: libc::c_int,
     pub tabs: *mut bitstr_t,
     pub sel: *mut crate::screen::screen_sel,
     pub write_list: *mut crate::screen_write::screen_write_collect_line,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct grid_cell {
-    pub data: crate::utf8::Utf8Data,
-    pub attr: u_short,
-    pub flags: u_char,
-    pub fg: libc::c_int,
-    pub bg: libc::c_int,
-    pub us: libc::c_int,
 }
 
 #[repr(C)]
@@ -801,8 +791,8 @@ pub struct window_pane {
     pub resize_timer: event,
     pub force_timer: event,
     pub ictx: *mut crate::input::input_ctx,
-    pub cached_gc: grid_cell,
-    pub cached_active_gc: grid_cell,
+    pub cached_gc: crate::grid::Cell,
+    pub cached_active_gc: crate::grid::Cell,
     pub palette: *mut libc::c_int,
     pub pipe_fd: libc::c_int,
     pub pipe_event: *mut bufferevent,
@@ -817,7 +807,7 @@ pub struct window_pane {
     pub written: size_t,
     pub skipped: size_t,
     pub border_gc_set: libc::c_int,
-    pub border_gc: grid_cell,
+    pub border_gc: crate::grid::Cell,
     pub entry: C2RustUnnamed_22,
     pub tree_entry: C2RustUnnamed_21,
 }
@@ -1015,7 +1005,7 @@ pub struct status_line {
     pub screen: screen,
     pub active: *mut screen,
     pub references: libc::c_int,
-    pub style: grid_cell,
+    pub style: crate::grid::Cell,
     pub entries: [status_line_entry; 5],
 }
 
@@ -1085,8 +1075,8 @@ pub struct tty {
     pub timer: event,
     pub discarded: size_t,
     pub tio: termios,
-    pub cell: grid_cell,
-    pub last_cell: grid_cell,
+    pub cell: crate::grid::Cell,
+    pub last_cell: crate::grid::Cell,
     pub flags: libc::c_int,
     pub term: *mut tty_term,
     pub mouse_last_x: u_int,
@@ -1176,7 +1166,7 @@ pub struct tty_ctx {
     pub redraw_cb: tty_ctx_redraw_cb,
     pub set_client_cb: tty_ctx_set_client_cb,
     pub arg: *mut libc::c_void,
-    pub cell: *const grid_cell,
+    pub cell: *const crate::grid::Cell,
     pub wrapped: libc::c_int,
     pub num: u_int,
     pub ptr: *mut libc::c_void,
@@ -1191,7 +1181,7 @@ pub struct tty_ctx {
     pub sx: u_int,
     pub sy: u_int,
     pub bg: u_int,
-    pub defaults: grid_cell,
+    pub defaults: crate::grid::Cell,
     pub palette: *mut libc::c_int,
     pub bigger: libc::c_int,
     pub wox: u_int,
@@ -1575,7 +1565,7 @@ pub unsafe extern "C" fn server_destroy_pane(mut wp: *mut window_pane, mut notif
         written: 0,
         skipped: 0,
     };
-    let mut gc: grid_cell = grid_cell {
+    let mut gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -1629,9 +1619,9 @@ pub unsafe extern "C" fn server_destroy_pane(mut wp: *mut window_pane, mut notif
         );
         screen_write_linefeed(&mut ctx, 1 as libc::c_int, 8 as libc::c_int as u_int);
         memcpy(
-            &mut gc as *mut grid_cell as *mut libc::c_void,
-            &grid_default_cell as *const grid_cell as *const libc::c_void,
-            ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+            &mut gc as *mut GridCell as *mut libc::c_void,
+            &grid_default_cell as *const GridCell as *const libc::c_void,
+            ::std::mem::size_of::<GridCell>() as libc::c_ulong,
         );
         time(&mut t);
         ctime_r(&mut t, tim.as_mut_ptr());
@@ -1643,7 +1633,7 @@ pub unsafe extern "C" fn server_destroy_pane(mut wp: *mut window_pane, mut notif
             screen_write_nputs(
                 &mut ctx as *mut screen_write_ctx,
                 -(1 as libc::c_int) as ssize_t,
-                &mut gc as *mut grid_cell,
+                &mut gc as *mut GridCell,
                 b"Pane is dead (status %d, %s)\x00" as *const u8 as *const libc::c_char,
                 ((*wp).status & 0xff00 as libc::c_int) >> 8 as libc::c_int,
                 tim.as_mut_ptr(),
@@ -1656,7 +1646,7 @@ pub unsafe extern "C" fn server_destroy_pane(mut wp: *mut window_pane, mut notif
             screen_write_nputs(
                 &mut ctx as *mut screen_write_ctx,
                 -(1 as libc::c_int) as ssize_t,
-                &mut gc as *mut grid_cell,
+                &mut gc as *mut GridCell,
                 b"Pane is dead (signal %s, %s)\x00" as *const u8 as *const libc::c_char,
                 sig2name((*wp).status & 0x7f as libc::c_int),
                 tim.as_mut_ptr(),

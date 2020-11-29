@@ -1,4 +1,6 @@
+use crate::grid::Cell as GridCell;
 use ::libc;
+
 extern "C" {
     #[no_mangle]
     fn grid_collect_history(_: *mut grid);
@@ -7,9 +9,9 @@ extern "C" {
     #[no_mangle]
     fn grid_scroll_history_region(_: *mut grid, _: u_int, _: u_int, _: u_int);
     #[no_mangle]
-    fn grid_get_cell(_: *mut grid, _: u_int, _: u_int, _: *mut grid_cell);
+    fn grid_get_cell(_: *mut grid, _: u_int, _: u_int, _: *mut crate::grid::Cell);
     #[no_mangle]
-    fn grid_set_cell(_: *mut grid, _: u_int, _: u_int, _: *const grid_cell);
+    fn grid_set_cell(_: *mut grid, _: u_int, _: u_int, _: *const crate::grid::Cell);
     #[no_mangle]
     fn grid_set_padding(_: *mut grid, _: u_int, _: u_int);
     #[no_mangle]
@@ -17,7 +19,7 @@ extern "C" {
         _: *mut grid,
         _: u_int,
         _: u_int,
-        _: *const grid_cell,
+        _: *const crate::grid::Cell,
         _: *const libc::c_char,
         _: size_t,
     );
@@ -35,7 +37,7 @@ extern "C" {
         _: u_int,
         _: u_int,
         _: u_int,
-        _: *mut *mut grid_cell,
+        _: *mut *mut GridCell,
         _: libc::c_int,
         _: libc::c_int,
         _: libc::c_int,
@@ -48,17 +50,6 @@ pub type u_char = __u_char;
 pub type u_short = __u_short;
 pub type u_int = __u_int;
 pub type size_t = libc::c_ulong;
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct grid_cell {
-    pub data: crate::utf8::Utf8Data,
-    pub attr: u_short,
-    pub flags: u_char,
-    pub fg: libc::c_int,
-    pub bg: libc::c_int,
-    pub us: libc::c_int,
-}
 
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -122,7 +113,7 @@ pub unsafe extern "C" fn grid_view_get_cell(
     mut gd: *mut grid,
     mut px: u_int,
     mut py: u_int,
-    mut gc: *mut grid_cell,
+    mut gc: *mut GridCell,
 ) {
     grid_get_cell(gd, px, (*gd).hsize.wrapping_add(py), gc);
 }
@@ -132,7 +123,7 @@ pub unsafe extern "C" fn grid_view_set_cell(
     mut gd: *mut grid,
     mut px: u_int,
     mut py: u_int,
-    mut gc: *const grid_cell,
+    mut gc: *const GridCell,
 ) {
     grid_set_cell(gd, px, (*gd).hsize.wrapping_add(py), gc);
 }
@@ -147,7 +138,7 @@ pub unsafe extern "C" fn grid_view_set_cells(
     mut gd: *mut grid,
     mut px: u_int,
     mut py: u_int,
-    mut gc: *const grid_cell,
+    mut gc: *const GridCell,
     mut s: *const libc::c_char,
     mut slen: size_t,
 ) {
@@ -446,7 +437,7 @@ pub unsafe extern "C" fn grid_view_string_cells(
         px,
         py,
         nx,
-        0 as *mut *mut grid_cell,
+        0 as *mut *mut GridCell,
         0 as libc::c_int,
         0 as libc::c_int,
         0 as libc::c_int,

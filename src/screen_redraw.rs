@@ -1,4 +1,4 @@
-use crate::utf8::Utf8Data;
+use crate::{grid::Cell as GridCell, utf8::Utf8Data};
 use ::libc;
 
 extern "C" {
@@ -44,7 +44,7 @@ extern "C" {
     #[no_mangle]
     fn format_draw(
         _: *mut screen_write_ctx,
-        _: *const grid_cell,
+        _: *const crate::grid::Cell,
         _: u_int,
         _: *const libc::c_char,
         _: *mut style_ranges,
@@ -72,7 +72,12 @@ extern "C" {
     #[no_mangle]
     fn tty_cursor(_: *mut tty, _: u_int, _: u_int);
     #[no_mangle]
-    fn tty_cell(_: *mut tty, _: *const grid_cell, _: *const grid_cell, _: *mut libc::c_int);
+    fn tty_cell(
+        _: *mut tty,
+        _: *const crate::grid::Cell,
+        _: *const crate::grid::Cell,
+        _: *mut libc::c_int,
+    );
     #[no_mangle]
     fn tty_update_mode(_: *mut tty, _: libc::c_int, _: *mut screen);
     #[no_mangle]
@@ -84,13 +89,13 @@ extern "C" {
         _: u_int,
         _: u_int,
         _: u_int,
-        _: *const grid_cell,
+        _: *const crate::grid::Cell,
         _: *mut libc::c_int,
     );
     #[no_mangle]
     fn tty_sync_start(_: *mut tty);
     #[no_mangle]
-    fn tty_default_colours(_: *mut grid_cell, _: *mut window_pane);
+    fn tty_default_colours(_: *mut crate::grid::Cell, _: *mut window_pane);
     #[no_mangle]
     static mut marked_pane: cmd_find_state;
     #[no_mangle]
@@ -104,7 +109,7 @@ extern "C" {
     #[no_mangle]
     fn status_message_redraw(_: *mut client) -> libc::c_int;
     #[no_mangle]
-    static grid_default_cell: grid_cell;
+    static grid_default_cell: crate::grid::Cell;
     #[no_mangle]
     fn grid_compare(_: *mut grid, _: *mut grid) -> libc::c_int;
     #[no_mangle]
@@ -119,7 +124,7 @@ extern "C" {
         _: libc::c_int,
     );
     #[no_mangle]
-    fn screen_write_cell(_: *mut screen_write_ctx, _: *const grid_cell);
+    fn screen_write_cell(_: *mut screen_write_ctx, _: *const crate::grid::Cell);
     #[no_mangle]
     fn window_pane_visible(_: *mut window_pane) -> libc::c_int;
     #[no_mangle]
@@ -138,7 +143,7 @@ extern "C" {
     fn log_debug(_: *const libc::c_char, _: ...);
     #[no_mangle]
     fn style_apply(
-        _: *mut grid_cell,
+        _: *mut crate::grid::Cell,
         _: *mut crate::options::options,
         _: *const libc::c_char,
         _: *mut crate::format::format_tree,
@@ -510,22 +515,11 @@ pub struct screen {
     pub saved_cx: u_int,
     pub saved_cy: u_int,
     pub saved_grid: *mut grid,
-    pub saved_cell: grid_cell,
+    pub saved_cell: crate::grid::Cell,
     pub saved_flags: libc::c_int,
     pub tabs: *mut bitstr_t,
     pub sel: *mut crate::screen::screen_sel,
     pub write_list: *mut crate::screen_write::screen_write_collect_line,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct grid_cell {
-    pub data: crate::utf8::Utf8Data,
-    pub attr: u_short,
-    pub flags: u_char,
-    pub fg: libc::c_int,
-    pub bg: libc::c_int,
-    pub us: libc::c_int,
 }
 
 #[repr(C)]
@@ -786,8 +780,8 @@ pub struct window_pane {
     pub resize_timer: event,
     pub force_timer: event,
     pub ictx: *mut crate::input::input_ctx,
-    pub cached_gc: grid_cell,
-    pub cached_active_gc: grid_cell,
+    pub cached_gc: crate::grid::Cell,
+    pub cached_active_gc: crate::grid::Cell,
     pub palette: *mut libc::c_int,
     pub pipe_fd: libc::c_int,
     pub pipe_event: *mut bufferevent,
@@ -802,7 +796,7 @@ pub struct window_pane {
     pub written: size_t,
     pub skipped: size_t,
     pub border_gc_set: libc::c_int,
-    pub border_gc: grid_cell,
+    pub border_gc: crate::grid::Cell,
     pub entry: C2RustUnnamed_22,
     pub tree_entry: C2RustUnnamed_21,
 }
@@ -1000,7 +994,7 @@ pub struct status_line {
     pub screen: screen,
     pub active: *mut screen,
     pub references: libc::c_int,
-    pub style: grid_cell,
+    pub style: crate::grid::Cell,
     pub entries: [status_line_entry; 5],
 }
 
@@ -1070,8 +1064,8 @@ pub struct tty {
     pub timer: event,
     pub discarded: size_t,
     pub tio: termios,
-    pub cell: grid_cell,
-    pub last_cell: grid_cell,
+    pub cell: crate::grid::Cell,
+    pub last_cell: crate::grid::Cell,
     pub flags: libc::c_int,
     pub term: *mut tty_term,
     pub mouse_last_x: u_int,
@@ -1161,7 +1155,7 @@ pub struct tty_ctx {
     pub redraw_cb: tty_ctx_redraw_cb,
     pub set_client_cb: tty_ctx_set_client_cb,
     pub arg: *mut libc::c_void,
-    pub cell: *const grid_cell,
+    pub cell: *const crate::grid::Cell,
     pub wrapped: libc::c_int,
     pub num: u_int,
     pub ptr: *mut libc::c_void,
@@ -1176,7 +1170,7 @@ pub struct tty_ctx {
     pub sx: u_int,
     pub sy: u_int,
     pub bg: u_int,
-    pub defaults: grid_cell,
+    pub defaults: crate::grid::Cell,
     pub palette: *mut libc::c_int,
     pub bigger: libc::c_int,
     pub wox: u_int,
@@ -1464,7 +1458,7 @@ unsafe extern "C" fn screen_redraw_border_set(
     mut wp: *mut window_pane,
     mut pane_lines: libc::c_int,
     mut cell_type: libc::c_int,
-    mut gc: *mut grid_cell,
+    mut gc: *mut GridCell,
 ) {
     let mut idx: u_int = 0;
     match pane_lines {
@@ -1938,7 +1932,7 @@ unsafe extern "C" fn screen_redraw_make_pane_status(
     mut pane_lines: libc::c_int,
 ) -> libc::c_int {
     let mut w: *mut window = (*wp).window;
-    let mut gc: grid_cell = grid_cell {
+    let mut gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -1989,7 +1983,7 @@ unsafe extern "C" fn screen_redraw_make_pane_status(
         saved_cx: 0,
         saved_cy: 0,
         saved_grid: 0 as *mut grid,
-        saved_cell: grid_cell {
+        saved_cell: GridCell {
             data: Utf8Data {
                 data: [0; 21],
                 have: 0,
@@ -2396,7 +2390,7 @@ unsafe extern "C" fn screen_redraw_draw_borders_style(
     mut x: u_int,
     mut y: u_int,
     mut wp: *mut window_pane,
-) -> *const grid_cell {
+) -> *const GridCell {
     let mut c: *mut client = (*ctx).c;
     let mut s: *mut session = (*c).session;
     let mut w: *mut window = (*(*s).curw).window;
@@ -2440,7 +2434,7 @@ unsafe extern "C" fn screen_redraw_draw_borders_cell(
     let mut x: u_int = (*ctx).ox.wrapping_add(i);
     let mut y: u_int = (*ctx).oy.wrapping_add(j);
     let mut pane_status: libc::c_int = (*ctx).pane_status;
-    let mut gc: grid_cell = grid_cell {
+    let mut gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -2453,7 +2447,7 @@ unsafe extern "C" fn screen_redraw_draw_borders_cell(
         bg: 0,
         us: 0,
     };
-    let mut tmp: *const grid_cell = 0 as *const grid_cell;
+    let mut tmp: *const GridCell = 0 as *const GridCell;
     if (*c).overlay_check.is_some()
         && (*c).overlay_check.expect("non-null function pointer")(c, x, y) == 0
     {
@@ -2465,9 +2459,9 @@ unsafe extern "C" fn screen_redraw_draw_borders_cell(
     }
     if wp.is_null() {
         memcpy(
-            &mut gc as *mut grid_cell as *mut libc::c_void,
-            &grid_default_cell as *const grid_cell as *const libc::c_void,
-            ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+            &mut gc as *mut GridCell as *mut libc::c_void,
+            &grid_default_cell as *const GridCell as *const libc::c_void,
+            ::std::mem::size_of::<GridCell>() as libc::c_ulong,
         );
     } else {
         tmp = screen_redraw_draw_borders_style(ctx, x, y, wp);
@@ -2475,9 +2469,9 @@ unsafe extern "C" fn screen_redraw_draw_borders_cell(
             return;
         }
         memcpy(
-            &mut gc as *mut grid_cell as *mut libc::c_void,
+            &mut gc as *mut GridCell as *mut libc::c_void,
             tmp as *const libc::c_void,
-            ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+            ::std::mem::size_of::<GridCell>() as libc::c_ulong,
         );
         if server_is_marked(s, (*s).curw, marked_pane.wp) != 0
             && screen_redraw_check_is(x, y, pane_status, marked_pane.wp) != 0
@@ -2610,7 +2604,7 @@ unsafe extern "C" fn screen_redraw_draw_pane(
     let mut w: *mut window = (*(*(*c).session).curw).window;
     let mut tty: *mut tty = &mut (*c).tty;
     let mut s: *mut screen = 0 as *mut screen;
-    let mut defaults: grid_cell = grid_cell {
+    let mut defaults: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,

@@ -1,4 +1,7 @@
-use crate::utf8::{utf8_state, Utf8Data};
+use crate::{
+    grid::Cell as GridCell,
+    utf8::{utf8_state, Utf8Data},
+};
 use ::libc;
 
 extern "C" {
@@ -120,7 +123,7 @@ extern "C" {
         _: *mut *mut libc::c_char,
     ) -> libc::c_int;
     #[no_mangle]
-    fn tty_default_colours(_: *mut grid_cell, _: *mut window_pane);
+    fn tty_default_colours(_: *mut crate::grid::Cell, _: *mut window_pane);
     #[no_mangle]
     fn alerts_queue(_: *mut window, _: libc::c_int);
     #[no_mangle]
@@ -128,7 +131,7 @@ extern "C" {
     #[no_mangle]
     fn server_status_window(_: *mut window);
     #[no_mangle]
-    fn screen_write_collect_add(_: *mut screen_write_ctx, _: *const grid_cell);
+    fn screen_write_collect_add(_: *mut screen_write_ctx, _: *const crate::grid::Cell);
     #[no_mangle]
     fn screen_write_carriagereturn(_: *mut screen_write_ctx);
     #[no_mangle]
@@ -153,7 +156,7 @@ extern "C" {
     #[no_mangle]
     fn screen_write_reset(_: *mut screen_write_ctx);
     #[no_mangle]
-    static grid_default_cell: grid_cell;
+    static grid_default_cell: crate::grid::Cell;
     #[no_mangle]
     fn window_pane_reset_palette(_: *mut window_pane);
     #[no_mangle]
@@ -185,11 +188,19 @@ extern "C" {
     #[no_mangle]
     fn screen_write_scrollup(_: *mut screen_write_ctx, _: u_int, _: u_int);
     #[no_mangle]
-    fn screen_write_alternateon(_: *mut screen_write_ctx, _: *mut grid_cell, _: libc::c_int);
+    fn screen_write_alternateon(
+        _: *mut screen_write_ctx,
+        _: *mut crate::grid::Cell,
+        _: libc::c_int,
+    );
     #[no_mangle]
     fn screen_write_clearscreen(_: *mut screen_write_ctx, _: u_int);
     #[no_mangle]
-    fn screen_write_alternateoff(_: *mut screen_write_ctx, _: *mut grid_cell, _: libc::c_int);
+    fn screen_write_alternateoff(
+        _: *mut screen_write_ctx,
+        _: *mut crate::grid::Cell,
+        _: libc::c_int,
+    );
     #[no_mangle]
     fn screen_write_insertline(_: *mut screen_write_ctx, _: u_int, _: u_int);
     #[no_mangle]
@@ -643,22 +654,11 @@ pub struct screen {
     pub saved_cx: u_int,
     pub saved_cy: u_int,
     pub saved_grid: *mut grid,
-    pub saved_cell: grid_cell,
+    pub saved_cell: crate::grid::Cell,
     pub saved_flags: libc::c_int,
     pub tabs: *mut bitstr_t,
     pub sel: *mut crate::screen::screen_sel,
     pub write_list: *mut crate::screen_write::screen_write_collect_line,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct grid_cell {
-    pub data: crate::utf8::Utf8Data,
-    pub attr: u_short,
-    pub flags: u_char,
-    pub fg: libc::c_int,
-    pub bg: libc::c_int,
-    pub us: libc::c_int,
 }
 
 #[repr(C)]
@@ -919,8 +919,8 @@ pub struct window_pane {
     pub resize_timer: event,
     pub force_timer: event,
     pub ictx: *mut input_ctx,
-    pub cached_gc: grid_cell,
-    pub cached_active_gc: grid_cell,
+    pub cached_gc: crate::grid::Cell,
+    pub cached_active_gc: crate::grid::Cell,
     pub palette: *mut libc::c_int,
     pub pipe_fd: libc::c_int,
     pub pipe_event: *mut bufferevent,
@@ -935,7 +935,7 @@ pub struct window_pane {
     pub written: size_t,
     pub skipped: size_t,
     pub border_gc_set: libc::c_int,
-    pub border_gc: grid_cell,
+    pub border_gc: crate::grid::Cell,
     pub entry: C2RustUnnamed_22,
     pub tree_entry: C2RustUnnamed_21,
 }
@@ -1157,7 +1157,7 @@ pub const INPUT_END_ST: C2RustUnnamed_27 = 0;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct input_cell {
-    pub cell: grid_cell,
+    pub cell: crate::grid::Cell,
     pub set: libc::c_int,
     pub g0set: libc::c_int,
     pub g1set: libc::c_int,
@@ -1188,7 +1188,7 @@ pub struct tty_ctx {
     pub redraw_cb: tty_ctx_redraw_cb,
     pub set_client_cb: tty_ctx_set_client_cb,
     pub arg: *mut libc::c_void,
-    pub cell: *const grid_cell,
+    pub cell: *const crate::grid::Cell,
     pub wrapped: libc::c_int,
     pub num: u_int,
     pub ptr: *mut libc::c_void,
@@ -1203,7 +1203,7 @@ pub struct tty_ctx {
     pub sx: u_int,
     pub sy: u_int,
     pub bg: u_int,
-    pub defaults: grid_cell,
+    pub defaults: crate::grid::Cell,
     pub palette: *mut libc::c_int,
     pub bigger: libc::c_int,
     pub wox: u_int,
@@ -1308,7 +1308,7 @@ pub struct status_line {
     pub screen: screen,
     pub active: *mut screen,
     pub references: libc::c_int,
-    pub style: grid_cell,
+    pub style: crate::grid::Cell,
     pub entries: [status_line_entry; 5],
 }
 
@@ -1378,8 +1378,8 @@ pub struct tty {
     pub timer: event,
     pub discarded: size_t,
     pub tio: termios,
-    pub cell: grid_cell,
-    pub last_cell: grid_cell,
+    pub cell: crate::grid::Cell,
+    pub last_cell: crate::grid::Cell,
     pub flags: libc::c_int,
     pub term: *mut tty_term,
     pub mouse_last_x: u_int,
@@ -4140,9 +4140,9 @@ unsafe extern "C" fn input_start_timer(mut ictx: *mut input_ctx) {
 /* Reset cell state to default. */
 unsafe extern "C" fn input_reset_cell(mut ictx: *mut input_ctx) {
     memcpy(
-        &mut (*ictx).cell.cell as *mut grid_cell as *mut libc::c_void,
-        &grid_default_cell as *const grid_cell as *const libc::c_void,
-        ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+        &mut (*ictx).cell.cell as *mut GridCell as *mut libc::c_void,
+        &grid_default_cell as *const GridCell as *const libc::c_void,
+        ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
     (*ictx).cell.set = 0 as libc::c_int;
     (*ictx).cell.g1set = 0 as libc::c_int;
@@ -5475,7 +5475,7 @@ unsafe extern "C" fn input_csi_dispatch_rm(mut ictx: *mut input_ctx) {
 /* Handle CSI private RM. */
 unsafe extern "C" fn input_csi_dispatch_rm_private(mut ictx: *mut input_ctx) {
     let mut sctx: *mut screen_write_ctx = &mut (*ictx).ctx;
-    let mut gc: *mut grid_cell = &mut (*ictx).cell.cell;
+    let mut gc: *mut GridCell = &mut (*ictx).cell.cell;
     let mut i: u_int = 0;
     i = 0 as libc::c_int as u_int;
     while i < (*ictx).param_list_len {
@@ -5577,7 +5577,7 @@ unsafe extern "C" fn input_csi_dispatch_sm(mut ictx: *mut input_ctx) {
 unsafe extern "C" fn input_csi_dispatch_sm_private(mut ictx: *mut input_ctx) {
     let mut sctx: *mut screen_write_ctx = &mut (*ictx).ctx;
     let mut wp: *mut window_pane = (*ictx).wp;
-    let mut gc: *mut grid_cell = &mut (*ictx).cell.cell;
+    let mut gc: *mut GridCell = &mut (*ictx).cell.cell;
     let mut i: u_int = 0;
     i = 0 as libc::c_int as u_int;
     while i < (*ictx).param_list_len {
@@ -5771,7 +5771,7 @@ unsafe extern "C" fn input_csi_dispatch_sgr_256_do(
     mut fgbg: libc::c_int,
     mut c: libc::c_int,
 ) -> libc::c_int {
-    let mut gc: *mut grid_cell = &mut (*ictx).cell.cell;
+    let mut gc: *mut GridCell = &mut (*ictx).cell.cell;
     if c == -(1 as libc::c_int) || c > 255 as libc::c_int {
         if fgbg == 38 as libc::c_int {
             (*gc).fg = 8 as libc::c_int
@@ -5812,7 +5812,7 @@ unsafe extern "C" fn input_csi_dispatch_sgr_rgb_do(
     mut g: libc::c_int,
     mut b: libc::c_int,
 ) -> libc::c_int {
-    let mut gc: *mut grid_cell = &mut (*ictx).cell.cell;
+    let mut gc: *mut GridCell = &mut (*ictx).cell.cell;
     if r == -(1 as libc::c_int) || r > 255 as libc::c_int {
         return 0 as libc::c_int;
     }
@@ -5864,7 +5864,7 @@ unsafe extern "C" fn input_csi_dispatch_sgr_rgb(
 }
 /* Handle CSI SGR with a ISO parameter. */
 unsafe extern "C" fn input_csi_dispatch_sgr_colon(mut ictx: *mut input_ctx, mut i: u_int) {
-    let mut gc: *mut grid_cell = &mut (*ictx).cell.cell;
+    let mut gc: *mut GridCell = &mut (*ictx).cell.cell;
     let mut s: *mut libc::c_char = (*ictx).param_list[i as usize].c2rust_unnamed.str_0;
     let mut copy: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut ptr: *mut libc::c_char = 0 as *mut libc::c_char;
@@ -6031,14 +6031,14 @@ unsafe extern "C" fn input_csi_dispatch_sgr_colon(mut ictx: *mut input_ctx, mut 
 }
 /* Handle CSI SGR. */
 unsafe extern "C" fn input_csi_dispatch_sgr(mut ictx: *mut input_ctx) {
-    let mut gc: *mut grid_cell = &mut (*ictx).cell.cell;
+    let mut gc: *mut GridCell = &mut (*ictx).cell.cell;
     let mut i: u_int = 0;
     let mut n: libc::c_int = 0;
     if (*ictx).param_list_len == 0 as libc::c_int as libc::c_uint {
         memcpy(
             gc as *mut libc::c_void,
-            &grid_default_cell as *const grid_cell as *const libc::c_void,
-            ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+            &grid_default_cell as *const GridCell as *const libc::c_void,
+            ::std::mem::size_of::<GridCell>() as libc::c_ulong,
         );
         return;
     }
@@ -6067,8 +6067,8 @@ unsafe extern "C" fn input_csi_dispatch_sgr(mut ictx: *mut input_ctx) {
                         0 => {
                             memcpy(
                                 gc as *mut libc::c_void,
-                                &grid_default_cell as *const grid_cell as *const libc::c_void,
-                                ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+                                &grid_default_cell as *const GridCell as *const libc::c_void,
+                                ::std::mem::size_of::<GridCell>() as libc::c_ulong,
                             );
                         }
                         1 => {
@@ -6599,7 +6599,7 @@ unsafe extern "C" fn input_osc_4(mut ictx: *mut input_ctx, mut p: *const libc::c
 /* Handle the OSC 10 sequence for setting and querying foreground colour. */
 unsafe extern "C" fn input_osc_10(mut ictx: *mut input_ctx, mut p: *const libc::c_char) {
     let mut wp: *mut window_pane = (*ictx).wp;
-    let mut defaults: grid_cell = grid_cell {
+    let mut defaults: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -6635,7 +6635,7 @@ unsafe extern "C" fn input_osc_10(mut ictx: *mut input_ctx, mut p: *const libc::
 /* Handle the OSC 11 sequence for setting and querying background colour. */
 unsafe extern "C" fn input_osc_11(mut ictx: *mut input_ctx, mut p: *const libc::c_char) {
     let mut wp: *mut window_pane = (*ictx).wp;
-    let mut defaults: grid_cell = grid_cell {
+    let mut defaults: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,

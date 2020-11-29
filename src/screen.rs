@@ -1,4 +1,4 @@
-use crate::utf8::Utf8Data;
+use crate::{grid::Cell as GridCell, utf8::Utf8Data};
 use ::libc;
 
 extern "C" {
@@ -83,7 +83,7 @@ pub struct screen {
     pub saved_cx: u_int,
     pub saved_cy: u_int,
     pub saved_grid: *mut grid,
-    pub saved_cell: grid_cell,
+    pub saved_cell: crate::grid::Cell,
     pub saved_flags: libc::c_int,
     pub tabs: *mut bitstr_t,
     pub sel: *mut screen_sel,
@@ -117,18 +117,7 @@ pub struct screen_sel {
     pub sy: u_int,
     pub ex: u_int,
     pub ey: u_int,
-    pub cell: grid_cell,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct grid_cell {
-    pub data: crate::utf8::Utf8Data,
-    pub attr: u_short,
-    pub flags: u_char,
-    pub fg: libc::c_int,
-    pub bg: libc::c_int,
-    pub us: libc::c_int,
+    pub cell: crate::grid::Cell,
 }
 
 #[repr(C)]
@@ -263,7 +252,7 @@ pub unsafe extern "C" fn screen_reinit(mut s: *mut screen) {
         .wrapping_sub(1 as libc::c_int as libc::c_uint);
     (*s).mode = 0x1 as libc::c_int | 0x10 as libc::c_int;
     if !(*s).saved_grid.is_null() {
-        screen_alternate_off(s, 0 as *mut grid_cell, 0 as libc::c_int);
+        screen_alternate_off(s, 0 as *mut GridCell, 0 as libc::c_int);
     }
     (*s).saved_cx = (2147483647 as libc::c_int as libc::c_uint)
         .wrapping_mul(2 as libc::c_uint)
@@ -599,7 +588,7 @@ pub unsafe extern "C" fn screen_set_selection(
     mut ey: u_int,
     mut rectangle: u_int,
     mut modekeys: libc::c_int,
-    mut gc: *mut grid_cell,
+    mut gc: *mut GridCell,
 ) {
     if (*s).sel.is_null() {
         (*s).sel = xcalloc(
@@ -608,9 +597,9 @@ pub unsafe extern "C" fn screen_set_selection(
         ) as *mut screen_sel
     }
     memcpy(
-        &mut (*(*s).sel).cell as *mut grid_cell as *mut libc::c_void,
+        &mut (*(*s).sel).cell as *mut GridCell as *mut libc::c_void,
         gc as *const libc::c_void,
-        ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+        ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
     (*(*s).sel).hidden = 0 as libc::c_int;
     (*(*s).sel).rectangle = rectangle as libc::c_int;
@@ -759,16 +748,16 @@ pub unsafe extern "C" fn screen_check_selection(
 #[no_mangle]
 pub unsafe extern "C" fn screen_select_cell(
     mut s: *mut screen,
-    mut dst: *mut grid_cell,
-    mut src: *const grid_cell,
+    mut dst: *mut GridCell,
+    mut src: *const GridCell,
 ) {
     if (*s).sel.is_null() || (*(*s).sel).hidden != 0 {
         return;
     }
     memcpy(
         dst as *mut libc::c_void,
-        &mut (*(*s).sel).cell as *mut grid_cell as *const libc::c_void,
-        ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+        &mut (*(*s).sel).cell as *mut GridCell as *const libc::c_void,
+        ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
     utf8_copy(&mut (*dst).data, &(*src).data);
     (*dst).attr = ((*dst).attr as libc::c_int & !(0x80 as libc::c_int)) as u_short;
@@ -820,7 +809,7 @@ unsafe extern "C" fn screen_reflow(
 #[no_mangle]
 pub unsafe extern "C" fn screen_alternate_on(
     mut s: *mut screen,
-    mut gc: *mut grid_cell,
+    mut gc: *mut GridCell,
     mut cursor: libc::c_int,
 ) {
     let mut sx: u_int = 0;
@@ -843,9 +832,9 @@ pub unsafe extern "C" fn screen_alternate_on(
         (*s).saved_cy = (*s).cy
     }
     memcpy(
-        &mut (*s).saved_cell as *mut grid_cell as *mut libc::c_void,
+        &mut (*s).saved_cell as *mut GridCell as *mut libc::c_void,
         gc as *const libc::c_void,
-        ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+        ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
     grid_view_clear(
         (*s).grid,
@@ -862,7 +851,7 @@ pub unsafe extern "C" fn screen_alternate_on(
 #[no_mangle]
 pub unsafe extern "C" fn screen_alternate_off(
     mut s: *mut screen,
-    mut gc: *mut grid_cell,
+    mut gc: *mut GridCell,
     mut cursor: libc::c_int,
 ) {
     let mut sx: u_int = 0;
@@ -904,8 +893,8 @@ pub unsafe extern "C" fn screen_alternate_off(
         if !gc.is_null() {
             memcpy(
                 gc as *mut libc::c_void,
-                &mut (*s).saved_cell as *mut grid_cell as *const libc::c_void,
-                ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+                &mut (*s).saved_cell as *mut GridCell as *const libc::c_void,
+                ::std::mem::size_of::<GridCell>() as libc::c_ulong,
             );
         }
     }

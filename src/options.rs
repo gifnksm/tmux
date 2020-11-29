@@ -1,4 +1,4 @@
-use crate::utf8::Utf8Data;
+use crate::{grid::Cell as GridCell, utf8::Utf8Data};
 use ::libc;
 
 extern "C" {
@@ -86,7 +86,7 @@ extern "C" {
     #[no_mangle]
     fn args_has(_: *mut args, _: u_char) -> libc::c_int;
     #[no_mangle]
-    static grid_default_cell: grid_cell;
+    static grid_default_cell: crate::grid::Cell;
     #[no_mangle]
     fn colour_fromstring(s: *const libc::c_char) -> libc::c_int;
     #[no_mangle]
@@ -132,9 +132,13 @@ extern "C" {
     #[no_mangle]
     fn fatalx(_: *const libc::c_char, _: ...) -> !;
     #[no_mangle]
-    fn style_parse(_: *mut style, _: *const grid_cell, _: *const libc::c_char) -> libc::c_int;
+    fn style_parse(
+        _: *mut style,
+        _: *const crate::grid::Cell,
+        _: *const libc::c_char,
+    ) -> libc::c_int;
     #[no_mangle]
-    fn style_set(_: *mut style, _: *const grid_cell);
+    fn style_set(_: *mut style, _: *const crate::grid::Cell);
 }
 pub type __builtin_va_list = [__va_list_tag; 1];
 
@@ -526,22 +530,11 @@ pub struct screen {
     pub saved_cx: u_int,
     pub saved_cy: u_int,
     pub saved_grid: *mut grid,
-    pub saved_cell: grid_cell,
+    pub saved_cell: crate::grid::Cell,
     pub saved_flags: libc::c_int,
     pub tabs: *mut bitstr_t,
     pub sel: *mut crate::screen::screen_sel,
     pub write_list: *mut crate::screen_write::screen_write_collect_line,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct grid_cell {
-    pub data: crate::utf8::Utf8Data,
-    pub attr: u_short,
-    pub flags: u_char,
-    pub fg: libc::c_int,
-    pub bg: libc::c_int,
-    pub us: libc::c_int,
 }
 
 #[repr(C)]
@@ -682,7 +675,7 @@ pub struct C2RustUnnamed_15 {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct style {
-    pub gc: grid_cell,
+    pub gc: crate::grid::Cell,
     pub ignore: libc::c_int,
     pub fill: libc::c_int,
     pub align: style_align,
@@ -958,8 +951,8 @@ pub struct window_pane {
     pub resize_timer: event,
     pub force_timer: event,
     pub ictx: *mut crate::input::input_ctx,
-    pub cached_gc: grid_cell,
-    pub cached_active_gc: grid_cell,
+    pub cached_gc: crate::grid::Cell,
+    pub cached_active_gc: crate::grid::Cell,
     pub palette: *mut libc::c_int,
     pub pipe_fd: libc::c_int,
     pub pipe_event: *mut bufferevent,
@@ -974,7 +967,7 @@ pub struct window_pane {
     pub written: size_t,
     pub skipped: size_t,
     pub border_gc_set: libc::c_int,
-    pub border_gc: grid_cell,
+    pub border_gc: crate::grid::Cell,
     pub entry: C2RustUnnamed_25,
     pub tree_entry: C2RustUnnamed_24,
 }
@@ -1164,7 +1157,7 @@ pub struct status_line {
     pub screen: screen,
     pub active: *mut screen,
     pub references: libc::c_int,
-    pub style: grid_cell,
+    pub style: crate::grid::Cell,
     pub entries: [status_line_entry; 5],
 }
 
@@ -1229,8 +1222,8 @@ pub struct tty {
     pub timer: event,
     pub discarded: size_t,
     pub tio: termios,
-    pub cell: grid_cell,
-    pub last_cell: grid_cell,
+    pub cell: crate::grid::Cell,
+    pub last_cell: crate::grid::Cell,
     pub flags: libc::c_int,
     pub term: *mut tty_term,
     pub mouse_last_x: u_int,
@@ -2525,7 +2518,7 @@ pub unsafe extern "C" fn options_get_only(
             },
             cached: 0,
             style: style {
-                gc: grid_cell {
+                gc: GridCell {
                     data: Utf8Data {
                         data: [0; 21],
                         have: 0,
@@ -3507,7 +3500,7 @@ unsafe extern "C" fn options_from_string_check(
     mut cause: *mut *mut libc::c_char,
 ) -> libc::c_int {
     let mut sy: style = style {
-        gc: grid_cell {
+        gc: GridCell {
             data: Utf8Data {
                 data: [0; 21],
                 have: 0,

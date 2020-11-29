@@ -1,4 +1,4 @@
-use crate::utf8::Utf8Data;
+use crate::{grid::Cell as GridCell, utf8::Utf8Data};
 use ::libc;
 
 extern "C" {
@@ -55,7 +55,7 @@ extern "C" {
     #[no_mangle]
     fn attributes_fromstring(_: *const libc::c_char) -> libc::c_int;
     #[no_mangle]
-    static grid_default_cell: grid_cell;
+    static grid_default_cell: crate::grid::Cell;
     #[no_mangle]
     fn log_debug(_: *const libc::c_char, _: ...);
 }
@@ -438,22 +438,11 @@ pub struct screen {
     pub saved_cx: u_int,
     pub saved_cy: u_int,
     pub saved_grid: *mut grid,
-    pub saved_cell: grid_cell,
+    pub saved_cell: crate::grid::Cell,
     pub saved_flags: libc::c_int,
     pub tabs: *mut bitstr_t,
     pub sel: *mut crate::screen::screen_sel,
     pub write_list: *mut crate::screen_write::screen_write_collect_line,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct grid_cell {
-    pub data: crate::utf8::Utf8Data,
-    pub attr: u_short,
-    pub flags: u_char,
-    pub fg: libc::c_int,
-    pub bg: libc::c_int,
-    pub us: libc::c_int,
 }
 
 #[repr(C)]
@@ -714,8 +703,8 @@ pub struct window_pane {
     pub resize_timer: event,
     pub force_timer: event,
     pub ictx: *mut crate::input::input_ctx,
-    pub cached_gc: grid_cell,
-    pub cached_active_gc: grid_cell,
+    pub cached_gc: crate::grid::Cell,
+    pub cached_active_gc: crate::grid::Cell,
     pub palette: *mut libc::c_int,
     pub pipe_fd: libc::c_int,
     pub pipe_event: *mut bufferevent,
@@ -730,7 +719,7 @@ pub struct window_pane {
     pub written: size_t,
     pub skipped: size_t,
     pub border_gc_set: libc::c_int,
-    pub border_gc: grid_cell,
+    pub border_gc: crate::grid::Cell,
     pub entry: C2RustUnnamed_23,
     pub tree_entry: C2RustUnnamed_22,
 }
@@ -928,7 +917,7 @@ pub struct status_line {
     pub screen: screen,
     pub active: *mut screen,
     pub references: libc::c_int,
-    pub style: grid_cell,
+    pub style: crate::grid::Cell,
     pub entries: [status_line_entry; 5],
 }
 
@@ -998,8 +987,8 @@ pub struct tty {
     pub timer: event,
     pub discarded: size_t,
     pub tio: termios,
-    pub cell: grid_cell,
-    pub last_cell: grid_cell,
+    pub cell: crate::grid::Cell,
+    pub last_cell: crate::grid::Cell,
     pub flags: libc::c_int,
     pub term: *mut tty_term,
     pub mouse_last_x: u_int,
@@ -1082,7 +1071,7 @@ pub const STYLE_DEFAULT_BASE: style_default_type = 0;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct style {
-    pub gc: grid_cell,
+    pub gc: crate::grid::Cell,
     pub ignore: libc::c_int,
     pub fill: libc::c_int,
     pub align: style_align,
@@ -1121,7 +1110,7 @@ unsafe extern "C" fn atoi(mut __nptr: *const libc::c_char) -> libc::c_int {
 static mut style_default: style = {
     let mut init = style {
         gc: {
-            let mut init = grid_cell {
+            let mut init = GridCell {
                 data: {
                     let mut init = Utf8Data {
                         data: [
@@ -1179,12 +1168,12 @@ static mut style_default: style = {
 #[no_mangle]
 pub unsafe extern "C" fn style_parse(
     mut sy: *mut style,
-    mut base: *const grid_cell,
+    mut base: *const GridCell,
     mut in_0: *const libc::c_char,
 ) -> libc::c_int {
     let mut current_block: u64;
     let mut saved: style = style {
-        gc: grid_cell {
+        gc: GridCell {
             data: Utf8Data {
                 data: [0; 21],
                 have: 0,
@@ -1521,7 +1510,7 @@ pub unsafe extern "C" fn style_parse(
 /* Convert style to a string. */
 #[no_mangle]
 pub unsafe extern "C" fn style_tostring(mut sy: *mut style) -> *const libc::c_char {
-    let mut gc: *mut grid_cell = &mut (*sy).gc;
+    let mut gc: *mut GridCell = &mut (*sy).gc;
     let mut off: libc::c_int = 0 as libc::c_int;
     let mut comma: *const libc::c_char = b"\x00" as *const u8 as *const libc::c_char;
     let mut tmp: *const libc::c_char = b"\x00" as *const u8 as *const libc::c_char;
@@ -1668,7 +1657,7 @@ pub unsafe extern "C" fn style_tostring(mut sy: *mut style) -> *const libc::c_ch
 /* Apply a style on top of the given style. */
 #[no_mangle]
 pub unsafe extern "C" fn style_add(
-    mut gc: *mut grid_cell,
+    mut gc: *mut GridCell,
     mut oo: *mut crate::options::options,
     mut name: *const libc::c_char,
     mut ft: *mut crate::format::format_tree,
@@ -1702,30 +1691,30 @@ pub unsafe extern "C" fn style_add(
 /* Apply a style on top of the default style. */
 #[no_mangle]
 pub unsafe extern "C" fn style_apply(
-    mut gc: *mut grid_cell,
+    mut gc: *mut GridCell,
     mut oo: *mut crate::options::options,
     mut name: *const libc::c_char,
     mut ft: *mut crate::format::format_tree,
 ) {
     memcpy(
         gc as *mut libc::c_void,
-        &grid_default_cell as *const grid_cell as *const libc::c_void,
-        ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+        &grid_default_cell as *const GridCell as *const libc::c_void,
+        ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
     style_add(gc, oo, name, ft);
 }
 /* Initialize style from cell. */
 #[no_mangle]
-pub unsafe extern "C" fn style_set(mut sy: *mut style, mut gc: *const grid_cell) {
+pub unsafe extern "C" fn style_set(mut sy: *mut style, mut gc: *const GridCell) {
     memcpy(
         sy as *mut libc::c_void,
         &mut style_default as *mut style as *const libc::c_void,
         ::std::mem::size_of::<style>() as libc::c_ulong,
     );
     memcpy(
-        &mut (*sy).gc as *mut grid_cell as *mut libc::c_void,
+        &mut (*sy).gc as *mut GridCell as *mut libc::c_void,
         gc as *const libc::c_void,
-        ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+        ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
 }
 /* Copy style. */

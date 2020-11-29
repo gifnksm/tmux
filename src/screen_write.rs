@@ -1,4 +1,7 @@
-use crate::utf8::{utf8_state, Utf8Data, Utf8State};
+use crate::{
+    grid::Cell as GridCell,
+    utf8::{utf8_state, Utf8Data, Utf8State},
+};
 use ::libc;
 
 extern "C" {
@@ -42,7 +45,7 @@ extern "C" {
     #[no_mangle]
     fn format_draw(
         _: *mut screen_write_ctx,
-        _: *const grid_cell,
+        _: *const crate::grid::Cell,
         _: u_int,
         _: *const libc::c_char,
         _: *mut style_ranges,
@@ -108,21 +111,21 @@ extern "C" {
     #[no_mangle]
     fn tty_cmd_syncstart(_: *mut tty, _: *const tty_ctx);
     #[no_mangle]
-    fn tty_default_colours(_: *mut grid_cell, _: *mut window_pane);
+    fn tty_default_colours(_: *mut crate::grid::Cell, _: *mut window_pane);
     #[no_mangle]
-    static grid_default_cell: grid_cell;
+    static grid_default_cell: crate::grid::Cell;
     #[no_mangle]
-    fn grid_cells_equal(_: *const grid_cell, _: *const grid_cell) -> libc::c_int;
+    fn grid_cells_equal(_: *const crate::grid::Cell, _: *const crate::grid::Cell) -> libc::c_int;
     #[no_mangle]
     fn grid_clear_history(_: *mut grid);
     #[no_mangle]
-    fn grid_get_cell(_: *mut grid, _: u_int, _: u_int, _: *mut grid_cell);
+    fn grid_get_cell(_: *mut grid, _: u_int, _: u_int, _: *mut crate::grid::Cell);
     #[no_mangle]
     fn grid_get_line(_: *mut grid, _: u_int) -> *mut grid_line;
     #[no_mangle]
-    fn grid_view_get_cell(_: *mut grid, _: u_int, _: u_int, _: *mut grid_cell);
+    fn grid_view_get_cell(_: *mut grid, _: u_int, _: u_int, _: *mut crate::grid::Cell);
     #[no_mangle]
-    fn grid_view_set_cell(_: *mut grid, _: u_int, _: u_int, _: *const grid_cell);
+    fn grid_view_set_cell(_: *mut grid, _: u_int, _: u_int, _: *const crate::grid::Cell);
     #[no_mangle]
     fn grid_view_set_padding(_: *mut grid, _: u_int, _: u_int);
     #[no_mangle]
@@ -130,7 +133,7 @@ extern "C" {
         _: *mut grid,
         _: u_int,
         _: u_int,
-        _: *const grid_cell,
+        _: *const crate::grid::Cell,
         _: *const libc::c_char,
         _: size_t,
     );
@@ -157,7 +160,7 @@ extern "C" {
     #[no_mangle]
     fn screen_reset_tabs(_: *mut screen);
     #[no_mangle]
-    fn screen_select_cell(_: *mut screen, _: *mut grid_cell, _: *const grid_cell);
+    fn screen_select_cell(_: *mut screen, _: *mut crate::grid::Cell, _: *const crate::grid::Cell);
     #[no_mangle]
     fn screen_check_selection(_: *mut screen, _: u_int, _: u_int) -> libc::c_int;
     #[no_mangle]
@@ -165,9 +168,9 @@ extern "C" {
     #[no_mangle]
     fn status_at_line(_: *mut client) -> libc::c_int;
     #[no_mangle]
-    fn screen_alternate_on(_: *mut screen, _: *mut grid_cell, _: libc::c_int);
+    fn screen_alternate_on(_: *mut screen, _: *mut crate::grid::Cell, _: libc::c_int);
     #[no_mangle]
-    fn screen_alternate_off(_: *mut screen, _: *mut grid_cell, _: libc::c_int);
+    fn screen_alternate_off(_: *mut screen, _: *mut crate::grid::Cell, _: libc::c_int);
     #[no_mangle]
     fn utf8_fromcstr(_: *const libc::c_char) -> *mut Utf8Data;
     #[no_mangle]
@@ -564,7 +567,7 @@ pub struct screen {
     pub saved_cx: u_int,
     pub saved_cy: u_int,
     pub saved_grid: *mut grid,
-    pub saved_cell: grid_cell,
+    pub saved_cell: crate::grid::Cell,
     pub saved_flags: libc::c_int,
     pub tabs: *mut bitstr_t,
     pub sel: *mut crate::screen::screen_sel,
@@ -594,7 +597,7 @@ pub struct screen_write_collect_item {
     pub type_0: C2RustUnnamed_12,
     pub used: u_int,
     pub bg: u_int,
-    pub gc: grid_cell,
+    pub gc: crate::grid::Cell,
     pub entry: C2RustUnnamed_11,
 }
 
@@ -603,17 +606,6 @@ pub struct screen_write_collect_item {
 pub struct C2RustUnnamed_11 {
     pub tqe_next: *mut screen_write_collect_item,
     pub tqe_prev: *mut *mut screen_write_collect_item,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct grid_cell {
-    pub data: crate::utf8::Utf8Data,
-    pub attr: u_short,
-    pub flags: u_char,
-    pub fg: libc::c_int,
-    pub bg: libc::c_int,
-    pub us: libc::c_int,
 }
 
 pub type C2RustUnnamed_12 = libc::c_uint;
@@ -879,8 +871,8 @@ pub struct window_pane {
     pub resize_timer: event,
     pub force_timer: event,
     pub ictx: *mut crate::input::input_ctx,
-    pub cached_gc: grid_cell,
-    pub cached_active_gc: grid_cell,
+    pub cached_gc: crate::grid::Cell,
+    pub cached_active_gc: crate::grid::Cell,
     pub palette: *mut libc::c_int,
     pub pipe_fd: libc::c_int,
     pub pipe_event: *mut bufferevent,
@@ -895,7 +887,7 @@ pub struct window_pane {
     pub written: size_t,
     pub skipped: size_t,
     pub border_gc_set: libc::c_int,
-    pub border_gc: grid_cell,
+    pub border_gc: crate::grid::Cell,
     pub entry: C2RustUnnamed_25,
     pub tree_entry: C2RustUnnamed_24,
 }
@@ -1093,7 +1085,7 @@ pub struct status_line {
     pub screen: screen,
     pub active: *mut screen,
     pub references: libc::c_int,
-    pub style: grid_cell,
+    pub style: crate::grid::Cell,
     pub entries: [status_line_entry; 5],
 }
 
@@ -1163,8 +1155,8 @@ pub struct tty {
     pub timer: event,
     pub discarded: size_t,
     pub tio: termios,
-    pub cell: grid_cell,
-    pub last_cell: grid_cell,
+    pub cell: crate::grid::Cell,
+    pub last_cell: crate::grid::Cell,
     pub flags: libc::c_int,
     pub term: *mut tty_term,
     pub mouse_last_x: u_int,
@@ -1254,7 +1246,7 @@ pub struct tty_ctx {
     pub redraw_cb: tty_ctx_redraw_cb,
     pub set_client_cb: tty_ctx_set_client_cb,
     pub arg: *mut libc::c_void,
-    pub cell: *const grid_cell,
+    pub cell: *const crate::grid::Cell,
     pub wrapped: libc::c_int,
     pub num: u_int,
     pub ptr: *mut libc::c_void,
@@ -1269,7 +1261,7 @@ pub struct tty_ctx {
     pub sx: u_int,
     pub sy: u_int,
     pub bg: u_int,
-    pub defaults: grid_cell,
+    pub defaults: crate::grid::Cell,
     pub palette: *mut libc::c_int,
     pub bigger: libc::c_int,
     pub wox: u_int,
@@ -1446,9 +1438,9 @@ unsafe extern "C" fn screen_write_initctx(
         (*ttyctx).palette = (*(*ctx).wp).palette
     } else {
         memcpy(
-            &mut (*ttyctx).defaults as *mut grid_cell as *mut libc::c_void,
-            &grid_default_cell as *const grid_cell as *const libc::c_void,
-            ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+            &mut (*ttyctx).defaults as *mut GridCell as *mut libc::c_void,
+            &grid_default_cell as *const GridCell as *const libc::c_void,
+            ::std::mem::size_of::<GridCell>() as libc::c_ulong,
         );
         (*ttyctx).palette = 0 as *mut libc::c_int
     }
@@ -1643,10 +1635,10 @@ pub unsafe extern "C" fn screen_write_reset(mut ctx: *mut screen_write_ctx) {
 #[no_mangle]
 pub unsafe extern "C" fn screen_write_putc(
     mut ctx: *mut screen_write_ctx,
-    mut gcp: *const grid_cell,
+    mut gcp: *const GridCell,
     mut ch: u_char,
 ) {
-    let mut gc: grid_cell = grid_cell {
+    let mut gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -1660,9 +1652,9 @@ pub unsafe extern "C" fn screen_write_putc(
         us: 0,
     };
     memcpy(
-        &mut gc as *mut grid_cell as *mut libc::c_void,
+        &mut gc as *mut GridCell as *mut libc::c_void,
         gcp as *const libc::c_void,
-        ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+        ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
     utf8_set(&mut gc.data, ch);
     screen_write_cell(ctx, &mut gc);
@@ -1730,7 +1722,7 @@ pub unsafe extern "C" fn screen_write_text(
     mut width: u_int,
     mut lines: u_int,
     mut more: libc::c_int,
-    mut gcp: *const grid_cell,
+    mut gcp: *const GridCell,
     mut fmt: *const libc::c_char,
     mut args: ...
 ) -> libc::c_int {
@@ -1745,7 +1737,7 @@ pub unsafe extern "C" fn screen_write_text(
     let mut at: u_int = 0;
     let mut left: u_int = 0;
     let mut text: *mut Utf8Data = 0 as *mut Utf8Data;
-    let mut gc: grid_cell = grid_cell {
+    let mut gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -1759,9 +1751,9 @@ pub unsafe extern "C" fn screen_write_text(
         us: 0,
     };
     memcpy(
-        &mut gc as *mut grid_cell as *mut libc::c_void,
+        &mut gc as *mut GridCell as *mut libc::c_void,
         gcp as *const libc::c_void,
-        ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+        ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
     ap = args.clone();
     xvasprintf(&mut tmp, fmt, ap.as_va_list());
@@ -1879,7 +1871,7 @@ pub unsafe extern "C" fn screen_write_text(
 #[no_mangle]
 pub unsafe extern "C" fn screen_write_puts(
     mut ctx: *mut screen_write_ctx,
-    mut gcp: *const grid_cell,
+    mut gcp: *const GridCell,
     mut fmt: *const libc::c_char,
     mut args: ...
 ) {
@@ -1898,7 +1890,7 @@ pub unsafe extern "C" fn screen_write_puts(
 pub unsafe extern "C" fn screen_write_nputs(
     mut ctx: *mut screen_write_ctx,
     mut maxlen: ssize_t,
-    mut gcp: *const grid_cell,
+    mut gcp: *const GridCell,
     mut fmt: *const libc::c_char,
     mut args: ...
 ) {
@@ -1910,11 +1902,11 @@ pub unsafe extern "C" fn screen_write_nputs(
 pub unsafe extern "C" fn screen_write_vnputs(
     mut ctx: *mut screen_write_ctx,
     mut maxlen: ssize_t,
-    mut gcp: *const grid_cell,
+    mut gcp: *const GridCell,
     mut fmt: *const libc::c_char,
     mut ap: ::std::ffi::VaList,
 ) {
-    let mut gc: grid_cell = grid_cell {
+    let mut gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -1934,9 +1926,9 @@ pub unsafe extern "C" fn screen_write_vnputs(
     let mut size: size_t = 0 as libc::c_int as size_t;
     let mut more: Utf8State = utf8_state::MORE;
     memcpy(
-        &mut gc as *mut grid_cell as *mut libc::c_void,
+        &mut gc as *mut GridCell as *mut libc::c_void,
         gcp as *const libc::c_void,
-        ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+        ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
     xvasprintf(&mut msg, fmt, ap.as_va_list());
     ptr = msg as *mut u_char;
@@ -2011,7 +2003,7 @@ pub unsafe extern "C" fn screen_write_fast_copy(
 ) {
     let mut s: *mut screen = (*ctx).s;
     let mut gd: *mut grid = (*src).grid;
-    let mut gc: grid_cell = grid_cell {
+    let mut gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -2064,7 +2056,7 @@ pub unsafe extern "C" fn screen_write_hline(
     mut right: libc::c_int,
 ) {
     let mut s: *mut screen = (*ctx).s;
-    let mut gc: grid_cell = grid_cell {
+    let mut gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -2083,9 +2075,9 @@ pub unsafe extern "C" fn screen_write_hline(
     cx = (*s).cx;
     cy = (*s).cy;
     memcpy(
-        &mut gc as *mut grid_cell as *mut libc::c_void,
-        &grid_default_cell as *const grid_cell as *const libc::c_void,
-        ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+        &mut gc as *mut GridCell as *mut libc::c_void,
+        &grid_default_cell as *const GridCell as *const libc::c_void,
+        ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
     gc.attr = (gc.attr as libc::c_int | 0x80 as libc::c_int) as u_short;
     screen_write_putc(
@@ -2114,7 +2106,7 @@ pub unsafe extern "C" fn screen_write_vline(
     mut bottom: libc::c_int,
 ) {
     let mut s: *mut screen = (*ctx).s;
-    let mut gc: grid_cell = grid_cell {
+    let mut gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -2133,9 +2125,9 @@ pub unsafe extern "C" fn screen_write_vline(
     cx = (*s).cx;
     cy = (*s).cy;
     memcpy(
-        &mut gc as *mut grid_cell as *mut libc::c_void,
-        &grid_default_cell as *const grid_cell as *const libc::c_void,
-        ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+        &mut gc as *mut GridCell as *mut libc::c_void,
+        &grid_default_cell as *const GridCell as *const libc::c_void,
+        ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
     gc.attr = (gc.attr as libc::c_int | 0x80 as libc::c_int) as u_short;
     screen_write_putc(
@@ -2168,10 +2160,10 @@ pub unsafe extern "C" fn screen_write_menu(
     mut ctx: *mut screen_write_ctx,
     mut menu: *mut menu,
     mut choice: libc::c_int,
-    mut choice_gc: *const grid_cell,
+    mut choice_gc: *const GridCell,
 ) {
     let mut s: *mut screen = (*ctx).s;
-    let mut default_gc: grid_cell = grid_cell {
+    let mut default_gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -2184,7 +2176,7 @@ pub unsafe extern "C" fn screen_write_menu(
         bg: 0,
         us: 0,
     };
-    let mut gc: *const grid_cell = &mut default_gc;
+    let mut gc: *const GridCell = &mut default_gc;
     let mut cx: u_int = 0;
     let mut cy: u_int = 0;
     let mut i: u_int = 0;
@@ -2193,9 +2185,9 @@ pub unsafe extern "C" fn screen_write_menu(
     cx = (*s).cx;
     cy = (*s).cy;
     memcpy(
-        &mut default_gc as *mut grid_cell as *mut libc::c_void,
-        &grid_default_cell as *const grid_cell as *const libc::c_void,
-        ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+        &mut default_gc as *mut GridCell as *mut libc::c_void,
+        &grid_default_cell as *const GridCell as *const libc::c_void,
+        ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
     screen_write_box(
         ctx,
@@ -2281,7 +2273,7 @@ pub unsafe extern "C" fn screen_write_box(
     mut ny: u_int,
 ) {
     let mut s: *mut screen = (*ctx).s;
-    let mut gc: grid_cell = grid_cell {
+    let mut gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -2300,9 +2292,9 @@ pub unsafe extern "C" fn screen_write_box(
     cx = (*s).cx;
     cy = (*s).cy;
     memcpy(
-        &mut gc as *mut grid_cell as *mut libc::c_void,
-        &grid_default_cell as *const grid_cell as *const libc::c_void,
-        ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+        &mut gc as *mut GridCell as *mut libc::c_void,
+        &grid_default_cell as *const GridCell as *const libc::c_void,
+        ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
     gc.attr = (gc.attr as libc::c_int | 0x80 as libc::c_int) as u_short;
     screen_write_putc(ctx, &mut gc, 'l' as i32 as u_char);
@@ -2356,7 +2348,7 @@ pub unsafe extern "C" fn screen_write_preview(
     mut ny: u_int,
 ) {
     let mut s: *mut screen = (*ctx).s;
-    let mut gc: grid_cell = grid_cell {
+    let mut gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -2580,7 +2572,7 @@ pub unsafe extern "C" fn screen_write_alignmenttest(mut ctx: *mut screen_write_c
         redraw_cb: None,
         set_client_cb: None,
         arg: 0 as *mut libc::c_void,
-        cell: 0 as *const grid_cell,
+        cell: 0 as *const GridCell,
         wrapped: 0,
         num: 0,
         ptr: 0 as *mut libc::c_void,
@@ -2595,7 +2587,7 @@ pub unsafe extern "C" fn screen_write_alignmenttest(mut ctx: *mut screen_write_c
         sx: 0,
         sy: 0,
         bg: 0,
-        defaults: grid_cell {
+        defaults: GridCell {
             data: Utf8Data {
                 data: [0; 21],
                 have: 0,
@@ -2615,7 +2607,7 @@ pub unsafe extern "C" fn screen_write_alignmenttest(mut ctx: *mut screen_write_c
         wsx: 0,
         wsy: 0,
     };
-    let mut gc: grid_cell = grid_cell {
+    let mut gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -2631,9 +2623,9 @@ pub unsafe extern "C" fn screen_write_alignmenttest(mut ctx: *mut screen_write_c
     let mut xx: u_int = 0;
     let mut yy: u_int = 0;
     memcpy(
-        &mut gc as *mut grid_cell as *mut libc::c_void,
-        &grid_default_cell as *const grid_cell as *const libc::c_void,
-        ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+        &mut gc as *mut GridCell as *mut libc::c_void,
+        &grid_default_cell as *const GridCell as *const libc::c_void,
+        ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
     utf8_set(&mut gc.data, 'E' as i32 as u_char);
     yy = 0 as libc::c_int as u_int;
@@ -2676,7 +2668,7 @@ pub unsafe extern "C" fn screen_write_insertcharacter(
         redraw_cb: None,
         set_client_cb: None,
         arg: 0 as *mut libc::c_void,
-        cell: 0 as *const grid_cell,
+        cell: 0 as *const GridCell,
         wrapped: 0,
         num: 0,
         ptr: 0 as *mut libc::c_void,
@@ -2691,7 +2683,7 @@ pub unsafe extern "C" fn screen_write_insertcharacter(
         sx: 0,
         sy: 0,
         bg: 0,
-        defaults: grid_cell {
+        defaults: GridCell {
             data: Utf8Data {
                 data: [0; 21],
                 have: 0,
@@ -2757,7 +2749,7 @@ pub unsafe extern "C" fn screen_write_deletecharacter(
         redraw_cb: None,
         set_client_cb: None,
         arg: 0 as *mut libc::c_void,
-        cell: 0 as *const grid_cell,
+        cell: 0 as *const GridCell,
         wrapped: 0,
         num: 0,
         ptr: 0 as *mut libc::c_void,
@@ -2772,7 +2764,7 @@ pub unsafe extern "C" fn screen_write_deletecharacter(
         sx: 0,
         sy: 0,
         bg: 0,
-        defaults: grid_cell {
+        defaults: GridCell {
             data: Utf8Data {
                 data: [0; 21],
                 have: 0,
@@ -2838,7 +2830,7 @@ pub unsafe extern "C" fn screen_write_clearcharacter(
         redraw_cb: None,
         set_client_cb: None,
         arg: 0 as *mut libc::c_void,
-        cell: 0 as *const grid_cell,
+        cell: 0 as *const GridCell,
         wrapped: 0,
         num: 0,
         ptr: 0 as *mut libc::c_void,
@@ -2853,7 +2845,7 @@ pub unsafe extern "C" fn screen_write_clearcharacter(
         sx: 0,
         sy: 0,
         bg: 0,
-        defaults: grid_cell {
+        defaults: GridCell {
             data: Utf8Data {
                 data: [0; 21],
                 have: 0,
@@ -2927,7 +2919,7 @@ pub unsafe extern "C" fn screen_write_insertline(
         redraw_cb: None,
         set_client_cb: None,
         arg: 0 as *mut libc::c_void,
-        cell: 0 as *const grid_cell,
+        cell: 0 as *const GridCell,
         wrapped: 0,
         num: 0,
         ptr: 0 as *mut libc::c_void,
@@ -2942,7 +2934,7 @@ pub unsafe extern "C" fn screen_write_insertline(
         sx: 0,
         sy: 0,
         bg: 0,
-        defaults: grid_cell {
+        defaults: GridCell {
             data: Utf8Data {
                 data: [0; 21],
                 have: 0,
@@ -3037,7 +3029,7 @@ pub unsafe extern "C" fn screen_write_deleteline(
         redraw_cb: None,
         set_client_cb: None,
         arg: 0 as *mut libc::c_void,
-        cell: 0 as *const grid_cell,
+        cell: 0 as *const GridCell,
         wrapped: 0,
         num: 0,
         ptr: 0 as *mut libc::c_void,
@@ -3052,7 +3044,7 @@ pub unsafe extern "C" fn screen_write_deleteline(
         sx: 0,
         sy: 0,
         bg: 0,
-        defaults: grid_cell {
+        defaults: GridCell {
             data: Utf8Data {
                 data: [0; 21],
                 have: 0,
@@ -3308,7 +3300,7 @@ pub unsafe extern "C" fn screen_write_reverseindex(mut ctx: *mut screen_write_ct
         redraw_cb: None,
         set_client_cb: None,
         arg: 0 as *mut libc::c_void,
-        cell: 0 as *const grid_cell,
+        cell: 0 as *const GridCell,
         wrapped: 0,
         num: 0,
         ptr: 0 as *mut libc::c_void,
@@ -3323,7 +3315,7 @@ pub unsafe extern "C" fn screen_write_reverseindex(mut ctx: *mut screen_write_ct
         sx: 0,
         sy: 0,
         bg: 0,
-        defaults: grid_cell {
+        defaults: GridCell {
             data: Utf8Data {
                 data: [0; 21],
                 have: 0,
@@ -3520,7 +3512,7 @@ pub unsafe extern "C" fn screen_write_scrolldown(
         redraw_cb: None,
         set_client_cb: None,
         arg: 0 as *mut libc::c_void,
-        cell: 0 as *const grid_cell,
+        cell: 0 as *const GridCell,
         wrapped: 0,
         num: 0,
         ptr: 0 as *mut libc::c_void,
@@ -3535,7 +3527,7 @@ pub unsafe extern "C" fn screen_write_scrolldown(
         sx: 0,
         sy: 0,
         bg: 0,
-        defaults: grid_cell {
+        defaults: GridCell {
             data: Utf8Data {
                 data: [0; 21],
                 have: 0,
@@ -3606,7 +3598,7 @@ pub unsafe extern "C" fn screen_write_clearendofscreen(
         redraw_cb: None,
         set_client_cb: None,
         arg: 0 as *mut libc::c_void,
-        cell: 0 as *const grid_cell,
+        cell: 0 as *const GridCell,
         wrapped: 0,
         num: 0,
         ptr: 0 as *mut libc::c_void,
@@ -3621,7 +3613,7 @@ pub unsafe extern "C" fn screen_write_clearendofscreen(
         sx: 0,
         sy: 0,
         bg: 0,
-        defaults: grid_cell {
+        defaults: GridCell {
             data: Utf8Data {
                 data: [0; 21],
                 have: 0,
@@ -3703,7 +3695,7 @@ pub unsafe extern "C" fn screen_write_clearstartofscreen(
         redraw_cb: None,
         set_client_cb: None,
         arg: 0 as *mut libc::c_void,
-        cell: 0 as *const grid_cell,
+        cell: 0 as *const GridCell,
         wrapped: 0,
         num: 0,
         ptr: 0 as *mut libc::c_void,
@@ -3718,7 +3710,7 @@ pub unsafe extern "C" fn screen_write_clearstartofscreen(
         sx: 0,
         sy: 0,
         bg: 0,
-        defaults: grid_cell {
+        defaults: GridCell {
             data: Utf8Data {
                 data: [0; 21],
                 have: 0,
@@ -3796,7 +3788,7 @@ pub unsafe extern "C" fn screen_write_clearscreen(mut ctx: *mut screen_write_ctx
         redraw_cb: None,
         set_client_cb: None,
         arg: 0 as *mut libc::c_void,
-        cell: 0 as *const grid_cell,
+        cell: 0 as *const GridCell,
         wrapped: 0,
         num: 0,
         ptr: 0 as *mut libc::c_void,
@@ -3811,7 +3803,7 @@ pub unsafe extern "C" fn screen_write_clearscreen(mut ctx: *mut screen_write_ctx
         sx: 0,
         sy: 0,
         bg: 0,
-        defaults: grid_cell {
+        defaults: GridCell {
             data: Utf8Data {
                 data: [0; 21],
                 have: 0,
@@ -4138,7 +4130,7 @@ unsafe extern "C" fn screen_write_collect_flush(
         redraw_cb: None,
         set_client_cb: None,
         arg: 0 as *mut libc::c_void,
-        cell: 0 as *const grid_cell,
+        cell: 0 as *const GridCell,
         wrapped: 0,
         num: 0,
         ptr: 0 as *mut libc::c_void,
@@ -4153,7 +4145,7 @@ unsafe extern "C" fn screen_write_collect_flush(
         sx: 0,
         sy: 0,
         bg: 0,
-        defaults: grid_cell {
+        defaults: GridCell {
             data: Utf8Data {
                 data: [0; 21],
                 have: 0,
@@ -4305,7 +4297,7 @@ pub unsafe extern "C" fn screen_write_collect_end(mut ctx: *mut screen_write_ctx
     let mut ci: *mut screen_write_collect_item = (*ctx).item;
     let mut cl: *mut screen_write_collect_line =
         &mut *(*s).write_list.offset((*s).cy as isize) as *mut screen_write_collect_line;
-    let mut gc: grid_cell = grid_cell {
+    let mut gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -4382,7 +4374,7 @@ pub unsafe extern "C" fn screen_write_collect_end(mut ctx: *mut screen_write_ctx
 #[no_mangle]
 pub unsafe extern "C" fn screen_write_collect_add(
     mut ctx: *mut screen_write_ctx,
-    mut gc: *const grid_cell,
+    mut gc: *const GridCell,
 ) {
     let mut s: *mut screen = (*ctx).s;
     let mut ci: *mut screen_write_collect_item = 0 as *mut screen_write_collect_item;
@@ -4446,9 +4438,9 @@ pub unsafe extern "C" fn screen_write_collect_add(
     }
     if (*ci).used == 0 as libc::c_int as libc::c_uint {
         memcpy(
-            &mut (*ci).gc as *mut grid_cell as *mut libc::c_void,
+            &mut (*ci).gc as *mut GridCell as *mut libc::c_void,
             gc as *const libc::c_void,
-            ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+            ::std::mem::size_of::<GridCell>() as libc::c_ulong,
         );
     }
     if (*(*(*ctx).s).write_list.offset((*s).cy as isize))
@@ -4469,13 +4461,13 @@ pub unsafe extern "C" fn screen_write_collect_add(
 #[no_mangle]
 pub unsafe extern "C" fn screen_write_cell(
     mut ctx: *mut screen_write_ctx,
-    mut gc: *const grid_cell,
+    mut gc: *const GridCell,
 ) {
     let mut s: *mut screen = (*ctx).s;
     let mut gd: *mut grid = (*s).grid;
     let mut gl: *mut grid_line = 0 as *mut grid_line;
     let mut gce: *mut grid_cell_entry = 0 as *mut grid_cell_entry;
-    let mut tmp_gc: grid_cell = grid_cell {
+    let mut tmp_gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -4488,7 +4480,7 @@ pub unsafe extern "C" fn screen_write_cell(
         bg: 0,
         us: 0,
     };
-    let mut now_gc: grid_cell = grid_cell {
+    let mut now_gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -4506,7 +4498,7 @@ pub unsafe extern "C" fn screen_write_cell(
         redraw_cb: None,
         set_client_cb: None,
         arg: 0 as *mut libc::c_void,
-        cell: 0 as *const grid_cell,
+        cell: 0 as *const GridCell,
         wrapped: 0,
         num: 0,
         ptr: 0 as *mut libc::c_void,
@@ -4521,7 +4513,7 @@ pub unsafe extern "C" fn screen_write_cell(
         sx: 0,
         sy: 0,
         bg: 0,
-        defaults: grid_cell {
+        defaults: GridCell {
             data: Utf8Data {
                 data: [0; 21],
                 have: 0,
@@ -4685,17 +4677,17 @@ pub unsafe extern "C" fn screen_write_cell(
     selected = screen_check_selection(s, (*s).cx, (*s).cy);
     if selected != 0 && !((*gc).flags as libc::c_int) & 0x10 as libc::c_int != 0 {
         memcpy(
-            &mut tmp_gc as *mut grid_cell as *mut libc::c_void,
+            &mut tmp_gc as *mut GridCell as *mut libc::c_void,
             gc as *const libc::c_void,
-            ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+            ::std::mem::size_of::<GridCell>() as libc::c_ulong,
         );
         tmp_gc.flags = (tmp_gc.flags as libc::c_int | 0x10 as libc::c_int) as u_char;
         grid_view_set_cell(gd, (*s).cx, (*s).cy, &mut tmp_gc);
     } else if selected == 0 && (*gc).flags as libc::c_int & 0x10 as libc::c_int != 0 {
         memcpy(
-            &mut tmp_gc as *mut grid_cell as *mut libc::c_void,
+            &mut tmp_gc as *mut GridCell as *mut libc::c_void,
             gc as *const libc::c_void,
-            ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+            ::std::mem::size_of::<GridCell>() as libc::c_ulong,
         );
         tmp_gc.flags = (tmp_gc.flags as libc::c_int & !(0x10 as libc::c_int)) as u_char;
         grid_view_set_cell(gd, (*s).cx, (*s).cy, &mut tmp_gc);
@@ -4762,10 +4754,10 @@ unsafe extern "C" fn screen_write_combine(
     mut ctx: *mut screen_write_ctx,
     mut ud: *const Utf8Data,
     mut xx: *mut u_int,
-) -> *const grid_cell {
+) -> *const GridCell {
     let mut s: *mut screen = (*ctx).s;
     let mut gd: *mut grid = (*s).grid;
-    static mut gc: grid_cell = grid_cell {
+    static mut gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -4781,7 +4773,7 @@ unsafe extern "C" fn screen_write_combine(
     let mut n: u_int = 0;
     /* Can't combine if at 0. */
     if (*s).cx == 0 as libc::c_int as libc::c_uint {
-        return 0 as *const grid_cell;
+        return 0 as *const GridCell;
     }
     /* Empty data is out. */
     if (*ud).size as libc::c_int == 0 as libc::c_int {
@@ -4797,14 +4789,14 @@ unsafe extern "C" fn screen_write_combine(
         n = n.wrapping_add(1)
     }
     if n > (*s).cx {
-        return 0 as *const grid_cell;
+        return 0 as *const GridCell;
     }
     *xx = (*s).cx.wrapping_sub(n);
     /* Check there is enough space. */
     if (gc.data.size as libc::c_int + (*ud).size as libc::c_int) as libc::c_ulong
         > ::std::mem::size_of::<[u_char; 21]>() as libc::c_ulong
     {
-        return 0 as *const grid_cell;
+        return 0 as *const GridCell;
     }
     log_debug(
         b"%s: %.*s onto %.*s at %u,%u\x00" as *const u8 as *const libc::c_char,
@@ -4842,12 +4834,12 @@ unsafe extern "C" fn screen_write_combine(
  */
 unsafe extern "C" fn screen_write_overwrite(
     mut ctx: *mut screen_write_ctx,
-    mut gc: *mut grid_cell,
+    mut gc: *mut GridCell,
     mut width: u_int,
 ) -> libc::c_int {
     let mut s: *mut screen = (*ctx).s;
     let mut gd: *mut grid = (*s).grid;
-    let mut tmp_gc: grid_cell = grid_cell {
+    let mut tmp_gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -4950,7 +4942,7 @@ pub unsafe extern "C" fn screen_write_setselection(
         redraw_cb: None,
         set_client_cb: None,
         arg: 0 as *mut libc::c_void,
-        cell: 0 as *const grid_cell,
+        cell: 0 as *const GridCell,
         wrapped: 0,
         num: 0,
         ptr: 0 as *mut libc::c_void,
@@ -4965,7 +4957,7 @@ pub unsafe extern "C" fn screen_write_setselection(
         sx: 0,
         sy: 0,
         bg: 0,
-        defaults: grid_cell {
+        defaults: GridCell {
             data: Utf8Data {
                 data: [0; 21],
                 have: 0,
@@ -5005,7 +4997,7 @@ pub unsafe extern "C" fn screen_write_rawstring(
         redraw_cb: None,
         set_client_cb: None,
         arg: 0 as *mut libc::c_void,
-        cell: 0 as *const grid_cell,
+        cell: 0 as *const GridCell,
         wrapped: 0,
         num: 0,
         ptr: 0 as *mut libc::c_void,
@@ -5020,7 +5012,7 @@ pub unsafe extern "C" fn screen_write_rawstring(
         sx: 0,
         sy: 0,
         bg: 0,
-        defaults: grid_cell {
+        defaults: GridCell {
             data: Utf8Data {
                 data: [0; 21],
                 have: 0,
@@ -5052,7 +5044,7 @@ pub unsafe extern "C" fn screen_write_rawstring(
 #[no_mangle]
 pub unsafe extern "C" fn screen_write_alternateon(
     mut ctx: *mut screen_write_ctx,
-    mut gc: *mut grid_cell,
+    mut gc: *mut GridCell,
     mut cursor: libc::c_int,
 ) {
     let mut ttyctx: tty_ctx = tty_ctx {
@@ -5060,7 +5052,7 @@ pub unsafe extern "C" fn screen_write_alternateon(
         redraw_cb: None,
         set_client_cb: None,
         arg: 0 as *mut libc::c_void,
-        cell: 0 as *const grid_cell,
+        cell: 0 as *const GridCell,
         wrapped: 0,
         num: 0,
         ptr: 0 as *mut libc::c_void,
@@ -5075,7 +5067,7 @@ pub unsafe extern "C" fn screen_write_alternateon(
         sx: 0,
         sy: 0,
         bg: 0,
-        defaults: grid_cell {
+        defaults: GridCell {
             data: Utf8Data {
                 data: [0; 21],
                 have: 0,
@@ -5112,7 +5104,7 @@ pub unsafe extern "C" fn screen_write_alternateon(
 #[no_mangle]
 pub unsafe extern "C" fn screen_write_alternateoff(
     mut ctx: *mut screen_write_ctx,
-    mut gc: *mut grid_cell,
+    mut gc: *mut GridCell,
     mut cursor: libc::c_int,
 ) {
     let mut ttyctx: tty_ctx = tty_ctx {
@@ -5120,7 +5112,7 @@ pub unsafe extern "C" fn screen_write_alternateoff(
         redraw_cb: None,
         set_client_cb: None,
         arg: 0 as *mut libc::c_void,
-        cell: 0 as *const grid_cell,
+        cell: 0 as *const GridCell,
         wrapped: 0,
         num: 0,
         ptr: 0 as *mut libc::c_void,
@@ -5135,7 +5127,7 @@ pub unsafe extern "C" fn screen_write_alternateoff(
         sx: 0,
         sy: 0,
         bg: 0,
-        defaults: grid_cell {
+        defaults: GridCell {
             data: Utf8Data {
                 data: [0; 21],
                 have: 0,

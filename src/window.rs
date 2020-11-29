@@ -1,4 +1,4 @@
-use crate::{key_code::code as key_code_code, utf8::Utf8Data};
+use crate::{grid::Cell as GridCell, key_code::code as key_code_code, utf8::Utf8Data};
 use ::c2rust_bitfields;
 use ::libc;
 
@@ -146,7 +146,10 @@ extern "C" {
     #[no_mangle]
     fn input_key_pane(_: *mut window_pane, _: key_code, _: *mut mouse_event) -> libc::c_int;
     #[no_mangle]
-    fn grid_cells_look_equal(_: *const grid_cell, _: *const grid_cell) -> libc::c_int;
+    fn grid_cells_look_equal(
+        _: *const crate::grid::Cell,
+        _: *const crate::grid::Cell,
+    ) -> libc::c_int;
     #[no_mangle]
     fn grid_view_string_cells(_: *mut grid, _: u_int, _: u_int, _: u_int) -> *mut libc::c_char;
     #[no_mangle]
@@ -621,22 +624,11 @@ pub struct screen {
     pub saved_cx: u_int,
     pub saved_cy: u_int,
     pub saved_grid: *mut grid,
-    pub saved_cell: grid_cell,
+    pub saved_cell: crate::grid::Cell,
     pub saved_flags: libc::c_int,
     pub tabs: *mut bitstr_t,
     pub sel: *mut crate::screen::screen_sel,
     pub write_list: *mut crate::screen_write::screen_write_collect_line,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct grid_cell {
-    pub data: crate::utf8::Utf8Data,
-    pub attr: u_short,
-    pub flags: u_char,
-    pub fg: libc::c_int,
-    pub bg: libc::c_int,
-    pub us: libc::c_int,
 }
 
 #[repr(C)]
@@ -897,8 +889,8 @@ pub struct window_pane {
     pub resize_timer: event,
     pub force_timer: event,
     pub ictx: *mut crate::input::input_ctx,
-    pub cached_gc: grid_cell,
-    pub cached_active_gc: grid_cell,
+    pub cached_gc: crate::grid::Cell,
+    pub cached_active_gc: crate::grid::Cell,
     pub palette: *mut libc::c_int,
     pub pipe_fd: libc::c_int,
     pub pipe_event: *mut bufferevent,
@@ -913,7 +905,7 @@ pub struct window_pane {
     pub written: size_t,
     pub skipped: size_t,
     pub border_gc_set: libc::c_int,
-    pub border_gc: grid_cell,
+    pub border_gc: crate::grid::Cell,
     pub entry: C2RustUnnamed_23,
     pub tree_entry: C2RustUnnamed_22,
 }
@@ -1111,7 +1103,7 @@ pub struct status_line {
     pub screen: screen,
     pub active: *mut screen,
     pub references: libc::c_int,
-    pub style: grid_cell,
+    pub style: crate::grid::Cell,
     pub entries: [status_line_entry; 5],
 }
 
@@ -1181,8 +1173,8 @@ pub struct tty {
     pub timer: event,
     pub discarded: size_t,
     pub tio: termios,
-    pub cell: grid_cell,
-    pub last_cell: grid_cell,
+    pub cell: crate::grid::Cell,
+    pub last_cell: crate::grid::Cell,
     pub flags: libc::c_int,
     pub term: *mut tty_term,
     pub mouse_last_x: u_int,
@@ -3657,8 +3649,8 @@ pub unsafe extern "C" fn window_set_active_pane(
 }
 #[no_mangle]
 pub unsafe extern "C" fn window_redraw_active_switch(mut w: *mut window, mut wp: *mut window_pane) {
-    let mut gc1: *mut grid_cell = 0 as *mut grid_cell;
-    let mut gc2: *mut grid_cell = 0 as *mut grid_cell;
+    let mut gc1: *mut GridCell = 0 as *mut GridCell;
+    let mut gc2: *mut GridCell = 0 as *mut GridCell;
     let mut c1: libc::c_int = 0;
     let mut c2: libc::c_int = 0;
     if wp == (*w).active {
@@ -4241,7 +4233,7 @@ pub unsafe extern "C" fn window_pane_find_by_id(mut id: u_int) -> *mut window_pa
             },
         },
         ictx: 0 as *mut crate::input::input_ctx,
-        cached_gc: grid_cell {
+        cached_gc: GridCell {
             data: Utf8Data {
                 data: [0; 21],
                 have: 0,
@@ -4254,7 +4246,7 @@ pub unsafe extern "C" fn window_pane_find_by_id(mut id: u_int) -> *mut window_pa
             bg: 0,
             us: 0,
         },
-        cached_active_gc: grid_cell {
+        cached_active_gc: GridCell {
             data: Utf8Data {
                 data: [0; 21],
                 have: 0,
@@ -4287,7 +4279,7 @@ pub unsafe extern "C" fn window_pane_find_by_id(mut id: u_int) -> *mut window_pa
             saved_cx: 0,
             saved_cy: 0,
             saved_grid: 0 as *mut grid,
-            saved_cell: grid_cell {
+            saved_cell: GridCell {
                 data: Utf8Data {
                     data: [0; 21],
                     have: 0,
@@ -4320,7 +4312,7 @@ pub unsafe extern "C" fn window_pane_find_by_id(mut id: u_int) -> *mut window_pa
             saved_cx: 0,
             saved_cy: 0,
             saved_grid: 0 as *mut grid,
-            saved_cell: grid_cell {
+            saved_cell: GridCell {
                 data: Utf8Data {
                     data: [0; 21],
                     have: 0,
@@ -4348,7 +4340,7 @@ pub unsafe extern "C" fn window_pane_find_by_id(mut id: u_int) -> *mut window_pa
         written: 0,
         skipped: 0,
         border_gc_set: 0,
-        border_gc: grid_cell {
+        border_gc: GridCell {
             data: Utf8Data {
                 data: [0; 21],
                 have: 0,

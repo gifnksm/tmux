@@ -52,17 +52,6 @@ pub type size_t = libc::c_ulong;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct grid_cell {
-    pub data: crate::utf8::Utf8Data,
-    pub attr: u_short,
-    pub flags: u_char,
-    pub fg: libc::c_int,
-    pub bg: libc::c_int,
-    pub us: libc::c_int,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
 pub struct grid {
     pub flags: libc::c_int,
     pub sx: u_int,
@@ -144,17 +133,29 @@ pub struct C2RustUnnamed_1 {
  * Grid data. This is the basic data structure that represents what is shown on
  * screen.
  *
- * A grid is a grid of cells (struct grid_cell). Lines are not allocated until
+ * A grid is a grid of cells (struct Cell). Lines are not allocated until
  * cells in that line are written to. The grid is split into history and
  * viewable data with the history starting at row (line) 0 and extending to
  * (hsize - 1); from hsize to hsize + (sy - 1) is the viewable data. All
  * functions in this file work on absolute coordinates, grid-view.c has
  * functions which work on the screen data.
  */
+/// Grid cell data.
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct Cell {
+    pub data: crate::utf8::Utf8Data,
+    pub attr: u_short,
+    pub flags: u_char,
+    pub fg: libc::c_int,
+    pub bg: libc::c_int,
+    pub us: libc::c_int,
+}
+
 /* Default grid cell data. */
 #[no_mangle]
-pub static mut grid_default_cell: grid_cell = {
-    let mut init = grid_cell {
+pub static mut grid_default_cell: Cell = {
+    let mut init = Cell {
         data: {
             let mut init = Utf8Data {
                 data: [
@@ -198,8 +199,8 @@ pub static mut grid_default_cell: grid_cell = {
  * Padding grid cell data. Padding cells are the only zero width cell that
  * appears in the grid - because of this, they are always extended cells.
  */
-static mut grid_padding_cell: grid_cell = {
-    let mut init = grid_cell {
+static mut grid_padding_cell: Cell = {
+    let mut init = Cell {
         data: {
             let mut init = Utf8Data {
                 data: [
@@ -240,8 +241,8 @@ static mut grid_padding_cell: grid_cell = {
     init
 };
 /* Cleared grid cell data. */
-static mut grid_cleared_cell: grid_cell = {
-    let mut init = grid_cell {
+static mut grid_cleared_cell: Cell = {
+    let mut init = Cell {
         data: {
             let mut init = Utf8Data {
                 data: [
@@ -301,7 +302,7 @@ static mut grid_cleared_entry: grid_cell_entry = {
 /* Store cell in entry. */
 unsafe extern "C" fn grid_store_cell(
     mut gce: *mut grid_cell_entry,
-    mut gc: *const grid_cell,
+    mut gc: *const Cell,
     mut c: u_char,
 ) {
     (*gce).flags = ((*gc).flags as libc::c_int & !(0x40 as libc::c_int)) as u_char;
@@ -319,7 +320,7 @@ unsafe extern "C" fn grid_store_cell(
 /* Check if a cell should be an extended cell. */
 unsafe extern "C" fn grid_need_extended_cell(
     mut gce: *const grid_cell_entry,
-    mut gc: *const grid_cell,
+    mut gc: *const Cell,
 ) -> libc::c_int {
     if (*gce).flags as libc::c_int & 0x8 as libc::c_int != 0 {
         return 1 as libc::c_int;
@@ -363,7 +364,7 @@ unsafe extern "C" fn grid_get_extended_cell(
 unsafe extern "C" fn grid_extended_cell(
     mut gl: *mut grid_line,
     mut gce: *mut grid_cell_entry,
-    mut gc: *const grid_cell,
+    mut gc: *const Cell,
 ) -> *mut grid_extd_entry {
     let mut gee: *mut grid_extd_entry = 0 as *mut grid_extd_entry;
     let mut flags: libc::c_int = (*gc).flags as libc::c_int & !(0x40 as libc::c_int);
@@ -500,8 +501,8 @@ unsafe extern "C" fn grid_check_y(
 /* Check if two styles are (visibly) the same. */
 #[no_mangle]
 pub unsafe extern "C" fn grid_cells_look_equal(
-    mut gc1: *const grid_cell,
-    mut gc2: *const grid_cell,
+    mut gc1: *const Cell,
+    mut gc2: *const Cell,
 ) -> libc::c_int {
     if (*gc1).fg != (*gc2).fg || (*gc1).bg != (*gc2).bg {
         return 0 as libc::c_int;
@@ -516,8 +517,8 @@ pub unsafe extern "C" fn grid_cells_look_equal(
 /* Compare grid cells. Return 1 if equal, 0 if not. */
 #[no_mangle]
 pub unsafe extern "C" fn grid_cells_equal(
-    mut gc1: *const grid_cell,
-    mut gc2: *const grid_cell,
+    mut gc1: *const Cell,
+    mut gc2: *const Cell,
 ) -> libc::c_int {
     if grid_cells_look_equal(gc1, gc2) == 0 {
         return 0 as libc::c_int;
@@ -594,7 +595,7 @@ pub unsafe extern "C" fn grid_destroy(mut gd: *mut grid) {
 pub unsafe extern "C" fn grid_compare(mut ga: *mut grid, mut gb: *mut grid) -> libc::c_int {
     let mut gla: *mut grid_line = 0 as *mut grid_line;
     let mut glb: *mut grid_line = 0 as *mut grid_line;
-    let mut gca: grid_cell = grid_cell {
+    let mut gca: Cell = Cell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -607,7 +608,7 @@ pub unsafe extern "C" fn grid_compare(mut ga: *mut grid, mut gb: *mut grid) -> l
         bg: 0,
         us: 0,
     };
-    let mut gcb: grid_cell = grid_cell {
+    let mut gcb: Cell = Cell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -840,7 +841,7 @@ pub unsafe extern "C" fn grid_peek_line(mut gd: *mut grid, mut py: u_int) -> *co
     return &mut *(*gd).linedata.offset(py as isize) as *mut grid_line;
 }
 /* Get cell from line. */
-unsafe extern "C" fn grid_get_cell1(mut gl: *mut grid_line, mut px: u_int, mut gc: *mut grid_cell) {
+unsafe extern "C" fn grid_get_cell1(mut gl: *mut grid_line, mut px: u_int, mut gc: *mut Cell) {
     let mut gce: *mut grid_cell_entry =
         &mut *(*gl).celldata.offset(px as isize) as *mut grid_cell_entry;
     let mut gee: *mut grid_extd_entry = 0 as *mut grid_extd_entry;
@@ -848,8 +849,8 @@ unsafe extern "C" fn grid_get_cell1(mut gl: *mut grid_line, mut px: u_int, mut g
         if (*gce).c2rust_unnamed.offset >= (*gl).extdsize {
             memcpy(
                 gc as *mut libc::c_void,
-                &grid_default_cell as *const grid_cell as *const libc::c_void,
-                ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+                &grid_default_cell as *const Cell as *const libc::c_void,
+                ::std::mem::size_of::<Cell>() as libc::c_ulong,
             );
         } else {
             gee = &mut *(*gl).extddata.offset((*gce).c2rust_unnamed.offset as isize)
@@ -883,7 +884,7 @@ pub unsafe extern "C" fn grid_get_cell(
     mut gd: *mut grid,
     mut px: u_int,
     mut py: u_int,
-    mut gc: *mut grid_cell,
+    mut gc: *mut Cell,
 ) {
     if grid_check_y(
         gd,
@@ -894,8 +895,8 @@ pub unsafe extern "C" fn grid_get_cell(
     {
         memcpy(
             gc as *mut libc::c_void,
-            &grid_default_cell as *const grid_cell as *const libc::c_void,
-            ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+            &grid_default_cell as *const Cell as *const libc::c_void,
+            ::std::mem::size_of::<Cell>() as libc::c_ulong,
         );
     } else {
         grid_get_cell1(&mut *(*gd).linedata.offset(py as isize), px, gc);
@@ -907,7 +908,7 @@ pub unsafe extern "C" fn grid_set_cell(
     mut gd: *mut grid,
     mut px: u_int,
     mut py: u_int,
-    mut gc: *const grid_cell,
+    mut gc: *const Cell,
 ) {
     let mut gl: *mut grid_line = 0 as *mut grid_line;
     let mut gce: *mut grid_cell_entry = 0 as *mut grid_cell_entry;
@@ -947,7 +948,7 @@ pub unsafe extern "C" fn grid_set_cells(
     mut gd: *mut grid,
     mut px: u_int,
     mut py: u_int,
-    mut gc: *const grid_cell,
+    mut gc: *const Cell,
     mut s: *const libc::c_char,
     mut slen: size_t,
 ) {
@@ -1233,7 +1234,7 @@ pub unsafe extern "C" fn grid_move_cells(
 }
 /* Get ANSI foreground sequence. */
 unsafe extern "C" fn grid_string_cells_fg(
-    mut gc: *const grid_cell,
+    mut gc: *const Cell,
     mut values: *mut libc::c_int,
 ) -> size_t {
     let mut n: size_t = 0;
@@ -1292,7 +1293,7 @@ unsafe extern "C" fn grid_string_cells_fg(
 }
 /* Get ANSI background sequence. */
 unsafe extern "C" fn grid_string_cells_bg(
-    mut gc: *const grid_cell,
+    mut gc: *const Cell,
     mut values: *mut libc::c_int,
 ) -> size_t {
     let mut n: size_t = 0;
@@ -1354,8 +1355,8 @@ unsafe extern "C" fn grid_string_cells_bg(
  * given a current state.
  */
 unsafe extern "C" fn grid_string_cells_code(
-    mut lastgc: *const grid_cell,
-    mut gc: *const grid_cell,
+    mut lastgc: *const Cell,
+    mut gc: *const Cell,
     mut buf: *mut libc::c_char,
     mut len: size_t,
     mut escape_c0: libc::c_int,
@@ -1635,12 +1636,12 @@ pub unsafe extern "C" fn grid_string_cells(
     mut px: u_int,
     mut py: u_int,
     mut nx: u_int,
-    mut lastgc: *mut *mut grid_cell,
+    mut lastgc: *mut *mut Cell,
     mut with_codes: libc::c_int,
     mut escape_c0: libc::c_int,
     mut trim: libc::c_int,
 ) -> *mut libc::c_char {
-    let mut gc: grid_cell = grid_cell {
+    let mut gc: Cell = Cell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -1653,7 +1654,7 @@ pub unsafe extern "C" fn grid_string_cells(
         bg: 0,
         us: 0,
     };
-    static mut lastgc1: grid_cell = grid_cell {
+    static mut lastgc1: Cell = Cell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -1677,9 +1678,9 @@ pub unsafe extern "C" fn grid_string_cells(
     let mut gl: *const grid_line = 0 as *const grid_line;
     if !lastgc.is_null() && (*lastgc).is_null() {
         memcpy(
-            &mut lastgc1 as *mut grid_cell as *mut libc::c_void,
-            &grid_default_cell as *const grid_cell as *const libc::c_void,
-            ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+            &mut lastgc1 as *mut Cell as *mut libc::c_void,
+            &grid_default_cell as *const Cell as *const libc::c_void,
+            ::std::mem::size_of::<Cell>() as libc::c_ulong,
         );
         *lastgc = &mut lastgc1
     }
@@ -1705,8 +1706,8 @@ pub unsafe extern "C" fn grid_string_cells(
                 codelen = strlen(code.as_mut_ptr());
                 memcpy(
                     *lastgc as *mut libc::c_void,
-                    &mut gc as *mut grid_cell as *const libc::c_void,
-                    ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+                    &mut gc as *mut Cell as *const libc::c_void,
+                    ::std::mem::size_of::<Cell>() as libc::c_ulong,
                 );
             } else {
                 codelen = 0 as libc::c_int as size_t
@@ -1878,7 +1879,7 @@ unsafe extern "C" fn grid_reflow_join(
 ) {
     let mut gl: *mut grid_line = 0 as *mut grid_line;
     let mut from: *mut grid_line = 0 as *mut grid_line;
-    let mut gc: grid_cell = grid_cell {
+    let mut gc: Cell = Cell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -2029,7 +2030,7 @@ unsafe extern "C" fn grid_reflow_split(
 ) {
     let mut gl: *mut grid_line = &mut *(*gd).linedata.offset(yy as isize) as *mut grid_line;
     let mut first: *mut grid_line = 0 as *mut grid_line;
-    let mut gc: grid_cell = grid_cell {
+    let mut gc: Cell = Cell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -2125,7 +2126,7 @@ unsafe extern "C" fn grid_reflow_split(
 pub unsafe extern "C" fn grid_reflow(mut gd: *mut grid, mut sx: u_int) {
     let mut target: *mut grid = 0 as *mut grid;
     let mut gl: *mut grid_line = 0 as *mut grid_line;
-    let mut gc: grid_cell = grid_cell {
+    let mut gc: Cell = Cell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -2312,7 +2313,7 @@ pub unsafe extern "C" fn grid_unwrap_position(
 /* Get length of line. */
 #[no_mangle]
 pub unsafe extern "C" fn grid_line_length(mut gd: *mut grid, mut py: u_int) -> u_int {
-    let mut gc: grid_cell = grid_cell {
+    let mut gc: Cell = Cell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,

@@ -1,4 +1,5 @@
 use crate::{
+    grid::Cell as GridCell,
     tty_code::{code as tty_code_code, Code as TtyCode},
     utf8::Utf8Data,
 };
@@ -148,9 +149,9 @@ extern "C" {
     #[no_mangle]
     fn colour_256to16(_: libc::c_int) -> libc::c_int;
     #[no_mangle]
-    static grid_default_cell: grid_cell;
+    static grid_default_cell: crate::grid::Cell;
     #[no_mangle]
-    fn grid_cells_equal(_: *const grid_cell, _: *const grid_cell) -> libc::c_int;
+    fn grid_cells_equal(_: *const crate::grid::Cell, _: *const crate::grid::Cell) -> libc::c_int;
     #[no_mangle]
     fn xsnprintf(_: *mut libc::c_char, _: size_t, _: *const libc::c_char, _: ...) -> libc::c_int;
     #[no_mangle]
@@ -164,16 +165,16 @@ extern "C" {
     #[no_mangle]
     fn utf8_set(_: *mut Utf8Data, _: u_char);
     #[no_mangle]
-    fn screen_select_cell(_: *mut screen, _: *mut grid_cell, _: *const grid_cell);
+    fn screen_select_cell(_: *mut screen, _: *mut crate::grid::Cell, _: *const crate::grid::Cell);
     #[no_mangle]
-    fn grid_view_get_cell(_: *mut grid, _: u_int, _: u_int, _: *mut grid_cell);
+    fn grid_view_get_cell(_: *mut grid, _: u_int, _: u_int, _: *mut crate::grid::Cell);
     #[no_mangle]
     fn grid_get_line(_: *mut grid, _: u_int) -> *mut grid_line;
     #[no_mangle]
     fn fatalx(_: *const libc::c_char, _: ...) -> !;
     #[no_mangle]
     fn style_add(
-        _: *mut grid_cell,
+        _: *mut crate::grid::Cell,
         _: *mut crate::options::options,
         _: *const libc::c_char,
         _: *mut crate::format::format_tree,
@@ -261,24 +262,13 @@ pub struct screen {
     pub saved_cx: u_int,
     pub saved_cy: u_int,
     pub saved_grid: *mut grid,
-    pub saved_cell: grid_cell,
+    pub saved_cell: crate::grid::Cell,
     pub saved_flags: libc::c_int,
     pub tabs: *mut bitstr_t,
     pub sel: *mut crate::screen::screen_sel,
     pub write_list: *mut crate::screen_write::screen_write_collect_line,
 }
 pub type bitstr_t = libc::c_uchar;
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct grid_cell {
-    pub data: crate::utf8::Utf8Data,
-    pub attr: u_short,
-    pub flags: u_char,
-    pub fg: libc::c_int,
-    pub bg: libc::c_int,
-    pub us: libc::c_int,
-}
 
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -863,8 +853,8 @@ pub struct window_pane {
     pub resize_timer: event,
     pub force_timer: event,
     pub ictx: *mut crate::input::input_ctx,
-    pub cached_gc: grid_cell,
-    pub cached_active_gc: grid_cell,
+    pub cached_gc: crate::grid::Cell,
+    pub cached_active_gc: crate::grid::Cell,
     pub palette: *mut libc::c_int,
     pub pipe_fd: libc::c_int,
     pub pipe_event: *mut bufferevent,
@@ -879,7 +869,7 @@ pub struct window_pane {
     pub written: size_t,
     pub skipped: size_t,
     pub border_gc_set: libc::c_int,
-    pub border_gc: grid_cell,
+    pub border_gc: crate::grid::Cell,
     pub entry: C2RustUnnamed_22,
     pub tree_entry: C2RustUnnamed_21,
 }
@@ -1077,7 +1067,7 @@ pub struct status_line {
     pub screen: screen,
     pub active: *mut screen,
     pub references: libc::c_int,
-    pub style: grid_cell,
+    pub style: crate::grid::Cell,
     pub entries: [status_line_entry; 5],
 }
 
@@ -1147,8 +1137,8 @@ pub struct tty {
     pub timer: event,
     pub discarded: size_t,
     pub tio: termios,
-    pub cell: grid_cell,
-    pub last_cell: grid_cell,
+    pub cell: crate::grid::Cell,
+    pub last_cell: crate::grid::Cell,
     pub flags: libc::c_int,
     pub term: *mut tty_term,
     pub mouse_last_x: u_int,
@@ -1220,7 +1210,7 @@ pub struct tty_ctx {
     pub redraw_cb: tty_ctx_redraw_cb,
     pub set_client_cb: tty_ctx_set_client_cb,
     pub arg: *mut libc::c_void,
-    pub cell: *const grid_cell,
+    pub cell: *const crate::grid::Cell,
     pub wrapped: libc::c_int,
     pub num: u_int,
     pub ptr: *mut libc::c_void,
@@ -1235,7 +1225,7 @@ pub struct tty_ctx {
     pub sx: u_int,
     pub sy: u_int,
     pub bg: u_int,
-    pub defaults: grid_cell,
+    pub defaults: crate::grid::Cell,
     pub palette: *mut libc::c_int,
     pub bigger: libc::c_int,
     pub wox: u_int,
@@ -2399,7 +2389,7 @@ unsafe extern "C" fn tty_large_region(mut _tty: *mut tty, mut ctx: *const tty_ct
  */
 unsafe extern "C" fn tty_fake_bce(
     mut tty: *const tty,
-    mut gc: *const grid_cell,
+    mut gc: *const GridCell,
     mut bg: u_int,
 ) -> libc::c_int {
     if tty_term_flag((*tty).term, tty_code_code::BCE) != 0 {
@@ -2523,7 +2513,7 @@ unsafe extern "C" fn tty_clamp_line(
 /* Clear a line. */
 unsafe extern "C" fn tty_clear_line(
     mut tty: *mut tty,
-    mut defaults: *const grid_cell,
+    mut defaults: *const GridCell,
     mut py: u_int,
     mut px: u_int,
     mut nx: u_int,
@@ -2686,7 +2676,7 @@ unsafe extern "C" fn tty_clamp_area(
 /* Clear an area, adjusting to visible part of pane. */
 unsafe extern "C" fn tty_clear_area(
     mut tty: *mut tty,
-    mut defaults: *const grid_cell,
+    mut defaults: *const GridCell,
     mut py: u_int,
     mut ny: u_int,
     mut px: u_int,
@@ -2859,9 +2849,9 @@ unsafe extern "C" fn tty_draw_pane(mut tty: *mut tty, mut ctx: *const tty_ctx, m
 }
 unsafe extern "C" fn tty_check_codeset(
     mut tty: *mut tty,
-    mut gc: *const grid_cell,
-) -> *const grid_cell {
-    static mut new: grid_cell = grid_cell {
+    mut gc: *const GridCell,
+) -> *const GridCell {
+    static mut new: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -2886,9 +2876,9 @@ unsafe extern "C" fn tty_check_codeset(
         return gc;
     }
     memcpy(
-        &mut new as *mut grid_cell as *mut libc::c_void,
+        &mut new as *mut GridCell as *mut libc::c_void,
         gc as *const libc::c_void,
-        ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+        ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
     /* See if this can be mapped to an ACS character. */
     c = tty_acs_reverse_get(
@@ -2933,11 +2923,11 @@ pub unsafe extern "C" fn tty_draw_line(
     mut nx: u_int,
     mut atx: u_int,
     mut aty: u_int,
-    mut defaults: *const grid_cell,
+    mut defaults: *const GridCell,
     mut palette: *mut libc::c_int,
 ) {
     let mut gd: *mut grid = (*s).grid;
-    let mut gc: grid_cell = grid_cell {
+    let mut gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -2950,7 +2940,7 @@ pub unsafe extern "C" fn tty_draw_line(
         bg: 0,
         us: 0,
     };
-    let mut last: grid_cell = grid_cell {
+    let mut last: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -2963,7 +2953,7 @@ pub unsafe extern "C" fn tty_draw_line(
         bg: 0,
         us: 0,
     };
-    let mut gcp: *const grid_cell = 0 as *const grid_cell;
+    let mut gcp: *const GridCell = 0 as *const GridCell;
     let mut gl: *mut grid_line = 0 as *mut grid_line;
     let mut i: u_int = 0;
     let mut j: u_int = 0;
@@ -3052,9 +3042,9 @@ pub unsafe extern "C" fn tty_draw_line(
         wrapped = 1 as libc::c_int
     }
     memcpy(
-        &mut last as *mut grid_cell as *mut libc::c_void,
-        &grid_default_cell as *const grid_cell as *const libc::c_void,
-        ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+        &mut last as *mut GridCell as *mut libc::c_void,
+        &grid_default_cell as *const GridCell as *const libc::c_void,
+        ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
     len = 0 as libc::c_int as size_t;
     width = 0 as libc::c_int as u_int;
@@ -3114,9 +3104,9 @@ pub unsafe extern "C" fn tty_draw_line(
             screen_select_cell(s, &mut last, gcp);
         } else {
             memcpy(
-                &mut last as *mut grid_cell as *mut libc::c_void,
+                &mut last as *mut GridCell as *mut libc::c_void,
                 gcp as *const libc::c_void,
-                ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+                ::std::mem::size_of::<GridCell>() as libc::c_ulong,
             );
         }
         if tty_check_overlay(tty, atx.wrapping_add(ux), aty) == 0 {
@@ -3756,11 +3746,11 @@ pub unsafe extern "C" fn tty_cmd_syncstart(mut tty: *mut tty, mut _ctx: *const t
 #[no_mangle]
 pub unsafe extern "C" fn tty_cell(
     mut tty: *mut tty,
-    mut gc: *const grid_cell,
-    mut defaults: *const grid_cell,
+    mut gc: *const GridCell,
+    mut defaults: *const GridCell,
     mut palette: *mut libc::c_int,
 ) {
-    let mut gcp: *const grid_cell = 0 as *const grid_cell;
+    let mut gcp: *const GridCell = 0 as *const GridCell;
     /* Skip last character if terminal is stupid. */
     if (*(*tty).term).flags & 0x2 as libc::c_int != 0
         && (*tty).cy == (*tty).sy.wrapping_sub(1 as libc::c_int as libc::c_uint)
@@ -3796,7 +3786,7 @@ pub unsafe extern "C" fn tty_cell(
 }
 #[no_mangle]
 pub unsafe extern "C" fn tty_reset(mut tty: *mut tty) {
-    let mut gc: *mut grid_cell = &mut (*tty).cell;
+    let mut gc: *mut GridCell = &mut (*tty).cell;
     if grid_cells_equal(gc, &grid_default_cell) == 0 {
         if (*gc).attr as libc::c_int & 0x80 as libc::c_int != 0 && tty_acs_needed(tty) != 0 {
             tty_putcode(tty, tty_code_code::RMACS);
@@ -3804,26 +3794,26 @@ pub unsafe extern "C" fn tty_reset(mut tty: *mut tty) {
         tty_putcode(tty, tty_code_code::SGR0);
         memcpy(
             gc as *mut libc::c_void,
-            &grid_default_cell as *const grid_cell as *const libc::c_void,
-            ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+            &grid_default_cell as *const GridCell as *const libc::c_void,
+            ::std::mem::size_of::<GridCell>() as libc::c_ulong,
         );
     }
     memcpy(
-        &mut (*tty).last_cell as *mut grid_cell as *mut libc::c_void,
-        &grid_default_cell as *const grid_cell as *const libc::c_void,
-        ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+        &mut (*tty).last_cell as *mut GridCell as *mut libc::c_void,
+        &grid_default_cell as *const GridCell as *const libc::c_void,
+        ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
 }
 unsafe extern "C" fn tty_invalidate(mut tty: *mut tty) {
     memcpy(
-        &mut (*tty).cell as *mut grid_cell as *mut libc::c_void,
-        &grid_default_cell as *const grid_cell as *const libc::c_void,
-        ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+        &mut (*tty).cell as *mut GridCell as *mut libc::c_void,
+        &grid_default_cell as *const GridCell as *const libc::c_void,
+        ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
     memcpy(
-        &mut (*tty).last_cell as *mut grid_cell as *mut libc::c_void,
-        &grid_default_cell as *const grid_cell as *const libc::c_void,
-        ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+        &mut (*tty).last_cell as *mut GridCell as *mut libc::c_void,
+        &grid_default_cell as *const GridCell as *const libc::c_void,
+        ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
     (*tty).cy = (2147483647 as libc::c_int as libc::c_uint)
         .wrapping_mul(2 as libc::c_uint)
@@ -4172,12 +4162,12 @@ pub unsafe extern "C" fn tty_cursor(mut tty: *mut tty, mut cx: u_int, mut cy: u_
 #[no_mangle]
 pub unsafe extern "C" fn tty_attributes(
     mut tty: *mut tty,
-    mut gc: *const grid_cell,
-    mut defaults: *const grid_cell,
+    mut gc: *const GridCell,
+    mut defaults: *const GridCell,
     mut palette: *mut libc::c_int,
 ) {
-    let mut tc: *mut grid_cell = &mut (*tty).cell;
-    let mut gc2: grid_cell = grid_cell {
+    let mut tc: *mut GridCell = &mut (*tty).cell;
+    let mut gc2: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -4193,9 +4183,9 @@ pub unsafe extern "C" fn tty_attributes(
     let mut changed: libc::c_int = 0;
     /* Copy cell and update default colours. */
     memcpy(
-        &mut gc2 as *mut grid_cell as *mut libc::c_void,
+        &mut gc2 as *mut GridCell as *mut libc::c_void,
         gc as *const libc::c_void,
-        ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+        ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
     if gc2.fg == 8 as libc::c_int {
         gc2.fg = (*defaults).fg
@@ -4304,13 +4294,13 @@ pub unsafe extern "C" fn tty_attributes(
         tty_putcode(tty, tty_code_code::SMACS);
     }
     memcpy(
-        &mut (*tty).last_cell as *mut grid_cell as *mut libc::c_void,
-        &mut gc2 as *mut grid_cell as *const libc::c_void,
-        ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+        &mut (*tty).last_cell as *mut GridCell as *mut libc::c_void,
+        &mut gc2 as *mut GridCell as *const libc::c_void,
+        ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
 }
-unsafe extern "C" fn tty_colours(mut tty: *mut tty, mut gc: *const grid_cell) {
-    let mut tc: *mut grid_cell = &mut (*tty).cell;
+unsafe extern "C" fn tty_colours(mut tty: *mut tty, mut gc: *const GridCell) {
+    let mut tc: *mut GridCell = &mut (*tty).cell;
     let mut have_ax: libc::c_int = 0;
     /* No changes? Nothing is necessary. */
     if (*gc).fg == (*tc).fg && (*gc).bg == (*tc).bg && (*gc).us == (*tc).us {
@@ -4378,7 +4368,7 @@ unsafe extern "C" fn tty_colours(mut tty: *mut tty, mut gc: *const grid_cell) {
 unsafe extern "C" fn tty_check_fg(
     mut tty: *mut tty,
     mut palette: *mut libc::c_int,
-    mut gc: *mut grid_cell,
+    mut gc: *mut GridCell,
 ) {
     let mut r: u_char = 0;
     let mut g: u_char = 0;
@@ -4441,7 +4431,7 @@ unsafe extern "C" fn tty_check_fg(
 unsafe extern "C" fn tty_check_bg(
     mut tty: *mut tty,
     mut palette: *mut libc::c_int,
-    mut gc: *mut grid_cell,
+    mut gc: *mut GridCell,
 ) {
     let mut r: u_char = 0;
     let mut g: u_char = 0;
@@ -4499,7 +4489,7 @@ unsafe extern "C" fn tty_check_bg(
 unsafe extern "C" fn tty_check_us(
     mut _tty: *mut tty,
     mut palette: *mut libc::c_int,
-    mut gc: *mut grid_cell,
+    mut gc: *mut GridCell,
 ) {
     let mut c: libc::c_int = 0;
     /* Perform substitution if this pane has a palette. */
@@ -4514,8 +4504,8 @@ unsafe extern "C" fn tty_check_us(
         (*gc).us = colour_256toRGB((*gc).us)
     };
 }
-unsafe extern "C" fn tty_colours_fg(mut tty: *mut tty, mut gc: *const grid_cell) {
-    let mut tc: *mut grid_cell = &mut (*tty).cell;
+unsafe extern "C" fn tty_colours_fg(mut tty: *mut tty, mut gc: *const GridCell) {
+    let mut tc: *mut GridCell = &mut (*tty).cell;
     let mut s: [libc::c_char; 32] = [0; 32];
     /* Is this a 24-bit or 256-colour colour? */
     if (*gc).fg & 0x2000000 as libc::c_int != 0 || (*gc).fg & 0x1000000 as libc::c_int != 0 {
@@ -4549,8 +4539,8 @@ unsafe extern "C" fn tty_colours_fg(mut tty: *mut tty, mut gc: *const grid_cell)
     /* Save the new values in the terminal current cell. */
     (*tc).fg = (*gc).fg;
 }
-unsafe extern "C" fn tty_colours_bg(mut tty: *mut tty, mut gc: *const grid_cell) {
-    let mut tc: *mut grid_cell = &mut (*tty).cell;
+unsafe extern "C" fn tty_colours_bg(mut tty: *mut tty, mut gc: *const GridCell) {
+    let mut tc: *mut GridCell = &mut (*tty).cell;
     let mut s: [libc::c_char; 32] = [0; 32];
     /* Is this a 24-bit or 256-colour colour? */
     if (*gc).bg & 0x2000000 as libc::c_int != 0 || (*gc).bg & 0x1000000 as libc::c_int != 0 {
@@ -4584,8 +4574,8 @@ unsafe extern "C" fn tty_colours_bg(mut tty: *mut tty, mut gc: *const grid_cell)
     /* Save the new values in the terminal current cell. */
     (*tc).bg = (*gc).bg;
 }
-unsafe extern "C" fn tty_colours_us(mut tty: *mut tty, mut gc: *const grid_cell) {
-    let mut tc: *mut grid_cell = &mut (*tty).cell;
+unsafe extern "C" fn tty_colours_us(mut tty: *mut tty, mut gc: *const GridCell) {
+    let mut tc: *mut GridCell = &mut (*tty).cell;
     let mut c: u_int = 0;
     let mut r: u_char = 0;
     let mut g: u_char = 0;
@@ -4664,22 +4654,22 @@ unsafe extern "C" fn tty_try_colour(
     }
     return -(1 as libc::c_int);
 }
-unsafe extern "C" fn tty_window_default_style(mut gc: *mut grid_cell, mut wp: *mut window_pane) {
+unsafe extern "C" fn tty_window_default_style(mut gc: *mut GridCell, mut wp: *mut window_pane) {
     memcpy(
         gc as *mut libc::c_void,
-        &grid_default_cell as *const grid_cell as *const libc::c_void,
-        ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+        &grid_default_cell as *const GridCell as *const libc::c_void,
+        ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
     (*gc).fg = (*wp).fg;
     (*gc).bg = (*wp).bg;
 }
 #[no_mangle]
-pub unsafe extern "C" fn tty_default_colours(mut gc: *mut grid_cell, mut wp: *mut window_pane) {
+pub unsafe extern "C" fn tty_default_colours(mut gc: *mut GridCell, mut wp: *mut window_pane) {
     let mut oo: *mut crate::options::options = (*wp).options;
     memcpy(
         gc as *mut libc::c_void,
-        &grid_default_cell as *const grid_cell as *const libc::c_void,
-        ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+        &grid_default_cell as *const GridCell as *const libc::c_void,
+        ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
     if (*wp).flags & 0x1000 as libc::c_int != 0 {
         (*wp).flags &= !(0x1000 as libc::c_int);
@@ -4715,11 +4705,11 @@ pub unsafe extern "C" fn tty_default_colours(mut gc: *mut grid_cell, mut wp: *mu
 }
 unsafe extern "C" fn tty_default_attributes(
     mut tty: *mut tty,
-    mut defaults: *const grid_cell,
+    mut defaults: *const GridCell,
     mut palette: *mut libc::c_int,
     mut bg: u_int,
 ) {
-    let mut gc: grid_cell = grid_cell {
+    let mut gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -4733,9 +4723,9 @@ unsafe extern "C" fn tty_default_attributes(
         us: 0,
     };
     memcpy(
-        &mut gc as *mut grid_cell as *mut libc::c_void,
-        &grid_default_cell as *const grid_cell as *const libc::c_void,
-        ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+        &mut gc as *mut GridCell as *mut libc::c_void,
+        &grid_default_cell as *const GridCell as *const libc::c_void,
+        ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
     gc.bg = bg as libc::c_int;
     tty_attributes(tty, &mut gc, defaults, palette);

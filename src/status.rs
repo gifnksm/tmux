@@ -1,4 +1,5 @@
 use crate::{
+    grid::Cell as GridCell,
     key_code::code as key_code_code,
     utf8::{utf8_state, Utf8Char, Utf8Data, Utf8State},
 };
@@ -128,7 +129,7 @@ extern "C" {
     #[no_mangle]
     fn format_draw(
         _: *mut screen_write_ctx,
-        _: *const grid_cell,
+        _: *const crate::grid::Cell,
         _: u_int,
         _: *const libc::c_char,
         _: *mut style_ranges,
@@ -189,20 +190,20 @@ extern "C" {
         _: libc::c_int,
     );
     #[no_mangle]
-    fn screen_write_putc(_: *mut screen_write_ctx, _: *const grid_cell, _: u_char);
+    fn screen_write_putc(_: *mut screen_write_ctx, _: *const crate::grid::Cell, _: u_char);
     #[no_mangle]
     fn screen_write_start(_: *mut screen_write_ctx, _: *mut screen);
     #[no_mangle]
     fn screen_resize(_: *mut screen, _: u_int, _: u_int, _: libc::c_int);
     #[no_mangle]
-    fn grid_cells_equal(_: *const grid_cell, _: *const grid_cell) -> libc::c_int;
+    fn grid_cells_equal(_: *const crate::grid::Cell, _: *const crate::grid::Cell) -> libc::c_int;
     #[no_mangle]
     fn grid_compare(_: *mut grid, _: *mut grid) -> libc::c_int;
     #[no_mangle]
     fn screen_write_nputs(
         _: *mut screen_write_ctx,
         _: ssize_t,
-        _: *const grid_cell,
+        _: *const crate::grid::Cell,
         _: *const libc::c_char,
         _: ...
     );
@@ -218,7 +219,7 @@ extern "C" {
     #[no_mangle]
     fn screen_write_strlen(_: *const libc::c_char, _: ...) -> size_t;
     #[no_mangle]
-    fn screen_write_cell(_: *mut screen_write_ctx, _: *const grid_cell);
+    fn screen_write_cell(_: *mut screen_write_ctx, _: *const crate::grid::Cell);
     #[no_mangle]
     fn winlinks_RB_NEXT(_: *mut winlink) -> *mut winlink;
     #[no_mangle]
@@ -281,7 +282,7 @@ extern "C" {
     ) -> libc::c_int;
     #[no_mangle]
     fn style_apply(
-        _: *mut grid_cell,
+        _: *mut crate::grid::Cell,
         _: *mut crate::options::options,
         _: *const libc::c_char,
         _: *mut crate::format::format_tree,
@@ -706,22 +707,11 @@ pub struct screen {
     pub saved_cx: u_int,
     pub saved_cy: u_int,
     pub saved_grid: *mut grid,
-    pub saved_cell: grid_cell,
+    pub saved_cell: crate::grid::Cell,
     pub saved_flags: libc::c_int,
     pub tabs: *mut bitstr_t,
     pub sel: *mut crate::screen::screen_sel,
     pub write_list: *mut crate::screen_write::screen_write_collect_line,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct grid_cell {
-    pub data: crate::utf8::Utf8Data,
-    pub attr: u_short,
-    pub flags: u_char,
-    pub fg: libc::c_int,
-    pub bg: libc::c_int,
-    pub us: libc::c_int,
 }
 
 #[repr(C)]
@@ -982,8 +972,8 @@ pub struct window_pane {
     pub resize_timer: event,
     pub force_timer: event,
     pub ictx: *mut crate::input::input_ctx,
-    pub cached_gc: grid_cell,
-    pub cached_active_gc: grid_cell,
+    pub cached_gc: crate::grid::Cell,
+    pub cached_active_gc: crate::grid::Cell,
     pub palette: *mut libc::c_int,
     pub pipe_fd: libc::c_int,
     pub pipe_event: *mut bufferevent,
@@ -998,7 +988,7 @@ pub struct window_pane {
     pub written: size_t,
     pub skipped: size_t,
     pub border_gc_set: libc::c_int,
-    pub border_gc: grid_cell,
+    pub border_gc: crate::grid::Cell,
     pub entry: C2RustUnnamed_22,
     pub tree_entry: C2RustUnnamed_21,
 }
@@ -1196,7 +1186,7 @@ pub struct status_line {
     pub screen: screen,
     pub active: *mut screen,
     pub references: libc::c_int,
-    pub style: grid_cell,
+    pub style: crate::grid::Cell,
     pub entries: [status_line_entry; 5],
 }
 
@@ -1266,8 +1256,8 @@ pub struct tty {
     pub timer: event,
     pub discarded: size_t,
     pub tio: termios,
-    pub cell: grid_cell,
-    pub last_cell: grid_cell,
+    pub cell: crate::grid::Cell,
+    pub last_cell: crate::grid::Cell,
     pub flags: libc::c_int,
     pub term: *mut tty_term,
     pub mouse_last_x: u_int,
@@ -1357,7 +1347,7 @@ pub struct tty_ctx {
     pub redraw_cb: tty_ctx_redraw_cb,
     pub set_client_cb: tty_ctx_set_client_cb,
     pub arg: *mut libc::c_void,
-    pub cell: *const grid_cell,
+    pub cell: *const crate::grid::Cell,
     pub wrapped: libc::c_int,
     pub num: u_int,
     pub ptr: *mut libc::c_void,
@@ -1372,7 +1362,7 @@ pub struct tty_ctx {
     pub sx: u_int,
     pub sy: u_int,
     pub bg: u_int,
-    pub defaults: grid_cell,
+    pub defaults: crate::grid::Cell,
     pub palette: *mut libc::c_int,
     pub bigger: libc::c_int,
     pub wox: u_int,
@@ -1402,7 +1392,7 @@ pub const STYLE_DEFAULT_BASE: style_default_type = 0;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct style {
-    pub gc: grid_cell,
+    pub gc: crate::grid::Cell,
     pub ignore: libc::c_int,
     pub fill: libc::c_int,
     pub align: style_align,
@@ -1917,7 +1907,7 @@ pub unsafe extern "C" fn status_redraw(mut c: *mut client) -> libc::c_int {
         written: 0,
         skipped: 0,
     };
-    let mut gc: grid_cell = grid_cell {
+    let mut gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -1999,9 +1989,9 @@ pub unsafe extern "C" fn status_redraw(mut c: *mut client) -> libc::c_int {
     if grid_cells_equal(&mut gc, &mut (*sl).style) == 0 {
         force = 1 as libc::c_int;
         memcpy(
-            &mut (*sl).style as *mut grid_cell as *mut libc::c_void,
-            &mut gc as *mut grid_cell as *const libc::c_void,
-            ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+            &mut (*sl).style as *mut GridCell as *mut libc::c_void,
+            &mut gc as *mut GridCell as *const libc::c_void,
+            ::std::mem::size_of::<GridCell>() as libc::c_ulong,
         );
     }
     /* Resize the target screen. */
@@ -2216,7 +2206,7 @@ pub unsafe extern "C" fn status_message_redraw(mut c: *mut client) -> libc::c_in
         saved_cx: 0,
         saved_cy: 0,
         saved_grid: 0 as *mut grid,
-        saved_cell: grid_cell {
+        saved_cell: GridCell {
             data: Utf8Data {
                 data: [0; 21],
                 have: 0,
@@ -2237,7 +2227,7 @@ pub unsafe extern "C" fn status_message_redraw(mut c: *mut client) -> libc::c_in
     let mut len: size_t = 0;
     let mut lines: u_int = 0;
     let mut offset: u_int = 0;
-    let mut gc: grid_cell = grid_cell {
+    let mut gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -2317,7 +2307,7 @@ pub unsafe extern "C" fn status_message_redraw(mut c: *mut client) -> libc::c_in
         screen_write_nputs(
             &mut ctx as *mut screen_write_ctx,
             len as ssize_t,
-            &mut gc as *mut grid_cell,
+            &mut gc as *mut GridCell,
             b"%s\x00" as *const u8 as *const libc::c_char,
             (*c).message_string,
         );
@@ -2495,7 +2485,7 @@ pub unsafe extern "C" fn status_prompt_redraw(mut c: *mut client) -> libc::c_int
         saved_cx: 0,
         saved_cy: 0,
         saved_grid: 0 as *mut grid,
-        saved_cell: grid_cell {
+        saved_cell: GridCell {
             data: Utf8Data {
                 data: [0; 21],
                 have: 0,
@@ -2521,7 +2511,7 @@ pub unsafe extern "C" fn status_prompt_redraw(mut c: *mut client) -> libc::c_int
     let mut width: u_int = 0;
     let mut pcursor: u_int = 0;
     let mut pwidth: u_int = 0;
-    let mut gc: grid_cell = grid_cell {
+    let mut gc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -2534,7 +2524,7 @@ pub unsafe extern "C" fn status_prompt_redraw(mut c: *mut client) -> libc::c_int
         bg: 0,
         us: 0,
     };
-    let mut cursorgc: grid_cell = grid_cell {
+    let mut cursorgc: GridCell = GridCell {
         data: Utf8Data {
             data: [0; 21],
             have: 0,
@@ -2587,9 +2577,9 @@ pub unsafe extern "C" fn status_prompt_redraw(mut c: *mut client) -> libc::c_int
     }
     format_free(ft);
     memcpy(
-        &mut cursorgc as *mut grid_cell as *mut libc::c_void,
-        &mut gc as *mut grid_cell as *const libc::c_void,
-        ::std::mem::size_of::<grid_cell>() as libc::c_ulong,
+        &mut cursorgc as *mut GridCell as *mut libc::c_void,
+        &mut gc as *mut GridCell as *const libc::c_void,
+        ::std::mem::size_of::<GridCell>() as libc::c_ulong,
     );
     cursorgc.attr = (cursorgc.attr as libc::c_int ^ 0x10 as libc::c_int) as u_short;
     start = screen_write_strlen(
@@ -2628,7 +2618,7 @@ pub unsafe extern "C" fn status_prompt_redraw(mut c: *mut client) -> libc::c_int
     screen_write_nputs(
         &mut ctx as *mut screen_write_ctx,
         start as ssize_t,
-        &mut gc as *mut grid_cell,
+        &mut gc as *mut GridCell,
         b"%s\x00" as *const u8 as *const libc::c_char,
         (*c).prompt_string,
     );
