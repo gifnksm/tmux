@@ -100,7 +100,7 @@ extern "C" {
     #[no_mangle]
     fn screen_write_menu(
         _: *mut screen_write_ctx,
-        _: *mut menu,
+        _: *mut Menu,
         _: libc::c_int,
         _: *const crate::grid::Cell,
     );
@@ -1047,24 +1047,6 @@ pub type tty_ctx_set_client_cb =
     Option<unsafe extern "C" fn(_: *mut tty_ctx, _: *mut client) -> libc::c_int>;
 pub type tty_ctx_redraw_cb = Option<unsafe extern "C" fn(_: *const tty_ctx) -> ()>;
 
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct menu_item {
-    pub name: *const libc::c_char,
-    pub key: key_code,
-    pub command: *const libc::c_char,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct menu {
-    pub title: *const libc::c_char,
-    pub items: *mut menu_item,
-    pub count: u_int,
-    pub width: u_int,
-}
-pub type menu_choice_cb =
-    Option<unsafe extern "C" fn(_: *mut menu, _: u_int, _: key_code, _: *mut libc::c_void) -> ()>;
 pub type cmd_parse_status = libc::c_uint;
 pub const CMD_PARSE_SUCCESS: cmd_parse_status = 2;
 pub const CMD_PARSE_ERROR: cmd_parse_status = 1;
@@ -1099,6 +1081,25 @@ pub struct cmd_parse_input {
 
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct Item {
+    pub name: *const libc::c_char,
+    pub key: key_code,
+    pub command: *const libc::c_char,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct Menu {
+    pub title: *const libc::c_char,
+    pub items: *mut Item,
+    pub count: u_int,
+    pub width: u_int,
+}
+pub type ChoiseCb =
+    Option<unsafe extern "C" fn(_: *mut Menu, _: u_int, _: key_code, _: *mut libc::c_void) -> ()>;
+
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct menu_data {
     pub item: *mut crate::cmd_queue::cmdq_item,
     pub flags: libc::c_int,
@@ -1106,20 +1107,20 @@ pub struct menu_data {
     pub s: crate::screen::Screen,
     pub px: u_int,
     pub py: u_int,
-    pub menu: *mut menu,
+    pub menu: *mut Menu,
     pub choice: libc::c_int,
-    pub cb: menu_choice_cb,
+    pub cb: ChoiseCb,
     pub data: *mut libc::c_void,
 }
 #[no_mangle]
 pub unsafe extern "C" fn menu_add_items(
-    mut menu: *mut menu,
-    mut items: *const menu_item,
+    mut menu: *mut Menu,
+    mut items: *const Item,
     mut qitem: *mut crate::cmd_queue::cmdq_item,
     mut c: *mut client,
     mut fs: *mut cmd_find_state,
 ) {
-    let mut loop_0: *const menu_item = 0 as *const menu_item;
+    let mut loop_0: *const Item = 0 as *const Item;
     loop_0 = items;
     while !(*loop_0).name.is_null() {
         menu_add_item(menu, loop_0, qitem, c, fs);
@@ -1128,13 +1129,13 @@ pub unsafe extern "C" fn menu_add_items(
 }
 #[no_mangle]
 pub unsafe extern "C" fn menu_add_item(
-    mut menu: *mut menu,
-    mut item: *const menu_item,
+    mut menu: *mut Menu,
+    mut item: *const Item,
     mut qitem: *mut crate::cmd_queue::cmdq_item,
     mut c: *mut client,
     mut fs: *mut cmd_find_state,
 ) {
-    let mut new_item: *mut menu_item = 0 as *mut menu_item;
+    let mut new_item: *mut Item = 0 as *mut Item;
     let mut key: *const libc::c_char = 0 as *const libc::c_char;
     let mut cmd: *const libc::c_char = 0 as *const libc::c_char;
     let mut s: *mut libc::c_char = 0 as *mut libc::c_char;
@@ -1150,15 +1151,15 @@ pub unsafe extern "C" fn menu_add_item(
     (*menu).items = xreallocarray(
         (*menu).items as *mut libc::c_void,
         (*menu).count.wrapping_add(1u32) as size_t,
-        ::std::mem::size_of::<menu_item>() as libc::c_ulong,
-    ) as *mut menu_item;
+        ::std::mem::size_of::<Item>() as libc::c_ulong,
+    ) as *mut Item;
     let fresh0 = (*menu).count;
     (*menu).count = (*menu).count.wrapping_add(1);
-    new_item = &mut *(*menu).items.offset(fresh0 as isize) as *mut menu_item;
+    new_item = &mut *(*menu).items.offset(fresh0 as isize) as *mut Item;
     memset(
         new_item as *mut libc::c_void,
         0i32,
-        ::std::mem::size_of::<menu_item>() as libc::c_ulong,
+        ::std::mem::size_of::<Item>() as libc::c_ulong,
     );
     if line != 0 {
         return;
@@ -1225,15 +1226,15 @@ pub unsafe extern "C" fn menu_add_item(
     };
 }
 #[no_mangle]
-pub unsafe extern "C" fn menu_create(mut title: *const libc::c_char) -> *mut menu {
-    let mut menu: *mut menu = 0 as *mut menu;
-    menu = xcalloc(1u64, ::std::mem::size_of::<menu>() as libc::c_ulong) as *mut menu;
+pub unsafe extern "C" fn menu_create(mut title: *const libc::c_char) -> *mut Menu {
+    let mut menu: *mut Menu = 0 as *mut Menu;
+    menu = xcalloc(1u64, ::std::mem::size_of::<Menu>() as libc::c_ulong) as *mut Menu;
     (*menu).title = xstrdup(title);
     (*menu).width = format_width(title);
     return menu;
 }
 #[no_mangle]
-pub unsafe extern "C" fn menu_free(mut menu: *mut menu) {
+pub unsafe extern "C" fn menu_free(mut menu: *mut Menu) {
     let mut i: u_int = 0;
     i = 0u32;
     while i < (*menu).count {
@@ -1257,7 +1258,7 @@ unsafe extern "C" fn menu_draw_cb(mut c: *mut client, mut _ctx0: *mut screen_red
     let mut md: *mut menu_data = (*c).overlay_data as *mut menu_data;
     let mut tty: *mut tty = &mut (*c).tty;
     let mut s: *mut Screen = &mut (*md).s;
-    let mut menu: *mut menu = (*md).menu;
+    let mut menu: *mut Menu = (*md).menu;
     let mut ctx: screen_write_ctx = screen_write_ctx {
         wp: 0 as *mut window_pane,
         s: 0 as *mut crate::screen::Screen,
@@ -1333,13 +1334,13 @@ unsafe extern "C" fn menu_free_cb(mut c: *mut client) {
 unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) -> libc::c_int {
     let mut current_block: u64;
     let mut md: *mut menu_data = (*c).overlay_data as *mut menu_data;
-    let mut menu: *mut menu = (*md).menu;
+    let mut menu: *mut Menu = (*md).menu;
     let mut m: *mut mouse_event = &mut (*event).m;
     let mut i: u_int = 0;
     let mut count: libc::c_int = (*menu).count as libc::c_int;
     let mut old: libc::c_int = (*md).choice;
     let mut name: *const libc::c_char = 0 as *const libc::c_char;
-    let mut item: *const menu_item = 0 as *const menu_item;
+    let mut item: *const Item = 0 as *const Item;
     let mut state: *mut crate::cmd_queue::cmdq_state = 0 as *mut crate::cmd_queue::cmdq_state;
     let mut status: cmd_parse_status = CMD_PARSE_EMPTY;
     let mut error: *mut libc::c_char = 0 as *mut libc::c_char;
@@ -2469,7 +2470,7 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
     if (*md).choice == -(1i32) {
         return 1i32;
     }
-    item = &mut *(*menu).items.offset((*md).choice as isize) as *mut menu_item;
+    item = &mut *(*menu).items.offset((*md).choice as isize) as *mut Item;
     if (*item).name.is_null() || *(*item).name as libc::c_int == '-' as i32 {
         if (*md).flags & 0x4i32 != 0 {
             return 0i32;
@@ -2508,14 +2509,14 @@ unsafe extern "C" fn menu_key_cb(mut c: *mut client, mut event: *mut key_event) 
 }
 #[no_mangle]
 pub unsafe extern "C" fn menu_display(
-    mut menu: *mut menu,
+    mut menu: *mut Menu,
     mut flags: libc::c_int,
     mut item: *mut crate::cmd_queue::cmdq_item,
     mut px: u_int,
     mut py: u_int,
     mut c: *mut client,
     mut fs: *mut cmd_find_state,
-    mut cb: menu_choice_cb,
+    mut cb: ChoiseCb,
     mut data: *mut libc::c_void,
 ) -> libc::c_int {
     let mut md: *mut menu_data = 0 as *mut menu_data;

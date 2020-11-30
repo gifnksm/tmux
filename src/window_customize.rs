@@ -1,5 +1,6 @@
 use crate::{
-    grid::Cell as GridCell, key_code::code as key_code_code, screen::Screen, utf8::Utf8Data,
+    grid::Cell as GridCell, key_code::code as key_code_code, menu::Item as MenuItem,
+    screen::Screen, utf8::Utf8Data,
 };
 use ::libc;
 
@@ -243,7 +244,7 @@ extern "C" {
         _: mode_tree_menu_cb,
         _: mode_tree_height_cb,
         _: *mut libc::c_void,
-        _: *const menu_item,
+        _: *const MenuItem,
         _: *mut *const libc::c_char,
         _: u_int,
         _: *mut *mut crate::screen::Screen,
@@ -1227,13 +1228,6 @@ pub type tty_ctx_set_client_cb =
     Option<unsafe extern "C" fn(_: *mut tty_ctx, _: *mut client) -> libc::c_int>;
 pub type tty_ctx_redraw_cb = Option<unsafe extern "C" fn(_: *const tty_ctx) -> ()>;
 
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct menu_item {
-    pub name: *const libc::c_char,
-    pub key: key_code,
-    pub command: *const libc::c_char,
-}
 pub type cmd_parse_status = libc::c_uint;
 pub const CMD_PARSE_SUCCESS: cmd_parse_status = 2;
 pub const CMD_PARSE_ERROR: cmd_parse_status = 1;
@@ -1399,9 +1393,9 @@ unsafe extern "C" fn toupper(mut __c: libc::c_int) -> libc::c_int {
         __c
     };
 }
-static mut window_customize_menu_items: [menu_item; 9] = [
+static mut window_customize_menu_items: [MenuItem; 9] = [
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: b"Select\x00" as *const u8 as *const libc::c_char,
             key: '\r' as i32 as key_code,
             command: 0 as *const libc::c_char,
@@ -1409,7 +1403,7 @@ static mut window_customize_menu_items: [menu_item; 9] = [
         init
     },
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: b"Expand\x00" as *const u8 as *const libc::c_char,
             key: key_code_code::RIGHT,
             command: 0 as *const libc::c_char,
@@ -1417,7 +1411,7 @@ static mut window_customize_menu_items: [menu_item; 9] = [
         init
     },
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: b"\x00" as *const u8 as *const libc::c_char,
             key: 0xff000000000u64,
             command: 0 as *const libc::c_char,
@@ -1425,7 +1419,7 @@ static mut window_customize_menu_items: [menu_item; 9] = [
         init
     },
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: b"Tag\x00" as *const u8 as *const libc::c_char,
             key: 't' as i32 as key_code,
             command: 0 as *const libc::c_char,
@@ -1433,7 +1427,7 @@ static mut window_customize_menu_items: [menu_item; 9] = [
         init
     },
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: b"Tag All\x00" as *const u8 as *const libc::c_char,
             key: '\u{14}' as i32 as key_code,
             command: 0 as *const libc::c_char,
@@ -1441,7 +1435,7 @@ static mut window_customize_menu_items: [menu_item; 9] = [
         init
     },
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: b"Tag None\x00" as *const u8 as *const libc::c_char,
             key: 'T' as i32 as key_code,
             command: 0 as *const libc::c_char,
@@ -1449,7 +1443,7 @@ static mut window_customize_menu_items: [menu_item; 9] = [
         init
     },
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: b"\x00" as *const u8 as *const libc::c_char,
             key: 0xff000000000u64,
             command: 0 as *const libc::c_char,
@@ -1457,7 +1451,7 @@ static mut window_customize_menu_items: [menu_item; 9] = [
         init
     },
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: b"Cancel\x00" as *const u8 as *const libc::c_char,
             key: 'q' as i32 as key_code,
             command: 0 as *const libc::c_char,
@@ -1465,7 +1459,7 @@ static mut window_customize_menu_items: [menu_item; 9] = [
         init
     },
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: 0 as *const libc::c_char,
             key: 0xff000000000u64,
             command: 0 as *const libc::c_char,

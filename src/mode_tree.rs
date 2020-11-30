@@ -1,6 +1,10 @@
 use crate::{
-    grid::Cell as GridCell, key_code::code as key_code_code, screen::Screen,
-    style::Ranges as StyleRanges, utf8::Utf8Data,
+    grid::Cell as GridCell,
+    key_code::code as key_code_code,
+    menu::{ChoiseCb as MenuChoiseCb, Item as MenuItem, Menu},
+    screen::Screen,
+    style::Ranges as StyleRanges,
+    utf8::Utf8Data,
 };
 use ::libc;
 
@@ -147,29 +151,29 @@ extern "C" {
     #[no_mangle]
     static grid_default_cell: crate::grid::Cell;
     #[no_mangle]
-    fn menu_create(_: *const libc::c_char) -> *mut menu;
+    fn menu_create(_: *const libc::c_char) -> *mut Menu;
     #[no_mangle]
     fn menu_add_items(
-        _: *mut menu,
-        _: *const menu_item,
+        _: *mut Menu,
+        _: *const MenuItem,
         _: *mut crate::cmd_queue::cmdq_item,
         _: *mut client,
         _: *mut cmd_find_state,
     );
     #[no_mangle]
     fn menu_display(
-        _: *mut menu,
+        _: *mut Menu,
         _: libc::c_int,
         _: *mut crate::cmd_queue::cmdq_item,
         _: u_int,
         _: u_int,
         _: *mut client,
         _: *mut cmd_find_state,
-        _: menu_choice_cb,
+        _: MenuChoiseCb,
         _: *mut libc::c_void,
     ) -> libc::c_int;
     #[no_mangle]
-    fn menu_free(_: *mut menu);
+    fn menu_free(_: *mut Menu);
     #[no_mangle]
     fn log_debug(_: *const libc::c_char, _: ...);
     #[no_mangle]
@@ -1070,7 +1074,7 @@ pub struct mode_tree_data {
     pub zoomed: libc::c_int,
     pub wp: *mut window_pane,
     pub modedata: *mut libc::c_void,
-    pub menu: *const menu_item,
+    pub menu: *const MenuItem,
     pub sort_list: *mut *const libc::c_char,
     pub sort_size: u_int,
     pub sort_crit: mode_tree_sort_criteria,
@@ -1238,24 +1242,6 @@ pub struct mode_tree_sort_criteria {
     pub reversed: libc::c_int,
 }
 
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct menu_item {
-    pub name: *const libc::c_char,
-    pub key: key_code,
-    pub command: *const libc::c_char,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct menu {
-    pub title: *const libc::c_char,
-    pub items: *mut menu_item,
-    pub count: u_int,
-    pub width: u_int,
-}
-pub type menu_choice_cb =
-    Option<unsafe extern "C" fn(_: *mut menu, _: u_int, _: key_code, _: *mut libc::c_void) -> ()>;
 pub type cmd_parse_status = libc::c_uint;
 pub const CMD_PARSE_SUCCESS: cmd_parse_status = 2;
 pub const CMD_PARSE_ERROR: cmd_parse_status = 1;
@@ -1296,9 +1282,9 @@ unsafe extern "C" fn toupper(mut __c: libc::c_int) -> libc::c_int {
         __c
     };
 }
-static mut mode_tree_menu_items: [menu_item; 5] = [
+static mut mode_tree_menu_items: [MenuItem; 5] = [
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: b"Scroll Left\x00" as *const u8 as *const libc::c_char,
             key: '<' as i32 as key_code,
             command: 0 as *const libc::c_char,
@@ -1306,7 +1292,7 @@ static mut mode_tree_menu_items: [menu_item; 5] = [
         init
     },
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: b"Scroll Right\x00" as *const u8 as *const libc::c_char,
             key: '>' as i32 as key_code,
             command: 0 as *const libc::c_char,
@@ -1314,7 +1300,7 @@ static mut mode_tree_menu_items: [menu_item; 5] = [
         init
     },
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: b"\x00" as *const u8 as *const libc::c_char,
             key: 0xff000000000u64,
             command: 0 as *const libc::c_char,
@@ -1322,7 +1308,7 @@ static mut mode_tree_menu_items: [menu_item; 5] = [
         init
     },
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: b"Cancel\x00" as *const u8 as *const libc::c_char,
             key: 'q' as i32 as key_code,
             command: 0 as *const libc::c_char,
@@ -1330,7 +1316,7 @@ static mut mode_tree_menu_items: [menu_item; 5] = [
         init
     },
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: 0 as *const libc::c_char,
             key: 0xff000000000u64,
             command: 0 as *const libc::c_char,
@@ -1611,7 +1597,7 @@ pub unsafe extern "C" fn mode_tree_start(
     mut menucb: mode_tree_menu_cb,
     mut heightcb: mode_tree_height_cb,
     mut modedata: *mut libc::c_void,
-    mut menu: *const menu_item,
+    mut menu: *const MenuItem,
     mut sort_list: *mut *const libc::c_char,
     mut sort_size: u_int,
     mut s: *mut *mut crate::screen::Screen,
@@ -2322,7 +2308,7 @@ unsafe extern "C" fn mode_tree_filter_free(mut data: *mut libc::c_void) {
     mode_tree_remove_ref(data as *mut mode_tree_data);
 }
 unsafe extern "C" fn mode_tree_menu_callback(
-    mut _menu: *mut menu,
+    mut _menu: *mut Menu,
     mut _idx: u_int,
     mut key: key_code,
     mut data: *mut libc::c_void,
@@ -2350,8 +2336,8 @@ unsafe extern "C" fn mode_tree_display_menu(
     mut outside: libc::c_int,
 ) {
     let mut mti: *mut mode_tree_item = 0 as *mut mode_tree_item;
-    let mut menu: *mut menu = 0 as *mut menu;
-    let mut items: *const menu_item = 0 as *const menu_item;
+    let mut menu: *mut Menu = 0 as *mut Menu;
+    let mut items: *const MenuItem = 0 as *const MenuItem;
     let mut mtm: *mut mode_tree_menu = 0 as *mut mode_tree_menu;
     let mut title: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut line: u_int = 0;
@@ -2403,7 +2389,7 @@ unsafe extern "C" fn mode_tree_display_menu(
         Some(
             mode_tree_menu_callback
                 as unsafe extern "C" fn(
-                    _: *mut menu,
+                    _: *mut Menu,
                     _: u_int,
                     _: key_code,
                     _: *mut libc::c_void,

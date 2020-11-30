@@ -1,4 +1,7 @@
-use crate::style::{range_type as style_range_type, Range as StyleRange, Ranges as StyleRanges};
+use crate::{
+    menu::{ChoiseCb as MenuChoiseCb, Item as MenuItem, Menu},
+    style::{range_type as style_range_type, Range as StyleRange, Ranges as StyleRanges},
+};
 use ::libc;
 
 extern "C" {
@@ -65,27 +68,27 @@ extern "C" {
     #[no_mangle]
     fn status_line_size(_: *mut client) -> u_int;
     #[no_mangle]
-    fn menu_create(_: *const libc::c_char) -> *mut menu;
+    fn menu_create(_: *const libc::c_char) -> *mut Menu;
     #[no_mangle]
     fn menu_add_item(
-        _: *mut menu,
-        _: *const menu_item,
+        _: *mut Menu,
+        _: *const MenuItem,
         _: *mut crate::cmd_queue::cmdq_item,
         _: *mut client,
         _: *mut cmd_find_state,
     );
     #[no_mangle]
-    fn menu_free(_: *mut menu);
+    fn menu_free(_: *mut Menu);
     #[no_mangle]
     fn menu_display(
-        _: *mut menu,
+        _: *mut Menu,
         _: libc::c_int,
         _: *mut crate::cmd_queue::cmdq_item,
         _: u_int,
         _: u_int,
         _: *mut client,
         _: *mut cmd_find_state,
-        _: menu_choice_cb,
+        _: MenuChoiseCb,
         _: *mut libc::c_void,
     ) -> libc::c_int;
     #[no_mangle]
@@ -994,24 +997,6 @@ pub struct C2RustUnnamed_31 {
     pub rbe_color: libc::c_int,
 }
 
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct menu_item {
-    pub name: *const libc::c_char,
-    pub key: key_code,
-    pub command: *const libc::c_char,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct menu {
-    pub title: *const libc::c_char,
-    pub items: *mut menu_item,
-    pub count: u_int,
-    pub width: u_int,
-}
-pub type menu_choice_cb =
-    Option<unsafe extern "C" fn(_: *mut menu, _: u_int, _: key_code, _: *mut libc::c_void) -> ()>;
 pub type cmd_find_type = libc::c_uint;
 pub const CMD_FIND_SESSION: cmd_find_type = 2;
 pub const CMD_FIND_WINDOW: cmd_find_type = 1;
@@ -1333,8 +1318,8 @@ unsafe extern "C" fn cmd_display_menu_exec(
     let mut target: *mut cmd_find_state = cmdq_get_target(item);
     let mut event: *mut key_event = cmdq_get_event(item);
     let mut tc: *mut client = cmdq_get_target_client(item);
-    let mut menu: *mut menu = 0 as *mut menu;
-    let mut menu_item: menu_item = menu_item {
+    let mut menu: *mut Menu = 0 as *mut Menu;
+    let mut MenuItem: MenuItem = MenuItem {
         name: 0 as *const libc::c_char,
         key: 0,
         command: 0 as *const libc::c_char,
@@ -1362,7 +1347,7 @@ unsafe extern "C" fn cmd_display_menu_exec(
         i = i + 1;
         name = *(*args).argv.offset(fresh0 as isize);
         if *name as libc::c_int == '\u{0}' as i32 {
-            menu_add_item(menu, 0 as *const menu_item, item, tc, target);
+            menu_add_item(menu, 0 as *const MenuItem, item, tc, target);
         } else {
             if (*args).argc - i < 2i32 {
                 cmdq_error(
@@ -1376,12 +1361,12 @@ unsafe extern "C" fn cmd_display_menu_exec(
             let fresh1 = i;
             i = i + 1;
             key = *(*args).argv.offset(fresh1 as isize);
-            menu_item.name = name;
-            menu_item.key = key_string_lookup_string(key);
+            MenuItem.name = name;
+            MenuItem.key = key_string_lookup_string(key);
             let fresh2 = i;
             i = i + 1;
-            menu_item.command = *(*args).argv.offset(fresh2 as isize);
-            menu_add_item(menu, &mut menu_item, item, tc, target);
+            MenuItem.command = *(*args).argv.offset(fresh2 as isize);
+            menu_add_item(menu, &mut MenuItem, item, tc, target);
         }
     }
     free(title as *mut libc::c_void);

@@ -1,4 +1,5 @@
 use crate::{
+    menu::Item as MenuItem,
     msg::{code as msgtype_code, Msgtype},
     screen::Screen,
 };
@@ -98,7 +99,7 @@ extern "C" {
         _: mode_tree_menu_cb,
         _: mode_tree_height_cb,
         _: *mut libc::c_void,
-        _: *const menu_item,
+        _: *const MenuItem,
         _: *mut *const libc::c_char,
         _: u_int,
         _: *mut *mut crate::screen::Screen,
@@ -1073,14 +1074,6 @@ pub type tty_ctx_redraw_cb = Option<unsafe extern "C" fn(_: *const tty_ctx) -> (
 
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct menu_item {
-    pub name: *const libc::c_char,
-    pub key: key_code,
-    pub command: *const libc::c_char,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
 pub struct clients {
     pub tqh_first: *mut client,
     pub tqh_last: *mut *mut client,
@@ -1150,9 +1143,9 @@ pub const WINDOW_CLIENT_BY_CREATION_TIME: window_client_sort_type = 2;
 pub const WINDOW_CLIENT_BY_SIZE: window_client_sort_type = 1;
 pub type window_client_sort_type = libc::c_uint;
 pub const WINDOW_CLIENT_BY_NAME: window_client_sort_type = 0;
-static mut window_client_menu_items: [menu_item; 9] = [
+static mut window_client_menu_items: [MenuItem; 9] = [
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: b"Detach\x00" as *const u8 as *const libc::c_char,
             key: 'd' as i32 as key_code,
             command: 0 as *const libc::c_char,
@@ -1160,7 +1153,7 @@ static mut window_client_menu_items: [menu_item; 9] = [
         init
     },
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: b"Detach Tagged\x00" as *const u8 as *const libc::c_char,
             key: 'D' as i32 as key_code,
             command: 0 as *const libc::c_char,
@@ -1168,7 +1161,7 @@ static mut window_client_menu_items: [menu_item; 9] = [
         init
     },
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: b"\x00" as *const u8 as *const libc::c_char,
             key: 0xff000000000u64,
             command: 0 as *const libc::c_char,
@@ -1176,7 +1169,7 @@ static mut window_client_menu_items: [menu_item; 9] = [
         init
     },
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: b"Tag\x00" as *const u8 as *const libc::c_char,
             key: 't' as i32 as key_code,
             command: 0 as *const libc::c_char,
@@ -1184,7 +1177,7 @@ static mut window_client_menu_items: [menu_item; 9] = [
         init
     },
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: b"Tag All\x00" as *const u8 as *const libc::c_char,
             key: '\u{14}' as i32 as key_code,
             command: 0 as *const libc::c_char,
@@ -1192,7 +1185,7 @@ static mut window_client_menu_items: [menu_item; 9] = [
         init
     },
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: b"Tag None\x00" as *const u8 as *const libc::c_char,
             key: 'T' as i32 as key_code,
             command: 0 as *const libc::c_char,
@@ -1200,7 +1193,7 @@ static mut window_client_menu_items: [menu_item; 9] = [
         init
     },
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: b"\x00" as *const u8 as *const libc::c_char,
             key: 0xff000000000u64,
             command: 0 as *const libc::c_char,
@@ -1208,7 +1201,7 @@ static mut window_client_menu_items: [menu_item; 9] = [
         init
     },
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: b"Cancel\x00" as *const u8 as *const libc::c_char,
             key: 'q' as i32 as key_code,
             command: 0 as *const libc::c_char,
@@ -1216,7 +1209,7 @@ static mut window_client_menu_items: [menu_item; 9] = [
         init
     },
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: 0 as *const libc::c_char,
             key: 0xff000000000u64,
             command: 0 as *const libc::c_char,

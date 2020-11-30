@@ -1,6 +1,7 @@
 use crate::{
     grid::{Cell as GridCell, Grid},
     key_code::code as key_code_code,
+    menu::{ChoiseCb as MenuChoiseCb, Item as MenuItem, Menu},
     screen::Screen,
     style::{Range as StyleRange, Ranges as StyleRanges},
     utf8::{utf8_state, Utf8Char, Utf8Data, Utf8State},
@@ -239,7 +240,7 @@ extern "C" {
     #[no_mangle]
     fn utf8_to_data(_: Utf8Char, _: *mut Utf8Data);
     #[no_mangle]
-    fn menu_free(_: *mut menu);
+    fn menu_free(_: *mut Menu);
     #[no_mangle]
     fn utf8_strlen(_: *const Utf8Data) -> size_t;
     #[no_mangle]
@@ -259,11 +260,11 @@ extern "C" {
     #[no_mangle]
     fn utf8_open(_: *mut Utf8Data, _: u_char) -> crate::utf8::Utf8State;
     #[no_mangle]
-    fn menu_create(_: *const libc::c_char) -> *mut menu;
+    fn menu_create(_: *const libc::c_char) -> *mut Menu;
     #[no_mangle]
     fn menu_add_item(
-        _: *mut menu,
-        _: *const menu_item,
+        _: *mut Menu,
+        _: *const MenuItem,
         _: *mut crate::cmd_queue::cmdq_item,
         _: *mut client,
         _: *mut cmd_find_state,
@@ -272,14 +273,14 @@ extern "C" {
     fn utf8_cstrwidth(_: *const libc::c_char) -> u_int;
     #[no_mangle]
     fn menu_display(
-        _: *mut menu,
+        _: *mut Menu,
         _: libc::c_int,
         _: *mut crate::cmd_queue::cmdq_item,
         _: u_int,
         _: u_int,
         _: *mut client,
         _: *mut cmd_find_state,
-        _: menu_choice_cb,
+        _: MenuChoiseCb,
         _: *mut libc::c_void,
     ) -> libc::c_int;
     #[no_mangle]
@@ -1271,25 +1272,6 @@ pub struct tty_ctx {
 pub type tty_ctx_set_client_cb =
     Option<unsafe extern "C" fn(_: *mut tty_ctx, _: *mut client) -> libc::c_int>;
 pub type tty_ctx_redraw_cb = Option<unsafe extern "C" fn(_: *const tty_ctx) -> ()>;
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct menu_item {
-    pub name: *const libc::c_char,
-    pub key: key_code,
-    pub command: *const libc::c_char,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct menu {
-    pub title: *const libc::c_char,
-    pub items: *mut menu_item,
-    pub count: u_int,
-    pub width: u_int,
-}
-pub type menu_choice_cb =
-    Option<unsafe extern "C" fn(_: *mut menu, _: u_int, _: key_code, _: *mut libc::c_void) -> ()>;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -10758,7 +10740,7 @@ unsafe extern "C" fn status_prompt_complete_prefix(
 }
 /* Complete word menu callback. */
 unsafe extern "C" fn status_prompt_menu_callback(
-    mut _menu: *mut menu,
+    mut _menu: *mut Menu,
     mut idx: u_int,
     mut key: key_code,
     mut data: *mut libc::c_void,
@@ -10804,8 +10786,8 @@ unsafe extern "C" fn status_prompt_complete_list_menu(
     mut offset: u_int,
     mut flag: libc::c_char,
 ) -> libc::c_int {
-    let mut menu: *mut menu = 0 as *mut menu;
-    let mut item: menu_item = menu_item {
+    let mut menu: *mut Menu = 0 as *mut Menu;
+    let mut item: MenuItem = MenuItem {
         name: 0 as *const libc::c_char,
         key: 0,
         command: 0 as *const libc::c_char,
@@ -10876,7 +10858,7 @@ unsafe extern "C" fn status_prompt_complete_list_menu(
         Some(
             status_prompt_menu_callback
                 as unsafe extern "C" fn(
-                    _: *mut menu,
+                    _: *mut Menu,
                     _: u_int,
                     _: key_code,
                     _: *mut libc::c_void,
@@ -10899,8 +10881,8 @@ unsafe extern "C" fn status_prompt_complete_window_menu(
     mut offset: u_int,
     mut flag: libc::c_char,
 ) -> *mut libc::c_char {
-    let mut menu: *mut menu = 0 as *mut menu;
-    let mut item: menu_item = menu_item {
+    let mut menu: *mut Menu = 0 as *mut Menu;
+    let mut item: MenuItem = MenuItem {
         name: 0 as *const libc::c_char,
         key: 0,
         command: 0 as *const libc::c_char,
@@ -11053,7 +11035,7 @@ unsafe extern "C" fn status_prompt_complete_window_menu(
         Some(
             status_prompt_menu_callback
                 as unsafe extern "C" fn(
-                    _: *mut menu,
+                    _: *mut Menu,
                     _: u_int,
                     _: key_code,
                     _: *mut libc::c_void,

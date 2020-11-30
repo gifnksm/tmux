@@ -1,5 +1,6 @@
 use crate::{
-    grid::Cell as GridCell, key_code::code as key_code_code, screen::Screen, utf8::Utf8Data,
+    grid::Cell as GridCell, key_code::code as key_code_code, menu::Item as MenuItem,
+    screen::Screen, utf8::Utf8Data,
 };
 use ::libc;
 
@@ -165,7 +166,7 @@ extern "C" {
         _: mode_tree_menu_cb,
         _: mode_tree_height_cb,
         _: *mut libc::c_void,
-        _: *const menu_item,
+        _: *const MenuItem,
         _: *mut *const libc::c_char,
         _: u_int,
         _: *mut *mut crate::screen::Screen,
@@ -1160,14 +1161,6 @@ pub type tty_ctx_redraw_cb = Option<unsafe extern "C" fn(_: *const tty_ctx) -> (
 
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct menu_item {
-    pub name: *const libc::c_char,
-    pub key: key_code,
-    pub command: *const libc::c_char,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
 pub struct session_group {
     pub name: *const libc::c_char,
     pub sessions: C2RustUnnamed_34,
@@ -1295,9 +1288,9 @@ unsafe extern "C" fn tolower(mut __c: libc::c_int) -> libc::c_int {
         __c
     };
 }
-static mut window_tree_menu_items: [menu_item; 13] = [
+static mut window_tree_menu_items: [MenuItem; 13] = [
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: b"Select\x00" as *const u8 as *const libc::c_char,
             key: '\r' as i32 as key_code,
             command: 0 as *const libc::c_char,
@@ -1305,7 +1298,7 @@ static mut window_tree_menu_items: [menu_item; 13] = [
         init
     },
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: b"Expand\x00" as *const u8 as *const libc::c_char,
             key: key_code_code::RIGHT,
             command: 0 as *const libc::c_char,
@@ -1313,7 +1306,7 @@ static mut window_tree_menu_items: [menu_item; 13] = [
         init
     },
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: b"Mark\x00" as *const u8 as *const libc::c_char,
             key: 'm' as i32 as key_code,
             command: 0 as *const libc::c_char,
@@ -1321,7 +1314,7 @@ static mut window_tree_menu_items: [menu_item; 13] = [
         init
     },
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: b"\x00" as *const u8 as *const libc::c_char,
             key: 0xff000000000u64,
             command: 0 as *const libc::c_char,
@@ -1329,7 +1322,7 @@ static mut window_tree_menu_items: [menu_item; 13] = [
         init
     },
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: b"Tag\x00" as *const u8 as *const libc::c_char,
             key: 't' as i32 as key_code,
             command: 0 as *const libc::c_char,
@@ -1337,7 +1330,7 @@ static mut window_tree_menu_items: [menu_item; 13] = [
         init
     },
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: b"Tag All\x00" as *const u8 as *const libc::c_char,
             key: '\u{14}' as i32 as key_code,
             command: 0 as *const libc::c_char,
@@ -1345,7 +1338,7 @@ static mut window_tree_menu_items: [menu_item; 13] = [
         init
     },
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: b"Tag None\x00" as *const u8 as *const libc::c_char,
             key: 'T' as i32 as key_code,
             command: 0 as *const libc::c_char,
@@ -1353,7 +1346,7 @@ static mut window_tree_menu_items: [menu_item; 13] = [
         init
     },
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: b"\x00" as *const u8 as *const libc::c_char,
             key: 0xff000000000u64,
             command: 0 as *const libc::c_char,
@@ -1361,7 +1354,7 @@ static mut window_tree_menu_items: [menu_item; 13] = [
         init
     },
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: b"Kill\x00" as *const u8 as *const libc::c_char,
             key: 'x' as i32 as key_code,
             command: 0 as *const libc::c_char,
@@ -1369,7 +1362,7 @@ static mut window_tree_menu_items: [menu_item; 13] = [
         init
     },
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: b"Kill Tagged\x00" as *const u8 as *const libc::c_char,
             key: 'X' as i32 as key_code,
             command: 0 as *const libc::c_char,
@@ -1377,7 +1370,7 @@ static mut window_tree_menu_items: [menu_item; 13] = [
         init
     },
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: b"\x00" as *const u8 as *const libc::c_char,
             key: 0xff000000000u64,
             command: 0 as *const libc::c_char,
@@ -1385,7 +1378,7 @@ static mut window_tree_menu_items: [menu_item; 13] = [
         init
     },
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: b"Cancel\x00" as *const u8 as *const libc::c_char,
             key: 'q' as i32 as key_code,
             command: 0 as *const libc::c_char,
@@ -1393,7 +1386,7 @@ static mut window_tree_menu_items: [menu_item; 13] = [
         init
     },
     {
-        let mut init = menu_item {
+        let mut init = MenuItem {
             name: 0 as *const libc::c_char,
             key: 0xff000000000u64,
             command: 0 as *const libc::c_char,

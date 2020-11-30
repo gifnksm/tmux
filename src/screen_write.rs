@@ -1,5 +1,6 @@
 use crate::{
     grid::{Cell as GridCell, CellEntry as GridCellEntry, Grid, Line as GridLine},
+    menu::Menu,
     screen::Screen,
     style::Ranges as StyleRanges,
     utf8::{utf8_state, Utf8Data, Utf8State},
@@ -1200,22 +1201,6 @@ pub type tty_ctx_set_client_cb =
     Option<unsafe extern "C" fn(_: *mut tty_ctx, _: *mut client) -> libc::c_int>;
 pub type tty_ctx_redraw_cb = Option<unsafe extern "C" fn(_: *const tty_ctx) -> ()>;
 
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct menu_item {
-    pub name: *const libc::c_char,
-    pub key: key_code,
-    pub command: *const libc::c_char,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct menu {
-    pub title: *const libc::c_char,
-    pub items: *mut menu_item,
-    pub count: u_int,
-    pub width: u_int,
-}
 unsafe extern "C" fn screen_write_offset_timer(
     mut _fd: libc::c_int,
     mut _events: libc::c_short,
@@ -2028,7 +2013,7 @@ pub unsafe extern "C" fn screen_write_vline(
 #[no_mangle]
 pub unsafe extern "C" fn screen_write_menu(
     mut ctx: *mut screen_write_ctx,
-    mut menu: *mut menu,
+    mut menu: *mut Menu,
     mut choice: libc::c_int,
     mut choice_gc: *const GridCell,
 ) {
